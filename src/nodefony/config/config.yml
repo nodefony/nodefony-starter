@@ -39,14 +39,13 @@ name:                           "N O D E F O N Y"
 system:                         #
   state:                        prod    #prod
   version:                      "1.0"
-  domain:                       nodefony.com
-  #domain:                       192.168.100.104
+  domain:                       127.0.0.1
   httpPort:                     5151
   httpsPort:                    5152
   locale:                       "fr_fr"   
   projectName:                  "NODEFONY" 
-  authorName:                   Christophe CAMENSULI
-  authorMail:                   christophe.camensuli@gmail.com
+  authorName:                   myName
+  authorMail:                   myName@domain.com
   date:                         null
   dateYear:                     null
 
