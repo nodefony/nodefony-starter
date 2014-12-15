@@ -33,11 +33,7 @@ nodefony.register("appKernel",function(){
 			"./vendors/nodefony/bundles/frameworkBundle",
 			"./vendors/nodefony/bundles/realTimeBundle",
 			"./vendors/nodefony/bundles/orm2Bundle",
-			"./vendors/nodefony/bundles/monitoringBundle",
-			//"./vendors/nodefony/bundles/mailerBundle",
-			"./src/bundles/demoBundle",
-			//"./src/bundles/webRtcBundle",
-			//"./src/bundles/wuiBundle"
+			"./vendors/nodefony/bundles/monitoringBundle"
 		]);
 
 		/*
