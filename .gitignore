@@ -4,11 +4,11 @@ docs/*
 bin/*
 tmp/*
 node_modules/*
-#web/*
+web/*
 
 
-#vendors/asciiArt/figlet222/chkfont*
-#vendors/asciiArt/figlet222/figlet*
+vendors/asciiArt/figlet222/chkfont*
+vendors/asciiArt/figlet222/figlet*
 #Ignore vin backup
 *.swp
 *.swn
