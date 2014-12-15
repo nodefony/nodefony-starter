@@ -1,0 +1,35 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Command/skeletons/licence.mit.skeleton" %}
+
+{% block body %}
+
+nodefony.registerController("{{name}}", function(){
+
+		/**
+		 *	The class is a **`{{name}}` CONTROLLER** .
+		 *	@module {{module}}
+		 *	@main {{module}}
+		 *	@class {{name}}
+		 *	@constructor
+		 *	@param {class} container   
+		 *	@param {class} context
+		 *	
+		 */
+		var {{controllerName}} = function(container, context){
+			this.mother = this.$super;
+			this.mother.constructor(container, context);
+		};
+
+
+		/**
+		 *
+		 *	@method indexAction
+		 *
+		 */
+		{{controllerName}}.prototype.indexAction = function(){
+			this.forward("frameworkBundle:default:system",{view: "{{bundleName}}:{{directory}}:index.html.twig",bundle:this.getParameters("bundles.{{smallName}}")});
+		};
+
+		
+		return {{controllerName}};
+});
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block stylesheets %}
+
+	{{parent()}}
+	<style type="text/css">
+
+		* { font-family: 'Source Code Pro', sans-serif !important;  }
+		body { background: #000; padding: 40px;color:white }
+		.terminal { color: #0B0; }
+		
+		
+		#canvas ,#canvas2{
+			background-color:white
+		}
+
+	</style>
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="/ui/themes/ui.all.css">
+	<link rel="stylesheet" href="/ui/themes/default/panel.css">
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block javascripts %}
+
+	{{parent()}}
+	<script type="text/javascript" src="/jquery/jquery-ui-1.10.4.custom.js"></script>
+
+	<script type="text/javascript" src="/io/io.js"></script>
+	<script type="text/javascript" src="/io/transports/websockets/websocket.js"></script>
+	<script type="text/javascript" src="/crypto/base64.js"></script>
+	<script type="text/javascript" src="/crypto/md5.js"></script>
+	<script type="text/javascript" src="/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/io/realtime/realtime.js"></script>
+	<script type="text/javascript" src="/io/protocols/sip/sip.js"></script>
+	<script type="text/javascript" src="/media/media.js"></script>
+	<script type="text/javascript" src="/webrtc/webrtc.js"></script>
+
+	
+
+	<!-- UI -->
+	<script type="text/javascript" src="/ui/ui.js"></script>
+	<script type="text/javascript" src="/ui/color.js"></script>
+	<script type="text/javascript" src="/ui/plugins/container/container.js"></script>
+	<script type="text/javascript" src="/ui/plugins/panel/panel.js"></script>
+
+
+	<script>
+
+		
+		var drawSpectrum = function(canvas, myAudioAnalyser) {
+            		var ctx = canvas.getContext('2d');
+            		var width = canvas.width;
+            		var height = canvas.height;
+            		var bar_width = 10;
+            		ctx.clearRect(0, 0, width, height);
+            		var freqByteData = new Uint8Array(myAudioAnalyser.frequencyBinCount);
+			//console.log(freqByteData)
+            		myAudioAnalyser.getByteFrequencyData(freqByteData);
+            		var barCount = Math.round(width / bar_width);
+            		for (var i = 0; i < barCount; i++) {
+                		var magnitude = freqByteData[i];
+                		// some values need adjusting to fit on the canvas
+                		ctx.fillRect(bar_width * i, height, bar_width - 2, -magnitude + 60);
+            		}
+        	};	
+
+		$( document ).ready(function(){
+			nodefony.ui.log("SERVIE WEBRTC NODEJS");
+			var webRTC = null;
+			var userName = $("#userName").html();
+
+			var select = $("#bt").bind("click",function(event){
+				var user = $("#invite").val();
+				webRTC.createOffer(user)
+			});
+
+
+
+			var mix = new nodefony.media.mediaMix();
+			//console.log(mix);
+
+			
+			var url = "nodefony.com:5151/webrtc1/3000" ;
+			webRTC = new nodefony.webRtc(url, null,{
+				
+				onRegister:function(user, webrtc){
+					//console.log(user)
+					nodefony.ui.log("register User "+user.name)
+					user.mediaStream.getUserMedia({
+						audio:true,
+						video:true
+					},function(mediaStream){
+						//console.log(mediaStream)
+						mediaStream.attachMediaStream($('#myVideo').get(0));
+					
+						var track2 = mix.createTrack(mediaStream,{
+							filter		: false,
+							panner		: false,
+							analyser	: true,
+							onReady		:function(media){
+								media.play();
+								var intervalSpectrumId = setInterval(function(){
+									drawSpectrum($('#canvas').get(0) ,media.analyser);
+								}, 30);
+							}	
+						});
+
+					})
+				},
+				
+				onOffer:function(message, result){
+					console.log(message)
+					var res = confirm("call from :" +message.from);
+					result.accept = res ;
+				},
+				onRemoteStream:function(event, remoteStream/*.urlStream*/, webRtc){
+					remoteStream.attachMediaStream($('#myVideo1').get(0));	
+					var track = mix.createTrack(remoteStream,{
+						filter		: false,
+						panner		: false,
+						analyser	: true,
+						onReady		:function(media){
+							media.play();
+							var intervalSpectrumId = setInterval(function(){
+								drawSpectrum($('#canvas2').get(0) ,media.analyser);
+							}, 30);
+						}	
+					});					
+
+				}
+			});
+			webRTC.register( userName, "1234");
+
+
+		});
+	</script>
+
+
+{% endblock %}
+
+
+{% block bodyContent %}
+	<p id="userName" value="{{ userName }}" style="display:none">{{ userName }}</p>
+		<label style="top:50px;position:absolute">
+		<input  id='invite' type="text" name="s" value="" placeholder="UserName" style="color:black">
+		<button id='bt'  >INVITE</button>
+	</label>
+	<video id="myVideo" width="400" height="222" style="top:100px;position:absolute" ></video>
+	<canvas width="300" height="200" id="canvas" style="top:350px;position:absolute"></canvas>
+
+	<video id="myVideo1" width="400" height="222" style="top:100px;left:1200px;position:absolute" ></video>
+	<canvas width="300" height="200" id="canvas2" style="top:350px;left:1200px;position:absolute"></canvas>
+
+{% endblock %}
+
+

@@ -1,0 +1,101 @@
+#
+#===============================================================================
+#
+#  Copyright © 2013/2013        CAMENSULI Christophe | christophe.camensuli@nodefony.com
+#
+# ===============================================================================
+#
+#
+#        nodefony BUILDER YAML FILE 
+#
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+
+########## nodefony FRAMEWORK NODE CONFIG  ############
+App:
+        projectName:                    "NODEFONY" 
+        projectYear:                    2013
+        name:                           cci
+        email:                          christophe.camensuli@gmail.com
+        locale:                         "fr_fr"
+
+
+
+#
+#       STATIC FILE WITH CONNECT LIBRARY
+#
+httpBundle:
+  statics:
+    public:
+      less:                       true
+      maxage:                     0          #30*24*60*60*1000
+    vendors:
+      path:                       "/web/"
+      maxage:                     0          #30*24*60*60*1000
+    settings:
+      cache :                     false	
+      maxAge:                     0
+
+
+#
+#       LESS SERVICE CONFIGURATION
+#
+asseticBundle:
+  less:
+    compress:                     false
+    cache:                        false 
+
+#
+#
+#       ORM MANAGER 
+#
+#       ORM2 
+#
+#       CONFIG 
+#       https://github.com/dresende/node-orm2
+#
+#       MULTI CONNECTION !!!!
+#
+orm2Bundle: 
+  settings: 
+    debug:                      true
+    reconnect:                  60000           # time (ms) to reconnect db
+#  connectors:                    
+#    conn1: 
+#      driver: mysql
+#      host: localhost
+#      port: 3306
+#      user:  root
+#      password: barzog
+#      dbname: wef 
+ 
+#    conn3: 
+#      driver: sqlite
+#      user:  wef
+#      password: nodefony
+#      dbname: "/app/Resources/sessions.db"
+      
+#    mongodb:
+#      driver: mongodb
+#      host: localhost
+#      port: 27017
+#      user:  wef
+#      password: nodefony
+#      dbname: wef

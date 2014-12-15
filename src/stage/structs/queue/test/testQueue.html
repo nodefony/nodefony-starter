@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+	
+	<head>
+		<title>QUEUE  - STAGE Unit Tests </title>
+
+		<script src="/test/unit.js"></script>
+		<script src="/src/library/stage/stage.js"></script>
+		<script src="/src/library/selectors/sizzle/sizzle.js"></script>
+		<script src="/src/library/array/array.js"></script>
+		<script src="/src/library/json/json.js"></script>
+		<script src="/src/library/structs/structs.js"></script>
+		<script src="/src/library/structs/hash/hash.js"></script>
+		<script src="/src/library/structs/queue/queue.js"></script>
+		<script src="/src/library/function/function.js"></script>
+		<script src="/src/library/string/string.js"></script>
+		<script src="/src/library/events/events.js"></script>
+		<script src="/src/library/dom/dom.js"></script>
+		<script src="/src/library/css/css.js"></script>
+		<script src="/src/library/storage/storage.js"></script>
+		<script src="/src/library/console/console.js"></script>
+
+
+		<link rel="stylesheet" type="text/css" href="/src/library/console/themes/basic/css/console.css" />
+
+</head>
+
+	<body>
+		<script type="text/javascript" language="javascript" charset="utf-8">
+
+			function testQueue(){
+				var localSettings= {
+					onRunStart:stage.setContext( function(queue){
+						assertEquals(queue,myQueue);
+						assertEquals(this,window.stage);
+					},stage),
+					onRunFinish:function(queue){
+						assertEquals(queue,myQueue);
+					},
+					onError:function(queue, error, code){
+						console.log(error);
+						console.log(code);
+					}
+				}
+				var myQueue = stage.structs.createQueue(localSettings);
+
+				for (var i =0;i<1000;i++){
+					myQueue.enqueue(i);
+				}
+				var j = 0;
+				myQueue.run(function(ele){
+					assertEquals(ele, j);
+					assertEquals(this, window.stage);
+					j++;
+				}.bind(stage));
+
+				var ret = myQueue.count();
+				assertEquals(ret,1000);
+				ret = myQueue.peek();
+				assertEquals(ret,0);
+
+				myQueue.remove(999);
+
+				for (var i =0;i<999;i++){
+					myQueue.dequeue();
+				}
+				ret = myQueue.isEmpty();
+				assertTrue(ret);
+			}
+		</script>
+	</body>
+</html>
+

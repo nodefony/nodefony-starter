@@ -1,0 +1,48 @@
+#!/usr/local/bin/node
+
+var cluster = require('cluster');	
+var domain = require('domain');
+
+
+//  AUTOLOAD LIBRARY nodefony NODE
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.load("./app/appKernel.js");
+
+
+
+
+if (cluster.isMaster) {
+
+	nodefony.kernel.prototype.generateAscii("N O D E F O N Y" , function(error, stdout, stderr){
+		console.log('\033[31m'+stdout+'\033[0m');
+	});
+
+	//var nbProc = require('os').cpus().length; 
+	var nbProc = 1; 
+	for (var i=0 ; i<nbProc;i++){
+		cluster.fork();
+	}
+
+	cluster.on('disconnect', function(worker) {
+		console.error('disconnect!');
+		//cluster.fork();
+	});
+
+	/*var logStream = new nodefony.log(process.cwd()+'/tmp/error.log',{
+		rotate:true
+	});
+	var logStreamD = new nodefony.log(process.cwd()+'/tmp/debug.log',{
+		rotate:true
+	});*/
+	
+}else {
+	var kernel =new nodefony.appKernel("SERVER", "prod", false, autoloader);
+}
+
+
+
+
+
+
+
+

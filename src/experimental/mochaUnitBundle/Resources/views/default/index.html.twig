@@ -1,0 +1,87 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="/mochaUnitBundle/css/mocha.css" rel="stylesheet" media="screen">
+<link href="/mochaUnitBundle/css/style.css" rel="stylesheet" media="screen">
+{% endblock %}
+
+{% block bodyContent %}
+
+<div class="container">
+	<div class="panel-group" id="accordion">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> Listing des tests </a>
+				</h4>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse{% if jsToLoad|length == 0 %} in{% endif %}">
+				<div class="panel-body">
+				<div class="list-group">
+					<a class="list-group-item" href="?test=all">	
+					<span class="listing-name">Tous les tests</span>
+					<span class="glyphicon glyphicon-refresh pull-right"></span>
+					</a>
+					{% set bundle = '' %}
+				{% for test in tests %}
+					{% if bundle != test.bundle %}
+					{% set bundle = test.bundle %}
+					
+					<div class="panel panel-info">
+		              <div class="panel-heading">
+		                <h2 class="panel-title"><a href="?test=all&bundle={{ test.bundle }}">{{ test.bundle }}</a></h2>
+		              </div>
+		            </div>
+					{% endif %}
+					<a class="list-group-item" href="?test={{test.name}}&dir={{ test.dir }}&bundle={{ test.bundle }}">	
+					<span class="glyphicon glyphicon-pushpin listing-margin"></span>
+					<span class="listing-name">{{test.name}}</span>
+					<span class="glyphicon glyphicon-refresh pull-right"></span>
+					</a>
+				{% endfor %}
+				</div> 
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"> Visualisation des tests </a>
+				</h4>
+			</div>
+			<div id="collapseTwo" class="panel-collapse collapse{% if jsToLoad|length > 0 %} in{% endif %}">
+				<div class="panel-body">
+				<div id="mocha">
+				
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="/mochaUnitBundle/js/mochaUnit.js"></script>
+	<script type="text/javascript" src="/mochaUnitBundle/js/mocha.js"></script>
+	<script type="text/javascript" src="/mochaUnitBundle/js/chai.js"></script>
+	{% if jsToLoad|length > 0 %}
+	<script type="text/javascript">mocha.setup('{{ config.setup.interface }}')</script>
+	{% for js in jsToLoad %}
+	<script type="text/javascript" src="{{ js }}"></script>
+	{% endfor %}
+	<script id="ready" type="text/javascript">
+    
+    jQuery(document).ready(function(){
+        assert = {{ config.setup.assert }};
+        {% if config.setup.checkLeaks %}mocha.checkLeaks();{% endif %}
+        {% if config.setup.globals %}mocha.globals({{ config.setup.globals }});{% endif %}
+        mocha.run();
+    });
+    
+    </script>
+	{% endif %}
+{% endblock %}

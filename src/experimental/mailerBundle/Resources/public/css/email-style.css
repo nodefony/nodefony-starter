@@ -1,0 +1,27 @@
+
+
+.title {
+	font-family: Verdana;
+	font-size: 25px;
+	color: #6f8745;
+}
+
+.paragraphe {
+	font-family: Verdana;
+    font-size: 15px;
+	margin: 20px 10px;
+	border: 1px #CECECE dotted;
+}
+
+.signature {
+	margin: 20px 10px;
+	font-family: Verdana;
+    font-size: 17px;
+    color: #e8eedd;
+}
+
+.address {
+	font-family: Verdana;
+    font-size: 20px;
+    font-weight: bold;
+}

@@ -1,0 +1,4 @@
+
+databaseName: Nom de la base de donnée
+encoding: Codage
+selectDriver: Selection du driver db

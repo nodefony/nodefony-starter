@@ -1,0 +1,24 @@
+#Ignore directory 
+build/*
+docs/*
+bin/*
+tmp/*
+node_modules/*
+#web/*
+
+
+vendors/asciiArt/figlet222/chkfont*
+vendors/asciiArt/figlet222/figlet*
+#Ignore vin backup
+*.swp
+*.swn
+*.swo
+#emacs
+*~
+# macos
+.DS_Store
+
+# Eclipse file
+/.project
+/.settings
+/nbproject/private/

@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://{{domain}}/schema/dic/services"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xsi:schemaLocation="http://{{domain}}/schema/dic/services http://{{domain}}/schema/dic/services/services-1.0.xsd">
+
+    	<parameters>
+    	</parameters>
+
+    	<services>
+        	
+
+	</services>
+
+</container>

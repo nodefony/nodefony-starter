@@ -1,0 +1,61 @@
+{% extends "/app/Resources/views/base.html.twig" %}
+
+
+{% block title %} {{title}} {% endblock %}
+
+
+{% block stylesheets %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/frameworkBundle/css/style.css" rel="stylesheet" media="screen">
+
+{% endblock %}
+
+
+{% block body %}
+	{% block navBar %}
+		<div class="navbar">
+	 		<div class="navbar-header">
+	 			<div class="logo"></div>
+				<a class="navbar-brand text-lg" href="{{path("Default")}}"><i class="glyphicon glyphicon-fire text-warning icon-shadow"></i> <strong>WEB nodefony FRAMEWORK</strong> </a>
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	              <span class="sr-only">Toggle navigation</span>
+	              <span class="icon-bar"></span>
+	              <span class="icon-bar"></span>
+	              <span class="icon-bar"></span>
+	            </button>
+			</div>
+			<div id="navbar" class="collapse pos-rlt navbar-collapse box-shadow bg-white">
+				<ul class="nav navbar-nav">
+					{% block navbarLeft %}{% endblock %}
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					{% block navbarRight %}{% endblock %}
+					<li><a href="/documentation"><i class="glyphicon glyphicon-cog text-info icon-shadow"></i> Documentation</a></li>
+					<li><a href="/login" class=""><i class="glyphicon glyphicon-lock text-danger icon-shadow"></i> Connection</a></li>
+				</ul>
+			</div>
+		</div>	
+	{% endblock %}
+	
+	{% block content %}
+		<div class="container">
+			<div class="row">
+				{% block navContent %}{% endblock %}
+			</div>
+			<div class="row">
+				{% block bodyContent %}{% endblock %}
+			</div>
+		</div>
+	{% endblock %}
+{% endblock %}
+
+
+{% block javascripts %}
+	<script type="text/javascript" src="/frameworkBundle/vendors/jquery/jquery-2.1.0.js"></script>
+	<script type="text/javascript" src="/frameworkBundle/vendors/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
+	<script type="text/javascript" src="/vendors/stage/function.js"></script>
+	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
+	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
+{% endblock %}
+

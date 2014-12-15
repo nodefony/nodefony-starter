@@ -1,0 +1,73 @@
+/*
+ *
+ *
+ *
+ *
+ */
+var serveStatic = require('serve-static');
+var finalhandler = require('finalhandler');
+
+nodefony.registerService("static", function(){
+
+
+	var static = function( container, options){
+		this.syslog = this.container.get("syslog");	
+		this.settings = nodefony.extend({}, this.container.getParameters("bundles.http").statics.settings, options);
+		this.logger(this.settings,"INFO");
+		//console.log(this.settings);
+		this.servers = [];
+	}
+
+
+	static.prototype.logger = function(pci, severity, msgid,  msg){
+		if (! msgid) msgid = "NEW SERVER STATIC FILE ";
+		return this.syslog.logger(pci, severity, msgid,  msg);
+	};
+
+
+	static.prototype.serve = function(request, response, callback){
+		this.logger(request.url,"INFO");	
+		for (var i= 0 ; i < this.servers.length ; i++){
+			this.servers[i](request, response, function(ele){
+				console.log(arguments);
+				if ( ele ){
+					finalhandler(request, response)();
+				}
+			})	
+		}
+		callback()
+	};
+
+
+	static.prototype.addDirectory = function(path, options, less){
+		var settings = nodefony.extend({redirect:false},this.settings , options);
+		var serve  = serveStatic(path, settings)
+		this.servers.push(serve);
+		return serve ;
+	};
+
+
+	static.prototype.get = function(name){
+		if (this.container)
+			return this.container.get(name);
+		return null;
+	};
+
+	static.prototype.set = function(name, obj){
+		if (this.container)
+			return this.container.set(name, obj);
+		return null;
+	};
+
+	static.prototype.handle = function(request, response, callback){
+		//FIXME FOR less-middleware 
+		//request.path = request.url;
+		this.serve(request, response, callback )
+	}
+
+
+
+	return static ;
+
+});
+

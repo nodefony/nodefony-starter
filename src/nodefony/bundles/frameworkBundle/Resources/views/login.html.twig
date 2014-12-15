@@ -1,0 +1,81 @@
+
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+
+{{trans_default_domain("login")}}
+
+{% block title %} {{title| trans}} {% endblock %}
+
+{% block bodyContent %}
+	{% if error %}
+		<div id="error">{{error}}</div>
+	{% endif %}
+        <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+
+          	<h1 class="block text-center m-t-xxl">{{ "loginMessage"|trans() }}</h1>
+	    	<h4 class="wrapper strong text-center">{{ "sousTitre"|trans }} <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
+            <div class="account-wall">
+                <form id="login" class="form-signin"  action="/secure" method="POST" >
+        		<div class="list-group list-group-sm">
+        			<div class="list-group-item">
+	        			<input type="text" id="email"  class="form-control no-b" placeholder="{{"user.register.firstName"|trans}}" required autofocus />
+	        		</div>
+	        		<div class="list-group-item">
+	        			<input type="password" id="password"  class="form-control no-b" placeholder="Password" required />
+	        		</div>
+        		</div>
+        		<div class="checkbox text-center">
+	        		<label>
+	                	<input type="checkbox" value="remember-me" /> <strong>{{"remember"|trans}}</strong>
+	        		</label>
+        		</div>
+        		<button id="valid" class="btn btn-lg btn-primary btn-block"  > {{"validation"|trans}} </button>
+        		
+                </form>
+            </div>
+
+        </div>
+
+
+	<div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+		<div role="navigation" class="collapse navbar-collapse bs-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="/about">About</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li id="li-langs">
+					<select id="langs" name="hl" class="form-control">
+						{% set langs = getLangs()%}
+						{% for lang in langs %}
+							{% if getLocale() == lang.value %} 
+								<option value="{{lang.value}}" selected >{{lang.name}}</option>
+							{% else %}
+								<option value="{{lang.value}}" >{{lang.name}}</option>
+							{% endif %}
+						{% endfor%}
+					</select>
+				</li>
+			</ul>
+		</div>	
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{parent()}}
+
+	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/frameworkBundle/js/login.js"></script>
+	<script type="text/javascript">
+		document.cookie = "session=null; path=/;";
+	</script>
+{% endblock %}
+

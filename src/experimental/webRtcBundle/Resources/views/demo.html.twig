@@ -1,0 +1,90 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block stylesheets %}
+
+	{{parent()}}
+	<!--link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"-->
+	<link href="/webRtcBundle/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/webRtcBundle/css/lobster.css" rel="stylesheet">
+	<!--link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'-->
+	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="/ui/themes/ui.all.css">
+	<link rel="stylesheet" href="/ui/themes/default/panel.css">
+	<link rel="stylesheet" href="/webRtcBundle/css/webrtc.css">
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+	{{parent()}}
+	<script type="text/javascript" src="/jquery/jquery-ui-1.10.4.custom.js"></script>
+
+	<script type="text/javascript" src="/io/io.js"></script>
+	<script type="text/javascript" src="/crypto/base64.js"></script>
+	<script type="text/javascript" src="/crypto/md5.js"></script>
+	<script type="text/javascript" src="/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/io/realtime/realtime.js"></script>
+	<script type="text/javascript" src="/io/protocols/sip/sip.js"></script>
+	<script type="text/javascript" src="/media/media.js"></script>
+	<script type="text/javascript" src="/webrtc/webrtc.js"></script>
+
+
+	<!-- UI -->
+	<script type="text/javascript" src="/ui/ui.js"></script>
+	<script type="text/javascript" src="/ui/color.js"></script>
+	<script type="text/javascript" src="/webRtcBundle/js/popup.js"></script>
+	<script type="text/javascript" src="/ui/plugins/container/container.js"></script>
+	<script type="text/javascript" src="/ui/plugins/panel/panel.js"></script>
+
+	<script type="text/javascript" src="/webRtcBundle/js/appWebrtc.js"></script>
+
+
+{% endblock %}
+
+
+{% block bodyContent %}
+<p id="userName" value="{{ userName }}" style="display:none">{{ userName }}</p>
+
+<div class="container" style="background-color: #244558;">
+	<div class="row row-centered">
+		<label id="invite-label" class="col-md-10 col-xs-10 col-centered">
+			<input id='invite' type="text" name="s" value="" placeholder="Compose ton numéro" style="color: black;" class="col-md-9 col-xs-12 col-centered">
+			<input type="button" id='bt' class="col-md-3 col-xs-6 col-centered" value="Appeler" />
+		</label>
+	</div>
+	<div class="row row-centered">
+		<div id="remoteDiv" class="col-md-8 col-xs-12 row-centered">
+		</div>
+		<div id="myDiv" class="col-md-4 col-xs-12 row-centered">
+			<!--div class="row">
+				<div class="video-container col-md-12 col-xs-8 col-centered">
+					<div class="video col-md-12"></div>
+				</div>
+				<div id="discussion-title" class="col-md-12 col-xs-8 col-centered">Discussion</div>
+				<div id="discussion" class="col-md-12 col-xs-8 col-centered">
+					<div class="col-md-12 col-xs-8">Participants</div>
+					<hr />
+					<div class="col-md-12 col-xs-8"></div>
+				</div>
+			</div-->
+		</div>
+	</div>
+</div>
+
+<span id="signature">Design by nodefony ©</span>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+

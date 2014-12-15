@@ -1,0 +1,11 @@
+index: 
+  pattern:  /webrtc/{userName}
+  defaults: {controller: "webRtcBundle:default:index"}
+
+demo: 
+  pattern:  /webrtc/sip/{userName}
+  defaults: {controller: "webRtcBundle:default:demo"}
+  requirements: 
+    method: get,websocket
+
+

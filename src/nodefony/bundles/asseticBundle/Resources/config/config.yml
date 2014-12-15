@@ -1,0 +1,44 @@
+#
+#===============================================================================
+#
+#  Copyright © 2013/2014        CAMENSULI Christophe | christophe.camensuli@nodefony.com
+#
+# ===============================================================================
+#
+#        nodefony BUILDER YAML FILE 
+#
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+
+########## NODEFONY CONFIG BUNDLE  asseticBundle  ############
+name :				asseticBundle
+locale :			fr_fr
+
+#  Documentaion : http://lesscss.org/   https://github.com/less/less-docs
+less:
+  optimization:                 0               # (0, 1, or 2. 0 is default)
+#  dumpLineNumbers:              comments        #Add line tracking to the compiled css. ('comments' or 'mediaquery')
+  compress:                     true
+  cache:                        true
+  async:                        false
+
+ 
+#TODO
+coffescript:

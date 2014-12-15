@@ -1,0 +1,30 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block bodyContent %}
+
+
+	<div class="col-lg-12">
+		<div class="jumbotron bg-danger m-t-xxl">
+
+			<h1> Framework  Exception  </h1>
+			<h2>The following error occurred:</h2>
+			<p>bundle : {{ bundle }}</p>
+			<p>controller : {{ controller }}</p>
+			<pre>
+			{% if exception.message  %}
+Message : {{ exception.message }}
+			{% endif %}	
+			{% if exception.error  %}
+Error : {{ exception.message }}
+			{% endif %}	
+{{ exception|json_encode()  }}
+			</pre>
+			<p></p>				
+		</div>
+	</div>
+
+
+{% endblock %}
+
+

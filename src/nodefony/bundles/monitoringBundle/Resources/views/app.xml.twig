@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="app" version="1.0" src="/monitoringBundle/modules/app/appModule.js" type="application/javascript">
+
+	<content>
+		<dashboard layout="standard"></dashboard>	
+
+
+		<components>
+			<component label="Nodefony" icon="glyphicon glyphicon-envelope">
+			</component>
+		</components>
+
+
+	</content>
+	
+	<controllers>
+		<controller name="appController" src="/monitoringBundle/modules/app/controller/appController.js" type="application/javascript" />
+		<controller name="navController" src="/monitoringBundle/modules/app/controller/navController.js" type="application/javascript" />
+		<controller name="dashboardController" src="/monitoringBundle/modules/app/controller/dashboardController.js" type="application/javascript" />
+	</controllers>
+	
+	<templates>
+		<template name="index" src="/monitoringBundle/modules/app/Resources/views/index.html.twig" type="application/twig"/>
+		<template name="404" src="/monitoringBundle/modules/app/Resources/views/404.html.twig" type="application/twig"/>
+		<template name="500" src="/monitoringBundle/modules/app/Resources/views/500.html.twig" type="application/twig"/>
+		<template name="navigation" src="/monitoringBundle/modules/app/Resources/views/nav.html.twig" type="application/twig"/>
+		<template name="dashboard" src="/monitoringBundle/modules/app/Resources/views/dashboard.html.twig" type="application/twig"/>
+
+		<template name="widget" src="/monitoringBundle/modules/app/Resources/views/developer/widget.html.twig" type="application/twig"/>
+		<template name="button" src="/monitoringBundle/modules/app/Resources/views/developer/button.html.twig" type="application/twig"/>
+		<template name="color" src="/monitoringBundle/modules/app/Resources/views/developer/color.html.twig" type="application/twig"/>
+		<template name="domparser" src="/monitoringBundle/modules/app/Resources/views/developer/domparser.html.twig" type="application/twig"/>
+		<template name="realTime" src="/monitoringBundle/modules/app/Resources/views/developer/realTime.html.twig" type="application/twig"/>
+		<template name="graph" src="/monitoringBundle/modules/app/Resources/views/developer/graph.html.twig" type="application/twig"/>
+
+		<template name="routing" src="/monitoringBundle/modules/app/Resources/views/route/routing.html.twig" type="application/twig"/>
+		<template name="services" src="/monitoringBundle/modules/app/Resources/views/services/services.html.twig" type="application/twig"/>
+		<template name="syslog" src="/monitoringBundle/modules/app/Resources/views/syslog/index.html.twig" type="application/twig"/>
+		<template name="activity" src="/monitoringBundle/modules/app/Resources/views/activity.html.twig" type="application/twig"/>
+	</templates>
+	
+	<scripts>
+	</scripts>
+	
+	<translations>
+		<translation src="/monitoringBundle/modules/app/Resources/translations/app.fr_FR.json" type="json" />
+	</translations>
+	
+	<modules>
+	</modules>
+	
+	<styles>
+	</styles>
+
+	<routes>
+		<route id="index" path="/">
+			<default key="controller">appModule:app:index</default>
+		</route>
+		<route id="dashboard" path="/dashboard">
+			<default key="controller">appModule:dashboard:index</default>
+		</route>
+		<route id="developer" path="/developer/{element}">
+			<default key="controller">appModule:app:developer</default>
+		</route>
+		<route id="parameters" path="/parameters/{module}">
+			<default key="controller">appModule:app:parameters</default>
+		</route>
+		<route id="help" path="/help">
+			<default key="controller">appModule:app:help</default>
+		</route>
+
+	</routes>
+</module>

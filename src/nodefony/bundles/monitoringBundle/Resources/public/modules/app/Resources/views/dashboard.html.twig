@@ -1,0 +1,45 @@
+<!-- dashboard view -->
+{% if layout == "lefty" %}
+	{% extends 'dashboard/layouts/lefty.html.twig' %}
+{% elseif layout == "righty" %}
+	{% extends 'dashboard/layouts/righty.html.twig' %}
+{% else %}
+	{% extends 'dashboard/layouts/user.html.twig' %}
+{% endif %}
+
+
+{% block route %} 
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+                        <div class="panel-heading"><strong>SYSYTEM ROUTING    </strong>{{kernel.name|upper}}</div>
+                        <div id="widget-route" class="panel-body">
+				<p>Details all routes in framework</p>
+                        </div>
+                </div>
+
+
+{% endblock %}
+
+
+
+
+{% block services %} 
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+                        <div class="panel-heading"><strong>SYSYTEM SERVICES    </strong>{{kernel.name|upper}}</div>
+                        <div id="widget-service" class="panel-body">
+				<p>Details all services in framework</p>
+                        </div>
+                </div>
+
+
+{% endblock %}
+
+
+
+
+
+<script type="text/javascript">
+	$('[data-toggle="tooltip"]').tooltip();
+</script>
+<!-- /dashboard view -->

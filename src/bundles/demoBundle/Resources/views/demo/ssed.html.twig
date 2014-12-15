@@ -1,0 +1,199 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+
+{{trans_default_domain("ssed")}}
+
+
+{% block stylesheets %}
+
+	{{parent()}}
+	<style type="text/css">
+
+		* { font-family: 'Source Code Pro', sans-serif !important;  }
+		body { background: #000; padding: 40px;color:white }
+		.terminal { color: #0B0; }
+		
+	</style>
+
+{% endblock %}
+
+
+
+{% block title %} {{title| trans}} {% endblock %}
+
+{% block bodyContent %}
+	
+
+	<div class="row">
+            <div class="span9">
+                <!--div class="btn-group">
+                    <button class="btn btn-small btn-inverse" type="button" id="start-btn">start</button>
+                    <button class="btn btn-small btn-inverse" type="button" id="stop-btn">stop</button>
+                    <button class="btn btn-small btn-inverse" type="button" id="clear-btn">clear</button>
+                </div-->
+                <p class="terminal">&nbsp;</p>
+                <div id="logs">
+                    
+                </div>   
+            </div>
+            <div class="span9" id="l">
+                <div class="btn-group" id="services-buttons">
+                </div>
+                <p class="terminal">&nbsp;</p>
+                <canvas class="can" id="can-1" width="400" height="257"></canvas>
+                <p class="terminal" id="messages" style="height: 300px; overflow-y: auto;">
+                </p>
+                <!--button class="btn btn-small btn-inverse" type="button" id="clear-msg-logs">clear</button-->
+            </div>
+        </div>
+
+	
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{parent()}}
+
+	<script type="text/javascript" src="/io/io.js"></script>
+	<script type="text/javascript" src="/crypto/base64.js"></script>
+	<script type="text/javascript" src="/crypto/md5.js"></script>
+	<script type="text/javascript" src="/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/demoBundle/js/smoothie.js"></script>
+	<script type="text/javascript" src="/sse/sse.js"></script>
+	
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			// nodejs server
+			var server = "https://nodefony.com:5152/secure"
+			var sseClient = new nodefony.sse.client(server ,{
+				onError:function(obj, type, message){
+					//var json = nodefony.io.getHeaderJSON(obj)	
+					//console.log("Authenticate : "+json)
+					$("#logs" ).empty();
+					$("#logs").append("<p>"+message+"</p>")
+				},
+				onUnauthorized:function(authenticate, sse){
+					authenticate.register("cci", "91984869");
+				},
+				onAuthenticate:function(data, type, xhr){
+					//console.log("pass")
+					var json = nodefony.io.getHeaderJSON(xhr)	
+					//console.log(json)
+					//console.log("Authenticate : "+json.message)
+					this.handshake("wss://nodefony.com:5152/websocket/protocole");
+				},
+				onReady:function(sse, services){
+					for (var serv in sse.services){
+						createButton(serv, sse)
+					}
+					/*
+					sse.subcribe("random",{
+						action:"START",
+						time:800
+					});
+					setTimeout(function(){
+						sse.unSubcribe("random");	
+						sse.subcribe("random",{
+							action:"START",
+							time:2000
+						});
+					}.bind(this),15000)*/
+					//sse.subcribe("dmsg");
+				},	
+				onMessage:function(data, event){
+					//console.log(data)
+					//$("#messages").empty();
+					$("#messages").append("<p>"+JSON.stringify(data.ssed)+"</p>")
+					if ( data.ssed.random ){
+						if (line1)
+							line1.append(new Date().getTime(), data.ssed.random.data);
+						return ;
+					}
+					if ( data.ssed.dmsg  ){
+						if (line2)
+							line2.append(new Date().getTime(), data.ssed.dmsg.data/100);
+					}
+				},
+				onClose:function(){
+					//console.log(arguments)
+					$("#logs" ).empty();
+					$("#logs").append("<p>close by peer</p>");
+				}
+			});	
+			
+			/*setTimeout(function(){
+				
+				sseClient.transport.close()
+			},10000);*/	
+
+			$('#stop-btn').click(function() {     
+		            $('#start-btn').removeClass('disabled');    
+			    if (sseClient.connected) {
+				sseClient.close();
+			}
+                });
+
+		});
+			
+
+		var createButton = function(name, sse){
+			var button = $(document.createElement("button"));
+			button.addClass("btn btn-small btn-inverse");
+			button.text(name);
+			button.attr("id","service_"+name);
+			$("#services-buttons").append( button.get(0));
+			button.bind("click", function(event){
+				var target = $(event.target);
+				var name = target.text();
+				if (name in sse.sucribedService){
+					sse.unSubcribe(name);
+				}else{
+					sse.subcribe(name, {
+						action:"START",
+						time:800
+					});
+				}
+				
+
+			})
+		};
+
+
+		$('.can').attr('width', $('#l').width());
+        
+		var chart = new SmoothieChart({
+			millisPerPixel:100,
+			//maxValueScale:0.1,
+			//scaleSmoothing:0.9,
+			maxValue:1000,
+			minValue:0,
+			//timestampFormatter:SmoothieChart.timeFormatter,
+			grid: {
+				verticalSections:6,
+				//millisPerLine: 250
+			}
+		});
+		chart.streamTo(document.getElementById("can-1"), 800);
+
+
+		var line1 = new TimeSeries();
+                chart.addTimeSeries(line1, { strokeStyle:'rgb(255, 0, 0)', fillStyle:'rgba(255, 0, 0, 0.4)', lineWidth:3 });
+
+
+		var line2 = new TimeSeries();
+		chart.addTimeSeries(line2, { strokeStyle:'rgb(0, 0, 255)', fillStyle:'rgba(0, 0, 255, 0.4)', lineWidth:3 });
+
+
+
+		
+			
+
+	</script>
+
+{% endblock %}
+

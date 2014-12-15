@@ -1,0 +1,21 @@
+/*
+ *
+ *
+ *
+ */
+nodefony.registerBundle ("assetic", function(){
+
+	var framework = function(kernel, container){
+
+		// load bundle library 
+		this.autoLoader.loadDirectory(this.path+"/core");
+
+		this.mother = this.$super;
+		this.mother.constructor(kernel, container);
+		
+	}
+
+	return framework;
+});
+
+

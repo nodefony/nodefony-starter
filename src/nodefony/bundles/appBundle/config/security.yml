@@ -1,0 +1,54 @@
+# Security
+security:
+    firewalls:
+        secured_area:
+            pattern:                    ^/secure
+            provider:                   in_memory
+#            provider:                  ldap
+            form_login:
+              check_path:               /secure
+              login_path:               /login  
+              default_target_path:      /
+            SASL:
+#            http_digest:
+                private_key:            "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
+                realm:                  "nodefony"
+            crossDomain: 
+                allow-origin:   "*"
+                #allow-origin:   {"localhost":"localhost:83", "christophe":"192.168.100.200"}
+                Access-Control: {
+                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
+                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
+                        "access-control-Allow-Credentials":true,
+                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
+                        "access-control-max-age":10
+                        }
+            remember_me: ~
+            logout:     ~
+            anonymous: ~
+    #TODO               
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+    providers:
+        in_memory:
+             memory:
+                users:
+                    cci: { password: df6b3f921393a0d4ea273f044694c39c, roles: 'ROLE_USER' }
+                    bgg: { password: a9d0b6ed863c793d1b72316249f8d352, roles: 'ROLE_ADMIN' }
+                    admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
+                    bln: { password: 0fa4097001bc43795953e94178d7222d, roles: 'ROLE_ADMIN' }
+
+#        session:
+#            entity:
+#                class:              sessions
+#                property:           username
+#                manager_name:       sessions
+
+#        ldap:
+#            entity:
+#                class:              ldapManager
+#                property:
+#                  url:              192.168.100.45/CN=test,OU=Development,DC=Home
+#                manager_name:       ldap
+    encoders:

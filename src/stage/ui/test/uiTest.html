@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>UI test</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/frameworkBundle/css/style.css" rel="stylesheet" media="screen">
+        <link href="/mochaUnitBundle/css/mocha.css" rel="stylesheet" media="screen">
+        <link href="/mochaUnitBundle/css/style.css" rel="stylesheet" media="screen">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="/ui/themes/ui.all.css">
+	<link rel="stylesheet" href="/ui/themes/default/panel.css">
+
+	<script type="text/javascript" src="/jquery/jquery.js"></script>
+	<script type="text/javascript" src="/jquery/jquery-ui-1.10.4.custom.js"></script>
+
+		<!-- stage -->
+	<script type="text/javascript" src="/stage.js"></script>
+	<script type="text/javascript" src="/function.js"></script>
+	<script type="text/javascript" src="/notificationsCenter.js"></script>
+	<script type="text/javascript" src="/xml.js"></script>
+	<script type="text/javascript" src="/syslog/syslog.js"></script>
+	<script type="text/javascript" src="/io/io.js"></script>	
+	<script type="text/javascript" src="/io/transports/in/poll.js"></script>
+	<script type="text/javascript" src="/io/transports/in/longPoll.js"></script>
+	<script type="text/javascript" src="/autoload.js"></script>
+	<script type="text/javascript" src="/kernel/kernel.js"></script>
+	<script type="text/javascript" src="/kernel/appKernel.js"></script>
+	<script type="text/javascript" src="/kernel/container.js"></script>
+	<script type="text/javascript" src="/kernel/controller.js"></script>
+	<script type="text/javascript" src="/kernel/module.js"></script>
+	<script type="text/javascript" src="/twig/twig.js"></script>
+
+
+	<!-- UI -->
+	<script type="text/javascript" src="/ui/ui.js"></script>
+	<script type="text/javascript" src="/ui/color.js"></script>
+	<script type="text/javascript" src="/ui/plugins/container/container.js"></script>
+	<script type="text/javascript" src="/ui/plugins/panel/panel.js"></script>
+
+	<!-- UNIT TEST -->
+	<script type="text/javascript" src="/mochaUnitBundle/js/mochaUnit.js"></script>
+        <script type="text/javascript" src="/mochaUnitBundle/js/mocha.js"></script>
+        <script type="text/javascript" src="/mochaUnitBundle/js/chai.js"></script>
+        
+
+
+    </head>
+    
+    <body>
+	<div id="mocha"></div>
+
+
+        <script type="text/javascript">mocha.setup('bdd')</script>     
+        <script type="text/javascript">
+        
+        /**
+         * New node file
+         */
+        (function($){
+            
+            var assert = chai.assert;
+            
+            describe('Tests unitaires UI ', function(){
+                
+                before(function(){
+                });
+
+                describe('UI', function(){
+                    
+                    before(function(){
+                    });
+                    
+                    it('info ', function(){
+			    stage.ui.info("<br>sboob<br>smdlfjks<br><br>sboob<br>smdlfjks<br>");
+                    });
+
+		    it('log ', function(){
+			    stage.ui.log("<br>panel<br>panel<br><br>panel<br>panel<br>");
+                    });
+
+		    it('error ', function(){
+			    stage.ui.error("<br>panel<br>panel<br><br>panel<br>panel<br>");
+                    });
+
+ 
+                    after(function(){
+                    });
+                });
+
+                after(function(){
+                });
+                
+            });
+            
+        })(jQuery);
+        
+        </script>
+        <script id="ready" type="text/javascript">
+    
+            jQuery(document).ready(function(){
+                assert = chai.assert;
+                mocha.checkLeaks();
+                mocha.globals(['jQuery']);
+                mocha.run();
+            });
+        
+        </script>
+    </body>
+
+</html>

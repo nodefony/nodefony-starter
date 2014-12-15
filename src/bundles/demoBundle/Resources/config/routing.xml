@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://nodefony.com/schema/routing"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
+
+	<route id="Default" pattern="/demo">
+		<default key="controller">demoBundle:demo:index</default>
+	</route>
+
+	<route id="user" pattern="/user/{name}">
+		<default key="controller">demoBundle:demo:user</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="generate" pattern="/url">
+		<default key="controller">demoBundle:demo:generateUrl</default>
+	</route>
+
+	<route id="articles" pattern="/articles">
+		<default key="controller">demoBundle:demo:getArticles</default>
+	</route>
+
+	<route id="users" pattern="/users">
+		<default key="controller">demoBundle:demo:users</default>
+		<requirement key="method">GET,DELETE,POST</requirement>
+	</route>
+	
+	
+	<route id="test" pattern="/cci">
+		<default key="controller">demoBundle:demo:demoTest</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+
+	<route id="dev" pattern="/dev">
+		<default key="controller">demoBundle:demo:dev</default>
+		<requirement key="method">GET</requirement>
+	</route>
+	
+	<route id="dev" pattern="/poll">
+		<default key="controller">demoBundle:demo:poll</default>
+		<requirement key="method">GET,POST</requirement>
+	</route>
+
+	<!-- REALTIME --> 	
+	<route id="indexReal" pattern="/">
+		<default key="controller">demoBundle:demo:indexRealTime</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	
+	<!--  <import resource="routing2.xml" prefix="/couscous" />
+	<import resource="routing3.xml" hostname_pattern="hello.example.com" />  -->
+
+</routes>

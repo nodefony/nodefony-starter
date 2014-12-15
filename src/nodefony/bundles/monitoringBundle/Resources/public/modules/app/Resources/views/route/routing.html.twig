@@ -1,0 +1,27 @@
+{% include '../blocks/title.html.twig' with { 'title': 'ROUTING ', 'subtitle': 'Routing stage framework ' } %}
+<div class="wrapper" >
+<div class="table-responsive"  >
+	<table class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>ROUTE NAME</th>
+				<th>PATH</th>
+				<th>VARIABLES</th>
+				<th>CONTROLLER ACTION</th>
+				<th>FIRST MATCH</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for route in routes %}
+		<tr>
+			<td>{{route.name}}</td>
+			<td>{{route.path}}</td>
+			<td>{{route.variables}}</td>
+			<td>{{route.defaults.controller}}</td>
+			<td>{{route.firstMatch}}</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+</div>

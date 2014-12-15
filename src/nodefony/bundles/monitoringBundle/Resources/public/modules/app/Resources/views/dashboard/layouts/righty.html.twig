@@ -1,0 +1,10 @@
+<!-- dashboard standard layout -->
+{% include '../../blocks/title.html.twig' with { 'title': 'Dashboard', 'subtitle': 'Bienvenue sur votre application Nova' } %}
+<div class="wrapper">
+	<div class="row">
+		<div class="col-md-8">{% block left %}{% endblock %}</div>
+		<div class="col-md-2">{% block center %}{% endblock %}</div>
+		<div class="col-md-2">{% block right %}{% endblock %}</div>
+	</div>
+</div>
+<!-- /dashboard standard layout -->

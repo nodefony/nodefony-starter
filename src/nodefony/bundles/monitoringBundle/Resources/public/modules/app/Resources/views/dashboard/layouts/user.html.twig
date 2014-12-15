@@ -1,0 +1,71 @@
+<!-- dashboard standard layout -->
+{% include '../../blocks/title.html.twig' with { 'title': 'Dashboard Real Time', 'subtitle': 'Monitoring stage framework ' } %}
+<div class="wrapper">
+
+	
+	<div class="row">
+		<div class="col-md-4 col-lg-3" >
+			<a  class="block panel bg-info text-center wrapper">
+				<div id="requests" class="h1 text-white font-thin no-m">0</div>
+                                <span  class="text-muted text-xs text-white">Requettes</span>
+                        </a>
+
+                </div>
+		<div class="col-md-4 col-lg-3" >
+			<a  class="block panel bg-info text-center wrapper">
+				<div id="websocket" class="h1 text-white font-thin no-m">0</div>
+                                <span class="text-muted text-xs text-white">Websockets</span>
+                        </a>
+                </div>
+		<div class="col-md-4 col-lg-3" >
+			<a  class="block panel bg-info text-center wrapper">
+				<div id="nbServices" class="h1 text-white font-thin no-m">0</div>
+                                <span class="text-muted text-xs text-white">Services</span>
+                        </a>
+                </div>
+		<div class="col-md-4 col-lg-3" >
+			<a  class="block panel bg-info text-center wrapper">
+				<div id="nbRoutes" class="h1 text-white font-thin no-m">0</div>
+                                <span class="text-muted text-xs text-white">Routes</span>
+                        </a>
+                </div>
+	</div>
+
+
+	<div class="row graphs">
+		<div class="col-md-1 col-lg-12 bicolor" >
+				<div class="panel-heading font-bold">
+					SERVER REQUESTS
+				</div>
+				<div class="panel-body text-center">
+					<div class="inline">
+						<div class="graph">
+						</div>
+					</div>
+				</div>
+		</div>
+
+        </div>
+
+	<div class="row">
+		<div id="syslog" class="col-md-3 col-lg-4">
+			
+		</div>
+		<div id="realtime" class="col-md-3 col-lg-4">
+			  
+		</div>
+		<div id="http" class="col-md-3 col-lg-4">
+			
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2 col-lg-6">
+			{% block route %} <div class="m-b rounded wrapper-xl bg-light dker"></div> {% endblock %}
+
+		</div>
+		<div class="col-md-2 col-lg-6">
+			{% block services %} <div class="m-b rounded wrapper-xl bg-light dker"></div> {% endblock %}
+		</div>
+	</div>
+</div>
+<!-- /dashboard standard layout -->

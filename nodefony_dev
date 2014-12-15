@@ -1,0 +1,24 @@
+#!/usr/local/bin/node
+
+
+
+//  AUTOLOAD LIBRARY nodefony NODE
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.load("./app/appKernel.js");
+
+
+
+// START KERNEL  MANAGEMENT
+
+nodefony.kernel.prototype.generateAscii("N O D E F O N Y" , function(error, stdout, stderr){
+
+	console.log('\033[31m'+stdout+'\033[0m');
+
+	//var kernel =new nodefony.appKernel("SERVER","prod", false, autoloader);
+	var kernel =new nodefony.appKernel("SERVER", "dev", true, autoloader);
+
+});
+
+
+
+

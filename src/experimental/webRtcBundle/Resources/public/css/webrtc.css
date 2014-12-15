@@ -1,0 +1,160 @@
+/** { font-family: 'Source Code Pro', sans-serif !important;  }*/
+body { background: #000; padding: 70px 40px 40px 40px; color:white }
+.terminal { color: #0B0; }
+
+
+#invite {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#invite-label {
+	text-align: center;
+}
+
+#invite-label * {
+	height: 50px;
+	text-align: center;
+}
+
+.container-fluid .row .col-md-8, .container-fluid .row .col-md-4 {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.video-container {
+	text-align: center;
+}
+
+.video-container.col-md-6, .video-container.col-md-12 {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.video {
+	border: 1px black solid;
+	border-radius: 5px;
+}
+
+.row-centered {
+	text-align:center;
+}
+.col-centered {
+	display:inline-block;
+	float:none;
+	/* reset the text-align */
+	text-align: center;
+	/* inline-block space fix */
+	margin-right:-4px;
+}
+
+#bt, #discussion-title {
+	background-color: #172c39;
+	border: 0;
+}
+
+#invite, #bt, #discussion-title {
+	font-size: 25px;
+	font-family: Lobster;
+}
+
+#signature {
+	font-size: 12px;
+	font-family: Lobster;
+}
+
+
+#discussion {
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: verdana;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.video-controls {
+	font-family: Lobster;
+	top: -90px;
+	float: left;
+	position: relative;
+	width: 100%;
+	height: 0;
+}
+
+.video-controls .control-button {
+	color: #4679BD;
+	opacity: 0.8;
+}
+
+.video-controls .control-button:hover {
+	color: #D6E6FC;
+	opacity: 1;
+}
+
+.controls-identity {
+	width: 50px;
+	display: inline-table;
+	overflow: hidden;
+}
+
+#discussion-title {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+#discussion {
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.control-button .fa:hover {
+	cursor: pointer;
+}
+
+@media(max-width: 349px){
+	.video-controls {
+		font-size: 4px;
+		top: -30px;
+	}
+	
+	.controls-identity {
+		font-size: 12px;
+	}
+}
+
+@media (min-width: 350px) and (max-width: 493px){
+	.video-controls {
+		font-size: 8px;
+		top: -50px;
+	}
+	
+	.controls-identity {
+		font-size: 12px;
+	}
+}
+
+.modal-header h4 {
+	color: #000;
+	font-weight: bold;
+}
+
+.modal-body {
+	color: #000;
+}
+
+.img-responsive {
+    display: inline;
+}
+
+.audio-container{
+	height: 220px;
+	border: 1px #000 solid;
+}
+
+.video-container span.fa-headphones , .audio-container span.fa-headphones {
+	line-height: 220px;
+	font-size: 20rem;
+	opacity: 0.2;
+}
+

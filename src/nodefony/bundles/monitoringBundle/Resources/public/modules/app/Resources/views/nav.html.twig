@@ -1,0 +1,115 @@
+<!-- navigation -->
+<div class="app-aside-content">
+	<div class="nav-wrapper">
+		<div id="{{ navCssId }}" class="navigation">
+			<!-- menu -->
+			<span class="block m-t m-b wrap-rl text-xs">{{ "navigation"|trans }}</span>
+			<div class="aside-nav">
+				
+				<div class="list-group">
+
+					<a 
+						href="{{ path('dashboard') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa fa-th text-success"></i>
+						<span>Monitoring</span>
+					</a>
+					<a 
+						href="{{ path('routing') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa glyphicon glyphicon-random text-success"></i>
+						<span>Routing</span>
+					</a>
+					<a 
+						href="{{ path('services') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Services</span>
+					</a>
+					<a 
+						href="{{ path('syslog') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Syslog Serveur</span>
+					</a>
+
+					{% set length =  nav | length %}			
+					{% if length == 1 %}
+						{% for component in nav %}
+							{% for item in component.element %}
+							<a 
+								href="{{ path(item['@id']) }}" 
+								module="{{ item['@id'] }}"
+								class="list-group-item font-bold">
+									<i class="icon {{ item['@icon'] }}"></i>
+									<span>{{ item["@label"] }}</span>
+							</a>
+							{% endfor %}
+						{% endfor %}
+					{% else %}
+						{% for component in nav %}
+							{# TODO #}
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<!-- /menu -->
+			<hr/>
+			<!-- stuff -->
+			<span class="block m-t m-b wrap-rl text-xs">Framework</span>
+			<div class="aside-nav">
+				<div class="list-group">
+					<a 
+						href="{{path("parameters")}}" 
+						class="list-group-item">
+							<i class="icon fa fa-cog"></i>
+							<span>Paramètres</span>
+							<span class="pull-right">
+								<div class="badge bg-success">2</div>
+							</span>
+					</a>
+					<a 
+						href="{{path("help")}}" 
+						class="list-group-item">
+							<i class="icon fa fa-question-circle"></i>
+							<span>Documentation</span>
+					</a>
+					<a href="#uidev" class="list-group-item" data-toggle="collapse">
+						<i class="icon fa fa-bug"></i>
+						<span>Développeur</span>
+						<span class="pull-right">
+							<i class="fa fa-fw fa-angle-right collapse-icon"></i>
+						</span>
+					</a>
+					<div class="collapse dk" id="uidev">
+						<a href="{{path("developer", {element:"widget"})}}" class="list-group-item">
+							Widgets
+						</a>
+						<a href="{{path("developer", {element:"button"})}}" class="list-group-item">
+							Boutons
+						</a>
+						<a href="{{path("developer", {element:"color"})}}" class="list-group-item">
+							Couleurs
+						</a>
+						<a href="{{path("developer", {element:"domparser"})}}" class="list-group-item">
+							Domparser
+						</a>
+						<a href="{{path("developer", {element:"realTime"})}}" class="list-group-item">
+							RealTime
+						</a>
+						<a href="{{path("developer", {element:"graph"})}}" class="list-group-item">
+							Graph
+						</a>
+
+					</div>
+				</div>
+			</div>
+				
+		</div>
+	</div>
+</div>
+<!-- /navigation -->

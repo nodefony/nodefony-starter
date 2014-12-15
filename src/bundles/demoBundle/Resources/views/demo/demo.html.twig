@@ -1,0 +1,69 @@
+{% extends "/app/Resources/views/base.html.twig" %}
+
+{% block meta %}
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+{% endblock %}
+
+{% block title %}Nodefony Demo{% endblock %}
+
+
+{% block stylesheets %}
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet'/> 
+	<link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+	<link href="/demoBundle/css/style.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript" src="/jquery/jquery.-1.11.1.js"></script>
+	<script type="text/javascript" src="/nodefony.js"></script>
+	<script type="text/javascript" src="/function.js"></script>
+	<script type="text/javascript" src="/notificationsCenter.js"></script>
+	<script type="text/javascript" src="/syslog/syslog.js"></script>
+	<script type="text/javascript" src="/xml.js"></script>
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/toastr/toastr.min.js"></script>
+	<script type="text/javascript" src="/io/io.js"></script>	
+	<script type="text/javascript" src="/crypto/base64.js"></script>
+	<script type="text/javascript" src="/crypto/md5.js"></script>
+	<script type="text/javascript" src="/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/io/transports/socket.js"></script>
+	<script type="text/javascript" src="/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/io/realtime/realtime.js"></script>
+
+	<script type="text/javascript" src="/autoload.js"></script>
+	<script type="text/javascript" src="/kernel/kernel.js"></script>
+	<script type="text/javascript" src="/kernel/appKernel.js"></script>
+	<script type="text/javascript" src="/kernel/container.js"></script>
+	<script type="text/javascript" src="/kernel/routerService.js"></script>
+	<script type="text/javascript" src="/kernel/controller.js"></script>
+	<script type="text/javascript" src="/kernel/module.js"></script>
+	<script type="text/javascript" src="/kernel/translationService.js"></script>
+	<script type="text/javascript" src="/kernel/locationService.js"></script>
+	<script type="text/javascript" src="/twig/twig.js"></script>
+	<script type="text/javascript" src="/jquery.serializeObject/jquery.serializeObject.min.js"></script>
+	<script type="text/javascript" src="/jsencrypt/jsencrypt.min.js"></script>
+	<script type="text/javascript" src="/wuiBundle/js/jquery.timeago.js"></script>
+	<script type="text/javascript" src="/jquery-validation/jquery.validate.js"></script>
+	<script type="text/javascript" src="/jquery-validation/localization/messages_fr.js"></script>
+	<script type="text/javascript" src="/jquery.rest/1/jquery.rest.js"></script>
+	<script type="text/javascript" src="/nprogress/nprogress.js"></script>
+	<script type="text/javascript" src="/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/demoBundle/js/appKernel.js"></script>
+
+
+	<!--[if lt IE 9]>
+		<script src="excanvas/excanvas.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="/easy-pie-chart/jquery.easypiechart.js"></script>
+	<script type="text/javascript" src="/jquery.flot/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="/jquery.flot/jquery.flot.pie.min.js"></script>
+	<script type="text/javascript" src="/jquery.flot/jquery.flot.stack.min.js"></script>
+	<script type="text/javascript" src="/jquery.flot/jquery.flot.resize.min.js"></script>
+	<script type="text/javascript" src="/jquery.flot/plugins/jquery.flot.tooltip.min.js"></script>
+	<script type="text/javascript" src="/jquery.flot/plugins/jquery.flot.spline.min.js"></script>
+
+
+
+{% endblock %}
+

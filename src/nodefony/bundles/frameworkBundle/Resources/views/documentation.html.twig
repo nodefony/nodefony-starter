@@ -1,0 +1,20 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block bodyContent %}
+	<div class="row-fluid">
+		<iframe src="/doc/yahoo/index.html" id="docu" class="container well well-small span12"></iframe>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript">
+		var setDocDimension = function(){
+			$('#docu').css({'height': ($('#docu').contents().find('html').height() + 40) + 'px'});
+		};
+		jQuery('#docu').load(setDocDimension);
+	</script>
+
+{% endblock %}
+
