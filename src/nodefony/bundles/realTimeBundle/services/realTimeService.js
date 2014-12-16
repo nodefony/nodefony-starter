@@ -141,6 +141,13 @@ nodefony.registerService("realTime", function(){
 		this.protocol = new nodefony.io.protocol.bayeux();
 		this.listen(this, "onError", this.onError );
 		this.listen(this, "onMessage", this.onMessage );
+		this.kernel.listen(this, "onReady", function(){
+			this.settings = this.container.getParameters("bundles.realTime");
+			for (var services in this.settings.services){
+				this.registerService(services, this.settings.services[services])
+			}
+		});
+
 	}.herite(nodefony.syslog);
 
 	realTime.prototype.registerService = function(name, definition){
@@ -169,10 +176,6 @@ nodefony.registerService("realTime", function(){
 	};
 	
 	realTime.prototype.onHandshake = function(message, connectionId, ipClient){
-		this.settings = this.container.getParameters("bundles.realTime");
-		for (var services in this.settings.services){
-			this.registerService(services, this.settings.services[services])
-		}
 		var advice = this.settings.system.reconnect.handshake ;
 		var response = this.protocol.handshakeResponse(message, advice,{address:ipClient}) ;
 		response.clientId = connectionId;

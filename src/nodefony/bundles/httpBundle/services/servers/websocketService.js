@@ -48,7 +48,8 @@ nodefony.registerService("websocket", function(){
 				d.add(request);
 				d.run(function() {
 					//this.firewall.handlerWebsocket.call(this.firewall, request, null, logString);
-					this.kernel.fire("onWebsocketRequest", request, null, logString, d)
+					//this.kernel.fire("onWebsocketRequest", request, null, logString, d)
+					this.kernel.fire("onServerRequest", request, null, logString, d)
 				}.bind(this));
 		}.bind(this));
 

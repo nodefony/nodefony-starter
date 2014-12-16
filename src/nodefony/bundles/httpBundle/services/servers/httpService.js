@@ -37,7 +37,8 @@ nodefony.registerService("http", function(){
 				d.add(response);
 				d.run(function() {
 					//this.firewall.handlerHTTP.call(this.firewall, request, response, logString, d);
-					this.kernel.fire("onHttpRequest", request, response, logString, d)
+					//this.kernel.fire("onHttpRequest", request, response, logString, d)
+					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
 			}.bind(this));
 		}.bind(this))

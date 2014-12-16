@@ -155,33 +155,12 @@ stage.registerController("dashboardController", function() {
 		splines:	{ show: true, tension: 0.4, lineWidth: 1, fill: 0.8 }
 	}; 
 
-	var series = function(name, optionsPlot){
+	/*var series = function(name, optionsPlot){
 		
 		var series = {};
 		if (name){
 			series[name] = 	stage.extend({lablel:name}, defaultSetting, optionsPlot);
 		}
-
-		/*var coor = [];
-		for (var i= 0 ; i < maximum ; i++){
-			coor.push([null,null]);	
-		}
-		var series = [{
-			data: coor,
-			
-		}];
-
-		var y = [];
-		for (var i= 0 ; i < maximum ; i++){
-			y.push(0);	
-		}
-
-
-		var ring = function(val){
-			y.shift();
-			y.push(val);
-			return y ;
-		}*/
 
 		var func = function( val){
 			ring(val);
@@ -206,21 +185,21 @@ stage.registerController("dashboardController", function() {
 	controller.prototype.searchSyslog =function(conditions){
 		return this.module.serverSyslog.getLogs(conditions);
 	
-	}; 
+	};*/ 
 
 
 
-	controller.prototype.graph = function(ele, pdu){
+	/*controller.prototype.graph = function(ele, pdu){
 
 		var conditions =  {
-			msgid :{
-				data:/.*SERVER HTTP.*/,
-				operator:"RegExp"
-			},	
-			date:{
-   	 			operator:">=",
-   	 			data:new Date(Date.now()-1000)
-   	 		}
+			//msgid :{
+			//	data:/.*SERVER HTTP.*\/,
+			//	operator:"RegExp"
+			//},	
+			//date:{
+   	 		//	operator:">=",
+   	 		//	data:new Date(Date.now()-1000)
+   	 		//}
 		}
 
 		//REALTIME ELE
@@ -299,7 +278,7 @@ stage.registerController("dashboardController", function() {
 				this.graph(this.plot, pdu);
 			});
 		}
-	};
+	};*/
 
 	/**
 	 * 
@@ -385,7 +364,7 @@ stage.registerController("dashboardController", function() {
 		this.realtimeWidget();
 		this.httpWidget();
 
-		this.graph();
+		//this.graph();
 		//this.routeWidget();
 		//this.serviceWidget();
 	};

@@ -498,8 +498,13 @@ nodefony.register("kernel", function(){
 						break;
 					case /^security\..*$/.test(ele.name) :
 						try {
-							this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG");
-							this.container.get("security").reader(ele.path);
+							var firewall = this.container.get("security") ;
+							if ( firewall ){
+								this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG");
+								this.container.get("security").reader(ele.path);
+							}else{
+								this.logger("SECURITY LOAD FILE :"+ele.path +" BUT SERVICE NOT READY" ,"WARNING");	
+							}
 						}catch(e){
 							this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG SECURITY :"+ele.name)
 						}

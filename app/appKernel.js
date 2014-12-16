@@ -27,13 +27,13 @@ nodefony.register("appKernel",function(){
 	 	*	onFinish register initializeBundles
 	 	*/
 		this.registerBundles([
-			"./vendors/nodefony/bundles/securityBundle",
-			"./vendors/nodefony/bundles/asseticBundle",
 			"./vendors/nodefony/bundles/httpBundle",	
 			"./vendors/nodefony/bundles/frameworkBundle",
+			"./vendors/nodefony/bundles/asseticBundle",
 			"./vendors/nodefony/bundles/realTimeBundle",
-			"./vendors/nodefony/bundles/orm2Bundle",
-			"./vendors/nodefony/bundles/monitoringBundle"
+			"./vendors/nodefony/bundles/monitoringBundle",
+			"./vendors/nodefony/bundles/securityBundle",
+			"./vendors/nodefony/bundles/orm2Bundle"
 		]);
 
 		/*

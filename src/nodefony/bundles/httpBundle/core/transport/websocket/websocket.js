@@ -13,6 +13,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	var websocket = function(container, request, response ,type){
 		this.type = type ;
 		this.container = container;
+		this.kernel = this.container.get("kernel") ;
 		this.request =request ; 
 		this.connection = request.accept(null, request.origin);
 		this.response = new nodefony.wsResponse( this.connection );
@@ -93,6 +94,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}catch(e){
 			this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR")
 		}
+		this.kernel.container.leaveScope(this.container);
 	};
 
 

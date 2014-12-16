@@ -192,6 +192,16 @@ nodefony.registerController("api", function(){
 		};
 
 
+		/**
+		 *
+		 *	@method websocketAction
+		 *
+		 */
+		apiController.prototype.websocketAction = function(){
+			
+
+		}
+
 
 
 		

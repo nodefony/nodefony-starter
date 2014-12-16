@@ -16,14 +16,15 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  	 *
  	 *
  	 */
-	var Http = function(container, request, response){
-		this.type = "HTTP";
+	var Http = function(container, request, response, type){
+		this.type = type;
 		this.container = container; 
 		this.request = new nodefony.Request( request , this.container);
 		this.response = new nodefony.Response( response , this.container);
 		this.session = null;
 		this.cookies = [];
 		this.secureArea = null ;
+		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;
 		
 		//this.Authenticate = this.get("Authenticate");
@@ -92,6 +93,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	}
 
 	Http.prototype.close = function(){
+		this.kernel.container.leaveScope(this.container);
 		// FLUSH
 		return this.response.flush();
 	}

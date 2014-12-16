@@ -20,12 +20,14 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel = this.container.get("kernel");
 		this.reader = this.container.get("reader");
 		this.serverStatic = serverStatic;
+
+		this.container.addScope("request");
+		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
+			this.handle(request, response, type, domain);
+		}.bind(this))
 	};
 	
 	httpKernel.prototype.boot = function(){
-				
-		// Manage Templating	
-		//this.initTemplate();	
 				
 		// Manage statics files
 		 this.kernel.listen(this, "onBoot", function(){
@@ -82,20 +84,7 @@ nodefony.registerService("httpKernel", function(){
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
 
-	httpKernel.prototype.getRequestType = function(type){
-		switch (type){
-			case "HTTP" :
-			case "HTTPS" :
-				return nodefony.io.transports.http;
-			break;
-			case "WEBSOCKET" :
-			case "WEBSOCKET_SECURE" :
-			case "WEBSOCKET SECURE" :
-				return nodefony.io.transports.websocket;
-			break
-		}
-		return null;
-	};
+	
 
 	httpKernel.prototype.onError = function(container, error){
 		if ( error.stack ){
@@ -154,23 +143,18 @@ nodefony.registerService("httpKernel", function(){
 	};
 
 	//  build response
-	httpKernel.prototype.handle = function(container, request, response, type){
+	httpKernel.prototype.handle = function(request, response, type, domain){
+
+		// SCOPE REQUEST ;
+		var container = this.container.enterScope("request");	
+		if ( domain ) domain.container = container ;
+
 		//  manage EVENTS
-		var notificationsCenter = container.get("notificationsCenter");
+		var notificationsCenter = nodefony.notificationsCenter.create();
+		container.set("notificationsCenter", notificationsCenter);
+
 		//request events	
 		notificationsCenter.listen(this, "onError", this.onError)
-
-		var Class  = this.getRequestType(type);
-		var context = new Class(container, request, response, type);
-		container.set("context", context); 
-
-		if (type === "HTTP" || type === "HTTPS"){
-			container.setParameters("request.protocol" , type);
-			var port = (type === "HTTP") ? this.kernel.httpPort : this.kernel.httpsPort ;
-			container.setParameters("request.host" , this.kernel.domain + ":" +port );
-			//Parse cookies request
-			context.parseCookies();
-		}
 
 
 		//I18n
@@ -178,9 +162,44 @@ nodefony.registerService("httpKernel", function(){
 		//var classTranslation = this.container.getParameters("services.translation").class 
 		//var translation = new classTranslation( container, type );
 		container.set("translation", translation );
-		
+
+		container.setParameters("request.protocol" , type);
+
+		switch (type){
+			case "HTTP" :
+				var context = new nodefony.io.transports.http(container, request, response, type);
+				container.set("context", context);
+				var port = this.kernel.httpPort ;
+				container.setParameters("request.host" , this.kernel.domain + ":" +port );
+				//Parse cookies request
+				context.parseCookies();
+				this.kernel.fire("onHttpRequest", container, context, type);
+			break;
+			case "HTTPS" :
+				var context = new nodefony.io.transports.http(container, request, response, type);
+				container.set("context", context);
+				var port = this.kernel.httpsPort ;
+				container.setParameters("request.host" , this.kernel.domain + ":" +port );
+				//Parse cookies request
+				context.parseCookies();
+				this.kernel.fire("onHttpsRequest", container, context, type);
+			break;
+			case "WEBSOCKET" :
+				var context = new nodefony.io.transports.websocket(container, request, response, type);
+				container.set("context", context);
+				this.kernel.fire("onWebsocketRequest", container, context, type);
+			break;
+			case "WEBSOCKET SECURE" :
+				var context = new nodefony.io.transports.websocket(container, request, response, type);
+				container.set("context", context);
+				this.kernel.fire("onWebSocketSecureRequest", container, context, type);
+			break;
+		}
+		var firewall = this.get("security");
+		if( ! firewall) notificationsCenter.fire("onRequest",container, request, response ); 
+
 		return 	context ;
 	};
 
 	return httpKernel ;
-})
+});

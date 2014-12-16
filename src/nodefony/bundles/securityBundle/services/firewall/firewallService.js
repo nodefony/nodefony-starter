@@ -217,7 +217,6 @@ nodefony.registerService("firewall", function(){
  	 */
 	var Firewall = function(container, kernel ){
 		this.container = container;
-		this.container.addScope("request");
 		this.kernel = kernel;
 		this.reader = function(context){
 			var func = context.container.get("reader").loadPlugin("security", pluginReader);
@@ -240,16 +239,11 @@ nodefony.registerService("firewall", function(){
 		
 	};
 
-	Firewall.prototype.handlerHTTP = function(request, response, type, domain){
-		var container = this.container.enterScope("request");	
-		if ( domain ) domain.container = container ;
-		//  manage EVENTS
-		var notificationsCenter = nodefony.notificationsCenter.create();
-		container.set("notificationsCenter", notificationsCenter);
+	Firewall.prototype.handlerHTTP = function(container, context, type){
 		
-		// httpkernel listen
-		var kernelHttp = this.get("httpKernel");
-		var context = kernelHttp.handle.call(kernelHttp, container, request, response, type );
+		var request = context.request.request ;
+		var response = context.response.response ;
+		var notificationsCenter = container.get("notificationsCenter");
 		request.on('end', function(){
 			// SESSION START 
 			// FIXME GOOD PLACE ???
@@ -269,7 +263,7 @@ nodefony.registerService("firewall", function(){
 								var next = 401;
 							switch (next){
 								case 204 :
-									this.container.leaveScope(container);
+									//this.container.leaveScope(container);
 									return ;
 								case 401 :
 									this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + URL.href ,"ERROR")
@@ -277,7 +271,7 @@ nodefony.registerService("firewall", function(){
 										status:next,
 										message:"crossDomain Unauthorized "
 									});
-									this.container.leaveScope(container);
+									//this.container.leaveScope(container);
 									return ;
 								case 200 :
 									this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + URL.href ,"DEBUG")
@@ -361,7 +355,7 @@ nodefony.registerService("firewall", function(){
 							var ur = this.securedAreas[area].overrideURL(context.request);
 							//console.log(context.request)
 							notificationsCenter.fire("onRequest",container, request, response, obj );
-							this.container.leaveScope(container);
+							//this.container.leaveScope(container);
 							return ;
 						}
 						notificationsCenter.fire("onError",container, {
@@ -370,7 +364,7 @@ nodefony.registerService("firewall", function(){
 							message:e
 						} );
 					}
-					this.container.leaveScope(container);
+					//this.container.leaveScope(container);
 					return;
 				}
 			}
@@ -382,27 +376,21 @@ nodefony.registerService("firewall", function(){
 					message:e
 				});
 			}
-			this.container.leaveScope(container);
+			//this.container.leaveScope(container);
 		}.bind(this));
 	}
 
 
 	
-	Firewall.prototype.handlerWebsocket = function(request, response, type, domain){
-		var container = this.container.enterScope("request");	
-		if ( domain ) domain.container = container ;
-
-		//  manage EVENTS
-		var notificationsCenter = nodefony.notificationsCenter.create();
-		container.set("notificationsCenter", notificationsCenter);
-		
-		// httpkernel 
-		var kernelHttp = this.get("httpKernel");
-		var context = kernelHttp.handle.call(kernelHttp, container, request, response, type );
-		
+	//Firewall.prototype.handlerWebsocket = function(request, response, type, domain){
+	Firewall.prototype.handlerWebsocket = function(container, context, type){
+		var request = context.request.request ;
+		var response = context.response.response ;
+		var notificationsCenter = container.get("notificationsCenter");
+		// TODO FIREWALL FOR WEBSOCKET
 		notificationsCenter.fire("onRequest",request, response );
 
-		this.container.leaveScope(container);
+		//this.container.leaveScope(container);
 	};
 
 

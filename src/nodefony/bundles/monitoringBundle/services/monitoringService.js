@@ -53,13 +53,17 @@ nodefony.registerService("monitoring", function(){
 		this.port = 1318;
 		this.server = null;
 		this.syslog = kernel.syslog ;
-		this.createServer();
+		if( this.realTime )
+			this.createServer();
 
 	};
 
 	service.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "SERVICE MONITORING ";
-		this.realTime.logger(pci, severity,"SERVICE MONITORING");
+		if ( this.realTime )
+			this.realTime.logger(pci, severity,"SERVICE MONITORING");
+		else
+			this.kernel.logger(pci, severity,"SERVICE MONITORING");
 	};
 
 
@@ -123,7 +127,7 @@ nodefony.registerService("monitoring", function(){
  		 */
 		this.server.on("close",function(socket){
 			this.stopped = true ;
-			this.realTime.logger("SHUTDOWN server MONITORING listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
+			this.logger("SHUTDOWN server MONITORING listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
 		}.bind(this));
 
 		/*
@@ -137,7 +141,7 @@ nodefony.registerService("monitoring", function(){
  		 *	LISTEN ON DOMAIN 
  		 */
 		this.server.listen(this.port, this.domain, function(){
-			this.realTime.logger("Create server MONITORING listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
+			this.logger("Create server MONITORING listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
 		}.bind(this));	
 			
 		/*

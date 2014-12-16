@@ -40,7 +40,8 @@ nodefony.registerService("https", function(){
 				d.add(response);
 				d.run(function() {
 					//this.firewall.handlerHTTP.call(this.firewall, request, response, logString, d);
-					this.kernel.fire("onHttpsRequest", request, response, logString, d)
+					//this.kernel.fire("onHttpsRequest", request, response, logString, d)
+					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
 			}.bind(this));
 		}.bind(this));
