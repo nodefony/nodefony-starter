@@ -60,10 +60,6 @@ statics:
   settings:
     cache :                     true	
     maxAge:                     96*60*60          
-  public:
-    path:                       "/web/public/"
-    maxage:                     30*24*60*60
-
 
 # SESSIONS
 sessions:

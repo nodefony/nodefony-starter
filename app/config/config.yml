@@ -43,15 +43,13 @@ App:
 #
 httpBundle:
   statics:
-    public:
-      less:                       true
-      maxage:                     0          #30*24*60*60*1000
-    vendors:
-      path:                       "/web/"
-      maxage:                     0          #30*24*60*60*1000
     settings:
       cache :                     false	
-      maxAge:                     0
+      maxAge:                     0 
+    web:
+      path:                       "/web/"
+      maxage:                     0          #30*24*60*60*1000
+    
 
 
 #
@@ -78,24 +76,10 @@ orm2Bundle:
     debug:                      true
     reconnect:                  60000           # time (ms) to reconnect db
 #  connectors:                    
-#    conn1: 
-#      driver: mysql
-#      host: localhost
-#      port: 3306
-#      user:  root
-#      password: barzog
-#      dbname: wef 
- 
 #    conn3: 
 #      driver: sqlite
 #      user:  wef
 #      password: nodefony
 #      dbname: "/app/Resources/sessions.db"
       
-#    mongodb:
-#      driver: mongodb
-#      host: localhost
-#      port: 27017
-#      user:  wef
-#      password: nodefony
-#      dbname: wef
+

@@ -24,7 +24,6 @@ nodefony.register("appKernel",function(){
 
 		/*
 	 	*	Bundle to register in Application
-	 	*	onFinish register initializeBundles
 	 	*/
 		this.registerBundles([
 			"./vendors/nodefony/bundles/httpBundle",	

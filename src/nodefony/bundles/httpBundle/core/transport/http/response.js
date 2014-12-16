@@ -23,13 +23,15 @@ nodefony.register("Response",function(){
 		this.headers = {};
 
 		// default http code 
-		this.statusCode = 200;	
+		this.statusCode = 200;
+
+		//default Content-Type
 		this.setHeader("Content-Type", "text/html; charset=utf-8");
 	};
 
 	Response.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "HTTP RESPONSE  ";
+		if (! msgid) msgid = "HTTP RESPONSE";
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
 

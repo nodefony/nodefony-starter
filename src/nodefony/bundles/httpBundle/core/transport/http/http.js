@@ -44,7 +44,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen( this, "onRequest" , this.handle );
-		this.remoteAddress = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+		this.remoteAddress = request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 	};
 
 	Http.prototype.handle = function(container, request , response, data){

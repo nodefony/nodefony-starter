@@ -156,7 +156,6 @@ nodefony.registerService("httpKernel", function(){
 		//request events	
 		notificationsCenter.listen(this, "onError", this.onError)
 
-
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );

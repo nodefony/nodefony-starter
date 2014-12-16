@@ -41,7 +41,6 @@ nodefony.registerController("api", function(){
 		};
 
 
-
 		apiController.prototype.renderRest = function(data){
 		
 			var context = this.getContext() ;
@@ -62,8 +61,6 @@ nodefony.registerController("api", function(){
 			
 		};
 
-
-
 		/**
 		 *
 		 *	@method routesAction
@@ -78,8 +75,6 @@ nodefony.registerController("api", function(){
 				data:JSON.stringify(this.get("router").routes)
 			});
 		};
-
-
 
 		/**
 		 *

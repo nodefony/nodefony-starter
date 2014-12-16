@@ -68,7 +68,7 @@ nodefony.register("Request",function(){
 		this.contentType = this.getContentType(this.request);
 		this.charset = this.getCharset(this.request);
 		this.domain = this.setDomain();
-		this.remoteAdress = this.getRemoteAdress()
+		this.remoteAdress = this.getRemoteAdress();
 		this.data = new Array();
 
 		this.request.on('data', function (data) {
@@ -119,16 +119,13 @@ nodefony.register("Request",function(){
 		return  charset || "utf8" ; 
 	}
 
-	
-
 	Request.prototype.setDomain = function(){
 		return this.host.split(":")[0];
 	};
 
 	Request.prototype.getRemoteAdress = function(){
-		return this.request.connection.remoteAddress ;
+		return this.headers['x-forwarded-for'] || this.request.connection.remoteAddress ;
 	};
-
 
 	Request.prototype.getUrl = function(request, query){
 		if ( request.connection.encrypted )
@@ -143,8 +140,6 @@ nodefony.register("Request",function(){
 			return (  'xmlhttprequest' === this.headers['x-requested-with'].toLowerCase() ) 
 		return false;
 	}
-
-
 
 	return Request;
 
