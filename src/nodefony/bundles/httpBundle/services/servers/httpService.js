@@ -24,7 +24,7 @@ nodefony.registerService("http", function(){
 		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
 			this.httpKernel.serverStatic.handle(request, response , function(){
-				this.httpKernel.logger("request from :"+request.headers.host+" METHOD :"+request.method+" URL :"+request.url, "INFO", "SERVER HTTP");
+				//this.httpKernel.logger("request from :"+request.headers.host+" METHOD :"+request.method+" URL :"+request.url, "INFO", "SERVER HTTP");
 				var d = nodedomain.create();
 				d.on('error', function(er) {
 					if ( d.container ){
@@ -36,8 +36,6 @@ nodefony.registerService("http", function(){
 				d.add(request);
 				d.add(response);
 				d.run(function() {
-					//this.firewall.handlerHTTP.call(this.firewall, request, response, logString, d);
-					//this.kernel.fire("onHttpRequest", request, response, logString, d)
 					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
 			}.bind(this));

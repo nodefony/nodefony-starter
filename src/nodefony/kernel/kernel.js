@@ -189,8 +189,8 @@ nodefony.register("kernel", function(){
 				}		
 			},function(pdu){
 				var pay = pdu.payload.stack || pdu.payload; 
-				//console.error( red + pdu.severityName +" SYSLOG " +reset + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
-				console.error( red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+				var date = new Date(pdu.timeStamp) ;
+				console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
 			});
 			// INFO DEBUG
 			var data ;
@@ -200,9 +200,8 @@ nodefony.register("kernel", function(){
 					data:data
 				}		
 			},function(pdu){
-				//var pay = pdu.payload.stack || pdu.payload; 
-				//console.log( blue + pdu.severityName +" SYSLOG " +reset + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);	
-				console.log( blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);	
+				var date = new Date(pdu.timeStamp) ;
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
 			});
 
 			syslog.listenWithConditions(this,{
@@ -210,9 +209,8 @@ nodefony.register("kernel", function(){
 					data:"WARNING"
 				}		
 			},function(pdu){
-				//var pay = pdu.payload.stack || pdu.payload; 
-				//console.log( yellow + pdu.severityName +" SYSLOG " +reset + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);	
-				console.log( yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);	
+				var date = new Date(pdu.timeStamp) ;
+				console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
 			});
 
 

@@ -159,8 +159,6 @@ nodefony.registerService("httpKernel", function(){
 
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
-		//var classTranslation = this.container.getParameters("services.translation").class 
-		//var translation = new classTranslation( container, type );
 		container.set("translation", translation );
 
 		container.setParameters("request.protocol" , type);
@@ -196,9 +194,11 @@ nodefony.registerService("httpKernel", function(){
 			break;
 		}
 		var firewall = this.get("security");
-		if( ! firewall) notificationsCenter.fire("onRequest",container, request, response ); 
-
-		return 	context ;
+		if( ! firewall){
+			request.on('end', function(){
+				notificationsCenter.fire("onRequest",container, request, response ); 
+			});
+		}
 	};
 
 	return httpKernel ;

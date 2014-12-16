@@ -26,6 +26,14 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;
+
+		this.logger("request from :"+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
+			host:request.headers.host ,
+			domain:this.domain,
+			url:request.url,
+			method:request.method,
+			protocol:this.type
+		});
 		
 		//this.Authenticate = this.get("Authenticate");
 		this.notificationsCenter = this.get("notificationsCenter");
@@ -100,7 +108,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	
 	Http.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = this.container.getParameters("request.protocol") + " REQUEST ";
+		if (! msgid) msgid = this.container.getParameters("request.protocol") + " REQUEST";
 		return syslog.logger(pci, severity, msgid,  msg);
 	}
 

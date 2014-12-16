@@ -27,7 +27,7 @@ nodefony.registerService("https", function(){
 		var logString ="HTTPS";
 		this.server = https.createServer(this.options, function(request, response){
 			this.httpKernel.serverStatic.handle(request, response , function(){
-				this.httpKernel.logger("request from :"+request.headers.host+" METHOD :"+request.method+" URL :"+request.url,"INFO", "SERVER HTTPS");
+				//this.httpKernel.logger("request from :"+request.headers.host+" METHOD :"+request.method+" URL :"+request.url,"INFO", "SERVER HTTPS");
 				var d = nodedomain.create();
 				d.on('error', function(er) {
 					if ( d.container ){
@@ -39,8 +39,6 @@ nodefony.registerService("https", function(){
 				d.add(request);
 				d.add(response);
 				d.run(function() {
-					//this.firewall.handlerHTTP.call(this.firewall, request, response, logString, d);
-					//this.kernel.fire("onHttpsRequest", request, response, logString, d)
 					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
 			}.bind(this));

@@ -29,11 +29,6 @@ nodefony.registerService("websocketSecure", function(){
 			
 		this.httpKernel.logger(" Server  is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER WEBSOCKET SECURE");
 
-		/*this.websocketServer.on('connect', function(request) {
-			//this.httpKernel.logger("WEBSOCKET SECURE", "INFO");
-			//this.httpKernel.logger(" Connect  is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "REQUEST WEBSOCKET SECURE");
-		}.bind(this));*/
-
 		var logString =  "WEBSOCKET SECURE";
 		this.websocketServer.on('request', function(request) {
 			var d = nodedomain.create();
@@ -46,8 +41,6 @@ nodefony.registerService("websocketSecure", function(){
 				}.bind(this));
 				d.add(request);
 				d.run(function() {
-					//this.firewall.handlerWebsocket.call(this.firewall, request, null, logString);
-					//this.kernel.fire("onWebSocketSecureRequest", request, null, logString, d)
 					this.kernel.fire("onServerRequest", request, null, logString, d)
 				}.bind(this));
 		}.bind(this));

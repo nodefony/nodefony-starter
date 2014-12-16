@@ -18,7 +18,10 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.connection = request.accept(null, request.origin);
 		this.response = new nodefony.wsResponse( this.connection );
 		this.remoteAddress = request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
-		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO");
+		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
+			remoteAddress:this.connection.remoteAddress,
+			origin:request.origin
+		});
 
 		//this.server = this.container.get("webSocketServer");
 		this.notificationsCenter = this.container.get("notificationsCenter");
@@ -59,7 +62,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	};
 
 
-	websocket.prototype.handle = function(request){
+	websocket.prototype.handle = function(container, request, response){
 		this.container.get("translation").handle( request );
 		try {
 			var resolver = this.get("router").resolve(this.container, this.request);

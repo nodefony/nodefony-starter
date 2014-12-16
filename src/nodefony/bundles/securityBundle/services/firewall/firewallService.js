@@ -243,7 +243,6 @@ nodefony.registerService("firewall", function(){
 		
 		var request = context.request.request ;
 		var response = context.response.response ;
-		var notificationsCenter = container.get("notificationsCenter");
 		request.on('end', function(){
 			// SESSION START 
 			// FIXME GOOD PLACE ???
@@ -263,15 +262,13 @@ nodefony.registerService("firewall", function(){
 								var next = 401;
 							switch (next){
 								case 204 :
-									//this.container.leaveScope(container);
 									return ;
 								case 401 :
 									this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + URL.href ,"ERROR")
-									notificationsCenter.fire("onError",container, {
+									context.notificationsCenter.fire("onError",container, {
 										status:next,
 										message:"crossDomain Unauthorized "
 									});
-									//this.container.leaveScope(container);
 									return ;
 								case 200 :
 									this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + URL.href ,"DEBUG")
@@ -281,7 +278,7 @@ nodefony.registerService("firewall", function(){
 						if ( this.securedAreas[area].Authenticate ){
 							//FIXME SESSION
 							if ( this.securedAreas[area].checkValidSession(context) ){
-								notificationsCenter.fire("onRequest",container, request, response );	
+								context.notificationsCenter.fire("onRequest",container, request, response );	
 							}else{
 								if (this.securedAreas[area].provider ) {
 									var provider = this.securedAreas[area].provider
@@ -307,7 +304,7 @@ nodefony.registerService("firewall", function(){
 													message:"OK",
 													status:200,
 												});
-												notificationsCenter.fire("onRequest",container, request, response, obj );
+												context.notificationsCenter.fire("onRequest",container, request, response, obj );
 											}else{
 												this.securedAreas[area].redirect(context, this.securedAreas[area].defaultTarget);
 											}
@@ -332,11 +329,11 @@ nodefony.registerService("firewall", function(){
 												this.securedAreas[area].redirectHttps(context);
 											}else{
 												var ur = this.securedAreas[area].overrideURL(context.request);
-												notificationsCenter.fire("onRequest",container, request, response );
+												context.notificationsCenter.fire("onRequest",container, request, response );
 											}
 												
 										}else{
-											notificationsCenter.fire("onError",container, {
+											context.notificationsCenter.fire("onError",container, {
 												status:this.securedAreas[area].Authenticate.statusCode,
 												message:"Unauthorized"
 											} );
@@ -353,44 +350,35 @@ nodefony.registerService("firewall", function(){
 						if (this.securedAreas[area].formLogin) {
 							var obj = kernelHttp.setXJSON(context, e);
 							var ur = this.securedAreas[area].overrideURL(context.request);
-							//console.log(context.request)
-							notificationsCenter.fire("onRequest",container, request, response, obj );
-							//this.container.leaveScope(container);
+							context.notificationsCenter.fire("onRequest",container, request, response, obj );
 							return ;
 						}
-						notificationsCenter.fire("onError",container, {
+						context.notificationsCenter.fire("onError",container, {
 							xjson:e,	
 							status:401,
 							message:e
 						} );
 					}
-					//this.container.leaveScope(container);
 					return;
 				}
 			}
 			try {
-				notificationsCenter.fire("onRequest", container, request, response);	
+				context.notificationsCenter.fire("onRequest", container, request, response);	
 			}catch (e){
-				notificationsCenter.fire("onError",container, {
+				context.notificationsCenter.fire("onError",container, {
 					status:500,
 					message:e
 				});
 			}
-			//this.container.leaveScope(container);
 		}.bind(this));
-	}
-
+	};
 
 	
-	//Firewall.prototype.handlerWebsocket = function(request, response, type, domain){
 	Firewall.prototype.handlerWebsocket = function(container, context, type){
 		var request = context.request.request ;
 		var response = context.response.response ;
-		var notificationsCenter = container.get("notificationsCenter");
 		// TODO FIREWALL FOR WEBSOCKET
-		notificationsCenter.fire("onRequest",request, response );
-
-		//this.container.leaveScope(container);
+		context.notificationsCenter.fire("onRequest", container, request, response );
 	};
 
 

@@ -118,8 +118,9 @@ nodefony.register("orm", function(){
 			}		
 		},function(pdu){
 			var pay = pdu.payload.stack || pdu.payload;
-			//console.error( red + pdu.severityName +" SYSLOG "+this.name +reset +" "+pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
-			console.error( red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+			//console.error( red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+			var date = new Date(pdu.timeStamp) ;
+			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);
 		});
 			
 		if (this.kernel.environment === "dev"){
@@ -132,8 +133,11 @@ nodefony.register("orm", function(){
 				}		
 			},function(pdu){
 				var pay = pdu.payload.stack || pdu.payload;
-				//console.log( blue + pdu.severityName +" SYSLOG "+this.name +reset +" "+ pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
-				console.log( blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+				//console.log( blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+
+				var date = new Date(pdu.timeStamp) ;
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pay);
+
 			});
 		}
 		return syslog;
