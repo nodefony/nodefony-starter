@@ -72,6 +72,9 @@ nodefony.register("log", function(){
 	}
 
 	Log.prototype.logger = function(){
+		if ( this.stream._writableState.ending || this.stream._writableState.ended){
+			return ;
+		}
 		//FIXME 
 		var ret = this.stream.write.apply(this.stream, arguments);
 		if ( ! ret){

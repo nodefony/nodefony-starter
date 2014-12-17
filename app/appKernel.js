@@ -16,21 +16,13 @@ nodefony.register("appKernel",function(){
 		// Kernel constructor
 		var kernel = this.$super;
 		
-
-
 		// kernel constructor
 		kernel.constructor(environment, debug, loader, type)
-		console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
 
 		/*
 	 	*	Bundle to register in Application
 	 	*/
 		this.registerBundles([
-			"./vendors/nodefony/bundles/httpBundle",	
-			"./vendors/nodefony/bundles/frameworkBundle",
-			"./vendors/nodefony/bundles/asseticBundle",
-			"./vendors/nodefony/bundles/realTimeBundle",
-			"./vendors/nodefony/bundles/monitoringBundle",
 			"./vendors/nodefony/bundles/securityBundle",
 			"./vendors/nodefony/bundles/orm2Bundle"
 		]);

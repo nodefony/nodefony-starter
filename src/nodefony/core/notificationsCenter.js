@@ -6,12 +6,20 @@ nodefony.register("notificationsCenter",function(){
 	var regListenOn = /^on(.*)$/;
 
 
-	var Notification = function(settings, context){
+	var defaultNbListeners = 20 ;
+			
+
+	var Notification = function(settings, context, nbListener){
 		this.event = new events.EventEmitter();	
+		this.setMaxListeners(nbListener || defaultNbListeners);
 		if (settings) {
 			this.settingsToListen(settings, context);
 		}
-	}
+	};
+
+	Notification.prototype.setMaxListeners = function(nb){
+		return this.event.setMaxListeners(nb);
+	};
 
 	/**
 	 *

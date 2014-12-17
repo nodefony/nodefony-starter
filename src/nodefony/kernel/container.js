@@ -37,11 +37,7 @@ nodefony.register("Container", function(){
 							this[ns] = value;
 						}else{
 							if ( ISDefined(value) ){
-								if ( nodefony.typeOf(value) === "object" ){
-									this[ns] = nodefony.extend(true, this[ns], value );
-								}else{
-									this[ns] = value ;
-								}
+								this[ns] = value ;
 							}else{
 								return this[ns];
 							}

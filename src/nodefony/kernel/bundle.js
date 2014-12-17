@@ -17,7 +17,10 @@ nodefony.register("Bundle", function(){
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.waitBundleReady = false ;
 		this.container = container ;
-		this.container.setParameters("bundles."+this.name,{});
+		var config = this.container.getParameters("bundles."+this.name) ;
+		if ( ! config ){
+			this.container.setParameters("bundles."+this.name, {});
+		}
 		this.finder = new nodefony.finder( {
 			path:this.path,
 			exclude:/^docs$|^test$|^public$/
@@ -51,11 +54,14 @@ nodefony.register("Bundle", function(){
 				switch (true){
 					case /^(.*)Bundle$/.test(ele) :
 						var name = /^(.*)Bundle$/.exec(ele)
-						this.logger("\033[32m OVERRIDING\033[0m  bundle config : "+name[1] +" in bundle :" + this.name ,"DEBUG")
 						var config = this.container.getParameters("bundles."+name[1])
 						if ( config ){
 							var ext = nodefony.extend(true, {}, config , result[ele])
+							this.logger("\033[32m OVERRIDING\033[0m  CONFIG bundle  : "+name[1]  ,"WARNING")
 							this.container.setParameters("bundles."+name[1], ext);	
+						}else{
+							this.logger("\033[32m OVERRIDING\033[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING")
+							this.container.setParameters("bundles."+name[1], result[ele]);	
 						}
 					break;
 					case /^locale$/.test(ele) :
@@ -63,7 +69,14 @@ nodefony.register("Bundle", function(){
 					break;
 				}
 			}
-			this.container.setParameters("bundles."+this.name,result);	
+			var config = this.container.getParameters("bundles."+this.name);
+ 		        if ( Object.keys(config).length ){
+				this.logger("\033[32m BUNDLE IS ALREADY OVERRIDING BY AN OTHERONE  INVERT \033[0m  CONFIG  "+ util.inspect(config)  ,"WARNING");
+				var ext = nodefony.extend(true, {}, result, config ); 
+				this.container.setParameters("bundles."+this.name, ext);
+			}else{
+				this.container.setParameters("bundles."+this.name, result);	
+			}	
 		}
 	};
 

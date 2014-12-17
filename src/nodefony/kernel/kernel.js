@@ -147,7 +147,36 @@ nodefony.register("kernel", function(){
 		this.injection = new nodefony.injection(this.container);
 		this.container.set("injection", this.injection);
 
-				//console.log(this);
+
+		switch (this.environment ){
+			case "dev":
+				var bundles = [
+					"./vendors/nodefony/bundles/httpBundle",	
+					"./vendors/nodefony/bundles/frameworkBundle",
+					"./vendors/nodefony/bundles/asseticBundle",
+					"./vendors/nodefony/bundles/realTimeBundle",
+					"./vendors/nodefony/bundles/monitoringBundle"
+				]
+			break;
+			case "prod":
+			default :
+				var bundles = [
+					"./vendors/nodefony/bundles/httpBundle",	
+					"./vendors/nodefony/bundles/frameworkBundle",
+					"./vendors/nodefony/bundles/asseticBundle"
+				]
+		}
+
+		this.registerBundles(bundles, function(){
+			if (this.type === "SERVER"){
+				this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
+			}else{
+				console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
+			}
+			this.preboot = true ;
+			this.fire("onPreBoot", this );
+		}.bind(this), false);
+
 	};
 
 	/**
@@ -200,8 +229,14 @@ nodefony.register("kernel", function(){
 					data:data
 				}		
 			},function(pdu){
-				var date = new Date(pdu.timeStamp) ;
-				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+				if ( pdu.msgid === "SERVER WELCOME"){
+					console.log(   blue + "              "+reset + " "+ pdu.payload);	
+					return ;
+				}
+				if ( this.preboot ){
+					var date = new Date(pdu.timeStamp) ;
+					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+				}
 			});
 
 			syslog.listenWithConditions(this,{
@@ -209,8 +244,10 @@ nodefony.register("kernel", function(){
 					data:"WARNING"
 				}		
 			},function(pdu){
-				var date = new Date(pdu.timeStamp) ;
-				console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
+				if ( this.preboot ){
+					var date = new Date(pdu.timeStamp) ;
+					console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
+				}
 			});
 
 
@@ -241,6 +278,10 @@ nodefony.register("kernel", function(){
 						data:data
 					}		
 				},function(pdu){
+					if ( pdu.msgid === "SERVER WELCOME"){
+						console.log(  pdu.payload);	
+						return ;
+					}
 					var reg = new RegExp("\\[32m");
 					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload .replace(reg,"");
 					this.logStreamD.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
@@ -346,43 +387,50 @@ nodefony.register("kernel", function(){
 	 *	@param {String} path
 	 *	@param {Function} callbackFinish
          */
-	kernel.prototype.registerBundles = function(path, callbackFinish){
-		process.nextTick(function(){
-			try{
-				var finder = new nodefony.finder( {
-					path:path,
-					recurse:false,
-					onFile:function(file){
-						if (file.matchName(regBundle)){
-							try {
-								var name = this.getBundleName(file.name);
-								//this.logger("\033[32m REGISTER BUNDLE : "+name+"   \033[0m","DEBUG");
-								var Class = this.autoLoader.load(file.path);
-								if (Class) {
-									if (typeof Class === "function" ){
-										Class.prototype.path = file.dirName;
-										Class.prototype.name = name;
-										Class.prototype.autoLoader = this.autoLoader;
-										Class.prototype.container = this.container;
-										var func = Class.herite(nodefony.Bundle);
-										this.bundles[name] = new func(this, this.container);
-										if ( this.bundles[name].waitBundleReady ){
-											this.eventReadywait += 1 ;
-											this.bundles[name].listen(this,"onReady", waitingBundle);
-										}	
+	kernel.prototype.registerBundles = function(path, callbackFinish, nextick){
+		//process.nextTick(function(){
+			var func = function(){
+				try{
+					var finder = new nodefony.finder( {
+						path:path,
+						recurse:false,
+						onFile:function(file){
+							if (file.matchName(regBundle)){
+								try {
+									var name = this.getBundleName(file.name);
+									//this.logger("\033[32m REGISTER BUNDLE : "+name+"   \033[0m","DEBUG");
+									var Class = this.autoLoader.load(file.path);
+									if (Class) {
+										if (typeof Class === "function" ){
+											Class.prototype.path = file.dirName;
+											Class.prototype.name = name;
+											Class.prototype.autoLoader = this.autoLoader;
+											Class.prototype.container = this.container;
+											var func = Class.herite(nodefony.Bundle);
+											this.bundles[name] = new func(this, this.container);
+											if ( this.bundles[name].waitBundleReady ){
+												this.eventReadywait += 1 ;
+												this.bundles[name].listen(this,"onReady", waitingBundle);
+											}	
+										}
 									}
-								}
-							}catch(e){
-								this.logger(e);
-							}	
-						}
-					}.bind(this),
-					onFinish:callbackFinish || this.initializeBundles.bind(this)
-				});
-			}catch(e){
-				this.logger(e);
+								}catch(e){
+									this.logger(e);
+								}	
+							}
+						}.bind(this),
+						onFinish:callbackFinish || this.initializeBundles.bind(this)
+					});
+				}catch(e){
+					this.logger(e);
+				}
 			}
-		}.bind(this));
+		//}.bind(this));
+		if ( nextick === undefined ){
+			process.nextTick( func.bind(this) );	
+		}else{
+			func.apply(this)	
+		}
 	};
 
 	/**
@@ -489,7 +537,9 @@ nodefony.register("kernel", function(){
 					case /^services\..*$/.test(ele.name) :
 						try {
 							this.logger("SERVICE LOAD FILE :"+ele.path ,"DEBUG");
-							this.container.get("injection").reader(ele.path);
+							//this.kernel.listen(this, "onBoot", function(){
+								this.container.get("injection").reader(ele.path);
+							//});
 						}catch(e){
 							this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG SERVICE :"+ele.name)
 						}
