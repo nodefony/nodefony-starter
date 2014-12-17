@@ -48,6 +48,20 @@ nodefony.registerBundle ("monitoring", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
+			this.kernel.listen(this, "onBoot", function(){
+				if ( this.container.getParameters("bundles."+this.name).debugBar) {
+					this.logger("ADD DEBUG BAR MONITORING", "WARNING")
+					this.kernel.listen(this, "onRequest",function(context){
+						context.listen(this, "onView", function(result, context){
+							//context.response.body = context.response.body.replace("</body>","MONO VIER </body>") ;
+							var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
+							this.get("templating").renderFile(View, {},function(error , result){
+								context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
+							})
+						})
+					})
+				}
+			}.bind(this));
 	};
 
 	return monitoring;

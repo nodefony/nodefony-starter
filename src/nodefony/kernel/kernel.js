@@ -147,24 +147,21 @@ nodefony.register("kernel", function(){
 		this.injection = new nodefony.injection(this.container);
 		this.container.set("injection", this.injection);
 
+		var bundles = [];
+		bundles.push("./vendors/nodefony/bundles/httpBundle");
+		bundles.push("./vendors/nodefony/bundles/frameworkBundle");
+		bundles.push("./vendors/nodefony/bundles/asseticBundle");
+
+		if (this.settings.system.security)
+			bundles.push("./vendors/nodefony/bundles/securityBundle");
 
 		switch (this.environment ){
 			case "dev":
-				var bundles = [
-					"./vendors/nodefony/bundles/httpBundle",	
-					"./vendors/nodefony/bundles/frameworkBundle",
-					"./vendors/nodefony/bundles/asseticBundle",
-					"./vendors/nodefony/bundles/realTimeBundle",
-					"./vendors/nodefony/bundles/monitoringBundle"
-				]
+				bundles.push("./vendors/nodefony/bundles/realTimeBundle");
+				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			break;
 			case "prod":
 			default :
-				var bundles = [
-					"./vendors/nodefony/bundles/httpBundle",	
-					"./vendors/nodefony/bundles/frameworkBundle",
-					"./vendors/nodefony/bundles/asseticBundle"
-				]
 		}
 
 		this.registerBundles(bundles, function(){

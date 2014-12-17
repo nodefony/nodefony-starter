@@ -9,10 +9,5 @@
     <body>
 	{% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
-	{% if nodefony.environment == "dev" %}
-		{#% include 'vendors/nodefony/bundles/monitoringBundle/Resources/css/footerMonitoring.css.twig'  %#}
-		{% include 'vendors/nodefony/bundles/monitoringBundle/Resources/views/footerMonitoring.html.twig' with {'nodefony': nodefony} %}
-		{#% include 'vendors/nodefony/bundles/monitoringBundle/Resources/javascript/footerMonitoring.js.twig'  %#}
-	{% endif %}
     </body>
 </html>

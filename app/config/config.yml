@@ -37,9 +37,15 @@ App:
         locale:                         "fr_fr"
 
 
+#
+#       OVERRIDE MONITORING
+#
+monitoringBundle:
+#        debugBar:                 false
+
 
 #
-#       STATIC FILE WITH CONNECT LIBRARY
+#        OVERRIDE STATIC FILE WITH CONNECT LIBRARY
 #
 httpBundle:
   statics:
@@ -53,7 +59,7 @@ httpBundle:
 
 
 #
-#       LESS SERVICE CONFIGURATION
+#       OVERRIDE LESS SERVICE CONFIGURATION
 #
 asseticBundle:
   less:
@@ -62,7 +68,7 @@ asseticBundle:
 
 #
 #
-#       ORM MANAGER 
+#       OVERRIDE ORM MANAGER 
 #
 #       ORM2 
 #

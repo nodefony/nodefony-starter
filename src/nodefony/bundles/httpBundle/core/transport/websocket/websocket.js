@@ -23,8 +23,9 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 			origin:request.origin
 		});
 
-		//this.server = this.container.get("webSocketServer");
-		this.notificationsCenter = this.container.get("notificationsCenter");
+		//  manage EVENTS
+		this.notificationsCenter = nodefony.notificationsCenter.create();
+		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result){

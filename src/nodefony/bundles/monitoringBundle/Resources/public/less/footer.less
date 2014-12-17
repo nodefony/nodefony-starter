@@ -1,0 +1,36 @@
+@import "../../../../frameworkBundle/Resources/public/vendors/bootstrap/Less/variables.less";
+@import "../../../../frameworkBundle/Resources/public/less/addons/variables.less";
+
+
+// Override font path 
+@icon-font-path: "/frameworkBundle/vendors/bootstrap/fonts/";
+
+.barConfig(){
+	color:@light;
+	line-height: 25px;
+}
+
+.monitor{
+	background-color:@brand-primary-dker;
+	&.navbar-inverse {
+		height:28px;
+		min-height:28px;
+		& .navbar-nav>li>a {
+			font-size: 12px;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			.barConfig();
+		}
+		& .navbar-nav>li>a:hover, & .navbar-brand:hover {
+			background-color: @brand-dark;
+		}
+		& .navbar-brand {
+			padding: 3px 15px;
+			font-size: 13px;
+			.barConfig();
+		}
+    	}
+}
+
+
+

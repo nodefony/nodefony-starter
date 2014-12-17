@@ -36,7 +36,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		});
 		
 		//this.Authenticate = this.get("Authenticate");
-		this.notificationsCenter = this.get("notificationsCenter");
+
+		//  manage EVENTS
+		this.notificationsCenter = nodefony.notificationsCenter.create();
+		this.container.set("notificationsCenter", this.notificationsCenter);
+
 		this.url = this.request.url.href;
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result){
@@ -64,8 +68,10 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  		 */
 		try {
 			var resolver = this.get("router").resolve(this.container, this.request);
+			//WARNING EVENT KERNEL
+			this.kernel.fire("onRequest", this);	
 			if (resolver.resolve) {
-				return resolver.callController(data);
+				return  resolver.callController(data);
 			}
 			/*
  			 *	NOT FOUND
@@ -75,7 +81,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 						error:"URI :" + request.url,
 						message:"not Found"
 			});
-			
 		}catch(e){
 			/*
  			 *	ERROR IN CONTROLLER 
@@ -98,19 +103,25 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.response.write();
 		// FLUSH
 		return this.close();
-	}
+	};
 
 	Http.prototype.close = function(){
 		this.kernel.container.leaveScope(this.container);
 		// FLUSH
 		return this.response.flush();
-	}
+	};
 	
 	Http.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
 		if (! msgid) msgid = this.container.getParameters("request.protocol") + " REQUEST";
 		return syslog.logger(pci, severity, msgid,  msg);
-	}
+	};
+
+
+	Http.prototype.listen = function(){
+		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+	};
+
 
 	Http.prototype.getRequest = function(){
 		return this.request;	
@@ -137,7 +148,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(url.format(Url), status)
 		else	
 			this.response.redirect(Url, status)
-		this.notificationsCenter.fire("onResponse");
+		this.notificationsCenter.fire("onResponse", null, this.context);
 	};
 
 	// FIXME COOKIES SESSION

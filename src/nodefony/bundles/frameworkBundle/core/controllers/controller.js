@@ -75,8 +75,8 @@ nodefony.register("controller", function(){
 				if (error){
 					this.notificationsCenter.fire("onError", this.container, error )
 				}else{
-					this.notificationsCenter.fire("onView", result )
-					this.notificationsCenter.fire("onResponse", result );
+					this.notificationsCenter.fire("onView", result, this.context )
+					this.notificationsCenter.fire("onResponse", result,  this.context );
 				}
  			}.bind(this));
 		}catch(e){
@@ -89,7 +89,7 @@ nodefony.register("controller", function(){
 		if (data) res.setBody(data);
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
-		this.notificationsCenter.fire("onResponse", res );
+		this.notificationsCenter.fire("onResponse", res , this.context);
 		//return res;	
 	}
 	
@@ -102,7 +102,7 @@ nodefony.register("controller", function(){
 		if (! url )
 			throw new Error("Redirect error no url !!!")
 		var result = this.getResponse().redirect(url, status)
-		this.notificationsCenter.fire("onResponse", result );
+		this.notificationsCenter.fire("onResponse", result , this.context);
 	};
 
 	Controller.prototype.isAjax = function(){

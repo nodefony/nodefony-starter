@@ -149,13 +149,7 @@ nodefony.registerService("httpKernel", function(){
 		var container = this.container.enterScope("request");	
 		if ( domain ) domain.container = container ;
 
-		//  manage EVENTS
-		var notificationsCenter = nodefony.notificationsCenter.create();
-		container.set("notificationsCenter", notificationsCenter);
-
-		//request events	
-		notificationsCenter.listen(this, "onError", this.onError)
-
+		
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
@@ -192,10 +186,14 @@ nodefony.registerService("httpKernel", function(){
 				this.kernel.fire("onWebSocketSecureRequest", container, context, type);
 			break;
 		}
+
+		//request events	
+		context.notificationsCenter.listen(this, "onError", this.onError);
+
 		var firewall = this.get("security");
 		if( ! firewall){
 			request.on('end', function(){
-				notificationsCenter.fire("onRequest",container, request, response ); 
+				context.notificationsCenter.fire("onRequest",container, request, response ); 
 			});
 		}
 	};

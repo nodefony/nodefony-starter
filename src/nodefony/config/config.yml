@@ -33,15 +33,17 @@
 #       KERNEL CONFIG
 #
 #
-# 
-#
 name:                           "N O D E F O N Y"
 system:                         #
   state:                        prod    #prod
+  debug:                        false
   version:                      "1.0"
   domain:                       127.0.0.1
   httpPort:                     5151
   httpsPort:                    5152
+  statics:                      true
+  security:                     true
+
   locale:                       "fr_fr"   
   projectName:                  "NODEFONY" 
   authorName:                   myName
@@ -49,7 +51,6 @@ system:                         #
   date:                         null
   dateYear:                     null
 
-  debug:                        false
   log:
     active:                     true
     messages:                   "/tmp/nodefony.log"

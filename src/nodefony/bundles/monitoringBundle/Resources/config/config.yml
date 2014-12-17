@@ -33,7 +33,7 @@
 name :				monitoringBundle
 version:			"1.0"
 locale :			fr_fr
-
+debugBar:                       true
 
 realTimeBundle:
   services:

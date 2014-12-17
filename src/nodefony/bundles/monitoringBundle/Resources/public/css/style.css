@@ -8113,16 +8113,3 @@ button.toast-close-button {
     width: 25em;
   }
 }
-.monitor.navbar {
-  height: 28px;
-  min-height: 28px;
-}
-.monitor.navbar .navbar-nav > li > a {
-  font-size: 12px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-.monitor.navbar .navbar-brand {
-  padding: 3px 15px;
-  font-size: 13px;
-}

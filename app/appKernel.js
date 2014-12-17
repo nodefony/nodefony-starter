@@ -23,7 +23,6 @@ nodefony.register("appKernel",function(){
 	 	*	Bundle to register in Application
 	 	*/
 		this.registerBundles([
-			"./vendors/nodefony/bundles/securityBundle",
 			"./vendors/nodefony/bundles/orm2Bundle"
 		]);
 
