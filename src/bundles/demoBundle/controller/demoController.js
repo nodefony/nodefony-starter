@@ -244,6 +244,27 @@ nodefony.registerController("demo", function(){
 	};
 
 
+
+
+	demoController.prototype.uploadAction = function(){
+	
+		//var req = this.get('context').request;
+		console.log( this.getParameters("query.files") )
+		/*if(nodefony.typeOf(req.queryFiles['fichier[]']) == 'array'){
+			for(var i = 0; i < req.queryFiles['fichier[]'].length; i++){
+				var file = req.queryFiles['fichier[]'][i];
+				if(file.isValid()) file.move('/tmp/');
+			}
+		} else {
+			var file = req.queryFiles['fichier[]'];
+			if(file.isValid()) file.move('/tmp/');
+		}*/
+		return this.redirect(this.generateUrl("dev"));
+	};
+
+
+
+
 	return demoController;
 });
 

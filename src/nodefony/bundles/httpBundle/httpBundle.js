@@ -24,7 +24,6 @@ nodefony.registerBundle ("httpServer", function(){
 		//setTimeout(function(){
 		//	this.fire("onReady")
 		//}.bind(this),10000);
-
 	}
 
 	return httpServer;

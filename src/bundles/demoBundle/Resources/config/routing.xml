@@ -37,8 +37,14 @@
 		<default key="controller">demoBundle:demo:dev</default>
 		<requirement key="method">GET</requirement>
 	</route>
+
+	<route id="upload" pattern="/upload">
+		<default key="controller">demoBundle:demo:upload</default>
+		<requirement key="method">POST</requirement>
+	</route>
+
 	
-	<route id="dev" pattern="/poll">
+	<route id="poll" pattern="/poll">
 		<default key="controller">demoBundle:demo:poll</default>
 		<requirement key="method">GET,POST</requirement>
 	</route>

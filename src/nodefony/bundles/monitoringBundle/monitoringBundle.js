@@ -37,7 +37,7 @@ nodefony.registerBundle ("monitoring", function(){
 	var monitoring = function(kernel, container){
 
 		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+		//this.autoLoader.loadDirectory(this.path+"/core");
 
 		this.mother = this.$super;
 		this.mother.constructor(kernel, container);

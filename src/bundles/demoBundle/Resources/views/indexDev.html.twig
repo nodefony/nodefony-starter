@@ -4,101 +4,28 @@
 
 {% block title %}  
 
-	ENTRY JS
+	UPLOAD
 
 
 {% endblock %}
-
-
-{% block stylesheets %}
-<link rel="stylesheet" href="/jquery-ui-1.10.3.custom/css/ui-lightness/jquery-ui-1.10.3.custom.css"  />
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-{% endblock %}
-
 
 
 	
 {% block body %}
 
-<div id= dialog></div>
-	
+<form action="/upload?sboob=foo" method="post" enctype="multipart/form-data">
+		First name: <input type="text" name="fname"><br>
+		Last name: <input type="text" name="lname"><br>
+		Photo: <input type="file" name="photo"><br>
+		Photo2: <input type="file" name="photo2"><br>
+		<input type="submit" value="Submit">
+	</form>
 
 {% endblock %}
 
 
 
 {% block javascripts %}
-
-<script type="text/javascript" src="/jquery/jquery.js"></script>
-<script type="text/javascript" src="/nodefony.js"></script>
-<script type="text/javascript" src="/kernel.js"></script>
-<script type="text/javascript" src="/function.js"></script>
-<script type="text/javascript" src="/notificationsCenter.js"></script>
-<script type="text/javascript" src="/syslog/syslog.js"></script>
-<script type="text/javascript" src="/twig/twig.js"></script>
-<script type="text/javascript" src="/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
-
-
-
-<script>
-	var app = new nodefony.kernel(function(){
-			//console.log("ready");
-			//console.log(this);
-	}, {
-		environment:"dev",
-		debug:true, 
-		onBoot:function(){
-			//console.log(arguments);
-			console.log(this)
-		},
-		
-	
-	});
-	 
-	app.listen(app,"onReady",function(){
-		//$(document.body).html("j'ai demarere")
-		for (var i=0 ; i<10 ; i++)
-		if (i % 2 ) this.logger(i, "INFO")
-		else this.logger(i, "DEBUG")
-		
-		//new nodefony.ui.log("j'ai demarere");
-		//$().log()
-	});
-	
-	
-	/*var syslog = new nodefony.syslog();
-	
-	console.log(syslog);
-	
-	
-	
-	
-	syslog.listenWithConditions(this, {
-				severity:{
-					data:"CRITIC"
-				}		
-		},
-		function(pdu){
-			console.log(pdu.toString())
-	});
-	
-	
-	
-	for (var i=0 ; i<100 ; i++)
-	syslog.logger(i,"CRITIC","mailer", "message:"+i);*/
-	
-	
-	app.listen(this,"onUnLoad",function(){
-	
-		console.log("Hello");
-	});
-	
-	
-	
-	
-	
-	
-</script>
 
 {% endblock %}
 

@@ -52,10 +52,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	};
 
 	Http.prototype.handle = function(container, request , response, data){
-		var get, post ;
-		get = this.container.setParameters("query.get", this.request.queryGet );
+		var get = this.container.setParameters("query.get", this.request.queryGet );
 		if (this.request.queryPost  )
-			post = this.container.setParameters("query.post", this.request.queryPost );
+			var post = this.container.setParameters("query.post", this.request.queryPost );
+		if (this.request.queryPost  )
+			var post = this.container.setParameters("query.files", this.request.queryFile );
 		this.container.setParameters("query.request", this.request.query );
 
 		/*

@@ -50,7 +50,7 @@ nodefony.register("cookies",function(){
 			this.originalMaxAge = this.setOriginalMaxAge(this.settings.maxAge) ;
 			this.expires = this.setExpires(this.settings.expires) ;
 			this.path = this.setPath(this.settings.path);
-			this.domain = this.setDomain(this.settings.domain) ;
+			this.domain = this.setDomain() ;
 			this.httpOnly = this.setHttpOnly(this.settings.httpOnly) ;
 			this.secure = this.setSecure(this.settings.secure)  ;
 		}
@@ -74,7 +74,7 @@ nodefony.register("cookies",function(){
 	};
 
 	Cookie.prototype.setDomain = function(domain){
-		return domain;
+		return this.settings.domain;
 	};
 
 	Cookie.prototype.setHttpOnly = function(val){

@@ -42,7 +42,7 @@ system:                         #
   httpPort:                     5151
   httpsPort:                    5152
   statics:                      true
-  security:                     true
+  security:                     false
 
   locale:                       "fr_fr"   
   projectName:                  "NODEFONY" 

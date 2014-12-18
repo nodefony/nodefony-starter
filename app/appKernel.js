@@ -23,7 +23,8 @@ nodefony.register("appKernel",function(){
 	 	*	Bundle to register in Application
 	 	*/
 		this.registerBundles([
-			"./vendors/nodefony/bundles/orm2Bundle"
+			"./vendors/nodefony/bundles/orm2Bundle",
+			"./src/bundles/demoBundle"
 		]);
 
 		/*

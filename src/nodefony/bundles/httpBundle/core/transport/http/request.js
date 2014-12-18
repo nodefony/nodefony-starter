@@ -17,6 +17,7 @@ var xml = require('xml2js');
 nodefony.register("Request",function(){
 
 	
+	
 	var settingsXml = {};
 	var parserRequestBody = function(request){
 		//var contentType = this.contentType ? this.contentType : "application/x-www-form-urlencoded";
@@ -39,8 +40,16 @@ nodefony.register("Request",function(){
 						}.bind(this));	
 					break;
 					case "multipart/form-data":
-						this.queryPost = this.body;
-						this.logger("FORM you must use a parser for multipart/form-data   BUFFER SIZE : "+ this.body.length, "WARNING");
+						var res = new nodefony.io.MultipartParser(this);
+						//console.log(res);
+						this.queryPost = res.post ;
+						this.queryFile = res.file ;
+						if (Object.keys(this.queryFile).length ) {
+							for(var file in this.queryFile){
+								var upload = new nodefony.io.UploadedFile(this.queryFile[file], this.container); 
+							}
+						}
+						this.logger("FORM  multipart/form-data   BUFFER SIZE : "+ this.body.length, "DEBUG");
 					break;
 					case "application/x-www-form-urlencoded":
 						this.queryPost = qs.parse(this.body.toString(this.charset));
@@ -61,13 +70,16 @@ nodefony.register("Request",function(){
 		this.request = request;
 		this.host = request.headers.host;
 		this.url = this.getUrl(request) ;
+		this.queryPost = {}; 
+		this.queryFile = {}; 
+		this.queryGet = this.getUrl(request, true).query;
 		this.query = this.getUrl(request, true).query;
-		this.queryGet = this.getUrl(request, true).query ; 
 		this.headers = 	request.headers ;
 		this.method = request.method;
+		this.rawContentType = {} ;
 		this.contentType = this.getContentType(this.request);
 		this.charset = this.getCharset(this.request);
-		this.domain = this.setDomain();
+		this.domain = this.getDomain();
 		this.remoteAdress = this.getRemoteAdress();
 		this.data = new Array();
 
@@ -81,17 +93,21 @@ nodefony.register("Request",function(){
 				parserRequestBody.call(this, this.request );
 				switch (typeof this.queryPost){
 					case "object" :
-						this.query = nodefony.extend(this.query, this.queryGet, this.queryPost);
-					break;
-					case "string" :
-						this.query = this.queryPost;
+						if (this.queryPost instanceof Buffer){
+							this.query = this.queryPost ;
+						}else{
+							nodefony.extend( this.query, this.queryPost);
+							nodefony.extend( this.query, this.queryFile);
+						}
 					break;
 					default:
-						this.query = nodefony.extend(this.query, this.queryGet);
+						nodefony.extend( this.query, this.queryPost);
+						nodefony.extend( this.query, this.queryFile);
 				}
 			}catch(e){
 				throw new Error ("Request "+this.url.href +" Content-type : " + this.contentType + " data Request :   "+ this.body.length+"   " + e );
 			}
+			//console.log(this.query)
 		}.bind(this));
 	};
 
@@ -103,8 +119,23 @@ nodefony.register("Request",function(){
 
 	Request.prototype.getContentType = function( request ){
 		if ( request.headers["content-type"] ){
-			return  request.headers["content-type"].split(";")[0];		
+			var tab = request.headers["content-type"].split(";") ;
+			if (tab.length > 1){
+				for (var i = 1 ; i<tab.length ;i++){
+					if (typeof tab[i] === "string"){
+						var ele = tab[i].split("=")
+						var key = ele[0].replace(" ","");
+						this.rawContentType[key]= ele[1]; 
+					}else{
+						continue ;
+					}
+
+				}
+			}
+			this.extentionContentType = request.headers["content-type"] ;
+			return  tab[0];		
 		}
+		
 		return null;
 	}
 
@@ -119,7 +150,7 @@ nodefony.register("Request",function(){
 		return  charset || "utf8" ; 
 	}
 
-	Request.prototype.setDomain = function(){
+	Request.prototype.getDomain = function(){
 		return this.host.split(":")[0];
 	};
 
