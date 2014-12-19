@@ -102,7 +102,10 @@ nodefony.registerService("random", function(){
 
 	service.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "SERVICE RANDOM ";
-		this.realTime.logger(pci, severity,"SERVICE RANDOM");
+		if ( this.realTime )
+			this.realTime.logger(pci, severity,"SERVICE RANDOM");
+		else
+			this.kernel.logger(pci, severity,"SERVICE RANDOM");
 	};
 
 

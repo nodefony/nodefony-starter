@@ -56,7 +56,10 @@ nodefony.registerService("dmsg", function(){
 
 	dmsg.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "SERVICE DMSG ";
-		this.realTime.logger(pci, severity,"SERVICE DMSG");
+		if (this.realTime)
+			this.realTime.logger(pci, severity,"SERVICE DMSG");
+		else
+			this.kernel.logger(pci, severity,"SERVICE DMSG");
 	};
 
 

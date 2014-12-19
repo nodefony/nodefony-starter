@@ -57,7 +57,7 @@ nodefony.registerService("statics", function(){
 		// LESS IN THE FLY
 		if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
 			try {
-				var res = this.serviceLess.handle(request, response, type, function(){
+				var res = this.serviceLess.handle(request, response, type, function(err, dest){
 					this.server.handle(request, response, function(){
 						response.setHeader("Content-Type", "text/html");
 						callback.apply(this, arguments);	

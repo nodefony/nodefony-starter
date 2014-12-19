@@ -9,8 +9,6 @@
 
 nodefony.registerService("less", function(){
 
-
-
 	//var regexCss =/^(.+)\.css$/;
 	var regexLess =/^(.+)\.less$/;
 	//var regexCssComp =/^(.+)(\.|-)min\.css$|^(.+)\.css$/
@@ -79,13 +77,14 @@ nodefony.registerService("less", function(){
 		return this.syslog.logger(pci, severity || "DEBUG", msgid,  msg);
 	};
 	
-
-
 	Less.prototype.parse = function(file, dest, callback){
 		var vendors = process.cwd()+"/web/vendors" ;
 		var settings = nodefony.extend(this.settings,{
 			paths: [file.dirName, vendors ],  // Specify search paths for @import directives
-			filename: file.name    //'style.less', // Specify a filename, for better error messages
+			filename: file.name ,   //'style.less', // Specify a filename, for better error messages
+			async: false,
+			//logLevel: 2,
+			fileAsync: false
 		})
 		this.engine.render(file.content(),settings,
 			function (e, css) {
@@ -94,20 +93,18 @@ nodefony.registerService("less", function(){
 					this.logger(str, "ERROR")
 					if (callback) callback(e, null);
 				}else{
-					fs.writeFile(dest, css.css,function(err){
-						if (err){
-							this.logger( err,"ERROR");
-							if (callback) callback(err, null);
-						}else{
-							this.logger("CREATE LESS FILE: " + dest);
-							if (callback) callback(null, dest);
-						}
-					}.bind(this))
+					try {
+						var res = fs.writeFileSync(dest, css.css);
+						this.logger("CREATE LESS FILE: " + dest);
+						if (callback) callback(null, dest);
+					}catch(err){
+						this.logger( err,"ERROR");
+						if (callback) callback(err, null);
+					}
 				}
 			}.bind(this)
 		);
 	};
-
 
 	Less.prototype.handle = function(request, response, type, callback){
 			//console.log(type + " :  " + request.url)
@@ -125,7 +122,5 @@ nodefony.registerService("less", function(){
 		}
 		return false;
 	};
-
 	return Less ;
-
 });
