@@ -421,8 +421,14 @@ nodefony.registerService("realTime", function(){
 
 
 	realTime.prototype.handleConnection = function(message, context){
-		// WEBSOCKET
-		return this.onMessage(message, context);
+		switch(context.type){
+			case "WEBSOCKET":
+				return this.onMessage(message, context);
+			break;
+			case "HTTP":
+			case "HTTPS":
+				return this.onMessage(message, context);
+		}
 	}	
 
 	
@@ -515,15 +521,16 @@ nodefony.registerService("realTime", function(){
 		try {
 			switch (connection.type){
 				case "HTTP":
+				case "HTTPS":
 					connection.response.body = message ;
 					connection.response.setHeader("Content-Type", "application/json");
-					return connection.response ;
+					//return connection.response ;
 				break;
 				case "WEBSOCKET":
 					connection.send(message);
-					return connection ;
 				break;
 			}
+			return connection.response ;
 		}catch(e){
 			this.logger(e,"ERROR")
 		}

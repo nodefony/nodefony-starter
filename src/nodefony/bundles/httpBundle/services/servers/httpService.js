@@ -15,6 +15,7 @@ nodefony.registerService("http", function(){
 		this.domain = this.httpKernel.kernel.settings.system.domain ;
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
+		this.ready = false ;
 
 	};
 	
@@ -51,6 +52,7 @@ nodefony.registerService("http", function(){
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
 			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER HTTP", "LISTEN");
+			this.ready = true ;
 		}.bind(this));
 
 		this.server.on("error",function(error){

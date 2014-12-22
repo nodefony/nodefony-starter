@@ -14,8 +14,9 @@ nodefony.registerService("router", function(){
  	 *
  	 *
  	 */
-	var Resolver = function(container){
+	var Resolver = function(container, router){
 		this.container = container;
+		this.router = router ;
 		this.resolve = false;
 		this.kernel = this.container.get("kernel");
 		this.defaultAction = null;
@@ -85,6 +86,12 @@ nodefony.registerService("router", function(){
 	Resolver.prototype.getController= function(name){
 		return this.bundle.controllers[name];
 	};
+
+	Resolver.prototype.logger = function(pci, severity, msgid,  msg){
+		if (! msgid) msgid = "SERVICE RESOLVER";
+		return this.router.syslog.logger(pci, severity, msgid,  msg);
+	};
+
 	
 
 	Resolver.prototype.callController= function(data){
@@ -95,10 +102,14 @@ nodefony.registerService("router", function(){
 				this.variables.push(data); 
 			}
 			var result =  this.action.apply(controller, this.variables);
+			//console.log(result)
 			switch (true){
 				case result instanceof nodefony.Response :
 					this.notificationsCenter.fire("onResponse", result);
-				break;
+				break ;
+				case result instanceof nodefony.wsResponse :
+					this.notificationsCenter.fire("onResponse", result);
+				break ;
 				case nodefony.typeOf(result) === "object":
 					if ( this.defaultView ){
 						result = controller.render(this.defaultView, result );
@@ -111,6 +122,7 @@ nodefony.registerService("router", function(){
 					}
 				break;
 				default:
+					//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
 					// CASE async controller wait fire onResponse by other entity
 			}
 			return result;
@@ -240,6 +252,7 @@ nodefony.registerService("router", function(){
 				throw e.error
 			}
 		}.bind(this));
+		this.syslog = this.container.get("syslog"); 
 	};
 
 	Router.prototype.generatePath = function(name, variables, host){
@@ -312,7 +325,7 @@ nodefony.registerService("router", function(){
 	};
 
 	Router.prototype.resolve = function(container, request){
-		var resolver = new Resolver(container);
+		var resolver = new Resolver(container, this);
 		for (var i = 0; i<this.routes.length; i++){
 			var route = this.routes[i];
 			var res = resolver.match(route, request);
@@ -323,7 +336,7 @@ nodefony.registerService("router", function(){
 	};
 
 	Router.prototype.resolveName = function(container, name){
-		var resolver = new Resolver(container);	
+		var resolver = new Resolver(container, this);	
 		var route = resolver.parsePathernController(name);
 		return resolver;
 	};
@@ -333,9 +346,9 @@ nodefony.registerService("router", function(){
 	};
 
 	Router.prototype.logger = function(pci, severity, msgid,  msg){
-		var syslog = this.container.get("syslog");
+		//var syslog = this.container.get("syslog");
 		if (! msgid) msgid = "SERVICE ROUTER";
-		return syslog.logger(pci, severity, msgid,  msg);
+		return this.syslog.logger(pci, severity, msgid,  msg);
 	};
 
 	Router.prototype.nodeReader = function(obj){

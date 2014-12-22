@@ -85,7 +85,7 @@ nodefony.registerController("framework", function(){
 				services:services
 			};
 
-			if (options.view){
+			if (options && options.view){
 				nodefony.extend(obj, options);
 				return this.render(options.view, obj );
 			}else{

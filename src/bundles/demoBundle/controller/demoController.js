@@ -22,7 +22,8 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.indexAction= function(module){
-		
+		return this.forward("frameworkBundle:default:system");
+		//return this.forward("demoBundle:demo:dev");
 	};
 
 	/**
@@ -31,7 +32,7 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.renderviewAction= function(name){
-		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"bgg"});
+		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
 		return this.getResponse(content)
 	};
 
@@ -263,6 +264,10 @@ nodefony.registerController("demo", function(){
 	};
 
 
+
+	demoController.prototype.downloadAction = function(){
+
+	};
 
 
 	return demoController;

@@ -35,6 +35,9 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.notificationsCenter.listen(this, "onRequest", this.handle);
 
 		// LISTEN EVENTS SOCKET	
+		
+		
+
 		this.connection.on('message', this.handleMessage.bind(this));
 
 		this.connection.on('close', this.close.bind(this)); 
@@ -50,9 +53,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		try {
 			var resolver = this.get("router").resolve(this.container, this.request);
 			if (resolver.resolve) {
-				var result = resolver.callController(message);
-				this.notificationsCenter.fire("onResponse", result)
-				return ;
+				return resolver.callController(message);
 			}else{
 				this.request.reject();
 			}
@@ -63,12 +64,12 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	};
 
 
-	websocket.prototype.handle = function(container, request, response){
+	websocket.prototype.handle = function(container, request, response, data){
 		this.container.get("translation").handle( request );
 		try {
 			var resolver = this.get("router").resolve(this.container, this.request);
 			if (resolver.resolve) {
-				return resolver.callController();
+				return resolver.callController(data || null);
 			}else{
 				request.reject();
 			}
@@ -87,6 +88,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 
 	websocket.prototype.send = function(data){
+		//console.log(data)
 		return this.response.send(data || this.response.body)
 	};
 

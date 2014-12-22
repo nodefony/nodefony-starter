@@ -70,7 +70,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		try {
 			var resolver = this.get("router").resolve(this.container, this.request);
 			//WARNING EVENT KERNEL
-			this.kernel.fire("onRequest", this);	
+			this.kernel.fire("onRequest", this, resolver);	
 			if (resolver.resolve) {
 				return  resolver.callController(data);
 			}
@@ -107,6 +107,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	};
 
 	Http.prototype.close = function(){
+		// free container scope
 		this.kernel.container.leaveScope(this.container);
 		// FLUSH
 		return this.response.flush();

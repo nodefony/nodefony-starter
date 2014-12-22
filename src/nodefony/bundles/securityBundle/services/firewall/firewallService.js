@@ -325,7 +325,7 @@ nodefony.registerService("firewall", function(){
 
 										if (this.securedAreas[area].formLogin) {
 											var ajax = context.request.isAjax() ;
-											if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer") ){
+											if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer").ready ){
 												this.securedAreas[area].redirectHttps(context);
 											}else{
 												var ur = this.securedAreas[area].overrideURL(context.request);
@@ -487,8 +487,6 @@ nodefony.registerService("firewall", function(){
 	Firewall.prototype.addProvider = function(name){
 		
 	};
-
-	
 
 	Firewall.prototype.addSecuredArea = function(name){
 		if ( ! this.securedAreas[name] ){

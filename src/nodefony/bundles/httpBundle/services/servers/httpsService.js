@@ -14,7 +14,7 @@ nodefony.registerService("https", function(){
 		
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
-
+		this.ready = false ;
 	};
 	
 	Https.prototype.createServer = function(port, domain){
@@ -54,6 +54,7 @@ nodefony.registerService("https", function(){
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
 			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER HTTPS", "LISTEN");
+			this.ready = true ;
 		}.bind(this));
 
 		this.server.on("error",function(error){

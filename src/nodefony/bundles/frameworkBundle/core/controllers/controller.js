@@ -47,7 +47,7 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.getResponse = function(content){
 		if (content)
-			this.context.response.body = content;
+			this.context.response.setBody( content );
 		return this.context.response;
 	};
 
@@ -70,23 +70,25 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.render = function(view, param){
 		var View = this.container.get("httpKernel").getView(view);
+		var response = null ;
 		try {	
-			return this.container.get('templating').renderFile(View, param, function(error, result){
+			this.container.get('templating').renderFile(View, param, function(error, result){
 				if (error){
 					this.notificationsCenter.fire("onError", this.container, error )
 				}else{
 					this.notificationsCenter.fire("onView", result, this.context )
-					this.notificationsCenter.fire("onResponse", result,  this.context );
+					//this.notificationsCenter.fire("onResponse", result,  this.context );
+					response = this.getResponse();
 				}
  			}.bind(this));
 		}catch(e){
 			this.notificationsCenter.fire("onError", this.container, e );
 		}
+		return response ;
 	};
 
 	Controller.prototype.renderResponse = function(data, status , headers ){
-		var res = this.getResponse();
-		if (data) res.setBody(data);
+		var res = this.getResponse(data);
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
 		this.notificationsCenter.fire("onResponse", res , this.context);
@@ -112,7 +114,7 @@ nodefony.register("controller", function(){
 	
 	Controller.prototype.forward = function(name, param){
 		var resolver = this.container.get("router").resolveName(this.container, name);
-		return resolver.callController(param );
+		resolver.callController(param );
 	};
 	
 	Controller.prototype.generateUrl = function(name, variables, absolute){

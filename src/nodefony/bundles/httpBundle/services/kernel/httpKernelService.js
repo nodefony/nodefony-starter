@@ -24,7 +24,11 @@ nodefony.registerService("httpKernel", function(){
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
 			this.handle(request, response, type, domain);
-		}.bind(this))
+		});
+		this.firewall = null ;
+		this.kernel.listen(this, "onReady", function(){
+			this.firewall = this.get("security") ;
+		});
 	};
 	
 	httpKernel.prototype.boot = function(){
@@ -32,7 +36,7 @@ nodefony.registerService("httpKernel", function(){
 		// Manage statics files
 		 this.kernel.listen(this, "onBoot", function(){
 			this.initStaticFiles();
-		 }.bind(this));
+		 });
 			
 	};
 
@@ -142,8 +146,11 @@ nodefony.registerService("httpKernel", function(){
 		}
 	};
 
+
+
 	//  build response
 	httpKernel.prototype.handle = function(request, response, type, domain){
+
 
 		// SCOPE REQUEST ;
 		var container = this.container.enterScope("request");	
@@ -190,11 +197,15 @@ nodefony.registerService("httpKernel", function(){
 		//request events	
 		context.notificationsCenter.listen(this, "onError", this.onError);
 
-		var firewall = this.get("security");
-		if( ! firewall){
-			request.on('end', function(){
-				context.notificationsCenter.fire("onRequest",container, request, response ); 
-			});
+		if( ! this.firewall){
+			if (type === "HTTP" || type === "HTTPS"){
+				request.on('end', function(){
+					context.notificationsCenter.fire("onRequest",container, request, response );	
+				});
+			}
+			if (type === "WEBSOCKET" || type === "WEBSOCKET SECURE"){
+				context.notificationsCenter.fire("onRequest",container, request, response );
+			}
 		}
 	};
 

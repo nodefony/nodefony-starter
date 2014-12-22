@@ -21,6 +21,7 @@ nodefony.register("wsResponse",function(){
 
 	
 	Response.prototype.send = function(data){
+		//console.log(data)
 		this.connection.send(data);
 		this.body = "";
 	};

@@ -28,15 +28,15 @@ nodefony.registerController("default", function(){
 		switch( this.getRequest().method ){
 			case "GET" :
 				return this.getResponse("PING");
-				break;
+			break;
 			case "POST" :
 				return realtime.handleConnection(this.getParameters("query").request, context );	
-				break;
+			break;
 			case "WEBSOCKET" :
 				if (message){
 					realtime.handleConnection(message.utf8Data, context );
 				}
-				break;
+			break;
 			default :
 				throw new Error("REALTIME METHOD NOT ALLOWED")
 		};

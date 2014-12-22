@@ -27,12 +27,10 @@ nodefony.register("Bundle", function(){
 		});
 		this.controllers = {};
 		this.views = {};
-		//this.views["Default"] = {};
 		this.views["."] = {};
 		this.entities = {};
 		this.fixtures = {};
 
-		//this.services = {};
 		this.reader = this.container.get("kernel").reader;
 		
 		this.resourcesFiles = this.finder.result.findByNode("Resources") ;
@@ -58,10 +56,17 @@ nodefony.register("Bundle", function(){
 						if ( config ){
 							var ext = nodefony.extend(true, {}, config , result[ele])
 							this.logger("\033[32m OVERRIDING\033[0m  CONFIG bundle  : "+name[1]  ,"WARNING")
-							this.container.setParameters("bundles."+name[1], ext);	
+							//this.container.setParameters("bundles."+name[1], ext);	
 						}else{
-							this.logger("\033[32m OVERRIDING\033[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING")
-							this.container.setParameters("bundles."+name[1], result[ele]);	
+							var ext = result[ele] ;
+							this.logger("\033[32m OVERRIDING\033[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING");
+							//this.container.setParameters("bundles."+name[1], result[ele]);	
+						}
+						if ( this.kernel.bundles[name[1]] ){
+							this.kernel.bundles[name[1]].settings = ext ; 
+							this.container.setParameters("bundles."+name[1], this.kernel.bundles[name[1]].settings); 
+						}else{
+							this.container.setParameters("bundles."+name[1], ext); 
 						}
 					break;
 					case /^locale$/.test(ele) :
@@ -72,10 +77,11 @@ nodefony.register("Bundle", function(){
 			var config = this.container.getParameters("bundles."+this.name);
  		        if ( Object.keys(config).length ){
 				this.logger("\033[32m BUNDLE IS ALREADY OVERRIDING BY AN OTHERONE  INVERT \033[0m  CONFIG  "+ util.inspect(config)  ,"WARNING");
-				var ext = nodefony.extend(true, {}, result, config ); 
-				this.container.setParameters("bundles."+this.name, ext);
+				this.settings = nodefony.extend(true, {}, result, config ); 
+				this.container.setParameters("bundles."+this.name, this.settings);
 			}else{
-				this.container.setParameters("bundles."+this.name, result);	
+				this.settings = result ;
+				this.container.setParameters("bundles."+this.name, this.settings);	
 			}	
 		}
 	};
