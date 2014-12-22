@@ -135,20 +135,24 @@ nodefony.registerController("demo", function(){
  	 *	@see ORM2 execQuery usage
  	 *
  	 */
-	demoController.prototype.getArticlesAction= function(name, message){
-		var orm = this.get('ORM2').getConnection('conn2');
+	demoController.prototype.ormConnectionAction= function(){
+		var orm = this.get('ORM2').getConnection('demo');
+
 		if ( ! orm){
 			throw {
-				message:"conn2 is not available "
+				message:"demo is not available "
 			}
 		}
-		orm.driver.execQuery('select * from article_translation', function(err, data){
-			if (err){
-				//this.logger(err);
-				throw err;
-			}
-			return this.render('demoBundle:Default:index.html.twig',{name:name, orm: data});
-		}.bind(this));
+		try{
+			orm.driver.execQuery('select * from Artist', function(err, data){
+				if (err){
+					throw err;
+				}
+				this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
+			}.bind(this));
+		}catch(e){
+			throw e
+		}
 	};
 
 	/**

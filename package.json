@@ -23,7 +23,7 @@
     "ejs": "*",
     "twig": "*",
     "connect": ">= 2.8 < 3",
-    "orm": "== 2.1.13",
+    "orm": "*",
     "sqlite3": "*",
     "mysql": "*",
     "mongodb": "*",
@@ -32,9 +32,7 @@
     "nodemailer": "*",
     "mocha": "*",
     "chai": "*",
-    "ascii-table": "*",
-    "orm-timestamps": "*",
-    "orm-paging": "*"
+    "ascii-table": "*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

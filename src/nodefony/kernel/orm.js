@@ -84,8 +84,8 @@ nodefony.register("orm", function(){
 		});
 
 		this.listen(this, "onConnect" , function(name, db){
-			
 			if (name in this.definitions){
+			console.log('PASSA')
 				for( var i =0 ; i < this.definitions[name].length ; i++){
 					this.definitions[name][i](db);
 				}
@@ -95,8 +95,6 @@ nodefony.register("orm", function(){
 			}catch(e){
 				this.logger(e, "ERROR", this.name+" ENTITY");
 			}
-			
-			
 		}.bind(this));
 	};
 	

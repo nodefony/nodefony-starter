@@ -68,16 +68,21 @@ nodefony.register("controller", function(){
 		return res;
 	};
 
+
+	Controller.prototype.renderAsync = function(view, param){
+		var response = this.render(view, param);
+		this.notificationsCenter.fire("onResponse", response,  this.context );
+	};
+
 	Controller.prototype.render = function(view, param){
-		var View = this.container.get("httpKernel").getView(view);
 		var response = null ;
 		try {	
+			var View = this.container.get("httpKernel").getView(view);
 			this.container.get('templating').renderFile(View, param, function(error, result){
 				if (error){
 					this.notificationsCenter.fire("onError", this.container, error )
 				}else{
 					this.notificationsCenter.fire("onView", result, this.context )
-					//this.notificationsCenter.fire("onResponse", result,  this.context );
 					response = this.getResponse();
 				}
  			}.bind(this));

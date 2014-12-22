@@ -17,21 +17,11 @@
 		<default key="controller">demoBundle:demo:generateUrl</default>
 	</route>
 
-	<route id="articles" pattern="/articles">
-		<default key="controller">demoBundle:demo:getArticles</default>
+	<route id="articles" pattern="/orm">
+		<default key="controller">demoBundle:demo:ormConnection</default>
 	</route>
 
-	<route id="users" pattern="/users">
-		<default key="controller">demoBundle:demo:users</default>
-		<requirement key="method">GET,DELETE,POST</requirement>
-	</route>
-	
-	
-	<route id="test" pattern="/cci">
-		<default key="controller">demoBundle:demo:demoTest</default>
-		<requirement key="method">GET</requirement>
-	</route>
-
+		
 
 	<route id="dev" pattern="/dev">
 		<default key="controller">demoBundle:demo:dev</default>

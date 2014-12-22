@@ -62,14 +62,14 @@ nodefony.registerService("ORM2", function(){
 		}
 		//console.log(db.__proto__);
 		this.db = db;
-		this.db.use(this.orm.enginePaging);
+		/*this.db.use(this.orm.enginePaging);
 		this.db.use(this.orm.engineTimestamp, {
 	        	createdProperty: 'created_at',
 	        	modifiedProperty: 'modified_at',
 	        	dbtype: { type: 'date', time: true },
 	        	now: function() { return new Date(); },
 	        	persist: true
-		});
+		});*/
 		this.orm.notificationsCenter.fire("onConnect", this.name, this.db );
 		this.state = "CONNECTED";
 	};
@@ -81,7 +81,7 @@ nodefony.registerService("ORM2", function(){
 	connectionDB.prototype.connect = function(){
 		try{
 			var conn = this.orm.engine.connect(this.url);
-			conn.fxoPath = this.url;
+			conn.Path = this.url;
 			conn.on("connect", function(err, db){
 				if(!err) {
 					if ( this.intervalId ){
@@ -96,9 +96,8 @@ nodefony.registerService("ORM2", function(){
 				}
 			}.bind(this));
 			conn.on("error", function(err){
-				if(conn.fxoPath == this.url){
+				if(conn.Path == this.url){
 					error.call(this, err);
-					
 				}
 			}.bind(this));
 		} catch(e){
@@ -126,8 +125,8 @@ nodefony.registerService("ORM2", function(){
 		this.mother = this.$super;
 		this.mother.constructor("ORM2", container, kernel, autoLoader);
 		this.engine = require("orm");
-		this.enginePaging = require("orm-paging");
-		this.engineTimestamp = require("orm-timestamps");
+		//this.enginePaging = require("orm-paging");
+		//this.engineTimestamp = require("orm-timestamps");
 		this.boot();
 
 	}.herite(nodefony.orm);

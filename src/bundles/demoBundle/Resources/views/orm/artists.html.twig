@@ -1,0 +1,48 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+
+{% block title %} {{name}} {% endblock %}
+
+
+{% block body %}
+
+
+
+
+<div class="container">
+
+	<div class="row">
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading"><strong>ARTISTS    </strong></div>
+			<div class="panel-body">
+				<p>Details</p>
+			</div>
+
+			<div class="table-responsive" >
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th> NAME</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for artist in orm %}
+						<tr>
+							<td>{{artist.ArtistId}}</td>
+							<td>{{artist.Name}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock %}
+
