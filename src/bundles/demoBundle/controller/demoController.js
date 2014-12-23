@@ -208,9 +208,7 @@ nodefony.registerController("demo", function(){
 			process.exit(0);
 		}
 		
-		
 		setTimeout(function(){
-			//this.notificationsCenter.fire("onResponse", "Hello");
 			//console.log(this.getParameters("query").get);
 			var type = /application\/(.*);/.exec(this.getRequest().headers['content-type'])[1];
 			if(type == 'json'){

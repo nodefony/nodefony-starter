@@ -52,35 +52,36 @@ nodefony.registerBundle ("monitoring", function(){
 			if ( this.container.getParameters("bundles."+this.name).debugBar) {
 				this.logger("ADD DEBUG BAR MONITORING", "WARNING")
 				this.kernel.listen(this, "onRequest",function(context){
-					var tab = context.resolver.route.defaults.controller.split(":") ;
-					var obj = {
-						bundle:context.resolver.bundle.name,
-						route:{
-							name:context.resolver.route.name,
-							uri:context.resolver.route.path
-						},
-						controllerName:( tab[1] ? tab[1] : "default" ),
-						action:	tab[2]
-					}
-					//console.log("Bundle : " +context.resolver.bundle.name);
-					//console.log("Route Name : " +context.resolver.route.name);
-					//console.log("Route URI : " +context.resolver.route.path);
-					//console.log("Controller Name : " + ( tab[1] ? tab[1] : "default" ));
-					//console.log("Controller Action : " + tab[2]);
+					if ( context.resolver.resolve ){
+						var obj = {
+							bundle:context.resolver.bundle.name,
+							route:{
+								name:context.resolver.route.name,
+								uri:context.resolver.route.path
+							}
+						};
+						if ( context.resolver.route.defaults ) {
+							var tab = context.resolver.route.defaults.controller.split(":") ;
+							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
+							obj["action"] = tab[2] ;
 
-					context.listen(this, "onView", function(result, context){
-						if( !  context.request.isAjax() ){
-							var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
-							this.get("templating").renderFile(View, {},function(error , result){
-								if (error){
-									throw error ;
-								}
-								context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
-							})
-						}else{
-							context.setXjson(obj);	
 						}
-					});
+						//console.log(obj);
+
+						context.listen(this, "onView", function(result, context){
+							if( !  context.request.isAjax() ){
+								var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
+								this.get("templating").renderFile(View, {},function(error , result){
+									if (error){
+										throw error ;
+									}
+									context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
+								})
+							}else{
+								context.setXjson(obj);	
+							}
+						});
+					}
 				})
 			}
 		}.bind(this));

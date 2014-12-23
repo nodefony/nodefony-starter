@@ -97,10 +97,8 @@ nodefony.register("controller", function(){
 		var res = this.getResponse(data);
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
-		this.notificationsCenter.fire("onView", data, this.context )
 		this.notificationsCenter.fire("onResponse", res , this.context);
-		//return res;	
-	}
+	};
 	
 	Controller.prototype.getUser = function(){
 		return this.container.get('security').getUser();

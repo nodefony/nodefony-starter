@@ -261,8 +261,9 @@ nodefony.register("kernel", function(){
 						data:"CRITIC,ERROR"
 					}		
 				},function(pdu){
+					if (! pdu.payload ) return 
 					var reg = new RegExp("\\[32m");
-					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload .replace(reg,"");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload.replace(reg,"");
 					this.logStream.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
 				});	
 				var data ;
@@ -279,8 +280,9 @@ nodefony.register("kernel", function(){
 						console.log(  pdu.payload);	
 						return ;
 					}
+					if (! pdu.payload ) return 
 					var reg = new RegExp("\\[32m");
-					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload .replace(reg,"");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload.replace(reg,"");
 					this.logStreamD.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
 				});
 			}
