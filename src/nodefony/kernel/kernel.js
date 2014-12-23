@@ -214,7 +214,7 @@ nodefony.register("kernel", function(){
 					data:"CRITIC,ERROR"
 				}		
 			},function(pdu){
-				var pay = pdu.payload.stack || pdu.payload; 
+				var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
 				var date = new Date(pdu.timeStamp) ;
 				console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
 			});

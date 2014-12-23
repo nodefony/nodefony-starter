@@ -68,11 +68,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  		 *	TRY resolve
  		 */
 		try {
-			var resolver = this.get("router").resolve(this.container, this.request);
+			this.resolver = this.get("router").resolve(this.container, this.request);
 			//WARNING EVENT KERNEL
-			this.kernel.fire("onRequest", this, resolver);	
-			if (resolver.resolve) {
-				return  resolver.callController(data);
+			this.kernel.fire("onRequest", this, this.resolver);	
+			if (this.resolver.resolve) {
+				return  this.resolver.callController(data);
 			}
 			/*
  			 *	NOT FOUND
@@ -152,6 +152,33 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(Url, status)
 		this.notificationsCenter.fire("onResponse", null, this.context);
 	};
+
+
+
+	Http.prototype.setXjson  = function( xjson){
+		switch ( nodefony.typeOf(xjson) ){
+			case "object":
+				this.response.headers["X-Json"] = JSON.stringify(xjson);
+				return xjson;
+			break;
+			case "string":
+				this.response.headers["X-Json"] = xjson;
+				return JSON.parse(xjson);
+			break;
+			case "Error":
+				if ( typeof xjson.message === "Object" ){
+					this.response.headers["X-Json"] = JSON.stringify(xjson.message);
+					return xjson.message;	
+				}else{
+					this.response.headers["X-Json"] = xjson.message;
+					return {error:xjson.message};	
+				}
+			break;
+		}
+	};
+
+
+
 
 	// FIXME COOKIES SESSION
 	// connect intrusif in prototype response.on('header') https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x

@@ -76,7 +76,7 @@ nodefony.registerController("demo", function(){
  	 *	@see ENTITY usage 
  	 *
  	 */
-	demoController.prototype.userAction= function(name, message){
+	/*demoController.prototype.userAction= function(name, message){
 		var users = this.get('ORM2').getEntity('user');
 		var user = users.find({ username: name },function(err, user){
 			if (err)
@@ -84,7 +84,7 @@ nodefony.registerController("demo", function(){
 			return this.render('demoBundle:Default:user.html.twig',{name:name,user:user});
 
 		}.bind(this)) ;
-	};
+	};*/
 
 	/**
  	 *
@@ -94,7 +94,7 @@ nodefony.registerController("demo", function(){
  	 *	@see SQLITE usage connection
  	 *
  	 */
-	demoController.prototype.usersAction= function(name, message){
+	/*demoController.prototype.usersAction= function(name, message){
 		var users = this.get('ORM2').getEntity('user');
 
 		switch( this.getRequest().method ){
@@ -126,21 +126,20 @@ nodefony.registerController("demo", function(){
 			case "DELETE" :
 			break;
 		}
-	};
+	};*/
 
 	/**
  	 *
  	 *	@see ORM2 usage 
- 	 *	@see MYSQL usage connection
+ 	 *	@see sqlite usage connection
  	 *	@see ORM2 execQuery usage
  	 *
  	 */
 	demoController.prototype.ormConnectionAction= function(){
 		var orm = this.get('ORM2').getConnection('demo');
-
 		if ( ! orm){
 			throw {
-				message:"demo is not available "
+				message:"Connection demo is not available "
 			}
 		}
 		try{
@@ -148,22 +147,15 @@ nodefony.registerController("demo", function(){
 				if (err){
 					throw err;
 				}
-				this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
+				//setTimeout(function(){
+
+					this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
+				//}.bind(this) , 4000)
 			}.bind(this));
 		}catch(e){
 			throw e
 		}
 	};
-
-	/**
- 	 *
- 	 *	@see render
- 	 *
- 	 */
-	demoController.prototype.demoMobileAction= function(name){
-		return this.render('demoBundle:Default:indexMobile.html.twig',{name:name});
-	};
-
 
 	/**
  	 *
@@ -201,9 +193,7 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.devAction= function(name){
-
 		return this.render('demoBundle::indexDev.html.twig');
-
 	};
 	
 	/**

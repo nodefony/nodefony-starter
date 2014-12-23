@@ -1,26 +1,44 @@
 {% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
 
 
-
 {% block title %} {{name}} {% endblock %}
 
+{% block stylesheets %}
+	{{ parent() }}
+	<link href="/monitoringBundle/vendors/datatable/css/jquery.dataTables.css" rel="stylesheet" media="screen">
+	<link href="/monitoringBundle/vendors/datatable/css/dataTables.bootstrap.css" rel="stylesheet" media="screen">
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="/monitoringBundle/vendors/datatable/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/datatable/js/dataTables.bootstrap.js"></script>
+
+	<script>
+		$(document).ready(function(){
+
+			$("table").DataTable()	
+		})
+
+	</script>
+
+{% endblock %}
 
 {% block body %}
-
-
-
-
 <div class="container">
 
 	<div class="row">
-		<div class="panel panel-default">
+		<div class="panel panel-default ">
 			<!-- Default panel contents -->
 			<div class="panel-heading"><strong>ARTISTS    </strong></div>
 			<div class="panel-body">
 				<p>Details</p>
 			</div>
 
-			<div class="table-responsive" >
+			<div class="table-responsive m " >
 				<table class="table table-striped table-bordered">
 					<thead>
 						<tr>
@@ -45,4 +63,3 @@
 
 
 {% endblock %}
-

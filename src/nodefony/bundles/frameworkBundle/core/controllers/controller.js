@@ -58,44 +58,46 @@ nodefony.register("controller", function(){
 	Controller.prototype.renderView = function(view, param ){
 		var View = this.container.get("httpKernel").getView(view);
 		var res = null;
-		var content = this.container.get('templating').renderFile(View, param, function(error, result){
-			if (error){
-				this.logger(error);	
-			}else{
-				res = result;
-			}
- 		}.bind(this));
+		try{ 
+			this.container.get('templating').renderFile(View, param, function(error, result){
+				if (error || result === undefined){
+					this.logger(error);	
+					this.notificationsCenter.fire("onError", this.container, error );
+				}else{
+					try {
+						this.notificationsCenter.fire("onView", result, this.context )
+						res = result;
+					}catch(e){
+						throw e ;
+					}
+				}
+ 			}.bind(this));
+		}catch(e){
+			throw e ;
+		}
 		return res;
 	};
 
 
 	Controller.prototype.renderAsync = function(view, param){
 		var response = this.render(view, param);
-		this.notificationsCenter.fire("onResponse", response,  this.context );
+		if ( response )
+			this.notificationsCenter.fire("onResponse", response,  this.context );
 	};
 
 	Controller.prototype.render = function(view, param){
-		var response = null ;
-		try {	
-			var View = this.container.get("httpKernel").getView(view);
-			this.container.get('templating').renderFile(View, param, function(error, result){
-				if (error){
-					this.notificationsCenter.fire("onError", this.container, error )
-				}else{
-					this.notificationsCenter.fire("onView", result, this.context )
-					response = this.getResponse();
-				}
- 			}.bind(this));
-		}catch(e){
-			this.notificationsCenter.fire("onError", this.container, e );
+		var res = this.renderView(view, param);
+		if (res !== null ){
+			return this.getResponse() ;
 		}
-		return response ;
+		return res ;
 	};
 
 	Controller.prototype.renderResponse = function(data, status , headers ){
 		var res = this.getResponse(data);
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
+		this.notificationsCenter.fire("onView", data, this.context )
 		this.notificationsCenter.fire("onResponse", res , this.context);
 		//return res;	
 	}

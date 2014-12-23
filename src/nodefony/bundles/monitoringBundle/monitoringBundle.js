@@ -48,20 +48,42 @@ nodefony.registerBundle ("monitoring", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
-			this.kernel.listen(this, "onBoot", function(){
-				if ( this.container.getParameters("bundles."+this.name).debugBar) {
-					this.logger("ADD DEBUG BAR MONITORING", "WARNING")
-					this.kernel.listen(this, "onRequest",function(context){
-						context.listen(this, "onView", function(result, context){
-							//context.response.body = context.response.body.replace("</body>","MONO VIER </body>") ;
+		this.kernel.listen(this, "onBoot", function(){
+			if ( this.container.getParameters("bundles."+this.name).debugBar) {
+				this.logger("ADD DEBUG BAR MONITORING", "WARNING")
+				this.kernel.listen(this, "onRequest",function(context){
+					var tab = context.resolver.route.defaults.controller.split(":") ;
+					var obj = {
+						bundle:context.resolver.bundle.name,
+						route:{
+							name:context.resolver.route.name,
+							uri:context.resolver.route.path
+						},
+						controllerName:( tab[1] ? tab[1] : "default" ),
+						action:	tab[2]
+					}
+					//console.log("Bundle : " +context.resolver.bundle.name);
+					//console.log("Route Name : " +context.resolver.route.name);
+					//console.log("Route URI : " +context.resolver.route.path);
+					//console.log("Controller Name : " + ( tab[1] ? tab[1] : "default" ));
+					//console.log("Controller Action : " + tab[2]);
+
+					context.listen(this, "onView", function(result, context){
+						if( !  context.request.isAjax() ){
 							var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
 							this.get("templating").renderFile(View, {},function(error , result){
+								if (error){
+									throw error ;
+								}
 								context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
 							})
-						})
-					})
-				}
-			}.bind(this));
+						}else{
+							context.setXjson(obj);	
+						}
+					});
+				})
+			}
+		}.bind(this));
 	};
 
 	return monitoring;

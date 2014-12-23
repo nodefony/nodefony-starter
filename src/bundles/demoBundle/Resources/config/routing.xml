@@ -17,11 +17,9 @@
 		<default key="controller">demoBundle:demo:generateUrl</default>
 	</route>
 
-	<route id="articles" pattern="/orm">
+	<route id="artists" pattern="/demo/artists">
 		<default key="controller">demoBundle:demo:ormConnection</default>
 	</route>
-
-		
 
 	<route id="dev" pattern="/dev">
 		<default key="controller">demoBundle:demo:dev</default>
@@ -45,7 +43,7 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
-	
+	<!-- FIXME -->	
 	<!--  <import resource="routing2.xml" prefix="/couscous" />
 	<import resource="routing3.xml" hostname_pattern="hello.example.com" />  -->
 

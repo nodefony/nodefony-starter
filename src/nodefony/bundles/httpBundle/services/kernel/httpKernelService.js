@@ -39,7 +39,6 @@ nodefony.registerService("httpKernel", function(){
 		 });
 			
 	};
-
 	
 	httpKernel.prototype.getTemplate = function(name){
 		return nodefony.templatings[name];
@@ -88,17 +87,21 @@ nodefony.registerService("httpKernel", function(){
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
 
-	
-
 	httpKernel.prototype.onError = function(container, error){
-		if ( error.stack ){
-			var myError =  error.stack;
-			this.logger(myError);
-			myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
-            			
+		if ( ! error ){
+ 		       	error = {status:500,
+				message:"nodefony undefined error "
+			}
 		}else{
-			var myError =  util.inspect(error);
-			this.logger(myError);
+			if ( error.stack ){
+				var myError =  error.stack;
+				this.logger(myError);
+				myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
+            				
+			}else{
+				var myError =  util.inspect(error);
+				this.logger(myError);
+			}
 		}
 		var context = container.get('context');
 		switch (error.status){
@@ -115,7 +118,8 @@ nodefony.registerService("httpKernel", function(){
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
 		}
 		if (error.xjson){
-			this.setXJSON(context, error.xjson);
+			if ( context.setXjson ) 
+				context.setXjson(error.xjson);
 		}
 		resolver.callController( {
 			exception:myError,
@@ -124,39 +128,14 @@ nodefony.registerService("httpKernel", function(){
 		} );
 	};
 
-	httpKernel.prototype.setXJSON  = function(context, xjson){
-		switch ( nodefony.typeOf(xjson) ){
-			case "object":
-				context.response.headers["X-Json"] = JSON.stringify(xjson);
-				return xjson;
-			break;
-			case "string":
-				context.response.headers["X-Json"] = xjson;
-				return JSON.parse(xjson);
-			break;
-			case "Error":
-				if ( typeof xjson.message === "Object" ){
-					context.response.headers["X-Json"] = JSON.stringify(xjson.message);
-					return xjson.message;	
-				}else{
-					context.response.headers["X-Json"] = xjson.message;
-					return {error:xjson.message};	
-				}
-			break;
-		}
-	};
-
-
 
 	//  build response
 	httpKernel.prototype.handle = function(request, response, type, domain){
-
 
 		// SCOPE REQUEST ;
 		var container = this.container.enterScope("request");	
 		if ( domain ) domain.container = container ;
 
-		
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
