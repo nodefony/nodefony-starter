@@ -514,5 +514,16 @@ nodefony.register("Bundle", function(){
                 return null;
         };
 
+	Bundle.prototype.getParameters = function(){
+		return this.container.getParameters.apply(this.container , arguments);
+	};
+
+	Bundle.prototype.setParameters = function(){
+		return this.container.setParameters.apply(this.container ,arguments);
+	};
+
+
+	
+
 	return Bundle;
 });

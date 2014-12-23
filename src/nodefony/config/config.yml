@@ -26,17 +26,14 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
-##
 #
-#       NODEFONY FRAMEWORK 
+#  NODEFONY FRAMEWORK 
 #
 #       KERNEL CONFIG
 #
 #
 name:                           "N O D E F O N Y"
-system:                         #
-  state:                        prod    #prod
-  debug:                        false
+system:                         
   version:                      "1.0"
   domain:                       127.0.0.1
   httpPort:                     5151
@@ -58,50 +55,33 @@ system:                         #
     services:                   "/tmp/servicesNodefony.log"
     rotate:                     false
 
-
 #
-#
-#       ENGINE TEMPLATE 
+# ENGINE TEMPLATE 
 #      
 #       TWIG
 #       https://github.com/justjohn/twig.js
 #
-#
 templating:                     twig
 
 
-  #  jsPath:                       "" 
-  #  cssPath:                      css
-  #  imgPath:                      images
-  #  compilater:                   yahoo # google   # yahoo
-  #  compilaters:
-    # GOOGLE COMPILER   https://developers.google.com/closure/compiler/docs/api-tutorial3
-    #      SIMPLE_OPTIMIZATIONS 
-    #      ADVANCED_OPTIMIZATIONS
-    #    google:                     SIMPLE_OPTIMIZATIONS
+#  jsPath:                       "" 
+#  cssPath:                      css
+#  imgPath:                      images
+#  compilater:                   yahoo # google   # yahoo
+#  compilaters:
+# GOOGLE COMPILER   https://developers.google.com/closure/compiler/docs/api-tutorial3
+#      SIMPLE_OPTIMIZATIONS 
+#      ADVANCED_OPTIMIZATIONS
+#    google:                     SIMPLE_OPTIMIZATIONS
 
-    # YAHOO COMPILER    http://yui.github.io/yuicompressor/
-    # --nomunge                 Minify only, do not obfuscate
-    # --preserve-semi           Preserve all semicolons
-    # --disable-optimizations   Disable all micro optimizations        
-    #    yahoo:                      --nomunge
-    #  nameFile:                     nodefony.js
-    #  buildDirectory:               build                    
-    #  tmpDirectory:                 tmp                  
-
-
+# YAHOO COMPILER    http://yui.github.io/yuicompressor/
+# --nomunge                 Minify only, do not obfuscate
+# --preserve-semi           Preserve all semicolons
+# --disable-optimizations   Disable all micro optimizations        
+#    yahoo:                      --nomunge
+#  nameFile:                     nodefony.js
+#  buildDirectory:               build                    
+#  tmpDirectory:                 tmp                  
 
 
-#library:                        
-#  name:                         library
-#  require:                      
-#    - notificationsCenter       : 1.0
-#    - functions                 : 1.0
-#    - sse                       : 1.0
 
-#vendors:
-#  name:                         vendors
-#  require:                    
-#    - jquery:                   2.0.3
-#    - bootstrap:                1.4
-#    - jquery-ui:                1.4

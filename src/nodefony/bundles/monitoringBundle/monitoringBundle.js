@@ -71,7 +71,13 @@ nodefony.registerBundle ("monitoring", function(){
 						context.listen(this, "onView", function(result, context){
 							if( !  context.request.isAjax() ){
 								var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
-								this.get("templating").renderFile(View, {},function(error , result){
+								this.get("templating").renderFile(View, {
+									route:context.resolver.route,
+									variablesRoute:context.resolver.variables,
+									kernelSettings:this.kernel.settings,
+									environment:this.kernel.environment,
+									appSettings:this.getParameters("bundles.App").App
+								},function(error , result){
 									if (error){
 										throw error ;
 									}

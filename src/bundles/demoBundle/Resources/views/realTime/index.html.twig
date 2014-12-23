@@ -166,10 +166,9 @@
 
 		$(document).ready(function(){
 			// nodejs server
-			//var server = "https://nodefony.com:5152/secure/realtime"
 			var server = "/realtime"
 			
-			var sseClient = new nodefony.realtime(server ,{
+			var sseClient = new stage.realtime(server ,{
 				// fire when 401 http code
 				onUnauthorized:function(authenticate, realtime){
 					authenticate.register("admin", "admin");

@@ -86,8 +86,12 @@ nodefony.registerService("random", function(){
 	var service = function(realTime, container, kernel){
 	
 		this.realTime = realTime ;
-		this.container = container ;
 		this.kernel = kernel ;
+		if ( ! this.realTime ){
+			this.kernel.logger("REALIME SERVICE NOT FOUND", "WARNING", "SERVICE RANDOM");
+			return ;
+		}
+		this.container = container ;
 		this.random = new random( this);
 		this.name ="random" ;
 		this.status = "disconnect";

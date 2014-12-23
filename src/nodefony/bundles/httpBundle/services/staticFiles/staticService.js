@@ -16,18 +16,20 @@ nodefony.registerService("statics", function(){
 	};
 	
 	var static = function( container, options){
-	
 		this.container = container ;
 		this.connect = require("connect");
-		this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);		
 		this.syslog = this.container.get("syslog");
 		this.server = this.connect();
 
 		this.settingsAssetic = this.container.getParameters("bundles.assetic");
 
 		this.mime = this.connect.static.mime;
-		if (this.settings.cache)
-			this.server.use(this.connect.staticCache());	
+		this.kernel = this.container.get("kernel");
+		this.kernel.listen(this, "onBoot",function(){
+			this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
+			if (this.settings.cache)
+				this.server.use(this.connect.staticCache());	
+		});
 
 		this.kernel = this.container.get("kernel") ;
 		this.environment = this.kernel.environment ;

@@ -39,8 +39,12 @@ nodefony.registerService("dmsg", function(){
 	var dmsg = function(realTime, container, kernel){
 	
 		this.realTime = realTime ;
-		this.container = container ;
 		this.kernel = kernel ;
+		if ( ! this.realTime ){
+			this.kernel.logger("REALIME SERVICE NOT FOUND", "WARNING", "SERVICE DMSG");
+			return ;
+		}
+		this.container = container ;
 		this.status = "disconnect";
 		this.connections= [];
 		this.domain = kernel.domain;
@@ -56,10 +60,7 @@ nodefony.registerService("dmsg", function(){
 
 	dmsg.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "SERVICE DMSG ";
-		if (this.realTime)
-			this.realTime.logger(pci, severity,"SERVICE DMSG");
-		else
-			this.kernel.logger(pci, severity,"SERVICE DMSG");
+		return this.realTime.logger(pci, severity,"SERVICE DMSG");
 	};
 
 

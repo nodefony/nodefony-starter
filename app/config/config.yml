@@ -28,24 +28,30 @@
 
 
 
-########## nodefony FRAMEWORK NODE CONFIG  ############
+#
+#  FRAMEWORK NODEFONY
+#
+#     APP CONFIG  
 App:
-        projectName:                    "NODEFONY" 
-        projectYear:                    2013
+        projectName:                    "App" 
+        projectYear:                    2015
         name:                           cci
         email:                          christophe.camensuli@gmail.com
         locale:                         "fr_fr"
 
 
 #
-#       OVERRIDE MONITORING
+#  OVERRIDE BUNDLE MONITORING
 #
 monitoringBundle:
 #        debugBar:                 false
 
 
 #
-#        OVERRIDE STATIC FILE WITH CONNECT LIBRARY
+#  OVERRIDE BUNDLE HTTP 
+#
+#      STATICS FILES WITH CONNECT LIBRARY
+#
 #
 httpBundle:
   statics:
@@ -59,16 +65,18 @@ httpBundle:
 
 
 #
-#       OVERRIDE LESS SERVICE CONFIGURATION
+#  OVERRIDE BUNDLE ASSETIC
+#
+#       LESS SERVICE CONFIGURATION
 #
 asseticBundle:
   less:
     compress:                     false
     cache:                        false 
 
+
 #
-#
-#       OVERRIDE ORM MANAGER 
+#  OVERRIDE BUNDLE ORM2 
 #
 #       ORM2 
 #
