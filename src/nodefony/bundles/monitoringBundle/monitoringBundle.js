@@ -57,27 +57,26 @@ nodefony.registerBundle ("monitoring", function(){
 							bundle:context.resolver.bundle.name,
 							route:{
 								name:context.resolver.route.name,
-								uri:context.resolver.route.path
-							}
+								uri:context.resolver.route.path,
+								variables:context.resolver.route.variables
+							},
+							kernelSettings:this.kernel.settings,
+							environment:this.kernel.environment,
+							appSettings:this.getParameters("bundles.App").App
 						};
 						if ( context.resolver.route.defaults ) {
 							var tab = context.resolver.route.defaults.controller.split(":") ;
 							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
 							obj["action"] = tab[2] ;
+							obj["pattern"] = context.resolver.route.defaults.controller ;
 
 						}
-						//console.log(obj);
 
 						context.listen(this, "onView", function(result, context){
 							if( !  context.request.isAjax() ){
-								var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
-								this.get("templating").renderFile(View, {
-									route:context.resolver.route,
-									variablesRoute:context.resolver.variables,
-									kernelSettings:this.kernel.settings,
-									environment:this.kernel.environment,
-									appSettings:this.getParameters("bundles.App").App
-								},function(error , result){
+								//var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
+								var View = this.container.get("httpKernel").getView("monitoringBundle::monitoring.html.twig");
+								this.get("templating").renderFile(View, obj,function(error , result){
 									if (error){
 										throw error ;
 									}

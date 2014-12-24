@@ -35,6 +35,7 @@ stage.register("kernel",function(){
 		this.container = new stage.Container();
 		this.container.set("kernel", this);
 		this.isDomReady = false;
+		this.uiContainer = null;
 
 		// syslog
 		this.syslog = this.initializeLog(settingsSyslog);
@@ -224,7 +225,8 @@ stage.register("kernel",function(){
 	Kernel.prototype.domReady = function(){
 		if ( ! this.booted ) return ; 
 		this.logger("domReady", "DEBUG");
-		var element = $("body");
+		this.fire("onDomLoad", this);
+		var element = this.uiContainer ? $(this.uiContainer) : $("body");
 		try {
 			if ( this.modules["app"] ){
 				this.modules["app"].initialize(element);	

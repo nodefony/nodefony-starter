@@ -33,7 +33,7 @@
 #
 #     APP CONFIG  
 App:
-        projectName:                    "App" 
+        projectName:                    "Demo APP" 
         projectYear:                    2015
         name:                           cci
         email:                          christophe.camensuli@gmail.com

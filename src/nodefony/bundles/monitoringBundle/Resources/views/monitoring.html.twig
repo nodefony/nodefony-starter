@@ -1,0 +1,114 @@
+{% extends "/vendors/nodefony/bundles/monitoringBundle/Resources/views/base.html.twig" %}
+
+
+{% block stylesheets %}
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet'/> 
+	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
+	<link href="/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.css" rel="stylesheet"/>
+
+	<link href="/monitoringBundle/css/footer.css" rel="stylesheet"/>
+
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript" src="/frameworkBundle/vendors/jquery/jquery.-1.11.1.js"></script>
+	<script type="text/javascript" src="/frameworkBundle/vendors/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
+
+
+	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
+	<script type="text/javascript" src="/vendors/stage/function.js"></script>
+	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
+	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
+	<script type="text/javascript" src="/vendors/stage/xml.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>	
+	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/transports/socket.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
+
+	<script type="text/javascript" src="/monitoringBundle/vendors/toastr/toastr.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.serializeObject/jquery.serializeObject.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery-validation/jquery.validate.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery-validation/localization/messages_fr.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/nprogress/nprogress.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"></script>
+
+	<!--[if lt IE 9]>
+		<script src="/monitoringBundle/vendors/excanvas/excanvas.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="/monitoringBundle/vendors/easy-pie-chart/jquery.easypiechart.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.pie.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.stack.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.resize.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.tooltip.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.spline.min.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"></script>
+
+
+	<script type="text/javascript" src="/monitoringBundle/js/appKernel.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/js/footer.js"></script>
+{% endblock %}
+
+
+{% block debugBar %}
+
+
+	<div class="  navbar-inverse  navbar-fixed-bottom monitor">
+		<div class="container-fluid">
+    			<!-- Brand and toggle get grouped for better mobile display -->
+    			<div class="navbar-header b-r">
+				
+      				<a class="navbar-brand" href="#"><i class="glyphicon glyphicon-fire text-warning icon-shadow"></i>  {{nodefony.name}} &nbsp; {{nodefony.system.version}}</a>
+    			</div>
+    			<!-- Collect the nav links, forms, and other content for toggling -->
+    			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      				<ul class="nav navbar-nav b-r">
+					<li class="b-r"><a>{{appSettings.projectName}} : {{environment}}</a></li>
+					<li class="b-r"><a>{{pattern}}</a></li>
+        				<!--li class=""><a target="_blank" href=""> <span class="sr-only">(current)</span></a></li>
+        				<li><a target="_blank" href=""></a></li-->
+        				<li class="dropdown">
+          				<a href="#/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> MONITORING <span class="caret"></span></a>
+          				<ul class="dropdown-menu" role="menu">
+            					<li><a href="/monitoring#/routing"> <i class="glyphicon glyphicon-random text-warning icon-shadow"></i>   Routing</a></li>
+            					<li><a href="/monitoring#/services">  Services</a></li>
+            					<li class="divider"></li>
+          				</ul>
+        				</li>
+      				</ul>
+      				
+      				<ul class="nav navbar-nav navbar-right">
+        				<li><a href="#">Link</a></li>
+        				<li class="dropdown">
+          				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          				<ul class="dropdown-menu" role="menu">
+            					<li><a href="#">Action</a></li>
+            					<li><a href="#">Another action</a></li>
+            					<li><a href="#">Something else here</a></li>
+            					<li class="divider"></li>
+            					<li><a href="#">Separated link</a></li>
+          				</ul>
+        				</li>
+      				</ul>
+    			</div><!-- /.navbar-collapse -->
+  		</div><!-- /.container-fluid -->
+	</div>
+
+{% endblock %}
+
