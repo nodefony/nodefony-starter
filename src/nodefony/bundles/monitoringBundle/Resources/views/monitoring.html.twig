@@ -69,12 +69,11 @@
 {% block debugBar %}
 
 
-	<div class="  navbar-inverse  navbar-fixed-bottom monitor">
+	<div class="navbar-inverse  navbar-fixed-bottom monitor">
 		<div class="container-fluid">
     			<!-- Brand and toggle get grouped for better mobile display -->
     			<div class="navbar-header b-r">
-				
-      				<a class="navbar-brand" href="#"><i class="glyphicon glyphicon-fire text-warning icon-shadow"></i>  {{nodefony.name}} &nbsp; {{nodefony.system.version}}</a>
+      				<a id="monitorToggle" class="contentHide navbar-brand"><i class="glyphicon glyphicon-fire text-warning icon-shadow"></i>  {{nodefony.name}} &nbsp; {{nodefony.system.version}}</a>
     			</div>
     			<!-- Collect the nav links, forms, and other content for toggling -->
     			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -109,6 +108,12 @@
     			</div><!-- /.navbar-collapse -->
   		</div><!-- /.container-fluid -->
 	</div>
+
+	<script type="text/javascript">
+		$("#monitorToggle").click(function() {
+			$(".debugContent").toggle();
+		});
+	</script>
 
 {% endblock %}
 

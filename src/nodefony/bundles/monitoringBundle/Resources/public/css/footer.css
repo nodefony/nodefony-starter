@@ -1,5 +1,5 @@
 .monitor {
-  background-color: #564aa3;
+  /*background-color:@brand-primary-dker;*/
 }
 .monitor.navbar-inverse {
   height: 28px;

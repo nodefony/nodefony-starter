@@ -1,7 +1,7 @@
 <div class="monitor" >
         {% block stylesheets %} {% endblock %}
 	
-	<div class="debugContent">
+	<div class="debugContent" style="display: none;">
 	</div>
 	<div class="debugBar">
 		{% block debugBar %} {% endblock %}
@@ -9,3 +9,22 @@
         {% block javascripts %} {% endblock %}
 </div>
 
+<style>
+	.debugContent {
+		border-top: 2px solid black;
+		background: #f0f3f4; 
+		position: absolute; 
+		bottom: 0; 
+		width: 100%;
+	}
+	
+	.debugContent .app-aside .app-aside-content {
+		position: absolute;
+	}
+	
+	.debugContent .app-header,
+	.debugContent .app-footer {
+		display: none;
+	}
+	
+</style>
