@@ -47,11 +47,21 @@ realTimeBundle:
       domain:                     nodefony.com
       #domain:                     192.168.100.104
 
+#
+#  OVERRIDE BUNDLE ORM2 
+#
+#       ORM2 
+#
+#       CONFIG 
+#       https://github.com/dresende/node-orm2
+#
+#       MULTI CONNECTION !!!!
+#
 orm2Bundle:
   connectors:                    
     demo: 
       driver: sqlite
-      #user:  cci
-      #password: nodefony
+      #user:  admin
+      #password: admin
       dbname: "/src/bundles/demoBundle/Resources/databases/demo.db"
 

@@ -5,7 +5,7 @@
  */
 
 //== Kernel
-appKernel = new stage.appKernel("/monitoring/app", "dev", {
+appKernel = new stage.appKernel("/monitoring/app", "prod", {
 	debug: false,
 	location:{
 		html5Mode:false
@@ -14,8 +14,7 @@ appKernel = new stage.appKernel("/monitoring/app", "dev", {
 		
 	},
 	onDomLoad: function() {
-		console.log($(".debugContent").get(0));
-		this.uiContainer = $(".debugContent").get(0);
+		this.uiContainer = $(".debugContent").get(0) || $("body").get(0);
 	},
 	onReady: function() {
 		this.router.redirect(this.router.generateUrl("index"));	

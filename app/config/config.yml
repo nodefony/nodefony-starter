@@ -33,7 +33,7 @@
 #
 #     APP CONFIG  
 App:
-        projectName:                    "Demo APP" 
+        projectName:                    "Nodefony Project" 
         projectYear:                    2015
         name:                           cci
         email:                          christophe.camensuli@gmail.com
@@ -62,8 +62,6 @@ httpBundle:
       path:                       "/web/"
       maxage:                     0          #30*24*60*60*1000
     
-
-
 #
 #  OVERRIDE BUNDLE ASSETIC
 #
@@ -71,29 +69,8 @@ httpBundle:
 #
 asseticBundle:
   less:
-    compress:                     false
-    cache:                        false 
+    compress:                     true
+    cache:                        true 
 
 
-#
-#  OVERRIDE BUNDLE ORM2 
-#
-#       ORM2 
-#
-#       CONFIG 
-#       https://github.com/dresende/node-orm2
-#
-#       MULTI CONNECTION !!!!
-#
-orm2Bundle: 
-  settings: 
-    debug:                      true
-    reconnect:                  60000           # time (ms) to reconnect db
-#  connectors:                    
-#    conn3: 
-#      driver: sqlite
-#      user:  wef
-#      password: nodefony
-#      dbname: "/app/Resources/sessions.db"
-      
 

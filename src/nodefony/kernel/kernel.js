@@ -45,10 +45,7 @@ nodefony.register("kernel", function(){
 	 */
 	
 	var kernel= function(environment, debug, autoLoader, type){
-		/**
-		 * @property rootDir 
-		 * @type String
-		 */
+		
 		this.rootDir = process.cwd();
 		this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
 		this.appPath = this.rootDir+"/app/";
@@ -56,11 +53,6 @@ nodefony.register("kernel", function(){
 		this.platform = process.platform ;
 		this.getName();
 		this.type = type;
-		/**
-		 * Instance of container service
-		 * @property container  
-		 * @type Object
-		 */
 		this.container = null; 
 		this.bundles = {};
 		this.environment = environment;
@@ -152,16 +144,19 @@ nodefony.register("kernel", function(){
 		bundles.push("./vendors/nodefony/bundles/frameworkBundle");
 		bundles.push("./vendors/nodefony/bundles/asseticBundle");
 
-		if (this.settings.system.security)
+		// FIREWALL 
+		if (this.settings.system.security){
 			bundles.push("./vendors/nodefony/bundles/securityBundle");
+		}
 
-		switch (this.environment ){
-			case "dev":
-				bundles.push("./vendors/nodefony/bundles/realTimeBundle");
-				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
-			break;
-			case "prod":
-			default :
+		// REALTIME
+		if (this.settings.system.realtime) {
+			bundles.push("./vendors/nodefony/bundles/realTimeBundle");
+		}
+
+		// MONITORING
+		if (this.settings.system.monitoring) {
+			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
 
 		this.registerBundles(bundles, function(){
@@ -518,7 +513,7 @@ nodefony.register("kernel", function(){
 				switch (true){
 					case /^config\..*$/.test(ele.name) :
 						try {
-							this.logger("CONFIG LOAD FILE :"+ele.path ,"DEBUG");
+							this.logger("CONFIG LOAD FILE :"+ele.path ,"DEBUG","SERVICE KERNEL READER");
 							this.reader.readConfig( ele.path, callback )
 						}catch(e){
 							this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG :"+ele.name)
@@ -527,7 +522,7 @@ nodefony.register("kernel", function(){
 					case /^routing\..*$/.test(ele.name) :
 						// ROUTING
 						try {
-							this.logger("ROUTER LOAD FILE :"+ele.path ,"DEBUG");
+							this.logger("ROUTER LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
 							this.container.get("router").reader(ele.path);
 						}catch(e){
 							this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG ROUTING :"+ele.name)
@@ -535,7 +530,7 @@ nodefony.register("kernel", function(){
 						break;
 					case /^services\..*$/.test(ele.name) :
 						try {
-							this.logger("SERVICE LOAD FILE :"+ele.path ,"DEBUG");
+							this.logger("SERVICE LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
 							//this.kernel.listen(this, "onBoot", function(){
 								this.container.get("injection").reader(ele.path);
 							//});
@@ -547,7 +542,7 @@ nodefony.register("kernel", function(){
 						try {
 							var firewall = this.container.get("security") ;
 							if ( firewall ){
-								this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG");
+								this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
 								this.container.get("security").reader(ele.path);
 							}else{
 								this.logger("SECURITY LOAD FILE :"+ele.path +" BUT SERVICE NOT READY" ,"WARNING");	
@@ -573,7 +568,7 @@ nodefony.register("kernel", function(){
 			code = 1;
 			process.nextTick(function(){
 				this.logger("Cycle Of Live terminate WEF KERNEL CODE : "+code,"INFO");
-				process.exit(code);
+				//process.exit(code);
 			}.bind(this));
 			this.logger(e,"ERROR");
 		}

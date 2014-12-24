@@ -26,19 +26,19 @@ stage.registerModule("app", function() {
 			var server = "/realtime"; 
 			this.realtime = new stage.realtime(server ,{
  				onConnect:function(message, realtime){
-					console.log("welcome to realtime " )
+					//console.log("welcome to realtime " )
 				}.bind(this),
 				onError:function(code, realtime ,message){
 					this.logger("REAlTIME  :" + message,"ERROR")
 				}.bind(this),
 				onClose:function(){
-					console.log("REALTIME CLOSE");
+					//console.log("REALTIME CLOSE");
 				},
 				onDisconnect:function(){
-					console.log("REALTIME DISCONNECT");
+					//console.log("REALTIME DISCONNECT");
 				},
 				reConnect:function(){
-					console.log("REALTIME DISCONNECT");	
+					//console.log("REALTIME DISCONNECT");	
 				}
 			});
 			this.kernel.set("realtime", this.realtime)

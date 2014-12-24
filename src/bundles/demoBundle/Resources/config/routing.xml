@@ -38,7 +38,7 @@
 	</route>
 
 	<!-- REALTIME --> 	
-	<route id="indexReal" pattern="/">
+	<route id="indexReal" pattern="/demo/realtime">
 		<default key="controller">demoBundle:demo:indexRealTime</default>
 		<requirement key="method">GET</requirement>
 	</route>

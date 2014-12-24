@@ -196,7 +196,7 @@ stage.registerController("appController", function() {
 				}
 			});
 			this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
-				console.log("subscribe service : " + service)
+				//console.log("subscribe service : " + service)
 				if (service === "random")
 					this.realtime.listen(this, "onMessage", onRandomMessage );
 				if (service === "monitoring"){

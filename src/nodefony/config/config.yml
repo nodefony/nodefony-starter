@@ -40,6 +40,8 @@ system:
   httpsPort:                    5152
   statics:                      true
   security:                     true
+  realtime:                     true
+  monitoring:                   true
 
   locale:                       "fr_fr"   
   projectName:                  "NODEFONY" 

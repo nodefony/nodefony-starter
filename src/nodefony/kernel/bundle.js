@@ -66,7 +66,7 @@ nodefony.register("Bundle", function(){
 							this.kernel.bundles[name[1]].settings = ext ; 
 							this.container.setParameters("bundles."+name[1], this.kernel.bundles[name[1]].settings); 
 						}else{
-							this.container.setParameters("bundles."+name[1], ext); 
+							this.container.setParameters("bundles."+name[1], ext || {}); 
 						}
 					break;
 					case /^locale$/.test(ele) :
