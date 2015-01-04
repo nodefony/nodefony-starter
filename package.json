@@ -23,7 +23,7 @@
     "ejs": "*",
     "twig": "*",
     "connect": ">= 2.8 < 3",
-    "orm": "*",
+    "orm": "== 2.1.13",
     "sqlite3": "*",
     "mysql": "*",
     "mongodb": "*",

@@ -1,14 +1,14 @@
 {
-    "name": "nodefony Test Documentation",
+    "name": "NODEFONY Generate Documentation",
     "description": "This is the first test for nodefony mutuGui documentation",
     "version": "1.0.0",
     "options": {
     	"linkNatives": false,
-    	"ignorePaths": ["*/tests"],
-	"exclude":"jquery,mochaUnitBundle,",
+    	"ignorePaths": ["*/tests","*/vendors/*"],
+	"exclude":"jquery,mochaUnitBundle",
     	"paths": ["./web/vendors/stage/","./vendors/nodefony/"],
-        "outdir": "./web/doc/yahoo",
+        "outdir": "./web/doc/",
         "writeJSON": false
     },
-    "logo":"/frameworkBundle/images/logonodefony.png"
+    "logo":"../frameworkBundle/images/logonodefony.png"
 }

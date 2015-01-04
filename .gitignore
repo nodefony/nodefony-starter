@@ -7,7 +7,12 @@ node_modules/*
 web/*
 
 
-vendors/asciiArt
+vendors/asciiArt/figlet222/
+*.[oa]
+chkfont
+figlet
+
+
 #Ignore vin backup
 *.swp
 *.swn

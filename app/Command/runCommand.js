@@ -26,16 +26,16 @@ nodefony.registerCommand("server",function(){
 	appRun.prototype.runServer = function(){
 		//FIXME parent detach kernel console	
 		var spawn = require('child_process').spawn;
-		var commandLine = './web/index.js';
+		var commandLine = './nodefony';
 		var server = spawn(commandLine,[],{
-			//detached:true,
-			//stdio: [ 'ignore' ]
+			detached:true,
+			stdio: [ 'inherit' ]
 		});
-		//server.unref();
 
 		server.stdout.on('data', function (data) {
 			  console.log(data+"");
 		});
+		server.unref();
 
 	};
 
