@@ -30,6 +30,10 @@
 name :				demoBundle
 locale :			fr_fr
 
+
+#
+#  OVERRIDE BUNDLE REALTIME 
+#
 realTimeBundle:
   system:
     reconnect:
@@ -61,7 +65,5 @@ orm2Bundle:
   connectors:                    
     demo: 
       driver: sqlite
-      #user:  admin
-      #password: admin
       dbname: "/src/bundles/demoBundle/Resources/databases/demo.db"
 

@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
-	<route id="Default" pattern="/demo">
+	<route id="index" pattern="/demo">
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
@@ -21,12 +21,12 @@
 		<default key="controller">demoBundle:demo:ormConnection</default>
 	</route>
 
-	<route id="dev" pattern="/dev">
-		<default key="controller">demoBundle:demo:dev</default>
+	<route id="upload" pattern="/demo/upload">
+		<default key="controller">demoBundle:demo:indexUpload</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="upload" pattern="/upload">
+	<route id="uploadFile" pattern="/upload">
 		<default key="controller">demoBundle:demo:upload</default>
 		<requirement key="method">POST</requirement>
 	</route>

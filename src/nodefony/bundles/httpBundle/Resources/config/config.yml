@@ -42,6 +42,14 @@ https:
     cert:                       "/config/certificates/server.crt"
 
 
+upload:
+  tmp_dir:                      "tmp/upload"
+  max_filesize:                 10000000
+
+
+download:
+
+
 websocket:
   keepaliveInterval:            20000
   keepaliveGracePeriod:         10000

@@ -102,7 +102,6 @@ nodefony.registerService("router", function(){
 				this.variables.push(data); 
 			}
 			var result =  this.action.apply(controller, this.variables);
-			//console.log(result)
 			switch (true){
 				case result instanceof nodefony.Response :
 					this.notificationsCenter.fire("onResponse", result);

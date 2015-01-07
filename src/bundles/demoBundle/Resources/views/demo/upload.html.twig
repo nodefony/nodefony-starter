@@ -1,0 +1,76 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block title %}  
+
+	UPLOAD
+
+
+{% endblock %}
+
+
+	
+{% block body %}
+
+<h1>NATIF UPLOAD</h1>
+<form id="natif" action="/upload" method="post" enctype="multipart/form-data">
+		First name: <input type="text" name="fname"><br>
+		Last name: <input type="text" name="lname"><br>
+		Photo: <input type="file" name="photo"><br>
+		Photo2: <input type="file" name="photo2"><br>
+		<input type="submit" value="Submit">
+	</form>
+
+
+
+
+<h1>AJAX UPLOAD</h1>
+<form id="ajax"  method="post" enctype="multipart/form-data">
+		First name: <input type="text" name="fname"><br>
+		Last name: <input type="text" name="lname"><br>
+		Photo3: <input type="file" name="photo3"><br>
+		Photo4: <input type="file" name="photo4"><br>
+	</form>
+		<input id="ajaxButton" type="button" value="Submit">
+
+{% endblock %}
+
+
+
+
+
+
+
+
+{% block javascripts %}
+	{{parent()}}
+	
+	<script type="text/javascript">	
+		$(document).ready(function(){
+			var form = $("#ajaxButton") ;
+			form.bind("click", function(event){
+				console.log()
+				var formData = new FormData($('#ajax')[0]);
+				$.ajax({
+    					url: '/upload',
+    					type: 'POST',
+    					xhr: function() {
+        					myXhr = $.ajaxSettings.xhr();
+        					if(myXhr.upload){
+            					myXhr.upload.addEventListener('progress',function(){console.log(arguments)}, false);
+        					}
+        					return myXhr;
+    					},
+    					data: formData,
+    					cache: false,
+    					contentType: false,
+    					processData: false
+				});
+			})
+		});
+	</script>	
+
+
+
+{% endblock %}
+

@@ -12,6 +12,8 @@
         	<parameter key="websocketServer">websocket</parameter>
         	<parameter key="websocketServerSecure">websocketSecure</parameter>
         	<parameter key="sessions">sessions</parameter>
+        	<parameter key="upload">upload</parameter>
+        	<parameter key="download">download</parameter>
     	</parameters>
 
     	<services>
@@ -51,7 +53,13 @@
             		<argument type="service" id="httpKernel" />
         	</service>
 
+		<service id="upload" class="%=upload%">
+            		<argument type="service" id="httpKernel" />
+        	</service>
 
+		<service id="download" class="%=download%">
+            		<argument type="service" id="httpKernel" />
+        	</service>
 
 		<!--service id="request" scope="request" synthetic="true" synchronized="true" /-->
 

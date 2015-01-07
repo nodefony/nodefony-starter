@@ -23,7 +23,11 @@ nodefony.registerService("httpKernel", function(){
 
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
-			this.handle(request, response, type, domain);
+			try {
+				this.handle(request, response, type, domain);
+			}catch(e){
+				throw e
+			}
 		});
 		this.firewall = null ;
 		this.kernel.listen(this, "onReady", function(){
@@ -141,11 +145,12 @@ nodefony.registerService("httpKernel", function(){
 		container.set("translation", translation );
 
 		container.setParameters("request.protocol" , type);
-
 		switch (type){
 			case "HTTP" :
 				var context = new nodefony.io.transports.http(container, request, response, type);
 				container.set("context", context);
+				//request events	
+				context.notificationsCenter.listen(this, "onError", this.onError);
 				var port = this.kernel.httpPort ;
 				container.setParameters("request.host" , this.kernel.domain + ":" +port );
 				//Parse cookies request
@@ -155,6 +160,8 @@ nodefony.registerService("httpKernel", function(){
 			case "HTTPS" :
 				var context = new nodefony.io.transports.http(container, request, response, type);
 				container.set("context", context);
+				//request events	
+				context.notificationsCenter.listen(this, "onError", this.onError);
 				var port = this.kernel.httpsPort ;
 				container.setParameters("request.host" , this.kernel.domain + ":" +port );
 				//Parse cookies request
@@ -164,17 +171,18 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+				//request events	
+				context.notificationsCenter.listen(this, "onError", this.onError);
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 			break;
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+				//request events	
+				context.notificationsCenter.listen(this, "onError", this.onError);
 				this.kernel.fire("onWebSocketSecureRequest", container, context, type);
 			break;
 		}
-
-		//request events	
-		context.notificationsCenter.listen(this, "onError", this.onError);
 
 		if( ! this.firewall){
 			if (type === "HTTP" || type === "HTTPS"){

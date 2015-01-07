@@ -62,6 +62,15 @@ nodefony.register("fileClass", function(){
 		return false;
 	};
 
+	File.prototype.getExtention = function(){
+		if ( this.isFile ){
+			var tab = this.name.split('.');
+			if (tab.length > 1) return tab.reverse()[0];
+		}
+		return null ; 
+	};
+
+
 	File.prototype.matchType = function(type){
 		return type === this.type
 	};
@@ -76,17 +85,26 @@ nodefony.register("fileClass", function(){
 
 	File.prototype.dirname = function(){
 		return path.dirname(this.path);
-	}
+	};
 
 	var regHidden = /^\./;
 	File.prototype.isHidden = function(){
 		return regHidden.test(this.name);
-	}
+	};
 
 
 	File.prototype.content = function(){
 		return fs.readFileSync(this.path, {encoding: 'utf8'});
-	}
+	};
+
+	File.prototype.move = function(target){
+		try {
+			fs.renameSync(this.path, target);
+			return new File(target);
+		}catch(e){
+			throw e
+		}
+	};
 
 	return File;
 

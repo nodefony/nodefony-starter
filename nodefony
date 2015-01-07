@@ -17,8 +17,8 @@ if (cluster.isMaster) {
 		console.log('\033[31m'+stdout+'\033[0m');
 	});
 
-	//var nbProc = require('os').cpus().length; 
-	var nbProc = 1; 
+	var nbProc = require('os').cpus().length; 
+	//var nbProc = 1; 
 	for (var i=0 ; i<nbProc;i++){
 		cluster.fork();
 	}

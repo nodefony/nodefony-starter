@@ -187,15 +187,7 @@ nodefony.registerController("demo", function(){
 	};
 
 
-	/*
- 	 *
- 	 *	For dev client
- 	 *
- 	 */
-	demoController.prototype.devAction= function(name){
-		return this.render('demoBundle::indexDev.html.twig');
-	};
-	
+		
 	/**
 	 *
 	 *	For poll client
@@ -237,22 +229,37 @@ nodefony.registerController("demo", function(){
 	};
 
 
-
+	/*
+ 	 *
+ 	 *	UPLOAD
+ 	 *
+ 	 */
+	demoController.prototype.indexUploadAction= function(name){
+		return this.render('demoBundle:demo:upload.html.twig');
+	};
 
 	demoController.prototype.uploadAction = function(){
 	
 		//var req = this.get('context').request;
-		console.log( this.getParameters("query.files") )
-		/*if(nodefony.typeOf(req.queryFiles['fichier[]']) == 'array'){
-			for(var i = 0; i < req.queryFiles['fichier[]'].length; i++){
-				var file = req.queryFiles['fichier[]'][i];
-				if(file.isValid()) file.move('/tmp/');
-			}
-		} else {
-			var file = req.queryFiles['fichier[]'];
-			if(file.isValid()) file.move('/tmp/');
-		}*/
-		return this.redirect(this.generateUrl("dev"));
+		var files = this.getParameters("query.files");
+	
+		for (var file in files){
+			files[file].move("/tmp/");
+			//console.log( files[file].getExtention() )
+			//console.log( files[file].getMimeType() )
+			//console.log( files[file].realName() )
+		}
+		if ( ! this.isAjax() ){
+			return this.redirect(this.generateUrl("index"));
+		}else{
+			return this.renderResponse(
+					JSON.stringify({
+						res : "ok"
+					}), 
+				200, 
+				{'Content-Type': 'application/json; charset=utf-8'}
+			);
+		}
 	};
 
 

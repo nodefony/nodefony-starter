@@ -19,9 +19,9 @@ nodefony.register("Request",function(){
 	
 	
 	var settingsXml = {};
-	var parserRequestBody = function(request){
+	var parserRequestBody = function(){
 		//var contentType = this.contentType ? this.contentType : "application/x-www-form-urlencoded";
-		switch ( request.method ){
+		switch ( this.request.method ){
 			case "POST":
 			case "PUT":
 			case "DELETE":
@@ -43,10 +43,11 @@ nodefony.register("Request",function(){
 						var res = new nodefony.io.MultipartParser(this);
 						//console.log(res);
 						this.queryPost = res.post ;
-						this.queryFile = res.file ;
-						if (Object.keys(this.queryFile).length ) {
-							for(var file in this.queryFile){
-								var upload = new nodefony.io.UploadedFile(this.queryFile[file], this.container); 
+						var queryFile = res.file ;
+						if (Object.keys(queryFile).length ) {
+							var service = this.container.get("upload");
+							for(var file in queryFile){
+								this.queryFile[file] = service.createTmpFile(this, queryFile[file]);
 							}
 						}
 						this.logger("FORM  multipart/form-data   BUFFER SIZE : "+ this.body.length, "DEBUG");
@@ -82,9 +83,11 @@ nodefony.register("Request",function(){
 		this.domain = this.getDomain();
 		this.remoteAdress = this.getRemoteAdress();
 		this.data = new Array();
+		this.dataSize = 0;
 
 		this.request.on('data', function (data) {
 			this.data.push(data) 
+			this.dataSize+= data.length;
 		}.bind(this));
 
 		this.request.on('end', function (data) {
