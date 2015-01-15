@@ -1,0 +1,105 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+
+
+{% block title %}  
+
+	DOWLOAD
+
+
+{% endblock %}
+
+
+{% block stylesheets %}
+{{parent()}}
+	<link href="/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.css" rel="stylesheet"/>
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+{{parent()}}
+
+<script type="text/javascript" src="/frameworkBundle/vendors/jquery/jquery-ui-1.10.4.custom.js"></script>
+
+<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"></script>
+
+
+<script>
+
+	/*$(document).ready(function(){
+		$("table").DataTable();		
+	})*/
+
+	$(document).ready(function() {
+    		$('table').DataTable( {
+			"paging":   true,
+			"pagingType": "full_numbers",
+        		"scrollY":        800,
+        		"scrollCollapse": true,
+        		"jQueryUI":       true
+    		} );
+	} );
+
+</script>
+
+{% endblock %}
+
+
+	
+{% block body %}
+
+{{parent()}}
+
+<div class="container">
+
+	<div class="table-responsive">
+		<table class="table table-bordered">
+        		<thead>
+          			<tr>
+            				<th>File Name</th>
+            				<th>Type</th>
+            				<th>Path</th>
+            				<th>Size</th>
+            				<th>access time</th>
+            				<th>change time</th>
+            				<th>modify time </th>
+          			</tr>
+        		</thead>
+        		<tbody>
+			{% for json in files %}
+				{% for jsonTree in  json.children %}
+					<!--pre>{{ jsonTree  }}</pre-->
+				<tr>
+					<!--pre>{{ jsonTree.name  }}</pre-->
+					<!--pre>{{ dump( file|keys )  }}</pre-->
+					{% if jsonTree.link == "Download"  %}
+						<th><a href="/download?path={{jsonTree.path}}">{{jsonTree.name}}</a></th>
+					{% else %}
+						<th><a href="/demo/download?path={{jsonTree.path}}">{{jsonTree.name}}</a></th>
+					{% endif %}
+					{% if jsonTree.type == "File"  %}
+						<td>{{jsonTree.mimeType}}</td>
+					{% else %}
+						<td>{{jsonTree.type}}</td>
+					{% endif %}
+					<td>{{jsonTree.path}}</td>
+					<td>{{jsonTree.stats.size}}</td>
+					<td>{{jsonTree.stats.atime}}</td>
+					<td>{{jsonTree.stats.mtime}}</td>
+					<td>{{jsonTree.stats.ctime}}</td>
+				</tr>
+				{% endfor %}
+			{% endfor %}
+          		
+        		</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+{% endblock %}

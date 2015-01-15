@@ -9,6 +9,8 @@
  *
  */
 
+
+
 nodefony.registerController("demo", function(){
 
 	var demoController = function(container, context){
@@ -262,10 +264,117 @@ nodefony.registerController("demo", function(){
 		}
 	};
 
+	var encode = function(file){
+		//console.log(file.mimeType)
+		switch (true) {
+			// stream
+			case /^image/.test(file.mimeType):
+			case /^video/.test(file.mimeType):
+			case /^audio/.test(file.mimeType):
+			case /application\/pdf/.test(file.mimeType):
+				var response = this.getResponse().response;
+				var fileStream = fs.createReadStream(file.path);
+				response.writeHead(200, {'Content-Type': file.mimeType});
+				fileStream.pipe(response, {
+					// auto end response 
+					end:true
+				});
+				/*fileStream.on("end",function(){
+					response.end();
+				})*/
+			break;
+			// download
+			default:
+				var response = this.getResponse().response;
+				var fileStream = fs.createReadStream(file.path);
+				response.writeHead(200, {
+					'Content-Disposition': 'attachment; filename="'+file.name+'"',
+					"Expires": "0",
+					'Content-Description': 'File Transfer'
+				}); 
+				fileStream.pipe(response, {
+					// auto end response 
+					end:true
+				});
+		}
+	}
+
+	var search = function(path){
+		var response = null; 
+		try {
+			var file = new nodefony.fileClass(path);
+			switch (file.type){
+				case "symbolicLink" :
+				case "Directory" :
+					var finder = new nodefony.finder({
+						path:path,
+						json:true,
+						followSymLink:true,
+						//seeHidden:true,
+						recurse:false,
+						onDirectory:function(File, finder){
+							File.link = file.type;
+						},
+						onFile:function(File, finder){
+							switch(File.mimeType){
+								case "text/plain":
+									File.link = "Link";
+								break;
+								default:
+									File.link = "Download";
+							};
+						},
+						onFinish:function(error, files){
+							response = this.render('demoBundle:demo:download.html.twig',{
+								files:files.json
+							});
+						}.bind(this)
+					});
+				break;
+				case "File" :
+					return this.render('demoBundle:demo:downloadFile.html.twig',{
+						content:file.content(),
+						mime:file.mimeType
+					});
+				break;
+			}
+			if (! response ) throw new Error("Error ")
+			return response ;
+		}catch(e){
+			throw e ;
+		}
+	};
 
 
-	demoController.prototype.downloadAction = function(){
+	/*
+ 	 *
+ 	 *	DOWNLOAD
+ 	 *
+ 	 */
+	demoController.prototype.indexDownloadAction= function(name){
+		var query = this.getParameters("query");
+		if (! query.get.path)
+			var path =  "./" ;
+		else
+			var path = query.get.path ;
 
+		try{ 
+			return search.call(this, path) ;
+		}catch(e){
+			throw e ;
+		}
+	};
+
+	demoController.prototype.downloadAction = function(path){
+		var query = this.getParameters("query");
+		if (! query.get.path)
+			throw new Error("Download Not path to host")
+		else
+			var path = query.get.path ;
+		var file = new nodefony.fileClass(path);
+
+		return encode.call(this, file);
+		//return this.render('demoBundle:demo:download.html.twig');
 	};
 
 

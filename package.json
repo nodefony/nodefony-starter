@@ -32,7 +32,8 @@
     "nodemailer": "*",
     "mocha": "*",
     "chai": "*",
-    "ascii-table": "*"
+    "ascii-table": "*",
+    "mime":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

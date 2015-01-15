@@ -4,14 +4,10 @@
  *
  *
  */
-
 var shortId = require('shortid');
 var Path = require('path') ;
 
-
 nodefony.registerService("upload", function(){
-
-
 
 	var uploadedFile = function(tmpName , path, dataFile, service){
 
@@ -59,36 +55,34 @@ nodefony.registerService("upload", function(){
 		return this.headers["Content-Type"] ;
 	};
 
-
 	var upload = function(httpKernel){
 		this.httpKernel = httpKernel ;
 		this.kernel = this.get("kernel");
 		this.syslog = this.container.get("syslog");
-		this.config = this.container.getParameters("bundles.http").upload;
-		
-		//this.uploadedFile ={};
 
-		if (/^\//.test(this.config.tmp_dir)){
-			this.path = this.config.tmp_dir;
-		}else{
-			this.path = this.kernel.rootDir+"/"+this.config.tmp_dir;
-		}
-		
-		var res = fs.existsSync(this.path);
-		if (! res ){
-			// create directory 
-			this.logger("create directory FOR UPLOAD FILE " + this.path, "DEBUG")
-			try {
-				var res = fs.mkdirSync(this.path);
-			}catch(e){
-				throw e ;
+		this.kernel.listen(this,"onBoot" , function(){
+			this.config = this.container.getParameters("bundles.http").upload;
+			if (/^\//.test(this.config.tmp_dir)){
+				this.path = this.config.tmp_dir;
+			}else{
+				this.path = this.kernel.rootDir+"/"+this.config.tmp_dir;
 			}
-		}
-		this.kernel.listen(this, "onHttpRequest",function(container , context){
-			context.request.request.on("data", function(){
-				if (context.request.contentType === "multipart/form-data" &&  context.request.dataSize > this.config.max_filesize ) 
-					throw new Error("File Upload size exceeded file size must be less than " +this.config.max_filesize + "Bytes ");
-			}.bind(this))
+			var res = fs.existsSync(this.path);
+			if (! res ){
+				// create directory 
+				this.logger("create directory FOR UPLOAD FILE " + this.path, "DEBUG")
+				try {
+					var res = fs.mkdirSync(this.path);
+				}catch(e){
+					throw e ;
+				}
+			}
+			this.kernel.listen(this, "onHttpRequest",function(container , context){
+				context.request.request.on("data", function(){
+					if (context.request.contentType === "multipart/form-data" &&  context.request.dataSize > this.config.max_filesize ) 
+						throw new Error("File Upload size exceeded ,File size must be less than " +this.config.max_filesize + "Bytes ");
+				}.bind(this))
+			});	
 		});
 	};
 
@@ -128,8 +122,5 @@ nodefony.registerService("upload", function(){
 		return shortId.generate();
 	};
 
-	
-
 	return  upload ;
 });
-

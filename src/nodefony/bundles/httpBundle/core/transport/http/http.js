@@ -19,8 +19,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	var Http = function(container, request, response, type){
 		this.type = type;
 		this.container = container; 
-		this.request = new nodefony.Request( request , this.container);
-		this.response = new nodefony.Response( response , this.container);
+		this.request = new nodefony.Request( request , container);
+		this.response = new nodefony.Response( response , container);
 		this.session = null;
 		this.cookies = [];
 		this.secureArea = null ;
@@ -42,13 +42,14 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		this.url = this.request.url.href;
+		this.remoteAddress = request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result){
 			this.response.body = result;
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen( this, "onRequest" , this.handle );
-		this.remoteAddress = request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 	};
 
 	Http.prototype.handle = function(container, request , response, data){
@@ -99,22 +100,24 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//break ;
 		}
 		/*
- 		* HTTP HEAD  
+ 		* HTTP WRITE HEAD  
  		*/
 		this.response.writeHead();
 		/*
- 	 	* GENERATE RESPONSE
+ 	 	* WRITE RESPONSE
  	 	*/  
 		this.response.write();
-		// FLUSH
+		// END REQUEST
 		return this.close();
 	};
 
+	Http.prototype.flush = function(data, encoding){
+		return this.response.flush(data, encoding);	
+	}
+
 	Http.prototype.close = function(){
-		// free container scope
-		this.kernel.container.leaveScope(this.container);
-		// FLUSH
-		return this.response.flush();
+		// END REQUEST
+		return this.response.end();
 	};
 	
 	Http.prototype.logger = function(pci, severity, msgid,  msg){
@@ -122,7 +125,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		if (! msgid) msgid = this.container.getParameters("request.protocol") + " REQUEST";
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
-
 
 	Http.prototype.listen = function(){
 		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
@@ -157,8 +159,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.notificationsCenter.fire("onResponse", null, this.context);
 	};
 
-
-
 	Http.prototype.setXjson  = function( xjson){
 		switch ( nodefony.typeOf(xjson) ){
 			case "object":
@@ -180,9 +180,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			break;
 		}
 	};
-
-
-
 
 	// FIXME COOKIES SESSION
 	// connect intrusif in prototype response.on('header') https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x
@@ -212,7 +209,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			}
 		}	
 	};
-
 
 	Http.prototype.parseCookies = function(){
 		return  nodefony.cookies.cookiesParser(this);

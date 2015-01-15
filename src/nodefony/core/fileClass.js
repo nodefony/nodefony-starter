@@ -1,7 +1,43 @@
+/*
+ *
+ *
+ *
+ *
+ *
+ */
 
-
+var mime = require('mime');
 
 nodefony.register("fileClass", function(){
+
+
+	var findPath = function(str, Path, rec){
+		//Path = Path.replace(" ","\ ");
+		//str = str.replace(" ","\ ");
+			//console.log( "Patern :" + str );
+			//console.log( "Path Dir:" + Path);
+		var res = regRelatif.exec(str);
+		if (res){
+			var nb = str.indexOf("/");
+			//console.log("NB = " + nb)
+			if (nb > 0){
+				var ele = str.slice(nb+1);
+				//console.log("SLICE = " + ele)
+				//console.log("dirname = " + path.dirname(Path))
+				return findPath(ele, path.dirname(Path) , true);
+			}
+		}else{
+			var dirname  =  path.dirname(Path) ;
+			if ( rec ){
+				return dirname+"/"+str; 
+			}
+			res = regAbsolute.exec(str);
+			if (res){
+				return str;
+			}
+			return dirname+"/"+str;
+		}
+	}
 
 	/*
  	 *
@@ -9,13 +45,23 @@ nodefony.register("fileClass", function(){
  	 *
  	 *
  	 */
+	var regRelatif = /^(\.\.\/)+/;
+	var regAbsolute = /^\//;
 	var File = function(Path){
 		if (Path){
-			this.name = path.basename(Path);
-			this.path = this.getRealpath(Path);
-			this.dirName = this.dirname();
 			this.stats =  fs.lstatSync(Path);
 			this.type = this.checkType();	
+			if ( this.stats.isSymbolicLink() ){
+				var res = fs.readlinkSync( Path ) ;
+				this.path = findPath(Path, res) ;
+			}else{
+				this.path = this.getRealpath(Path) ;	
+			}
+			this.name = path.basename(this.path);
+			if (this.type === "File"){
+				this.mimeType = this.getMimeType(this.name);
+			}
+			this.dirName = this.dirname();
 			this.match = null;
 		}else{
 			throw new Error("error fileClass : "+ Path)
@@ -45,7 +91,11 @@ nodefony.register("fileClass", function(){
 			return "Socket";
 		}
 		return ;
-	}
+	};
+
+	File.prototype.getMimeType = function(name){
+		return  mime.lookup(name);
+	};
 
 	File.prototype.getRealpath = function(Path, cache){
 		return  fs.realpathSync(Path, cache);
@@ -81,6 +131,10 @@ nodefony.register("fileClass", function(){
 
 	File.prototype.isDirectory = function(){
 		return this.type === "Directory"
+	};
+
+	File.prototype.isSymbolicLink = function(){
+		return this.type === "symbolicLink"
 	};
 
 	File.prototype.dirname = function(){

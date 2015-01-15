@@ -12,8 +12,12 @@
 	
 {% block body %}
 
-<h1>NATIF UPLOAD</h1>
-<form id="natif" action="/upload" method="post" enctype="multipart/form-data">
+{{parent()}}
+
+<div class="container">
+
+	<h1>NATIF UPLOAD</h1>
+	<form id="natif" action="/upload" method="post" enctype="multipart/form-data">
 		First name: <input type="text" name="fname"><br>
 		Last name: <input type="text" name="lname"><br>
 		Photo: <input type="file" name="photo"><br>
@@ -24,15 +28,17 @@
 
 
 
-<h1>AJAX UPLOAD</h1>
-<form id="ajax"  method="post" enctype="multipart/form-data">
+	<h1>AJAX UPLOAD</h1>
+	<form id="ajax"  method="post" enctype="multipart/form-data">
 		First name: <input type="text" name="fname"><br>
 		Last name: <input type="text" name="lname"><br>
 		Photo3: <input type="file" name="photo3"><br>
 		Photo4: <input type="file" name="photo4"><br>
 	</form>
-		<input id="ajaxButton" type="button" value="Submit">
+	<input id="ajaxButton" type="button" value="Submit">
 
+
+</div>
 {% endblock %}
 
 

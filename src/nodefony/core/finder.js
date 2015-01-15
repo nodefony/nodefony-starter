@@ -11,7 +11,16 @@
 nodefony.register("finder", function(){
 
 
-
+	
+	
+	var jsonTree = function(path, parent){
+		this.mother = this.$super;
+		this.mother.constructor(path);
+		this.parent = parent ;
+		if ( this.parent !== null)
+			this.parent.children.push(this);
+		this.children = [];
+	}.herite(nodefony.fileClass);
 	
 
 	/*
@@ -23,6 +32,7 @@ nodefony.register("finder", function(){
 			this.files = res;
 		else
 			this.files = [];		
+		this.json = {};
 	} 
 
 	Result.prototype.push = function(file){
@@ -163,19 +173,27 @@ nodefony.register("finder", function(){
 		seeHidden:false,
 		match: null,
 		exclude: null,
-		followSymLink:false
+		followSymLink:false,
+		json:false
 	};
 
 
 	var regSlash = /^(.*)\/$/g;
 	var finder = function(settings){	
 		this.path = [];
+		this.errorParse = [];
 		this.settings = nodefony.extend({}, defaultSettings, settings);	
+		this.tree = this.settings.json ; 
+		if (this.tree){
+			this.wrapper = jsonTree ;
+		}else{
+			this.wrapper = 	nodefony.fileClass ;
+		}
 		this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
 		if (this.settings.path){	
 			this.in(this.settings.path);
 			if ( this.path.length ){
-				this.result = this.find( this.settings );
+				this.result = this.find();
 			}else{
 				this.result = new Result();
 			}
@@ -186,7 +204,7 @@ nodefony.register("finder", function(){
 		this.typePath = nodefony.typeOf(Path);
 		if (this.typePath === "string" ){
 			try{
-				this.path.push(new nodefony.fileClass(Path))
+				this.path.push(new this.wrapper(Path, null))
 				return this;
 			}catch(e){
 				return this ; 	
@@ -194,7 +212,7 @@ nodefony.register("finder", function(){
 		}
 		if(this.typePath === "array" ){
 			for (var i = 0 ; i < Path.length ; i++){
-				this.path.push(new nodefony.fileClass(Path[i]))
+				this.path.push(new this.wrapper(Path[i], null))
 			}
 			return this;
 		}
@@ -216,48 +234,57 @@ nodefony.register("finder", function(){
 
 	finder.prototype.find = function( settings ){
 		var result = new Result();
-		var extend = nodefony.extend({}, defaultSettings, settings) ;
-		if (settings.json){
-			result.json = [];
+		if (! settings ) {
+			var extend = this.settings ;
+		}else{
+			var extend = nodefony.extend({}, defaultSettings, settings) ;	
 		}
-		for (var i = 0 ; i < this.path.length ; i++){
-			var json = null ;
-			if (result.json ){
-				result.json[this.path[i].name] = this.path[i];
-				//result.json["childs"]=[];
-				json = result.json ;
+		try {
+			for (var i = 0 ; i < this.path.length ; i++){
+				if (extend.json ){
+					result.json[this.path[i].name] = this.path[i];
+					find.call(this, this.path[i], result, extend.depth, extend, this.path[i] );
+				}else{
+					find.call(this, this.path[i], result, extend.depth, extend, null );
+				}
 			}
-			find.call(this, this.path[i], result, extend.depth, extend, json );
+		}catch(e){
+			this.notificationsCenter.fire("onFinish",e,null);
+			throw e;
 		}
-		this.notificationsCenter.fire("onFinish",null,result)
+		this.notificationsCenter.fire("onFinish",null, result) ;
 		return result;
 	}	
 
 
 	
-
-	var find = function(file, result, depth, settings, json){
+	var find = function(file, result, depth, settings, parent){
 		try{
+				
 			var res = fs.readdirSync(file.path);
-		
+
 			if (res && res.length){
 				var ret = regSlash.exec(file.path);
  				if (ret){
-					var filePath = ret[1]+"/";	
+					var filePath = ret[1]+"/";
 				}else{
 					var filePath = file.path+"/";
 				}	
 				for (var i=0 ; i < res.length ; i++){
 					var match = true ;
-					var file = filePath+res[i] ;	
-					var info = new nodefony.fileClass( file );
+					var File = filePath+res[i] ;
+					var info = new this.wrapper( File , parent);
 					if (! settings.seeHidden){
 						if ( checkHidden.call(this, info, settings) ) {
+							if (parent && parent.children)
+								parent.children.pop();
 							continue;
-						}	
+						}
 					}
 					if ( settings.exclude ){
 						if ( checkExclude.call(this, info, settings) ){
+							if (parent && parent.children)
+								parent.children.pop();
 							continue;
 						}
 					}
@@ -265,37 +292,24 @@ nodefony.register("finder", function(){
 						var match =  checkMatch.call(this, info, settings) ;
 					}
 					if (match){
-						result.push(info);
+						var index = result.push(info);
 						this.notificationsCenter.fire("on"+info.type, info, this);
+					}else{
+						if (parent && parent.children)
+							parent.children.pop();
 					}
 					switch(info.type){
 						case "Directory":
-							if (json && match ){
-								var obj = [];
-								obj[info.name] = info;
-								//obj["childs"] =[];
-								//var index = json["childs"].push(obj);
-								//json[info.name] = json["childs"][index-1];
-								//json[info.name] = obj;
-								json.push(obj)
-							}
 							if ( settings.recurse && depth-1 !== 0 ){
-								arguments.callee.call(this, info, result, --depth, settings, obj );	
+								arguments.callee.call(this, info, result, --depth, settings, info );	
 								depth++;
-							}
-						break;
-						case "File":
-							if (json && match ){
-								var obj = info;
-								//obj[info.name] = info;
-								//json["childs"].push(obj);
-								//json[info.name] = obj;
-								json.push(obj)
 							}
 						break;
 						case "symbolicLink" :
 							if (settings.followSymLink && depth-1 !== 0){
-								arguments.callee.call(this, new nodefony.fileClass(info.path), result, settings.depth, settings, json);
+								var obj = new this.wrapper(info.path, info) ;
+								if ( obj.isDirectory() )
+									arguments.callee.call(this, obj, result, settings.depth, settings, parent);
 							}
 						break;
 					}
@@ -305,9 +319,11 @@ nodefony.register("finder", function(){
 			}
 			return result;
 		}catch(e){
-			this.notificationsCenter.fire("onError",e);
-			this.notificationsCenter.fire("onFinish",e,null);
-			return ;	
+			this.notificationsCenter.fire("onError", e);
+			this.errorParse.push(e);
+			console.log(e);
+			//this.notificationsCenter.fire("onFinish",e,null);
+			//throw e ;	
 		}
 	};
 	
