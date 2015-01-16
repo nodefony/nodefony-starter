@@ -147,8 +147,8 @@ nodefony.register("fileClass", function(){
 	};
 
 
-	File.prototype.content = function(){
-		return fs.readFileSync(this.path, {encoding: 'utf8'});
+	File.prototype.content = function(encoding){
+		return fs.readFileSync(this.path, {encoding: encoding || 'utf8'});
 	};
 
 	File.prototype.move = function(target){
