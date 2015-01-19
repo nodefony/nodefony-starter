@@ -57,10 +57,14 @@ nodefony.register("Response",function(){
 		nodefony.extend(this.headers, obj);
 	};
 
+	Response.prototype.setEncoding = function(encoding){
+		return this.encoding = encoding ;
+	};
+
+
 	Response.prototype.setStatusCode = function(status){
 		this.statusCode = status ;
 	};
-
 
 	Response.prototype.setBody = function(ele){
 		switch (nodefony.typeOf(ele) ) {
@@ -69,14 +73,13 @@ nodefony.register("Response",function(){
 			break;
 			case "object" :
 			case "array" :
-				this.body = JSON.stringify(ele) 
+				this.body = JSON.stringify(ele); 
 			break;
 			default:
 				this.body = ele;
 		}
 		return  ele ;
 	};
-
 
 	Response.prototype.writeHead = function(statusCode, headers){
 		return this.response.writeHead(
@@ -85,16 +88,14 @@ nodefony.register("Response",function(){
 		);
 	};
 
-
 	Response.prototype.flush = function(data, encoding){
 		if ( ! this.response.headersSent ) {
 			this.setHeader('Transfer-Encoding', 'chunked');
 			this.headers['Transfer-Encoding'] = 'chunked' ;
-			this.writeHead()
+			this.writeHead();
 		}
 		return this.response.write( data , encoding);
 	};
-
 
 	Response.prototype.write = function(){
 		if (this.encoding )
@@ -107,7 +108,6 @@ nodefony.register("Response",function(){
         	return this.response.end(data, encoding);
 	};
 
-
 	Response.prototype.redirect = function(url, status){
 		if (status === "301")
 			this.statusCode = status;
@@ -117,7 +117,6 @@ nodefony.register("Response",function(){
 		this.setHeader("Location", url);		
 		return this;
 	};
-
 	
 	return Response;
 

@@ -261,69 +261,7 @@ nodefony.registerController("demo", function(){
 		}
 	};
 
-
-	var createStreamMedia = function(file , start, end){
-		var request = this.getRequest();
-		var response = this.getResponse().response;
-		var headers = request.headers ;
-		var range = headers.range;
-		var length = file.stats.size ;
-		if ( range ) {
-			//console.log("HEADER = " + range);
-			var parts = range.replace(/bytes=/, "").split("-");
-			//console.log(parts)
-			var partialstart = parts[0];
-			var partialend = parts[1];
-			var start = parseInt(partialstart, 10);
-			var end = partialend ? parseInt(partialend, 10) : length - 1;
-			var chunksize = (end - start) + 1;
-			//console.log("start :" + start) ;
-			//console.log("end :" + end) ;
-			var value = {
-				start:start,
-				end:end
-			}
-			//console.log('RANGE: ' + start + ' - ' + end + ' = ' + chunksize);
-			var writeHeaders = {
-				'Content-Range': 'bytes ' + start + '-' + end + '/' + length,
-				'Accept-Ranges': 'bytes',
-				'Content-Length': chunksize,
-				'Content-Type': file.mimeType
-			}
-			var code = 206 ;
-		}else{
-			var writeHeaders ={
-				'Content-Type': file.mimeType,
-				'Content-Length':length	
-			};
-			var code = 200 ;
-		}
-		// streamFile
-		var fileStream = fs.createReadStream(file.path, value || null);	
-		response.on('close', function() {
-			if (fileStream) {
-            			fileStream.unpipe(response);
-            			if (fileStream.fd) {
-					//console.log("CLOSE")
-                			fs.close(fileStream.fd);
-            			}
-        		}
-		})
-		fileStream.on("readable",function(){
-			if ( !  response.headersSent ){
-				response.writeHead(code, writeHeaders); 
-				fileStream.pipe(response, {
-					// auto end response 
-					end:true
-				});
-			}
-		});
-		return fileStream ;
-	}
-
-
 	var encode = function(file){
-		//console.log(file.mimeType)
 		switch (true) {
 			// stream
 			case /^image/.test(file.mimeType):
@@ -331,48 +269,28 @@ nodefony.registerController("demo", function(){
 			case /^audio/.test(file.mimeType):
 			case /application\/pdf/.test(file.mimeType):
 				try {
-					var fileStream = createStreamMedia.call(this, file);
-					fileStream.on("error",function(error){
-						switch (error.code){
-							case "EISDIR":
-								error.message = file.path +" : is Directory" ;
-							break;
-						}
-						throw error ;
-
-					})
-				}catch(e){
-					throw e
+					return this.renderMediaStream( file );
+					
+				}catch(error){
+					switch (error.code){
+						case "EISDIR":
+							error.message = file.path +" : is Directory" ;
+						break;
+					}
+					throw error ;
 				}
 			break;
 			// download
 			default:
 				try {
-					var response = this.getResponse().response;
-					var fileStream = fs.createReadStream(file.path);
-					fileStream.on("error",function(error){
-						switch (error.code){
-							case "EISDIR":
-								error.message = file.path +" : is Directory" ;
-							break;
-						}
-						throw error ;
-					});
-					fileStream.on("readable",function(){
-						if ( !  response.headersSent ){
-							response.writeHead(200, {
-								'Content-Disposition': 'attachment; filename="'+file.name+'"',
-								"Expires": "0",
-								'Content-Description': 'File Transfer'
-							}); 
-							fileStream.pipe(response, {
-								// auto end response 
-								end:true
-							});
-						}
-					});
-				}catch(e){
-					throw e
+					return this.renderFileDownload(file) ; 
+				}catch(error){
+					switch (error.code){
+						case "EISDIR":
+							error.message = file.path +" : is Directory" ;
+						break;
+					}
+					throw error ;
 				}
 		}
 	};
@@ -410,13 +328,20 @@ nodefony.registerController("demo", function(){
 					});
 				break;
 				case "File" :
-					return this.render('demoBundle:demo:files.html.twig',{
-						content:file.content(),
-						mime:file.mimeType
-					});
+					switch (file.mimeType) {
+						case "text/plain":
+							return this.render('demoBundle:demo:files.html.twig',{
+								content:file.content(file.encoding),
+								mime:file.mimeType,
+								encoding:file.encoding
+							});	
+						break;
+						default:
+							return encode.call(this, file);	
+					}
 				break;
 			}
-			if (! response ) throw new Error("Error ")
+			if (! response ) throw new Error("Search File system Error")
 			return response ;
 		}catch(e){
 			throw e ;
@@ -434,6 +359,8 @@ nodefony.registerController("demo", function(){
 			var path =  "./" ;
 		else
 			var path = query.get.path ;
+
+		//TODO secure path
 
 		try{ 
 			return search.call(this, path) ;

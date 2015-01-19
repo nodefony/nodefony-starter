@@ -37,7 +37,7 @@ nodefony.register("fileClass", function(){
 			}
 			return dirname+"/"+str;
 		}
-	}
+	};
 
 	/*
  	 *
@@ -60,6 +60,7 @@ nodefony.register("fileClass", function(){
 			this.name = path.basename(this.path);
 			if (this.type === "File"){
 				this.mimeType = this.getMimeType(this.name);
+				this.encoding = this.getCharset();
 			}
 			this.dirName = this.dirname();
 			this.match = null;
@@ -97,6 +98,10 @@ nodefony.register("fileClass", function(){
 		return  mime.lookup(name);
 	};
 
+	File.prototype.getCharset = function(mimeType){
+		return mime.charsets.lookup(mimeType || this.mimeType  )
+	};
+
 	File.prototype.getRealpath = function(Path, cache){
 		return  fs.realpathSync(Path, cache);
 	};
@@ -119,7 +124,6 @@ nodefony.register("fileClass", function(){
 		}
 		return null ; 
 	};
-
 
 	File.prototype.matchType = function(type){
 		return type === this.type
@@ -146,9 +150,9 @@ nodefony.register("fileClass", function(){
 		return regHidden.test(this.name);
 	};
 
-
 	File.prototype.content = function(encoding){
-		return fs.readFileSync(this.path, {encoding: encoding || 'utf8'});
+		var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
+		return fs.readFileSync(this.path, encode);
 	};
 
 	File.prototype.move = function(target){
