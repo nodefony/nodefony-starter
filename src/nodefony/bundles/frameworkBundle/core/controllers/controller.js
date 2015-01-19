@@ -109,9 +109,6 @@ nodefony.register("controller", function(){
 				throw new Error("File argument bad type for renderFileDownload :" + typeof file);
 			}	
 		}
-		var response = this.getResponse().response;
-		var fileStream = fs.createReadStream(File.path, options );
-		
 		var head = nodefony.extend({
 			'Content-Disposition': 'attachment; filename="'+File.name+'"',
 			"Expires": "0",
@@ -119,6 +116,8 @@ nodefony.register("controller", function(){
 			'Content-Type': File.mimeType
 		}, headers);
 
+		var response = this.getResponse().response;
+		var fileStream = fs.createReadStream(File.path, options );
 		fileStream.on("open",function(){
 			if ( !  response.headersSent ){
 				response.writeHead(200, head); 
@@ -128,13 +127,22 @@ nodefony.register("controller", function(){
 				});
 			}
 		});
+		response.on('close', function() {
+			if (fileStream) {
+            			fileStream.unpipe(response);
+            			if (fileStream.fd) {
+					//console.log("CLOSE")
+                			fs.close(fileStream.fd);
+            			}
+        		}
+		});
 		fileStream.on("error",function(error){
 			throw error ;				
 		});
 		
 	};
 		
-	Controller.prototype.renderMediaStream = function(file , options){
+	Controller.prototype.renderMediaStream = function(file , options, headers){
 		if (file instanceof nodefony.fileClass ){
 			var File = file;
 		}else{
@@ -146,9 +154,8 @@ nodefony.register("controller", function(){
 		}
 		if ( ! options ) options = {};
 		var request = this.getRequest();
-		var response = this.getResponse().response;
-		var headers = request.headers ;
-		var range = headers.range;
+		var requestHeaders = request.headers ;
+		var range = requestHeaders.range;
 		var length = File.stats.size ;
 		if ( range ) {
 			//console.log("HEADER = " + range);
@@ -166,22 +173,24 @@ nodefony.register("controller", function(){
 				end:end
 			});
 			//console.log('RANGE: ' + start + ' - ' + end + ' = ' + chunksize);
-			var writeHeaders = {
+			var head = nodefony.extend({
 				'Content-Range': 'bytes ' + start + '-' + end + '/' + length,
 				'Accept-Ranges': 'bytes',
 				'Content-Length': chunksize,
-				'Content-Type': File.mimeType
-			};
+				'Content-Type': File.mimeType	
+			}, headers);
+			
 			var code = 206 ;
 		}else{
-			var writeHeaders ={
+			var head = nodefony.extend({
 				'Content-Type': File.mimeType,
 				'Content-Length':length,	
 				'Content-Disposition:' : ' inline; filename="'+File.name+'"'
-			};
+			},headers);
 			var code = 200 ;
 		}
 		// streamFile
+		var response = this.getResponse().response;
 		var fileStream = fs.createReadStream(File.path, value || options);	
 		response.on('close', function() {
 			if (fileStream) {
@@ -195,7 +204,7 @@ nodefony.register("controller", function(){
 		
 		fileStream.on("open",function(){
 			if ( !  response.headersSent ){
-				response.writeHead(code, writeHeaders); 
+				response.writeHead(code, head); 
 				fileStream.pipe(response, {
 					// auto end response 
 					end:true
