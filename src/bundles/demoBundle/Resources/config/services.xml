@@ -11,13 +11,13 @@
 
 	<services>
 
-		<service id="dmsg" class="%=dmsg%">
+		<service id="dmsg" class="{{dmsg}}">
 			<argument type="service" id="realTime" />
 			<argument type="service" id="container" />
 			<argument type="service" id="kernel" />
 		</service>
 
-		<service id="random" class="%=random%">
+		<service id="random" class="{{random}}">
 			<argument type="service" id="realTime" />
 			<argument type="service" id="container" />
 			<argument type="service" id="kernel" />

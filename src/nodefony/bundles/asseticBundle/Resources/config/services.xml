@@ -9,7 +9,7 @@
     	</parameters>
 
     	<services>
-		<service id="less" class="%=less%">
+		<service id="less" class="{{less}}">
             		<argument type="service" id="kernel" />
             		<argument type="service" id="container" />
         	</service>

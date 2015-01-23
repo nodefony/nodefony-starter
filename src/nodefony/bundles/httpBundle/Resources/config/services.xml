@@ -16,43 +16,43 @@
     	</parameters>
 
     	<services>
-		<service id="serverStatic" class="%=serverStatic%">
+		<service id="serverStatic" class="{{serverStatic}}">
             		<argument type="service" id="container" />
             		<argument type="paramaters" id="options" />
         	</service>
 
-		<service id="httpKernel" class="%=httpKernel%">
+		<service id="httpKernel" class="{{httpKernel}}">
             		<argument type="service" id="container" />
             		<argument type="service" id="serverStatic" />
 			<call method="boot"></call>
         	</service>
 
-        	<service id="httpServer" class="%=httpServer%">
+        	<service id="httpServer" class="{{httpServer}}">
             		<argument type="service" id="httpKernel" />
             		<argument type="service" id="security" />
         	</service>
 
-		<service id="httpsServer" class="%=httpsServer%">
+		<service id="httpsServer" class="{{httpsServer}}">
             		<argument type="service" id="httpKernel" />
             		<argument type="service" id="security" />
         	</service>
 
-		<service id="websocketServer" class="%=websocketServer%">
+		<service id="websocketServer" class="{{websocketServer}}">
             		<argument type="service" id="httpKernel" />
             		<argument type="service" id="security" />
         	</service>
 
-		<service id="websocketServerSecure" class="%=websocketServerSecure%">
+		<service id="websocketServerSecure" class="{{websocketServerSecure}}">
             		<argument type="service" id="httpKernel" />
             		<argument type="service" id="security" />
         	</service>
 
-		<service id="sessions" class="%=sessions%">
+		<service id="sessions" class="{{sessions}}">
             		<argument type="service" id="security" />
             		<argument type="service" id="httpKernel" />
         	</service>
 
-		<service id="upload" class="%=upload%">
+		<service id="upload" class="{{upload}}">
             		<argument type="service" id="httpKernel" />
         	</service>
 

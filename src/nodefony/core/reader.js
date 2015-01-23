@@ -68,9 +68,12 @@ nodefony.register("Reader", function(){
 		readFile:{
 			encoding: 'utf8'	
 		},
-		ejs:{
-			open:"%",
-			close:"%"	
+		twig:{
+			'twig options':{
+				async: false,	
+				cache:true
+			},
+			views:null	
 		},
 		parse:false
 	};
@@ -111,12 +114,6 @@ nodefony.register("Reader", function(){
 		return null;
 	};
 
-
-	var compile = function(str, options){
-		var settings = nodefony.extend({}, this.settings.ejs , options);
-		return this.engine.compile(str, settings);
-	}
-
 	/**
  	 *	Reader node js
  	 *
@@ -133,10 +130,7 @@ nodefony.register("Reader", function(){
 		this.plugins = {};
 		this.container = container;
 		this.xmlParser = new xmlParser( this.settings.parserXml );
-		if ( this.container.has("ejs") )
-			this.engine = this.container.get("ejs");
-		else
-			this.engine = require("ejs");
+		this.engine = require("twig") ; 
 		/**
  		 * @method  readConfig
  		 *
@@ -161,13 +155,19 @@ nodefony.register("Reader", function(){
  	 *
  	 */	
 	Reader.prototype.render = function(str, data, options){
-		var settings = nodefony.extend({}, this.settings.ejs , options);
+	//	console.log(str)
+	//	console.log(data)
+	//	console.log(this.settings.ejs)
+		/*var settings = nodefony.extend({}, this.settings.ejs , options);
 		var Render = compile.call(this, str, settings);
+		console.log(Render(data))
 		try {
 			return Render(data);
 		}catch(e){
 			this.logger(e);
-		}
+		}*/
+		return this.engine.twig({data:str}).render(data);
+		
 	};
 
 	/**

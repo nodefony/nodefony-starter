@@ -10,12 +10,12 @@
     	</parameters>
 
     	<services>
-        	<service id="router" class="%=router%">
+        	<service id="router" class="{{router}}">
             		<argument type="service" id="container" />
             		<argument type="service" id="httpKernel" />
         	</service>
 
-		<service id="translation" class="%=translation%">
+		<service id="translation" class="{{translation}}">
             		<argument type="service" id="container" />
 			<call method="boot"></call>
         	</service>
