@@ -307,7 +307,7 @@ nodefony.register("finder", function(){
 						break;
 						case "symbolicLink" :
 							if (settings.followSymLink && depth-1 !== 0){
-								var obj = new this.wrapper(info.path, info) ;
+								var obj = new this.wrapper(info.path, info) 	
 								if ( obj.isDirectory() )
 									arguments.callee.call(this, obj, result, settings.depth, settings, parent);
 							}

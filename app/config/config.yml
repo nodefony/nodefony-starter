@@ -60,10 +60,11 @@ httpBundle:
       path:                       "/web/"
       maxage:                     30*24*60*60*1000
 
-  #upload:
-  #    tmp_dir:                      "tmp/upload"
-  #    max_filesize:                 100000
-  
+  upload:
+      tmp_dir:                    "tmp/upload"
+      max_filesize:               100000
+  session:
+      handler:                    session.storage.files                    
     
 #
 #  OVERRIDE BUNDLE ASSETIC

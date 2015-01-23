@@ -54,7 +54,6 @@ nodefony.register("cookies",function(){
 			this.httpOnly = this.setHttpOnly(this.settings.httpOnly) ;
 			this.secure = this.setSecure(this.settings.secure)  ;
 		}
-	
 	};
 	
 	Cookie.prototype.setValue = function(value){

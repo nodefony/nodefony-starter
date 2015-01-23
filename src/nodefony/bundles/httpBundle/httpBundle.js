@@ -7,10 +7,12 @@
  */
 
 
-nodefony.registerBundle ("httpServer", function(){
+nodefony.registerBundle ("http", function(){
 
 	nodefony.io.transports = {};
-
+	nodefony.session = {
+		storage:{}
+	};
 	var httpServer  = function(kernel, container){
 
 		// load bundle library 

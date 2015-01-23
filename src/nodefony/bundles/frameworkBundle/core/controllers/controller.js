@@ -192,15 +192,6 @@ nodefony.register("controller", function(){
 		// streamFile
 		var response = this.getResponse().response;
 		var fileStream = fs.createReadStream(File.path, value || options);	
-		response.on('close', function() {
-			if (fileStream) {
-            			fileStream.unpipe(response);
-            			if (fileStream.fd) {
-					//console.log("CLOSE")
-                			fs.close(fileStream.fd);
-            			}
-        		}
-		});
 		
 		fileStream.on("open",function(){
 			if ( !  response.headersSent ){
@@ -210,6 +201,16 @@ nodefony.register("controller", function(){
 					end:true
 				});
 			}
+		});
+
+		response.on('close', function() {
+			if (fileStream) {
+            			fileStream.unpipe(response);
+            			if (fileStream.fd) {
+					//console.log("CLOSE")
+                			fs.close(fileStream.fd);
+            			}
+        		}
 		});
 		fileStream.on("error",function(error){
 			throw error ;				
