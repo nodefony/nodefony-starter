@@ -42,7 +42,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		this.url = this.request.url.href;
-		this.remoteAddress = request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+		this.remoteAddress = this.request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result){

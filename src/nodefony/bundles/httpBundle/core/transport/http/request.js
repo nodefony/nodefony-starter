@@ -158,7 +158,7 @@ nodefony.register("Request",function(){
 	};
 
 	Request.prototype.getRemoteAdress = function(){
-		return this.headers['x-forwarded-for'] || this.request.connection.remoteAddress ;
+		return this.headers['x-forwarded-for'] || this.request.connection.remoteAddress || this.request.socket.remoteAddress || this.request.connection.socket.remoteAddress ;
 	};
 
 	Request.prototype.getUrl = function(request, query){

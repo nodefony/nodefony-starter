@@ -11,12 +11,9 @@ var crypto = require('crypto');
 
 
 nodefony.register("cookies",function(){
-
 	
 	var encode = encodeURIComponent ;
 	var decode = decodeURIComponent ;
-
-
 
 	var cookieDefaultSettings = {
 		maxAge:0,//24*60*60,
@@ -96,7 +93,15 @@ nodefony.register("cookies",function(){
 				this.expires = null ;
 			}	
 		}else{
-			this.expires = null ;
+			var maxage = this.getMaxAge() ;
+			if ( maxage === 0 ){
+				this.expires = null ;
+			}else{
+				var exp = new Date().getTime() ;
+				var res= exp + ( maxage * 1000 ) ;
+				this.expires = new Date(res ) ;
+			}
+			return this.expires ;
 		}
 		this.getMaxAge() ;
 		return this.expires;
@@ -109,9 +114,9 @@ nodefony.register("cookies",function(){
 			break;
 			case "string" :
 				try {
-					var res = eval(ms) ;
+					var res = eval(ms);
 				}catch(e){
-					var res = ms
+					var res = ms;
 				}
 				return  parseInt(res, 10);
 			break;
@@ -133,8 +138,7 @@ nodefony.register("cookies",function(){
 			this.maxAge = this.originalMaxAge ;
 		}
 		return 	this.maxAge ;
-	}
-
+	};
 		
 	Cookie.prototype.toString =  function() {
 		return this.name + "=" + encode(this.value) ;
@@ -193,7 +197,6 @@ nodefony.register("cookies",function(){
 	    	return obj;
 	};
 
-
 	var cookiesParser = function(context){
 		var cookies = context.request.request.headers.cookie ;
 		if ( cookies ){
@@ -205,12 +208,10 @@ nodefony.register("cookies",function(){
 		}
 	};
 
-
 	return {
 		cookie:Cookie,
 		cookiesParser:cookiesParser,
 		parser:parse
 	
 	}
-
 });

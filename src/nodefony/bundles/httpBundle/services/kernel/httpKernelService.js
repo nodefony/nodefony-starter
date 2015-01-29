@@ -166,7 +166,7 @@ nodefony.registerService("httpKernel", function(){
 				container.setParameters("request.host" , this.kernel.domain + ":" +port );
 				//Parse cookies request
 				context.parseCookies();
-				this.kernel.fire("onHttpsRequest", container, context, type);
+				this.kernel.fire("onHttpRequest", container, context, type);
 			break;
 			case "WEBSOCKET" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
@@ -180,7 +180,7 @@ nodefony.registerService("httpKernel", function(){
 				container.set("context", context);
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
-				this.kernel.fire("onWebSocketSecureRequest", container, context, type);
+				this.kernel.fire("onWebSocketRequest", container, context, type);
 			break;
 		}
 

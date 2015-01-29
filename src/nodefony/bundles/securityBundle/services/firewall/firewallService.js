@@ -230,9 +230,7 @@ nodefony.registerService("firewall", function(){
 
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onHttpRequest", this.handlerHTTP );
-		this.kernel.listen(this, "onHttpsRequest", this.handlerHTTP );
 		this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
-		this.kernel.listen(this, "onWebSocketSecureRequest", this.handlerWebsocket );
 		this.kernel.listen(this, "onReady",function(){
 			this.sessionService = this.get("sessions");
 		});
@@ -240,14 +238,10 @@ nodefony.registerService("firewall", function(){
 	};
 
 	Firewall.prototype.handlerHTTP = function(container, context, type){
-		
 		var request = context.request.request ;
 		var response = context.response.response ;
 		request.on('end', function(){
-			// SESSION START 
-			// FIXME GOOD PLACE ???
-			//var session = this.sessionService.start(context);
-
+			
 			for ( var area in this.securedAreas ){
 				if ( this.securedAreas[area].match(context.request, context.response) ){
 					context.secureArea = this.securedAreas[area] ;
@@ -290,13 +284,7 @@ nodefony.registerService("firewall", function(){
 								switch (status){
 									case 200 :
 										//FIXME SESSION
-										//console.log(context.request)
-										var cookie = new nodefony.cookies.cookie("session","true",{
-											maxAge:50000,
-											//domain:context.request.domain
-										});
-										context.setCookie(cookie);
-
+										
 										if ( this.securedAreas[area].defaultTarget ){
 											if ( context.request.isAjax() ){
 												this.securedAreas[area].overrideURL(context.request, this.securedAreas[area].defaultTarget);
@@ -317,12 +305,8 @@ nodefony.registerService("firewall", function(){
 										}
 									break;
 									case 401 :
-										var cookie = new nodefony.cookies.cookie("session","false",{
-											maxAge:50000,
-											//domain:context.request.domain
-										});
-										context.setCookie(cookie);
-
+										//FIXME SESSION
+										
 										if (this.securedAreas[area].formLogin) {
 											var ajax = context.request.isAjax() ;
 											if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer").ready ){

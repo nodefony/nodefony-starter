@@ -9,10 +9,6 @@
 nodefony.register("Container", function(){
 
 
-	
-
-
-
 	/*
  	 *
  	 *	CONTAINER CLASS

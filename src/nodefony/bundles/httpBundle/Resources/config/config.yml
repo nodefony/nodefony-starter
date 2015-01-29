@@ -68,9 +68,12 @@ session:
   start:                        "autostart"
   name:                         "nodefony"
   handler:                      session.storage.memory
-  save_path:                    "./tmp/sessions"
+  save_path:                    "/tmp/sessions"
+  gc_probability:               1
+  gc_divisor:                   100
+  hash_function:                "md5"
+  cookie_lifetime:              0
   cookie:
-    maxAge:                     0               # 24*60*60  in seconde
     httpOnly:                   true            # don't see by script (javascript)
     secure:                     false           # https only
     signed:                     false

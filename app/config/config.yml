@@ -61,10 +61,12 @@ httpBundle:
       maxage:                     30*24*60*60*1000
 
   upload:
-      tmp_dir:                    "tmp/upload"
-      max_filesize:               100000
+    tmp_dir:                      "tmp/upload"
+    max_filesize:                 100000
   session:
-      handler:                    session.storage.files                    
+    handler:                      session.storage.files                    
+    save_path:                    "./tmp/sessions"
+    cookie_lifetime:              1440
     
 #
 #  OVERRIDE BUNDLE ASSETIC

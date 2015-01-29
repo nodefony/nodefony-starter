@@ -164,6 +164,14 @@ nodefony.register("fileClass", function(){
 		}
 	};
 
+	File.prototype.unlink = function(){
+		try {
+			fs.unlinkSync(this.path);
+		}catch(e){
+			throw e
+		}
+	};
+
 	return File;
 
 });
