@@ -11,29 +11,27 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 	var fileSessionStorage = function(manager){
 		this.manager = manager ;
 		this.path = manager.settings.save_path;
-		var res = fs.existsSync(this.path);
-		if (! res ){
-			this.manager.logger("create directory native sessions " + this.path);
-			try {
-				var res = fs.mkdirSync(this.path);
-			}catch(e){
-				throw e ;
-			}
-		}
+		this.open();
+
 		this.finder = new nodefony.finder({
 			path:this.path,
-			/*onFile:function(file){
-				this.loadSession(file);
-			}.bind(this),*/
 			onFinish:function(error, result){
 				this.manager.logger("FILES SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+result.length());
 			}.bind(this)
 		});
 	};
 
-	fileSessionStorage.prototype.start = function(session){
+	fileSessionStorage.prototype.start = function(id){
 		var fileSession  = null ;	
-		var finder = new nodefony.finder({
+		var path = this.path+"/"+id ;
+		try {
+			fileSession = new nodefony.fileClass(path);
+			return this.read(fileSession);
+
+		}catch(e){
+			return false ;
+		}
+		/*var finder = new nodefony.finder({
 			path:this.path,
 			onFile:function(file){
 				if ( file.name === session.id){
@@ -47,11 +45,20 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 					this.read(fileSession, session);
 				}
 			}.bind(this)
-		});
-		return fileSession ;
+		});*/
+		//return fileSession ;
 	};
 
 	fileSessionStorage.prototype.open = function(){
+		var res = fs.existsSync(this.path);
+		if (! res ){
+			this.manager.logger("create directory native sessions " + this.path);
+			try {
+				var res = fs.mkdirSync(this.path);
+			}catch(e){
+				throw e ;
+			}
+		}
 		return true;
 	};
 
@@ -77,10 +84,16 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 
 	fileSessionStorage.prototype.gc = function(maxlifetime){
 		var nbSessionsDelete  = 0 ;
+		var msMaxlifetime = (maxlifetime * 1000);
 		var finder = new nodefony.finder({
 			path:this.path,
 			onFile:function(file){
-				
+				var mtime = new Date( file.stats.mtime ).getTime();
+				if ( mtime + msMaxlifetime < new Date().getTime() ){
+					file.unlink();
+					this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR SESSION ID ==> "+ file.name + " DELETED");
+					nbSessionsDelete++;
+				}
 			}.bind(this),
 			onFinish:function(error, result){
 				this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
@@ -89,15 +102,14 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 
 	};
 
-	fileSessionStorage.prototype.read = function(file, session){
+	fileSessionStorage.prototype.read = function(file){
 		var id = file.name;
 		try {
 			var res = fs.readFileSync(file.path, {
 				encoding:'utf8'
 			});
-			var obj = JSON.parse(res);
-			session.deSerialize(obj);
 			this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
+			return res ; 
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
 			throw e;
@@ -107,12 +119,13 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 	fileSessionStorage.prototype.write = function(fileName, serialize){
 		var path = this.path+"/"+fileName ;
 		try{
-			fs.writeFileSync(path, serialize);
-			this.manager.logger("FILES SESSIONS STORAGE  CREATE SESSION : " + fileName);
+			var ret = fs.writeFileSync(path, serialize);
+			this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");
 			throw e;
 		} 
+		return   new nodefony.fileClass(path) ;
 	};
 	
 	return fileSessionStorage ;

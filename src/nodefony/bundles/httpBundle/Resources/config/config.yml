@@ -66,14 +66,18 @@ statics:
 # SESSIONS
 session:
   start:                        "autostart"
+  use_strict_mode:              false                    
   name:                         "nodefony"
   handler:                      session.storage.memory
   save_path:                    "/tmp/sessions"
   gc_probability:               1
   gc_divisor:                   100
+  gc_maxlifetime:               1440
   hash_function:                "md5"
-  cookie_lifetime:              0
+  use_cookies:                  true           
+  use_only_cookies:             true
   cookie:
+    maxAge:                     0               # like cookie_lifetime php
     httpOnly:                   true            # don't see by script (javascript)
     secure:                     false           # https only
     signed:                     false
