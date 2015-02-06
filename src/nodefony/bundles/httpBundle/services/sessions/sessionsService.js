@@ -6,92 +6,132 @@
 nodefony.registerService("sessions", function(){
 
 
+	var cookiesParser = function(context, name){
+		if (context.cookies[name] ){
+			return context.cookies[name];
+		}
+		return null;
+	};
+
+	var checkSecureReferer = function(){
+		var host = this.context.request.request.headers['host'] ;
+		var meta = this.getMetaBag( "host" );
+
+		if ( host === meta ){
+			return host ;
+		}else{
+			this.manager("SESSION START WARNING REFERRER NOT SAME, HOST : "+host+" ,META STORAGE :" + meta ,"WARNING");
+			throw {
+				meta :meta ,
+				host :host
+			}
+		}	
+	};
+
+	var setMetasSession = function(){
+		var time = new Date().getTime() ;
+		this.setMetaBag("created", time );
+		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
+		this.setMetaBag("host", this.context.request.request.headers['host'] );
+		this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
+	};
+
+	var createSession = function(lifetime){
+		this.id = this.setId();
+		this.manager.logger("NEW SESSION CREATE : "+ this.id)	
+		this.cookieSession = this.setCookieSession(lifetime) ;
+		setMetasSession.call(this);	
+		return this ;
+	};
+
 	/*
  	 *
  	 *	CLASS SESSION
  	 */
-	var settingsSession = {
-	
-	};
-
-	/*var Session = function(name, id, context, settings){
-		if (typeof name  === "object" ){
-			this.container = this.$super ;
-			this.$super.constructor(name.services, name.parameters);
-			this.settings = name.settings ;
-			this.id = name.id ;
-			this.referer = name.referer;
-			this.userAgent= name.userAgent;
-			this.dateCreation = name.dateCreation;
-			this.sessionName = name.sessionName ;
-			this.cookieSession = new nodefony.cookies.cookie(name.cookieSession) ;
+	var Session = function(name, settings, storage, manager ){
+		if ( ! storage ){
+			this.status = "disabled";
 		}else{
-			this.container = this.$super ;
-			this.$super.constructor();
-			this.settings = nodefony.extend({}, settingsSession, settings);
-			this.id = id ;
-			var date = Date.now() ;
-			this.setParameters("session.created", date );
-			this.setParameters("session.lastUsed", date);
-			this.setParameters("session.referer",  context.request.remoteAdress);
-			this.setParameters("session.userAgent",  context.request.request.headers["user-agent"]);
-			this.sessionName = name ;
-			this.cookieSession = this.setCookieSession(context) ;
+			this.status = "none"; // active | disabled
 		}
-	}.herite(nodefony.Container);
-
-	Session.prototype.logger = function(pci, severity, msgid, msg){
-		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "SESSIONS "+this.id+" :";
-		return syslog.logger(pci, severity || "DEBUG", msgid,  msg);
-	};
-
-	
-	Session.prototype.setCookieSession = function(context){
-		var cookie = new nodefony.cookies.cookie(this.sessionName, this.id, this.settings.cookie);
-		context.setCookie(cookie);
-		return cookie ;
-	};
-
-	*/
-
-
-	var Session = function(name, settings, storage ){
-		this.name = name ;
+		this.manager = manager ;
+		this.setName(name);
 		this.id = null ;
 		this.settings = settings ;
 		this.storage = storage ;	
 		this.mother = this.$super;
 		this.mother.constructor();
-		//this.lifeSession = new Date().getTime() + ( parseInt((this.settings.gc_maxlifetime * 1000) , 10) );
+		this.context = null ;
+		this.lifetime =  this.settings.cookie["maxAge"]; 
+		this.saved = false ;
 	}.herite(nodefony.Container);
-
+	
 	Session.prototype.start = function(context){
-		var cookie = cookiesParser(context, this.name)
-		if (cookie){
-			this.id = cookie.value;
-			this.cookieSession = new nodefony.cookies.cookie(cookie);
-			var hasCookie = true ;
+		this.context = context ;
+		if (this.settings.use_only_cookies){
+			this.applyTranId = 0;	
 		}else{
-			this.id  = this.setId(context);
-			this.cookieSession = this.setCookieSession(context) ;
-			var hasCookie = false ;
+			this.applyTranId = this.settings.use_trans_sid ;	
 		}
-		var ret = this.storage.start(this.id);
-		if (ret){
-			this.deSerialize(ret);
+		switch (this.status){
+			case "active":
+				this.manager.logger("SESSION ALLREADY STARTED ==> "+this.name+" : "+this.id, "WARNING");
+				return this;
+			break;
+			case  "disabled" :
+				try {
+					this.storage = this.manager.initializeStorage();
+					if ( this.storage ){
+						this.status = "none";
+						return this.start(context);
+					}
+				}catch(e){
+					this.manager.logger("SESSION STORAGE HANDLER NOT FOUND ","ERROR")
+				}
+			break;
+			default:
+				if (this.settings.use_cookies){
+					var cookie = cookiesParser(context, this.name) ;
+					if (cookie){
+						this.id = cookie.value;
+						this.cookieSession = new nodefony.cookies.cookie(cookie);	
+					}
+					this.applyTranId = 0 ;	
+				}
+				if ( (! this.settings.use_only_cookies) && (! this.id) ){
+					if ( this.name in context.request.query ){
+						this.id = context.request.query[this.name];
+					}
+				}
+		}
+
+		if (this.id){
+			var ret = this.storage.start(this.id);
+			if (ret){
+				this.deSerialize(ret);
+				if (this.settings.referer_check){
+					try {
+						var secure = checkSecureReferer.call(this, context)	
+					}catch(e){
+						this.manager.logger("SESSION REFERER ERROR SESSION  ==> " + this.name + " : "+ this.id, "WARNING");
+						this.invalidate(this.id);	
+					}
+				}
+			}else{
+				if (this.settings.use_strict_mode){
+					this.invalidate();
+				}
+			}		
 		}else{
-			if (hasCookie && this.settings.use_strict_mode ){
-				this.id = this.setId(context);
-				this.cookieSession = this.setCookieSession(context) ;
-			}
-			//not found
-			var time = new Date().getTime() ;
-			this.setMetaBag("created", time );
-			this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
-			this.save(this.id, this.serialize() );
+			this.clear();
+			createSession.call(this);
 		}
+		this.status = "active" ;
+		this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
 		return this ;
+		
+		//this.save(this.id, this.serialize() );
+		
 	};
 
 	Session.prototype.metaBag = function(){
@@ -106,8 +146,7 @@ nodefony.registerService("sessions", function(){
 		return this.getParameters(key);
 	};
 
-
-	Session.prototype.setCookieSession = function(context, leftTime){
+	Session.prototype.setCookieSession = function( leftTime){
 		if (leftTime){
 			var settings = nodefony.extend( {}, this.settings.cookie);
 			settings["maxAge"] = leftTime;
@@ -115,7 +154,7 @@ nodefony.registerService("sessions", function(){
 			var settings = 	this.settings.cookie ;
 		}
 		var cookie = new nodefony.cookies.cookie(this.name, this.id, settings);
-		context.setCookie(cookie);
+		this.context.response.addCookie(cookie);
 		return cookie ;
 	};
 
@@ -135,14 +174,30 @@ nodefony.registerService("sessions", function(){
 			this.setMetaBag(meta, obj.metaBag[meta]);
 	};
 
-	Session.prototype.remove = function(id){
-		return this.storage.destroy(id || this.id);	
+	Session.prototype.remove = function(){
+		try {
+			return this.storage.destroy( this.id);	
+		}catch(e){
+			this.manager.looger(e, "ERROR");
+			throw e;
+		}
 	};
 
+	Session.prototype.destroy = function(){
+		this.clear()
+		this.remove();
+		return true ;	
+	};
+
+
 	Session.prototype.clear = function(){
-		this.services = null ;
+		delete this.protoService ;
+		this.protoService = function(){};
+		delete this.protoParameters
+		this.protoParameters = function(){};
+		delete this.services ;
 		this.services = new this.protoService();
-		this.parameters = null;
+		delete this.parameters ;
 		this.parameters = new this.protoParameters();
 	};
 
@@ -151,24 +206,24 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.invalidate = function(lifetime){
-		this.clear();
+		this.manager.logger("INVALIDATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
+		if (! lifetime) lifetime = this.lifetime ;
+		this.destroy();
+		return createSession.call(this, lifetime);
 	};
 
-	Session.prototype.migrate = function(context, destroy, lifetime){
-		var oldId = this.id ;
-		this.id = this.setId(context);
-		this.cookieSession = this.setCookieSession(context, lifetime) ;
-		var time = new Date().getTime() ;
-		this.setMetaBag("created", time );
-		this.setMetaBag("lifetime", lifetime );
-		this.save(this.id, this.serialize() );
+	Session.prototype.migrate = function(destroy, lifetime){
+		this.manager.logger("MIGRATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
+		//this.save();
+		if (! lifetime) lifetime = this.lifetime ;
 		if (destroy){
-			this.remove(oldId);
+			this.remove();
 		}
+		return createSession.call(this, lifetime);
 	};
 
-	Session.prototype.setId = function(context){
-		var ip = context.remoteAddress || this.getRemoteAdress(context) ;
+	Session.prototype.setId = function(){
+		var ip = this.context.remoteAddress || this.getRemoteAdress(this.context) ;
 		var date = new Date().getTime();
 		var concat = ip + date + this.randomValueHex(16) + Math.random() * 10 ;
 		switch(this.settings.hash_function){
@@ -189,15 +244,21 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.save = function(){
-		return this.storage.write(this.id, this.serialize());	
+		this.saved = true ;
+		try {
+			return this.storage.write(this.id, this.serialize());	
+		}catch(e){
+			this.manager.logger(" SESSION ERROR : "+e,"ERROR");
+			this.saved = false ;	
+		}
 	};
 
 	Session.prototype.getName = function(){
 		return this.name ;	
 	};
 
-	Session.prototype.setName = function(){
-	
+	Session.prototype.setName = function(name){
+		this.name = name || this.settings.name ;	
 	};
 
 	Session.prototype.randomValueHex = function(len) {
@@ -206,8 +267,8 @@ nodefony.registerService("sessions", function(){
 			.slice(0,len);   // return required number of characters
 	};
 	
-	Session.prototype.getRemoteAdress = function(context){
-		var request = context.request.request ;
+	Session.prototype.getRemoteAdress = function(){
+		var request = this.context.request.request ;
 		return request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || request.connection.socket.remoteAddress ;
 	};
 
@@ -217,13 +278,7 @@ nodefony.registerService("sessions", function(){
  	 *
  	 *
  	 */
-	var cookiesParser = function(context, name){
-		if (context.cookies[name] ){
-			return context.cookies[name];
-		}
-		return null;
-	};
-
+	
 	var SessionsManager = function(security, httpKernel){
 		this.httpKernel = httpKernel;
 		this.firewall = security ; 
@@ -231,13 +286,9 @@ nodefony.registerService("sessions", function(){
 		this.kernel.listen(this, "onBoot",function(){
 			this.settings = this.container.getParameters("bundles.http").session;
 			this.defaultSessionName = this.settings.name ;
-			var storage =  eval("nodefony."+this.settings.handler) ;
-			if (storage){
-				this.storage = new storage(this) ;
-			}else{
-				this.storage = null ;
-			}
+			this.initializeStorage();
 		}.bind(this));
+
 		this.kernel.listen(this, "onHttpRequest", function(container, context, type){
 			var request = context.request.request ;
 			request.on('end', function(){
@@ -248,12 +299,30 @@ nodefony.registerService("sessions", function(){
 			response.on("finish",function(){
 				if ( context.session ){
 					context.session.setMetaBag("lastUsed", new Date().getTime() );
-					context.session.save();	
+					if ( ! this.saved )
+						context.session.save();	
 				}
 			});
 		}.bind(this));
+
+		this.kernel.listen(this, "onTerminate",function(){
+			if ( this.storage )
+				this.storage.close();	
+		}.bind(this));
 	};
 
+	SessionsManager.prototype.initializeStorage = function(){
+		var storage =  eval("nodefony."+this.settings.handler) ;
+		if (storage){
+			this.storage = new storage(this) ;
+			this.storage.open();
+		}else{
+			this.storage = null ;
+			this.logger("SESSION HANDLER STORAGE NOT FOUND :" + this.settings.handler,"ERROR")
+		}
+		return this.storage
+	};
+	
 	SessionsManager.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
 		if (! msgid) msgid = "SERVICE SESSIONS";
@@ -262,7 +331,6 @@ nodefony.registerService("sessions", function(){
 	
 	SessionsManager.prototype.start = function(context){
 		var session = this.createSession(this.defaultSessionName, this.settings );
-		//var date = new Date().getTime();
 		var ret = session.start(context) ;
 		if ( this.probaGarbage() ){
 			this.storage.gc(this.settings.gc_maxlifetime);	
@@ -271,7 +339,9 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	SessionsManager.prototype.createSession = function(name, settings){
-		return new Session(name, settings, this.storage);
+		var session = new Session(name, settings, this.storage, this);
+		session.logger = this.logger.bind(this) ;
+		return session ;
 	};
 
 	SessionsManager.prototype.probaGarbage = function(){

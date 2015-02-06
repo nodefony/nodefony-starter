@@ -42,7 +42,11 @@ nodefony.register.call( nodefony.io.authentication, "SASL", function(){
 		this.$super.constructor("SASL");
 		this.mechanisms	= this.getAllMechanisms();
 		this.notificationCenter.listen(this, "checkAuthenticate", function(host, request, response, callback){
-			this.checkResponse(host, request, response, callback)
+			try {
+				this.checkResponse(host, request, response, callback)
+			}catch(e){
+				throw e
+			}
 		}.bind(this))
 	
 	};

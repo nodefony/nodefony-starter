@@ -22,7 +22,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.request = new nodefony.Request( request , container);
 		this.response = new nodefony.Response( response , container);
 		this.session = null;
-		this.cookies = [];
+		this.cookies = {};
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;
@@ -99,6 +99,9 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//case response instanceof nodefony.Response :
 			//break ;
 		}
+
+		// cookies
+		this.response.setCookies();
 		/*
  		* HTTP WRITE HEAD  
  		*/
@@ -181,9 +184,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		}
 	};
 
-	// FIXME COOKIES SESSION
+	
+
+
 	// connect intrusif in prototype response.on('header') https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x
-	Http.prototype.setCookie = function(cookie){
+	/*Http.prototype.setCookie = function(cookie){
 		if ( cookie instanceof nodefony.cookies.cookie ){
 			this.response.response.on('header', function(){
 				this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
@@ -196,11 +201,10 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 				error:"Context HTTP setCookie not valid cookies"
 			}
 		}
-	};
+	};*/
 
 	Http.prototype.addCookie = function(cookie){
 		if ( cookie instanceof nodefony.cookies.cookie ){
-			this.cookies.push(cookie);	
 			this.cookies[cookie.name] = cookie;
 		}else{
 			throw {

@@ -14,30 +14,23 @@ nodefony.register.call(nodefony.io, "authentication",function(){
 	};
 
 	authenticate.prototype.checkAuthenticate = function(host, request, response){
-			this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
-			if (this.authorization){
-				try {
-					this.notificationCenter.fire("checkAuthenticate", host, request, response, this.getUserPasswd );
+		this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
+		if (this.authorization){
+			try {
+				this.notificationCenter.fire("checkAuthenticate", host, request, response );
+				if (this.statusCode !== 401)
 					return response.statusCode = this.statusCode;
-				}catch(e){
-					response.headers["WWW-Authenticate"] = this.generateResponse(host, request, response);
-					response.statusCode = this.statusCode
-					throw (e);	
-				}
+			}catch(e){
+				response.headers["WWW-Authenticate"] = this.generateResponse(host, request, response);
+				response.statusCode = this.statusCode ;
+				throw (e);	
 			}
-			if (request.headers["Session"]){
-				this.notificationCenter.fire("checkSession", host, request, response );
-				//return this.checkSession();
-			}else{
-				response.headers["WWW-Authenticate"] = this.generateResponse(host, request, response);	
-				this.statusCode = response.statusCode = 401;
-			}
-		return this.statusCode ;
-	};
+		}
+		
+		response.headers["WWW-Authenticate"] = this.generateResponse(host, request, response);	
+		this.statusCode = response.statusCode = 401;
 
-	authenticate.prototype.checkSession = function(){
-		throw new Error("YOU MUST redefine session function checkSession in authenticate  ")
-		return 200;	
+		return this.statusCode ;
 	};
 
 	authenticate.prototype.generatePasswd = function(type, user, passwd){
@@ -50,6 +43,12 @@ nodefony.register.call(nodefony.io, "authentication",function(){
 		throw new Error("YOU MUST redefine provider function getUserPasswd in authenticate prototcole ")	
 	};
 	
+	authenticate.prototype.serialize = function(){
+		return JSON.stringify({
+			authorization:	this.authorization ,
+			type:this.name
+		})
+	};
 	
 	return  {
 		mechanisms:{},

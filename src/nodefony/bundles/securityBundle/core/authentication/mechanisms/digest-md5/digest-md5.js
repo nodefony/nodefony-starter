@@ -90,14 +90,15 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		this.settings = nodefony.extend({}, settingsDigest, options);	
 		this.mother = this.$super;
 		this.$super.constructor("Digest");
+		this.auth = false ;
 		if (request){
 			this.secret = host+":"+request.headers["user-agent"]+":"+request.headers["referer"]
 			this.request = request ;
 			this.response = response;
 			this.method = request.method;
 		}
-		this.notificationCenter.listen(this, "checkAuthenticate", function(host, request, response, callback){
-			this.checkResponse( this.authorization, callback);
+		this.notificationCenter.listen(this, "checkAuthenticate", function(host, request, response){
+			this.checkResponse( this.authorization, this.getUserPasswd);
 		})
 
 	}.herite(nodefony.io.authentication.authenticate);
@@ -115,7 +116,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		var nonce = this.nonce.substring(lenghtTs);
 		var ts = this.nonce.substring(0,lenghtTs);
 		var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
-		if (tm > tsTimeout){
+		if ( (! this.auth ) &&  tm > tsTimeout){
 			throw {
 				type:"error",
 				message:"Digest TIMEOUT"	
@@ -175,6 +176,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 			var userHashToCompare = callback(this.username);
 			var res = this.recalculateResponse(userHashToCompare);
 			if (res === this.response){
+				this.auth = true ;
 				this.statusCode = 200;
 				return true;
 			}else{

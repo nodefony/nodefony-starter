@@ -48,10 +48,12 @@ nodefony.register("notificationsCenter",function(){
 			return this.event.emit.apply(this.event, arguments)
 		} catch (e) {
 			if(e.stack){
-				console.error(e.message)
+				console.error(e.message);
 				console.error(e.stack);
+				throw e ;
 			}else{
-				throw new Error(e);
+				console.error(e);
+				throw e ;
 			}
 		}
 		return ret;

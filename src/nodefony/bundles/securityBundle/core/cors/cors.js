@@ -55,7 +55,7 @@ nodefony.register.call( nodefony.io, "cors", function(){
 
 
 	cors.prototype.match = function( request, response){
-		var URL = url.parse(request.headers.referer || request.headers.origin )
+		var URL = url.parse(request.headers.referer || request.headers.origin || request.url.href )
 		var origin =  URL.protocol+"//"+URL.host ;
 		if (this.allowMatch){
 			var res = this.allowMatch.exec(origin) ;

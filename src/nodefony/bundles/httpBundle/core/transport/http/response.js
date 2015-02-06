@@ -23,6 +23,9 @@ nodefony.register("Response",function(){
 		this.body = "";
 		this.encoding = null;
 
+		//cookies
+		this.cookies = {};
+
 		// struct headers
 		this.headers = {};
 
@@ -40,6 +43,30 @@ nodefony.register("Response",function(){
 
 		/*this.response.on("close",function(){
 		}.bind(this))*/
+	};
+
+	Response.prototype.addCookie = function(cookie){
+		if ( cookie instanceof nodefony.cookies.cookie ){
+			this.cookies[cookie.name] = cookie;
+		}else{
+			throw {
+				message:"",
+				error:"Response addCookies not valid cookies"
+			}
+		}	
+	};
+
+	Response.prototype.setCookies = function(){
+		for (var cook in this.cookies){
+			this.setCookie(this.cookies[cook]);	
+		}
+	};
+
+	Response.prototype.setCookie = function(cookie){
+		this.response.on('header', function(){
+			this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
+			this.setHeader('Set-Cookie', cookie.serialize());
+		}.bind(this))
 	};
 
 	Response.prototype.logger = function(pci, severity, msgid,  msg){

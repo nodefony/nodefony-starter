@@ -35,7 +35,7 @@
 name:                           "N O D E F O N Y"
 system:                         
   version:                      "1.0"
-  domain:                       127.0.0.1
+  domain:                       nodefony.com
   httpPort:                     5151
   httpsPort:                    5152
   statics:                      true

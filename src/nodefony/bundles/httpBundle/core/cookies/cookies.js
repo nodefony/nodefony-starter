@@ -53,6 +53,13 @@ nodefony.register("cookies",function(){
 		}
 	};
 	
+
+	Cookie.prototype.clearCookie = function(){
+		this.setExpires(1);
+		this.path = "/";
+	};
+
+
 	Cookie.prototype.setValue = function(value){
 		if (value){
 			value = decode( value ) ;

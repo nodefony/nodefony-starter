@@ -64,7 +64,7 @@ httpBundle:
     tmp_dir:                      "tmp/upload"
     max_filesize:                 100000
   session:
-    handler:                      session.storage.files                    
+#   handler:                      session.storage.sqlite                    
     save_path:                    "./tmp/sessions"
 #    cookie:
 #      maxAge:                     1440

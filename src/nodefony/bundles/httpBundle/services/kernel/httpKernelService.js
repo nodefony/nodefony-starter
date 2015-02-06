@@ -36,12 +36,10 @@ nodefony.registerService("httpKernel", function(){
 	};
 	
 	httpKernel.prototype.boot = function(){
-				
 		// Manage statics files
 		 this.kernel.listen(this, "onBoot", function(){
 			this.initStaticFiles();
 		 });
-			
 	};
 	
 	httpKernel.prototype.getTemplate = function(name){
@@ -103,8 +101,8 @@ nodefony.registerService("httpKernel", function(){
 				myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
             				
 			}else{
-				var myError =  util.inspect(error);
-				this.logger(myError);
+				var myError =  error;
+				this.logger(util.inspect(error));
 			}
 		}
 		var context = container.get('context');
@@ -126,7 +124,7 @@ nodefony.registerService("httpKernel", function(){
 				context.setXjson(error.xjson);
 		}
 		resolver.callController( {
-			exception:myError,
+			exception:myError || error,
 			controller: container.get("controller") ? container.get("controller").name : null,
 			bundle:container.get("bundle") ? container.get("bundle").name : null
 		} );
@@ -147,40 +145,24 @@ nodefony.registerService("httpKernel", function(){
 		container.setParameters("request.protocol" , type);
 		switch (type){
 			case "HTTP" :
-				var context = new nodefony.io.transports.http(container, request, response, type);
-				container.set("context", context);
-				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onError);
-				var port = this.kernel.httpPort ;
-				container.setParameters("request.host" , this.kernel.domain + ":" +port );
-				//Parse cookies request
-				context.parseCookies();
-				this.kernel.fire("onHttpRequest", container, context, type);
-			break;
 			case "HTTPS" :
 				var context = new nodefony.io.transports.http(container, request, response, type);
 				container.set("context", context);
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
-				var port = this.kernel.httpsPort ;
+				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
 				container.setParameters("request.host" , this.kernel.domain + ":" +port );
 				//Parse cookies request
 				context.parseCookies();
 				this.kernel.fire("onHttpRequest", container, context, type);
 			break;
 			case "WEBSOCKET" :
-				var context = new nodefony.io.transports.websocket(container, request, response, type);
-				container.set("context", context);
-				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onError);
-				this.kernel.fire("onWebsocketRequest", container, context, type);
-			break;
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
-				this.kernel.fire("onWebSocketRequest", container, context, type);
+				this.kernel.fire("onWebsocketRequest", container, context, type);
 			break;
 		}
 

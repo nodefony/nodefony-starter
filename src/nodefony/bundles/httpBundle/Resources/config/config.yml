@@ -68,7 +68,7 @@ session:
   start:                        "autostart"
   use_strict_mode:              false                    
   name:                         "nodefony"
-  handler:                      session.storage.memory
+  handler:                      session.storage.files
   save_path:                    "/tmp/sessions"
   gc_probability:               1
   gc_divisor:                   100
@@ -76,8 +76,9 @@ session:
   hash_function:                "md5"
   use_cookies:                  true           
   use_only_cookies:             true
+  referer_check:                true
   cookie:
-    maxAge:                     0               # like cookie_lifetime php
+    maxAge:                     10               # like cookie_lifetime php  =>seconde
     httpOnly:                   true            # don't see by script (javascript)
     secure:                     false           # https only
     signed:                     false

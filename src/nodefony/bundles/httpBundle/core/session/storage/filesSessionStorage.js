@@ -11,14 +11,8 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 	var fileSessionStorage = function(manager){
 		this.manager = manager ;
 		this.path = manager.settings.save_path;
-		this.open();
-
-		this.finder = new nodefony.finder({
-			path:this.path,
-			onFinish:function(error, result){
-				this.manager.logger("FILES SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+result.length());
-			}.bind(this)
-		});
+		this.gc_maxlifetime = manager.settings.gc_maxlifetime ;
+		
 	};
 
 	fileSessionStorage.prototype.start = function(id){
@@ -31,22 +25,6 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}catch(e){
 			return false ;
 		}
-		/*var finder = new nodefony.finder({
-			path:this.path,
-			onFile:function(file){
-				if ( file.name === session.id){
-					fileSession = file ;	
-				}
-			}.bind(this),
-			onFinish:function(error, result){
-				if ( ! fileSession){
-					this.write(session.id, session.serialize() );	
-				}else{
-					this.read(fileSession, session);
-				}
-			}.bind(this)
-		});*/
-		//return fileSession ;
 	};
 
 	fileSessionStorage.prototype.open = function(){
@@ -58,33 +36,39 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 			}catch(e){
 				throw e ;
 			}
+		}else{
+			this.gc(this.gc_maxlifetime);
+			this.finder = new nodefony.finder({
+				path:this.path,
+				onFinish:function(error, result){
+					this.manager.logger("FILES SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+result.length());
+				}.bind(this)
+			});
 		}
 		return true;
 	};
 
 	fileSessionStorage.prototype.close = function(){
+		this.gc(this.gc_maxlifetime);
 		return true;
 	};
 
 	fileSessionStorage.prototype.destroy = function(id){
 		var fileDestroy  = null ;
-		var finder = new nodefony.finder({
-			path:this.path,
-			onFile:function(file){
-				if ( file.name === id){
-					fileDestroy = file ;	
-				}
-			}.bind(this),
-			onFinish:function(error, result){
-				if ( fileDestroy )
-					fileDestroy.unlink();		
-			}.bind(this)
-		});
+		var path = this.path+"/"+id ;
+		try {
+			fileDestroy = new nodefony.fileClass(path);
+			this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION ID ==> "+ fileDestroy.name + " DELETED");
+			return fileDestroy.unlink();;
+
+		}catch(e){
+			return false ;
+		}
 	};
 
 	fileSessionStorage.prototype.gc = function(maxlifetime){
 		var nbSessionsDelete  = 0 ;
-		var msMaxlifetime = (maxlifetime * 1000);
+		var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
 		var finder = new nodefony.finder({
 			path:this.path,
 			onFile:function(file){
@@ -108,7 +92,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 			var res = fs.readFileSync(file.path, {
 				encoding:'utf8'
 			});
-			this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
+			//this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
 			return res ; 
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
@@ -120,7 +104,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		var path = this.path+"/"+fileName ;
 		try{
 			var ret = fs.writeFileSync(path, serialize);
-			this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
+			//this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");
 			throw e;

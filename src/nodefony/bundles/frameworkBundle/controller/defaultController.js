@@ -17,7 +17,18 @@ nodefony.registerController("framework", function(){
 		};
 
 		frameworkController.prototype.indexAction = function(){
-			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
+			//var session = this.getContext().session;
+			//var name = session.get("name");
+			//if ( ! name ){
+			//	session.set("name" , "cci");
+			//}
+			//var bool = session.getMetaBag("lastUsed") + ( 30*1000 ) > new Date().getTime() ;
+			//if ( bool ){
+				return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
+			//}else{
+			//	session.invalidate();
+			//	return this.redirect("login");
+			//}
 		};
 
 		frameworkController.prototype["404Action"] = function(error){
@@ -25,12 +36,8 @@ nodefony.registerController("framework", function(){
 		};
 
 		frameworkController.prototype["401Action"] = function(error){
-			var cookie = new nodefony.cookies.cookie("session","false",{
-				maxAge:50000,
-				//domain:context.request.domain
-			});
-			this.getContext().setCookie(cookie);
-			return this.render('frameworkBundle::401.html.twig', nodefony.extend( {url:this.context.url}, error) );
+			var res = nodefony.extend( {url:this.context.url}, error);
+			return this.render('frameworkBundle::401.html.twig', res );
 		};
 		
 		frameworkController.prototype.loginAction = function(log){

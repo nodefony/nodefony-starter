@@ -95,15 +95,16 @@ nodefony.registerService("firewall", function(){
 	}();
 
 
-	var securedArea = function(container){
+	var securedArea = function(container, firewall){
 		this.container = container;
-		//console.log( this.container.get("httpsServer") );
+		this.firewall = firewall ;
 		this.Authenticate = null;
 		this.crossDomain = false;
 		this.pattern = ".*";
 		this.provider = null;
 		this.formLogin = null;
 		this.checkLogin = null;
+		this.sessionStrategy = "migrate" ;
 	};
 
 
@@ -131,6 +132,11 @@ nodefony.registerService("firewall", function(){
 					this.logger("Authentification : "+ auth+" is not implemented");
 			}
 		}
+		this.firewall.kernel.listen(this, "onBoot",function(){
+			if ( this.provider in this.firewall.providers){
+				this.Authenticate.getUserPasswd = this.firewall.providers[ this.provider ].getUserPassword.bind(this.firewall.providers[ this.provider ]) ;	 
+			}
+		}.bind(this))
 		return this.Authenticate;
 	};
 
@@ -158,8 +164,7 @@ nodefony.registerService("firewall", function(){
 		return context.redirect(context.request.url, 301);
 	};
 
-
-
+		
 	securedArea.prototype.match = function(request, response){
 		//if (request.url.href === this.formLogin )
                         //return true;
@@ -185,28 +190,16 @@ nodefony.registerService("firewall", function(){
 
 
 	securedArea.prototype.setDefaultTarget = function(route){
-		this.defaultTarget = route
+		this.defaultTarget = route;
 	};
 
-	securedArea.prototype.checkAuthenticate = function(host, request, response){
-		return this.Authenticate.checkAuthenticate(host, request, response);
+	securedArea.prototype.checkAuthenticate = function(host, context){
+		return this.Authenticate.checkAuthenticate(host, context.request, context.response);
 	};
+
 	//FIXME SESSION
-	securedArea.prototype.checkValidSession = function(context){
-		if( context.session ) {
-			switch (context.session.value){
-				case "null":
-				case "false":
-				case null:
-				case false:
-					return null;
-				break;
-				default:
-					return 200;
-			}
-		}else{
-			return null;
-		}
+	securedArea.prototype.checkValidSession = function(context, host){
+		
 	};
 
 	/*
@@ -215,45 +208,72 @@ nodefony.registerService("firewall", function(){
  	 *
  	 *
  	 */
+
+	var optionStrategy ={
+		migrate:true,
+		invalidate:true,
+		none:true
+	};
+
 	var Firewall = function(container, kernel ){
 		this.container = container;
 		this.kernel = kernel;
+		this.kernelHttp = this.get("httpKernel");
 		this.reader = function(context){
 			var func = context.container.get("reader").loadPlugin("security", pluginReader);
 			return function(result){
 				return func(result, context.nodeReader.bind(context));
 			};
 		}(this);
-
 		this.securedAreas = {}; 
 		this.providers = {};
-
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onHttpRequest", this.handlerHTTP );
 		this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
 		this.kernel.listen(this, "onReady",function(){
 			this.sessionService = this.get("sessions");
 		});
-		
 	};
+
+
+	Firewall.prototype.setSessionStrategy = function(strategy){
+		if (strategy in optionStrategy ){
+			return this.sessionStrategy = strategy ;
+		}
+		throw new Error("sessionStrategy strategy not found")
+	};
+
 
 	Firewall.prototype.handlerHTTP = function(container, context, type){
 		var request = context.request.request ;
 		var response = context.response.response ;
 		request.on('end', function(){
 			
+			/*switch(this.sessionStrategy){
+				case "migrate" :
+					context.session.migrate(true);
+				break;
+				case "invalidate" :
+					context.session.invalidate();
+				break;
+				case "none" :
+				break;
+			}*/
+
 			for ( var area in this.securedAreas ){
 				if ( this.securedAreas[area].match(context.request, context.response) ){
 					context.secureArea = this.securedAreas[area] ;
 					try {
-						var host = container.getParameters("request.host");
-						var URL = url.parse(request.headers.referer || request.headers.origin ) ;
+						var host =  container.getParameters("request.host");
+						var URL = url.parse(request.headers.referer || request.headers.origin || type+"://"+request.headers.host ) ;
+
 						var cross = ! ( URL.protocol+"//"+URL.host  === type.toLowerCase()+"://"+host ) ;
 						if ( cross ){
-							if ( this.securedAreas[area].crossDomain )
+							if ( this.securedAreas[area].crossDomain ){
 								var next = this.securedAreas[area].crossDomain.match( context.request, context.response )	
-							else
+							}else{
 								var next = 401;
+							}
 							switch (next){
 								case 204 :
 									return ;
@@ -270,25 +290,21 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if ( this.securedAreas[area].Authenticate ){
-							//FIXME SESSION
-							if ( this.securedAreas[area].checkValidSession(context) ){
-								context.notificationsCenter.fire("onRequest",container, request, response );	
-							}else{
-								if (this.securedAreas[area].provider ) {
-									var provider = this.securedAreas[area].provider
-									if ( provider in this.providers){
-										this.securedAreas[area].Authenticate.getUserPasswd = this.providers[ provider ].getUserPassword.bind(this.providers[ provider ]) ;	
-									}
-								}
-								var status =  this.securedAreas[area].checkAuthenticate(host, context.request, context.response);
-								switch (status){
-									case 200 :
-										//FIXME SESSION
+							
+							var status = this.securedAreas[area].checkAuthenticate(host, context);	
+							
+							switch (status){
+								case 200 :
+									if ( ! context.session.getMetaBag("Authenticate.username") ){
 										
+										context.session.migrate(true);	
+										context.session.setMetaBag("Authenticate.username", this.securedAreas[area].Authenticate.username);	
+										context.session.setMetaBag("Authenticate.token",this.securedAreas[area].Authenticate.serialize());
+											
 										if ( this.securedAreas[area].defaultTarget ){
 											if ( context.request.isAjax() ){
 												this.securedAreas[area].overrideURL(context.request, this.securedAreas[area].defaultTarget);
-												var obj = kernelHttp.setXJSON(context, {
+												var obj = context.setXjson( {
 													message:"OK",
 													status:200,
 												});
@@ -298,50 +314,49 @@ nodefony.registerService("firewall", function(){
 											}
 											
 										}else{
-											throw {
-												message:"defaultTarget not found in config file",
-												status:404
-											}
+											context.redirect(context.request.url, 301);
 										}
-									break;
-									case 401 :
-										//FIXME SESSION
-										
-										if (this.securedAreas[area].formLogin) {
-											var ajax = context.request.isAjax() ;
-											if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer").ready ){
-												this.securedAreas[area].redirectHttps(context);
-											}else{
-												var ur = this.securedAreas[area].overrideURL(context.request);
-												context.notificationsCenter.fire("onRequest",container, request, response );
-											}
-												
-										}else{
-											context.notificationsCenter.fire("onError",container, {
-												status:this.securedAreas[area].Authenticate.statusCode,
-												message:"Unauthorized"
-											} );
-										}
-									break;
-									default:
-										throw {
-											message:"Authenticate status code not defined : "+ this.securedAreas[area].Authenticate.statusCode
-										}
-								}
+									}else{
+										context.notificationsCenter.fire("onRequest",container, request, response );
+									}	
+									return ;
+								break;
+								case 401 :
+									throw {
+										message:"Unauthorized"
+									}
+								break;
+								default:
+									throw {
+										message:"Authenticate status code not defined : "+ this.securedAreas[area].Authenticate.statusCode
+									}
 							}
 						}
 					}catch (e){
-						if (this.securedAreas[area].formLogin) {
-							var obj = kernelHttp.setXJSON(context, e);
-							var ur = this.securedAreas[area].overrideURL(context.request);
-							context.notificationsCenter.fire("onRequest",container, request, response, obj );
-							return ;
+
+						context.session.invalidate();
+						if (typeof e === "string"){
+							var e ={
+								error:e
+							}
 						}
-						context.notificationsCenter.fire("onError",container, {
-							xjson:e,	
-							status:401,
-							message:e
-						} );
+						if (this.securedAreas[area].formLogin) {
+							var obj = context.setXjson(e);
+							var ajax = context.request.isAjax() ;
+							if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer").ready ){
+								this.securedAreas[area].redirectHttps(context);
+							}else{
+								var ur = this.securedAreas[area].overrideURL(context.request);
+								context.notificationsCenter.fire("onRequest",container, request, response );
+							}
+								
+						}else{
+							context.notificationsCenter.fire("onError",container, {
+								xjson:e,
+								status:this.securedAreas[area].Authenticate.statusCode,
+								message:"Unauthorized"
+							} );
+						}
 					}
 					return;
 				}
@@ -386,6 +401,7 @@ nodefony.registerService("firewall", function(){
 								break;
 								case "anonymous":
 								break;
+								
 								case "crossDomain":
 									area.setCrossDomain(param[ele]);
 								break;
@@ -414,6 +430,9 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 					}
+				break;
+				case "session_fixation_strategy":
+					this.setSessionStrategy(obj[ele]);
 				break;
 				case "access_control" : 
 				break;
@@ -468,13 +487,10 @@ nodefony.registerService("firewall", function(){
 		//console.log(area)
 	}
 
-	Firewall.prototype.addProvider = function(name){
-		
-	};
-
+	
 	Firewall.prototype.addSecuredArea = function(name){
 		if ( ! this.securedAreas[name] ){
-			this.securedAreas[name] = new securedArea(this.container) ;
+			this.securedAreas[name] = new securedArea(this.container, this) ;
 			return this.securedAreas[name]
 		}else{
 			this.logger("securedAreas :" + name +"already exist ")

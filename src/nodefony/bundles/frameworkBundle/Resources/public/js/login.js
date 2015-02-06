@@ -42,7 +42,7 @@ var login = function(){
 					body:request.responseText
 				}
 				delete authenticate ;
-				authenticate = new nodefony.io.authentication.authenticate(path, obj, {
+				authenticate = new stage.io.authentication.authenticate(path, obj, {
 					ajax:false,
 					onRegister:function(authenticate, Authorization){
 
@@ -69,7 +69,7 @@ var login = function(){
 						}
 					},
 					onError:function(obj, type, message){
-						var res = nodefony.io.getHeaderJSON(obj);
+						var res = stage.io.getHeaderJSON(obj);
 						if (res){
 							//console.log(res);
 							log({
