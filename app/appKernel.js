@@ -13,10 +13,8 @@ nodefony.register("appKernel",function(){
 
 	var appKernel = function(type, environment, debug, loader){
 		
-		// Kernel constructor
-		var kernel = this.$super;
-		
 		// kernel constructor
+		var kernel = this.$super;
 		kernel.constructor(environment, debug, loader, type)
 
 		/*
@@ -24,7 +22,8 @@ nodefony.register("appKernel",function(){
 	 	*/
 		this.registerBundles([
 			"./vendors/nodefony/bundles/orm2Bundle",
-			"./src/bundles/demoBundle"
+			"./src/bundles/demoBundle",
+			"./src/experimental/webRtcBundle"
 		]);
 
 		/*

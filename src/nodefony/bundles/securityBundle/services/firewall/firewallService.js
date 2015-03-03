@@ -94,54 +94,113 @@ nodefony.registerService("firewall", function(){
 		};
 	}();
 
-
-	var securedArea = function(container, firewall){
+	// manager
+	var securedArea = function(name, container, firewall){
+		this.notificationCenter = new nodefony.notificationsCenter.create();
+		this.name = name ;
 		this.container = container;
 		this.firewall = firewall ;
-		this.Authenticate = null;
-		this.crossDomain = false;
+		//this.crossDomain = false;
 		this.pattern = ".*";
+		this.factory = null; 
 		this.provider = null;
 		this.formLogin = null;
 		this.checkLogin = null;
-		this.sessionStrategy = "migrate" ;
-	};
 
-
-	securedArea.prototype.authentication = function(auth, options){
-		if ( auth ){
-			// authentifications
-			switch (auth){
-				case "SASL":
-					this.Authenticate =  new nodefony.io.authentication.SASL(options);
-				break;
-				case "BASIC":
-				case "http_basic":
-					this.Authenticate = new nodefony.io.authentication.BASIC(options);
-				break;
-				case "DIGEST":
-				case "http_digest":
-					this.Authenticate = new nodefony.io.authentication["http_digest"](options);
-				break;	
-				case "false":
-				case false:
-				case null:
-					this.Authenticate = null;
-				break;
-				default:
-					this.logger("Authentification : "+ auth+" is not implemented");
-			}
-		}
 		this.firewall.kernel.listen(this, "onBoot",function(){
-			if ( this.provider in this.firewall.providers){
-				this.Authenticate.getUserPasswd = this.firewall.providers[ this.provider ].getUserPassword.bind(this.firewall.providers[ this.provider ]) ;	 
+			try {
+				if ( this.providerName in this.firewall.providers){
+					this.provider = this.firewall.providers[ this.providerName ] ;	
+					this.firewall.logger("ADD SECURITY CONTEXT : " + this.name +" FACTORY : "+ this.factory.name + " PROVIDER :" + this.provider.name + " PATTERN :" + this.pattern, "DEBUG");
+					/*this.firewall.kernel.listen(this, "onHttpRequest", function(container, context, type){
+						try {
+							this.handle(container, context, type);
+						}catch(e){
+							context.notificationsCenter.fire("onError",container, e);
+							this.firewall.logger(e, "ERROR");
+							return ;	
+						}
+						var request = context.request.request ;
+						var response = context.response.response ;
+						try {
+							context.notificationsCenter.fire("onRequest", container, request, response);	
+						}catch (e){
+							context.notificationsCenter.fire("onError",container, {
+								status:500,
+								message:e
+							});
+						}
+					}.bind(this) );*/
+				}else{
+					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
+				}
+			}catch(e){
+				this.firewall.logger(this.name +"  "+e,"ERROR");	
+				throw e;
 			}
 		}.bind(this))
-		return this.Authenticate;
+	};
+
+	securedArea.prototype.fire = function(){
+		return this.notificationCenter.fire.apply(this.notificationCenter, arguments);
+	};
+
+	securedArea.prototype.listen = function(){
+		return this.notificationCenter.listen.apply(this.notificationCenter, arguments);
+	};
+
+	securedArea.prototype.handle = function(container, context, type){
+		if ( this.match(context.request) ){
+			try {
+				this.fire("onHttpRequest", container, context, type);
+			}catch(e){
+				throw e;
+			}	
+		}
+	};
+	
+	// Factory
+	securedArea.prototype.setFactory = function(auth, options){
+		if ( auth ){
+			if (auth in nodefony.security.factory ){
+				this.factory = new nodefony.security.factory[auth](this, options)
+			}else{
+				this.firewall.logger("FACTORY :"+auth +"NOT registered ","ERROR");
+				throw new Error("FACTORY :"+auth +"NOT registered "); 
+			}
+			
+		}
+		// authentifications
+		/*switch (auth){
+			case "SASL":
+				this.Authenticate =  new nodefony.io.authentication.SASL(options);
+			break;
+			case "http_basic":
+				this.Authenticate = new nodefony.io.authentication.["http_digest"](options);
+			break;
+			case "http_digest":
+				this.Authenticate = new nodefony.io.authentication["http_digest"](options);
+			break;	
+			case "false":
+			case false:
+			case null:
+				this.Authenticate = null;
+			break;
+			default:
+				this.logger("Authentification : "+ auth+" is not implemented");
+		}
+		this.firewall.kernel.listen(this, "onBoot",function(){
+						 
+			//if ( this.provider in this.firewall.providers){
+				//this.Authenticate.provider = this.firewall.providers[ this.provider ] ;
+				//this.Authenticate.getUserPasswd = this.firewall.providers[ this.provider ].getUserPassword.bind(this.firewall.providers[ this.provider ]) ;	 
+			//}
+		}.bind(this))*/
+		//return this.Authenticate;
 	};
 
 	securedArea.prototype.setProvider = function(provider){
-		this.provider = provider;
+		this.providerName = provider;
 	};
 
 	securedArea.prototype.overrideURL = function(request, url ){
@@ -225,15 +284,35 @@ nodefony.registerService("firewall", function(){
 				return func(result, context.nodeReader.bind(context));
 			};
 		}(this);
+
 		this.securedAreas = {}; 
 		this.providers = {};
 		// listen KERNEL EVENTS
-		this.kernel.listen(this, "onHttpRequest", this.handlerHTTP );
-		this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
+		this.kernel.listen(this, "onBoot",function(){
+
+
+		});
+
 		this.kernel.listen(this, "onReady",function(){
 			this.sessionService = this.get("sessions");
 		});
+
+		//FIXME FIREWALL ENTRY POINT
+		this.kernel.listen(this,"onHttpRequest" , function(container, context, type){
+			var request = context.request.request ;
+			var response = context.response.response ;
+	
+			request.on('end', function(){
+
+				context.notificationsCenter.fire("onRequest", container, request, response);	
+			});
+		});
+
+
+		this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
+
 	};
+
 
 
 	Firewall.prototype.setSessionStrategy = function(strategy){
@@ -243,22 +322,17 @@ nodefony.registerService("firewall", function(){
 		throw new Error("sessionStrategy strategy not found")
 	};
 
+	Firewall.prototype.handle = function(container, context, type){
+		this.kernel.fire("onSecurity", this, context);
+	};
 
-	Firewall.prototype.handlerHTTP = function(container, context, type){
+	/*Firewall.prototype.handlerHTTP = function(container, context, type){
 		var request = context.request.request ;
 		var response = context.response.response ;
+		
 		request.on('end', function(){
 			
-			/*switch(this.sessionStrategy){
-				case "migrate" :
-					context.session.migrate(true);
-				break;
-				case "invalidate" :
-					context.session.invalidate();
-				break;
-				case "none" :
-				break;
-			}*/
+			
 
 			for ( var area in this.securedAreas ){
 				if ( this.securedAreas[area].match(context.request, context.response) ){
@@ -291,8 +365,9 @@ nodefony.registerService("firewall", function(){
 						}
 						if ( this.securedAreas[area].Authenticate ){
 							
+							console.log(context.session.getMetaBag("Authenticate.token"));
+
 							var status = this.securedAreas[area].checkAuthenticate(host, context);	
-							
 							switch (status){
 								case 200 :
 									if ( ! context.session.getMetaBag("Authenticate.username") ){
@@ -370,7 +445,7 @@ nodefony.registerService("firewall", function(){
 				});
 			}
 		}.bind(this));
-	};
+	};*/
 
 	
 	Firewall.prototype.handlerWebsocket = function(container, context, type){
@@ -421,11 +496,13 @@ nodefony.registerService("firewall", function(){
 								case "logout":
 								break;
 								case "provider" :
-									area.setProvider( param[ele]);
+									if ( ele in nodefony.security.providers ){
+										area.setProvider( param[ele]);
+									}
 								break;
 								default:
-									if ( ele in nodefony.io.authentication ){
-										area.authentication(ele, param[ele]);
+									if ( ele in nodefony.security.factory ){
+										area.setFactory(ele, param[ele]);
 									}
 							}
 						}
@@ -446,7 +523,7 @@ nodefony.registerService("firewall", function(){
 									for (var api in element[pro]){
 										switch (api){
 											case "users":
-												this.providers[provider] = new nodefony.usersManager(element[pro][api]);
+												this.providers[provider] = new nodefony.usersProvider(provider, element[pro][api]);
 											break;
 											default:
 												this.logger("Provider API : "+api +" Not exist")
@@ -490,8 +567,8 @@ nodefony.registerService("firewall", function(){
 	
 	Firewall.prototype.addSecuredArea = function(name){
 		if ( ! this.securedAreas[name] ){
-			this.securedAreas[name] = new securedArea(this.container, this) ;
-			return this.securedAreas[name]
+			this.securedAreas[name] = new securedArea(name, this.container, this) ;
+			return this.securedAreas[name];
 		}else{
 			this.logger("securedAreas :" + name +"already exist ")
 		}

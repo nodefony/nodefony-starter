@@ -105,9 +105,12 @@ nodefony.register("Container", function(){
 	}
 
 	Container.prototype.leaveScope = function(scope){
-    		var sc = this.scope[scope.name].splice(scope.index-1, 1);
-    		//delete scope;
-		return sc[0].parent;
+		if ( this.scope[scope.name] ){
+			var sc = this.scope[scope.name].splice(scope.index-1, 1);
+			//delete scope;
+			if (sc[0])
+				return sc[0].parent;
+		}
 	};
 
 

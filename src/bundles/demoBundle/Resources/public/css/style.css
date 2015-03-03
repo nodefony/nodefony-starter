@@ -1,0 +1,16 @@
+.flickity-page-dots {
+  bottom: -22px;
+}
+/* dots are lines */
+.flickity-page-dots .dot {
+  height: 4px;
+  width: 40px;
+  margin: 0;
+  border-radius: 0;
+}
+
+.gallery-cell {
+	background-color: red;
+	width: 100px;
+	height: 100px;
+}

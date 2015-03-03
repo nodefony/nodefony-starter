@@ -189,7 +189,7 @@ nodefony.register("finder", function(){
 		}else{
 			this.wrapper = 	nodefony.fileClass ;
 		}
-		this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
+		//this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
 		if (this.settings.path){	
 			this.in(this.settings.path);
 			if ( this.path.length ){
@@ -239,6 +239,7 @@ nodefony.register("finder", function(){
 		}else{
 			var extend = nodefony.extend({}, defaultSettings, settings) ;	
 		}
+		this.notificationsCenter = nodefony.notificationsCenter.create(extend);
 		try {
 			for (var i = 0 ; i < this.path.length ; i++){
 				if (extend.json ){

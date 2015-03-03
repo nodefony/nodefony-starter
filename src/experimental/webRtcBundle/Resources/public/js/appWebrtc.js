@@ -14,7 +14,7 @@ var mediaView = function(  settings){
 	this.createUserSpace();
 	this.createRemoteSpace();
 	this.users = {};
-	this.syslog = new nodefony.syslog(settingsSyslog);
+	this.syslog = new stage.syslog(settingsSyslog);
 };
 
 mediaView.prototype.logger = function(){
@@ -255,20 +255,20 @@ $( document ).ready(function(){
 	   containerRemoteSpace:$("#remoteDiv")
 	});
 
-	var server = "/secure/realtime"
-		var service = new nodefony.realtime(server ,{
+	var server = "/realtime"
+		var service = new stage.realtime(server ,{
 			// fire when 401 http code
 			onUnauthorized:function(authenticate, realtime){
 				authenticate.register("admin", "admin");
 			},
 		    // fire when authetification success or not authenticate
 		    onAuthorized:function(authenticate, realtime){
-			    //nodefony.ui.log("WELCOME TO REAL TIME nodefony WEBRTC ")
+			    //stage.ui.log("WELCOME TO REAL TIME stage WEBRTC ")
 		    },
 		    // fire when error
 		    onError:function(code, realtime ,message){
 			    //console.log(arguments)
-			    //nodefony.ui.log(message);
+			    //stage.ui.log(message);
 			    switch (code){
 				    case 500:
 					    //try to subcribe
@@ -281,29 +281,29 @@ $( document ).ready(function(){
 
 		    // fire when socket connection ready 
 		    onHandshake:function(message, socket, realtime){
-			    //nodefony.ui.info("HANSHAKE OK");
+			    //stage.ui.info("HANSHAKE OK");
 		    },
 		    // fire when service is ready
 		    onConnect:function(message, realtime){
-			    //nodefony.ui.log("CONNECT ON : "+realtime.publicAddress);
+			    //stage.ui.log("CONNECT ON : "+realtime.publicAddress);
 			    if (message.data.OPENSIP){
 				    realtime.subscribe("OPENSIP");
 			    }
 		    },
 		    onDisconnect:function(){
 			    //webRTC.byAll();
-			    nodefony.ui.info("Disconnect realtime service");
+			    stage.ui.info("Disconnect realtime service");
 		    },
 		    // fire when socket close
 		    onClose:function(){
-			    nodefony.ui.info( "onCLose");
+			    stage.ui.info( "onCLose");
 			    if(webRTC){
 
 			    }
 		    },
 		    // fire when service subcribed 
 		    onSubscribe:function(service, message, realtime){
-			    //nodefony.ui.info( "SUBSCRIBE service : " + service);
+			    //stage.ui.info( "SUBSCRIBE service : " + service);
 
 			    if ( service  === "OPENSIP"){
 				    //console.log(realtime);
@@ -311,17 +311,18 @@ $( document ).ready(function(){
 				    var port = realtime.services["OPENSIP"].port ;
 				    var url = "sip://"+domain+":"+port ;
 				    delete webRTC ;
-				    webRTC = new nodefony.webRtc(realtime.services["OPENSIP"].domain, realtime, {
-					   protocol:"SIP",
+				    webRTC = new stage.webRtc(realtime.services["OPENSIP"].domain, realtime, {
+					    protocol:"SIP",
 					   sipPort:realtime.services["OPENSIP"].port,
 					   sipTransport:realtime.services["OPENSIP"].type,
 					   onRegister:function(user, webrtc){
 						   //console.log(webrtc)
-						   //nodefony.ui.log("register User "+user.name);
+						   //stage.ui.log("register User "+user.name);
 						   user.mediaStream.getUserMedia({
-							   audio:true,
-						   video:true
-						   },function(mediaStream){
+								audio:true,
+								video:true
+							},
+							function(mediaStream){
 							   //console.log(mediaStream)
 							   //var vid = buildVideo("myVideo_"+user.name, "video", $("#myDiv"));
 							   var vid = mv.AddUserMedia("video", user.name, mediaStream);
@@ -336,7 +337,7 @@ $( document ).ready(function(){
 						   remoteStream.attachMediaStream(vid);
 					   },	
 					   onOffer:function(message, user, transac){
-						   nodefony.ui.Confirm("APPEL ENTRANT","call from :"+message.fromName,function(cancel, accept){
+						   stage.ui.Confirm("APPEL ENTRANT","call from :"+message.fromName,function(cancel, accept){
 							   if (cancel){
 								   //TODO DECLINED
 								   message.transaction.createResponse(603, "Declined");
@@ -348,35 +349,35 @@ $( document ).ready(function(){
 						   })
 					   },	
 					   onRinging:function(user){
-						   nodefony.ui.info(user+" Sonne !!!");
+						   stage.ui.info(user+" Sonne !!!");
 					   },
 					   onOffHook:function(user){
-						   nodefony.ui.info(user+" a decroché !!!");	
+						   stage.ui.info(user+" a decroché !!!");	
 					   },
 					   onOnHook:function(user){
-						   nodefony.ui.info(user+" a racroché !!!");	
+						   stage.ui.info(user+" a racroché !!!");	
 						   mv.removeRemoteMedia(user);
 					   },
 					   onDecline:function(user, code, message){
-						   nodefony.ui.log(user+" a refusé");
+						   stage.ui.log(user+" a refusé");
 					   },
 					   onError:function(method, code, message){
 						   switch (method){
 							   case "INVITE" :
 								   switch (code){
 									   case 404 :
-										   nodefony.ui.log(message.toName+" n'est pas en ligne" )
+										   stage.ui.log(message.toName+" n'est pas en ligne" )
 											   break;
 									   case 408 :
-										   nodefony.ui.log(message.toName+" ne repond pas" )
+										   stage.ui.log(message.toName+" ne repond pas" )
 											   break;
 									   default:
-										   nodefony.ui.log(message.toName+": "+ message.statusLine.message)
-									   break;
+										   stage.ui.log(message.toName+": "+ message.statusLine.message)
+									   		   break;
 								   }
 								   break;
 							   default:
-								console.log(arguments);	
+								   console.log(arguments);	
 						   }
 						   //console.log(message.toName)
 					   }
@@ -387,7 +388,7 @@ $( document ).ready(function(){
 		    // fire when service unsubcribed 
 		    onUnsubscribe:function(service, message, realtime){
 			    //webRTC.byAll();
-			    nodefony.ui.info( "UNSUBSCRIBE service : " + service);
+			    stage.ui.info( "UNSUBSCRIBE service : " + service);
 			    //try re subscribe
 			    //realtime.subscribe("OPENSIP");
 		    }

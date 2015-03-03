@@ -1,8 +1,8 @@
-index: 
+webrtc: 
   pattern:  /webrtc/{userName}
   defaults: {controller: "webRtcBundle:default:index"}
 
-demo: 
+webrtcsip: 
   pattern:  /webrtc/sip/{userName}
   defaults: {controller: "webRtcBundle:default:demo"}
   requirements: 

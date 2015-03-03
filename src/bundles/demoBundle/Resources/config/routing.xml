@@ -53,6 +53,12 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
+
+	<!-- FINDER -->
+	<route id="finder"  pattern="/finder">
+		<default key="controller">demoBundle:finder:index</default>
+	</route>
+
 	<!-- FIXME -->	
 	<!--  <import resource="routing2.xml" prefix="/couscous" />
 	<import resource="routing3.xml" hostname_pattern="hello.example.com" />  -->

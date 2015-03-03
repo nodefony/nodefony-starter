@@ -1,5 +1,5 @@
 
-nodefony.register.call(nodefony.ui, "Popup", function(){
+stage.register.call(stage.ui, "Popup", function(){
 
 	var defaultOptions = {
 		modal: {
@@ -90,7 +90,7 @@ nodefony.register.call(nodefony.ui, "Popup", function(){
 	};
 
 	var Popup = function Popup (options) {
-		this.options = nodefony.extend(true, {}, defaultOptions, options || {});
+		this.options = stage.extend(true, {}, defaultOptions, options || {});
 		this.id = (new Date).getTime();
 		this.entity = null;
 	};
@@ -133,7 +133,7 @@ nodefony.register.call(nodefony.ui, "Popup", function(){
 	};
 	
 	Popup.prototype.setModalOptions = function(modal) {
-		this.options.modal = nodefony.extend(this.options.modal, modal);
+		this.options.modal = stage.extend(this.options.modal, modal);
 		return this;
 	};
 	
@@ -201,9 +201,9 @@ nodefony.register.call(nodefony.ui, "Popup", function(){
 });
 
 
-nodefony.register.call(nodefony.ui, "Confirm", function(){
+stage.register.call(stage.ui, "Confirm", function(){
 	return function(title, content, callback){	
-		var popup = new nodefony.ui.Popup();
+		var popup = new stage.ui.Popup();
 		popup.setTitle(title);
 		popup.setContent(content);
 		

@@ -115,6 +115,10 @@ nodefony.registerService("httpKernel", function(){
 				context.response.statusCode = error.status;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:401");
 			break;
+			case 403:
+				context.response.statusCode = error.status;
+				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:403");
+			break;
 			default:
 				context.response.statusCode = 500;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
@@ -175,6 +179,8 @@ nodefony.registerService("httpKernel", function(){
 			if (type === "WEBSOCKET" || type === "WEBSOCKET SECURE"){
 				context.notificationsCenter.fire("onRequest",container, request, response );
 			}
+		}else{
+			//this.firewall.fire("");
 		}
 	};
 

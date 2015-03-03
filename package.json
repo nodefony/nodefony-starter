@@ -12,6 +12,7 @@
     "Node.js"
   ],
   "dependencies": {
+    "npm":"*",
     "websocket": "*",
     "js-yaml": "*",
     "node-getopt": "*",

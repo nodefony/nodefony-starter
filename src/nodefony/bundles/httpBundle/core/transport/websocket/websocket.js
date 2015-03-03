@@ -17,9 +17,10 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.request =request ; 
 		this.connection = request.accept(null, request.origin);
 		this.response = new nodefony.wsResponse( this.connection );
-		this.remoteAddress = request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
+		this.originUrl = url.parse( request.origin );
+		this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
-			remoteAddress:this.connection.remoteAddress,
+			remoteAddress:this.remoteAddress,
 			origin:request.origin
 		});
 
@@ -96,7 +97,8 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		try {
 			this.notificationsCenter.fire("onClose", reasonCode, description);
 			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
-			this.connection.close();
+			if (this.connection.state !== "closed")
+				this.connection.close();
 		}catch(e){
 			this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR")
 		}

@@ -472,7 +472,7 @@ nodefony.registerService("realTime", function(){
 						break;
 						case "/meta/connect":
 							var obj = {
-								remoteAddress : context.request.remoteAddress,
+								remoteAddress : context.remoteAddress,
 								host:url.parse(context.request.origin)	
 							};
 							//var remoteAddress = context.request.remoteAddress ;

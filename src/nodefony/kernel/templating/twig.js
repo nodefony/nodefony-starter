@@ -35,11 +35,11 @@ nodefony.registerTemplate("twig", function(){
 			}
 		});
 		var param = nodefony.extend( {nodefony:this.kernelSettings}, option);
-		try {
+		//try {
 			return this.engine.renderFile(file.path, param, callback)
-		}catch(e){
-			throw e ;
-		}
+		//}catch(e){
+		//	throw e ;
+		//}
 	};
 
 	Twig.prototype.render = function(view, param){

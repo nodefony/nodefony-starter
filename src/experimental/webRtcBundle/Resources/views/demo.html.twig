@@ -10,8 +10,8 @@
 	<!--link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'-->
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" href="/ui/themes/ui.all.css">
-	<link rel="stylesheet" href="/ui/themes/default/panel.css">
+	<link rel="stylesheet" href="/vendors/stage/ui/themes/ui.all.css">
+	<link rel="stylesheet" href="/vendors/stage/ui/themes/default/panel.css">
 	<link rel="stylesheet" href="/webRtcBundle/css/webrtc.css">
 
 {% endblock %}
@@ -20,26 +20,26 @@
 {% block javascripts %}
 
 	{{parent()}}
-	<script type="text/javascript" src="/jquery/jquery-ui-1.10.4.custom.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
-	<script type="text/javascript" src="/io/io.js"></script>
-	<script type="text/javascript" src="/crypto/base64.js"></script>
-	<script type="text/javascript" src="/crypto/md5.js"></script>
-	<script type="text/javascript" src="/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
-	<script type="text/javascript" src="/io/authentication/sasl/sasl.js"></script>
-	<script type="text/javascript" src="/io/protocols/bayeux/bayeux.js"></script>
-	<script type="text/javascript" src="/io/realtime/realtime.js"></script>
-	<script type="text/javascript" src="/io/protocols/sip/sip.js"></script>
-	<script type="text/javascript" src="/media/media.js"></script>
-	<script type="text/javascript" src="/webrtc/webrtc.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
+	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
+	<script type="text/javascript" src="/vendors/stage/webrtc/webrtc.js"></script>
 
 
 	<!-- UI -->
-	<script type="text/javascript" src="/ui/ui.js"></script>
-	<script type="text/javascript" src="/ui/color.js"></script>
+	<script type="text/javascript" src="/vendors/stage/ui/ui.js"></script>
+	<script type="text/javascript" src="/vendors/stage/ui/color.js"></script>
 	<script type="text/javascript" src="/webRtcBundle/js/popup.js"></script>
-	<script type="text/javascript" src="/ui/plugins/container/container.js"></script>
-	<script type="text/javascript" src="/ui/plugins/panel/panel.js"></script>
+	<script type="text/javascript" src="/vendors/stage/ui/plugins/container/container.js"></script>
+	<script type="text/javascript" src="/vendors/stage/ui/plugins/panel/panel.js"></script>
 
 	<script type="text/javascript" src="/webRtcBundle/js/appWebrtc.js"></script>
 

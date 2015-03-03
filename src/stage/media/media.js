@@ -258,8 +258,9 @@ stage.register("media", function(){
 
   				getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
 
+
 				getMediaStream = function(stream){
-					return webkitURL.createObjectURL(stream);
+					return URL.createObjectURL(stream);
 				};
 
 				mediaStream =  webkitMediaStream ;

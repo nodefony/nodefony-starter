@@ -35,13 +35,13 @@ locale :			fr_fr
 
 realTimeBundle:
   services:
-    SIP:
-      type:                       tcp
-      port:                       5060
-      domain:                     192.168.100.104
+          #    SIP:
+            #      type:                       tcp
+            #      port:                       5060
+            #      domain:                     192.168.100.171
 
     OPENSIP:
       type:                       tcp
       port:                       5060
-      domain:                     192.168.100.226
+      domain:                     192.168.100.171
 

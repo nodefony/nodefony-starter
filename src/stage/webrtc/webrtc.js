@@ -194,11 +194,10 @@ stage.register("webRtc",function(){
 
 	var userSettings = {
 		constraints	: { mandatory: { 'OfferToReceiveAudio': true, 'OfferToReceiveVideo': true } },
-		constraintsOffer: stage.browser.Gecko ? {'mandatory': {'MozDontOfferDataChannel':true}} : null
+		//constraintsOffer: stage.browser.Gecko ? {'mandatory': {'MozDontOfferDataChannel':true}} : null
 	};
 
 
-	var password = {};
 	var User =function(userName, settings){
 		this.name = userName
 		this.settings = stage.extend({}, userSettings, settings );
@@ -247,13 +246,14 @@ stage.register("webRtc",function(){
 	Transaction.prototype.createOffer = function(){
 		return  this.RTCPeerConnection.createOffer(function(sessionDescription){
 			try{
-				this.from.setDescription(this.RTCPeerConnection.setLocalDescription(sessionDescription));
+				this.from.setDescription(this.RTCPeerConnection.setLocalDescription(sessionDescription, function(){
+					var dialog = this.webrtc.protocol.invite(this.to.name, sessionDescription);
+					this.callId = dialog.callId ;
+				}.bind(this),this.webrtc.listen(this, "onError")));
 				//this.RTCPeerConnection.startIce();
 			}catch(e){
 				throw e;
 			}
-			var dialog = this.webrtc.protocol.invite(this.to.name, sessionDescription);
-			this.callId = dialog.callId ;
 		}.bind(this), this.webrtc.listen(this, "onError"), this.from.settings.constraintsOffer);
 	};
 
@@ -360,8 +360,9 @@ stage.register("webRtc",function(){
 		return this.RTCPeerConnection.createAnswer(
 			function(sessionDescription){
 				this.from.setDescription(sessionDescription) ; 
-				this.RTCPeerConnection.setLocalDescription(sessionDescription);
-				this.webrtc.notificationsCenter.fire("onCreateAnwser", this.to, sessionDescription, this, dialog);
+				this.RTCPeerConnection.setLocalDescription(sessionDescription,function(){
+					this.webrtc.notificationsCenter.fire("onCreateAnwser", this.to, sessionDescription, this, dialog);
+				}.bind(this),this.webrtc.listen(this, "onError"));
 			}.bind(this),
 			this.webrtc.listen(this, "onError"),
 			this.from.settings.constraints

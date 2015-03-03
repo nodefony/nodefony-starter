@@ -171,7 +171,7 @@
 			var sseClient = new stage.realtime(server ,{
 				// fire when 401 http code
 				onUnauthorized:function(authenticate, realtime){
-					authenticate.register("admin", "admin");
+					//authenticate.register("admin", "admin");
 				},
 				// fire when authetification success or not authenticate
 				onAuthorized:function(authenticate, realtime){

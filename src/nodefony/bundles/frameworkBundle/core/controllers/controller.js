@@ -60,8 +60,12 @@ nodefony.register("controller", function(){
 		try{ 
 			this.container.get('templating').renderFile(View, param, function(error, result){
 				if (error || result === undefined){
-					this.logger(error);	
-					this.notificationsCenter.fire("onError", this.container, error );
+					if ( ! error ){
+						error = new Error("ERROR PARSING TEMPLATE :" + view)
+					}
+					//this.logger(error);	
+					//this.notificationsCenter.fire("onError", this.container, error );
+					throw error ;
 				}else{
 					try {
 						this.notificationsCenter.fire("onView", result, this.context )

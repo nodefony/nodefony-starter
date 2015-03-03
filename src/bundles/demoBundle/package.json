@@ -1,0 +1,17 @@
+{
+  	"name": "nodefony demo",
+  	"version": "0.1.0",
+  	"description": "demo nodefony",
+  	"main": "/nodefony",
+  	"repository": "./",
+  	"keywords": [
+    		"nodefony"
+  		],
+  	"dependencies": {
+    		"md5":"*"
+    	},
+  	"devDependencies": {},
+  	"author": "cci <christophe.camensuli@gmail.com>",
+  	"license": "",
+  	"readmeFilename": "README.md"
+}
