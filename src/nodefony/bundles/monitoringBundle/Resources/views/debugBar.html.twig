@@ -1,0 +1,155 @@
+<link href="/monitoringBundle/css/debugBar.css" rel="stylesheet"/>	
+
+<div id="nodefony-container"  >
+	<ul class="pull-left">
+		<li> <img class="logo" src="/monitoringBundle/images/fire.png"> </li>
+		<li> <a href='{{path("monitoring")}}'>{{nodefony.name}} &nbsp {{nodefony.system.version}}</a>
+			<div class="details">
+				<ul>
+					{% for key, value in kernelSettings %}
+						{% if key != "system" %}
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+						{% else %}
+							{% for key, value in kernelSettings.system %}
+								{% if key != "log" %}
+									<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+
+		</li>
+		<li class="separator"></li>
+
+		<li> <img  src="/monitoringBundle/images/nodejs_logo.png"> 
+			<div class="details">
+				<ul>
+					{% for key, value in node %}
+						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</li>
+
+		<li class="separator"></li>
+
+		<li >
+			{{appSettings.projectName}} : {{environment}}
+			<div class="details">
+				<ul>
+					<li><label style="color:#999">APP</label></li>
+					{% for key, value in appSettings %}
+						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+					{% endfor %}
+
+					<li><label style="color:#999">BUNDLES</label></li>
+					{% for key, value in bundles %}
+						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.settings.version}}</span></li>
+					{% endfor %}
+
+					<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>
+					<li><label>Token</label><span class="label label-success">{{session.id}}</span></li>	
+					{% if session.storage == "session.storage.files" %}
+						<li><label>Storage</label><span >{{session.storage}}</span></li>
+						<li><label>Path</label><span >{{session.path}}</span></li>
+					{% else %}
+						<li><label>Storage</label><span >{{session.storage}}</span></li>
+
+					{% endif %}	
+				</ul>
+			</div>
+
+		</li>
+
+		<li class="separator"></li>
+
+		<li >	
+			<label class="label label-success">{{pattern}}</label>
+			<div class="details">
+				<ul>
+					<li><label style="color:#999">RESOLVER</label></li>
+					<li><label>Controller</label><span class="label label-success">{{controller}}</span></li>
+					<li><label>Bundle</label><span class="label label-success">{{bundle}}</span></li>
+					<li><label>Controller Name</label><span class="label label-success">{{controllerName}}Controller</span></li>
+					<li><label>Action</label><span class="label label-success">{{action}}Action</span></li>
+
+					<li><label style="color:#999">ROUTE</label></li>
+					{% for key, value in route %}
+						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+					{% endfor %}
+					
+
+				</ul>
+			</div>
+		</li>
+		<li class="separator"></li>
+
+		<li>
+			<label class"label" >Request</label>
+			<label class="label label-success" >{{ request.method }}</label>
+			<div class="details">
+				<ul>
+					{% for key, value in request %}
+						{% if key == "headers" %}
+							<li><label style="color:#999">HEADERS</label></li>
+							{% for key, value in request.headers %}
+								<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+							{% endfor %}
+						{% endif %}
+						{% if key == "queryPost" and request.queryPost is not empty  %}
+							<li><label style="color:#999">QUERY POST</label></li>
+							{% for key, value in request.queryPost %}
+								<li><label>{{ key  }}</label><span >{{value}}</span></li>
+							{% endfor %}
+						{% endif %}
+						{% if key == "queryGet" and request.queryGet is not empty %}
+							<li><label style="color:#999">QUERY GET</label></li>
+							{% for key, value in request.queryGet %}
+								<li><label>{{ key  }}</label><span >{{value}}</span></li>
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+					
+				</ul>
+			</div>
+
+
+		</li>
+
+		<li class="separator"></li>
+
+		<li>
+			<label class"label" >Response</label>
+			<label class="label label-success" >{{ response.statusCode }}</label>
+			<div class="details">
+				<ul>
+					{% for key, value in response %}
+						{% if key == "statuscode" %}
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}} {{response.message}}</span></li>
+						{% else %}
+							
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+
+						{% endif %}
+					{% endfor %}
+						
+				</ul>
+			</div>
+		</li>
+
+
+		<li class="separator"></li>
+	</ul>
+	<ul class="pull-right">
+		<li> <img id="nodefonyClose" src="/monitoringBundle/images/close.png">
+
+	</ul>
+</div>
+
+<div id="nodefony-small" class='hidden'>
+	<img src="/monitoringBundle/images/fire.png">
+</div>
+
+<script type="text/javascript" src="/monitoringBundle/js/debugBar.js"></script>

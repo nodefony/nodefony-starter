@@ -32,6 +32,8 @@ nodefony.register("Response",function(){
 		// default http code 
 		this.statusCode = 200;
 
+		this.response.statusMessage = "OK";
+
 		//default Content-Type to implicit headers
 		this.setHeader("Content-Type", "text/html; charset=utf-8");
 

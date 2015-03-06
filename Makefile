@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 
 
-all: asciiArt node install  asset framework
+all: asciiArt node install framework asset
 
 install:
 	@if [ -x  vendors/asciiArt/figlet222/figlet ] ; then  \
@@ -37,6 +37,8 @@ asset:
 	./console assets:install 
 
 framework:
+	./console npm:install
+	./console npm:list
 	./console router:generate:routes
 #	./console ORM2:connections:state
 #	./console ORM2:entity:show

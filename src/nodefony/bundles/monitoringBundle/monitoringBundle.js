@@ -55,27 +55,48 @@ nodefony.registerBundle ("monitoring", function(){
 					if ( context.resolver.resolve ){
 						var obj = {
 							bundle:context.resolver.bundle.name,
+							bundles:this.kernel.bundles,
+							node:process.versions,
 							route:{
 								name:context.resolver.route.name,
 								uri:context.resolver.route.path,
-								variables:context.resolver.route.variables
+								variables:context.resolver.variables
 							},
 							kernelSettings:this.kernel.settings,
 							environment:this.kernel.environment,
-							appSettings:this.getParameters("bundles.App").App
+							appSettings:this.getParameters("bundles.App").App,
+							request:{
+								method:context.request.method,
+								headers:context.request.headers,
+								queryPost:context.request.queryPost,
+								queryGet:context.request.queryGet
+							},
+							session:{
+								id:context.session.id,
+								name:context.session.name,
+								storage:context.session.settings.handler,
+								path:context.session.settings.save_path
+							}
 						};
 						if ( context.resolver.route.defaults ) {
 							var tab = context.resolver.route.defaults.controller.split(":") ;
 							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
 							obj["action"] = tab[2] ;
 							obj["pattern"] = context.resolver.route.defaults.controller ;
-
+							obj["controller"] = context.resolver.route.defaults.controller
 						}
 
 						context.listen(this, "onView", function(result, context){
+							obj["response"] = {	
+								statusCode:context.response.statusCode,
+								message:context.response.response.statusMessage,
+								size:context.response.body.length ,
+								encoding:context.response.encoding,
+								"content-type":context.response.response.getHeader('content-type')
+							}
 							if( !  context.request.isAjax() && obj.route.name !== "monitoring" ){
-								//var View = this.container.get("httpKernel").getView("monitoringBundle::footerMonitoring.html.twig");
-								var View = this.container.get("httpKernel").getView("monitoringBundle::monitoring.html.twig");
+								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+								//console.log(context.response)
 								this.get("templating").renderFile(View, obj,function(error , result){
 									if (error){
 										throw error ;

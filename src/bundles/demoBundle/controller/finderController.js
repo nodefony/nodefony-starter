@@ -38,7 +38,7 @@ nodefony.registerController("finder", function(){
 							};
 						},
 						onFinish:function(error, files){
-							console.log(files.json);
+							//console.log(files.json);
 							response = this.render('demoBundle:finder:index.html.twig',{
 								files:files.json
 							});

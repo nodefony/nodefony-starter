@@ -77,65 +77,8 @@ nodefony.register("kernel", function(){
 		process.on('SIGTERM', function() {
 			this.terminate(0);	
 		}.bind(this));
-		this.npmListPackages( this.rootDir+"/package.json" );
 	};
 
-
-	
-	/*
- 	 *
- 	 *	NPM List Package
- 	 */
-	kernel.prototype.npmListPackages = function(conf){
-		var conf = require(conf);
-		npm.load(conf, function(error){
-			if (error){
-				this.logger(error);
-				return ;
-			}
-			npm.commands.ls([], true, function(error, data){
-				this.logger( "			\033[34m NODEFONY NPM INSTALLED PACKAGE LIST\033[0m","INFO")
-				for (var pack in data.dependencies){
-					this.logger(data.dependencies[pack].name + " : " + data.dependencies[pack].version + " description : " + data.dependencies[pack].description , "INFO");	
-				}
-			}.bind(this))
-		}.bind(this))
-	};
-
-	var createNpmDependenciesArray = function (packageFilePath) {
-    		var p = require(packageFilePath);
-    		if (!p.dependencies) return [];
-
-    		var deps = [];
-    		for (var mod in p.dependencies) {
-        		deps.push(mod + "@" + p.dependencies[mod]);
-    		}
-
-    		return deps;
-	};
-
-	/*
- 	 *
- 	 *	NPM Install Packages
- 	 */
-	kernel.prototype.npmInstallPackages = function(conf, bundle){
-		var config = require(conf);
-		npm.load( config ,function(error){
-			var dependencies = createNpmDependenciesArray(conf) ;
-			npm.commands.install(dependencies,  function(er, data){
-				if (er){
- 				       	this.logger(er, "ERROR", "SERVICE NPM BUNDLE " + bundle.name);
-					return ;
-				}
-				if (data){
-					for (var i = 0 ; i< data.length ; i++){
-						this.logger(data[i],"INFO", "SERVICE NPM BUNDLE " + bundle.name)
-					}
-				}
-			}.bind(this));
-		}.bind(this))
-	};
-	
 	/**
 	 	@method get
 	 	@param {String} name of service
@@ -539,17 +482,6 @@ nodefony.register("kernel", function(){
 			for (var name in this.bundles ){
 				this.logger("\033[32m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
 				this.bundles[name].boot();
-				/*this.bundles[name].finder.find( {
-					match:"package.json",
-					recurse:false,
-					onFinish:function(error, result){
-						if ( result.files.length ){
-							this.npmInstallPackages(result.files[0].path, this.bundles[name]);	
-						}else{
-							this.bundles[name].boot();
-						}
-					}.bind(this)
-				} );*/
 			}
 		}catch(e){
 			this.logger("BUNDLE :"+name+" "+ e);	
