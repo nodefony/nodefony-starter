@@ -27,7 +27,6 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
-
 ########## nodefony FRAMEWORK NODE CONFIG  ############
 App:
         projectName:                    {{nameProject}} 

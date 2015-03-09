@@ -29,7 +29,7 @@
 ########## NODEFONY CONFIG BUNDLE  demoBundle  ############
 name :				demoBundle
 locale :			fr_fr
-
+version :                       "1.0"
 
 #
 #  OVERRIDE BUNDLE REALTIME 

@@ -845,7 +845,7 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		registerTimeout : 60000,
 		maxForward	: 70,
 		version		: "SIP/2.0",
-		userAgent	: "stage",
+		userAgent	: "nodefony",
 	 	portServer	: "5060",
 	 	userName	: "userName",		
 	 	pwd		: "password",

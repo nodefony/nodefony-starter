@@ -1,14 +1,12 @@
 #
-#
-#	CONFIG BUNDLE orm2Bundle 
-#
 #===============================================================================
 #
-#  Copyright © 2013/2014        cci | christophe.camensuli@nodefony.com
+#  Copyright © 2013/2013        CAMENSULI Christophe | christophe.camensuli@nodefony.com
 #
 # ===============================================================================
 #
-#        GENERATE BY NODEFONY BUILDER YAML FILE 
+#        nodefony BUILDER YAML FILE 
+#
 #
 # This file is YAML  FILE
 # ---
@@ -28,14 +26,8 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
+########## NODEFONY CONFIG BUNDLE  securityBundle  ############
+name :				securityBundle
+version :			"1.0"
 
-########## NODEFONY CONFIG BUNDLE  stageBundle  ############
-name :				orm2Bundle
-locale :			fr_fr
-version :                       "1.0"
-
-settings: 
-  debug:  true
-  reconnect:  60000           # time (ms) to reconnect db
-connectors:  {} 
 

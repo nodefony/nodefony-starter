@@ -30,6 +30,7 @@
 ########## NODEFONY CONFIG BUNDLE  asseticBundle  ############
 name :				asseticBundle
 locale :			fr_fr
+version :                       "1.0"
 
 #  Documentaion : http://lesscss.org/   https://github.com/less/less-docs
 less:

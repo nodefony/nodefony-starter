@@ -31,7 +31,6 @@ nodefony.registerController("framework", function(){
 			//}
 		};
 
-		
 		frameworkController.prototype.aboutAction= function(name){
 			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
 		};
