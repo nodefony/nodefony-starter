@@ -46,7 +46,7 @@
 
 					<li><label style="color:#999">BUNDLES</label></li>
 					{% for key, value in bundles %}
-						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.settings.version}}</span></li>
+						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.version}}</span></li>
 					{% endfor %}
 
 					<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>

@@ -50,21 +50,34 @@ nodefony.registerBundle ("monitoring", function(){
 		
 		this.kernel.listen(this, "onBoot", function(){
 			if ( this.container.getParameters("bundles."+this.name).debugBar) {
-				this.logger("ADD DEBUG BAR MONITORING", "WARNING")
+				this.logger("ADD DEBUG BAR MONITORING", "WARNING");
+				var bundles = function(){
+					var obj = {};
+					for (var bundle in this.kernel.bundles ){
+						obj[bundle] = {
+							name:this.kernel.bundles[bundle].name,
+							version:this.kernel.bundles[bundle].settings.version
+						}	
+					}
+					return obj;
+				}.call(this);
+				var env = this.kernel.environment ;
+				var app = this.getParameters("bundles.App").App ;
+				var node = process.versions ;
 				this.kernel.listen(this, "onRequest",function(context){
 					if ( context.resolver.resolve ){
 						var obj = {
 							bundle:context.resolver.bundle.name,
-							bundles:this.kernel.bundles,
-							node:process.versions,
+							bundles:bundles,
+							node:node,
 							route:{
 								name:context.resolver.route.name,
 								uri:context.resolver.route.path,
 								variables:context.resolver.variables
 							},
 							kernelSettings:this.kernel.settings,
-							environment:this.kernel.environment,
-							appSettings:this.getParameters("bundles.App").App,
+							environment:env,
+							appSettings:app,
 							request:{
 								method:context.request.method,
 								headers:context.request.headers,
@@ -78,6 +91,7 @@ nodefony.registerBundle ("monitoring", function(){
 								path:context.session.settings.save_path
 							}
 						};
+
 						if ( context.resolver.route.defaults ) {
 							var tab = context.resolver.route.defaults.controller.split(":") ;
 							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
@@ -96,15 +110,18 @@ nodefony.registerBundle ("monitoring", function(){
 							}
 							if( !  context.request.isAjax() && obj.route.name !== "monitoring" ){
 								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-								//console.log(context.response)
-								this.get("templating").renderFile(View, obj,function(error , result){
-									if (error){
-										throw error ;
-									}
-									context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
-								})
+								if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){
+									this.get("templating").renderFile(View, obj,function(error , result){
+										if (error){
+											throw error ;
+										}
+										context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
+									});
+								}else{
+									context.setXjson(obj);
+								}
 							}else{
-								//context.setXjson(obj);	
+								context.setXjson(obj);	
 							}
 						});
 					}
