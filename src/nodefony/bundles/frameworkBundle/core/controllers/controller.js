@@ -68,7 +68,7 @@ nodefony.register("controller", function(){
 					throw error ;
 				}else{
 					try {
-						this.notificationsCenter.fire("onView", result, this.context )
+						this.notificationsCenter.fire("onView", result, this.context );
 						res = result;
 					}catch(e){
 						throw e ;
@@ -83,6 +83,7 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.renderResponse = function(data, status , headers ){
 		var res = this.getResponse(data);
+		this.notificationsCenter.fire("onView", data, this.context );
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
 		this.notificationsCenter.fire("onResponse", res , this.context);

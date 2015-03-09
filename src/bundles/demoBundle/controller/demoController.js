@@ -28,6 +28,7 @@ nodefony.registerController("demo", function(){
 		//return this.forward("demoBundle:demo:dev");
 	};
 
+
 	/**
  	 *	@see renderView
  	 *	@see getResponse

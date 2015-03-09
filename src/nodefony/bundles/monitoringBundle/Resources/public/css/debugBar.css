@@ -9,13 +9,16 @@
 
 #nodefony-container {
 	position:		fixed;
-	width:			100%;
+	left:			0;
+	right:			0;
 	bottom:			0;
 	z-index:		10000000;
 	height:			30px;
 	background-color:	#564AA3;
 	color:			#ffffff;
-	padding:		5px 10px;
+	padding:		0px 10px;
+	font-family:		"Source Sans Pro",Helvetica,Arial,sans-serif;
+	font-size:		14px;
 }
 
 #nodefony-container .label {
@@ -47,13 +50,14 @@
 #nodefony-container ul {
 	list-style-type:	none;
 	padding-left:		0;
-	margin-left:		0;
+	margin:			0;
 }
 
 #nodefony-container ul li {
 	display:		inline;
 	float:			left;
-	padding-top: 1px;
+	padding-top:		1px;
+	line-height:		30px;
 }
 
 #nodefony-container ul li .details {
@@ -77,12 +81,23 @@
 
 #nodefony-container ul li .details ul li {
 	display:		block;
-	float: initial;
+	float:			initial;
+	line-height:		16px;
+	padding:		3px 0;
 }	
 
 #nodefony-container ul li .details ul li label{
 	width:			110px;
 	font-weight:		bold;
+	display:		inline-block;
+	margin:			0;
+}
+
+#nodefony-container ul li .details ul li span:empty{
+	display:		none;
+}
+
+#nodefony-container ul li .details ul li span{
 }
 
 #nodefony-container ul li:hover .details {
@@ -97,18 +112,29 @@
 	height:			30px;
 	margin-left:		10px;
 	margin-right:		10px;
-	margin-top:		-5px;	
+
 }
 
+#nodefony-container ul li .details ul li.separator {
+	border-bottom:		solid 1px #F0F0F0 ;
+	width:			100%;
+	height:			1px;
+	margin-left:		0px;
+	margin-right:		0px;
+	margin-top:		10px;
+	margin-bottom:		10px;	
+}
 
 #nodefony-container ul li img.logo{
-	margin-top:		-9px;
+	margin-right:		10px;
 }
 
 
 #nodefony-container img,  #nodefony-small img{
 	max-width:		20px;
 	max-height:		20px;
+	margin-top:		5px;
+	vertical-align:		baseline; 
 }
 
 #nodefony-container .pull-right {
@@ -129,15 +155,16 @@
 
 #nodefony-small {
 	position:		fixed;
-	width:			30px;
+	/*width:			30px;*/
 	bottom:			0;
 	right:			0;
 	z-index:		10000001;
 	height:			30px;
 	background-color:	#564AA3;
 	overflow:		hidden;
-	padding: 4px;
-	padding-left: 6px;
+	padding:		0 6px;
+	font-family:		"Source Sans Pro",Helvetica,Arial,sans-serif;
+	font-size:		14px;
 }
 
 #nodefonyClose {

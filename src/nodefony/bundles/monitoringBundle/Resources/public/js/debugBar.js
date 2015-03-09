@@ -1,73 +1,6 @@
 var nodefony = function(){
 
-	/*************************************/
-	/*	CORE EVENTS		     */
-	/*************************************/
-	var coreEvent = function(event){
-		if (event){
-			this.event = event;
-		}else{
-			this.event = null;
-		}
-	};
-	coreEvent.prototype.getTarget = function(event/* delegate event */){
-		var myEvent = event ? event : (this.event || null);
-
-		var ele = myEvent.target || myEvent.srcElement;
-		var currentTarget = myEvent.currentTarget;
-		var type = this.getEventType(myEvent);
-
-		if (currentTarget && currentTarget.tagName) {
-			if (type === 'load' || type === 'error' ||
-				(type === 'click' && currentTarget.tagName.toLowerCase() === 'input'
-				&& currentTarget.type === 'radio'))
-				ele = currentTarget;
-		}
-		
-		if (ele.nodeType == ele.TEXT_NODE)
-			ele = ele.parentNode;
-		return ele;
-	};
-
-	coreEvent.prototype.getTargetType = function(event/* delegate event */){
-		return this.getTarget(event).tagName.toUpperCase();
-	};
-
-	coreEvent.prototype.stopPropagation = function(event){
-		var myEvent = event ? event : (this.event || null);
-		if ( ! myEvent ) return false;
-		if ( myEvent.stopPropagation)
-			myEvent.stopPropagation();
-		else	
-			myEvent.cancelBubble = true;
-		return true;
-	};
-	coreEvent.prototype.preventDefault = function(event){
-		var myEvent = event ? event : (this.event || null);
-		if ( ! myEvent ) return false;
-		if ( myEvent.preventDefault){
-			myEvent.preventDefault();
-		}else{
-			myEvent.returnValue = false; 
-		}
-		return true;
-	};
-
-	coreEvent.prototype.eventStop = function(event/* delegate event */){
-		var myEvent = event ? event : (this.event || null);
-		if ( ! myEvent ) return false;
-		this.preventDefault(myEvent);
-		this.stopPropagation(myEvent);
-		return true;
-	};
-
-	coreEvent.prototype.getEventType = function(event/* delegate event */){
-		var myEvent = event ? event : (this.event || null);
-		if ( myEvent )
-			return myEvent.type;
-		return null;
-	};
-
+	
 
 
 
@@ -177,10 +110,6 @@ var nodefony = function(){
 		}
 	};
 
-
-
-
-
 	// EVENTS LOAD 
 	var load = function(){
 		this.debugbar = document.getElementById("nodefony-container");
@@ -217,10 +146,6 @@ var nodefony = function(){
 
 	};
 
-
-	Nodefony.prototype.close = function(){
-		
-	}
 
 	return new Nodefony();
 

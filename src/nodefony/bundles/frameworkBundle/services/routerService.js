@@ -104,15 +104,15 @@ nodefony.registerService("router", function(){
 			var result =  this.action.apply(controller, this.variables);
 			switch (true){
 				case result instanceof nodefony.Response :
-					this.notificationsCenter.fire("onResponse", result);
+					this.notificationsCenter.fire("onResponse", result, this.context);
 				break ;
 				case result instanceof nodefony.wsResponse :
-					this.notificationsCenter.fire("onResponse", result);
+					this.notificationsCenter.fire("onResponse", result, this.context);
 				break ;
 				case nodefony.typeOf(result) === "object":
 					if ( this.defaultView ){
 						result = controller.render(this.defaultView, result );
-						this.notificationsCenter.fire("onResponse", result);
+						this.notificationsCenter.fire("onResponse", result, this.context);
 					}else{
 						throw {
 							status:500,

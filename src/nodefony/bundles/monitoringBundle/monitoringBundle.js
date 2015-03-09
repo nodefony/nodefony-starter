@@ -104,7 +104,7 @@ nodefony.registerBundle ("monitoring", function(){
 									context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
 								})
 							}else{
-								context.setXjson(obj);	
+								//context.setXjson(obj);	
 							}
 						});
 					}

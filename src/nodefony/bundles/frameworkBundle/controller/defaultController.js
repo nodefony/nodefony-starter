@@ -31,6 +31,11 @@ nodefony.registerController("framework", function(){
 			//}
 		};
 
+		
+		frameworkController.prototype.aboutAction= function(name){
+			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
+		};
+
 		frameworkController.prototype["404Action"] = function(error){
 			return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, error.exception) );
 		};

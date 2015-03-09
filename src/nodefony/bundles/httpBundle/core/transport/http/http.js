@@ -45,7 +45,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.remoteAddress = this.request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
 		// LISTEN EVENTS KERNEL 
-		this.notificationsCenter.listen(this, "onView", function(result){
+		this.notificationsCenter.listen(this, "onView", function(result, context){
 			this.response.body = result;
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
