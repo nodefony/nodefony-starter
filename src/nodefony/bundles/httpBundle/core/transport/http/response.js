@@ -30,9 +30,7 @@ nodefony.register("Response",function(){
 		this.headers = {};
 
 		// default http code 
-		this.statusCode = 200;
-
-		this.response.statusMessage = "OK";
+		this.setStatusCode(200);
 
 		//default Content-Type to implicit headers
 		this.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -93,6 +91,7 @@ nodefony.register("Response",function(){
 
 	Response.prototype.setStatusCode = function(status){
 		this.statusCode = status ;
+		this.response.statusMessage = http['STATUS_CODES'][this.statusCode] ;
 	};
 
 	Response.prototype.setBody = function(ele){
@@ -139,9 +138,9 @@ nodefony.register("Response",function(){
 
 	Response.prototype.redirect = function(url, status){
 		if (status === "301")
-			this.statusCode = status;
+			this.setStatusCode( status );
 		else
-			this.statusCode = 302;
+			this.setStatusCode( 302 );
 
 		this.setHeader("Location", url);		
 		return this;

@@ -108,21 +108,19 @@ nodefony.registerService("httpKernel", function(){
 		var context = container.get('context');
 		switch (error.status){
 			case 404:
-				context.response.statusCode = error.status;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:404");
 			break;
 			case 401:
-				context.response.statusCode = error.status;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:401");
 			break;
 			case 403:
-				context.response.statusCode = error.status;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:403");
 			break;
 			default:
-				context.response.statusCode = 500;
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
 		}
+		context.response.setStatusCode(error.status || 500 ) ;
+
 		if (error.xjson){
 			if ( context.setXjson ) 
 				context.setXjson(error.xjson);

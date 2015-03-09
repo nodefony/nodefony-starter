@@ -17,18 +17,7 @@ nodefony.registerController("framework", function(){
 		};
 
 		frameworkController.prototype.indexAction = function(){
-			//var session = this.getContext().session;
-			//var name = session.get("name");
-			//if ( ! name ){
-			//	session.set("name" , "cci");
-			//}
-			//var bool = session.getMetaBag("lastUsed") + ( 30*1000 ) > new Date().getTime() ;
-			//if ( bool ){
-				return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
-			//}else{
-			//	session.invalidate();
-			//	return this.redirect("login");
-			//}
+			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
 		};
 
 		frameworkController.prototype.aboutAction= function(name){
