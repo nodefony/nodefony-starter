@@ -8,7 +8,6 @@
     		"nodefony"
   		],
   	"dependencies": {
-    		"md5":"*"
     	},
   	"devDependencies": {},
   	"author": "cci <christophe.camensuli@gmail.com>",

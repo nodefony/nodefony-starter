@@ -64,12 +64,27 @@ nodefony.registerBundle ("monitoring", function(){
 				var env = this.kernel.environment ;
 				var app = this.getParameters("bundles.App").App ;
 				var node = process.versions ;
+				var upload = this.container.get("upload");
+				var translation = this.container.get("translation");
+				var domain =  translation.defaultDomain ;
+				var service = {
+					upload : {
+						tmp_dir:upload.config.tmp_dir,
+						max_size:upload.config.max_filesize
+					},
+					translation:{
+						defaultLocale:translation.defaultLocale,
+						defaultDomain: domain	
+					}
+				}; 
 				this.kernel.listen(this, "onRequest",function(context){
+					var trans = context.get("translation");
 					if ( context.resolver.resolve ){
 						var obj = {
 							bundle:context.resolver.bundle.name,
 							bundles:bundles,
 							node:node,
+							services:service,
 							route:{
 								name:context.resolver.route.name,
 								uri:context.resolver.route.path,
@@ -89,9 +104,12 @@ nodefony.registerBundle ("monitoring", function(){
 								name:context.session.name,
 								storage:context.session.settings.handler,
 								path:context.session.settings.save_path
+							},
+							locale:{
+								default:trans.defaultLocale,
+								domain:trans.defaultDomain
 							}
 						};
-
 						if ( context.resolver.route.defaults ) {
 							var tab = context.resolver.route.defaults.controller.split(":") ;
 							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;

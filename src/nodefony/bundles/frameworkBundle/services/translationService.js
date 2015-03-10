@@ -159,7 +159,12 @@ nodefony.registerService("translation", function(){
 	i18n.prototype.handle = function( request , response){
 		this.engineTemplate.extendFunction("trans", this.trans.bind(this));
 		this.engineTemplate.extendFunction("getLocale", this.getLocale.bind(this));
-		this.engineTemplate.extendFunction("trans_default_domain", this.trans_default_domain.bind(this));
+		this.engineTemplate.extendFunction("trans_default_domain", function(){
+			this.trans_default_domain.apply(this,arguments);
+		}.bind(this));
+		this.engineTemplate.extendFunction("getTransDefaultDomain", function(){
+			return this.defaultDomain
+		}.bind(this));
 		this.engineTemplate.extendFilter("trans", this.trans.bind(this));
 		this.getLang( request,this.requestType );
 	};

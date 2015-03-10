@@ -25,7 +25,6 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.indexAction= function(module){
 		return this.forward("frameworkBundle:default:system");
-		//return this.forward("demoBundle:demo:dev");
 	};
 
 
