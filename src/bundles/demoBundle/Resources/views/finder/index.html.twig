@@ -1,37 +1,106 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-8" />
-	<title>SFR</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<meta name="geo.placename" content="">
+    <head>
+        <meta charset="UTF-8" />
+        <title>SFR</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="geo.placename" content="">
 
-	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" media="screen">
-	<link rel="stylesheet" href="/demoBundle/css/flickity.min.css" media="screen">
-	<link rel="stylesheet" href="/demoBundle/css/style.css" media="screen">
-
-
-	<script src="/demoBundle/js/jquery-1.11.2.min.js"></script>
-	<script src="/demoBundle/js/flickity.pkgd.min.js"></script>
-	<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-	<script src="/demoBundle/js/finder.js"></script>
-	<!-- Awesome Font -->
-	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-</head>
-
-<body>
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" media="screen">
+        <link rel="stylesheet" href="/demoBundle/css/flickity.min.css" media="screen">
+        <link rel="stylesheet" href="/demoBundle/css/style.css" media="screen">
 
 
-	{% for json in files %}
-		{% for jsonTree in  json.children %}
-			<a href="/finder?path={{jsonTree.path}}">{{jsonTree.name}}</a>
-		{% endfor %}
-	{% endfor %}
+        <script src="/demoBundle/js/jquery-1.11.2.min.js"></script>
+        <script src="/demoBundle/js/flickity.pkgd.min.js"></script>
+        <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+        <script src="/demoBundle/js/finder.js"></script>
+        <!-- Awesome Font -->
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <div id="header">
+            <div id="controls">
+                {% for json in files %}
+                    <a href="/finder?path={{json.dirName}}">Retour</a>
+                {% endfor %}
+            </div>
+            <div id="preview-container">
+                <div class="container">
+                    <img class="preview" src="">
+                    <span class="name"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="slider">
+            {% for json in files %}
+                {% for jsonTree in  json.children %}
+                    <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/finder?path={{jsonTree.path}}">
+                        <div class="icon">
+                            {% if jsonTree.type == "File"  %}
+                                {% if jsonTree.mimeType == "application/javascript" %}
+                                    <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-file-code-o fa-2x"></i></a>
+                                    {% elseif jsonTree.mimeType == "image/jpeg" or jsonTree.mimeType == "image/png" %}
+                                    <a href="/finder?path={{jsonTree.path}}"><div class="image" style="background-image: url('/finder?path={{jsonTree.path}}'); background-size: cover; width: 40px; height: 40px;"></div></a>
+                                    {% else %}
+                                    <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-file-o fa-2x"></i></a>
+                                    {% endif %}
+                                {% else %}
+                                <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-folder fa-2x"></i></a>
+                                {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+
+        <table id="listing" class="table display dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
+            <thead>
+                <tr role="row">
+                    <th class="sorting" style="width: 135px;">Nom</th>
+                    <th class="sorting" style="width: 223px;">Taille</th>
+                    <th class="sorting" style="width: 99px;">Type</th>
+                    <th class="sorting" style="width: 41px;">Date de modification</th>
+                </tr>
+            </thead>
+
+            <tfoot>
+            <th class="sorting" style="width: 135px;">Nom</th>
+            <th class="sorting" style="width: 223px;">Taille</th>
+            <th class="sorting" style="width: 99px;">Type</th>
+            <th class="sorting" style="width: 41px;">Date de modification</th>            </tfoot>
+
+        <tbody>
+            {% for json in files %}
+                {% for jsonTree in  json.children %}
+                    <tr role="row" class="odd">
+                        <td><a href="/finder?path={{jsonTree.path}}">{{jsonTree.name}}</a></td>
+                        <td>{{jsonTree.stats.size}}</td>
+                        <td>
+                            {% if jsonTree.type == "File"  %}
+                                {{jsonTree.mimeType}}
+                            {% else %}
+                                {{jsonTree.type}}
+                            {% endif %}
+                        </td>
+                        <td>{{jsonTree.stats.mtime}}</td>
+                    </tr>
+
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
 
 </body>
 </html>

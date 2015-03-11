@@ -95,6 +95,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	}
 
 	Http.prototype.send = function(response){
+		if (response.response.headersSent )
+			return this.close();
 		switch (true){
 			case response instanceof  http.ServerResponse :
 				this.response = response;
@@ -102,7 +104,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//case response instanceof nodefony.Response :
 			//break ;
 		}
-
 		// cookies
 		this.response.setCookies();
 		/*
