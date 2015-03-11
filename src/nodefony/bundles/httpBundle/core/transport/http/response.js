@@ -110,10 +110,14 @@ nodefony.register("Response",function(){
 	};
 
 	Response.prototype.writeHead = function(statusCode, headers){
-		return this.response.writeHead(
-			statusCode || this.statusCode,
-			headers || this.headers
-		);
+		if ( ! this.response.headersSent ){
+			return this.response.writeHead(
+				statusCode || this.statusCode,
+				headers || this.headers
+			);
+		}else{
+			throw new Error("Headers already sent !!");	
+		}
 	};
 
 	Response.prototype.flush = function(data, encoding){

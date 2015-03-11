@@ -125,20 +125,28 @@ nodefony.register("controller", function(){
 		var fileStream = fs.createReadStream(File.path, options );
 		fileStream.on("open",function(){
 			if ( !  response.headersSent ){
-				response.writeHead(200, head); 
-				fileStream.pipe(response, {
-					// auto end response 
-					end:true
-				});
+				try {
+					response.writeHead(200, head); 
+					fileStream.pipe(response, {
+						// auto end response 
+						end:true
+					});
+				}catch(e){
+					throw e ;
+				}
 			}
 		});
 		response.on('close', function() {
 			if (fileStream) {
-            			fileStream.unpipe(response);
-            			if (fileStream.fd) {
-					//console.log("CLOSE")
-                			fs.close(fileStream.fd);
-            			}
+				try {
+					fileStream.unpipe(response);
+					if (fileStream.fd) {
+						//console.log("CLOSE")
+						fs.close(fileStream.fd);
+					}
+				}catch(e){
+					throw e ;
+				}
         		}
 		});
 		fileStream.on("error",function(error){

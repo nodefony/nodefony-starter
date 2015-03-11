@@ -149,8 +149,23 @@ nodefony.registerService("firewall", function(){
 		return this.notificationCenter.listen.apply(this.notificationCenter, arguments);
 	};
 
-	securedArea.prototype.handle = function(container, context, type){
+	securedArea.prototype.handle = function(context, request, response){
+		console.log("CONTEXT SECURITY")
+		// CROSS DOMAIN
 		
+
+		// FACTORY
+		if ( this.factory ){
+			console.log(this.factory.name)
+		}
+		try {
+			context.notificationsCenter.fire("onRequest", context.container, request, response);	
+		}catch (e){
+			context.notificationsCenter.fire("onError",context.container, {
+				status:500,
+				message:e
+			});
+		}
 	};
 	
 	// Factory
@@ -219,9 +234,7 @@ nodefony.registerService("firewall", function(){
 
 		
 	securedArea.prototype.match = function(request, response){
-		//if (request.url.href === this.formLogin )
-                        //return true;
-                var url = request.url.pathname || request.resourceURL.pathname ;
+                var url = request.url ? request.url.pathname : ( request.resourceURL ? request.resourceURL.pathname : null ) ;
                 return this.pattern.exec(url);
 	};
 
@@ -279,7 +292,6 @@ nodefony.registerService("firewall", function(){
 			};
 		}(this);
 
-
 		this.securedAreas = {}; 
 		this.providers = {};
 
@@ -294,65 +306,64 @@ nodefony.registerService("firewall", function(){
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
+					var request = context.request.request ;
+					var response = context.response.response ;
 					for ( var area in this.securedAreas ){
 						if ( this.securedAreas[area].match(context.request, context.response) ){
 							context.secureArea = this.securedAreas[area] ;
-							this.handlerHttp(context);
+							request.on('end', function(){
+								this.handlerHttp(context, request, response);
+							}.bind(this));
 							break;
 						}
 					}
-					if ( !  context.secureArea ){
-						var request = context.request.request ;
-						var response = context.response.response ;
+					if ( !  context.secureArea ){	
 						request.on('end', function(){
 							context.notificationsCenter.fire("onRequest", context.container, request, response);	
 						}.bind(this));	
 					}
 				break;
 				case "WEBSOCKET" :
-				case "WEBSOCKET SECURE" :	
-					this.handlerWebsocket(context);
+				case "WEBSOCKET SECURE" :
+					var request = context.request ;
+					var response = context.response ;	
+					for ( var area in this.securedAreas ){
+						if ( this.securedAreas[area].match(context.request, context.response) ){
+							context.secureArea = this.securedAreas[area] ;
+							this.handlerWebsocket(context, request, response);
+							break;
+						}
+					}
+					if ( !  context.secureArea ){
+						context.notificationsCenter.fire("onRequest", context.container, request, response );
+					}
 				break;
 			}
 		});
-
-
-		/*this.kernel.listen(this,"onHttpRequest" , function(container, context, type){
-			var request = context.request.request ;
-			var response = context.response.response ;
-
-			for ( var area in this.securedAreas ){
-				if ( this.securedAreas[area].match(context.request, context.response) ){
-					//this.kernel.fire("onSecurity", this, context);	
-					break ;
-				}
-			}
-
-			request.on('end', function(){
-				context.notificationsCenter.fire("onRequest", container, request, response);	
-			}.bind(this));
-		});*/
-
-
-		//this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
-
 	};
 
+	Firewall.prototype.handlerHttp = function( context, request, response){
+		try {
+			return context.secureArea.handle( context, request, response);
+		}catch(e){
+			context.notificationsCenter.fire("onError",context.container, {
+				status:500,
+				message:e
+			});	
+		}
+		//context.notificationsCenter.fire("onRequest", context.container, request, response);	
+	};
 
+	Firewall.prototype.handlerWebsocket = function(context, request, response){
+		// TODO FIREWALL FOR WEBSOCKET
+		context.notificationsCenter.fire("onRequest", context.container, request, response );
+	};
 
 	Firewall.prototype.setSessionStrategy = function(strategy){
 		if (strategy in optionStrategy ){
 			return this.sessionStrategy = strategy ;
 		}
 		throw new Error("sessionStrategy strategy not found")
-	};
-
-	Firewall.prototype.handlerHttp = function( context){
-		var request = context.request.request ;
-		var response = context.response.response ;
-		request.on('end', function(){
-			context.notificationsCenter.fire("onRequest", context.container, request, response);	
-		}.bind(this));
 	};
 
 	/*Firewall.prototype.handlerHTTP = function(container, context, type){
@@ -477,12 +488,6 @@ nodefony.registerService("firewall", function(){
 	};*/
 
 	
-	Firewall.prototype.handlerWebsocket = function(context){
-		var request = context.request.request ;
-		var response = context.response.response ;
-		// TODO FIREWALL FOR WEBSOCKET
-		context.notificationsCenter.fire("onRequest", context.container, request, response );
-	};
 
 
 	Firewall.prototype.nodeReader = function(obj){

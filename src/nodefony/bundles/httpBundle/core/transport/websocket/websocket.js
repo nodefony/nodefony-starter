@@ -19,6 +19,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.response = new nodefony.wsResponse( this.connection );
 		this.originUrl = url.parse( request.origin );
 		this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
+		this.secureArea = null ;
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 			remoteAddress:this.remoteAddress,
 			origin:request.origin
