@@ -34,6 +34,9 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			method:request.method,
 			protocol:this.type
 		});
+
+		//parse cookies
+		this.parseCookies();
 		
 		//this.Authenticate = this.get("Authenticate");
 
@@ -42,7 +45,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		this.url = this.request.url.href;
-		this.remoteAddress = this.request.remoteAdress ; // request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+		this.remoteAddress = this.request.remoteAdress ; 
 
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result, context){

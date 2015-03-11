@@ -249,7 +249,8 @@ nodefony.registerController("demo", function(){
 			//console.log( files[file].realName() )
 		}
 		if ( ! this.isAjax() ){
-			return this.redirect(this.generateUrl("index"));
+			//return this.redirect(this.generateUrl("index"));
+			return this.forward("demoBundle:demo:indexDownload","/tmp");
 		}else{
 			return this.renderResponse(
 					JSON.stringify({
@@ -353,15 +354,15 @@ nodefony.registerController("demo", function(){
  	 *	DOWNLOAD
  	 *
  	 */
-	demoController.prototype.indexDownloadAction= function(name){
-		var query = this.getParameters("query");
-		if (! query.get.path)
-			var path =  "./" ;
-		else
-			var path = query.get.path ;
-
+	demoController.prototype.indexDownloadAction= function(path){
+		if (! path){
+			var query = this.getParameters("query");
+			if (! query.get.path)
+				var path =  "./" ;
+			else
+				var path = query.get.path ;
+		}
 		//TODO secure path
-
 		try{ 
 			return search.call(this, path) ;
 		}catch(e){

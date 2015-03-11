@@ -154,9 +154,13 @@ nodefony.registerService("httpKernel", function(){
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
 				container.setParameters("request.host" , this.kernel.domain + ":" +port );
-				//Parse cookies request
-				context.parseCookies();
 				this.kernel.fire("onHttpRequest", container, context, type);
+				if (! this.firewall){
+					request.on('end', function(){
+						context.notificationsCenter.fire("onRequest",container, request, response );	
+					});
+					return ;	
+				}
 			break;
 			case "WEBSOCKET" :
 			case "WEBSOCKET SECURE" :
@@ -165,21 +169,13 @@ nodefony.registerService("httpKernel", function(){
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				this.kernel.fire("onWebsocketRequest", container, context, type);
+				if (! this.firewall){
+					context.notificationsCenter.fire("onRequest",container, request, response );
+					return ;	
+				}
 			break;
 		}
-
-		if( ! this.firewall){
-			if (type === "HTTP" || type === "HTTPS"){
-				request.on('end', function(){
-					context.notificationsCenter.fire("onRequest",container, request, response );	
-				});
-			}
-			if (type === "WEBSOCKET" || type === "WEBSOCKET SECURE"){
-				context.notificationsCenter.fire("onRequest",container, request, response );
-			}
-		}else{
-			//this.firewall.fire("");
-		}
+		this.kernel.fire("onSecurity", context);
 	};
 
 	return httpKernel ;

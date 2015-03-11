@@ -18,7 +18,7 @@
 							{% endfor %}
 						{% endif %}
 					{% endfor %}
-					
+					<li><label>Debug</label><span class="label label-success">{{debug}}</span></li>	
 				</ul>
 			</div>
 
@@ -97,7 +97,16 @@
 					<li class="separator"> </li>
 					<li><label style="color:#999">ROUTE</label></li>
 					{% for key, value in route %}
-						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+						{% if key == "variables" %}
+							{% if route.variables | length %}
+								<label class="label" style="color:#999">Variables :</label>
+								{% for key, value in route.variables %}
+									<li><label>{{varialblesName[key]}}</label><span class="label label-success">{{value}}</span></li>	
+								{% endfor %}
+							{% endif %}
+						{% else %}
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+						{% endif %}
 					{% endfor %}
 					
 

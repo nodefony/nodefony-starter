@@ -90,7 +90,8 @@ nodefony.register("Route", function(){
 	Route.prototype.compile = function(){
 		var pattern = this.path.replace(/(\/)?(\.)?\{([^}]+)\}(?:\(([^)]*)\))?(\?)?/g, function(match, slash, dot, key, capture, opt, offset) {
 			var incl = (this.path[match.length+offset] || '/') === '/';
-			this.variables.push(key);
+			var index = this.variables.push(key);
+			//this.variables[key] = this.variables[index-1]; 
 			return (incl ? '(?:' : '')+(slash || '')+(incl ? '' : '(?:')+(dot || '')+'('+(capture || '[^/]+')+'))'+(opt || '');
 		}.bind(this));
 		pattern = pattern.replace(/([\/.])/g, '\\$1').replace(/\*/g, '(.+)');

@@ -20,7 +20,7 @@ nodefony.registerService("sessions", function(){
 		if ( host === meta ){
 			return host ;
 		}else{
-			this.manager("SESSION START WARNING REFERRER NOT SAME, HOST : "+host+" ,META STORAGE :" + meta ,"WARNING");
+			this.manager.logger("SESSION START WARNING REFERRER NOT SAME, HOST : "+host+" ,META STORAGE :" + meta ,"WARNING");
 			throw {
 				meta :meta ,
 				host :host
@@ -33,7 +33,8 @@ nodefony.registerService("sessions", function(){
 		this.setMetaBag("created", time );
 		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
 		this.setMetaBag("host", this.context.request.request.headers['host'] );
-		this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
+		if ( this.context.request.request.headers['user-agent'] )
+			this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
 	};
 
 	var createSession = function(lifetime){

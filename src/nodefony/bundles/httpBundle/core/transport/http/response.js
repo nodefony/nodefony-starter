@@ -89,9 +89,9 @@ nodefony.register("Response",function(){
 	};
 
 
-	Response.prototype.setStatusCode = function(status){
+	Response.prototype.setStatusCode = function(status, message){
 		this.statusCode = status ;
-		this.response.statusMessage = http['STATUS_CODES'][this.statusCode] ;
+		this.response.statusMessage = message || http['STATUS_CODES'][this.statusCode] ;
 	};
 
 	Response.prototype.setBody = function(ele){

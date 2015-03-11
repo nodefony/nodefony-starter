@@ -150,13 +150,7 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handle = function(container, context, type){
-		if ( this.match(context.request) ){
-			try {
-				this.fire("onHttpRequest", container, context, type);
-			}catch(e){
-				throw e;
-			}	
-		}
+		
 	};
 	
 	// Factory
@@ -285,31 +279,62 @@ nodefony.registerService("firewall", function(){
 			};
 		}(this);
 
+
 		this.securedAreas = {}; 
 		this.providers = {};
+
 		// listen KERNEL EVENTS
-		this.kernel.listen(this, "onBoot",function(){
-
-
-		});
+		this.kernel.listen(this, "onBoot",function(){});
 
 		this.kernel.listen(this, "onReady",function(){
 			this.sessionService = this.get("sessions");
 		});
 
-		//FIXME FIREWALL ENTRY POINT
-		this.kernel.listen(this,"onHttpRequest" , function(container, context, type){
-			var request = context.request.request ;
-			var response = context.response.response ;
-	
-			request.on('end', function(){
-
-				context.notificationsCenter.fire("onRequest", container, request, response);	
-			});
+		this.kernel.listen(this, "onSecurity",function(context){
+			switch (context.type){
+				case "HTTP" :
+				case "HTTPS" :
+					for ( var area in this.securedAreas ){
+						if ( this.securedAreas[area].match(context.request, context.response) ){
+							context.secureArea = this.securedAreas[area] ;
+							this.handlerHttp(context);
+							break;
+						}
+					}
+					if ( !  context.secureArea ){
+						var request = context.request.request ;
+						var response = context.response.response ;
+						request.on('end', function(){
+							context.notificationsCenter.fire("onRequest", context.container, request, response);	
+						}.bind(this));	
+					}
+				break;
+				case "WEBSOCKET" :
+				case "WEBSOCKET SECURE" :	
+					this.handlerWebsocket(context);
+				break;
+			}
 		});
 
 
-		this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
+		/*this.kernel.listen(this,"onHttpRequest" , function(container, context, type){
+			var request = context.request.request ;
+			var response = context.response.response ;
+
+			for ( var area in this.securedAreas ){
+				if ( this.securedAreas[area].match(context.request, context.response) ){
+					//this.kernel.fire("onSecurity", this, context);	
+					break ;
+				}
+			}
+
+			request.on('end', function(){
+				context.notificationsCenter.fire("onRequest", container, request, response);	
+			}.bind(this));
+		});*/
+
+
+		//this.kernel.listen(this, "onWebsocketRequest", this.handlerWebsocket );
 
 	};
 
@@ -322,8 +347,12 @@ nodefony.registerService("firewall", function(){
 		throw new Error("sessionStrategy strategy not found")
 	};
 
-	Firewall.prototype.handle = function(container, context, type){
-		this.kernel.fire("onSecurity", this, context);
+	Firewall.prototype.handlerHttp = function( context){
+		var request = context.request.request ;
+		var response = context.response.response ;
+		request.on('end', function(){
+			context.notificationsCenter.fire("onRequest", context.container, request, response);	
+		}.bind(this));
 	};
 
 	/*Firewall.prototype.handlerHTTP = function(container, context, type){
@@ -448,11 +477,11 @@ nodefony.registerService("firewall", function(){
 	};*/
 
 	
-	Firewall.prototype.handlerWebsocket = function(container, context, type){
+	Firewall.prototype.handlerWebsocket = function(context){
 		var request = context.request.request ;
 		var response = context.response.response ;
 		// TODO FIREWALL FOR WEBSOCKET
-		context.notificationsCenter.fire("onRequest", container, request, response );
+		context.notificationsCenter.fire("onRequest", context.container, request, response );
 	};
 
 
@@ -496,9 +525,12 @@ nodefony.registerService("firewall", function(){
 								case "logout":
 								break;
 								case "provider" :
-									if ( ele in nodefony.security.providers ){
-										area.setProvider( param[ele]);
-									}
+									var provider = ele ;
+									this.kernel.getBundle("security").listen(this, "onReady",function(){
+										if ( provider in this.providers ){
+											area.setProvider(provider);
+										}	
+									}.bind(this));
 								break;
 								default:
 									if ( ele in nodefony.security.factory ){

@@ -88,10 +88,12 @@ nodefony.registerBundle ("monitoring", function(){
 							route:{
 								name:context.resolver.route.name,
 								uri:context.resolver.route.path,
-								variables:context.resolver.variables
+								variables:context.resolver.variables 
 							},
+							varialblesName:context.resolver.route.variables,
 							kernelSettings:this.kernel.settings,
 							environment:env,
+							debug:this.kernel.debug,
 							appSettings:app,
 							request:{
 								method:context.request.method,
