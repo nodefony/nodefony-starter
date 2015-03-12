@@ -38,9 +38,12 @@ nodefony.registerService("http", function(){
 				d.run(function() {
 					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
+				//request.on
+
 			}.bind(this));
 		}.bind(this))
 
+		
 		if (this.settings.timeout){
 			this.server.timeout = this.settings.timeout;
 		}
@@ -77,6 +80,11 @@ nodefony.registerService("http", function(){
 				}.bind(this));
 			}
 		}.bind(this));
+
+		this.server.on("clientError",function(e, socket){
+			this.kernel.logger(e, "ERROR");
+		}.bind(this));
+
 
 		return this.server;
 

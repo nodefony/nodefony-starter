@@ -29,6 +29,8 @@ nodefony.register("Response",function(){
 		// struct headers
 		this.headers = {};
 
+		this.ended = false ;
+
 		// default http code 
 		this.setStatusCode(200);
 
@@ -38,7 +40,8 @@ nodefony.register("Response",function(){
 		// free container scope
 		this.response.on("finish",function(){
 			//console.log("FINISH response")
-			this.kernel.container.leaveScope(this.container);
+			if ( ! this.ended )
+				this.kernel.container.leaveScope(this.container);
 		}.bind(this))
 
 		/*this.response.on("close",function(){
@@ -137,6 +140,9 @@ nodefony.register("Response",function(){
 	};
 
 	Response.prototype.end = function(data, encoding){
+		//console.log('pass response end')
+		this.kernel.container.leaveScope(this.container);
+		this.ended = true ;
         	return this.response.end(data, encoding);
 	};
 

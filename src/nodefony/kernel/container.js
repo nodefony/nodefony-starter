@@ -6,6 +6,14 @@
  *
  */
 
+
+var shortId = require('shortid');
+
+var generateId = function(){
+	return shortId.generate();
+};
+
+
 nodefony.register("Container", function(){
 
 
@@ -94,22 +102,30 @@ nodefony.register("Container", function(){
 	};
 
 	Container.prototype.addScope = function(name){
-		return  this.scope[name] = [];
+		if (! this.scope[name] )
+			return  this.scope[name] = {};
+		return this.scope[name];
 	}
 
 	Container.prototype.enterScope = function(name){
 		var sc = new Scope(name, this)
-		var index = this.scope[name].push( sc );
-		sc.index = index;
+		//console.log("ENTER SCOPE :" + sc.id)
+		//var index = this.scope[name].push( sc );
+		this.scope[name][sc.id] = sc ;
+		//sc.index = index;
 		return sc;
 	}
 
 	Container.prototype.leaveScope = function(scope){
 		if ( this.scope[scope.name] ){
-			var sc = this.scope[scope.name].splice(scope.index-1, 1);
-			//delete scope;
-			if (sc[0])
-				return sc[0].parent;
+			var sc = this.scope[scope.name][scope.id]
+			if (sc){
+				//console.log("pass leaveScope "+ scope.id)
+				delete this.scope[scope.name][scope.id];
+				delete sc;
+				//return sc[0].parent;
+			}
+			//console.log(this.scope)
 		}
 	};
 
@@ -156,6 +172,7 @@ nodefony.register("Container", function(){
     		this.services = new parent.protoService();
     		this.parameters = new parent.protoParameters();
     		this.scope = parent.scope;
+		this.id = generateId();
 	}.herite(Container);
 
 	Scope.prototype.set = function(name, obj){

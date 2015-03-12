@@ -71,6 +71,12 @@ nodefony.registerService("https", function(){
 			}	
 		}.bind(this));
 
+		this.server.on("clientError",function(e, socket){
+			this.kernel.logger(e, "ERROR");
+		}.bind(this));
+
+
+
 		this.kernel.listen(this, "onTerminate",function(){
 			if (this.server){
 				this.server.close(function(){

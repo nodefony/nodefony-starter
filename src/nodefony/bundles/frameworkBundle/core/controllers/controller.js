@@ -104,6 +104,7 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.renderFileDownload = function(file, options, headers){
+		//console.log("renderFileDownload :" + file.path)
 		if (file instanceof nodefony.fileClass ){
 			var File = file;
 		}else{
@@ -116,38 +117,39 @@ nodefony.register("controller", function(){
 		if (File.type !== "File"){
 			throw new Error("renderMediaStreambad type for  :" +  file);
 		}
+		var length = File.stats.size ;
 		var head = nodefony.extend({
 			'Content-Disposition': 'attachment; filename="'+File.name+'"',
+			'Content-Length':length,
 			"Expires": "0",
 			'Content-Description': 'File Transfer',
 			'Content-Type': File.mimeType
 		}, headers);
 
-		var response = this.getResponse().response;
+		var response = this.getResponse();
 		var request = this.getRequest().request;
+
 		try {
 			var fileStream = fs.createReadStream(File.path, options );
 		}catch(e){
 			throw e ;
 		}
 		fileStream.on("open",function(){
-			//if ( !  response.headersSent ){
-				try {
-					response.writeHead(200, head); 
-					fileStream.pipe(response, {
-						// auto end response 
-						end:false
-					});
-				}catch(e){
-					throw e ;
-				}
-			//}
+			try {
+				response.response.writeHead(200, head); 
+				fileStream.pipe(response.response, {
+					// auto end response 
+					end:false
+				});
+			}catch(e){
+				throw e ;
+			}
 		});
 
 		fileStream.on("end",function(){
 			if (fileStream) {
 				try {
-					fileStream.unpipe(response);
+					fileStream.unpipe(response.response);
 					if (fileStream.fd) {
 						//console.log("CLOSE")
 						fs.close(fileStream.fd);
@@ -159,28 +161,24 @@ nodefony.register("controller", function(){
 			response.end();
 		});
 
-		
+		fileStream.on("close",function(){
+			//console.log("CLOSSSSSSSSE")
+			response.end();
+		});
 
-		/*response.on('close', function() {
-			if (fileStream) {
-				try {
-					fileStream.unpipe(response);
-					if (fileStream.fd) {
-						//console.log("CLOSE")
-						fs.close(fileStream.fd);
-					}
-				}catch(e){
-					throw e ;
-				}
-        		}
-		});*/
+		response.response.on('close', function() {
+			response.end();
+		})
+		
 		fileStream.on("error",function(error){
+			response.end();
 			throw error ;				
 		});
 		
 	};
 		
 	Controller.prototype.renderMediaStream = function(file , options, headers){
+		//console.log("renderMediaStream :" + file.path)
 		if (file instanceof nodefony.fileClass ){
 			var File = file;
 		}else{
@@ -231,32 +229,29 @@ nodefony.register("controller", function(){
 			var code = 200 ;
 		}
 		// streamFile
-		var response = this.getResponse().response;
+		var response = this.getResponse();
 		try {
-			var fileStream = fs.createReadStream(File.path, value || options);	
+			var fileStream = fs.createReadStream(File.path, value ? nodefony.extend( options, value) : options);	
 		}catch(e){
 			throw e ;
 		}
 		
 		fileStream.on("open",function(){
-			if ( !  response.headersSent ){
-				try {
-					response.writeHead(code, head); 
-					fileStream.pipe(response, {
-						// auto end response 
-						end:false
-					});
-				}catch(e){
-					throw e ;
-				}
+			try {
+				response.response.writeHead(code, head); 
+				fileStream.pipe(response.response, {
+					// auto end response 
+					end:false
+				});
+			}catch(e){
+				throw e ;
 			}
 		});
-
 
 		fileStream.on("end",function(){
 			if (fileStream) {
 				try {
-					fileStream.unpipe(response);
+					fileStream.unpipe(response.response);
 					if (fileStream.fd) {
 						//console.log("CLOSE")
 						fs.close(fileStream.fd);
@@ -268,22 +263,19 @@ nodefony.register("controller", function(){
 			response.end();
 		});
 
-		
-		/*response.on('close', function() {
-			if (fileStream) {
-				try {
-					console.log("close")
-					fileStream.unpipe(response);
-					if (fileStream.fd) {
-						//console.log("CLOSE")
-						fs.close(fileStream.fd);
-					}
-				}catch(e){
-					throw e ;
-				}
-        		}
-		});*/
+		fileStream.on("close",function(){
+			//console.log("CLOSSSSSSSSE")
+			response.end();
+		});
+
+
+		response.response.on('close', function() {
+			response.end();
+		})
+
+
 		fileStream.on("error",function(error){
+			response.end();
 			throw error ;				
 		})
 	};
