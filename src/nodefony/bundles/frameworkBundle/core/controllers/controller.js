@@ -104,7 +104,6 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.renderFileDownload = function(file, options, headers){
-		
 		if (file instanceof nodefony.fileClass ){
 			var File = file;
 		}else{
@@ -114,6 +113,9 @@ nodefony.register("controller", function(){
 				throw new Error("File argument bad type for renderFileDownload :" + typeof file);
 			}	
 		}
+		if (File.type !== "File"){
+			throw new Error("renderMediaStreambad type for  :" +  file);
+		}
 		var head = nodefony.extend({
 			'Content-Disposition': 'attachment; filename="'+File.name+'"',
 			"Expires": "0",
@@ -122,21 +124,27 @@ nodefony.register("controller", function(){
 		}, headers);
 
 		var response = this.getResponse().response;
-		var fileStream = fs.createReadStream(File.path, options );
+		var request = this.getRequest().request;
+		try {
+			var fileStream = fs.createReadStream(File.path, options );
+		}catch(e){
+			throw e ;
+		}
 		fileStream.on("open",function(){
-			if ( !  response.headersSent ){
+			//if ( !  response.headersSent ){
 				try {
 					response.writeHead(200, head); 
 					fileStream.pipe(response, {
 						// auto end response 
-						end:true
+						end:false
 					});
 				}catch(e){
 					throw e ;
 				}
-			}
+			//}
 		});
-		response.on('close', function() {
+
+		fileStream.on("end",function(){
 			if (fileStream) {
 				try {
 					fileStream.unpipe(response);
@@ -148,7 +156,24 @@ nodefony.register("controller", function(){
 					throw e ;
 				}
         		}
+			response.end();
 		});
+
+		
+
+		/*response.on('close', function() {
+			if (fileStream) {
+				try {
+					fileStream.unpipe(response);
+					if (fileStream.fd) {
+						//console.log("CLOSE")
+						fs.close(fileStream.fd);
+					}
+				}catch(e){
+					throw e ;
+				}
+        		}
+		});*/
 		fileStream.on("error",function(error){
 			throw error ;				
 		});
@@ -164,6 +189,9 @@ nodefony.register("controller", function(){
 			}else{
 				throw new Error("File argument bad type for renderMediaStream :" + typeof file);
 			}	
+		}
+		if (File.type !== "File"){
+			throw new Error("renderMediaStreambad type for  :" +  file);
 		}
 		if ( ! options ) options = {};
 		var request = this.getRequest();
@@ -204,7 +232,11 @@ nodefony.register("controller", function(){
 		}
 		// streamFile
 		var response = this.getResponse().response;
-		var fileStream = fs.createReadStream(File.path, value || options);	
+		try {
+			var fileStream = fs.createReadStream(File.path, value || options);	
+		}catch(e){
+			throw e ;
+		}
 		
 		fileStream.on("open",function(){
 			if ( !  response.headersSent ){
@@ -212,7 +244,7 @@ nodefony.register("controller", function(){
 					response.writeHead(code, head); 
 					fileStream.pipe(response, {
 						// auto end response 
-						end:true
+						end:false
 					});
 				}catch(e){
 					throw e ;
@@ -220,7 +252,8 @@ nodefony.register("controller", function(){
 			}
 		});
 
-		response.on('close', function() {
+
+		fileStream.on("end",function(){
 			if (fileStream) {
 				try {
 					fileStream.unpipe(response);
@@ -232,7 +265,24 @@ nodefony.register("controller", function(){
 					throw e ;
 				}
         		}
+			response.end();
 		});
+
+		
+		/*response.on('close', function() {
+			if (fileStream) {
+				try {
+					console.log("close")
+					fileStream.unpipe(response);
+					if (fileStream.fd) {
+						//console.log("CLOSE")
+						fs.close(fileStream.fd);
+					}
+				}catch(e){
+					throw e ;
+				}
+        		}
+		});*/
 		fileStream.on("error",function(error){
 			throw error ;				
 		})

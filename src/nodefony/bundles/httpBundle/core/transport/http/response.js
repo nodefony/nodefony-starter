@@ -37,7 +37,7 @@ nodefony.register("Response",function(){
 
 		// free container scope
 		this.response.on("finish",function(){
-			//console.log("FINISH")
+			//console.log("FINISH response")
 			this.kernel.container.leaveScope(this.container);
 		}.bind(this))
 
