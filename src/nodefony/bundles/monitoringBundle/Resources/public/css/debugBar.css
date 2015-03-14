@@ -45,7 +45,9 @@
 	color:			#FFF;
 }
 
-
+.black{
+	color:			#000;
+}
 
 #nodefony-container ul {
 	list-style-type:	none;
@@ -80,7 +82,7 @@
 
 #nodefony-container ul li .details ul li {
 	display:		block;
-	float:			initial;
+	float:			inherit;
 	line-height:		16px;
 	padding:		3px 0;
 }	

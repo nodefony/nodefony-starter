@@ -94,7 +94,7 @@ nodefony.registerService("firewall", function(){
 		};
 	}();
 
-	// manager
+	// context security
 	var securedArea = function(name, container, firewall){
 		this.notificationCenter = new nodefony.notificationsCenter.create();
 		this.name = name ;
@@ -111,7 +111,7 @@ nodefony.registerService("firewall", function(){
 			try {
 				if ( this.providerName in this.firewall.providers){
 					this.provider = this.firewall.providers[ this.providerName ] ;	
-					this.firewall.logger("ADD SECURITY CONTEXT : " + this.name +" FACTORY : "+ this.factory.name + " PROVIDER :" + this.provider.name + " PATTERN :" + this.pattern, "DEBUG");
+					this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 					/*this.firewall.kernel.listen(this, "onHttpRequest", function(container, context, type){
 						try {
 							this.handle(container, context, type);
@@ -145,6 +145,12 @@ nodefony.registerService("firewall", function(){
 		return this.notificationCenter.fire.apply(this.notificationCenter, arguments);
 	};
 
+	securedArea.prototype.logger = function(pci, severity, msgid,  msg){
+		if (! msgid) msgid = "\x1b[36m CONTEXT SECURITY "+this.name.toUpperCase()+"\x1b[0m";
+		return this.firewall.logger(pci, severity, msgid,  msg);
+	};
+
+
 	securedArea.prototype.listen = function(){
 		return this.notificationCenter.listen.apply(this.notificationCenter, arguments);
 	};
@@ -174,7 +180,7 @@ nodefony.registerService("firewall", function(){
 			if (auth in nodefony.security.factory ){
 				this.factory = new nodefony.security.factory[auth](this, options)
 			}else{
-				this.firewall.logger("FACTORY :"+auth +"NOT registered ","ERROR");
+				this.logger("FACTORY :"+auth +"NOT registered ","ERROR");
 				throw new Error("FACTORY :"+auth +"NOT registered "); 
 			}
 			
@@ -295,6 +301,8 @@ nodefony.registerService("firewall", function(){
 		this.securedAreas = {}; 
 		this.providers = {};
 
+		this.syslog = this.container.get("syslog");
+
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onBoot",function(){});
 
@@ -310,14 +318,14 @@ nodefony.registerService("firewall", function(){
 					var response = context.response.response ;
 					for ( var area in this.securedAreas ){
 						if ( this.securedAreas[area].match(context.request, context.response) ){
-							context.secureArea = this.securedAreas[area] ;
+							context.security = this.securedAreas[area] ;
 							request.on('end', function(){
 								this.handlerHttp(context, request, response);
 							}.bind(this));
 							break;
 						}
 					}
-					if ( !  context.secureArea ){	
+					if ( !  context.security ){	
 						request.on('end', function(){
 							context.notificationsCenter.fire("onRequest", context.container, request, response);	
 						}.bind(this));	
@@ -329,12 +337,12 @@ nodefony.registerService("firewall", function(){
 					var response = context.response ;	
 					for ( var area in this.securedAreas ){
 						if ( this.securedAreas[area].match(context.request, context.response) ){
-							context.secureArea = this.securedAreas[area] ;
+							context.security = this.securedAreas[area] ;
 							this.handlerWebsocket(context, request, response);
 							break;
 						}
 					}
-					if ( !  context.secureArea ){
+					if ( !  context.security ){
 						context.notificationsCenter.fire("onRequest", context.container, request, response );
 					}
 				break;
@@ -344,7 +352,7 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response){
 		try {
-			return context.secureArea.handle( context, request, response);
+			return context.security.handle( context, request, response);
 		}catch(e){
 			context.notificationsCenter.fire("onError",context.container, {
 				status:500,
@@ -612,9 +620,8 @@ nodefony.registerService("firewall", function(){
 	};
 
 	Firewall.prototype.logger = function(pci, severity, msgid,  msg){
-		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "SERVICE FIREWALL";
-		return syslog.logger(pci, severity, msgid,  msg);
+		if (! msgid) msgid = "\x1b[36m SERVICE FIREWALL\x1b[0m";
+		return this.syslog.logger(pci, severity, msgid,  msg);
 	};
 
 

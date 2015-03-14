@@ -252,7 +252,7 @@ $( document ).ready(function(){
 
 	mv = new mediaView({
 		containerUserSpace:$("#myDiv"),
-	   containerRemoteSpace:$("#remoteDiv")
+		containerRemoteSpace:$("#remoteDiv")
 	});
 
 	var server = "/realtime"
