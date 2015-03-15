@@ -112,7 +112,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
 		if ( (! this.auth ) &&  tm > tsTimeout){
 			throw {
-				type:"error",
+				status:401,
 				message:"Digest TIMEOUT"	
 			};
 		}
@@ -143,7 +143,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		var line = "" ;
 		var obj = {
 			nonce:'"'+this.nonce+'"',
-			realm:this.settings.realm,//+host,
+			realm:  this.settings.realm,//+host,
 			qop:"auth"
 		};
 		var length = Object.keys(obj).length -1 ; 
@@ -164,8 +164,10 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		try {
 			var res = this.recalculateNonce();
 			if (! res){
-				this.statusCode = 401
-				return false;
+				throw {
+					status:401,
+					message:"BAD Digest Response "	
+				};
 			}
 			var userHashToCompare = callback(this.username);
 			var res = this.recalculateResponse(userHashToCompare);
@@ -175,12 +177,12 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 				return true;
 			}else{
 				throw {
-					type:"error",
+					status:401,
 					message:"BAD Digest Response "	
 				}; 
 			}
 		}catch(e){
-			throw (e.message); 
+			throw (e); 
 		}
 	};
 
