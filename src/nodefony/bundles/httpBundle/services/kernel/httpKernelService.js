@@ -35,7 +35,6 @@ nodefony.registerService("httpKernel", function(){
 		});
 
 		this.kernel.listen(this, "onClientError", function(e, socket){
-			console.log(socket.localPort)
 			this.logger(e, "ERROR")
 		});
 	};
