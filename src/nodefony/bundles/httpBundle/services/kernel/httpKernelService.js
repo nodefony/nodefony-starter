@@ -33,6 +33,11 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel.listen(this, "onReady", function(){
 			this.firewall = this.get("security") ;
 		});
+
+		this.kernel.listen(this, "onClientError", function(e, socket){
+			console.log(socket.localPort)
+			this.logger(e, "ERROR")
+		});
 	};
 	
 	httpKernel.prototype.boot = function(){

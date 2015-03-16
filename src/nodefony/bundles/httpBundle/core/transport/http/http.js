@@ -53,6 +53,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen( this, "onRequest" , this.handle );
+
 	};
 
 	Http.prototype.handle = function(container, request , response, data){
