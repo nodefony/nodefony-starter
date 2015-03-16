@@ -48,7 +48,7 @@ nodefony.registerBundle ("monitoring", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
-		this.kernel.listen(this, "onBoot", function(){
+		this.kernel.listen(this, "onReady", function(){
 			if ( this.container.getParameters("bundles."+this.name).debugBar) {
 				this.logger("ADD DEBUG BAR MONITORING", "WARNING");
 				var bundles = function(){
@@ -67,6 +67,7 @@ nodefony.registerBundle ("monitoring", function(){
 				var upload = this.container.get("upload");
 				var translation = this.container.get("translation");
 				var domain =  translation.defaultDomain ;
+				var nbServices = Object.keys(nodefony.services).length ;
 				var service = {
 					upload : {
 						tmp_dir:upload.config.tmp_dir,
@@ -77,14 +78,35 @@ nodefony.registerBundle ("monitoring", function(){
 						defaultDomain: domain	
 					}
 				}; 
+				var security = function(){
+					var obj = {};
+					var firewall = this.container.get("security")
+					if (firewall){
+						for (var area in firewall.securedAreas ){
+							//console.log(firewall.securedAreas[area])
+							obj[area] = {};
+							obj[area]["pattern"] = firewall.securedAreas[area].pattern;
+							obj[area]["factory"] = firewall.securedAreas[area].factory ? firewall.securedAreas[area].factory.name : null ;
+							obj[area]["provider"] = firewall.securedAreas[area].provider ? firewall.securedAreas[area].provider.name : null ;
+						}
+					}
+					return obj ; 
+				}.call(this);
+
+				this.kernel.listen(this, "onServerRequest",function(request, response, logString, d){
+					request.nodefony_time = new Date().getTime();	
+				});
 				this.kernel.listen(this, "onRequest",function(context){
 					var trans = context.get("translation");
+					//console.log(context)
 					if ( context.resolver.resolve ){
 						var obj = {
 							bundle:context.resolver.bundle.name,
 							bundles:bundles,
 							node:node,
 							services:service,
+							nbServices:nbServices,
+							security:security,
 							route:{
 								name:context.resolver.route.name,
 								uri:context.resolver.route.path,
@@ -96,10 +118,12 @@ nodefony.registerBundle ("monitoring", function(){
 							debug:this.kernel.debug,
 							appSettings:app,
 							request:{
+								url:context.request.url.href,
 								method:context.request.method,
-								headers:context.request.headers,
+								remoteAdress:context.request.remoteAdress,
 								queryPost:context.request.queryPost,
-								queryGet:context.request.queryGet
+								queryGet:context.request.queryGet,
+								headers:context.request.headers
 							},
 							session:{
 								id:context.session.id,
@@ -112,6 +136,13 @@ nodefony.registerBundle ("monitoring", function(){
 								domain:trans.defaultDomain
 							}
 						};
+						//console.log(context.security)
+						if ( context.security ){
+							obj["context_secure"] = context.security.name ;	
+						}else{
+							obj["context_secure"] = null ;	
+						}
+							
 						if ( context.resolver.route.defaults ) {
 							var tab = context.resolver.route.defaults.controller.split(":") ;
 							obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
@@ -121,6 +152,7 @@ nodefony.registerBundle ("monitoring", function(){
 						}
 
 						context.listen(this, "onView", function(result, context){
+							obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
 							obj["response"] = {	
 								statusCode:context.response.statusCode,
 								message:context.response.response.statusMessage,
@@ -149,6 +181,5 @@ nodefony.registerBundle ("monitoring", function(){
 			}
 		}.bind(this));
 	};
-
 	return monitoring;
 });

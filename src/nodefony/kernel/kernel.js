@@ -387,44 +387,42 @@ nodefony.register("kernel", function(){
 	 *	@param {Function} callbackFinish
          */
 	kernel.prototype.registerBundles = function(path, callbackFinish, nextick){
-		//process.nextTick(function(){
-			var func = function(){
-				try{
-					var finder = new nodefony.finder( {
-						path:path,
-						recurse:false,
-						onFile:function(file){
-							if (file.matchName(regBundle)){
-								try {
-									var name = this.getBundleName(file.name);
-									//this.logger("\033[32m REGISTER BUNDLE : "+name+"   \033[0m","DEBUG");
-									var Class = this.autoLoader.load(file.path);
-									if (Class) {
-										if (typeof Class === "function" ){
-											Class.prototype.path = file.dirName;
-											Class.prototype.name = name;
-											Class.prototype.autoLoader = this.autoLoader;
-											Class.prototype.container = this.container;
-											var func = Class.herite(nodefony.Bundle);
-											this.bundles[name] = new func(this, this.container);
-											if ( this.bundles[name].waitBundleReady ){
-												this.eventReadywait += 1 ;
-												this.bundles[name].listen(this,"onReady", waitingBundle);
-											}	
-										}
+		var func = function(){
+			try{
+				var finder = new nodefony.finder( {
+					path:path,
+					recurse:false,
+					onFile:function(file){
+						if (file.matchName(regBundle)){
+							try {
+								var name = this.getBundleName(file.name);
+								//this.logger("\033[32m REGISTER BUNDLE : "+name+"   \033[0m","DEBUG");
+								var Class = this.autoLoader.load(file.path);
+								if (Class) {
+									if (typeof Class === "function" ){
+										Class.prototype.path = file.dirName;
+										Class.prototype.name = name;
+										Class.prototype.autoLoader = this.autoLoader;
+										Class.prototype.container = this.container;
+										var func = Class.herite(nodefony.Bundle);
+										this.bundles[name] = new func(this, this.container);
+										if ( this.bundles[name].waitBundleReady ){
+											this.eventReadywait += 1 ;
+											this.bundles[name].listen(this,"onReady", waitingBundle);
+										}	
 									}
-								}catch(e){
-									this.logger(e);
-								}	
-							}
-						}.bind(this),
-						onFinish:callbackFinish || this.initializeBundles.bind(this)
-					});
-				}catch(e){
-					this.logger(e);
-				}
+								}
+							}catch(e){
+								this.logger(e);
+							}	
+						}
+					}.bind(this),
+					onFinish:callbackFinish || this.initializeBundles.bind(this)
+				});
+			}catch(e){
+				this.logger(e);
 			}
-		//}.bind(this));
+		}
 		if ( nextick === undefined ){
 			process.nextTick( func.bind(this) );	
 		}else{

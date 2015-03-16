@@ -95,7 +95,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		}
 	}
 
-	Http.prototype.send = function(response){
+	Http.prototype.send = function(response, context){
 		if (response.response.headersSent )
 			return this.close();
 		switch (true){
@@ -164,7 +164,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(url.format(Url), status)
 		else	
 			this.response.redirect(Url, status)
-		this.notificationsCenter.fire("onResponse", null, this.context);
+		this.notificationsCenter.fire("onResponse", this.response, this.context);
 	};
 
 	Http.prototype.setXjson  = function( xjson){

@@ -4,7 +4,7 @@
 <div id="nodefony-container"  >
 	<ul class="pull-left">
 		<li> <img class="logo" src="/monitoringBundle/images/fire.png"> </li>
-		<li> <label class="label" > <a href='{{path("monitoring")}}'>{{nodefony.name}} &nbsp {{nodefony.system.version}}</a></label>
+		<li> <label class="label" > <a href='{{path("monitoring")}}'>{{nodefony.name}} &nbsp <label class="label label-default" >{{nodefony.system.version}}</label> </a></label>
 			<div class="details">
 				<ul>
 					{% for key, value in kernelSettings %}
@@ -70,10 +70,11 @@
 
 		<li >	
 			<label class="label" >SERVICES</label>
+			<label class="label label-default" >{{nbServices}}</label>
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">TRANSLATION</label></li>
-					<li><label>Locale Default</label><span >{{services.translation.defaultLocale}}</span></li>
+					<li><label>Locale Default</label><span class="label label-default">{{services.translation.defaultLocale}}</span></li>
 					<li><label>Domain Default</label><span >{{services.translation.defaultDomain}}</span></li>
 					<li class="separator"> </li>
 					<li><label style="color:#999">UPLOAD</label></li>
@@ -86,7 +87,34 @@
 		<li class="separator"></li>
 
 		<li >	
-			<label class="label label-success">{{pattern}}</label>
+			<label class="label" >FIREWALL</label>
+			{% if context_secure  %}
+				<label class="label label-success" >ON</label>
+				<div class="details">
+					<ul>
+						<li><label style="color:#999"> {{context_secure}}</label><label class="label label-success" >ON</label></li>
+					</ul>
+				</div>
+			{% else %}
+				<label class="label label-default" >OFF</label>
+				<div class="details">
+					<ul>
+						{% for key, value in security %}
+							<li><label style="color:#999"> {{key|upper}}</label><label class="label label-default" >OFF</label></li>
+							<li><label >Pattern </label><span >{{value.pattern}}</span></li>
+							<li><label >Factory </label><span >{{value.factory}}</span></li>
+							<li><label >Provider </label><span >{{value.provider}}</span></li>
+							<li class="separator"></li>
+						{% endfor %}	
+					</ul>
+				</div>
+			{% endif %}
+		</li>
+
+		<li class="separator"></li>
+
+		<li >	
+			<label class="label label-default">{{pattern}}</label>
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">ROUTER SERVICE</label></li>
@@ -108,7 +136,11 @@
 							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
 						{% endif %}
 					{% endfor %}
+					<li class="separator"></li>
 					
+					<li><label style="color:#999">TRANSLATION</label></li>
+					<li><label>Local</label><span class="label label-success">{{locale.default}}</span></li>
+					<li><label>Domain</label><span class="label label-success">{{getTransDefaultDomain()}}</span></li>	
 
 				</ul>
 			</div>
@@ -120,16 +152,19 @@
 			<label class="label label-success" >{{ request.method }}</label>
 			<div class="details">
 				<ul>
-					<li><label style="color:#999">TRANSLATION</label></li>
-					<li><label>LOCALE</label><span class="label label-success">{{locale.default}}</span></li>
-					<li><label>DOMAIN</label><span class="label label-success">{{getTransDefaultDomain()}}</span></li>
 						
-					<li class="separator"></li>
 					{% for key, value in request %}
+						{% if key == "url" %}
+							<li><label>URL</label><span style="font-size:15px" class="label label-default">{{value}}</span></li>
+						{% endif %}
+						{% if key == "remoteAdress" %}
+							<li><label>Remote Address</label><span>{{value}}</span></li>
+							<li class="separator"></li>
+						{% endif %}
 						{% if key == "headers" %}
 							<li><label style="color:#999">HEADERS</label></li>
 							{% for key, value in request.headers %}
-								<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+								<li><label>{{ key | capitalize }}</label><span class="label black">{{value}}</span></li>
 							{% endfor %}
 						{% endif %}
 						{% if key == "queryPost" and request.queryPost is not empty  %}
@@ -137,12 +172,14 @@
 							{% for key, value in request.queryPost %}
 								<li><label>{{ key  }}</label><span >{{value}}</span></li>
 							{% endfor %}
+							<li class="separator"></li>
 						{% endif %}
 						{% if key == "queryGet" and request.queryGet is not empty %}
 							<li><label style="color:#999">QUERY GET</label></li>
 							{% for key, value in request.queryGet %}
 								<li><label>{{ key  }}</label><span >{{value}}</span></li>
 							{% endfor %}
+							<li class="separator"></li>
 						{% endif %}
 					{% endfor %}
 					
@@ -157,6 +194,7 @@
 		<li>
 			<label class="label" >Response</label>
 			<label class="label label-success" >{{ response.statusCode }}</label>
+			<label class="label label-success" >{{ timeRequest }}</label>
 			<div class="details">
 				<ul>
 					{% for key, value in response %}

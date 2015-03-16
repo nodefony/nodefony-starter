@@ -36,7 +36,11 @@ nodefony.register( "usersProvider", function(){
 		if ( this.users[username] ){
 			return this.users[username].getPassword();
 		}else{
-			throw new Error("User : "+username+" not exist" )
+			throw {
+				status:401,
+				message:"User : "+username+" not exist"
+			}
+			//throw new Error("User : "+username+" not exist" )
 		}
 
 	}

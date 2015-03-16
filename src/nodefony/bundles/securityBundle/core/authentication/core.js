@@ -62,10 +62,8 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 
 	var Factory = function(contextSecurity,  settings){
 		this.name = this.getKey();
-		this.provider = contextSecurity.provider ;
 		this.contextSecurity = contextSecurity ;
 		this.authenticate = new nodefony.io.authentication["http_digest"](settings); 
-		contextSecurity.listen(this, "onHttpRequest", this.handle );
 	};
 
 	Factory.prototype.getKey = function(){
@@ -76,7 +74,7 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 		return "http";	
 	};
 
-	Factory.prototype.handle = function(container, context, type){
+	Factory.prototype.handle = function( context){
 		var request = context.request ;
 		var authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
 		if (! authorization){ 
@@ -89,20 +87,15 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 			}
 		}
 		try {
-			this.authenticate.checkResponse(authorization, this.provider.getUserPassword.bind(this.provider))
+			this.authenticate.checkResponse(authorization, this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider))
 		}catch(e){
 			var response = context.response ;
 			var host = request.headers["host"];
 			response.headers["WWW-Authenticate"] = this.authenticate.generateResponse(host, request, response);
-			throw {
-				status:401,
-				message:e
-			} ;
+			throw e;
 		}
 	};
-
 	return Factory ;
-
 });
 
 
