@@ -85,13 +85,14 @@ nodefony.registerController("finder", function(){
 	var encode = function(file){
 		switch (true) {
 			// stream
-			case /^image/.test(file.mimeType):
+			/*case /^image/.test(file.mimeType):
 				try{
 					return renderFileSync.call(this, file);
 				}catch(e){
 					throw e ;
 				}
-			break;
+			break;*/
+			case /^image/.test(file.mimeType):
 			case /^video/.test(file.mimeType):
 			case /^audio/.test(file.mimeType):
 			case /application\/pdf/.test(file.mimeType):
@@ -161,7 +162,6 @@ nodefony.registerController("finder", function(){
 			throw e;		
 		}
 	};
-
 
 	return finderController ;
 

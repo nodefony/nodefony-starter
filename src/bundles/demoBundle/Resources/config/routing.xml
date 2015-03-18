@@ -55,7 +55,7 @@
 
 
 	<!-- FINDER -->
-	<route id="finder"  pattern="/finder">
+	<route id="finder"  pattern="/demo/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
 
