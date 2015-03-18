@@ -115,7 +115,7 @@ nodefony.register("controller", function(){
 			}	
 		}
 		if (File.type !== "File"){
-			throw new Error("renderMediaStreambad type for  :" +  file);
+			throw new Error("renderMediaStream bad type for  :" +  file);
 		}
 		var length = File.stats.size ;
 		var head = nodefony.extend({
@@ -167,6 +167,10 @@ nodefony.register("controller", function(){
 		});
 
 		response.response.on('close', function() {
+			if (fileStream.fd){
+				fileStream.unpipe(response.response);
+				fs.close(fileStream.fd);
+			}
 			response.end();
 		})
 		
@@ -253,13 +257,13 @@ nodefony.register("controller", function(){
 				try {
 					fileStream.unpipe(response.response);
 					if (fileStream.fd) {
-						//console.log("CLOSE")
 						fs.close(fileStream.fd);
 					}
 				}catch(e){
 					throw e ;
 				}
         		}
+			//console.log("END")
 			response.end();
 		});
 
@@ -268,15 +272,21 @@ nodefony.register("controller", function(){
 			response.end();
 		});
 
-
-		response.response.on('close', function() {
+		response.response.on('close', function(){
+			//console.log("close response")
+			if (fileStream.fd){
+				fileStream.unpipe(response.response);
+				fs.close(fileStream.fd);
+			}
 			response.end();
-		})
+		 });
 
+	
 
 		fileStream.on("error",function(error){
+			//console.log("pass error callback")
 			response.end();
-			throw error ;				
+			//throw error ;				
 		})
 	};
 

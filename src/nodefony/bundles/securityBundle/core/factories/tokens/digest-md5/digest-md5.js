@@ -10,7 +10,7 @@
 var crypto = require('crypto');
 
 
-nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",function(){
+nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 
 
 	/*
@@ -23,7 +23,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 	var settingsDigest = {
 		private_key : "private_key",
 		realm : "user@",
-		max_time : 60000
+		max_time : 0
 	}
 	var lenghtTs = (new Date().getTime()+"").length;
 
@@ -33,12 +33,10 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		ret = ret.replace(/"/g,"");
 		ret = ret.replace(/ /g,"");
 		var head = ret.split(",");
-		//var obj = {}
 		for (var i= 0 ; i < head.length ; i++){
 			var res = reg.exec(head[i])
 			if (res && res[1]){
 				if (res[1] === "cnonce")
-					//this[res[1]] = new Buffer(res[2], 'base64').toString('ascii') ;
 					this[res[1]] = res[2];
 				else	
 					this[res[1]] = res[2];
@@ -84,17 +82,19 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		return MD5.update(A2).digest("hex");
 	};
 
-	var Digest = function(options, host, request, response){
+	var Digest = function( request, response, options){
+		this.name = "Digest" ;
+		if (! arguments.length ){
+			return this.generatePasswd ;
+		}
 		this.settings = nodefony.extend({}, settingsDigest, options);	
 		this.auth = false ;
-		if (request){
-			this.secret = host+":"+request.headers["user-agent"]+":"+request.headers["referer"]
-			this.request = request ;
-			this.response = response;
-			this.method = request.method;
-		}
-		
-
+		this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
+		this.host = request.headers["host"];
+		this.secret = this.host+":"+request.headers["user-agent"]+":"+ ( request.headers["referer"] || request.remoteAdress )
+		this.request = request ;
+		this.response = response;
+		this.method = request.method;
 	};
 
 	Digest.prototype.generateNonce = function(){
@@ -104,17 +104,19 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 	};
 
 	Digest.prototype.recalculateNonce = function(){
-		var tm = new Date().getTime();
-		var tmTimeout = parseInt(tm,10);
 
 		var nonce = this.nonce.substring(lenghtTs);
 		var ts = this.nonce.substring(0,lenghtTs);
-		var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
-		if ( (! this.auth ) &&  tm > tsTimeout){
-			throw {
-				status:401,
-				message:"Digest TIMEOUT"	
-			};
+		if (this.settings.max_time !== 0 ){
+			var tm = new Date().getTime();
+			var tmTimeout = parseInt(tm,10);
+			var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
+			if ( (! this.auth ) &&  tm > tsTimeout){
+				throw {
+					status:401,
+					message:"Digest TIMEOUT"	
+				};
+			}
 		}
 		var SHA1 = crypto.createHash('sha1');
 		var res = SHA1.update(ts+":"+this.secret+":"+this.settings.private_key).digest("hex");
@@ -130,20 +132,12 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		return res;
 	};
 		
-	Digest.prototype.generateResponse = function(host, request, response){
-		if (request){
-			this.secret = host+":"+request.headers["user-agent"]+":"+request.headers["referer"]
-			this.request = request ;
-			this.response = response;
-			this.method = request.method;
-		}else{
-			throw new Error("No request For digest generation")
-		}
+	Digest.prototype.generateResponse = function(){
 		this.nonce = this.generateNonce();
 		var line = "" ;
 		var obj = {
 			nonce:'"'+this.nonce+'"',
-			realm:  this.settings.realm,//+host,
+			realm:  this.settings.realm,//+this.host,
 			qop:"auth"
 		};
 		var length = Object.keys(obj).length -1 ; 
@@ -155,12 +149,11 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 			length-=1;
 		}
 		//return  '"'+new Buffer(line).toString('base64')+'"';	
-		return  'Digest '+line;	
+		return  this.name+' '+line;	
 	};
 
-	Digest.prototype.checkResponse = function(str, callback){
-		var parse = parseAuthorization.call(this, str);
-		//console.log(this.nonce);
+	Digest.prototype.checkResponse = function( callback){
+		parseAuthorization.call(this, this.authorization);
 		try {
 			var res = this.recalculateNonce();
 			if (! res){
@@ -170,7 +163,7 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 				};
 			}
 			var userHashToCompare = callback(this.username);
-			var res = this.recalculateResponse(userHashToCompare);
+			res = this.recalculateResponse(userHashToCompare);
 			if (res === this.response){
 				this.auth = true ;
 				this.statusCode = 200;
@@ -191,7 +184,6 @@ nodefony.register.call(nodefony.io.authentication.mechanisms, "digest-md5",funct
 		return generateA1(username, Realm, passwd)
 	};
 
-	nodefony.io.authentication["http_digest"] = Digest;
 				 
 	return Digest;
 

@@ -13,7 +13,7 @@ security:
 #               login_path:               /login  
 #               default_target_path:      /demo
             http_digest:
-            #SASL:
+#sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"
             crossDomain: 

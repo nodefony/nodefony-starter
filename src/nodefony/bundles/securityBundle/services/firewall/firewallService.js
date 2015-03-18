@@ -111,12 +111,13 @@ nodefony.registerService("firewall", function(){
 			try {
 				if ( this.providerName in this.firewall.providers){
 					this.provider = this.firewall.providers[ this.providerName ] ;	
-					this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 				}else{
 					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
+					return ;
 				}
+				this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 			}catch(e){
-				this.firewall.logger(this.name +"  "+e,"ERROR");	
+				this.logger(this.name +"  "+e,"ERROR");	
 				throw e;
 			}
 		}.bind(this))
@@ -127,7 +128,7 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.logger = function(pci, severity, msgid,  msg){
-		if (! msgid) msgid = "\x1b[36mCONTEXT SECURITY "+this.name.toUpperCase()+"\x1b[0m";
+		if (! msgid) msgid = "\x1b[36mCONTEXT SECURITY \033[31m"+this.name+" \x1b[0m";
 		return this.firewall.logger(pci, severity, msgid,  msg);
 	};
 
@@ -160,12 +161,14 @@ nodefony.registerService("firewall", function(){
 			context.notificationsCenter.fire("onRequest", context.container, request, response);	
 		}catch (e){
 			if (this.formLogin) {
+				this.logger(e.message, "ERROR");
 				var obj = context.setXjson(e);
 				var ajax = context.request.isAjax() ;
 				//FIXME REDIRECT HTTPS
 				if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready ){
 					this.redirectHttps(context);
 				}else{
+					context.response.setStatusCode( 401 ) ;
 					var ur = this.overrideURL(context.request, this.formLogin);
 					context.notificationsCenter.fire("onRequest",context.container, request, response );
 				}
@@ -185,12 +188,17 @@ nodefony.registerService("firewall", function(){
 			}
 		}
 	};
+
+	securedArea.prototype.getUser = function(){
+		return this.user || null ; 	
+	};
 	
 	// Factory
 	securedArea.prototype.setFactory = function(auth, options){
 		if ( auth ){
 			if (auth in nodefony.security.factory ){
 				this.factory = new nodefony.security.factory[auth](this, options)
+				this.logger("FACTORY "+auth +" registered ","DEBUG");
 			}else{
 				this.logger("FACTORY :"+auth +"NOT registered ","ERROR");
 				throw new Error("FACTORY :"+auth +"NOT registered "); 
@@ -198,7 +206,7 @@ nodefony.registerService("firewall", function(){
 			
 		}
 	};
-
+	
 	securedArea.prototype.setProvider = function(provider){
 		this.providerName = provider;
 	};
@@ -210,7 +218,6 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
-		//console.log(context.request.isAjax());
 		context.request.url.protocol = "https";
 		context.request.url.port = this.container.get("kernel").httpsPort;
 		context.request.url.href = "";
@@ -250,10 +257,6 @@ nodefony.registerService("firewall", function(){
 		this.defaultTarget = route;
 	};
 
-	securedArea.prototype.checkAuthenticate = function(host, context){
-		return this.Authenticate.checkAuthenticate(host, context.request, context.response);
-	};
-
 	//FIXME SESSION
 	securedArea.prototype.checkValidSession = function(context, host){
 		
@@ -279,7 +282,12 @@ nodefony.registerService("firewall", function(){
 		this.reader = function(context){
 			var func = context.container.get("reader").loadPlugin("security", pluginReader);
 			return function(result){
-				return func(result, context.nodeReader.bind(context));
+				try {
+					return func(result, context.nodeReader.bind(context));
+				}catch(e){
+					context.logger(e.message, "ERROR");
+					console.log(e)
+				}
 			};
 		}(this);
 
@@ -478,6 +486,7 @@ nodefony.registerService("firewall", function(){
 	Firewall.prototype.addSecuredArea = function(name){
 		if ( ! this.securedAreas[name] ){
 			this.securedAreas[name] = new securedArea(name, this.container, this) ;
+			this.logger("ADD security context : " + name, "DEBUG" )
 			return this.securedAreas[name];
 		}else{
 			this.logger("securedAreas :" + name +"already exist ")
@@ -485,7 +494,7 @@ nodefony.registerService("firewall", function(){
 	};
 
 	Firewall.prototype.logger = function(pci, severity, msgid,  msg){
-		if (! msgid) msgid = "\x1b[36m SERVICE FIREWALL\x1b[0m";
+		if (! msgid) msgid = "\x1b[36mSERVICE FIREWALL\x1b[0m";
 		return this.syslog.logger(pci, severity, msgid,  msg);
 	};
 

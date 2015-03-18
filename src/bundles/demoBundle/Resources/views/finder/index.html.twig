@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>SFR</title>
+        <title>FINDER</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="keywords" content="">
@@ -18,6 +18,16 @@
         <script src="/demoBundle/js/flickity.pkgd.min.js"></script>
         <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        
+        <link rel="stylesheet" href="/demoBundle/css/jquery.fancybox.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="/demoBundle/js/jquery.fancybox.pack.js?v=2.1.5"></script>
+        
+        <!-- Optionally add helpers - button, thumbnail and/or media -->
+        <link rel="stylesheet" href="/demoBundle/js/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+
+
 
         <script src="/demoBundle/js/finder.js"></script>
         <!-- Awesome Font -->
@@ -29,79 +39,140 @@
         <div id="header">
             <div id="controls">
                 {% for json in files %}
-                    <a href="/finder?path={{json.dirName}}">Retour</a>
+                    <a href="/finder?path={{json.dirName}}"><i class="fa fa-arrow-circle-left"></i> <span>{{json.dirName}}</span></a>
                 {% endfor %}
             </div>
-            <div id="preview-container">
+            <div id="previews-container">
                 <div class="container">
-                    <img class="preview" src="">
+                    <div class="preview-container">
+                        
+                    </div>
+                    
                     <span class="name"></span>
                 </div>
 
             </div>
-        </div>
 
-        <div id="slider">
-            {% for json in files %}
-                {% for jsonTree in  json.children %}
-                    <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/finder?path={{jsonTree.path}}">
-                        <div class="icon">
-                            {% if jsonTree.type == "File"  %}
-                                {% if jsonTree.mimeType == "application/javascript" %}
-                                    <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-file-code-o fa-2x"></i></a>
-                                    {% elseif jsonTree.mimeType == "image/jpeg" or jsonTree.mimeType == "image/png" %}
-                                    <a href="/finder?path={{jsonTree.path}}"><div class="image" style="background-image: url('/finder?path={{jsonTree.path}}'); background-size: cover; width: 40px; height: 40px;"></div></a>
-                                    {% else %}
-                                    <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-file-o fa-2x"></i></a>
-                                    {% endif %}
-                                {% else %}
-                                <a href="/finder?path={{jsonTree.path}}"><i class="fa fa-folder fa-2x"></i></a>
-                                {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
+            <div id="slider">
+                {% for json in files %}
+                    {% for jsonTree in  json.children %}
 
+                        {% if jsonTree.type == "File"  %}
+                            {% if jsonTree.mimeType == "application/javascript" %}
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/js.png" data-mine="{{jsonTree.mimeType}}">
+                                    <div class="icon">
+                                        <a href="/finder?path={{jsonTree.path}}">
+                                            <img class="small" src="/demoBundle/img/finder/js.png">
+                                        </a>
+                                    </div>
+                                </div>
 
-        <table id="listing" class="table display dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
-            <thead>
-                <tr role="row">
-                    <th class="sorting" style="width: 135px;">Nom</th>
-                    <th class="sorting" style="width: 223px;">Taille</th>
-                    <th class="sorting" style="width: 99px;">Type</th>
-                    <th class="sorting" style="width: 41px;">Date de modification</th>
-                </tr>
-            </thead>
+                            {% elseif jsonTree.mimeType == "application/pdf" %}
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/pdf.png" data-mine="{{jsonTree.mimeType}}">
+                                    <div class="icon">
+                                        <a href="/finder?path={{jsonTree.path}}">
+                                            <img class="small" src="/demoBundle/img/finder/pdf.png">
+                                        </a>
+                                    </div>
+                                </div>
 
-            <tfoot>
-            <th class="sorting" style="width: 135px;">Nom</th>
-            <th class="sorting" style="width: 223px;">Taille</th>
-            <th class="sorting" style="width: 99px;">Type</th>
-            <th class="sorting" style="width: 41px;">Date de modification</th>            </tfoot>
+                            {% elseif jsonTree.mimeType == "image/jpeg" or jsonTree.mimeType == "image/png" %}
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/finder?path={{jsonTree.path}}" data-mine="{{jsonTree.mimeType}}">
+                                    <div class="icon">
+                                        <a href="/finder?path={{jsonTree.path}}" class="image">
+                                            <img class='miniature' src='/finder?path={{jsonTree.path}}'>
+                                        </a>
+                                    </div>
+                                </div>
 
-        <tbody>
-            {% for json in files %}
-                {% for jsonTree in  json.children %}
-                    <tr role="row" class="odd">
-                        <td><a href="/finder?path={{jsonTree.path}}">{{jsonTree.name}}</a></td>
-                        <td>{{jsonTree.stats.size}}</td>
-                        <td>
-                            {% if jsonTree.type == "File"  %}
-                                {{jsonTree.mimeType}}
+                            {% elseif jsonTree.mimeType == "video/quicktime" or jsonTree.mimeType == "video/webm" or jsonTree.mimeType == 'video/mp4' or jsonTree.mimeType == 'audio/mpeg' %}
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/finder?path={{jsonTree.path}}" data-mine="{{jsonTree.mimeType}}">
+                                    <div class="icon">
+                                        <a href="/finder?path={{jsonTree.path}}" class="video">
+                                            <img class='miniature' src='/demoBundle/img/finder/mp4.png'>
+                                        </a>
+                                    </div>
+                                </div>
+
                             {% else %}
-                                {{jsonTree.type}}
+
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/unknown.png" data-mine="{{jsonTree.mimeType}}">
+                                    <div class="icon">
+                                        <a href="/finder?path={{jsonTree.path}}">
+                                            <img class="small" src="/demoBundle/img/finder/unknown.png">
+                                        </a>
+                                    </div>
+                                </div>
                             {% endif %}
-                        </td>
-                        <td>{{jsonTree.stats.mtime}}</td>
-                    </tr>
 
+                        {% else %}
+                            <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/folder.png" data-mine="{{jsonTree.type}}">
+                                <div class="icon">
+                                    <a href="/finder?path={{jsonTree.path}}">
+                                        <img class="small" src="/demoBundle/img/finder/folder.png">
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+
+
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </tbody>
-    </table>
+            </div>
+        </div>
 
 
-</body>
+
+        <div id="listing">
+            <table class="table display dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting" style="width: 135px;">Nom</th>
+                        <th class="sorting" style="width: 223px;">Taille</th>
+                        <th class="sorting" style="width: 99px;">Type</th>
+                        <th class="sorting" style="width: 41px;">Date de modification</th>
+                    </tr>
+                </thead>
+
+                <tfoot>
+                <th class="sorting" style="width: 135px;">Nom</th>
+                <th class="sorting" style="width: 223px;">Taille</th>
+                <th class="sorting" style="width: 99px;">Type</th>
+                <th class="sorting" style="width: 41px;">Date de modification</th>            </tfoot>
+
+                <tbody>
+                    {% for json in files %}
+                        {% for jsonTree in  json.children %}
+                            <tr role="row" class="odd">
+                                <td>
+                                    {% if jsonTree.type == "File"  %}
+                                        {% if jsonTree.mimeType == "image/jpeg" or jsonTree.mimeType == "image/png" %}
+                                            <a href="/finder?path={{jsonTree.path}}" class="image">{{jsonTree.name}}</a>
+                                        {% else %}
+                                            <a target="_blank" href="/finder?path={{jsonTree.path}}">{{jsonTree.name}}</a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="/finder?path={{jsonTree.path}}">{{jsonTree.name}}</a>
+                                    {% endif %}
+                                    
+                                </td>
+                                <td>{{jsonTree.stats.size}}</td>
+                                <td>
+                                    {% if jsonTree.type == "File"  %}
+                                        
+                                        {{jsonTree.mimeType}}
+                                    {% else %}
+                                        {{jsonTree.type}}
+                                    {% endif %}
+                                </td>
+                                <td>{{jsonTree.stats.mtime}}</td>
+                            </tr>
+
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
 </html>
 

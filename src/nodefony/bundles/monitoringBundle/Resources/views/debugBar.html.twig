@@ -92,7 +92,10 @@
 				<label class="label label-success" >ON</label>
 				<div class="details">
 					<ul>
-						<li><label style="color:#999"> {{context_secure}}</label><label class="label label-success" >ON</label></li>
+						<li><label style="color:#999"> {{context_secure.name}}</label><label class="label label-success" >{{context_secure.factory}}</label></li>
+						<li><label style="color:#999"> username</label><label class="label black" >{{context_secure.user.username}}</label></li>
+						<li><label style="color:#999"> userid</label><span class="label black" >{{context_secure.user.id}}</span></li>
+						<li><label style="color:#999"> roles</label><span class="label black" >{{context_secure.user.roles}}</span></li>
 					</ul>
 				</div>
 			{% else %}

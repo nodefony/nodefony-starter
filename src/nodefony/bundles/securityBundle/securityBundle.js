@@ -6,8 +6,6 @@
 nodefony.registerBundle ("security", function(){
 
 
-	
-
 	var security = function(kernel, container){
 
 		nodefony.security = {

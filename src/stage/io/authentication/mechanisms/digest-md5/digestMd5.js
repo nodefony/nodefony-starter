@@ -16,7 +16,7 @@ stage.require("md5");
 stage.require("base64");
 
 
-stage.register.call(stage.io.authentication.mechanisms, "DIGEST-MD5",function(){
+stage.register.call(stage.io.authentication.mechanisms, "Digest",function(){
 
 	var keyWord= {
 		realm:true,

@@ -125,7 +125,7 @@ nodefony.registerService("sessions", function(){
 			}		
 		}else{
 			this.clear();
-			createSession.call(this);
+			createSession.call(this, this.lifetime);
 		}
 		this.status = "active" ;
 		this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
@@ -269,8 +269,8 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	Session.prototype.getRemoteAdress = function(){
-		var request = this.context.request.request ;
-		return request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || request.connection.socket.remoteAddress ;
+		var request = this.context.request ;
+		return request.getRemoteAdress() ; 
 	};
 
 	/*

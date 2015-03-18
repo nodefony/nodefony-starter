@@ -141,9 +141,10 @@ nodefony.register("Response",function(){
 
 	Response.prototype.end = function(data, encoding){
 		//console.log('pass response end')
-		this.kernel.container.leaveScope(this.container);
 		this.ended = true ;
-        	return this.response.end(data, encoding);
+        	var ret = this.response.end(data, encoding);
+		this.kernel.container.leaveScope(this.container);
+		return ret ;
 	};
 
 	Response.prototype.redirect = function(url, status){

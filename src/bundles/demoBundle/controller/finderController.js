@@ -66,11 +66,32 @@ nodefony.registerController("finder", function(){
 		}
 	};
 
+	var renderFileSync = function(file){
+		var response = this.getResponse();
+		var request = this.getRequest().request;
+
+		try {
+			var img = fs.readFileSync(file.path);
+			response.writeHead(200, {
+				'Content-Type': file.mimeType ,
+				'Content-Disposition:' : ' inline; filename="'+file.name+'"'
+			});
+			response.end(img, 'binary');
+		}catch(e){
+			throw e ;
+		}	
+	};
 
 	var encode = function(file){
 		switch (true) {
 			// stream
 			case /^image/.test(file.mimeType):
+				try{
+					return renderFileSync.call(this, file);
+				}catch(e){
+					throw e ;
+				}
+			break;
 			case /^video/.test(file.mimeType):
 			case /^audio/.test(file.mimeType):
 			case /application\/pdf/.test(file.mimeType):
@@ -113,7 +134,7 @@ nodefony.registerController("finder", function(){
 	finderController.prototype.indexAction = function(){
 		var query = this.getParameters("query");
 		if (! query.get.path)
-			var path =  "./" ;
+			var path =  "/Users/cci/repository/demo/images" ;
 		else
 			var path = query.get.path ;
 
