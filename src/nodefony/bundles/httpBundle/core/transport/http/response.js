@@ -40,8 +40,9 @@ nodefony.register("Response",function(){
 		// free container scope
 		this.response.on("finish",function(){
 			//console.log("FINISH response")
-			if ( ! this.ended )
+			if ( ! this.ended ){
 				this.kernel.container.leaveScope(this.container);
+			}
 		}.bind(this))
 
 		/*this.response.on("close",function(){

@@ -84,7 +84,6 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 		this.contextSecurity.token = new typeMech( request, response, this.settings);
 
 		if (! this.contextSecurity.token.authorization){ 
-			console.log("pass 401")
 			response.headers["WWW-Authenticate"] = this.generateResponse(this.contextSecurity.token);
 			throw {
 				status:401,
@@ -92,8 +91,9 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 			}
 		}
 		try {
-			this.contextSecurity.token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider))
-			this.contextSecurity.user = this.contextSecurity.provider.loadUserByUsername(this.contextSecurity.token.username);
+			var res = this.contextSecurity.token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider))
+			if ( res )
+				context.user = this.contextSecurity.provider.loadUserByUsername(this.contextSecurity.token.username);
 		}catch(e){
 			response.headers["WWW-Authenticate"] = this.generateResponse(this.contextSecurity.token);
 			throw e;
@@ -128,7 +128,6 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 	};
 
 	Factory.prototype.getMechanisms = function(mech){
-		console.log(mech)
 		if ( mech in nodefony.security.tokens){
 			return nodefony.security.tokens[mech]
 		}else{

@@ -166,7 +166,6 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 			res = this.recalculateResponse(userHashToCompare);
 			if (res === this.response){
 				this.auth = true ;
-				this.statusCode = 200;
 				return true;
 			}else{
 				throw {

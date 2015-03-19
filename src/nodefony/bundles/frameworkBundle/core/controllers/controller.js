@@ -303,7 +303,7 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.getUser = function(){
-		return this.container.get('security').getUser();
+		return this.context.getUser();
 	};
 	
 	Controller.prototype.isAjax = function(){

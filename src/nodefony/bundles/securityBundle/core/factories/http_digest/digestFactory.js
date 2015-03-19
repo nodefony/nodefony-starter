@@ -36,8 +36,9 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 			}
 		}
 		try {
-			this.contextSecurity.token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider))
-			this.contextSecurity.user = this.contextSecurity.provider.loadUserByUsername(this.contextSecurity.token.username);
+			var res = this.contextSecurity.token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider))
+			if ( res )
+				context.user = this.contextSecurity.provider.loadUserByUsername(this.contextSecurity.token.username);
 		}catch(e){
 			response.headers["WWW-Authenticate"] = this.contextSecurity.token.generateResponse();
 			throw e;

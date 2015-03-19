@@ -85,7 +85,7 @@ nodefony.registerBundle ("monitoring", function(){
 						for (var area in firewall.securedAreas ){
 							//console.log(firewall.securedAreas[area])
 							obj[area] = {};
-							obj[area]["pattern"] = firewall.securedAreas[area].pattern;
+							obj[area]["pattern"] = firewall.securedAreas[area].regPartten;
 							obj[area]["factory"] = firewall.securedAreas[area].factory ? firewall.securedAreas[area].factory.name : null ;
 							obj[area]["provider"] = firewall.securedAreas[area].provider ? firewall.securedAreas[area].provider.name : null ;
 						}
@@ -139,13 +139,11 @@ nodefony.registerBundle ("monitoring", function(){
 							};
 							//console.log(context.security)
 							if ( context.security ){
-								//console.log(context.security.user)
 								obj["context_secure"] = {
 									name: context.security.name ,
 									factory : context.security.factory.name,
 									//token:context.security.token.name
-									user:context.security.user
-
+									user:context.user
 								}	
 							}else{
 								obj["context_secure"] = null ;	

@@ -38,7 +38,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		//parse cookies
 		this.parseCookies();
 		
-		//this.Authenticate = this.get("Authenticate");
+		this.security = null ;
+		this.user = null ;
 
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
@@ -94,6 +95,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.notificationsCenter.fire("onError", this.container, e);		
 		}
 	}
+
+	Http.prototype.getUser = function(){
+		return this.user || null ; 	
+	};
+
 
 	Http.prototype.send = function(response, context){
 		if (response.response.headersSent )

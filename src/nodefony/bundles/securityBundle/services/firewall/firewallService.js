@@ -143,6 +143,10 @@ nodefony.registerService("firewall", function(){
 			// FACTORY
 			if ( this.factory ){
 				this.factory.handle(context)
+				context.session.migrate(true);
+				context.session.setMetaBag("security",{
+					user:context.user.username	
+				});
 			}
 			if ( this.defaultTarget && context.request.url.path === this.checkLogin){
 				this.overrideURL(context.request, this.defaultTarget);
@@ -158,7 +162,7 @@ nodefony.registerService("firewall", function(){
 					return ;
 				}
 			}
-			context.notificationsCenter.fire("onRequest", context.container, request, response);	
+			context.notificationsCenter.fire("onRequest", context.container, request, response);
 		}catch (e){
 			if (this.formLogin) {
 				this.logger(e.message, "ERROR");
@@ -189,10 +193,7 @@ nodefony.registerService("firewall", function(){
 		}
 	};
 
-	securedArea.prototype.getUser = function(){
-		return this.user || null ; 	
-	};
-	
+		
 	// Factory
 	securedArea.prototype.setFactory = function(auth, options){
 		if ( auth ){
@@ -237,6 +238,7 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.setPattern = function(pattern){
+		this.regPartten =  pattern ;
 		this.pattern = new RegExp(pattern);
 	};
 
@@ -345,14 +347,21 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response){
 		try {
-			return context.security.handle( context, request, response);
+			if ( context.session.getMetaBag("security") ){
+				//console.log("PASS SESSION OK");
+				context.user = context.security.provider.loadUserByUsername( context.session.getMetaBag("security").user ) ;
+				context.notificationsCenter.fire("onRequest", context.container, request, response );
+			}else{
+				//console.log("PASS CONTEXT HANDLER");
+				var ret = context.security.handle( context, request, response);
+			}
 		}catch(e){
+
 			context.notificationsCenter.fire("onError",context.container, {
 				status:500,
 				message:e
 			});	
 		}
-		//context.notificationsCenter.fire("onRequest", context.container, request, response);	
 	};
 
 	Firewall.prototype.handlerWebsocket = function(context, request, response){
