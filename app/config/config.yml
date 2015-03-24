@@ -69,8 +69,8 @@ httpBundle:
   session:
 #   handler:                      session.storage.sqlite                    
     save_path:                    "./tmp/sessions"
-#    cookie:
-#      maxAge:                     1440
+    cookie:
+      maxAge:                     0
     
 #
 #  OVERRIDE BUNDLE ASSETIC

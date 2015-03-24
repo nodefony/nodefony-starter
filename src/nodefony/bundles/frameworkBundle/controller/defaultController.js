@@ -39,6 +39,7 @@ nodefony.registerController("framework", function(){
 		};
 		
 		frameworkController.prototype.loginAction = function(log){
+			var log = this.context.session.getFlashBag("session") ;
 			return this.render('frameworkBundle::login.html.twig',log);
 		};
 

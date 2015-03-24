@@ -65,6 +65,7 @@ nodefony.registerService("sessions", function(){
 		this.context = null ;
 		this.lifetime =  this.settings.cookie["maxAge"]; 
 		this.saved = false ;
+		this.flashBag = {};
 	}.herite(nodefony.Container);
 	
 	Session.prototype.start = function(context){
@@ -110,12 +111,16 @@ nodefony.registerService("sessions", function(){
 			var ret = this.storage.start(this.id);
 			if (ret){
 				this.deSerialize(ret);
-				if (this.settings.referer_check){
-					try {
-						var secure = checkSecureReferer.call(this, context)	
-					}catch(e){
-						this.manager.logger("SESSION REFERER ERROR SESSION  ==> " + this.name + " : "+ this.id, "WARNING");
-						this.invalidate(this.id);	
+				if (  ! this.isValidSession(ret) ){
+					this.invalidate();
+				}else{
+					if (this.settings.referer_check){
+						try {
+							var secure = checkSecureReferer.call(this, context)	
+						}catch(e){
+							this.manager.logger("SESSION REFERER ERROR SESSION  ==> " + this.name + " : "+ this.id, "WARNING");
+							this.invalidate();	
+						}
 					}
 				}
 			}else{
@@ -130,9 +135,21 @@ nodefony.registerService("sessions", function(){
 		this.status = "active" ;
 		this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
 		return this ;
-		
 		//this.save(this.id, this.serialize() );
-		
+	};
+
+	Session.prototype.isValidSession = function(data){
+		var lastUsed = this.getMetaBag("lastUsed");
+		if (this.lifetime === 0 ) {
+			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < new Date().getTime() ){
+				return false ;	
+			}
+			return true ;	
+		} 
+		if ( lastUsed + ( this.lifetime * 1000 ) < new Date().getTime() ){
+			return false;
+		}
+		return true ;	
 	};
 
 	Session.prototype.metaBag = function(){
@@ -146,6 +163,25 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.getMetaBag = function(key){
 		return this.getParameters(key);
 	};
+
+	Session.prototype.getFlashBag = function(key){
+		var res = this.flashBag[key];
+		if ( res ){
+			this.logger("Delete FlashBag : " + key ,"WARNING")
+			delete  this.flashBag[key] ;
+			return res ;
+		}
+		return null ;	
+	};
+
+	Session.prototype.setFlashBag = function(key, value){
+		if (! key ){
+			throw new Error ("FlashBag key must be define : " + key)
+		}
+		this.logger("ADD FlashBag : " + key ,"WARNING")
+		return this.flashBag[key] = value ;
+	};
+
 
 	Session.prototype.setCookieSession = function( leftTime){
 		if (leftTime){
@@ -162,17 +198,24 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.serialize = function(){
 		var obj = {
 			attributes:this.protoService.prototype,
-			metaBag:this.protoParameters.prototype
+			metaBag:this.protoParameters.prototype,
+			flashBag:this.flashBag
 		};
 		return JSON.stringify( obj );		
 	};
 
 	Session.prototype.deSerialize = function(data){
 		var obj = JSON.parse(data);
-		for (var attr in obj.attributes)
+		for (var attr in obj.attributes){
 			this.set(attr, obj.attributes[attr]);
-		for (var meta in obj.metaBag)
+		}
+		for (var meta in obj.metaBag){
+			//console.log(meta + " : " + obj.metaBag[meta])
 			this.setMetaBag(meta, obj.metaBag[meta]);
+		}
+		for (var flash in obj.flashBag){
+			this.setFlashBag(flash, obj.flashBag[flash])
+		}
 	};
 
 	Session.prototype.remove = function(){

@@ -36,7 +36,7 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 			}
 		}else{
 			throw {
-				message:"Stack Protocole SASL bad format",
+				message:" SASL security send challenge",
 				status:401
 			}	
 		}

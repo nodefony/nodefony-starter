@@ -135,7 +135,7 @@ nodefony.registerController("finder", function(){
 	finderController.prototype.indexAction = function(){
 		var query = this.getParameters("query");
 		if (! query.get.path)
-			var path =  "/Users/cci/repository/demo/images" ;
+			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;
 		else
 			var path = query.get.path ;
 

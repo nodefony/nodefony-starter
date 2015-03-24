@@ -71,7 +71,7 @@ statics:
 # SESSIONS
 session:
   start:                        "autostart"
-  use_strict_mode:              false                    
+  use_strict_mode:              true                    
   name:                         "nodefony"
   handler:                      session.storage.files
   save_path:                    "/tmp/sessions"
@@ -83,7 +83,7 @@ session:
   use_only_cookies:             true
   referer_check:                true
   cookie:
-    maxAge:                     0               # like cookie_lifetime php  =>seconde
+    maxAge:                     0               # like cookie_lifetime   =>seconde
     httpOnly:                   true            # don't see by script (javascript)
     secure:                     false           # https only
     signed:                     false

@@ -166,7 +166,6 @@ nodefony.registerService("firewall", function(){
 		}catch (e){
 			if (this.formLogin) {
 				this.logger(e.message, "ERROR");
-				var obj = context.setXjson(e);
 				var ajax = context.request.isAjax() ;
 				//FIXME REDIRECT HTTPS
 				if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready ){
@@ -174,10 +173,18 @@ nodefony.registerService("firewall", function(){
 				}else{
 					context.response.setStatusCode( 401 ) ;
 					var ur = this.overrideURL(context.request, this.formLogin);
+					if (! ajax){
+						if ( e.message !== "Unauthorized" ){
+							context.session.setFlashBag("session", {
+								error:e.message
+							});
+						}
+					}else{
+						 context.setXjson(e);
+					}
 					context.notificationsCenter.fire("onRequest",context.container, request, response );
 				}
 			}else{
-	
 				if (e.status){
 					context.notificationsCenter.fire("onError",context.container, {
 						status:e.status,
@@ -347,16 +354,16 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response){
 		try {
-			if ( context.session.getMetaBag("security") ){
+			var meta = context.session.getMetaBag("security");
+			if ( meta ){
 				//console.log("PASS SESSION OK");
-				context.user = context.security.provider.loadUserByUsername( context.session.getMetaBag("security").user ) ;
+				context.user = context.security.provider.loadUserByUsername( meta.user ) ;
 				context.notificationsCenter.fire("onRequest", context.container, request, response );
 			}else{
 				//console.log("PASS CONTEXT HANDLER");
 				var ret = context.security.handle( context, request, response);
 			}
 		}catch(e){
-
 			context.notificationsCenter.fire("onError",context.container, {
 				status:500,
 				message:e
@@ -375,10 +382,6 @@ nodefony.registerService("firewall", function(){
 		}
 		throw new Error("sessionStrategy strategy not found")
 	};
-
-	
-	
-
 
 	Firewall.prototype.nodeReader = function(obj){
 		//console.log(obj.security.firewalls)

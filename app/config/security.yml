@@ -5,13 +5,13 @@ security:
 
     firewalls:
         secured_area:
-            pattern:                    ^/secure
+            pattern:                    ^/
             provider:                   in_memory
 #           provider:                  ldap          
             form_login:
-               check_path:               /secure
-               login_path:               /login  
-               default_target_path:      /demo
+              check_path:               /secure
+              login_path:               /login  
+              default_target_path:      /demo
 #            http_digest:
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
