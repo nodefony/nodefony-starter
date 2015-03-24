@@ -25,10 +25,6 @@
     "sqlite3": "*",
     "mysql": "*",
     "less": "*",
-    "juice": "*",
-    "nodemailer": "*",
-    "mocha": "*",
-    "chai": "*",
     "ascii-table": "*",
     "mime":"*"
   },

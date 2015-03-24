@@ -26,27 +26,29 @@ nodefony.register("console", function(){
 		// App Kernel 
 		this.appKernel = this.$super;
 		this.appKernel.constructor("CONSOLE", environment, debug, loader);
-		//this.listen(this,"onReady", function(){
+
 		/*
-			*
- 		        *       READ GLOBAL CONSOLE CONFIG
- 	 	        */
+		 *
+ 		 *       READ GLOBAL CONSOLE CONFIG
+ 	 	 */
                 this.readConfigDirectory("./config", function(result){
  	 	        if (result){
  	 	                this.settings = nodefony.extend(true, this.settings, result)
  	 	        }
  	 	}.bind(this));
+
 		// MANAGE CLI OPTIONS
-		process.nextTick(function () {
-			try {
-				var ret = this.loadCommand();
-				if (ret)
-					this.terminate(1);
-			}catch(e){
-				this.logger(e);
+		try {
+			var ret = this.loadCommand();
+			if (ret)
 				this.terminate(1);
-				return ;
-			}
+		}catch(e){
+			this.logger(e);
+			this.terminate(1);
+			return ;
+		}
+		
+		process.nextTick(function () {
 			try {
 				var res = this.matchCommand();
 			}catch(e){
