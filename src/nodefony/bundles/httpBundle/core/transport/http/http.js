@@ -136,7 +136,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	
 	Http.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = this.container.getParameters("request.protocol") + " REQUEST";
+		if (! msgid) msgid = this.type + " REQUEST";
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
 

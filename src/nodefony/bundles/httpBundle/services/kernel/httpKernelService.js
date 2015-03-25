@@ -148,7 +148,6 @@ nodefony.registerService("httpKernel", function(){
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
 
-		container.setParameters("request.protocol" , type);
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
@@ -157,7 +156,12 @@ nodefony.registerService("httpKernel", function(){
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
-				container.setParameters("request.host" , this.kernel.domain + ":" +port );
+				var serverHost = this.kernel.domain + ":" +port ; ;
+				var URL = Url.parse(request.headers.referer || request.headers.origin || context.type+"://"+request.headers.host ) ;
+				var cross = ! ( URL.protocol+"//"+URL.host  === context.type.toLowerCase()+"://"+serverHost ) ;
+				//context.serverHost = serverHost ;
+				context.crossDomain = cross ;
+				context.crossURL = URL ;
 				this.kernel.fire("onHttpRequest", container, context, type);
 				if (! this.firewall){
 					request.on('end', function(){

@@ -5,9 +5,8 @@ bin/*
 tmp/*
 node_modules/*
 web/*
+vendors/asciiArt/figlet222
 
-
-vendors/asciiArt/figlet222/
 *.[oa]
 chkfont
 figlet

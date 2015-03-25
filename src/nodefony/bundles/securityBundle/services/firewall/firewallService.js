@@ -5,7 +5,7 @@
  *
  *
  */
-
+var Url = require("url");
 
 
 nodefony.registerService("firewall", function(){
@@ -96,7 +96,7 @@ nodefony.registerService("firewall", function(){
 
 	// context security
 	var securedArea = function(name, container, firewall){
-		this.notificationCenter = new nodefony.notificationsCenter.create();
+		//this.notificationCenter = new nodefony.notificationsCenter.create();
 		this.name = name ;
 		this.container = container;
 		this.firewall = firewall ;
@@ -123,22 +123,32 @@ nodefony.registerService("firewall", function(){
 		}.bind(this))
 	};
 
-	securedArea.prototype.fire = function(){
-		return this.notificationCenter.fire.apply(this.notificationCenter, arguments);
-	};
-
+	
 	securedArea.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "\x1b[36mCONTEXT SECURITY \033[31m"+this.name+" \x1b[0m";
 		return this.firewall.logger(pci, severity, msgid,  msg);
 	};
 
-
-	securedArea.prototype.listen = function(){
+	/*securedArea.prototype.listen = function(){
 		return this.notificationCenter.listen.apply(this.notificationCenter, arguments);
 	};
 
+	securedArea.prototype.fire = function(){
+		return this.notificationCenter.fire.apply(this.notificationCenter, arguments);
+	};*/
+
+	securedArea.prototype.handleCrossDomain = function(context, request, response){
+		if ( context.crossDomain ){
+			if ( this.crossDomain ){
+				return  this.crossDomain.match( context.request, context.response )	
+			}else{
+				return  401;
+			}
+		}
+	};
+
 	securedArea.prototype.handle = function(context, request, response){
-		// CROSS DOMAIN
+		
 		try {
 			// FACTORY
 			if ( this.factory ){
@@ -172,7 +182,7 @@ nodefony.registerService("firewall", function(){
 					this.redirectHttps(context);
 				}else{
 					context.response.setStatusCode( 401 ) ;
-					var ur = this.overrideURL(context.request, this.formLogin);
+					this.overrideURL(context.request, this.formLogin);
 					if (! ajax){
 						if ( e.message !== "Unauthorized" ){
 							context.session.setFlashBag("session", {
@@ -200,7 +210,6 @@ nodefony.registerService("firewall", function(){
 		}
 	};
 
-		
 	// Factory
 	securedArea.prototype.setFactory = function(auth, options){
 		if ( auth ){
@@ -220,9 +229,8 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.overrideURL = function(request, url ){
-		request.url.path = "";
-		request.url.href = "";
-		return request.url.pathname = url ;
+		request.url = Url.parse( Url.resolve(request.url, url) ) ;
+		return request.url ;
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
@@ -354,6 +362,22 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response){
 		try {
+			//CROSS DOMAIN 
+			var next = context.security.handleCrossDomain(context, request, response) ;
+			switch (next){
+				case 204 :
+					return ;
+				case 401 :
+					this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR")
+					context.notificationsCenter.fire("onError",context.container, {
+						status:next,
+						message:"crossDomain Unauthorized "
+					});
+					return ;
+				case 200 :
+					this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
+				break;
+			}
 			var meta = context.session.getMetaBag("security");
 			if ( meta ){
 				//console.log("PASS SESSION OK");
@@ -525,127 +549,3 @@ nodefony.registerService("firewall", function(){
 
 	return Firewall;
 });
-
-
-
-/*Firewall.prototype.handlerHTTP = function(container, context, type){
-		var request = context.request.request ;
-		var response = context.response.response ;
-		
-		request.on('end', function(){
-			
-			
-
-			for ( var area in this.securedAreas ){
-				if ( this.securedAreas[area].match(context.request, context.response) ){
-					context.secureArea = this.securedAreas[area] ;
-					try {
-						var host =  container.getParameters("request.host");
-						var URL = url.parse(request.headers.referer || request.headers.origin || type+"://"+request.headers.host ) ;
-
-						var cross = ! ( URL.protocol+"//"+URL.host  === type.toLowerCase()+"://"+host ) ;
-						if ( cross ){
-							if ( this.securedAreas[area].crossDomain ){
-								var next = this.securedAreas[area].crossDomain.match( context.request, context.response )	
-							}else{
-								var next = 401;
-							}
-							switch (next){
-								case 204 :
-									return ;
-								case 401 :
-									this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + URL.href ,"ERROR")
-									context.notificationsCenter.fire("onError",container, {
-										status:next,
-										message:"crossDomain Unauthorized "
-									});
-									return ;
-								case 200 :
-									this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + URL.href ,"DEBUG")
-								break;
-							}
-						}
-						if ( this.securedAreas[area].Authenticate ){
-							
-							console.log(context.session.getMetaBag("Authenticate.token"));
-
-							var status = this.securedAreas[area].checkAuthenticate(host, context);	
-							switch (status){
-								case 200 :
-									if ( ! context.session.getMetaBag("Authenticate.username") ){
-										
-										context.session.migrate(true);	
-										context.session.setMetaBag("Authenticate.username", this.securedAreas[area].Authenticate.username);	
-										context.session.setMetaBag("Authenticate.token",this.securedAreas[area].Authenticate.serialize());
-											
-										if ( this.securedAreas[area].defaultTarget ){
-											if ( context.request.isAjax() ){
-												this.securedAreas[area].overrideURL(context.request, this.securedAreas[area].defaultTarget);
-												var obj = context.setXjson( {
-													message:"OK",
-													status:200,
-												});
-												context.notificationsCenter.fire("onRequest",container, request, response, obj );
-											}else{
-												this.securedAreas[area].redirect(context, this.securedAreas[area].defaultTarget);
-											}
-											
-										}else{
-											context.redirect(context.request.url, 301);
-										}
-									}else{
-										context.notificationsCenter.fire("onRequest",container, request, response );
-									}	
-									return ;
-								break;
-								case 401 :
-									throw {
-										message:"Unauthorized"
-									}
-								break;
-								default:
-									throw {
-										message:"Authenticate status code not defined : "+ this.securedAreas[area].Authenticate.statusCode
-									}
-							}
-						}
-					}catch (e){
-
-						context.session.invalidate();
-						if (typeof e === "string"){
-							var e ={
-								error:e
-							}
-						}
-						if (this.securedAreas[area].formLogin) {
-							var obj = context.setXjson(e);
-							var ajax = context.request.isAjax() ;
-							if ( ! ajax && type === "HTTP" &&  this.container.get("httpsServer").ready ){
-								this.securedAreas[area].redirectHttps(context);
-							}else{
-								var ur = this.securedAreas[area].overrideURL(context.request);
-								context.notificationsCenter.fire("onRequest",container, request, response );
-							}
-								
-						}else{
-							context.notificationsCenter.fire("onError",container, {
-								xjson:e,
-								status:this.securedAreas[area].Authenticate.statusCode,
-								message:"Unauthorized"
-							} );
-						}
-					}
-					return;
-				}
-			}
-			try {
-				context.notificationsCenter.fire("onRequest", container, request, response);	
-			}catch (e){
-				context.notificationsCenter.fire("onError",container, {
-					status:500,
-					message:e
-				});
-			}
-		}.bind(this));
-	};*/
-

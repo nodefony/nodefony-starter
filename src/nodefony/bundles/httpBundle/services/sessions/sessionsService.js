@@ -29,9 +29,9 @@ nodefony.registerService("sessions", function(){
 	};
 
 	var setMetasSession = function(){
-		var time = new Date().getTime() ;
-		this.setMetaBag("created", time );
+		var time = new Date() ;
 		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
+		this.setMetaBag("created", time );
 		this.setMetaBag("host", this.context.request.request.headers['host'] );
 		if ( this.context.request.request.headers['user-agent'] )
 			this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
@@ -139,7 +139,7 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.isValidSession = function(data){
-		var lastUsed = this.getMetaBag("lastUsed");
+		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
 		if (this.lifetime === 0 ) {
 			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < new Date().getTime() ){
 				return false ;	
@@ -152,8 +152,13 @@ nodefony.registerService("sessions", function(){
 		return true ;	
 	};
 
+
+	Session.prototype.attributes= function(){
+		return this.protoService.prototype ;
+	};
+
 	Session.prototype.metaBag = function(){
-		return this.parameters ;
+		return this.protoParameters.prototype ;
 	};
 
 	Session.prototype.setMetaBag = function(key, value){
@@ -181,6 +186,10 @@ nodefony.registerService("sessions", function(){
 		this.logger("ADD FlashBag : " + key ,"WARNING")
 		return this.flashBag[key] = value ;
 	};
+
+	Session.prototype.flashBags = function(){
+		return this.flashBag ;
+	}
 
 
 	Session.prototype.setCookieSession = function( leftTime){
@@ -342,7 +351,7 @@ nodefony.registerService("sessions", function(){
 			var response = context.response.response ;
 			response.on("finish",function(){
 				if ( context.session ){
-					context.session.setMetaBag("lastUsed", new Date().getTime() );
+					context.session.setMetaBag("lastUsed", new Date() );
 					if ( ! this.saved )
 						context.session.save();	
 				}

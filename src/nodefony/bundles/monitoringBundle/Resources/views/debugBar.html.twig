@@ -50,17 +50,11 @@
 	
 					<li><label style="color:#999">BUNDLES</label></li>
 					{% for key, value in bundles %}
-						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.version}}</span></li>
+						{% if key != "App"  %}
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.version}}</span></li>
+						{% endif %}
 					{% endfor %}
-					<li class="separator"> </li>
-					<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>
-					<li><label>Token</label><span class="label label-success">{{session.id}}</span></li>	
-					{% if session.storage == "session.storage.files" %}
-						<li><label>Storage</label><span >{{session.storage}}</span></li>
-						<li><label>Path</label><span >{{session.path}}</span></li>
-					{% else %}
-						<li><label>Storage</label><span >{{session.storage}}</span></li>
-					{% endif %}	
+						
 				</ul>
 			</div>
 
@@ -80,6 +74,14 @@
 					<li><label style="color:#999">UPLOAD</label></li>
 					<li><label>Temporary Directory</label><span >{{services.upload.tmp_dir}}</span></li>
 					<li><label>Max Size File</label><span >{{services.upload.max_size}}</span></li>
+					<li class="separator"> </li>
+					<li><label style="color:#999">SESSION</label> </li>
+					{% if session.storage == "session.storage.files" %}
+						<li><label>Storage</label><span >{{session.storage}}</span></li>
+						<li><label>Path</label><span >{{session.path}}</span></li>
+					{% else %}
+						<li><label>Storage</label><span >{{session.storage}}</span></li>
+					{% endif %}
 				</ul>
 			</div>
 		</li>
@@ -90,6 +92,7 @@
 			<label class="label" >FIREWALL</label>
 			{% if context_secure  %}
 				<label class="label label-success" >ON</label>
+				<label class="label label-default" >{{context_secure.user.username}}</label>
 				<div class="details">
 					<ul>
 						<li><label style="color:#999"> {{context_secure.name}}</label><label class="label label-success" >{{context_secure.factory}}</label></li>
@@ -153,6 +156,9 @@
 		<li>
 			<label class="label" >Request</label>
 			<label class="label label-success" >{{ request.method }}</label>
+			{% if request.crossDomain %}
+				<label class="label label-default" >Cross Domain</label>
+			{% endif %}
 			<div class="details">
 				<ul>
 						
@@ -185,7 +191,39 @@
 							<li class="separator"></li>
 						{% endif %}
 					{% endfor %}
-					
+					<li class="separator"></li>
+					<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>
+					<li><label>Token</label><span class="label label-success">{{session.id}}</span></li>
+					<li><label>Metas</label>
+						<span >
+							{% for key, value in session.metas %}
+								{% if key == "lifetime" %}
+									<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
+								{% endif %}
+								{% if key == "created" %}
+									<li><label style="margin-left:20px"class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date("d/m/Y g:ia")}}</span></li>
+								{% endif %}
+								{% if key == "lastUsed" %}
+									<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date('d/m/Y g:ia')}}</span></li>
+								{% endif %}
+							{% endfor %}
+						</span>
+					</li>
+					<li><label>Attributes</label>
+						<span>
+							{% for key, value in session.attributes %}
+								<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
+							{% endfor %}
+						</span>
+					</li>
+					<li><label>Flashes</label>
+						<span>
+							{% for key, value in session.flashes %}
+								<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
+							{% endfor %}
+						</span>
+					</li>
+	
 				</ul>
 			</div>
 
