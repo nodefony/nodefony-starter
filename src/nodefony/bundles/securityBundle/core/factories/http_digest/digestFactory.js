@@ -45,8 +45,9 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 		}
 	};
 
-	Factory.prototype.generatePasswd = function(){
-		return new nodefony.security.tokens["digest-md5"].apply(this, arguments);	
+	Factory.prototype.generatePasswd = function(realm, user, passwd){
+		var func = new nodefony.security.tokens["Digest"]();
+		return func(realm, user, passwd);	
 	};
 
 	return Factory ;

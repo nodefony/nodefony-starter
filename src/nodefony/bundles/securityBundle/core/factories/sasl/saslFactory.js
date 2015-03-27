@@ -135,6 +135,13 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 		}
 	}
 	
+	Factory.prototype.generatePasswd = function(realm, user, passwd){
+		var func = new nodefony.security.tokens["Digest"]();
+		return func(realm, user, passwd);	
+	};
+
+
+
 	return Factory ;
 
 });
