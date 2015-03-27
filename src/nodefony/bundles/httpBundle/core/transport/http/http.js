@@ -68,7 +68,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		/*
  		 *	TRANSLATION
  		 */
-		this.container.get("translation").handle( request , response);
+		this.container.get("translation").handle( this);
 
 		/*
  		 *	TRY resolve

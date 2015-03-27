@@ -155,7 +155,8 @@ nodefony.registerService("firewall", function(){
 				this.factory.handle(context)
 				context.session.migrate(true);
 				context.session.setMetaBag("security",{
-					user:context.user.username	
+					user:context.user.username,	
+					tokenName:this.token.name
 				});
 			}
 			if ( this.defaultTarget && context.request.url.path === this.checkLogin){

@@ -23,6 +23,7 @@
 			</div>
 
 		</li>
+
 		<li class="separator"></li>
 
 		<li> <img  src="/monitoringBundle/images/nodejs_logo.png"> 
@@ -91,14 +92,25 @@
 		<li >	
 			<label class="label" >FIREWALL</label>
 			{% if context_secure  %}
-				<label class="label label-success" >ON</label>
-				<label class="label label-default" >{{context_secure.user.username}}</label>
+				<label class="label label-success" >{{context_secure.name}}</label>
+				{% if context_secure.user %}
+					<label class="label label-default" >{{context_secure.user.username}}</label>
+				{% endif %}
 				<div class="details">
 					<ul>
-						<li><label style="color:#999"> {{context_secure.name}}</label><label class="label label-success" >{{context_secure.factory}}</label></li>
-						<li><label style="color:#999"> username</label><label class="label black" >{{context_secure.user.username}}</label></li>
-						<li><label style="color:#999"> userid</label><span class="label black" >{{context_secure.user.id}}</span></li>
-						<li><label style="color:#999"> roles</label><span class="label black" >{{context_secure.user.roles}}</span></li>
+						<li><label style="color:#999">FIREWALL</label> <label  class="label label-success"> {{context_secure.name}}</label></li>
+						<li><label > Authentification</label><label class="label black" >{{context_secure.factory}}</label></li>
+						<li><label > Type</label><label class="label black" >{{context_secure.token}}</label></li>
+						{% if context_secure.user  %}
+							<li><label > Authenticated</label><label class="label black" >Yes</label></li>
+							<li class="separator"> </li>
+							<li><label style="color:#999">USER</label> </li>
+							<li><label > username</label><label class="label black" >{{context_secure.user.username}}</label></li>
+							<li><label > userid</label><span class="label black" >{{context_secure.user.id}}</span></li>
+							<li><label > roles</label><span class="label black" >{{context_secure.user.roles}}</span></li>
+						{% else %}
+							<li><label > Authenticated</label><label class="label black" >No</label></li>
+						{% endif %}
 					</ul>
 				</div>
 			{% else %}

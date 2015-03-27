@@ -322,6 +322,11 @@ nodefony.registerService("realTime", function(){
 			break;
 			case "socket" :
 			break;
+			case "udp" :
+			break ;
+			case "spawn" :
+				var spawn = require('child_process').spawn ;
+			break;
 			default:
 				message.error = this.protocol.errorResponse(500, message.clientId+","+message.channel,"bad connection Type "+serv.type );
 				return this.send( context ,this.protocol.send(message) );

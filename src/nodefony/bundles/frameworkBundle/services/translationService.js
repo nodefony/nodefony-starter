@@ -58,6 +58,7 @@ nodefony.registerService("translation", function(){
 	var i18n = function(container, type){
 		this.container = container;
 		this.kernel = this.container.get("kernel");
+		
 		if (this.container.has("translation") ){
 			this.defaultLocale = this.container.get("translation").defaultLocale ;
 		}
@@ -142,21 +143,27 @@ nodefony.registerService("translation", function(){
 		return this.defaultDomain = domain ;
 	};
 
-	i18n.prototype.getLang = function(request, requestType){
-		if (requestType === "HTTP" || requestType === "HTTPS"){
-			if ( this.container.getParameters("query.request").lang ){
-				//FIXME LANG in session or URL ... 
-				this.defaultLocale = this.container.getParameters("query.request").lang;
-				if ( ! this.container.getParameters("translate."+this.defaultLocale) ){
-					this.getFileLocale(this.defaultLocale);
-				}
+	i18n.prototype.getLang = function(context){
+		if (context.type === "HTTP" || context.type === "HTTPS"){
+			var Lang =  context.session.get("lang");
+			if ( Lang ){
+				this.defaultLocale = Lang;	
 			}
+			Lang = 	this.container.getParameters("query.request").lang 
+			if ( Lang ){
+				this.defaultLocale = Lang;	
+			}
+
+			if ( ! this.container.getParameters("translate."+this.defaultLocale) ){
+				this.getFileLocale(this.defaultLocale);
+			}
+			context.session.set("lang",this.defaultLocale )
 		}else{
 			// TODO WEBSOCKET SPEC LANG
 		}
 	};
 
-	i18n.prototype.handle = function( request , response){
+	i18n.prototype.handle = function( context){
 		this.engineTemplate.extendFunction("trans", this.trans.bind(this));
 		this.engineTemplate.extendFunction("getLocale", this.getLocale.bind(this));
 		this.engineTemplate.extendFunction("trans_default_domain", function(){
@@ -166,7 +173,7 @@ nodefony.registerService("translation", function(){
 			return this.defaultDomain
 		}.bind(this));
 		this.engineTemplate.extendFilter("trans", this.trans.bind(this));
-		this.getLang( request,this.requestType );
+		this.getLang( context );
 	};
 
 	return i18n;

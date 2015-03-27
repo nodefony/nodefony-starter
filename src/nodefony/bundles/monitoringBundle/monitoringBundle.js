@@ -120,7 +120,7 @@ nodefony.registerBundle ("monitoring", function(){
 								obj["context_secure"] = {
 									name: context.security.name ,
 									factory : context.security.factory.name,
-									//token:context.security.token.name
+									token:context.session.getMetaBag("security")  ? context.session.getMetaBag("security").tokenName : context.security.factory.token,
 									user:context.user
 								}	
 							}else{

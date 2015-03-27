@@ -12,7 +12,7 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 		this.name = this.getKey();
 		this.contextSecurity = contextSecurity ;
 		this.settings = settings ;
-		//this.token = new nodefony.security.tokens["digest-md5"](settings); 
+		this.token = "Digest"; 
 	};
 
 	Factory.prototype.getKey = function(){

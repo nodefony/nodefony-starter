@@ -47,7 +47,7 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 		this.name = this.getKey();
 		this.settings = settings ;
 		this.contextSecurity = contextSecurity ;
-		this.tokens = this.getAllMechanisms();
+		this.token = this.getAllMechanisms();
 		this.defaultToken = "Digest";
 	};
 
