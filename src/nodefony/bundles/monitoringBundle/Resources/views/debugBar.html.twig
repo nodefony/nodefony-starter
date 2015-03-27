@@ -4,7 +4,7 @@
 <div id="nodefony-container"  >
 	<ul class="pull-left">
 		<li> <img class="logo" src="/monitoringBundle/images/fire.png"> </li>
-		<li> <label class="label" > <a href='{{path("monitoring")}}'>{{nodefony.name}} &nbsp <label class="label label-default" >{{nodefony.system.version}}</label> </a></label>
+		<li> <label class="label" > <a href='{{path("monitoring")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
 			<div class="details">
 				<ul>
 					{% for key, value in kernelSettings %}

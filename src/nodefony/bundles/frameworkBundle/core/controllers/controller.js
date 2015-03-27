@@ -63,8 +63,6 @@ nodefony.register("controller", function(){
 					if ( ! error ){
 						error = new Error("ERROR PARSING TEMPLATE :" + view)
 					}
-					//this.logger(error);	
-					//this.notificationsCenter.fire("onError", this.container, error );
 					throw error ;
 				}else{
 					try {

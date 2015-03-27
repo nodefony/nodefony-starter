@@ -5,7 +5,7 @@ security:
 
     firewalls:
         secured_area:
-            pattern:                    ^/
+            pattern:                    ^/secure
             provider:                   in_memory
 #           provider:                  ldap          
             form_login:

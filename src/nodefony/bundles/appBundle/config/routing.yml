@@ -17,6 +17,11 @@ login:
     pattern:   /login
     defaults: 
       controller: frameworkBundle:default:login
+
+logout:
+    pattern:   /logout
+    defaults: 
+      controller: frameworkBundle:default:logout
       
 about: 
     pattern:   /about

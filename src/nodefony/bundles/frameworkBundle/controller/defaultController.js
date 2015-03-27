@@ -43,6 +43,12 @@ nodefony.registerController("framework", function(){
 			return this.render('frameworkBundle::login.html.twig',log);
 		};
 
+		frameworkController.prototype.logoutAction = function(log){
+			this.context.session.invalidate(true) ;
+			return this.render('frameworkBundle::login.html.twig',log);
+		};
+
+
 		frameworkController.prototype.exceptionsAction = function(exp){
 			var ele = {
 				title:"Exception",

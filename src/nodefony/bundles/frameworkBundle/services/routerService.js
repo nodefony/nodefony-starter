@@ -251,6 +251,17 @@ nodefony.registerService("router", function(){
 				throw e.error
 			}
 		}.bind(this));
+
+		this.engineTemplate.extendFunction("render", function(){
+			return "render"
+		}.bind(this));
+
+		this.engineTemplate.extendFunction("controller", function(pattern){
+			return "render"
+		}.bind(this));
+
+
+
 		this.syslog = this.container.get("syslog"); 
 	};
 

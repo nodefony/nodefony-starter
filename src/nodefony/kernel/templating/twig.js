@@ -34,33 +34,22 @@ nodefony.registerTemplate("twig", function(){
 				cache: ( env === "dev" ) ? false : true 
 			}
 		});
-		var param = nodefony.extend( {nodefony:this.kernelSettings}, option);
-		//try {
-			return this.engine.renderFile(file.path, param, callback)
-		//}catch(e){
-		//	throw e ;
-		//}
+		//var param = nodefony.extend( {nodefony:this.kernelSettings}, option);
+		return this.engine.renderFile(file.path, option, callback)
 	};
 
 	Twig.prototype.render = function(view, param){
 		var Render = this.compile(view)
 		try {
-			var options = nodefony.extend( {nodefony:this.kernelSettings}, param);
-			return Render(options);
+			//var options = nodefony.extend( {nodefony:this.kernelSettings}, param);
+			return Render(param);
 		}catch(e){
 			throw e ;
 		}
 	};
 	
 	Twig.prototype.compile = function(markup, options){
-		/*option.settings = nodefony.extend(true, {}, twigOptions, {
-			filename :options.path,
-			views :this.rootDir,
-			'twig options':{
-				cache: ( env === "dev" ) ? false : true 
-			}
-		});*/
-
+		
 		option.settings = nodefony.extend({}, twigOptions, {
 			filename :options.path
 		});	
