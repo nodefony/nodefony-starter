@@ -99,8 +99,12 @@
 				<div class="details">
 					<ul>
 						<li><label style="color:#999">FIREWALL</label> <label  class="label label-success"> {{context_secure.name}}</label></li>
-						<li><label > Authentification</label><label class="label black" >{{context_secure.factory}}</label></li>
-						<li><label > Type</label><label class="label black" >{{context_secure.token}}</label></li>
+						{% if context_secure.factory  %}
+							<li><label > Authentification</label><label class="label black" >{{context_secure.factory}}</label></li>
+						{% endif %}
+						{% if context_secure.token  %}
+							<li><label > Type</label><label class="label black" >{{context_secure.token}}</label></li>
+						{% endif %}
 						{% if context_secure.user  %}
 							<li><label > Authenticated</label><label class="label black" >Yes</label></li>
 							<li class="separator"> </li>

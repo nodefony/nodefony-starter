@@ -245,22 +245,12 @@ nodefony.registerService("router", function(){
 		this.engineTemplate = this.container.get("templating");
 		this.engineTemplate.extendFunction("path", function(){
 			try {
-				return this.generatePath.apply(this, arguments)
+				return this.generatePath.apply(this, arguments);
 			}catch(e){
 				this.logger(e.error)
 				throw e.error
 			}
 		}.bind(this));
-
-		this.engineTemplate.extendFunction("render", function(){
-			return "render"
-		}.bind(this));
-
-		this.engineTemplate.extendFunction("controller", function(pattern){
-			return "render"
-		}.bind(this));
-
-
 
 		this.syslog = this.container.get("syslog"); 
 	};
@@ -324,8 +314,6 @@ nodefony.registerService("router", function(){
 		this.routes[name] = this.routes[index-1];
 		this.logger("ADD Route : "+myroute.path + "   ===> "+myroute.defaults.controller, "DEBUG");
 	};
-
-
 
 	Router.prototype.getRoutes = function(name){
 		if (name){

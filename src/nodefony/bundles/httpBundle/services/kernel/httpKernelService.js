@@ -20,6 +20,7 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel = this.container.get("kernel");
 		this.reader = this.container.get("reader");
 		this.serverStatic = serverStatic;
+		this.engineTemplate = this.container.get("templating");
 
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
@@ -137,6 +138,17 @@ nodefony.registerService("httpKernel", function(){
 	};
 
 
+	var render = function(pattern, data){
+		try {
+			var router = this.get("router");
+			var resolver = router.resolveName(this, pattern) ;
+			return resolver.callController(data) ;
+		}catch(e){
+			this.logger(e)
+			throw e.error
+		}	
+	};
+
 	//  build response
 	httpKernel.prototype.handle = function(request, response, type, domain){
 
@@ -147,6 +159,9 @@ nodefony.registerService("httpKernel", function(){
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
+
+		this.engineTemplate.extendFunction("render", render.bind(container));
+		this.engineTemplate.extendFunction("controller", render.bind(container));
 
 		switch (type){
 			case "HTTP" :

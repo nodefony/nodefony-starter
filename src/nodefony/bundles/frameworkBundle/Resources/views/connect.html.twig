@@ -1,0 +1,5 @@
+{% if security %}
+	<li><a href="/logout" class=""><i class="glyphicon glyphicon-lock text-danger icon-shadow"></i> Deconnection</a></li>
+{% else %}
+	<li><a href="/login" class=""><i class="glyphicon glyphicon-lock text-danger icon-shadow"></i> Connection</a></li>
+{% endif %}

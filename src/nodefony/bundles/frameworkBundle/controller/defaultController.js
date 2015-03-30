@@ -19,6 +19,9 @@ nodefony.registerController("framework", function(){
 		frameworkController.prototype.indexAction = function(){
 			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
 		};
+		frameworkController.prototype.connectAction = function(){
+			return this.renderView('frameworkBundle::connect.html.twig',{security:this.context.user});
+		};
 
 		frameworkController.prototype.aboutAction= function(name){
 			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
@@ -44,7 +47,7 @@ nodefony.registerController("framework", function(){
 		};
 
 		frameworkController.prototype.logoutAction = function(log){
-			this.context.session.invalidate(true) ;
+			this.context.session.invalidate() ;
 			return this.render('frameworkBundle::login.html.twig',log);
 		};
 

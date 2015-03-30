@@ -116,15 +116,25 @@ nodefony.registerBundle ("monitoring", function(){
 								}
 							};
 							//console.log(context.security)
+							var secu = context.session.getMetaBag("security");
 							if ( context.security ){
 								obj["context_secure"] = {
 									name: context.security.name ,
 									factory : context.security.factory.name,
-									token:context.session.getMetaBag("security")  ? context.session.getMetaBag("security").tokenName : context.security.factory.token,
+									token:secu  ? secu.tokenName : context.security.factory.token,
 									user:context.user
 								}	
 							}else{
-								obj["context_secure"] = null ;	
+								if ( secu ){
+									obj["context_secure"] = {
+										name:	"OFF",
+										factory : null,
+										token:null,
+										user:context.user
+									}
+								}else{
+									obj["context_secure"] = null ;	
+								}
 							}
 								
 							if ( context.resolver.route.defaults ) {
