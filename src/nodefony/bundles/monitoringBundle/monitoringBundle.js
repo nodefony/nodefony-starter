@@ -43,6 +43,7 @@ nodefony.registerBundle ("monitoring", function(){
 				var node = process.versions ;
 				var upload = this.container.get("upload");
 				var translation = this.container.get("translation");
+				var sessionService = this.container.get("sessions");
 				var domain =  translation.defaultDomain ;
 				var nbServices = Object.keys(nodefony.services).length ;
 				var service = {
@@ -53,6 +54,10 @@ nodefony.registerBundle ("monitoring", function(){
 					translation:{
 						defaultLocale:translation.defaultLocale,
 						defaultDomain: domain	
+					},
+					session:{
+						storage:sessionService.settings.handler,
+						path:sessionService.settings.save_path
 					}
 				}; 
 				var security = function(){
@@ -104,20 +109,19 @@ nodefony.registerBundle ("monitoring", function(){
 									headers:context.request.headers,
 									crossDomain:context.crossDomain
 								},
-								session:{
-									id:context.session.id,
-									name:context.session.name,
-									storage:context.session.settings.handler,
-									path:context.session.settings.save_path
-								},
 								locale:{
 									default:trans.defaultLocale,
 									domain:trans.defaultDomain
 								}
 							};
-							//console.log(context.security)
-							var secu = context.session.getMetaBag("security");
+							if (context.session){
+								obj["session"] = {
+									
+									name:context.session.name
+								};	 
+							}
 							if ( context.security ){
+								var secu = context.session.getMetaBag("security");
 								obj["context_secure"] = {
 									name: context.security.name ,
 									factory : context.security.factory.name,
@@ -125,6 +129,7 @@ nodefony.registerBundle ("monitoring", function(){
 									user:context.user
 								}	
 							}else{
+								var secu = context.session ? context.session.getMetaBag("security") : null;
 								if ( secu ){
 									obj["context_secure"] = {
 										name:	"OFF",
@@ -147,11 +152,14 @@ nodefony.registerBundle ("monitoring", function(){
 
 							context.listen(this, "onView", function(result, context){
 								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
-								obj["session"] = nodefony.extend(obj["session"],{
-									metas:context.session.metaBag(),
-									attributes:context.session.attributes(),
-									flashes:context.session.flashBags()
-								});
+								if ( context.session ){
+									obj["session"] = nodefony.extend(obj["session"],{
+										id:context.session.id,
+										metas:context.session.metaBag(),
+										attributes:context.session.attributes(),
+										flashes:context.session.flashBags()
+									});
+								}
 								obj["response"] = {	
 									statusCode:context.response.statusCode,
 									message:context.response.response.statusMessage,

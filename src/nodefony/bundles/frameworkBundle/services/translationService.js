@@ -144,6 +144,7 @@ nodefony.registerService("translation", function(){
 	};
 
 	i18n.prototype.getLang = function(context){
+		if ( ! context.session ) return ;
 		if (context.type === "HTTP" || context.type === "HTTPS"){
 			var Lang =  context.session.get("lang");
 			if ( Lang ){

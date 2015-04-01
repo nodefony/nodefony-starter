@@ -21,16 +21,7 @@
 		<default key="controller">demoBundle:demo:ormConnection</default>
 	</route>
 
-	<route id="downloadDemo" pattern="/demo/download">
-		<default key="controller">demoBundle:demo:indexDownload</default>
-		<requirement key="method">GET</requirement>
-	</route>
-
-	<route id="download"   pattern="/download">
-		<default key="controller">demoBundle:demo:download</default>
-		<requirement key="method">GET</requirement>
-	</route>
-
+	
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
 		<requirement key="method">GET</requirement>
@@ -58,6 +49,12 @@
 	<route id="finder"  pattern="/demo/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
+
+	<route id="download"   pattern="/download">
+		<default key="controller">demoBundle:finder:download</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
 
 	<!-- FIXME -->	
 	<!--  <import resource="routing2.xml" prefix="/couscous" />

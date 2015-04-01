@@ -12,6 +12,7 @@ nodefony.register("controller", function(){
 		this.context = context;
 		this.container = container;
 		this.notificationsCenter = this.container.get("notificationsCenter");
+		this.sessionService = this.container.get("sessions");
 	};
 	
 	Controller.prototype.logger = function(pci, severity, msgid,  msg){
@@ -42,6 +43,10 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.getContext = function(){
 		return this.context ;
+	};
+
+	Controller.prototype.startSession = function(){
+		return  this.sessionService.start(this.context) ;
 	};
 
 	Controller.prototype.getResponse = function(content){

@@ -48,7 +48,7 @@ nodefony.registerController("finder", function(){
 				case "File" :
 					switch (file.mimeType) {
 						case "text/plain":
-							return this.render('demoBundle:demo:files.html.twig',{
+							return this.render('demoBundle:finder:files.html.twig',{
 								content:file.content(file.encoding),
 								mime:file.mimeType,
 								encoding:file.encoding

@@ -27,7 +27,6 @@ nodefony.registerController("demo", function(){
 		return this.forward("frameworkBundle:default:system");
 	};
 
-
 	/**
  	 *	@see renderView
  	 *	@see getResponse
@@ -188,36 +187,7 @@ nodefony.registerController("demo", function(){
 		return this.render('demoBundle:Default:indexMobile.html.twig',{name:name});
 	};
 
-	/**
-	 *
-	 *	For poll client
-	 *
-	 */
-	demoController.prototype.pollAction = function(){
-		//console.log(this.getRequest().headers['content-type']);
-		//return this.render('demoBundle::indexDev.html.twig');
-		if(this.getParameters("query").request.closeWef){
-			process.exit(0);
-		}
-		
-		setTimeout(function(){
-			//console.log(this.getParameters("query").get);
-			var type = /application\/(.*);/.exec(this.getRequest().headers['content-type'])[1];
-			if(type == 'json'){
-				var response = this.getParameters("query")['request'];
-			} else {
-				var xml = require('xml2js');
-				var response = new xml.Builder().buildObject(this.getParameters("query")['post']);
-			}
-		
-			this.renderResponse(
-				response, 
-				200, 
-				{'Content-Type': 'application/' + type + '; charset=utf-8'}
-			);
-		}.bind(this), 4000);
-	};
-
+	
 	/**
 	 *
 	 *	@method indexRealTimeAction
@@ -259,129 +229,6 @@ nodefony.registerController("demo", function(){
 				200, 
 				{'Content-Type': 'application/json; charset=utf-8'}
 			);
-		}
-	};
-
-	var encode = function(file){
-		switch (true) {
-			// stream
-			case /^image/.test(file.mimeType):
-			case /^video/.test(file.mimeType):
-			case /^audio/.test(file.mimeType):
-			case /application\/pdf/.test(file.mimeType):
-				try {
-					return this.renderMediaStream( file );
-					
-				}catch(error){
-					switch (error.code){
-						case "EISDIR":
-							error.message = file.path +" : is Directory" ;
-						break;
-					}
-					throw error ;
-				}
-			break;
-			// download
-			default:
-				try {
-					return this.renderFileDownload(file) ; 
-				}catch(error){
-					switch (error.code){
-						case "EISDIR":
-							error.message = file.path +" : is Directory" ;
-						break;
-					}
-					throw error ;
-				}
-		}
-	};
-
-	var search = function(path){
-		var response = null; 
-		try {
-			var file = new nodefony.fileClass(path);
-			switch (file.type){
-				case "symbolicLink" :
-				case "Directory" :
-					var finder = new nodefony.finder({
-						path:path,
-						json:true,
-						followSymLink:true,
-						//seeHidden:true,
-						recurse:false,
-						onDirectory:function(File, finder){
-							File.link = file.type;
-						},
-						onFile:function(File, finder){
-							switch(File.mimeType){
-								case "text/plain":
-									File.link = "Link";
-								break;
-								default:
-									File.link = "Download";
-							};
-						},
-						onFinish:function(error, files){
-							response = this.render('demoBundle:demo:finder.html.twig',{
-								files:files.json
-							});
-						}.bind(this)
-					});
-				break;
-				case "File" :
-					switch (file.mimeType) {
-						case "text/plain":
-							return this.render('demoBundle:demo:files.html.twig',{
-								content:file.content(file.encoding),
-								mime:file.mimeType,
-								encoding:file.encoding
-							});	
-						break;
-						default:
-							return encode.call(this, file);	
-					}
-				break;
-			}
-			if (! response ) throw new Error("Search File system Error")
-			return response ;
-		}catch(e){
-			throw e ;
-		}
-	};
-
-	/*
- 	 *
- 	 *	DOWNLOAD
- 	 *
- 	 */
-	demoController.prototype.indexDownloadAction= function(path){
-		if (! path){
-			var query = this.getParameters("query");
-			if (! query.get.path)
-				var path =  "./" ;
-			else
-				var path = query.get.path ;
-		}
-		//TODO secure path
-		try{ 
-			return search.call(this, path) ;
-		}catch(e){
-			throw e ;
-		}
-	};
-
-	demoController.prototype.downloadAction = function(path){
-		var query = this.getParameters("query");
-		if (! query.get.path)
-			throw new Error("Download Not path to host")
-		else
-			var path = query.get.path ;
-		var file = new nodefony.fileClass(path);
-
-		try {
-			return encode.call(this, file);
-		}catch(e){
-			throw e;		
 		}
 	};
 

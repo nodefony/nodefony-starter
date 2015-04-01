@@ -5,7 +5,7 @@ security:
 
     firewalls:
         secured_area:
-            pattern:                    ^/
+            pattern:                    ^/secure
             provider:                   in_memory
 #           provider:                  ldap          
             form_login:
@@ -30,8 +30,9 @@ security:
             remember_me:                ~
             logout:                     ~
             anonymous:                  ~
-            context:                    ~
+            context:                    1
             stateless:                  false
+        
     #TODO               
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }

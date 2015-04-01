@@ -77,11 +77,11 @@
 					<li><label>Max Size File</label><span >{{services.upload.max_size}}</span></li>
 					<li class="separator"> </li>
 					<li><label style="color:#999">SESSION</label> </li>
-					{% if session.storage == "session.storage.files" %}
-						<li><label>Storage</label><span >{{session.storage}}</span></li>
-						<li><label>Path</label><span >{{session.path}}</span></li>
+					{% if services.session.storage == "session.storage.files" %}
+						<li><label>Storage</label><span >{{services.session.storage}}</span></li>
+						<li><label>Path</label><span >{{services.session.path}}</span></li>
 					{% else %}
-						<li><label>Storage</label><span >{{session.storage}}</span></li>
+						<li><label>Storage</label><span >{{services.session.storage}}</span></li>
 					{% endif %}
 				</ul>
 			</div>
@@ -207,38 +207,40 @@
 							<li class="separator"></li>
 						{% endif %}
 					{% endfor %}
-					<li class="separator"></li>
-					<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>
-					<li><label>Token</label><span class="label label-success">{{session.id}}</span></li>
-					<li><label>Metas</label>
-						<span >
-							{% for key, value in session.metas %}
-								{% if key == "lifetime" %}
+					{% if session %}
+						<li class="separator"></li>
+						<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>
+						<li><label>Token</label><span class="label label-success">{{session.id}}</span></li>
+						<li><label>Metas</label>
+							<span >
+								{% for key, value in session.metas %}
+									{% if key == "lifetime" %}
+										<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
+									{% endif %}
+									{% if key == "created" %}
+										<li><label style="margin-left:20px"class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date("d/m/Y g:ia")}}</span></li>
+									{% endif %}
+									{% if key == "lastUsed" %}
+										<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date('d/m/Y g:ia')}}</span></li>
+									{% endif %}
+								{% endfor %}
+							</span>
+						</li>
+						<li><label>Attributes</label>
+							<span>
+								{% for key, value in session.attributes %}
 									<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
-								{% endif %}
-								{% if key == "created" %}
-									<li><label style="margin-left:20px"class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date("d/m/Y g:ia")}}</span></li>
-								{% endif %}
-								{% if key == "lastUsed" %}
-									<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date('d/m/Y g:ia')}}</span></li>
-								{% endif %}
-							{% endfor %}
-						</span>
-					</li>
-					<li><label>Attributes</label>
-						<span>
-							{% for key, value in session.attributes %}
-								<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
-							{% endfor %}
-						</span>
-					</li>
-					<li><label>Flashes</label>
-						<span>
-							{% for key, value in session.flashes %}
-								<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
-							{% endfor %}
-						</span>
-					</li>
+								{% endfor %}
+							</span>
+						</li>
+						<li><label>Flashes</label>
+							<span>
+								{% for key, value in session.flashes %}
+									<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
+								{% endfor %}
+							</span>
+						</li>
+					{% endif %}
 	
 				</ul>
 			</div>

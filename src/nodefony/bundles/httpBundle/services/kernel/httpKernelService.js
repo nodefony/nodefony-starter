@@ -138,7 +138,7 @@ nodefony.registerService("httpKernel", function(){
 	};
 
 
-	var render = function(pattern, data){
+	var controller = function(pattern, data){
 		try {
 			var router = this.get("router");
 			var resolver = router.resolveName(this, pattern) ;
@@ -148,6 +148,11 @@ nodefony.registerService("httpKernel", function(){
 			throw e.error
 		}	
 	};
+
+	var render = function(uri, options){
+		return uri;
+		//return resolver.callController;
+	}
 
 	//  build response
 	httpKernel.prototype.handle = function(request, response, type, domain){
@@ -161,7 +166,7 @@ nodefony.registerService("httpKernel", function(){
 		container.set("translation", translation );
 
 		this.engineTemplate.extendFunction("render", render.bind(container));
-		this.engineTemplate.extendFunction("controller", render.bind(container));
+		this.engineTemplate.extendFunction("controller", controller.bind(container));
 
 		switch (type){
 			case "HTTP" :

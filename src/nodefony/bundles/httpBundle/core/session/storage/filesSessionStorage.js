@@ -12,12 +12,16 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		this.manager = manager ;
 		this.path = manager.settings.save_path;
 		this.gc_maxlifetime = manager.settings.gc_maxlifetime ;
-		
+		this.contextSessions = [];
 	};
 
-	fileSessionStorage.prototype.start = function(id){
+	fileSessionStorage.prototype.start = function(id, contextSession){
 		var fileSession  = null ;	
-		var path = this.path+"/"+id ;
+		if ( contextSession ){
+			var path = this.path+"/"+contextSession+"/"+id ;	
+		}else{
+			var path = this.path+"/"+id ;
+		}
 		try {
 			fileSession = new nodefony.fileClass(path);
 			return this.read(fileSession);
@@ -27,21 +31,28 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 	};
 
-	fileSessionStorage.prototype.open = function(){
-		var res = fs.existsSync(this.path);
+	fileSessionStorage.prototype.open = function(contextSession){
+		if (contextSession) {
+			var path = this.path+"/"+contextSession ;
+			this.contextSessions.push(contextSession);
+		}else{
+			var path = this.path ;
+		}
+		var res = fs.existsSync(path);
 		if (! res ){
-			this.manager.logger("create directory native sessions " + this.path);
+			this.manager.logger("create directory context sessions " + path);
 			try {
-				var res = fs.mkdirSync(this.path);
+				var res = fs.mkdirSync(path);
 			}catch(e){
 				throw e ;
 			}
 		}else{
-			this.gc(this.gc_maxlifetime);
+			this.gc(this.gc_maxlifetime, contextSession);
 			this.finder = new nodefony.finder({
-				path:this.path,
+				path:path,
+				recurse:false,
 				onFinish:function(error, result){
-					this.manager.logger("FILES SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+result.length());
+					this.manager.logger("CONTEXT "+( contextSession ? contextSession : "GLOBAL" )+" SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+result.length() );
 				}.bind(this)
 			});
 		}
@@ -53,9 +64,13 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		return true;
 	};
 
-	fileSessionStorage.prototype.destroy = function(id){
+	fileSessionStorage.prototype.destroy = function(id, contextSession){
 		var fileDestroy  = null ;
-		var path = this.path+"/"+id ;
+		if ( contextSession ){
+			var path = this.path+"/"+contextSession+"/"+id ;	
+		}else{
+			var path = this.path+"/"+id ;
+		}
 		try {
 			fileDestroy = new nodefony.fileClass(path);
 			this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION ID ==> "+ fileDestroy.name + " DELETED");
@@ -66,11 +81,10 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 	};
 
-	fileSessionStorage.prototype.gc = function(maxlifetime){
+	var finderGC = function(path, msMaxlifetime ){
 		var nbSessionsDelete  = 0 ;
-		var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
 		var finder = new nodefony.finder({
-			path:this.path,
+			path:path,
 			onFile:function(file){
 				var mtime = new Date( file.stats.mtime ).getTime();
 				if ( mtime + msMaxlifetime < new Date().getTime() ){
@@ -83,7 +97,22 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
 			}.bind(this)
 		});
+		return finder;	
+	}
 
+	fileSessionStorage.prototype.gc = function(maxlifetime, contextSession){
+		var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
+		if ( contextSession ){
+			var path = this.path+"/"+contextSession ;
+			finderGC.call(this, path , msMaxlifetime)	
+		}else{
+			finderGC.call(this, this.path , msMaxlifetime)	
+			if (this.contextSessions.length){
+				for (var i = 0 ; i<this.contextSessions.length ; i++){
+					finderGC.call(this, this.path+"/"+this.contextSessions[i] , msMaxlifetime);	
+				}
+			}
+		}
 	};
 
 	fileSessionStorage.prototype.read = function(file){
@@ -100,8 +129,12 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}	
 	};
 
-	fileSessionStorage.prototype.write = function(fileName, serialize){
-		var path = this.path+"/"+fileName ;
+	fileSessionStorage.prototype.write = function(fileName, serialize, contextSession){
+		if ( contextSession ){
+			var path = this.path+"/"+contextSession+"/"+fileName ;	
+		}else{
+			var path = this.path+"/"+fileName ;
+		}
 		try{
 			var ret = fs.writeFileSync(path, serialize);
 			//this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);

@@ -546,7 +546,7 @@ nodefony.register("kernel", function(){
 							var firewall = this.container.get("security") ;
 							if ( firewall ){
 								this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
-								this.container.get("security").reader(ele.path);
+								firewall.reader(ele.path);
 							}else{
 								this.logger("SECURITY LOAD FILE :"+ele.path +" BUT SERVICE NOT READY" ,"WARNING");	
 							}

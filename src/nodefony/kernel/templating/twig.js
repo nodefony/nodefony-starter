@@ -23,6 +23,7 @@ nodefony.registerTemplate("twig", function(){
 		this.kernelSettings = this.container.getParameters("kernel");
 	};
 
+	
 	Twig.prototype.extention = "twig";
 
 	Twig.prototype.renderFile = function(file, option, callback){
