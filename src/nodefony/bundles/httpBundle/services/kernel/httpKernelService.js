@@ -41,10 +41,8 @@ nodefony.registerService("httpKernel", function(){
 	};
 	
 	httpKernel.prototype.boot = function(){
-		// Manage statics files
-		 this.kernel.listen(this, "onBoot", function(){
-			this.initStaticFiles();
-		 });
+		 /*this.kernel.listen(this, "onBoot", function(){
+		 });*/
 	};
 	
 	httpKernel.prototype.getTemplate = function(name){
@@ -64,21 +62,6 @@ nodefony.registerService("httpKernel", function(){
 			return bundle.getView(controller, action);
 		}catch (e){
 			throw e;	
-		}
-	};
-
-	httpKernel.prototype.initStaticFiles = function(){
-		var settings = this.container.getParameters("bundles.http").statics ;
-		var defaultCache = settings.settings.cache ;
-		var defaultAge = settings.settings.maxAge ;
-		for(var static in settings ){
-			if ( static === "settings" ) continue ;
-			var path = this.kernel.rootDir + settings[static].path ;
-			var age = settings[static].maxage;
-			this.logger("Add static route ===> " + path ,"DEBUG");
-			this.serverStatic.addDirectory(path ,{
-				maxAge: eval ( age )
-			});
 		}
 	};
 

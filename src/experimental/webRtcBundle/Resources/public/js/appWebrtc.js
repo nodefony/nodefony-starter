@@ -256,6 +256,7 @@ $( document ).ready(function(){
 	});
 
 	var server = "/realtime"
+		//var server = "/secure/realtime";
 		var service = new stage.realtime(server ,{
 			// fire when 401 http code
 			onUnauthorized:function(authenticate, realtime){

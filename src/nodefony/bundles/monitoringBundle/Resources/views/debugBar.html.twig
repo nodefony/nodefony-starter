@@ -40,7 +40,7 @@
 		<li class="separator"></li>
 
 		<li >
-			<label class="label" >{{appSettings.projectName}} : {{environment}}</label>
+			<label class="label" >{{appSettings.projectName}} : <label class="label label-default">{{environment}}</label></label>
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">APP</label></li>
@@ -126,7 +126,7 @@
 							<li><label >Pattern </label><span >{{value.pattern}}</span></li>
 							<li><label >Factory </label><span >{{value.factory}}</span></li>
 							<li><label >Provider </label><span >{{value.provider}}</span></li>
-							<li><label >Context </label><span >{{value.context}}</span></li>
+							<li><label >Context Session</label><span >{{value.context}}</span></li>
 							<li class="separator"></li>
 						{% endfor %}	
 					</ul>
@@ -223,6 +223,9 @@
 									{% endif %}
 									{% if key == "lastUsed" %}
 										<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value|date('d/m/Y g:ia')}}</span></li>
+									{% endif %}
+									{% if key == "context" %}
+										<li><label style="margin-left:20px" class="label  label-default">{{ key  }}</label><span style="margin-left:20px">{{value}}</span></li>
 									{% endif %}
 								{% endfor %}
 							</span>

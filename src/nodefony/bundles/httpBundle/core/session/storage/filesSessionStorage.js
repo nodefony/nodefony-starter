@@ -73,7 +73,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 		try {
 			fileDestroy = new nodefony.fileClass(path);
-			this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION ID ==> "+ fileDestroy.name + " DELETED");
+			this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION context : "+contextSession +" ID : "+ fileDestroy.name + " DELETED");
 			return fileDestroy.unlink();;
 
 		}catch(e){
@@ -81,7 +81,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 	};
 
-	var finderGC = function(path, msMaxlifetime ){
+	var finderGC = function(path, msMaxlifetime ,context){
 		var nbSessionsDelete  = 0 ;
 		var finder = new nodefony.finder({
 			path:path,
@@ -89,12 +89,12 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				var mtime = new Date( file.stats.mtime ).getTime();
 				if ( mtime + msMaxlifetime < new Date().getTime() ){
 					file.unlink();
-					this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR SESSION ID ==> "+ file.name + " DELETED");
+					this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR SESSION context : "+context+" ID : "+ file.name + " DELETED");
 					nbSessionsDelete++;
 				}
 			}.bind(this),
 			onFinish:function(error, result){
-				this.manager.logger("FILES SESSIONS STORAGE GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
+				this.manager.logger("FILES SESSIONS STORAGE context : "+ context +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
 			}.bind(this)
 		});
 		return finder;	
@@ -104,12 +104,12 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
 		if ( contextSession ){
 			var path = this.path+"/"+contextSession ;
-			finderGC.call(this, path , msMaxlifetime)	
+			finderGC.call(this, path , msMaxlifetime, contextSession)	
 		}else{
 			finderGC.call(this, this.path , msMaxlifetime)	
 			if (this.contextSessions.length){
 				for (var i = 0 ; i<this.contextSessions.length ; i++){
-					finderGC.call(this, this.path+"/"+this.contextSessions[i] , msMaxlifetime);	
+					finderGC.call(this, this.path+"/"+this.contextSessions[i] , msMaxlifetime , this.contextSessions[i]);	
 				}
 			}
 		}

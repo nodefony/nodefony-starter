@@ -50,6 +50,7 @@ nodefony.registerService("sessions", function(){
 	var setMetasSession = function(){
 		var time = new Date() ;
 		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
+		this.setMetaBag("context", this.contextSession );
 		this.setMetaBag("created", time );
 		this.setMetaBag("host", this.context.request.request.headers['host'] );
 		if ( this.context.request.request.headers['user-agent'] )

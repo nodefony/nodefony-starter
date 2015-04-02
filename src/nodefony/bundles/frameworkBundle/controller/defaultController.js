@@ -45,7 +45,7 @@ nodefony.registerController("framework", function(){
 		};
 		
 		frameworkController.prototype.loginAction = function(){
-			if ( ! this.context.session)
+			if ( ! this.context.session )
 				this.startSession();
 			var log = this.context.session.getFlashBag("session") ;
 			if ( log )

@@ -17,6 +17,9 @@ nodefony.registerService("statics", function(){
 	
 	var static = function( container, options){
 		this.container = container ;
+		this.kernel = this.container.get("kernel") ;
+		this.type = this.kernel.type;
+		if (this.type !== "SERVER") return  ;
 		this.connect = require("connect");
 		this.syslog = this.container.get("syslog");
 		this.server = this.connect();
@@ -24,19 +27,31 @@ nodefony.registerService("statics", function(){
 		this.settingsAssetic = this.container.getParameters("bundles.assetic");
 
 		this.mime = this.connect.static.mime;
-		this.kernel = this.container.get("kernel");
 		this.kernel.listen(this, "onBoot",function(){
 			this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
 			if (this.settings.cache)
 				this.server.use(this.connect.staticCache());	
+			this.initStaticFiles()
 		});
 
-		this.kernel = this.container.get("kernel") ;
 		this.environment = this.kernel.environment ;
 		this.kernel.listen(this, "onReady", function(){
 			this.serviceLess = this.container.get("less");
 		})
 	
+	};
+
+	static.prototype.initStaticFiles = function(){
+		var settings = this.container.getParameters("bundles.http").statics ;
+		for(var static in settings ){
+			if ( static === "settings" ) continue ;
+			var path = this.kernel.rootDir + settings[static].path ;
+			var age = settings[static].maxage;
+			this.logger("Add static route ===> " + path ,"DEBUG");
+			this.addDirectory(path ,{
+				maxAge: eval ( age )
+			});
+		}
 	};
 
 	static.prototype.logger = function(pci, severity, msgid,  msg){

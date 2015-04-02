@@ -246,7 +246,6 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.redirect = function(context, url){
-		//this.overrideURL(context.request, url);
 		return context.redirect(context.request.url, 301);
 	};
 		
@@ -312,6 +311,7 @@ nodefony.registerService("firewall", function(){
 
 		this.securedAreas = {}; 
 		this.providers = {};
+		this.sessionStrategy = "invalidate" ;
 
 		this.syslog = this.container.get("syslog");
 
@@ -403,6 +403,7 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.setSessionStrategy = function(strategy){
 		if (strategy in optionStrategy ){
+			this.logger("Set Session Strategy  : " + strategy,"DEBUG")
 			return this.sessionStrategy = strategy ;
 		}
 		throw new Error("sessionStrategy strategy not found");
@@ -455,11 +456,13 @@ nodefony.registerService("firewall", function(){
 									//}.bind(this,param[config], area));
 								break;
 								case "context" :
-									this.kernel.listen(this, "onBoot",function(context, contextSecurity){
-										//console.log( this.sessionService );
-										contextSecurity.setContextSession(context);
-										this.sessionService.addContextSession(context);
-									}.bind(this, param[config], area));
+									if ( param[config] ){
+										this.kernel.listen(this, "onBoot",function(context, contextSecurity){
+											//console.log( this.sessionService );
+											contextSecurity.setContextSession(context);
+											this.sessionService.addContextSession(context);
+										}.bind(this, param[config], area));
+									}
 								break;
 								default:
 									if ( config in nodefony.security.factory ){
