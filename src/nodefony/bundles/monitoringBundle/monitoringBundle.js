@@ -70,6 +70,7 @@ nodefony.registerBundle ("monitoring", function(){
 							obj[area]["pattern"] = firewall.securedAreas[area].regPartten;
 							obj[area]["factory"] = firewall.securedAreas[area].factory ? firewall.securedAreas[area].factory.name : null ;
 							obj[area]["provider"] = firewall.securedAreas[area].provider ? firewall.securedAreas[area].provider.name : null ;
+							obj[area]["context"] = firewall.securedAreas[area].sessionContext;
 						}
 					}
 					return obj ; 
