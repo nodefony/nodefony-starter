@@ -62,6 +62,7 @@ nodefony.register("controller", function(){
 	Controller.prototype.renderView = function(view, param ){
 		var View = this.container.get("httpKernel").getView(view);
 		var res = null;
+		nodefony.extend(param, this.context.extendTwig);
 		try{ 
 			this.container.get('templating').renderFile(View, param, function(error, result){
 				if (error || result === undefined){
@@ -283,8 +284,6 @@ nodefony.register("controller", function(){
 			}
 			response.end();
 		 });
-
-	
 
 		fileStream.on("error",function(error){
 			//console.log("pass error callback")

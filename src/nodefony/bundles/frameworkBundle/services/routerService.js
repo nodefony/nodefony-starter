@@ -37,7 +37,9 @@ nodefony.registerService("router", function(){
 			
 		}		
 		return match
-	}
+	};
+
+
 
 	var regAction =/^(.+)Action$/; 
 	Resolver.prototype.getAction= function(name){
@@ -92,8 +94,6 @@ nodefony.registerService("router", function(){
 		return this.router.syslog.logger(pci, severity, msgid,  msg);
 	};
 
-	
-
 	Resolver.prototype.callController= function(data){
 		try {
 			var controller = new this.controller( this.container, this.context );
@@ -129,6 +129,7 @@ nodefony.registerService("router", function(){
 			throw e;
 		}
 	};
+	nodefony.Resolver = Resolver ;
 
 	/*
  	 *
@@ -248,7 +249,10 @@ nodefony.registerService("router", function(){
 				return this.generatePath.apply(this, arguments);
 			}catch(e){
 				this.logger(e.error)
-				throw e.error
+				throw {
+					status:500,
+					error:e.error
+				}
 			}
 		}.bind(this));
 
@@ -282,8 +286,8 @@ nodefony.registerService("router", function(){
 			return host+path ;
 		return path ;
 
-	};	
-	
+	};
+		
 	/*Router.prototype.addRoute = function(name , route){
 		if (route instanceof nodefony.Route){
 			this.routes[name] = route;

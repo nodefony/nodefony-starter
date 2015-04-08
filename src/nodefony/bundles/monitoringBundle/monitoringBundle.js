@@ -148,7 +148,7 @@ nodefony.registerBundle ("monitoring", function(){
 								obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
 								obj["action"] = tab[2] ;
 								obj["pattern"] = context.resolver.route.defaults.controller ;
-								obj["controller"] = context.resolver.route.defaults.controller
+								obj["Controller"] = context.resolver.route.defaults.controller
 							}
 
 							context.listen(this, "onView", function(result, context){
@@ -168,6 +168,7 @@ nodefony.registerBundle ("monitoring", function(){
 									encoding:context.response.encoding,
 									"content-type":context.response.response.getHeader('content-type')
 								}
+								nodefony.extend(obj, context.extendTwig);
 								if( !  context.request.isAjax() && obj.route.name !== "monitoring" ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 									if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){

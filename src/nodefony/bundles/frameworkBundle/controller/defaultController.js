@@ -20,7 +20,7 @@ nodefony.registerController("framework", function(){
 			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
 		};
 		frameworkController.prototype.connectAction = function(login){
-			return this.renderView('frameworkBundle::connect.html.twig',{
+			return this.render('frameworkBundle::connect.html.twig',{
 				security:this.context.user,
 			        login:login ? true : false 
 			});

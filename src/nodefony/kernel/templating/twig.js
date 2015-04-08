@@ -35,8 +35,11 @@ nodefony.registerTemplate("twig", function(){
 				cache: ( env === "dev" ) ? false : true 
 			}
 		});
-		//var param = nodefony.extend( {nodefony:this.kernelSettings}, option);
-		return this.engine.renderFile(file.path, option, callback)
+		try {
+			return this.engine.renderFile(file.path, option, callback)
+		}catch(e){
+			callback(e, null);
+		}
 	};
 
 	Twig.prototype.render = function(view, param){

@@ -115,7 +115,7 @@ nodefony.registerService("httpKernel", function(){
 		}
 		resolver.callController( {
 			exception:myError || error,
-			controller: container.get("controller") ? container.get("controller").name : null,
+			Controller: container.get("controller") ? container.get("controller").name : null,
 			bundle:container.get("bundle") ? container.get("bundle").name : null
 		} );
 	};
@@ -125,16 +125,31 @@ nodefony.registerService("httpKernel", function(){
 		try {
 			var router = this.get("router");
 			var resolver = router.resolveName(this, pattern) ;
-			return resolver.callController(data) ;
+
+			var myController = new resolver.controller( this, resolver.context );
+			if ( data ){
+				resolver.variables.push(data); 
+			}
+			return resolver.action.apply(myController, resolver.variables);
 		}catch(e){
-			this.logger(e)
-			throw e.error
+			this.logger(e, "ERROR")
+			//throw e.error
 		}	
 	};
 
 	var render = function(uri, options){
-		return uri;
-		//return resolver.callController;
+		switch (true){
+			case uri instanceof nodefony.Response :
+				return uri.body;
+			break ;
+			case uri instanceof nodefony.wsResponse :
+				return uri.body
+			break ;
+			case  nodefony.typeOf( uri ) === "string" :
+				var router = this.get("router");
+				return uri ;
+			default:
+		}
 	}
 
 	//  build response
@@ -147,9 +162,9 @@ nodefony.registerService("httpKernel", function(){
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
-
-		this.engineTemplate.extendFunction("render", render.bind(container));
-		this.engineTemplate.extendFunction("controller", controller.bind(container));
+		
+		//this.engineTemplate.extendFunction("render", render.bind(container));
+		//this.engineTemplate.extendFunction("controller", controller.bind(container));
 
 		switch (type){
 			case "HTTP" :
@@ -166,6 +181,16 @@ nodefony.registerService("httpKernel", function(){
 				context.crossDomain = cross ;
 				context.crossURL = URL ;
 				this.kernel.fire("onHttpRequest", container, context, type);
+				//twig extend context
+				context.extendTwig = {
+					render:render.bind(container),
+					controller:controller.bind(container),
+					trans:translation.trans.bind(translation),
+					getLocale:translation.getLocale.bind(translation),
+					trans_default_domain:translation.trans_default_domain.bind(translation),
+					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
+				}
+
 				if (! this.firewall){
 					request.on('end', function(){
 						context.notificationsCenter.fire("onRequest",container, request, response );	
@@ -177,6 +202,11 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+				//twig extend context
+				context.extendTwig = {
+					render:render.bind(container),
+					controller:controller.bind(container)
+				}
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				this.kernel.fire("onWebsocketRequest", container, context, type);
