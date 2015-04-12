@@ -25,7 +25,7 @@ $ make
 
 ## <a name="start"></a>start
 
-Add domain name "nodefony.com" in your /etc/hosts  :
+Add host name "nodefony.com" in your /etc/hosts  :
 ```bash
 $ sudo vim /etc/hosts
 
