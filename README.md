@@ -24,10 +24,27 @@ $ make
 ```
 
 ## <a name="start"></a>start
+
+Add domain name "nodefony.com" in your /etc/hosts  :
+```bash
+$ sudo vim /etc/hosts
+
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost nodefony.com 
+
+```
+
 Start the server :
 ```bash
 $ ./nodefony_dev
 ```
+
+Access to App with URL : http://nodefony.com:5151
 
 [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
 
