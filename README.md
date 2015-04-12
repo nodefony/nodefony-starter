@@ -120,7 +120,7 @@ framework
 
 $ ./console generate:bundle myBundle src/bundles
 ```
-More informations [wiki](https://github.com/ccamensuli/nodefony/wiki/Configurations) 
+More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles) 
 	 
 
 ## <a name="authors"></a>Authors
