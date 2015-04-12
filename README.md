@@ -29,7 +29,7 @@ Start the server :
 $ ./nodefony_dev
 ```
 
-[![nodefony](nodefony/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
 
 
 ## <a name="authors"></a>Authors
