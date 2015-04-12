@@ -1,5 +1,5 @@
 #!/usr/local/bin/node
-
+var asciify = require('asciify');
 
 //  AUTOLOAD LIBRARY nodefony NODE
 var autoloader = require("./vendors/nodefony/core/autoloader");
@@ -9,9 +9,9 @@ autoloader.load("./vendors/nodefony/console/console.js");
 
 
 // START CONSOLE
-nodefony.kernel.prototype.generateAscii("N O D E F O N Y" , function(error, stdout, stderr){
+asciify("      NODEFONY", {font:'standard'}, function(err, res){
 
-	console.log('\033[31m'+stdout+'\033[0m');
+	console.log('\033[31m'+res+'\033[0m');
 
 	var kernel = new nodefony.console( "prod", false, autoloader);
 	//var kernel = new nodefony.console( "dev", true, autoloader);

@@ -16,13 +16,13 @@ nodefony.register("controller", function(){
 	};
 	
 	Controller.prototype.logger = function(pci, severity, msgid,  msg){
-		var syslog = this.container.get("syslog")
+		var syslog = this.container.get("syslog");
 		if (! msgid) msgid = "CONTROLER "+this.name+" ";
-		return syslog.logger(pci, severity, msgid,  msg)
+		return syslog.logger(pci, severity, msgid,  msg);
 	};
 
 	Controller.prototype.getName = function(){
-		return this.name
+		return this.name;
 	};
 
 	Controller.prototype.get = function(name){
@@ -320,6 +320,17 @@ nodefony.register("controller", function(){
 		}
 		var router = this.container.get("router");	
 		return router.generatePath.apply(router, arguments);
+	};
+
+	Controller.prototype.htmlMdParser = function(content, options){
+		var markdown  = require('markdown-it')(nodefony.extend({
+			html: true
+		},options))
+		try {
+			return markdown.render(content)
+		}catch (e){
+			throw e
+		}
 	};
 
 	return Controller;

@@ -120,6 +120,19 @@ nodefony.registerController("framework", function(){
 			}
 		};
 
+		frameworkController.prototype.readmeAction = function(){
+			var kernel = this.container.get("kernel");
+			var path = kernel.rootDir+'/README.md';
+			var file = new nodefony.fileClass(path);
+			var res = this.htmlMdParser(file.content(),{
+				linkify: true,
+				typographer: true	
+			});
+			return  this.render('frameworkBundle::md.html.twig',{
+					html:res
+				});
+		}
+
 
 		return frameworkController;
 });

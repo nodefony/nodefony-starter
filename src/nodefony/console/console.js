@@ -8,7 +8,6 @@
  */
 var Getopt = require('node-getopt');
 
-
 nodefony.register("console", function(){
 
 	var settingsSysLog = {
@@ -38,25 +37,27 @@ nodefony.register("console", function(){
  	 	}.bind(this));
 
 		// MANAGE CLI OPTIONS
-		try {
-			var ret = this.loadCommand();
-			if (ret)
-				this.terminate(1);
-		}catch(e){
-			this.logger(e);
-			this.terminate(1);
-			return ;
-		}
-		
-		process.nextTick(function () {
+		this.listen(this, "onBoot",function(){
 			try {
-				var res = this.matchCommand();
+				var ret = this.loadCommand();
+				if (ret)
+					this.terminate(1);
 			}catch(e){
 				this.logger(e);
 				this.terminate(1);
+				return ;
 			}
-		}.bind(this))
-
+			process.nextTick(function () {
+				try {
+					var res = this.matchCommand();
+				}catch(e){
+					this.logger(e);
+					this.terminate(1);
+				}
+			}.bind(this))
+		});
+		
+		
 	}.herite(nodefony.appKernel)
 	
 	

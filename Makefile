@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 
 
-all: asciiArt node install framework asset
+all: node install framework asset
 
 install:
 	@if [ -x  vendors/asciiArt/figlet222/figlet ] ; then  \
@@ -22,13 +22,6 @@ node:
 
 vendors:
 	
-asciiArt:
-	@if [ ! -d bin ] ; then  \
-		mkdir bin ;\
-	fi
-	@echo "###########  COMPILATION FIGLET ASCIIART  ###########"
-	make -C vendors/asciiArt/figlet222/ all
-
 doc:
 	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default
 
@@ -40,14 +33,10 @@ framework:
 	./console npm:install
 	./console npm:list
 	./console router:generate:routes
-#	./console ORM2:connections:state
-#	./console ORM2:entity:show
+	./console ORM2:connections:state
+	./console ORM2:entity:show
 
 clean:
-	@if [ -e  bin/figlet ] ; then  \
-		echo "###########  CLEAN ASCIIART  ###########" ;\
-		make -C vendors/asciiArt/figlet222/ clean; \
-	fi
 	@if [ -e  node_modules ] ; then \
 		echo "###########  CLEAN  NODE MODULES ###########" ;\
 		rm -rf node_modules/* ; \

@@ -13,17 +13,17 @@ nodefony.registerCommand("ORM2",function(){
 			case 'mysql':
 				obj.driver.execQuery('CREATE DATABASE ' + dbName + ' DEFAULT CHARACTER SET ' + charset + ' DEFAULT COLLATE ' + (collate || 'utf8_general_ci'));
 				break;
-			
+
 			case 'postgresql':
 				obj.driver.execQuery('CREATE DATABASE ' + dbName + ' ENCODING=' + charset);
 				break;
 		}
 	}
-	
-	
+
+
 
 	var Orm = function(container, command, options){
-		
+
 		var arg = command[0].split(":");
 		this.ormService = this.container.get("ORM2");
 
@@ -32,9 +32,9 @@ nodefony.registerCommand("ORM2",function(){
 				switch( arg[2 ]){
 					case "entity" :
 						if ( command[1] && command[2] ){
-							
+
 							this.ormService.listen(this, "onOrmReady",function(service){
-								
+
 								var connection = service.getConnection( command[1] );
 								if ( ! connection ){
 									this.logger(new Error("generate:entity  connectionName "+command[1] +" not exist"), "ERROR");
@@ -43,25 +43,25 @@ nodefony.registerCommand("ORM2",function(){
 								}
 								var enti = service.getEntity( command[2] );
 								if (enti){
-										enti.drop(function (){
-											this.logger(connection.driver_name +" CONNECTION : "+command[1] +" DROP TABLE :" + command[2] ,"INFO");
-											enti.sync(function () {
-												this.logger(connection.driver_name +" CONNECTION : "+command[1]+" CREATE TABLE : "+ command[2],"INFO");
-											}.bind(this));
+									enti.drop(function (){
+										this.logger(connection.driver_name +" CONNECTION : "+command[1] +" DROP TABLE :" + command[2] ,"INFO");
+										enti.sync(function () {
+											this.logger(connection.driver_name +" CONNECTION : "+command[1]+" CREATE TABLE : "+ command[2],"INFO");
 										}.bind(this));
-									
+									}.bind(this));
+
 								}else{
 									this.logger(new Error("generate:entity  entityName "+command[2] +" not exist"), "ERROR");
 									this.showHelp();	
 								}
 							});
-							
-							
+
+
 						}else{
 							this.logger(new Error("generate:entity must have connectionName entityName arguments"), "ERROR");
 							this.showHelp();	
 						}
-					break;
+						break;
 					case "entities" :
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 							connection.drop(function (){
@@ -71,7 +71,7 @@ nodefony.registerCommand("ORM2",function(){
 								}.bind(this));
 							}.bind(this));
 						});
-					break;
+						break;
 					case "bundleEntity" : 
 						var sp = command[1].split(":");
 						if ( sp.length !== 2 ){
@@ -92,13 +92,13 @@ nodefony.registerCommand("ORM2",function(){
 								this.ormService.listen(this, "onOrmReady",function(service){
 									//if (entityDef.connection === connectionName ){
 									var connection = service.getConnection( entityDef.connection );
-										var enti = service.getEntity( sp[1] );
-										enti.drop(function (){
-											this.logger(connection.driver_name +" CONNECTION : "+entityDef.connection +" DROP TABLE :" +  sp[1] ,"INFO");
-											enti.sync(function () {
-												this.logger(connection.driver_name +" CONNECTION : "+entityDef.connection+" CREATE TABLE : "+  sp[1],"INFO");
-											}.bind(this));
+									var enti = service.getEntity( sp[1] );
+									enti.drop(function (){
+										this.logger(connection.driver_name +" CONNECTION : "+entityDef.connection +" DROP TABLE :" +  sp[1] ,"INFO");
+										enti.sync(function () {
+											this.logger(connection.driver_name +" CONNECTION : "+entityDef.connection+" CREATE TABLE : "+  sp[1],"INFO");
 										}.bind(this));
+									}.bind(this));
 									//}									
 								});
 							}
@@ -107,8 +107,8 @@ nodefony.registerCommand("ORM2",function(){
 							this.showHelp();
 							return;	
 						}	
-						
-					break;
+
+						break;
 					default:
 						this.showHelp();
 				}
@@ -133,11 +133,11 @@ nodefony.registerCommand("ORM2",function(){
 					default:
 						this.showHelp();
 				}
-			break;
+				break;
 			case "fixture" : 
 				switch( arg[2 ]){
 					case 'load':
-						
+
 						var sp = command[1].split(":");
 						if ( sp.length !== 2 ){
 							this.logger(new Error("fixture:load   "+command[1] +" bad format"), "ERROR");
@@ -147,15 +147,15 @@ nodefony.registerCommand("ORM2",function(){
 						var bund = sp[0].replace("Bundle", "");
 						var bundle =  this.ormService.kernel.bundles[bund] ; 
 						var fixtureDef = bundle.getFixture( sp[1] );
-		
+
 						if ( fixtureDef ){
 
 							this.ormService.listen(this, "onOrmReady",function(service){	
-								
+
 								var conn = service.getConnection( fixtureDef.connection );
 								var entity = service.getEntity( fixtureDef.entity );
 								fixtureDef.fixture(conn, entity);
-								
+
 							});
 
 						}else{
@@ -167,9 +167,9 @@ nodefony.registerCommand("ORM2",function(){
 					default:
 						this.showHelp();
 				}
-			break;
+				break;
 			case "database" : 
-			break;
+				break;
 			case "entity" :
 				switch( arg[2 ]){
 					case "show" :						
@@ -178,12 +178,12 @@ nodefony.registerCommand("ORM2",function(){
 							console.log( this.table.render() );
 							this.terminate();
 						});
-					break;
+						break;
 					default:
 						this.showHelp();
 						this.terminate();
 				}
-			break;
+				break;
 			case "connections" :
 				switch( arg[2 ]){
 					case "state" :
@@ -192,12 +192,12 @@ nodefony.registerCommand("ORM2",function(){
 							console.log( this.connectionsTable.render() );
 							this.terminate();
 						});
-					break;
+						break;
 					default:
 						this.showHelp();
 						this.terminate();
 				}
-			break;
+				break;
 			default:
 				this.showHelp();
 
@@ -208,12 +208,12 @@ nodefony.registerCommand("ORM2",function(){
 	Orm.prototype.checkBundlesEntities = function(){
 		this.table = new AsciiTable("ENTITIES ORM");	
 		this.table.setHeading(
-			"NAME",
-			"TYPE",
-			"BUNDLE",
-			"CONNECTION",
-			"ASSOCIATIONS"
-		);
+				"NAME",
+				"TYPE",
+				"BUNDLE",
+				"CONNECTION",
+				"ASSOCIATIONS"
+				);
 		var bundles =  this.ormService.kernel.bundles ;
 		for (var bundle in bundles){
 			var entities = bundles[bundle].getEntities();
@@ -222,31 +222,31 @@ nodefony.registerCommand("ORM2",function(){
 			if ( entities ){
 				for (var entity in entities){
 					this.table.addRow(
-						entity,
-						entities[entity].type,
-						bundle,
-						entities[entity].connection,
-						util.inspect( entities[entity].association )			
-					);
+							entity,
+							entities[entity].type,
+							bundle,
+							entities[entity].connection,
+							util.inspect( entities[entity].association )			
+							);
 				}
 			}
 		}
 	};
 
 
-	
+
 	Orm.prototype.checkConnections = function(){
 		this.connections = {};
 		this.connectionsTable = new AsciiTable("CONNECTIONS DATABASES");
 		this.connectionsTable.setHeading(
-			"NAME",
-			"DRIVER",
-			//"DATABASE",
-			"LOCATION",
-			"USER",
-			"PASSWORD",
-			"STATE"
-		);
+				"NAME",
+				"DRIVER",
+				//"DATABASE",
+				"LOCATION",
+				"USER",
+				"PASSWORD",
+				"STATE"
+				);
 
 		this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 			this.connectionsTable.addRow(
@@ -257,9 +257,9 @@ nodefony.registerCommand("ORM2",function(){
 				connection.driver.config.user,
 				connection.driver.config.password,
 				connection.driver_name == "mysql"? connection.driver.db.state : "authenticated"
-			);	
+				);	
 		}.bind(this));
-					
+
 		this.ormService.listen(this, 'onErrorConnection',function(connectionName, connection, service){
 			this.connectionsTable.addRow(
 				connectionName,
@@ -269,23 +269,23 @@ nodefony.registerCommand("ORM2",function(){
 				connection.driver.config.user,
 				connection.driver.config.password,
 				connection.driver_name == "mysql"? connection.driver.db.state : "disconnected" 
-			);
+				);
 		});
 	};
 
 
 	return {
 		name:"ORM2",
-		commands:{
-			fixtures:["ORM2:fixtures:load" ,"Load data fixtures to your database"],
-			fixture:["ORM2:fixture:load bundleName:fixtureName" ,"Load a specific data fixture to your database"],
-			entity:["ORM2:generate:entity connectionName entityName" ,"Generate an Entity"],
-			entity2:["ORM2:generate:bundleEntity bundleName:entityName" ,"Generate Bundle Entity"],
-			entities:["ORM2:generate:entities" ,"Generate All Entities"],
-			create:["ORM2:database:create" ,"Create a database"],
-			show:["ORM2:entity:show" ,"show  Entities"],
-			connections:["ORM2:connections:state" ,"view  connections states"]
-		},
-		worker:Orm
+			commands:{
+				fixtures:["ORM2:fixtures:load" ,"Load data fixtures to your database"],
+				fixture:["ORM2:fixture:load bundleName:fixtureName" ,"Load a specific data fixture to your database"],
+				entity:["ORM2:generate:entity connectionName entityName" ,"Generate an Entity"],
+				entity2:["ORM2:generate:bundleEntity bundleName:entityName" ,"Generate Bundle Entity"],
+				entities:["ORM2:generate:entities" ,"Generate All Entities"],
+				create:["ORM2:database:create" ,"Create a database"],
+				show:["ORM2:entity:show" ,"show  Entities"],
+				connections:["ORM2:connections:state" ,"view  connections states"]
+			},
+			worker:Orm
 	}
 });

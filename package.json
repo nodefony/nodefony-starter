@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "npm":"*",
+    "asciify":"*",
     "websocket": "*",
     "js-yaml": "*",
     "node-getopt": "*",
@@ -26,7 +27,8 @@
     "mysql": "*",
     "less": "*",
     "ascii-table": "*",
-    "mime":"*"
+    "mime":"*",
+    "markdown-it":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

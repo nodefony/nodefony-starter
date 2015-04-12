@@ -146,17 +146,17 @@ nodefony.registerService("translation", function(){
 	i18n.prototype.getLang = function(context){
 		if (context.type === "HTTP" || context.type === "HTTPS"){
 			if ( ! context.session ){
-				Lang = 	this.container.getParameters("query.request").lang 
+				var Lang = this.container.getParameters("query.request").lang 
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
 			}else{
-				var Lang =  context.session.get("lang");
+				var Lang =  this.container.getParameters("query.request").lang || context.session.get("lang");
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
-				context.session.set("lang",this.defaultLocale );
 			}
+			context.session.set("lang",this.defaultLocale );
 			if ( ! this.container.getParameters("translate."+this.defaultLocale) ){
 				this.getFileLocale(this.defaultLocale);
 			}

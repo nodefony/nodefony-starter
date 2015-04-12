@@ -2,6 +2,8 @@
 
 var cluster = require('cluster');	
 var domain = require('domain');
+var asciify = require('asciify');
+
 
 
 //  AUTOLOAD LIBRARY nodefony NODE
@@ -13,8 +15,8 @@ autoloader.load("./app/appKernel.js");
 
 if (cluster.isMaster) {
 
-	nodefony.kernel.prototype.generateAscii("N O D E F O N Y" , function(error, stdout, stderr){
-		console.log('\033[31m'+stdout+'\033[0m');
+	asciify("      NODEFONY", {font:'standard'}, function(err, res){
+		console.log('\033[31m'+res+'\033[0m');
 	});
 
 	var nbProc = require('os').cpus().length; 
