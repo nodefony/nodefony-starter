@@ -177,6 +177,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 - MACOS (checked)  : GNU Make / Node.js' / npm 
 - ~~WINDOWS (no check)~~
 #### NPM : *Install auto by Makefile*
+```bash
 	.----------------------------------------------------------------------------------------------------------------------------------------.
 	|                                                         NPM NODEFONY PACKAGES                                                          |
 	|----------------------------------------------------------------------------------------------------------------------------------------|
@@ -200,7 +201,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 	| mime        | 1.3.4   | A comprehensive library for mime-type mapping                                                                  |
 	| markdown-it | 4.1.0   | Markdown-it - modern pluggable markdown parser.                                                                |
 	'----------------------------------------------------------------------------------------------------------------------------------------'
-
+```
 ## <a name="references--thanks"></a>References / Thanks
 Big thanks 
 
