@@ -11,7 +11,7 @@ security:
             form_login:
               check_path:               /secure
               login_path:               /login  
-              default_target_path:      /demo
+              default_target_path:      /
 
 #            http_digest:
             sasl:
