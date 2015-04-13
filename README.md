@@ -45,7 +45,7 @@ __Table of content__
 **Node.js** :
 
 ```bash
-$ git clone git@github.com:ccamensuli/nodefony.git
+$ git clone https://github.com/ccamensuli/nodefony.git
 
 $ cd nodefony
 
