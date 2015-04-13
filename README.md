@@ -17,7 +17,7 @@ __Table of content__
 
 
 ## <a name="requirements"></a>Requirements
-LINUX ( Checked )  MACOS ( Checked )  ~~WINDOWS ( Unchecked )~~
+
 #### On your system *you must have Installed* :   
 - ###### **[GIT](http://git-scm.com/)**  is Distributed version control system 
 
@@ -29,6 +29,16 @@ LINUX ( Checked )  MACOS ( Checked )  ~~WINDOWS ( Unchecked )~~
 
    npm will be automatically installed by Node.js
 
+#### System :
+- LINUX ( Checked )
+ 
+  Warning node must be in **/usr/local/bin/node**  
+
+  Debian : sudo apt-get install nodejs-legacy
+
+- MACOS ( Checked )
+
+- ~~WINDOWS ( Unchecked )~~
 
 ## <a name="install"></a>Install Framework
 
