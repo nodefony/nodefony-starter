@@ -176,7 +176,9 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 - LINUX (checked)  : GNU Make / Node.js / npm 
 - MACOS (checked)  : GNU Make / Node.js' / npm 
 - ~~WINDOWS (no check)~~
+
 #### NPM : *Install auto by Makefile*
+
 ```bash
 	.----------------------------------------------------------------------------------------------------------------------------------------.
 	|                                                         NPM NODEFONY PACKAGES                                                          |
