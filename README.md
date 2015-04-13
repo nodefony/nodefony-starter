@@ -10,13 +10,14 @@ __Table of content__
 - [Configurations](#configurations) 
 - [Command line Interface](#cli) 
 - [Bundles](#bundles) 
-- [Authors](#authors)
+- [Requirements](#requirements) 
 - [References / Thanks](#references--thanks)
+- [Authors](#authors)
 - [License](#license)
 
 ## <a name="install"></a>Install
 
-**node.js** :
+**Node.js** :
 
 ```bash
 $ git clone git@github.com:ccamensuli/nodefony.git
@@ -170,17 +171,48 @@ Create File      :helloBundle.js
 More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles) 
 	 
 
-## <a name="authors"></a>Authors
-
-- Christophe CAMENSULI  [github/ccamensuli](https://github.com/ccamensuli)
-
+## <a name="requirements"></a>Requirements
+#### System : *You must install*  
+- LINUX (checked)  : GNU Make / Node.js / npm 
+- MACOS (checked)  : GNU Make / Node.js' / npm 
+- ~~WINDOWS (no check)~~
+#### NPM : *Install auto by Makefile*
+	.----------------------------------------------------------------------------------------------------------------------------------------.
+	|                                                         NPM NODEFONY PACKAGES                                                          |
+	|----------------------------------------------------------------------------------------------------------------------------------------|
+	|    NAME     | VERSION |                                                  DESCRIPTION                                                   |
+	|-------------|---------|----------------------------------------------------------------------------------------------------------------|
+	| npm         | 2.7.6   | a package manager for JavaScript                                                                               |
+	| asciify     | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                      |
+	| websocket   | 1.0.18  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                |
+	| js-yaml     | 3.2.7   | YAML 1.2 parser and serializer                                                                                 |
+	| node-getopt | 0.2.3   | featured command line args parser                                                                              |
+	| shortid     | 2.2.2   | Amazingly short non-sequential url-friendly unique id generator.                                               |
+	| mkdirp      | 0.5.0   | Recursively mkdir, like `mkdir -p`                                                                             |
+	| xml2js      | 0.4.6   | Simple XML to JavaScript object converter.                                                                     |
+	| twig        | 0.8.2   | JS port of the Twig templating language.                                                                       |
+	| connect     | 2.29.1  | High performance middleware framework                                                                          |
+	| orm         | 2.1.13  | NodeJS Object-relational mapping                                                                               |
+	| sqlite3     | 3.0.5   | Asynchronous, non-blocking SQLite3 bindings                                                                    |
+	| mysql       | 2.6.1   | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed. |
+	| less        | 2.5.0   | Leaner CSS                                                                                                     |
+	| ascii-table | 0.0.8   | Easy tables for your console data                                                                              |
+	| mime        | 1.3.4   | A comprehensive library for mime-type mapping                                                                  |
+	| markdown-it | 4.1.0   | Markdown-it - modern pluggable markdown parser.                                                                |
+	'----------------------------------------------------------------------------------------------------------------------------------------'
 
 ## <a name="references--thanks"></a>References / Thanks
-
 Big thanks 
 
 **Related Links:**
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [Framework Symfony](http://symfony.com/)
+- [Twig.js](https://github.com/justjohn/twig.js/wiki)
 
+## <a name="authors"></a>Authors
+
+- Christophe CAMENSULI  [github/ccamensuli](https://github.com/ccamensuli)
 
 ##  <a name="license"></a>License
 
