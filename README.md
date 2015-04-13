@@ -18,7 +18,7 @@ __Table of content__
 
 ## <a name="requirements"></a>Requirements
 LINUX ( Checked )  MACOS ( Checked )  ~~WINDOWS ( Unchecked )~~
-#### In your System : *You must install*  
+#### On your system *you must have Installed* :   
 - ###### **[GIT](http://git-scm.com/)**  is Distributed version control system 
 
 -  **[GNU Make](https://www.gnu.org/software/make/)**  is a Tool which controls the generation of executables
@@ -26,6 +26,8 @@ LINUX ( Checked )  MACOS ( Checked )  ~~WINDOWS ( Unchecked )~~
 -  **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime
 
 -  **[npm](https://www.npmjs.com/)**  is the Package Manager for javascript application
+
+   npm will be automatically installed by Node.js
 
 
 ## <a name="install"></a>Install Framework
@@ -66,7 +68,7 @@ Access to App with URL : http://nodefony.com:5151
 [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
-Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)**  to change httpPort, domain server, locale ...
+Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)**  if you want change httpPort, domain server, locale ...
 ```bash
 	#
 	#  NODEFONY FRAMEWORK 
