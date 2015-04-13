@@ -51,6 +51,36 @@ Access to App with URL : http://nodefony.com:5151
 
 [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
 
+## <a name="configurations"></a>Configurations Kernel
+Open [./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)  to change httpPort  domain server ...
+```bash
+	#
+	#  NODEFONY FRAMEWORK 
+	#
+	#       KERNEL CONFIG
+	#
+	#
+	name:                         "NODEFONY"
+	system:                         
+  		version:                      "1.0"
+  		domain:                       nodefony.com
+  		httpPort:                     5151
+  		httpsPort:                    5152
+  		statics:                      true
+  		security:                     true
+  		realtime:                     true
+  		monitoring:                   true
+
+  		locale:                       "fr_fr"   
+
+  		log:
+    		active:                     true
+    		messages:                   "/tmp/nodefony.log"
+    		error:                      "/tmp/errorNodefony.log"
+    		services:                   "/tmp/servicesNodefony.log"
+    		rotate:                     false
+
+```
 
 ## <a name="cli"></a>Command Line Interface
 ```bash
@@ -101,11 +131,11 @@ App
 
 ```
 
-## <a name="configurations"></a>Configurations
-
 ## <a name="bundles"></a>Bundles
-Generate new bundle : 
+Generate new bundle :    generate:bundle nameBundle path
+       
 ```bash
+$ ./console generate:bundle helloBundle src/bundles
               _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
              |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
@@ -113,12 +143,29 @@ Generate new bundle :
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
                                                                             
 
-		      CONSOLE Version : 1.0 PLATFORM : darwin  PROCESS PID : 21536
+		      CONSOLE Version : 1.0 PLATFORM : darwin  PROCESS PID : 1069
 
-framework
-	generate:bundle nameBundle path                                  Generate a Bundle directory in path directory
-
-$ ./console generate:bundle myBundle src/bundles
+GENERATE bundle : helloBundle LOCATION : src/bundles
+Create Directory :helloBundle
+Create Directory :Command
+Create Directory :controller
+Create File      :defaultController.js
+Create Directory :manager
+Create Directory :tests
+Create Directory :Resources
+Create Directory :config
+Create File      :config.yml
+Create File      :routing.yml
+Create Directory :public
+Create Directory :js
+Create Directory :css
+Create Directory :images
+Create Directory :translations
+Create Directory :views
+Create File      :index.html.twig
+Create Directory :core
+Create Directory :Entity
+Create File      :helloBundle.js
 ```
 More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles) 
 	 
