@@ -194,8 +194,8 @@ Create Directory :core
 Create Directory :Entity
 Create File      :helloBundle.js
 ```
-#### Add bundle hello in Framework :
-Open Bundle App "appKernel" to add new Bundle : **[./app/appKernel.js](https://github.com/ccamensuli/nodefony/blob/master/app/appKernel.js)**
+#### Add hello bundle in Framework :
+Open Bundle App "appKernel" to add new hello Bundle in **registerBundles** array : **[./app/appKernel.js](https://github.com/ccamensuli/nodefony/blob/master/app/appKernel.js)**
 ```js
 /*
  *	ENTRY POINT FRAMEWORK APP KERNEL

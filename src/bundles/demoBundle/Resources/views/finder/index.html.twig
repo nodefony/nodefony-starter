@@ -1,40 +1,40 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>FINDER</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="keywords" content="">
-        <meta name="geo.placename" content="">
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
 
-        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+{% block stylesheets %}
+	{{parent()}}
+
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css" media="screen">
         <link rel="stylesheet" href="/demoBundle/css/flickity.min.css" media="screen">
         <link rel="stylesheet" href="/demoBundle/css/style.css" media="screen">
 
+	<link rel="stylesheet" href="/demoBundle/css/jquery.fancybox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/demoBundle/js/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
 
-        <script src="/demoBundle/js/jquery-1.11.2.min.js"></script>
-        <script src="/demoBundle/js/flickity.pkgd.min.js"></script>
+
+	<!-- Awesome Font -->
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+
+	<script src="/demoBundle/js/flickity.pkgd.min.js"></script>
         <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        
-        <link rel="stylesheet" href="/demoBundle/css/jquery.fancybox.css" type="text/css" media="screen" />
-        <script type="text/javascript" src="/demoBundle/js/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+	<script type="text/javascript" src="/demoBundle/js/jquery.fancybox.pack.js"></script>
         
         <!-- Optionally add helpers - button, thumbnail and/or media -->
-        <link rel="stylesheet" href="/demoBundle/js/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
-        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
-        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
-
-
+        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-buttons.js"></script>
+        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-media.js"></script>
 
         <script src="/demoBundle/js/finder.js"></script>
-        <!-- Awesome Font -->
-        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-    </head>
 
-    <body>
+
+{% endblock %}
+
+{% block content %}
 
         <div id="header">
             <div id="controls">
@@ -173,6 +173,7 @@
                 </tbody>
             </table>
         </div>
-    </body>
-</html>
+
+
+{% endblock %}
 

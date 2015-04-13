@@ -38,8 +38,8 @@ nodefony.registerController("finder", function(){
 							};
 						},
 						onFinish:function(error, files){
-							//console.log(files.json);
 							response = this.render('demoBundle:finder:index.html.twig',{
+								title:"Finder",
 								files:files.json
 							});
 						}.bind(this)
@@ -54,6 +54,17 @@ nodefony.registerController("finder", function(){
 								encoding:file.encoding
 							});	
 						break;
+						case "text/x-markdown":
+							var res = this.htmlMdParser(file.content(file.encoding),{
+								linkify: true,
+								typographer: true	
+							});
+							return  this.render('demoBundle:finder:files.html.twig',{
+								title:file.name,
+								content:res,
+								mime:file.mimeType,
+								encoding:file.encoding
+							});
 						default:
 							return encode.call(this, file);	
 					}
@@ -139,7 +150,14 @@ nodefony.registerController("finder", function(){
 		else
 			var path = query.get.path ;
 
-		//TODO secure path
+		// secure path
+		var reg = new RegExp( "^"+this.get("kernel").rootDir )
+		if ( ! reg.test(path)){
+			throw {
+				status:401
+			}
+			//var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images"	
+		}
 
 		try{ 
 			return search.call(this, path) ;
