@@ -5,17 +5,25 @@
 
 __Table of content__
 
+- [Requirements](#requirements) 
 - [Install](#install)
 - [Start](#start) 
 - [Configurations](#configurations) 
 - [Command line Interface](#cli) 
 - [Bundles](#bundles) 
-- [Requirements](#requirements) 
 - [References / Thanks](#references--thanks)
 - [Authors](#authors)
 - [License](#license)
 
-## <a name="install"></a>Install
+
+## <a name="requirements"></a>Requirements
+#### System : *You must install*  
+- LINUX (checked)  : GNU Make / Node.js / npm 
+- MACOS (checked)  : GNU Make / Node.js' / npm 
+- ~~WINDOWS (no check)~~
+
+
+## <a name="install"></a>Install Framework
 
 **Node.js** :
 
@@ -27,7 +35,7 @@ $ cd nodefony
 $ make
 ```
 
-## <a name="start"></a>start
+## <a name="start"></a>Start 
 
 Add host name "nodefony.com" in your /etc/hosts  :
 ```bash
@@ -171,12 +179,7 @@ Create File      :helloBundle.js
 More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles) 
 	 
 
-## <a name="requirements"></a>Requirements
-#### System : *You must install*  
-- LINUX (checked)  : GNU Make / Node.js / npm 
-- MACOS (checked)  : GNU Make / Node.js' / npm 
-- ~~WINDOWS (no check)~~
-
+## <a name="references--thanks"></a>References / Thanks
 #### NPM : *Install auto by Makefile*
 
 ```bash
@@ -204,7 +207,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 	| markdown-it | 4.1.0   | Markdown-it - modern pluggable markdown parser.                                                                |
 	'----------------------------------------------------------------------------------------------------------------------------------------'
 ```
-## <a name="references--thanks"></a>References / Thanks
+
 Big thanks 
 
 **Related Links:**
