@@ -10,7 +10,7 @@ __Table of content__
 - [Start](#start) 
 - [Configurations](#configurations) 
 - [Command line Interface](#cli) 
-- [Bundles](#bundles) 
+- [Get Started](#bundles) 
 - [References / Thanks](#references--thanks)
 - [Authors](#authors)
 - [License](#license)
@@ -51,7 +51,7 @@ $ sudo vim /etc/hosts
 
 ```
 
-Start the server :
+Start the server to check:
 ```bash
 $ ./nodefony_dev
 ```
@@ -61,7 +61,7 @@ Access to App with URL : http://nodefony.com:5151
 [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
-Open [./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)  to change httpPort  domain server ...
+Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)**  to change httpPort, domain server, locale ...
 ```bash
 	#
 	#  NODEFONY FRAMEWORK 
@@ -140,8 +140,9 @@ App
 
 ```
 
-## <a name="bundles"></a>Bundles
-Generate new bundle :    generate:bundle nameBundle path
+## <a name="bundles"></a>Get Started
+#### Generate hello Bundle :
+CLI Generate new bundle :    generate:bundle nameBundle path
        
 ```bash
 $ ./console generate:bundle helloBundle src/bundles
@@ -176,11 +177,66 @@ Create Directory :core
 Create Directory :Entity
 Create File      :helloBundle.js
 ```
+#### Add bundle hello in Framework :
+Open Bundle App "appKernel" to add new Bundle : **[./app/appKernel.js](https://github.com/ccamensuli/nodefony/blob/master/app/appKernel.js)**
+```js
+/*
+ *	ENTRY POINT FRAMEWORK APP KERNEL
+ */
+
+nodefony.register("appKernel",function(){
+
+	var appKernel = function(type, environment, debug, loader){
+		
+		// kernel constructor
+		var kernel = this.$super;
+		kernel.constructor(environment, debug, loader, type)
+
+		/*
+	 	*	Bundles to register in Application
+	 	*/
+		this.registerBundles([
+			"./src/bundles/helloBundle"
+		]);
+
+		/*
+ 		 *
+ 		 *	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
+ 		 */
+		if (type === "SERVER"){
+			this.listen(this,"onReady", function(){
+				// create HTTP server 
+				var http = this.get("httpServer").createServer();
+
+				// create HTTPS server
+				//var https = this.get("httpsServer").createServer();
+
+				// create WEBSOCKET server
+				var ws = this.get("websocketServer").createServer(http);
+
+				// create WEBSOCKET SECURE server
+				//var wss = this.get("websocketServerSecure").createServer(https);
+
+			}.bind(this));
+		};
+				
+	}.herite(nodefony.kernel);
+
+	return appKernel;
+})
+```
+#### Start Framework to check new Bundle hello:
+```bash
+$ ./nodefony_dev
+```
+
+Access to bundle route with URL : http://nodefony.com:5151/hello
+
 More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles) 
 	 
 
 ## <a name="references--thanks"></a>References / Thanks
-#### NPM : *Install auto by Makefile*
+#### NPM : *auto Installed  by Makefile*
 
 ```bash
 	.----------------------------------------------------------------------------------------------------------------------------------------.
@@ -208,7 +264,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 	'----------------------------------------------------------------------------------------------------------------------------------------'
 ```
 
-Big thanks 
+**Big thanks:**
 
 **Related Links:**
 - [Node.js](https://nodejs.org/)

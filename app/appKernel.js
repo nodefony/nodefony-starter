@@ -2,7 +2,7 @@
  *
  *
  *
- *
+ *	ENTRY POINT FRAMEWORK APP KERNEL
  *
  *
  *
@@ -18,7 +18,7 @@ nodefony.register("appKernel",function(){
 		kernel.constructor(environment, debug, loader, type)
 
 		/*
-	 	*	Bundle to register in Application
+	 	*	Bundles to register in Application
 	 	*/
 		this.registerBundles([
 			"./vendors/nodefony/bundles/orm2Bundle",
@@ -27,7 +27,7 @@ nodefony.register("appKernel",function(){
 
 		/*
  		 *
- 		 *	SERVERS
+ 		 *	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
  		 */
 		if (type === "SERVER"){
 			this.listen(this,"onReady", function(){
