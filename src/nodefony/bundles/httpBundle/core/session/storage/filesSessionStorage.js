@@ -5,6 +5,8 @@
  *
  *
  */
+var mkdirp = require('mkdirp');
+
 
 nodefony.register.call(nodefony.session.storage, "files",function(){
 
@@ -42,7 +44,8 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		if (! res ){
 			this.manager.logger("create directory context sessions " + path);
 			try {
-				var res = fs.mkdirSync(path);
+				//var res = fs.mkdirSync(path);
+				var res = mkdirp.sync(path)
 			}catch(e){
 				throw e ;
 			}
