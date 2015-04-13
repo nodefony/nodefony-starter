@@ -17,10 +17,15 @@ __Table of content__
 
 
 ## <a name="requirements"></a>Requirements
-#### System : *You must install*  
-- LINUX (checked)  : GNU Make / Node.js / npm 
-- MACOS (checked)  : GNU Make / Node.js' / npm 
-- ~~WINDOWS (no check)~~
+LINUX ( Checked )  MACOS ( Checked )  ~~WINDOWS ( Unchecked )~~
+#### In your System : *You must install*  
+- ###### **[GIT](http://git-scm.com/)**  is Distributed version control system 
+
+-  **[GNU Make](https://www.gnu.org/software/make/)**  is a Tool which controls the generation of executables
+
+-  **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime
+
+-  **[npm](https://www.npmjs.com/)**  is the Package Manager for javascript application
 
 
 ## <a name="install"></a>Install Framework
@@ -236,7 +241,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 	 
 
 ## <a name="references--thanks"></a>References / Thanks
-#### NPM : *auto Installed  by Makefile*
+#### NPM : *Will be automatically installed by Makefile*
 
 ```bash
 	.----------------------------------------------------------------------------------------------------------------------------------------.
