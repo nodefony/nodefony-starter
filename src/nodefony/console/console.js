@@ -7,9 +7,25 @@
  *
  */
 var Getopt = require('node-getopt');
+var AsciiTable = require('ascii-table');
+var npm = require("npm");
+
 
 nodefony.register("console", function(){
 
+
+	var createNpmDependenciesArray = function (packageFilePath) {
+    		var p = require(packageFilePath);
+    		if (!p.dependencies) return [];
+
+    		var deps = [];
+    		for (var mod in p.dependencies) {
+        		deps.push(mod + "@" + p.dependencies[mod]);
+    		}
+    		return deps;
+	};
+
+	
 	var settingsSysLog = {
 		//rateLimit:100,
 		//burstLimit:10,
@@ -24,7 +40,17 @@ nodefony.register("console", function(){
 
 		// App Kernel 
 		this.appKernel = this.$super;
-		this.appKernel.constructor("CONSOLE", environment, debug, loader);
+		this.appKernel.constructor("CONSOLE", environment, debug, loader, {
+			onPreRegister:function(){
+				console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
+			},
+			onBoot:function(){
+				if ( process.argv[2] && process.argv[2] === "npm:list" ){
+					this.listPackage(this.rootDir+"/package.json")
+				}	
+			}
+
+		});
 
 		/*
 		 *
@@ -36,6 +62,9 @@ nodefony.register("console", function(){
  	 	        }
  	 	}.bind(this));
 
+		if ( process.argv[2] && process.argv[2] === "npm:install" ){
+			return ;
+		}
 		// MANAGE CLI OPTIONS
 		this.listen(this, "onBoot",function(){
 			try {
@@ -59,8 +88,127 @@ nodefony.register("console", function(){
 		
 		
 	}.herite(nodefony.appKernel)
+
+
+	/**
+	 *	register Bundle 
+	 *	@method registerBundles 
+	 *	@param {String} path
+	 *	@param {Function} callbackFinish
+         */
+	Console.prototype.registerBundles = function(path, callbackFinish, nextick){
+		var func = function(){
+			try{
+				var finder = new nodefony.finder( {
+					path:path,
+					recurse:false,
+					onFile:function(file){
+						if (file.matchName(this.regBundle)){
+							try {
+								if ( process.argv[2] && process.argv[2] === "npm:install" ){
+									var name = this.getBundleName(file.name);
+									this.installPackage(name, file);	
+								}else{
+									this.loadBundle( file)
+								}
+							}catch(e){
+								this.workerSyslog.logger(e, "ERROR");
+							}	
+						}
+					}.bind(this),
+					onFinish:callbackFinish || this.initializeBundles.bind(this)
+				});
+			}catch(e){
+				this.workerSyslog.logger(e, "ERROR");
+			}
+		}
+		if ( nextick === undefined ){
+			process.nextTick( func.bind(this) );	
+		}else{
+			func.apply(this)	
+		}
+	};
+
+
 	
+	var displayTable = function(titre, ele){
+		var table = new AsciiTable(titre);
+		table.setHeading(
+			"NAME", 
+			"VERSION",
+			"DESCRIPTION"
+		);
+		table.setAlignCenter(3);
+		table.setAlignCenter(11);
+		for (var pack in ele){
+			table.addRow(
+				ele[pack].name,
+				ele[pack].version,
+				ele[pack].desc
+			);	
+		}
+		//table.removeBorder()
+		console.log(table.render());	
+	};
+
+
+
+	Console.prototype.listPackage = function(conf){
+		var conf = require(conf);
+		npm.load(conf, function(error){
+			if (error){
+				this.workerSyslog.logger(error,"ERROR");
+				this.terminate();
+				return ;
+			}
+			npm.commands.ls([], true, function(error, data){
+				var ele = {};
+				for (var pack in data.dependencies){
+					//this.kernel.logger(data.dependencies[pack].name + " : " + data.dependencies[pack].version + " description : " + data.dependencies[pack].description , "INFO");	
+					ele[pack] = {
+						name:data.dependencies[pack].name,
+						version:data.dependencies[pack].version,
+						desc:data.dependencies[pack].description
+					};
+				}
+				displayTable("NPM NODEFONY PACKAGES", ele);
+				this.terminate();
+			}.bind(this))
+		}.bind(this))
+	};
+
 	
+	Console.prototype.installPackage = function(name, file){
+		try {
+			var conf = new nodefony.fileClass(file.dirName+"/package.json");
+			var config = require(conf.path);
+			npm.load( config ,function(error){
+				if (error){
+					this.workerSyslog.logger(error, "ERROR");
+					this.terminate();
+				}
+				var dependencies = createNpmDependenciesArray(conf.path) ;
+				this.workerSyslog.logger("Install Package BUNDLE : "+ name,"INFO");
+				npm.commands.install(dependencies,  function(er, data){
+					if (er){
+ 				       		this.workerSyslog.logger(er, "ERROR", "SERVICE NPM BUNDLE " + name);
+						this.terminate();
+						return ;
+					}
+					this.loadBundle(file);	
+				}.bind(this));
+			}.bind(this))
+
+		}catch(e){
+			if (e.code != "ENOENT"){
+				this.workerSyslog.logger("Install Package BUNDLE : "+ name +":"+e,"ERROR");
+				throw e ;
+			}
+		}
+	};
+
+
+
 	Console.prototype.initWorkerSyslog = function(settings){
 		var red, blue, reset;
 		red   = '\033[31m';
@@ -77,15 +225,15 @@ nodefony.register("console", function(){
 		},function(pdu){
 			if (typeof  pdu.payload === 'object') {
     				if ( pdu.payload.message) {
-					console.log("\x1B[41m\n\n    "+ util.inspect( pdu.payload.message) +"\n"+ reset);
+					console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload.message) +"\n"+ reset);
 					return ;
     				}
     				if (pdu.payload.stack) {
-					console.log("\x1B[41m\n\n    "+ util.inspect( pdu.payload.stack) +"\n"+ reset);
+					console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload.stack) +"\n"+ reset);
 					return ;
     				}
   			}
-			console.log("\x1B[41m\n\n    "+ util.inspect( pdu.payload) +"\n"+ reset);
+			console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload) +"\n"+ reset);
 		});
 		// INFO DEBUG
 		var data ;
@@ -101,6 +249,9 @@ nodefony.register("console", function(){
 	};
 
 	var generateHelp = function(obj, str){
+		str+= "\033[32mnodefony\033[0m\n"
+		str +=  "\t\033[32m"+ "npm:list"+"\033[0m							 List all installed packages \n";
+		str +=  "\t\033[32m"+ "npm:install"+"\033[0m							 Install all framework packages\n";
 		for (var ele in obj){
 			if (obj[ele].name ){
 				str += "\033[32m"+ obj[ele].name+"\033[0m"; 
@@ -122,6 +273,8 @@ nodefony.register("console", function(){
 			this.bundles[bundle].registerCommand( this.commands );
 		}
 		this.getopts =  this.getopt(this.getOptsTab);
+		
+		
 		this.helpString = this.getopts.getHelp();
 		this.helpString += "\nCommands : [arguments]\n";
 
@@ -156,10 +309,10 @@ nodefony.register("console", function(){
 	
 
 	Console.prototype.matchCommand = function(){
-		var cli = this.getopts.parseSystem();
+		this.cli = this.getopts.parseSystem();
 		var ret = null;
-		if (cli.argv.length){
-			var ele = cli.argv[0].split(":");
+		if (this.cli.argv.length){
+			var ele = this.cli.argv[0].split(":");
 			if (ele.length){
 				var cmd = ele[0];
 				for (var bundle in this.commands  ){
@@ -169,7 +322,7 @@ nodefony.register("console", function(){
 							worker.prototype.showHelp = this.getopts.showHelp.bind(this.getopts) ;
 							worker.prototype.logger = syslogger.bind(this) ;
 							try {
-								ret = new worker(this.container, cli.argv , cli.options )
+								ret = new worker(this.container, this.cli.argv , this.cli.options )
 							}catch(e){
 								this.logger(""+e, "ERROR");
 							}
@@ -182,7 +335,7 @@ nodefony.register("console", function(){
 				this.logger(new Error("COMMAND : ")+ cmd +" not exist" );
 				this.getopts.showHelp();
 			}else{
-			       this.logger(new Error("BAD FORMAT ARGV : ") + cli.argv );
+			       this.logger(new Error("BAD FORMAT ARGV : ") + this.cli.argv );
 			       this.getopts.showHelp();
 			}
 		}

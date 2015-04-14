@@ -45,7 +45,8 @@ nodefony.register("kernel", function(){
 	 *	
 	 */
 	
-	var kernel= function(environment, debug, autoLoader, type){
+	var kernel= function(environment, debug, autoLoader, type, options){
+
 
 		this.rootDir = process.cwd();
 		this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
@@ -66,7 +67,7 @@ nodefony.register("kernel", function(){
 		this.settings = null;
 
 		
-		this.boot();
+		this.boot(options);
 		
 		/**
 		 *	@event onTerminate
@@ -103,7 +104,7 @@ nodefony.register("kernel", function(){
 	/**
 	 *	@method boot
          */
-	kernel.prototype.boot = function(){	
+	kernel.prototype.boot = function(options){	
 
 		
 		// Manage Container
@@ -132,7 +133,7 @@ nodefony.register("kernel", function(){
 
 		
 		//  manage GLOBAL EVENTS
-		this.notificationsCenter = nodefony.notificationsCenter.create();
+		this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		this.eventReadywait = 0 ;
@@ -163,12 +164,10 @@ nodefony.register("kernel", function(){
 		if (this.settings.system.monitoring) {
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
-
+		this.fire("onPreRegister", this );
 		this.registerBundles(bundles, function(){
 			if (this.type === "SERVER"){
 				this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
-			}else{
-				console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
 			}
 			this.preboot = true ;
 			this.fire("onPreBoot", this );
@@ -366,7 +365,7 @@ nodefony.register("kernel", function(){
 		return  ret[1] ;
 	};
 
-	var regBundle = /^(.*)Bundle.js$/;
+	kernel.prototype.regBundle = /^(.*)Bundle.js$/;
 	var waitingBundle = function(){
 		this.eventReadywait -= 1 ;
 		if ( this.eventReadywait === 0 || this.eventReadywait === -1 )
@@ -378,6 +377,32 @@ nodefony.register("kernel", function(){
 					this.logger(e, "ERROR");
 				}
 			}.bind(this))
+	};
+
+
+
+	
+	kernel.prototype.loadBundle =  function(file){
+		try {
+			var name = this.getBundleName(file.name);
+			var Class = this.autoLoader.load(file.path);
+			if (Class) {
+				if (typeof Class === "function" ){
+					Class.prototype.path = file.dirName;
+					Class.prototype.name = name;
+					Class.prototype.autoLoader = this.autoLoader;
+					Class.prototype.container = this.container;
+					var func = Class.herite(nodefony.Bundle);
+					this.bundles[name] = new func(this, this.container);
+					if ( this.bundles[name].waitBundleReady ){
+						this.eventReadywait += 1 ;
+						this.bundles[name].listen(this,"onReady", waitingBundle);
+					}	
+				}
+			}	
+		}catch(e){
+			throw e ;
+		}
 	};
 
 	/**
@@ -393,25 +418,10 @@ nodefony.register("kernel", function(){
 					path:path,
 					recurse:false,
 					onFile:function(file){
-						if (file.matchName(regBundle)){
+						if (file.matchName(this.regBundle)){
 							try {
-								var name = this.getBundleName(file.name);
 								//this.logger("\033[32m REGISTER BUNDLE : "+name+"   \033[0m","DEBUG");
-								var Class = this.autoLoader.load(file.path);
-								if (Class) {
-									if (typeof Class === "function" ){
-										Class.prototype.path = file.dirName;
-										Class.prototype.name = name;
-										Class.prototype.autoLoader = this.autoLoader;
-										Class.prototype.container = this.container;
-										var func = Class.herite(nodefony.Bundle);
-										this.bundles[name] = new func(this, this.container);
-										if ( this.bundles[name].waitBundleReady ){
-											this.eventReadywait += 1 ;
-											this.bundles[name].listen(this,"onReady", waitingBundle);
-										}	
-									}
-								}
+								this.loadBundle(file)
 							}catch(e){
 								this.logger(e);
 							}	

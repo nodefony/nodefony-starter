@@ -11,11 +11,11 @@
 
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader){
+	var appKernel = function(type, environment, debug, loader, settings){
 		
 		// kernel constructor
 		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type)
+		kernel.constructor(environment, debug, loader, type, settings)
 
 		/*
 	 	*	Bundles to register in Application

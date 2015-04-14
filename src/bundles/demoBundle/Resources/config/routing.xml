@@ -58,8 +58,8 @@
 	</route>
 
 
-	<!-- FIXME -->	
-	<!--  <import resource="routing2.xml" prefix="/couscous" />
+	<!-- TODO -->	
+	<!--  <import resource="routing2.xml" prefix="/prefix" />
 	<import resource="routing3.xml" hostname_pattern="hello.example.com" />  -->
 
 </routes>

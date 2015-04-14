@@ -7,7 +7,7 @@
   ],
   "dependencies": {
     "juice": "*",
-    "nodemailer": "*",
+    "nodemailer": "*"
   },
   "devDependencies": {},
   "author": "bgg ",
