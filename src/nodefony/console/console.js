@@ -62,7 +62,7 @@ nodefony.register("console", function(){
  	 	        }
  	 	}.bind(this));
 
-		if ( process.argv[2] && process.argv[2] === "npm:install" ){
+		if ( process.argv[2] && process.argv[2] === "npm:install" ||  process.argv[2] && process.argv[2] === "npm:list" ){
 			return ;
 		}
 		// MANAGE CLI OPTIONS

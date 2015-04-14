@@ -57,8 +57,8 @@
 #  type: smtp
 #  service: Gmail
 #  auth: 
-#    user: bennyfrommars
-#    pass: blablou
+#    user: user
+#    pass: pass
   
   
   
