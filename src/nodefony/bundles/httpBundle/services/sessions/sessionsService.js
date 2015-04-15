@@ -109,7 +109,7 @@ nodefony.registerService("sessions", function(){
 		this.context = context ;
 		
 		if (contextSession ===  undefined)
-			contextSession = this.contextSession
+			contextSession = this.contextSession ;
 		
 		if (this.settings.use_only_cookies){
 			this.applyTranId = 0;	
@@ -163,7 +163,7 @@ nodefony.registerService("sessions", function(){
 							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
 							return this;
 						}
-						this.manager.logger("MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+						this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 						this.remove();
 						this.contextSession = contextSession ;
 						createSession.call(this, this.lifetime);
@@ -172,7 +172,7 @@ nodefony.registerService("sessions", function(){
 						return this ;
 					break;
 					case "invalidate":
-						this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+						this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 						this.destroy();
 						this.contextSession = contextSession;
 						createSession.call(this, this.lifetime);
@@ -181,7 +181,23 @@ nodefony.registerService("sessions", function(){
 						return this;
 					break;
 					case "none" :
+						var ret = this.storage.start(this.id, this.contextSession);
+						this.deSerialize(ret);
+						if (  ! this.isValidSession(ret, context) ){
+							this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+							this.destroy();
+							this.contextSession = contextSession;
+							createSession.call(this, this.lifetime);
+							this.status = "active" ;
+							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+							return this;
+						}
+						this.manager.logger("STRATEGY SESSION NONE==> "+this.name + " : "+this.id, "DEBUG");
 						this.contextSession = contextSession;
+						createSession.call(this, this.lifetime, this.id);
+						this.status = "active" ;
+						this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
+						return this ;
 					break;
 				}
 			}

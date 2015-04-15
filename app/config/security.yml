@@ -1,7 +1,7 @@
 # Security
 security:
 
-    session_fixation_strategy:  migrate  # la stratégie peut être soit: none, migrate, invalidate
+    session_fixation_strategy:  none  # la stratégie peut être soit: none, migrate, invalidate
 
     firewalls:
         secured_area:
@@ -12,8 +12,9 @@ security:
               check_path:               /secure
               login_path:               /login  
               default_target_path:      /
-
-#            http_digest:
+            #FACTORY
+            #http_digest:
+            #http_basic:
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"
@@ -42,6 +43,7 @@ security:
              memory:
                 users:
                     admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
+                    cci: { password: 1234, roles: 'ROLE_USER' }
 
 #        ldap:
 #            entity:

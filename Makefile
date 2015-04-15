@@ -33,8 +33,8 @@ framework:
 	./console npm:install
 	./console npm:list
 	./console router:generate:routes
-	./console ORM2:connections:state
-	./console ORM2:entity:show
+#	./console ORM2:connections:state
+#	./console ORM2:entity:show
 
 clean:
 	@if [ -e  node_modules ] ; then \

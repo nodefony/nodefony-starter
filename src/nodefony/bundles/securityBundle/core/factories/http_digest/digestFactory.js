@@ -27,7 +27,7 @@ nodefony.register.call(nodefony.security.factory, "http_digest",function(){
 		var request = context.request ;
 		var response = context.response ;
 		this.contextSecurity.token = new nodefony.security.tokens["Digest"](request, response, this.settings);
-		this.contextSecurity.logger("TRY AUTHORISATION","DEBUG")
+		this.contextSecurity.logger("TRY AUTHORISATION "+this.contextSecurity.token.name ,"DEBUG")
 		if (! this.contextSecurity.token.authorization){ 
 			response.headers["WWW-Authenticate"] = this.contextSecurity.token.generateResponse();
 			throw {
