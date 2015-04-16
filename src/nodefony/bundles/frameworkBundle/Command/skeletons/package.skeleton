@@ -1,0 +1,14 @@
+{
+  	"name": "{{name|upper}}",
+  	"version": "1.0",
+  	"description": "",
+  	"author": "{{authorName}} {{authorEmail}}",
+  	"contributors": [],
+  	"keywords": [
+		"nodefony",
+		"javascript"
+  	],
+  	"dependencies": {
+
+  	}
+}

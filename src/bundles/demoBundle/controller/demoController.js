@@ -71,63 +71,7 @@ nodefony.registerController("demo", function(){
 		return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
 	};
 
-	/**
- 	 *
- 	 *	@see ORM2 usage
- 	 *	@see ENTITY usage 
- 	 *
- 	 */
-	/*demoController.prototype.userAction= function(name, message){
-		var users = this.get('ORM2').getEntity('user');
-		var user = users.find({ username: name },function(err, user){
-			if (err)
-				return this.render('demoBundle:Default:user.html.twig',{name:name,error:err});
-			return this.render('demoBundle:Default:user.html.twig',{name:name,user:user});
-
-		}.bind(this)) ;
-	};*/
-
-	/**
- 	 *
- 	 *	@see REST  usage 
- 	 *	@see ORM2 usage
- 	 *	@see ENTITY usage 
- 	 *	@see SQLITE usage connection
- 	 *
- 	 */
-	/*demoController.prototype.usersAction= function(name, message){
-		var users = this.get('ORM2').getEntity('user');
-
-		switch( this.getRequest().method ){
-			case "POST" :
-				var session = this.get('ORM2').getEntity('session');
-				var query = this.container.getParameters("query");  
-				var userObj = new users({username: query.post.firstname, password: query.post.pwd, email: null, state: 1});
-				userObj.save(function(err){
-					if(err){ 
-						console.log(err);
-					}else{
-						var obj = new session({last_access: new Date(), user_id: userObj.id});
-						obj.save(function(err, session){
-							if(err){
-								return this.render('demoBundle:Default:user.html.twig',{name:name,session:null,error:err});
-							}
-							return this.redirect("/users");
-						}.bind(this));
-					}
-				}.bind(this));
-			break;
-			case "GET" :
-				var user = users.find({ },function(err, user){
-					if (err)
-						return this.render('demoBundle:Default:user.html.twig',{name:name,error:err});
-					return this.render('demoBundle:Default:user.html.twig',{name:name,user:user});
-				}.bind(this));
-			break;
-			case "DELETE" :
-			break;
-		}
-	};*/
+	
 
 	/**
  	 *
@@ -148,46 +92,14 @@ nodefony.registerController("demo", function(){
 				if (err){
 					throw err;
 				}
-				//setTimeout(function(){
-
-					this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
-				//}.bind(this) , 4000)
+				this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
 			}.bind(this));
 		}catch(e){
 			throw e
 		}
 	};
 
-	/**
- 	 *
- 	 *	@see cookie
- 	 *
- 	 */
-	demoController.prototype.demoTestAction= function(name){
-		var context = this.getContext();
-		//console.log(context)
-		var cookie = new nodefony.cookies.cookie("test","wef",{
-			maxAge:50000,
-			domain:context.domain
-		})
-		var cookie2 = new nodefony.cookies.cookie("session","121212121",{
-			maxAge:500000
-		})
-
-		//console.log(cookie)
-		context.setCookie(cookie);
-		context.setCookie(cookie2);
-
-		//console.log(nodefony.session)
-		var session = new nodefony.session(context, {
 		
-		})
-		//console.log(session)
-
-		return this.render('demoBundle:Default:indexMobile.html.twig',{name:name});
-	};
-
-	
 	/**
 	 *
 	 *	@method indexRealTimeAction
@@ -209,7 +121,6 @@ nodefony.registerController("demo", function(){
 
 	demoController.prototype.uploadAction = function(){
 	
-		//var req = this.get('context').request;
 		var files = this.getParameters("query.files");
 	
 		for (var file in files){
@@ -219,7 +130,6 @@ nodefony.registerController("demo", function(){
 			//console.log( files[file].realName() )
 		}
 		if ( ! this.isAjax() ){
-			//return this.redirect(this.generateUrl("index"));
 			return this.forward("demoBundle:demo:indexDownload","/tmp");
 		}else{
 			return this.renderResponse(

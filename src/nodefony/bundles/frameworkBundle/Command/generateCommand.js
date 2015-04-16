@@ -13,7 +13,7 @@ nodefony.registerCommand("generate",function(){
  	 *
  	 */
 	var regBundle = /^(.*)Bundle$/;
-	var bundle = function(path , name, type){
+	var bundle = function(path , name, type, location){
 
 		var res = regBundle.exec(name);
 		if ( res ){
@@ -21,6 +21,17 @@ nodefony.registerCommand("generate",function(){
 		}else{
 			throw new Error("Bad bundle name")
 		}
+		var param = {
+			bundleName: name,
+			name: realName,
+			module:this.config.App.projectName,
+			projectName:this.config.App.projectName,
+			authorName:this.config.App.name,
+			authorEmail:this.config.App.email,
+			projectYear:this.config.App.projectYear,
+			projectYearNow:	new Date().getFullYear()
+		}
+
 		return this.build( {
 				name:name,
 				type:"directory",
@@ -36,16 +47,19 @@ nodefony.registerCommand("generate",function(){
 						name:name+".js",
 						type:"file",
 						skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/bundleClass.skeleton",
-						params:{
-							bundleName: name,
-							name: realName,
-							module:this.config.App.projectName,
-							projectName:this.config.App.projectName,
-							authorName:this.config.App.name,
-							authorEmail:this.config.App.email,
-							projectYear:this.config.App.projectYear,
-							projectYearNow:	new Date().getFullYear()
-						}
+						params:param
+					},{
+						name:"readme.md",
+						type:"file",
+						skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/readme.skeleton",
+						params:nodefony.extend(param, {
+							path:location 
+						})
+					},{
+						name:"package.json",
+						type:"file",
+						skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/package.skeleton",
+						params:param
 					}
 				]
 			}, path );
@@ -154,7 +168,7 @@ nodefony.registerCommand("generate",function(){
 
 
 	var manager = {
-		name:"manager",
+		name:"services",
 		type:"directory"
 	};
 	var tests = {
@@ -238,7 +252,7 @@ nodefony.registerCommand("generate",function(){
 		this.logger("GENERATE bundle : " + name +" LOCATION : " + path)
 		try {
 			var file = new nodefony.fileClass(path);
-			return bundle.call(this, file, name, "yml");
+			return bundle.call(this, file, name, "yml", path);
 		}catch (e){
 			this.logger(e, "ERROR");
 		}
