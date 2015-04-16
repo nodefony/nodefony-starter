@@ -10,7 +10,7 @@ nodefony.registerService("ORM2", function(){
 
 	/*
  	 *
- 	 *	TODO ERROR SYSLOG SERVICE ORM  Tue Dec 10 2013 16:47:01 GMT+0100 (CET)  : 'conn2 : ERROR CONNECT to database mysql://root:@localhost:3306/bln Error: Connection lost: The server closed the connection.'
+ 	 *	TODO ERROR SYSLOG SERVICE ORM  
  	 *
  	 */
 	var error = function(err){
@@ -159,7 +159,7 @@ nodefony.registerService("ORM2", function(){
 		
 		switch(config.driver){
 			case 'mysql':
-				url = "mysql://" + config.user + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.dbname;
+				url = "mysql://" + config.user + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.database;
 				break;
 				
 			case 'sqlite':
@@ -167,11 +167,11 @@ nodefony.registerService("ORM2", function(){
 				break;
 				
 			case 'mongodb':
-				url = "mongodb://" + (false ? '' : config.user + ":" + config.password) + '@' + config.host + ":" + config.port + "/" + config.dbname;
+				url = "mongodb://" + (false ? '' : config.user + ":" + config.password) + '@' + config.host + ":" + config.port + "/" + config.database;
 			break;
 			
 			case 'postgres':
-				url = "postgres://" + config.user + ":" + config.password + "@" + config.host + "/" + config.dbname;
+				url = "postgres://" + config.user + ":" + config.password + "@" + config.host + "/" + config.database;
 			break;
 			
 			default: 

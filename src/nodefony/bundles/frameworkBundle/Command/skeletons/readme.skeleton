@@ -2,7 +2,7 @@
 
 
 
-#### Add  {{name|upper}} bundle in Framework :
+## Add  {{name|upper}} bundle in Framework :
 Open Bundle App "appKernel.js" to add new {{name|upper}} Bundle in **registerBundles** array : 
 ```js
 /*
@@ -33,4 +33,9 @@ nodefony.register("appKernel",function(){
 	return appKernel;
 })
 ```
+## <a name="authors"></a>Authors
+
+- {{authorName}}  {{authorEmail}}  
+
+##  <a name="license"></a>License
 

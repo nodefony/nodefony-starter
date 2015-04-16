@@ -66,4 +66,11 @@ orm2Bundle:
     demo: 
       driver: sqlite
       dbname: "/src/bundles/demoBundle/Resources/databases/demo.db"
-
+    nodefony:
+      driver:   mysql
+      host:     nodefony.com
+      database: 'nodefony'
+      protocol: 'mysql'
+      port:     '3306'
+      user:     'root'
+      password: ''
