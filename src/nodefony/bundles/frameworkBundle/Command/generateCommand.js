@@ -37,10 +37,10 @@ nodefony.registerCommand("generate",function(){
 				type:"directory",
 				childs:[
 					Command,
-					controller.call(this, name, "controller" ,"defaultController"),
+					controller.call(this, name, "controller" ,"defaultController",null,location),
 					manager,
 					tests,
-					Resources.call(this, name, type),
+					Resources.call(this, name, type, location),
 					core,
 					entity,
 					{
@@ -65,7 +65,7 @@ nodefony.registerCommand("generate",function(){
 			}, path );
 	};
 	
-	var Resources = function(name, type){
+	var Resources = function(name, type, location){
 		var Name = /(.*)Bundle/.exec(name)[1]
 		var param = {
 			name:Name,
@@ -77,7 +77,8 @@ nodefony.registerCommand("generate",function(){
 			authorEmail:this.config.App.email,
 			projectYear:this.config.App.projectYear,
 			projectYearNow:	new Date().getFullYear(),
-			domain:this.configKernel.system.domain
+			domain:this.configKernel.system.domain,
+			location:location
 		};
 		
 		return {
@@ -119,10 +120,9 @@ nodefony.registerCommand("generate",function(){
 			name:name,
 			type:"file",
 			parse:false,
-			skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/twigView.skeleton",
+			skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/bundleView.skeleton",
 			params:	params || {}
 		}]; 
-		
 		obj["childs"] = file;
 		return obj;
 	};
@@ -265,7 +265,7 @@ nodefony.registerCommand("generate",function(){
 	 *
 	 */
 	var regController = /^(.*)Controller$/;
-	var controller = function(bundleName, directory, controllerName, viewDir){
+	var controller = function(bundleName, directory, controllerName, viewDir, location){
 		var res = regController.exec(controllerName);
 		if ( res ){
 			var realName = res[1] ;
@@ -293,7 +293,8 @@ nodefony.registerCommand("generate",function(){
 				authorEmail:this.config.App.email,
 				projectName:this.config.App.projectName,
 				projectYear:this.config.App.projectYear,
-				projectYearNow:	new Date().getFullYear()
+				projectYearNow:	new Date().getFullYear(),
+				location:location
 			}
 		}];
 		obj["childs"] = file;
@@ -346,7 +347,6 @@ nodefony.registerCommand("generate",function(){
 
 	
 	};
-
 
 	/*
 	 *	commands generator

@@ -26,7 +26,18 @@ nodefony.registerController("{{name}}", function(){
 		 *
 		 */
 		{{controllerName}}.prototype.indexAction = function(){
-			this.forward("frameworkBundle:default:system",{view: "{{bundleName}}:{{directory}}:index.html.twig",bundle:this.getParameters("bundles.{{smallName}}")});
+			// markdown read and parse readme.md
+			try {
+				var path =  this.get("kernel").rootDir+"/{{location}}/{{bundleName}}/readme.md";	
+				var file = new nodefony.fileClass(path);
+				var res = this.htmlMdParser(file.content(file.encoding),{
+					linkify: true,
+					typographer: true	
+				});
+				return this.render("{{bundleName}}:{{directory}}:index.html.twig",{readme:res});
+			}catch(e){
+				return this.forward("frameworkBundle:default:system",{view: "{{bundleName}}:{{directory}}:index.html.twig",bundle:this.getParameters("bundles.{{smallName}}")});
+			}
 		};
 
 		
