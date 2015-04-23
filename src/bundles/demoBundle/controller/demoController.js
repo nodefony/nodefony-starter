@@ -9,7 +9,7 @@
  *
  */
 
-
+var Promise = require('promise');
 
 nodefony.registerController("demo", function(){
 
@@ -81,22 +81,19 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.ormConnectionAction= function(){
+
 		var orm = this.get('ORM2').getConnection('demo');
 		if ( ! orm){
 			throw {
 				message:"Connection demo is not available "
 			}
 		}
-		try{
-			orm.driver.execQuery('select * from Artist', function(err, data){
-				if (err){
-					throw err;
-				}
-				this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
-			}.bind(this));
-		}catch(e){
-			throw e
-		}
+		orm.driver.execQuery('select * from Artist', function(err, data){
+			if (err){
+				this.logger(err, "ERROR")
+			}
+			this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
+		}.bind(this));
 	};
 
 		

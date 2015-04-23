@@ -37,5 +37,7 @@ version :                       "1.0"
 settings: 
   debug:  true
   reconnect:  60000           # time (ms) to reconnect db
-connectors:  {} 
-
+connectors:   
+  nodefony: 
+    driver: sqlite
+    dbname: "/app/Resources/databases/nodefony.db"

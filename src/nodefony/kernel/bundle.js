@@ -464,7 +464,7 @@ nodefony.register("Bundle", function(){
 		if ( this.entities ){
 			return this.entities;
 		}
-		return null ;
+		return null;
 	};
 
 	var regFixtures = /^(.+)Fixtures.js$/;
@@ -521,9 +521,6 @@ nodefony.register("Bundle", function(){
 	Bundle.prototype.setParameters = function(){
 		return this.container.setParameters.apply(this.container ,arguments);
 	};
-
-
-	
 
 	return Bundle;
 });

@@ -88,7 +88,7 @@ nodefony.registerService("ORM2", function(){
 						clearInterval(this.intervalId);
 						this.intervalId = null;
 					}
-					this.logger(this.name + " :  CONNECT to database "+ this.url, "INFO");
+					this.logger(this.name + " :  CONNECT to database "+ this.url, "DEBUG");
 					this.setConnection(db);
 				} else {
 					error.call(this, err);
@@ -141,7 +141,7 @@ nodefony.registerService("ORM2", function(){
 		this.mother.boot();	
 		this.kernel.listen(this, 'onBoot', function(kernel){
 			this.settings = this.container.getParameters("bundles.orm2");
-			if ( Object.keys(this.settings.connectors).length ){
+			if ( this.settings.connectors && Object.keys(this.settings.connectors).length ){
 				for(var name in this.settings.connectors){
 					//console.log("CONNECTION ===>> "+name);
 					this.createConnection(name, this.settings.connectors[name]);

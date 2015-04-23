@@ -75,3 +75,7 @@ orm2Bundle:
   settings: 
     debug:                      true
     reconnect:                  60000           # time (ms) to reconnect db
+  connectors:                    
+    nodefony: 
+      driver: sqlite
+      dbname: "/app/Resources/databases/nodefony.db"

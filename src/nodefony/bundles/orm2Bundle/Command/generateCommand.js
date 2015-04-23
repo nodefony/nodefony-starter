@@ -4,7 +4,7 @@
  *
  */
 
-
+var Promise = require('promise');
 
 nodefony.registerCommand("ORM2",function(){
 
@@ -66,7 +66,12 @@ nodefony.registerCommand("ORM2",function(){
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 							connection.drop(function (){
 								this.logger(connection.driver_name +" CONNECTION : "+connectionName+" DROP ALL TABLES","INFO");
-								connection.sync(function () {
+								connection.sync(function (error) {
+									if (error){
+										console.log("error")
+										this.logger(connection.driver_name +" CONNECTION : "+connectionName+" : " + error, "ERROR");
+										return ;
+									}
 									this.logger(connection.driver_name +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
 								}.bind(this));
 							}.bind(this));
@@ -118,16 +123,34 @@ nodefony.registerCommand("ORM2",function(){
 					case 'load':
 						this.ormService.listen(this, "onOrmReady",function(service){	
 							var bundles = this.ormService.kernel.bundles;
+							var tabPromise = [];
 							for(var bundle in bundles){
 								var fixtures = bundles[bundle].getFixtures();
-								for(var fixture in fixtures){
-									var conn = service.getConnection( fixtures[fixture].connection );
-									var entity = service.getEntity( fixtures[fixture].entity );
-									fixtures[fixture].fixture(conn, entity);
+								if (Object.keys(fixtures).length ){
+									this.logger("LOAD FIXTURES BUNDLE : " + bundles[bundle].name, "INFO");
+									for(var fixture in fixtures){
+										var conn = service.getConnection( fixtures[fixture].connection );
+										var entity = service.getEntity( fixtures[fixture].entity );
+										var entityName = fixtures[fixture].entity ;
+										var connectionName = fixtures[fixture].connection ;
+										this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
+										var toPush = new Promise(fixtures[fixture].fixture.bind(this.ormService) )
+											.then(function(data){
+												this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")
+											}.bind(this));
+										tabPromise.push( toPush );
+									}
 								}
+
 							}
-							//this.terminate();
-						});
+							Promise.all(tabPromise)
+								.catch(function(e){
+									this.logger(e, "ERROR");	
+									}.bind(this))
+								.done(function(){
+									this.terminate();
+								}.bind(this))
+						}.bind(this));
 
 						break;
 					default:
@@ -146,17 +169,32 @@ nodefony.registerCommand("ORM2",function(){
 						}
 						var bund = sp[0].replace("Bundle", "");
 						var bundle =  this.ormService.kernel.bundles[bund] ; 
+						this.logger("LOAD FIXTURES BUNDLE : " + bundle.name, "INFO");
+
 						var fixtureDef = bundle.getFixture( sp[1] );
 
 						if ( fixtureDef ){
-
-							this.ormService.listen(this, "onOrmReady",function(service){	
-
+							this.ormService.listen(this, "onOrmReady",function(service){
 								var conn = service.getConnection( fixtureDef.connection );
 								var entity = service.getEntity( fixtureDef.entity );
-								fixtureDef.fixture(conn, entity);
-
-							});
+								this.logger("FIXTURE ENTITY : " + fixtureDef.entity + " CONNECTIONS : "+fixtureDef.connection , "INFO");	
+								try {
+									new Promise(fixtureDef.fixture.bind(this.ormService) )
+									.then(function(){
+										this.logger("LOAD FIXTURE ENTITY : "+ fixtureDef.entity +" SUCCESS")
+									}.bind(this))
+									.catch(function(e){
+										this.logger(e, "ERROR");
+									}.bind(this))
+									.done(function(){
+										this.terminate()
+									}.bind(this))
+								}catch(e){
+									this.logger(e, "ERROR");
+									this.terminate()	
+								}
+								
+							}.bind(this));
 
 						}else{
 							this.logger(new Error("fixture:load   Fixture : "+sp[1] +" not exist in bundle "+ sp[0]), "ERROR");

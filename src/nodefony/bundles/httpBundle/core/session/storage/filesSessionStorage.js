@@ -97,7 +97,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				}
 			}.bind(this),
 			onFinish:function(error, result){
-				this.manager.logger("FILES SESSIONS STORAGE context : "+ context +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
+				this.manager.logger("FILES SESSIONS STORAGE context : "+ ( context || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
 			}.bind(this)
 		});
 		return finder;	
@@ -109,7 +109,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 			var path = this.path+"/"+contextSession ;
 			finderGC.call(this, path , msMaxlifetime, contextSession)	
 		}else{
-			finderGC.call(this, this.path , msMaxlifetime)	
+			//finderGC.call(this, this.path , msMaxlifetime)	
 			if (this.contextSessions.length){
 				for (var i = 0 ; i<this.contextSessions.length ; i++){
 					finderGC.call(this, this.path+"/"+this.contextSessions[i] , msMaxlifetime , this.contextSessions[i]);	
@@ -139,7 +139,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 			var path = this.path+"/"+fileName ;
 		}
 		try{
-			var ret = fs.writeFileSync(path, serialize);
+			var ret = fs.writeFileSync(path, JSON.stringify(serialize));
 			//this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");

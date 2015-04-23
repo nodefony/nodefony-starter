@@ -46,6 +46,13 @@ nodefony.register("orm", function(){
 
 	};
 	
+	Orm.prototype.get = function(service){
+		return this.container.get(service);
+	};
+
+	Orm.prototype.set = function(service, value){
+		return this.container.set(service, value);
+	};
 
 	Orm.prototype.boot = function(){
 		
@@ -115,7 +122,6 @@ nodefony.register("orm", function(){
 			}		
 		},function(pdu){
 			var pay = pdu.payload.stack || pdu.payload;
-			//console.error( red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
 			var date = new Date(pdu.timeStamp) ;
 			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);
 		});
@@ -130,8 +136,17 @@ nodefony.register("orm", function(){
 				}		
 			},function(pdu){
 				var pay = pdu.payload.stack || pdu.payload;
-				//console.log( blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pay);	
+				var date = new Date(pdu.timeStamp) ;
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pay);
 
+			});
+		}else{
+			syslog.listenWithConditions(this,{
+				severity:{
+					data:"INFO"
+				}		
+			},function(pdu){
+				var pay = pdu.payload.stack || pdu.payload;
 				var date = new Date(pdu.timeStamp) ;
 				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pay);
 
@@ -162,7 +177,10 @@ nodefony.register("orm", function(){
 	};
 	
 	Orm.prototype.getEntity = function(name){
-		return this.entities[name];
+		if (name)
+			return this.entities[name];
+		else
+			return this.entities;
 	};
 	
 

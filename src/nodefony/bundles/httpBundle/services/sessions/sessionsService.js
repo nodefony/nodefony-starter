@@ -304,7 +304,7 @@ nodefony.registerService("sessions", function(){
 			metaBag:this.protoParameters.prototype,
 			flashBag:this.flashBag
 		};
-		return JSON.stringify( obj );		
+		return  obj ;		
 	};
 
 	Session.prototype.deSerialize = function(data){
@@ -431,6 +431,7 @@ nodefony.registerService("sessions", function(){
 		this.httpKernel = httpKernel;
 		this.firewall = security ; 
 		this.kernel = httpKernel.kernel;
+		this.container = this.kernel.container ;
 		this.sessionStrategy = "none" ;
 		this.kernel.listen(this, "onBoot",function(){
 			this.settings = this.container.getParameters("bundles.http").session;
@@ -461,11 +462,21 @@ nodefony.registerService("sessions", function(){
 		}.bind(this));
 	};
 
+	SessionsManager.prototype.get = function(service){
+		return this.container.get(service);	
+	};
+
+	SessionsManager.prototype.set = function(service, value){
+		return this.container.set(service, value);
+	};
+
 	SessionsManager.prototype.initializeStorage = function(){
 		var storage =  eval("nodefony."+this.settings.handler) ;
 		if (storage){
 			this.storage = new storage(this) ;
-			this.storage.open("default");
+			this.kernel.listen(this, "onReady",function(){
+				this.storage.open("default");
+			});
 		}else{
 			this.storage = null ;
 			this.logger("SESSION HANDLER STORAGE NOT FOUND :" + this.settings.handler,"ERROR")
@@ -496,7 +507,9 @@ nodefony.registerService("sessions", function(){
 
 	SessionsManager.prototype.addContextSession = function(context){
 		if (this.storage){
-			this.storage.open(context)	
+			this.kernel.listen(this, "onReady",function(){
+				this.storage.open(context)	
+			});
 		}
 	};
 

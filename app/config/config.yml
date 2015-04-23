@@ -5,9 +5,7 @@
 #
 # ===============================================================================
 #
-#
 #        nodefony BUILDER YAML FILE 
-#
 #
 # This file is YAML  FILE
 # ---
@@ -27,17 +25,16 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
-
 #
 #  FRAMEWORK NODEFONY
 #
 #     APP CONFIG  
 App:
-        projectName:                    "Project" 
+        projectName:                    "My Project" 
         projectYear:                    2015
         locale:                         "fr_fr"
-        authorName:                     "myName"
-        authorMail:                     "myName@domain.com"
+        authorName:                     "administrator"
+        authorMail:                     "administrator@nodefony.com"
 
 
 
@@ -67,7 +64,7 @@ httpBundle:
     tmp_dir:                      "tmp/upload"
     max_filesize:                 100000
   session:
-#   handler:                      session.storage.sqlite                    
+    #handler:                      session.storage.db                    
     save_path:                    "./tmp/sessions"
     cookie:
       maxAge:                     0
@@ -83,4 +80,30 @@ asseticBundle:
     cache:                        true 
 
 
+#
+#       OVERRIDE  NODEFONY database
+#
+#       ORM2 
+#
+#orm2Bundle: 
+#  connectors:                    
+#    nodefony:
+#      driver:   mysql
+#      host:     nodefony.com
+#      database: 'nodefony'
+#      protocol: 'mysql'
+#      port:     '3306'
+#      user:     'root'
+#      password: ''
+#
+#orm2Bundle: 
+#  connectors:                    
+#    nodefony:
+#      driver:   mysql
+#      host:     192.168.100.175
+#      database: 'nodefony'
+#      protocol: 'mysql'
+#      port:     '3306'
+#      user:     'root'
+#      password: 'cocolesinge'
 
