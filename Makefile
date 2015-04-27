@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 
 
-all: node install framework asset
+all: node install framework asset orm
 
 install:
 	@if [ -x  vendors/asciiArt/figlet222/figlet ] ; then  \
@@ -33,8 +33,11 @@ framework:
 	./console npm:install
 	./console npm:list
 	./console router:generate:routes
-#	./console ORM2:connections:state
-#	./console ORM2:entity:show
+
+orm:
+	./console ORM2:connections:state
+	./console ORM2:generate:entities
+	./console ORM2:entity:show
 
 clean:
 	@if [ -e  node_modules ] ; then \

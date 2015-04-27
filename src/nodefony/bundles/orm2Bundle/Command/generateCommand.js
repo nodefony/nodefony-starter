@@ -46,6 +46,10 @@ nodefony.registerCommand("ORM2",function(){
 									enti.drop(function (){
 										this.logger(connection.driver_name +" CONNECTION : "+command[1] +" DROP TABLE :" + command[2] ,"INFO");
 										enti.sync(function () {
+											if (error){
+												this.logger(connection.driver_name +" CONNECTION : "+command[1]+" ERROR : "+ error,"INFO");
+												return ;
+											}
 											this.logger(connection.driver_name +" CONNECTION : "+command[1]+" CREATE TABLE : "+ command[2],"INFO");
 										}.bind(this));
 									}.bind(this));
@@ -68,7 +72,6 @@ nodefony.registerCommand("ORM2",function(){
 								this.logger(connection.driver_name +" CONNECTION : "+connectionName+" DROP ALL TABLES","INFO");
 								connection.sync(function (error) {
 									if (error){
-										console.log("error")
 										this.logger(connection.driver_name +" CONNECTION : "+connectionName+" : " + error, "ERROR");
 										return ;
 									}

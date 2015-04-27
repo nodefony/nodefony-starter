@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "npm":"*",
+    "node-pre-gyp":"*",
     "asciify":"*",
     "websocket": "*",
     "js-yaml": "*",
@@ -22,9 +23,6 @@
     "xml2js": "*",
     "twig": "*",
     "connect": ">= 2.8 < 3",
-    "orm": "== 2.1.13",
-    "sqlite3": "*",
-    "mysql": "*",
     "less": "*",
     "ascii-table": "*",
     "mime":"*",

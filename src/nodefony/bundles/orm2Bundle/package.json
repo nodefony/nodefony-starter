@@ -1,0 +1,23 @@
+{
+  "name": "ORM",
+  "version": "0.1.0",
+  "description": "orm developpement nodefony",
+  "repository": "./",
+  "keywords": [
+    "Node.js",
+    "nodefony"
+  ],
+  "dependencies": {
+  	"orm": "== 2.1.13",
+	"sqlite3": "*",
+	"mysql": "*"
+  },
+  "devDependencies": {},
+  "author": "cci <christophe.camensuli@gmail.com>",
+  "license": "",
+  "readmeFilename": "README.md",
+  "contributors": [
+    {
+    }
+  ]
+}

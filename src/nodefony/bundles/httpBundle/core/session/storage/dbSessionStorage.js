@@ -70,16 +70,17 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 
 	dbSessionStorage.prototype.read = function(id, contextSession){
 		var entity = null ; 
-		this.entity.find({session_id:id,context:contextSession || "default"}, function(err, results) {
+		this.entity.find({session_id:id,context:contextSession || "default"} ).success(function(err, results){
+			console.log(arguments)
 			if (err){
 				this.manager.logger(err,"ERROR");
 				return ;
 			}
+			console.log(results);
 			entity=results;
-		}.bind(this));
-		console.log(entity)
-		console.log(entity.toJSON())
-		return 	entity.toJSON();	
+		}.bind(this))
+		console.log('pass')
+		return 	entity;	
 	};
 
 	dbSessionStorage.prototype.write = function(id, serialize, contextSession){
