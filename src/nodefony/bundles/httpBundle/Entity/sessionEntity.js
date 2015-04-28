@@ -19,7 +19,7 @@ nodefony.registerEntity("session", function(){
 			},{ 
 				hooks: {
 					beforeCreate: function() {
-						if(this.createdAt === null) { this.createdAt = new Date(); }
+						if(this.createdAt === null) { this.createdAt = new Date().getTime(); }
 					}
 				}
 		});

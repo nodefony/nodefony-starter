@@ -30,27 +30,58 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 	};
 
 	dbSessionStorage.prototype.open = function(contextSession){
-		//this.gc(this.gc_maxlifetime, contextSession);	
+		this.gc(this.gc_maxlifetime, contextSession);
+		this.entity.count({context:( contextSession || "default" )}, function(err, sessionCount) {
+			this.manager.logger("CONTEXT "+( contextSession ? contextSession : "default" )+" DB SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+sessionCount );
+		}.bind(this));	
 	};
 
 	dbSessionStorage.prototype.close = function(){
-		//this.gc(this.gc_maxlifetime);
+		this.gc(this.gc_maxlifetime);
 		return true;	
 	};
 
 	dbSessionStorage.prototype.destroy = function(id, contextSession){
-	
+		this.entity.find({
+			session_id: id,
+			context: contextSession	
+		},function(error, results){
+			if (error){
+				this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
+				return ;
+			}
+			if ( results.length ){
+				results[0].remove(function(error, session){
+					if (error){
+						this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
+						return ;
+					}
+					this.manager.logger("DB DESTROY SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");
+				}.bind(this))
+			}
+		}.bind(this));	
 	};
 
 
 	var finderGC = function(msMaxlifetime, contextSession){
+		var nbSessionsDelete  = 0 ;
 		var myDate = 	new Date().getTime() - msMaxlifetime ;
 		this.entity.find({
-			createdAt	:new Date ( myDate),
 			context		:contextSession	
-		},function(){
-			console.log(arguments)	
-		});	
+		},function(error, results){
+			if ( error ){
+				return ;
+ 			}	
+			for (var i = 0 ; i < results.length  ; i++){
+				if ( results[i].createdAt > myDate)
+					continue ;
+				results[i].remove(function(error, session ){
+					nbSessionsDelete++ ;
+					this.manager.logger("DB SESSIONS STORAGE GARBADGE COLLECTOR SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");
+				}.bind(this));	
+			}
+			this.manager.logger("DB SESSIONS STORAGE context : "+ ( contextSession || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")
+		}.bind(this));	
 	};
 
 	dbSessionStorage.prototype.gc = function(maxlifetime, contextSession){
@@ -90,7 +121,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 	};
 
 	dbSessionStorage.prototype.write = function(id, serialize, contextSession, callback){
-		console.log(serialize)
 		var data = nodefony.extend({}, serialize, {
 			session_id:id,
 			context:contextSession
@@ -103,7 +133,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 						callback(err, null) ;
 						return ;
 					}
-					console.log(data)
 					callback(null, session) ;
 				}.bind(this));
 			}else{
