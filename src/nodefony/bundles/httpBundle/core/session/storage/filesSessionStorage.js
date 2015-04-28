@@ -125,7 +125,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				encoding:'utf8'
 			});
 			//this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
-			return res ; 
+			return JSON.parse(res) ; 
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
 			throw e;

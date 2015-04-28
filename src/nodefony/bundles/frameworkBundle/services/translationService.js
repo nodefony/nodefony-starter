@@ -155,8 +155,8 @@ nodefony.registerService("translation", function(){
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
+				context.session.set("lang",this.defaultLocale );
 			}
-			context.session.set("lang",this.defaultLocale );
 			if ( ! this.container.getParameters("translate."+this.defaultLocale) ){
 				this.getFileLocale(this.defaultLocale);
 			}

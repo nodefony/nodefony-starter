@@ -105,7 +105,7 @@ nodefony.registerService("sessions", function(){
 		return dec;
 	};
 	
-	Session.prototype.start = function(context, contextSession){
+	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
 		
 		if (contextSession ===  undefined)
@@ -126,7 +126,7 @@ nodefony.registerService("sessions", function(){
 					this.storage = this.manager.initializeStorage();
 					if ( this.storage ){
 						this.status = "none";
-						return this.start(context);
+						return this.start(context, contextSession, callback);
 					}
 				}catch(e){
 					this.manager.logger("SESSION STORAGE HANDLER NOT FOUND ","ERROR")
@@ -149,6 +149,7 @@ nodefony.registerService("sessions", function(){
 		}
 
 		if (this.id){
+			// change context session 
 			if ( this.contextSession != contextSession ){
 				switch(this.strategy){
 					case "migrate":
@@ -185,7 +186,7 @@ nodefony.registerService("sessions", function(){
 						this.deSerialize(ret);
 						if (  ! this.isValidSession(ret, context) ){
 							this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-							this.destroy();
+							//this.destroy();
 							this.contextSession = contextSession;
 							createSession.call(this, this.lifetime);
 							this.status = "active" ;
@@ -202,27 +203,39 @@ nodefony.registerService("sessions", function(){
 				}
 			}
 
-			if ( contextSession )
+			if ( contextSession ){
 				this.contextSession = contextSession ;
-			var ret = this.storage.start(this.id, this.contextSession);
-			if (ret){
-				this.deSerialize(ret);
-				if (  ! this.isValidSession(ret, context) ){
-					this.invalidate();
-				}
-			}else{
-				if (this.strategy === "none" && this.settings.use_strict_mode){
-					this.invalidate();
-				}
 			}
+			this.storage.start(this.id, this.contextSession, function(error, result){
+				if (error){
+					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
+					this.invalidate();
+				}
+				if (result){
+					this.deSerialize(result);
+					if (  ! this.isValidSession(result, context) ){
+						this.invalidate();
+						error = new Error("SESSION ==> "+this.name + " : "+this.id + "  session invalid ");
+					}
+				}else{
+					if ( this.settings.use_strict_mode ){
+						this.invalidate();
+						error = new Error("SESSION ==> "+this.name + " : "+this.id + " No data ");
+					}
+				}
+				this.status = "active" ;
+				this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+				if (callback)
+					return callback(null, this);
+			}.bind(this));
+			
 		}else{
 			this.clear();
 			createSession.call(this, this.lifetime);
+			this.status = "active" ;
+			this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+			callback(null, this)
 		}
-		this.status = "active" ;
-		this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-		return this ;
-		//this.save(this.id, this.serialize() );
 	};
 
 	Session.prototype.isValidSession = function(data, context){
@@ -307,8 +320,8 @@ nodefony.registerService("sessions", function(){
 		return  obj ;		
 	};
 
-	Session.prototype.deSerialize = function(data){
-		var obj = JSON.parse(data);
+	Session.prototype.deSerialize = function(obj){
+		//var obj = JSON.parse(data);
 		for (var attr in obj.attributes){
 			this.set(attr, obj.attributes[attr]);
 		}
@@ -395,7 +408,14 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.save = function(){
 		this.saved = true ;
 		try {
-			return this.storage.write(this.id, this.serialize(), this.contextSession);	
+			return this.storage.write(this.id, this.serialize(), this.contextSession,function(err, result){
+				if (err){
+					this.logger( err ,"ERROR" )
+					return ; 
+				}
+				this.logger(result, "DEBUG")
+				this.saved = true ;
+			}.bind(this));	
 		}catch(e){
 			this.manager.logger(" SESSION ERROR : "+e,"ERROR");
 			this.saved = false ;	
@@ -490,10 +510,13 @@ nodefony.registerService("sessions", function(){
 		return syslog.logger(pci, severity || "DEBUG", msgid,  msg);
 	};
 	
-	SessionsManager.prototype.start = function(context, sessionContext){
+	SessionsManager.prototype.start = function(context, sessionContext, callback){
 		var inst = this.createSession(this.defaultSessionName, this.settings );
-		var ret = inst.start(context, sessionContext) ;
-		context.session = inst ;
+		var ret = inst.start(context, sessionContext, function(err, session){
+			context.session = session ;
+			callback(err, session)
+		}.bind(this)) ;
+		
 		if ( this.probaGarbage() ){
 			this.storage.gc(this.settings.gc_maxlifetime, sessionContext);	
 		}

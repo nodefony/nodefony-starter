@@ -19,12 +19,12 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 		this.contextSessions = [];
 	};
 
-	dbSessionStorage.prototype.start = function(id, contextSession){
+	dbSessionStorage.prototype.start = function(id, contextSession, callback){
 		try {
-			return this.read(id, contextSession);
+			return this.read(id, contextSession, callback);
 
 		}catch(e){
-			return false ;
+			return callback(e, null) ;
 		}
 	
 	};
@@ -45,7 +45,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 
 	var finderGC = function(msMaxlifetime, contextSession){
 		var myDate = 	new Date().getTime() - msMaxlifetime ;
-		console.log(new Date ( myDate) )
 		this.entity.find({
 			createdAt	:new Date ( myDate),
 			context		:contextSession	
@@ -68,34 +67,56 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 	
 	};
 
-	dbSessionStorage.prototype.read = function(id, contextSession){
-		var entity = null ; 
-		this.entity.find({session_id:id,context:contextSession || "default"} ).success(function(err, results){
-			console.log(arguments)
+	dbSessionStorage.prototype.read = function(id, contextSession, callback){
+		
+		this.entity.find({session_id:id,context:contextSession || "default"}, function(err, results) {
 			if (err){
 				this.manager.logger(err,"ERROR");
+				callback(err,null );
 				return ;
 			}
-			console.log(results);
-			entity=results;
-		}.bind(this))
-		console.log('pass')
-		return 	entity;	
+			if ( results.length ){
+				var data = results[0] ;
+				callback(null,{
+					id:data.session_id,
+					flashBag:data.flashBag,
+					metaBag:data.metaBag,
+					attributes:data.attributes,		
+				} );
+			}else{
+				callback(null,{});
+			}
+		}.bind(this));
 	};
 
-	dbSessionStorage.prototype.write = function(id, serialize, contextSession){
-		var ret = null ;
+	dbSessionStorage.prototype.write = function(id, serialize, contextSession, callback){
+		console.log(serialize)
 		var data = nodefony.extend({}, serialize, {
 			session_id:id,
 			context:contextSession
 		});
-		this.entity.create(data, function(err, results) {
-			if (err){
-					
+		this.entity.find({session_id:id,context:contextSession || "default"}, function (err, results) {
+			if (results.length){
+				var session = results[0] ;
+				session.save(data, function (err) {
+					if (err){
+						callback(err, null) ;
+						return ;
+					}
+					console.log(data)
+					callback(null, session) ;
+				}.bind(this));
+			}else{
+				this.entity.create(data, function(err, results) {
+					if (err){
+						this.manager.logger(err,"ERROR");
+						callback(err,null)		
+					}
+					callback(null, results) ;
+				}.bind(this));
 			}
-			ret =  results ;
-		});	
-		return ret ;
+		}.bind(this));
+			
 	};
 
 	return dbSessionStorage ;

@@ -334,14 +334,15 @@ nodefony.registerService("firewall", function(){
 						for ( var area in this.securedAreas ){
 							if ( this.securedAreas[area].match(context.request, context.response) ){
 								context.security = this.securedAreas[area];
-								this.sessionService.start(context, this.securedAreas[area].sessionContext);
-								var meta = context.session.getMetaBag("security");
-								if (meta){
-									context.user = context.security.provider.loadUserByUsername( meta.user ) ;
-									context.notificationsCenter.fire("onRequest", context.container, request, response );
-								}else{
-									this.handlerHttp(context, request, response);
-								}
+								this.sessionService.start(context, this.securedAreas[area].sessionContext,function(error, session){;
+									var meta = session.getMetaBag("security");
+									if (meta){
+										context.user = context.security.provider.loadUserByUsername( meta.user ) ;
+										context.notificationsCenter.fire("onRequest", context.container, request, response );
+									}else{
+										this.handlerHttp(context, request, response);
+									}
+								}.bind(this));
 								break;
 							}
 						}
