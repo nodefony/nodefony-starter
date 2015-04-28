@@ -5,6 +5,8 @@
  */
 
 var Promise = require('promise');
+var async = require('async');
+
 
 nodefony.registerCommand("ORM2",function(){
 
@@ -67,16 +69,26 @@ nodefony.registerCommand("ORM2",function(){
 						}
 						break;
 					case "entities" :
+						var i = 0 ;
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
-							connection.drop(function (){
-								this.logger(connection.driver_name +" CONNECTION : "+connectionName+" DROP ALL TABLES","INFO");
-								connection.sync(function (error) {
-									if (error){
-										this.logger(connection.driver_name +" CONNECTION : "+connectionName+" : " + error, "ERROR");
-										return ;
-									}
-									this.logger(connection.driver_name +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
+							i++ ;
+							async.series([function(callback){
+								connection.drop(function (){
+									this.logger(connection.driver_name +" CONNECTION : "+connectionName+" DROP ALL TABLES","INFO");
+									connection.sync(function (error) {
+										if (error){
+											this.logger(connection.driver_name +" CONNECTION : "+connectionName+" : " + error, "ERROR");
+											i = 0
+											callback()
+											return ;
+										}
+										this.logger(connection.driver_name +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
+										callback(i--)
+									}.bind(this));
 								}.bind(this));
+							}.bind(this)], function(count){
+								if (i === 0)
+									this.terminate()
 							}.bind(this));
 						});
 						break;
@@ -241,6 +253,7 @@ nodefony.registerCommand("ORM2",function(){
 				break;
 			default:
 				this.showHelp();
+				this.terminate();
 
 		}
 

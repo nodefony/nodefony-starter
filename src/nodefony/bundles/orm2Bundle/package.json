@@ -8,9 +8,9 @@
     "nodefony"
   ],
   "dependencies": {
-  	"orm": "== 2.1.13",
 	"sqlite3": "*",
-	"mysql": "*"
+	"mysql": "*",
+  	"orm": "== 2.1.13"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

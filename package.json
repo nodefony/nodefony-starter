@@ -27,7 +27,8 @@
     "ascii-table": "*",
     "mime":"*",
     "markdown-it":"*",
-    "promise":"*"
+    "promise":"*",
+    "async":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",
