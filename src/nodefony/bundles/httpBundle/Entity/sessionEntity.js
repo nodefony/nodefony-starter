@@ -15,11 +15,11 @@ nodefony.registerEntity("session", function(){
 			attributes	: Object,
 			flashBag	: Object,
 			metaBag		: Object,
-			createdAt	: Date
+			createdAt	: { type: "date", time: true }
 			},{ 
 				hooks: {
 					beforeCreate: function() {
-						if(this.createdAt === null) { this.createdAt = new Date().getTime(); }
+						if(this.createdAt === null) { this.createdAt = new Date(); }
 					}
 				}
 		});

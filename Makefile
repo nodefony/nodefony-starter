@@ -38,6 +38,7 @@ orm:
 	./console ORM2:connections:state
 	./console ORM2:generate:entities
 	./console ORM2:entity:show
+	./console ORM2:fixtures:load
 
 clean:
 	@if [ -e  node_modules ] ; then \

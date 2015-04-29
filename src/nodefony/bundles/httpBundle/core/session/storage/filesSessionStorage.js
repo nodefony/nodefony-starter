@@ -17,7 +17,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		this.contextSessions = [];
 	};
 
-	fileSessionStorage.prototype.start = function(id, contextSession){
+	fileSessionStorage.prototype.start = function(id, contextSession, callback){
 		var fileSession  = null ;	
 		if ( contextSession ){
 			var path = this.path+"/"+contextSession+"/"+id ;	
@@ -26,10 +26,10 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 		try {
 			fileSession = new nodefony.fileClass(path);
-			return this.read(fileSession);
+			this.read(fileSession, callback);
 
 		}catch(e){
-			return false ;
+			callback(e, null) ;
 		}
 	};
 
@@ -118,34 +118,34 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		}
 	};
 
-	fileSessionStorage.prototype.read = function(file){
+	fileSessionStorage.prototype.read = function(file, callback){
 		var id = file.name;
 		try {
 			var res = fs.readFileSync(file.path, {
 				encoding:'utf8'
 			});
 			//this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
-			return JSON.parse(res) ; 
+			callback(null, JSON.parse(res) ); 
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
-			throw e;
+			callback(e, null );
 		}	
 	};
 
-	fileSessionStorage.prototype.write = function(fileName, serialize, contextSession){
+	fileSessionStorage.prototype.write = function(fileName, serialize, contextSession, callback){
 		if ( contextSession ){
 			var path = this.path+"/"+contextSession+"/"+fileName ;	
 		}else{
 			var path = this.path+"/"+fileName ;
 		}
 		try{
-			var ret = fs.writeFileSync(path, JSON.stringify(serialize));
+			fs.writeFileSync(path, JSON.stringify(serialize));
 			//this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
+			callback(null, serialize)
 		}catch(e){
 			this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");
-			throw e;
+			callback( e, null );
 		} 
-		return   new nodefony.fileClass(path) ;
 	};
 	
 	return fileSessionStorage ;

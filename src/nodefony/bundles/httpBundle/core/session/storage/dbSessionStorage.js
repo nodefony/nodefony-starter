@@ -5,7 +5,6 @@
  *
  */
 
-
 nodefony.register.call(nodefony.session.storage, "db",function(){
 
 
@@ -21,12 +20,10 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 
 	dbSessionStorage.prototype.start = function(id, contextSession, callback){
 		try {
-			return this.read(id, contextSession, callback);
-
+			this.read(id, contextSession, callback);
 		}catch(e){
-			return callback(e, null) ;
+			callback(e, null) ;
 		}
-	
 	};
 
 	dbSessionStorage.prototype.open = function(contextSession){
@@ -73,14 +70,19 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 				return ;
  			}	
 			for (var i = 0 ; i < results.length  ; i++){
-				if ( results[i].createdAt > myDate)
+				if ( results[i].metaBag.lastUsed ){
+					var date = new Date( results[i].metaBag.lastUsed ).getTime() ;
+				}else{
+					var date = new Date( results[i].createdAt ).getTime() ;
+				}
+				if ( date > myDate)
 					continue ;
 				results[i].remove(function(error, session ){
 					nbSessionsDelete++ ;
 					this.manager.logger("DB SESSIONS STORAGE GARBADGE COLLECTOR SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");
 				}.bind(this));	
 			}
-			this.manager.logger("DB SESSIONS STORAGE context : "+ ( contextSession || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")
+			//this.manager.logger("DB SESSIONS STORAGE context : "+ ( contextSession || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")
 		}.bind(this));	
 	};
 
@@ -95,7 +97,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 				}
 			}
 		}
-	
 	};
 
 	dbSessionStorage.prototype.read = function(id, contextSession, callback){
@@ -133,7 +134,7 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 						callback(err, null) ;
 						return ;
 					}
-					callback(null, session) ;
+					callback(null, serialize) ;
 				}.bind(this));
 			}else{
 				this.entity.create(data, function(err, results) {
@@ -145,7 +146,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 				}.bind(this));
 			}
 		}.bind(this));
-			
 	};
 
 	return dbSessionStorage ;

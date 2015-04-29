@@ -44,7 +44,6 @@ security:
              memory:
                 users:
                     admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
-                    cci: { password: 1234, roles: 'ROLE_USER' }
 
 #        ldap:
 #            entity:

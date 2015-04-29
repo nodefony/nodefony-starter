@@ -153,24 +153,30 @@ nodefony.registerService("sessions", function(){
 			if ( this.contextSession != contextSession ){
 				switch(this.strategy){
 					case "migrate":
-						var ret = this.storage.start(this.id, this.contextSession);
-						this.deSerialize(ret);
-						if (  ! this.isValidSession(ret, context) ){
-							this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-							this.destroy();
-							this.contextSession = contextSession;
+						this.storage.start(this.id, this.contextSession, function(error, result){
+							if (error){
+								callback(error, null);	
+								return ;
+							}
+							this.deSerialize(result);
+							if (  ! this.isValidSession(result, context) ){
+								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+								this.destroy();
+								this.contextSession = contextSession;
+								createSession.call(this, this.lifetime);
+								this.status = "active" ;
+								this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+								callback(null, this);
+								return ;
+							}
+							this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+							this.remove();
+							this.contextSession = contextSession ;
 							createSession.call(this, this.lifetime);
 							this.status = "active" ;
-							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-							return this;
-						}
-						this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-						this.remove();
-						this.contextSession = contextSession ;
-						createSession.call(this, this.lifetime);
-						this.status = "active" ;
-						this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
-						return this ;
+							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
+							callback(null, this);
+						}.bind(this));
 					break;
 					case "invalidate":
 						this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
@@ -179,28 +185,35 @@ nodefony.registerService("sessions", function(){
 						createSession.call(this, this.lifetime);
 						this.status = "active" ;
 						this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-						return this;
+						callback(null, this);
+						return ;
 					break;
 					case "none" :
-						var ret = this.storage.start(this.id, this.contextSession);
-						this.deSerialize(ret);
-						if (  ! this.isValidSession(ret, context) ){
-							this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-							//this.destroy();
+						this.storage.start(this.id, this.contextSession,function(error, result){
+							if (error){
+								callback(error, null);	
+								return ;
+							}
+							this.deSerialize(result);
+							if (  ! this.isValidSession(result, context) ){
+								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+								this.contextSession = contextSession;
+								createSession.call(this, this.lifetime);
+								this.status = "active" ;
+								this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+								callback(null, this);
+								return ;
+							}
+							this.manager.logger("STRATEGY SESSION NONE==> "+this.name + " : "+this.id, "DEBUG");
 							this.contextSession = contextSession;
-							createSession.call(this, this.lifetime);
+							createSession.call(this, this.lifetime, this.id);
 							this.status = "active" ;
-							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-							return this;
-						}
-						this.manager.logger("STRATEGY SESSION NONE==> "+this.name + " : "+this.id, "DEBUG");
-						this.contextSession = contextSession;
-						createSession.call(this, this.lifetime, this.id);
-						this.status = "active" ;
-						this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
-						return this ;
+							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
+							callback(null, this);
+						}.bind(this));
 					break;
 				}
+				return ;
 			}
 
 			if ( contextSession ){
@@ -214,19 +227,18 @@ nodefony.registerService("sessions", function(){
 				if (result){
 					this.deSerialize(result);
 					if (  ! this.isValidSession(result, context) ){
+						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + "  session invalid ", "ERROR");
 						this.invalidate();
-						error = new Error("SESSION ==> "+this.name + " : "+this.id + "  session invalid ");
 					}
 				}else{
 					if ( this.settings.use_strict_mode ){
+						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " use_strict_mode ", "ERROR");
 						this.invalidate();
-						error = new Error("SESSION ==> "+this.name + " : "+this.id + " No data ");
 					}
 				}
 				this.status = "active" ;
 				this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-				if (callback)
-					return callback(null, this);
+				return callback(null, this);
 			}.bind(this));
 			
 		}else{
@@ -406,14 +418,13 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.save = function(){
-		this.saved = true ;
 		try {
 			return this.storage.write(this.id, this.serialize(), this.contextSession,function(err, result){
 				if (err){
 					this.logger( err ,"ERROR" )
 					return ; 
 				}
-				this.logger(result, "DEBUG")
+				this.logger("SAVE SESSION " + this.id, "DEBUG")
 				this.saved = true ;
 			}.bind(this));	
 		}catch(e){
@@ -463,7 +474,9 @@ nodefony.registerService("sessions", function(){
 			var request = context.request.request ;
 			request.on('end', function(){
 				if ( this.settings.start === "autostart" )
-					 this.start(context);
+					 this.start(context, "default", function(err, session){
+						this.logger("AUTOSTART SESSION","DEBUG")
+					 }.bind(this));
 			}.bind(this));
 			var response = context.response.response ;
 			response.on("finish",function(){
