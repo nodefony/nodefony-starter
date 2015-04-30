@@ -13,14 +13,15 @@ nodefony.registerEntity("user", function(){
 	var user = function(db, ormService){
 		var model = db.define("user", {
 				id		: {type: 'serial', key: true},
-				username	: {type: 'text', unique: true},
+				username	: {type: 'text', unique: true, required:true},
 				password	: String,
-				enabled		: Boolean,
-				credentialsNonExpired: Boolean,
-				accountNonLocked: Boolean,
-				email		: String,
+				enabled		: {type: 'boolean', defaultValue:true},
+				credentialsNonExpired: {type: 'boolean', defaultValue:true},
+				accountNonLocked: {type: 'boolean', defaultValue:true},
+				email		: {type: 'text', unique: true},
 				name		: String,
 				surname		: String,
+				lang		: {type: 'text', defaultValue: "en_En" },
 				roles		: String
     			}, {
         		methods: {
@@ -37,10 +38,22 @@ nodefony.registerEntity("user", function(){
 			this.find({ username: username }, function (err, user) {
 				if (err)
 					return callback(err, null)	
-				return callback(err, user[0].password)
+				if ( user.length )
+					return callback(null, user[0].password)
+				return callback({
+					status:401,
+				        message:"User : " + username +" not Found"
+				}, null)
 			})
-			return callback ;	
 		};	
+
+		model.loadUserByUsername = function(username, callback){
+			this.find({ username: username }, function (err, user) {
+				if (err)
+					return callback(err, null);	
+				return callback(null, user[0]);
+			})
+		};
 
 		ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){
 			if(connectionName == 'nodefony'){
@@ -50,7 +63,6 @@ nodefony.registerEntity("user", function(){
 				}else{
 					throw "ENTITY ASSOCIATION session NOT AVAILABLE"
 				}
-
 			}
 		});
 		return model ;
@@ -62,10 +74,7 @@ nodefony.registerEntity("user", function(){
 	return {
 		type:"ORM2",
 		connection : "nodefony",
-		entity:user,
-		association:{
-			
-		}
+		entity:user
 
 	};
 })

@@ -1,20 +1,15 @@
 DISTRIB := $(shell uname)
 
 
-all: node install framework asset orm
+all: node  framework 
 
 install:
-	@if [ -x  vendors/asciiArt/figlet222/figlet ] ; then  \
-		echo "###########  INSTALL FIGLET ASCIIART  ###########" ;\
-		cp vendors/asciiArt/figlet222/figlet bin/ ;\
-	fi
-	@if [ ! -d tmp ] ; then  \
-		mkdir tmp ;\
-	fi
-	@if [ ! -d bin ] ; then  \
-		mkdir bin ;\
-	fi
+	./console router:generate:routes
+	make asset
+	make orm
+	
 node:
+	make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALATION  ###########" ;\
 		npm -d install  ;\
@@ -30,9 +25,14 @@ asset:
 	./console assets:install 
 
 framework:
+	@if [ ! -d tmp ] ; then  \
+		mkdir tmp ;\
+	fi
+	@if [ ! -d bin ] ; then  \
+		mkdir bin ;\
+	fi
 	./console npm:install
 	./console npm:list
-	./console router:generate:routes
 
 orm:
 	./console ORM2:connections:state
@@ -44,7 +44,6 @@ clean:
 	@if [ -e  node_modules ] ; then \
 		echo "###########  CLEAN  NODE MODULES ###########" ;\
 		rm -rf node_modules/* ; \
-		rm -rf node_modules/.* ; \
 	fi
 
 .EXPORT_ALL_VARIABLES:

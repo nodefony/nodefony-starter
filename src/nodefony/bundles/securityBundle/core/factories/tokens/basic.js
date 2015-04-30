@@ -64,27 +64,29 @@ nodefony.register.call(nodefony.security.tokens, "Basic",function(){
 
 
 
-	Basic.prototype.checkResponse = function( callback){
+	Basic.prototype.checkResponse = function( getUserPassword, callback){
 		var ret  = parseAuthorization.call(this, this.authorization);
 		if (  ! ret ){
-			throw {
+			callback ({
 				status:401,
 				message:"BAD Basic Response "	
-			};
+			},null);
 		}
 		try {
-			var userHashToCompare = callback(ret.username);
-			if (userHashToCompare == ret.passwd){
-				this.auth = true ;
-				return true;
-			}else{
-				throw {
-					status:401,
-					message:"BAD Basic Response "	
-				}; 
-			}
+			getUserPassword(ret.username, function(error, userHashToCompare){
+				if (userHashToCompare == ret.passwd){
+					this.auth = true ;
+					callback(null, true );
+				}else{
+					callback( {
+						status:401,
+						message:"BAD Basic Response "	
+					}, null); 
+				}
+
+			}.bind(this));
 		}catch(e){
-			throw (e); 
+			callback(e, null); 
 		}
 
 	};

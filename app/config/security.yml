@@ -7,7 +7,8 @@ security:
     firewalls:
         secured_area:
             pattern:                    ^/
-            provider:                   in_memory
+            provider:                   database
+#           provider:                  in_memory          
 #           provider:                  ldap          
             form_login:
               check_path:               /secure
@@ -44,11 +45,12 @@ security:
              memory:
                 users:
                     admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
-
+        database:
+             entity:
+                name:   "user"
 #        ldap:
-#            entity:
-#                class:              ldapManager
+#            class:
+#                name:              ldapManager
 #                property:
 #                  url:              192.168.100.45/CN=test,OU=Development,DC=Home
 #                manager_name:       ldap
-    encoders:

@@ -32,7 +32,7 @@
 App:
         projectName:                    "My Project" 
         projectYear:                    2015
-        locale:                         "fr_fr"
+        locale:                         "en_en"
         authorName:                     "administrator"
         authorMail:                     "administrator@nodefony.com"
 
@@ -64,8 +64,8 @@ httpBundle:
     tmp_dir:                      "tmp/upload"
     max_filesize:                 100000
   session:
-    #handler:                      session.storage.db                    
-    save_path:                    "./tmp/sessions"
+    handler:                      session.storage.db                    
+    #save_path:                    "./tmp/sessions"
     cookie:
       maxAge:                     0
     
@@ -96,14 +96,14 @@ asseticBundle:
 #      user:     'root'
 #      password: ''
 #
-orm2Bundle: 
-  connectors:                    
-    nodefony:
-      driver:   mysql
-      host:     192.168.100.175
-      database: 'nodefony'
-      protocol: 'mysql'
-      port:     '3306'
-      user:     'root'
-      password: 'cocolesinge'
+#orm2Bundle: 
+#  connectors:                    
+#    nodefony:
+#      driver:   mysql
+#      host:     192.168.100.175
+#      database: 'nodefony'
+#      protocol: 'mysql'
+#      port:     '3306'
+#      user:     'root'
+#      password: 'cocolesinge'
 

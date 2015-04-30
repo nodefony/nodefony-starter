@@ -87,8 +87,10 @@ nodefony.registerCommand("ORM2",function(){
 								}.bind(this));
 							}.bind(this)], function(count){
 								var nbConnection = Object.keys(service.connections).length ;
-								if (count === nbConnection || i < 0 )
-									this.terminate()
+								if (count === nbConnection )
+									this.terminate();
+								if ( count === -1 )
+									this.terminate();
 							}.bind(this));
 						});
 						break;
@@ -195,7 +197,8 @@ nodefony.registerCommand("ORM2",function(){
 								this.logger("FIXTURE ENTITY : " + fixtureDef.entity + " CONNECTIONS : "+fixtureDef.connection , "INFO");	
 								try {
 									new Promise(fixtureDef.fixture.bind(this.ormService) )
-									.then(function(){
+									.then(function(items){
+										console.log(items);
 										this.logger("LOAD FIXTURE ENTITY : "+ fixtureDef.entity +" SUCCESS")
 									}.bind(this))
 									.catch(function(e){

@@ -11,7 +11,7 @@ nodefony.registerEntity("session", function(){
 	var Session = function(db,  ormService ){
 		var model = db.define("session", {
 			session_id	: {type: "text", unique: true },
-			context		: {type: "text", default: "default" },
+			context		: {type: "text", defaultValue: "default" },
 			attributes	: Object,
 			flashBag	: Object,
 			metaBag		: Object,
@@ -28,7 +28,7 @@ nodefony.registerEntity("session", function(){
  			if( connectionName == 'nodefony' ){
  		 		var user = ormService.getEntity('user');
  		 		if ( user ){
- 		 			//model.hasOne("user", user);
+ 		 			model.hasOne("user", user);
  		 		}else{
  		 			throw "ENTITY ASSOCIATION USER NOT AVAILABLE"
  		 		}
@@ -39,8 +39,8 @@ nodefony.registerEntity("session", function(){
 
 	return {
 		type:"ORM2",
-			connection : "nodefony",
-			entity:Session
+		connection : "nodefony",
+		entity:Session
 	};
 });
 

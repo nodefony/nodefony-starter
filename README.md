@@ -50,6 +50,7 @@ $ git clone https://github.com/ccamensuli/nodefony.git
 $ cd nodefony
 
 $ make
+$ make install
 ```
 
 ## <a name="start"></a>Start 
@@ -225,6 +226,7 @@ nodefony.register("appKernel",function(){
 ```
 #### Start Framework to check new Bundle hello:
 ```bash
+$ make install
 $ ./nodefony_dev
 ```
 

@@ -22,8 +22,13 @@ nodefony.register( "usersProvider", function(){
 	};
 
 
-	usersProvider.prototype.loadUserByUsername = function(userName){
-		return this.users[userName] ;
+	usersProvider.prototype.loadUserByUsername = function(userName, callback){
+		if ( this.users[userName] ) 
+			return callback(null, this.users[userName])
+		return callback({
+				status:401,
+				message:"User : "+username+" not exist"
+			},null) ;
 	};
 
 	
@@ -32,15 +37,14 @@ nodefony.register( "usersProvider", function(){
 		return this.users[username] = new nodefony.user(username, password, enabled, credentials, blocked, roles);	
 	};
 
-	usersProvider.prototype.getUserPassword = function(username){
+	usersProvider.prototype.getUserPassword = function(username, callback){
 		if ( this.users[username] ){
-			return this.users[username].getPassword();
+			callback( null, this.users[username].getPassword() );
 		}else{
-			throw {
+			callback( {
 				status:401,
 				message:"User : "+username+" not exist"
-			}
-			//throw new Error("User : "+username+" not exist" )
+			}, null );
 		}
 
 	}

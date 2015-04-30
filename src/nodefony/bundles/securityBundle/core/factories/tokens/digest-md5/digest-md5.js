@@ -29,10 +29,12 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 
 	var reg =/^([^=]+)=(.+)$/;
 	var parseAuthorization = function(str){
+		//console.log(str)
 		var ret = str.replace(/Digest /g,"");
 		ret = ret.replace(/"/g,"");
 		ret = ret.replace(/ /g,"");
 		var head = ret.split(",");
+		//console.log(head)
 		for (var i= 0 ; i < head.length ; i++){
 			var res = reg.exec(head[i])
 			if (res && res[1]){
@@ -40,6 +42,7 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 					this[res[1]] = res[2];
 				else	
 					this[res[1]] = res[2];
+				//console.log(this[res[1]])
 			}
 		}	
 	}
@@ -104,7 +107,6 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 	};
 
 	Digest.prototype.recalculateNonce = function(){
-
 		var nonce = this.nonce.substring(lenghtTs);
 		var ts = this.nonce.substring(0,lenghtTs);
 		if (this.settings.max_time !== 0 ){
@@ -152,29 +154,34 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 		return  this.name+' '+line;	
 	};
 
-	Digest.prototype.checkResponse = function( callback){
-		parseAuthorization.call(this, this.authorization);
+	Digest.prototype.checkResponse = function( getUserPassword, callback){
 		try {
+			parseAuthorization.call(this, this.authorization);
 			var res = this.recalculateNonce();
 			if (! res){
-				throw {
+				callback( {
 					status:401,
 					message:"BAD Digest Response "	
-				};
+				},null);
 			}
-			var userHashToCompare = callback(this.username);
-			res = this.recalculateResponse(userHashToCompare);
-			if (res === this.response){
-				this.auth = true ;
-				return true;
-			}else{
-				throw {
-					status:401,
-					message:"BAD Digest Response "	
-				}; 
-			}
+			getUserPassword(this.username, function (error, userHashToCompare){
+				if (error){
+					callback (error, null);;
+					return; 
+				}
+				res = this.recalculateResponse(userHashToCompare);
+				if (res === this.response){
+					this.auth = true ;
+					return callback(null, true);
+				}else{
+					callback( {
+						status:401,
+						message:"BAD Digest Response "	
+					},null); 
+				}
+			}.bind(this));
 		}catch(e){
-			throw (e); 
+			callback (e, null); 
 		}
 	};
 
