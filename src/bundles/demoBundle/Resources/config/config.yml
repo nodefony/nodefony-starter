@@ -28,7 +28,7 @@
 
 ########## NODEFONY CONFIG BUNDLE  demoBundle  ############
 name :				demoBundle
-locale :			fr_fr
+locale :			en_en
 version :                       "1.0"
 
 #

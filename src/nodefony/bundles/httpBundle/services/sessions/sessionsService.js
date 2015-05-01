@@ -424,7 +424,7 @@ nodefony.registerService("sessions", function(){
 					this.logger( err ,"ERROR" )
 					return ; 
 				}
-				this.logger("SAVE SESSION " + this.id, "DEBUG")
+				//this.logger("SAVE SESSION " + this.id, "DEBUG")
 				this.saved = true ;
 			}.bind(this));	
 		}catch(e){

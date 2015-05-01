@@ -21,7 +21,7 @@ nodefony.registerEntity("user", function(){
 				email		: {type: 'text', unique: true},
 				name		: String,
 				surname		: String,
-				lang		: {type: 'text', defaultValue: "en_En" },
+				lang		: {type: 'text', defaultValue: "en_en" },
 				roles		: String
     			}, {
         		methods: {

@@ -1,14 +1,5 @@
 #
-#
-#	CONFIG BUNDLE orm2Bundle 
-#
-#===============================================================================
-#
-#  Copyright © 2013/2014        cci | christophe.camensuli@nodefony.com
-#
-# ===============================================================================
-#
-#        GENERATE BY NODEFONY BUILDER YAML FILE 
+#        GENERATE BY NODEFONY CONFIG BUNDLE YAML FILE 
 #
 # This file is YAML  FILE
 # ---
@@ -31,7 +22,7 @@
 
 ########## NODEFONY CONFIG BUNDLE  stageBundle  ############
 name :				orm2Bundle
-locale :			fr_fr
+locale :			en_en
 version :                       "1.0"
 
 settings: 

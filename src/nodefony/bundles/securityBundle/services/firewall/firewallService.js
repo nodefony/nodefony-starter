@@ -5,12 +5,8 @@
  *
  *
  */
-var Url = require("url");
-
 
 nodefony.registerService("firewall", function(){
-
-
 
 	var pluginReader = function(){
 

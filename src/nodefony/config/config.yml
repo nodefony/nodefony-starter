@@ -1,11 +1,5 @@
-#
-#===============================================================================
-#
-#  Copyright ©         CAMENSULI Christophe | christophe.camensuli@nodefony.com
-#
-# ===============================================================================
-#
-#        NODE BUILDER YAML FILE 
+#        
+#        NODEFONY FRAMEWORK CONFIG YAML FILE 
 #
 #
 # This file is YAML  FILE
@@ -32,11 +26,10 @@
 #       KERNEL CONFIG
 #
 #
-name:                           "N O D E F O N Y"
+name:                           "NODEFONY"
 system:                         
   version:                      "1.0"
   domain:                       nodefony.com
-#  domain:                       192.168.100.246
   httpPort:                     5151
   httpsPort:                    5152
   statics:                      true
@@ -44,7 +37,7 @@ system:
   realtime:                     true
   monitoring:                   true
 
-  locale:                       "fr_fr"   
+  locale:                       "en_en"   
 
   log:
     active:                     true

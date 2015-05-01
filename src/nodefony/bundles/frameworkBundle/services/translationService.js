@@ -151,13 +151,17 @@ nodefony.registerService("translation", function(){
 					this.defaultLocale = Lang;	
 				}
 			}else{
-				var Lang =  this.container.getParameters("query.request").lang || context.session.get("lang");
+				if (context.user){
+					var Lang  = context.user.lang
+				}else{
+					var Lang =  this.container.getParameters("query.request").lang || context.session.get("lang");
+				}
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
 				context.session.set("lang",this.defaultLocale );
 			}
-			if ( ! this.container.getParameters("translate."+this.defaultLocale) ){
+			if ( ! this.container.getParameters("translate."+this.defaultLocale) || !  this.container.getParameters("translate."+this.defaultLocale[this.defaultDomain]) ){
 				this.getFileLocale(this.defaultLocale);
 			}
 		}else{

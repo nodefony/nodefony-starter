@@ -13,8 +13,8 @@ var i = 0 ;
 setInterval(function(){
 
 if ( i % 2) 
-		options.path="/api/syslog";
-		//options.path="/download?path=/Users/cci/repository/stage/cesideesla.webm";
+		//options.path="/api/syslog";
+		options.path="/demo/finder";
 	else
 		options.path="/monitoring";
 
@@ -38,7 +38,7 @@ if ( i % 2)
 	// req.write('data\n');
 	req.end();
 	i++
-}, 100)
+}, 10)
 
 
 /*for (var i = 0; i<100000;i++){

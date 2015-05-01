@@ -16,6 +16,7 @@ nodefony.register("Bundle", function(){
 		this.kernel = kernel ;
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.waitBundleReady = false ;
+		this.locale = this.kernel.settings.system.locale ;
 		this.container = container ;
 		var config = this.container.getParameters("bundles."+this.name) ;
 		if ( ! config ){
@@ -257,6 +258,7 @@ nodefony.register("Bundle", function(){
 				}
 			}
 		}
+		//console.log(files);
 		files.getFiles().forEach(function(file, index, array){
 			//var basename = path.basename(file.dirName)
 			var domain = file.match[1] ;

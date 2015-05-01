@@ -5,7 +5,7 @@
  *
  *
  */
-
+var Url = require("url");
 
 nodefony.registerService("httpKernel", function(){
 

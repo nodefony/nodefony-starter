@@ -1,11 +1,5 @@
 #
-#===============================================================================
-#
-#  Copyright © 2013/2014        CAMENSULI Christophe | christophe.camensuli@nodefony.com
-#
-# ===============================================================================
-#
-#        nodefony BUILDER YAML FILE 
+#        NODEFONY CONFIG BUNDLE YAML FILE 
 #
 #
 # This file is YAML  FILE
@@ -29,7 +23,7 @@
 
 ########## NODEFONY CONFIG BUNDLE  asseticBundle  ############
 name :				asseticBundle
-locale :			fr_fr
+locale :			en_en
 version :                       "1.0"
 
 #  Documentaion : http://lesscss.org/   https://github.com/less/less-docs

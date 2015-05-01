@@ -1,11 +1,5 @@
 #
-#===============================================================================
-#
-#  Copyright © 2013/2013        CAMENSULI Christophe | christophe.camensuli@nodefony.com
-#
-# ===============================================================================
-#
-#        nodefony BUILDER YAML FILE 
+#        NODEFONY BUNDLE CONFIG YAML FILE 
 #
 #
 # This file is YAML  FILE
@@ -46,14 +40,9 @@ https:
     key:                        "/config/certificates/server.key"
     cert:                       "/config/certificates/server.crt"
 
-
 upload:
   tmp_dir:                      "tmp/upload"
   max_filesize:                 10000000
-
-
-download:
-
 
 websocket:
   keepaliveInterval:            20000
@@ -70,7 +59,7 @@ statics:
 
 # SESSIONS
 session:
-  start:                        "autostart"
+  start:                        null            #"autostart"
   use_strict_mode:              true                    
   name:                         "nodefony"
   handler:                      session.storage.files

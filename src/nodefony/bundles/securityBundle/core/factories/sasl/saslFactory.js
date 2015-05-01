@@ -36,7 +36,7 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 			}
 		}else{
 			throw {
-				message:" SASL security send challenge",
+				message:" Parse SASL security challenge authorization not found",
 				status:401
 			}	
 		}
@@ -66,7 +66,7 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 		try {
 			var res = parseSASLAuth(request);
 		}catch(e){
-			this.contextSecurity.logger(e.message, "ERROR")	
+			this.contextSecurity.logger(e.message, "WARNING")	
 			request.headers["authorization"]= null;
 			var res = {
 				mechanism:this.defaultToken
