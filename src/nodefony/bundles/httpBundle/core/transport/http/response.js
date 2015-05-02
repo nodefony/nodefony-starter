@@ -40,9 +40,9 @@ nodefony.register("Response",function(){
 		// free container scope
 		this.response.on("finish",function(){
 			//console.log("FINISH response")
-			if ( ! this.ended ){
-				this.kernel.container.leaveScope(this.container);
-			}
+			//if ( ! this.ended ){
+			//	this.kernel.container.leaveScope(this.container);
+			//}
 		}.bind(this))
 
 		/*this.response.on("close",function(){
@@ -144,7 +144,7 @@ nodefony.register("Response",function(){
 		//console.log('pass response end')
 		this.ended = true ;
         	var ret = this.response.end(data, encoding);
-		this.kernel.container.leaveScope(this.container);
+		//this.kernel.container.leaveScope(this.container);
 		return ret ;
 	};
 

@@ -2,20 +2,23 @@
 
 var cluster = require('cluster');	
 var domain = require('domain');
-var asciify = require('asciify');
 
+/*
+ *
+ * NODEFONY FRAMEWORK START 
+ *
+ *	PRODUCTION
+ *
+ */
 
-
-//  AUTOLOAD LIBRARY nodefony NODE
+// AUTOLOADER 
 var autoloader = require("./vendors/nodefony/core/autoloader");
 autoloader.load("./app/appKernel.js");
 
 
-
-
 if (cluster.isMaster) {
-
-	asciify("      NODEFONY", {font:'standard'}, function(err, res){
+	
+	require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 		console.log('\033[31m'+res+'\033[0m');
 	});
 
@@ -27,16 +30,8 @@ if (cluster.isMaster) {
 
 	cluster.on('disconnect', function(worker) {
 		console.error('disconnect!');
-		//cluster.fork();
 	});
 
-	/*var logStream = new nodefony.log(process.cwd()+'/tmp/error.log',{
-		rotate:true
-	});
-	var logStreamD = new nodefony.log(process.cwd()+'/tmp/debug.log',{
-		rotate:true
-	});*/
-	
 }else {
 	var kernel =new nodefony.appKernel("SERVER", "prod", false, autoloader);
 }

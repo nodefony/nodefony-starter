@@ -1,15 +1,22 @@
-#!/usr/local/bin/node
+#!/usr/local/bin/node 
+//--debug
 
-var asciify = require('asciify');
+//var profiler = require('v8-profiler');
 
-//  AUTOLOAD LIBRARY nodefony NODE
+/*
+ *
+ * NODEFONY FRAMEWORK START 
+ *
+ *	DEVELOPPEMENT
+ *
+ */
+// AUTOLOADER
 var autoloader = require("./vendors/nodefony/core/autoloader");
 autoloader.load("./app/appKernel.js");
 
-
-asciify("      NODEFONY", {font:'standard'}, function(err, res){
-		console.log('\033[31m'+res+'\033[0m'); 
-	//var kernel =new nodefony.appKernel("SERVER","prod", false, autoloader);
+require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
+	console.log('\033[31m'+res+'\033[0m'); 
+	// KERNEL 
 	var kernel =new nodefony.appKernel("SERVER", "dev", true, autoloader);
 });
 

@@ -55,6 +55,14 @@ nodefony.registerService("translation", function(){
 		}	
 	}();
 
+	var reader = function(context){
+		var func = context.container.get("reader").loadPlugin("translating", pluginReader);
+		return function(result, locale, domain){
+			return func(result, context.nodeReader.bind(context, locale, domain));
+		};	
+	};
+
+
 	var i18n = function(container, type){
 		this.container = container;
 		this.kernel = this.container.get("kernel");
@@ -68,12 +76,7 @@ nodefony.registerService("translation", function(){
 		this.defaultDomain = "messages"; 
 		//console.log(this.container.parameters.__proto__);
 		//console.log(this.container.getParameters("kernel"));
-		this.reader = function(context){
-			var func = context.container.get("reader").loadPlugin("translating", pluginReader);
-			return function(result, locale, domain){
-				return func(result, context.nodeReader.bind(context, locale, domain));
-			};
-		}(this);
+		this.reader = reader(this);
 	};
 
 	i18n.prototype.boot = function(){

@@ -78,6 +78,10 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 				if ( date > myDate)
 					continue ;
 				results[i].remove(function(error, session ){
+					if (error){
+						this.manager.logger("DB SESSIONS STORAGE GARBADGE COLLECTOR SESSION : " +error, "ERROR");
+						return ;
+					}
 					nbSessionsDelete++ ;
 					this.manager.logger("DB SESSIONS STORAGE GARBADGE COLLECTOR SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");
 				}.bind(this));	

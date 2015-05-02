@@ -260,9 +260,9 @@ nodefony.register("kernel", function(){
 						data:"CRITIC,ERROR"
 					}		
 				},function(pdu){
-					if (! pdu.payload ) return 
+					var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ;
 					var reg = new RegExp("\\[32m");
-					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload.replace(reg,"");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pay.replace(reg,"");
 					this.logStream.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
 				});	
 				var data ;
