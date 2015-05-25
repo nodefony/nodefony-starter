@@ -117,7 +117,6 @@ nodefony.registerBundle ("monitoring", function(){
 							};
 							if (context.session){
 								obj["session"] = {
-									
 									name:context.session.name
 								};	 
 							}

@@ -114,6 +114,20 @@ nodefony.register("Request",function(){
 		}.bind(this));
 	};
 
+	/*Request.prototype.acceptLanguage = function(request){
+		var data = request.headers["accept-language"];
+		if ( ! data ) return null ;
+		var tab  = data.split(";");
+		if ( ! tab.length ) return null;
+		var res = {};
+		for (var i = 0 ; i<tab.length ; i++){
+			if ( tab[i] ){
+				var ele = tab[i].split(",");
+				console.log(ele);
+			}	
+		}
+	}*/
+
 	Request.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
 		if (! msgid) msgid = "HTTP REQUEST  ";

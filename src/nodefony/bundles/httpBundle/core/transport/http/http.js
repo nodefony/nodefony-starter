@@ -144,7 +144,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
 	};
 
-
 	Http.prototype.getRequest = function(){
 		return this.request;	
 	};
@@ -194,9 +193,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			break;
 		}
 	};
-
-	
-
 
 	// connect intrusif in prototype response.on('header') https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x
 	/*Http.prototype.setCookie = function(cookie){

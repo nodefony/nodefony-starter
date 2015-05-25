@@ -45,16 +45,27 @@ nodefony.registerController("framework", function(){
 		};
 		
 		frameworkController.prototype.loginAction = function(){
-			if ( ! this.context.session )
-				this.startSession();
-			var log = this.context.session.getFlashBag("session") ;
-			if ( log )
-				log["login"] = true ;
-			else
-				log = {login :true};
-			//this.getResponse().setHeader('WWW-Authenticate',' Basic realm="My Realm"');
-			//this.getResponse().setStatusCode(401);
-			return this.render('frameworkBundle::login.html.twig',log);
+			if ( ! this.context.session ){
+				this.startSession("default", function(error, session){
+					if (error)
+						throw error ;
+					var log  = session.getFlashBag("session") ;
+					if ( log )
+						log["login"] = true ;
+					else
+						log = {login :true};
+					this.renderAsync('frameworkBundle::login.html.twig',log);
+				}.bind(this));
+			}else{
+				var log = this.context.session.getFlashBag("session") ;
+				if ( log )
+					log["login"] = true ;
+				else
+					log = {login :true};
+				//this.getResponse().setHeader('WWW-Authenticate',' Basic realm="My Realm"');
+				//this.getResponse().setStatusCode(401);
+				return this.render('frameworkBundle::login.html.twig',log);
+			}
 		};
 
 		frameworkController.prototype.logoutAction = function(){

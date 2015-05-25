@@ -22,6 +22,7 @@ nodefony.register("appKernel",function(){
 	 	*/
 		this.registerBundles([
 			"./vendors/nodefony/bundles/orm2Bundle",
+			"./src/experimental/webRtcBundle",
 			"./src/bundles/demoBundle"
 		]);
 

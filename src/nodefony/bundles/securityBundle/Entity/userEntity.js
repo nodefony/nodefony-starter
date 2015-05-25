@@ -22,7 +22,7 @@ nodefony.registerEntity("user", function(){
 				name		: String,
 				surname		: String,
 				lang		: {type: 'text', defaultValue: "en_en" },
-				roles		: String
+				roles		: {type: 'object', defaultValue: ["USER"]}
     			}, {
         		methods: {
             			fullName: function () {

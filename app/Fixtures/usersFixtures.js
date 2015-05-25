@@ -10,15 +10,17 @@ nodefony.registerFixture("users", function(){
 		user.create([
 			{
 				username:"admin",
-				name: "admin",
-				surname: "admin",
-				password: "f3084b5754aa27d3a9b86af28a569bc4"
+				name: "administrator",
+				surname: "nodefony",
+				password: "f3084b5754aa27d3a9b86af28a569bc4",
+				roles:["ADMIN"]
 			},{
 				username:"cci",
 				name: "christophe",
-				surname: "cci",
+				surname: "CAMENSULI",
 				password: "df6b3f921393a0d4ea273f044694c39c",
-				lang:"fr_fr"
+				lang:"fr_fr",
+				roles:["ADMIN","USER"]
 			}], 
 			function (err, items) {
 				if (err){

@@ -6,7 +6,7 @@ Default:
 secure:
   pattern:  /secure
   defaults: 
-    controller:         frameworkBundle:default:index
+    controller: frameworkBundle:default:index
             
 documentation:
     pattern:   /documentation 

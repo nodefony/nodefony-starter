@@ -45,8 +45,8 @@ nodefony.register("controller", function(){
 		return this.context ;
 	};
 
-	Controller.prototype.startSession = function(){
-		return  this.sessionService.start(this.context) ;
+	Controller.prototype.startSession = function(sessionContext, callback){
+		return  this.sessionService.start(this.context, sessionContext || "default", callback) ;
 	};
 
 	Controller.prototype.getResponse = function(content){

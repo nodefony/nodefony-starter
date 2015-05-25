@@ -1,16 +1,13 @@
 security:
-
   firewalls:
-#    secured_area2:
-#      pattern:                    ^/webrtc
-#      provider:                   in_memory
-#      context:                    ~
-#      form_login:
-#        check_path:               /webrtc/sip/cci
-#        login_path:               /login  
-#        default_target_path:      /webrtc/sip/cci
-#      sasl:
-#        private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
-#        realm:                    "nodefony"
-
+    secured_webrtc:
+      pattern:                    ^/webrtc
+      provider:                   in_memory
+      context:                    webrtc
+      form_login:
+        login_path:               /login  
+        default_target_path:      /webrtc
+      sasl:
+        private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
+        realm:                    "nodefony"
 
