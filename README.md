@@ -15,7 +15,9 @@ __Table of content__
 - [Authors](#authors)
 - [License](#license)
 
-
+#### Documentation and Wiki in progress !! 
+#### Beta Release Soon !! 
+ 
 ## <a name="requirements"></a>Requirements
 
 #### On your system *you must have Installed* :   
