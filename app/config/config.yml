@@ -31,13 +31,11 @@ App:
         authorMail:                     "admin@nodefony.com"
 
 
-
 #
 #  OVERRIDE BUNDLE MONITORING
 #
 monitoringBundle:
         debugBar:                 true
-
 
 #
 #  OVERRIDE BUNDLE HTTP 
@@ -62,8 +60,15 @@ httpBundle:
     #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"
     cookie:
-      maxAge:                     0
-    
+      maxAge:                     0   
+
+#      OVERRIDE HTTPS CONFIGURATION  see HTTP BUNDLE config for more options    
+#  https:
+#    certificats:
+#      key:                        "/config/certificates/server.key"
+#      cert:                       "/config/certificates/server.crt"
+
+
 #
 #  OVERRIDE BUNDLE ASSETIC
 #
@@ -73,7 +78,6 @@ asseticBundle:
   less:
     compress:                     true
     cache:                        true 
-
 
 #
 #       OVERRIDE  Sessions / User database 

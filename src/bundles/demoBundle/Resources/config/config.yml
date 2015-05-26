@@ -44,12 +44,10 @@ realTimeBundle:
       type:                       tcp
       port:                       1315
       domain:                     nodefony.com
-      #domain:                     192.168.100.246
     dmsg:
       type:                       tcp
       port:                       1316
       domain:                     nodefony.com
-      #domain:                     192.168.100.246
 
 #
 #  OVERRIDE BUNDLE ORM2 

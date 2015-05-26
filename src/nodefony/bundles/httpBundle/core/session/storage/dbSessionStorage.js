@@ -59,7 +59,6 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 		}.bind(this));	
 	};
 
-
 	var finderGC = function(msMaxlifetime, contextSession){
 		var nbSessionsDelete  = 0 ;
 		var myDate = 	new Date().getTime() - msMaxlifetime ;
@@ -153,6 +152,5 @@ nodefony.register.call(nodefony.session.storage, "db",function(){
 	};
 
 	return dbSessionStorage ;
-
 });
 

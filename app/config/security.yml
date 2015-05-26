@@ -6,7 +6,7 @@ security:
 
     firewalls:
         secured_area:
-            pattern:                    ^/demo
+            pattern:                    ^/
             provider:                   database
 #           provider:                  in_memory          
 #           provider:                  ldap          
