@@ -16,7 +16,7 @@ __Table of content__
 - [License](#license)
 
 #### Documentation and Wiki in progress !! 
-#### Beta Release Soon !! 
+#### Alpha Release Soon !! 
  
 ## <a name="requirements"></a>Requirements
 
