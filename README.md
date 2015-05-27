@@ -41,6 +41,7 @@ __Table of content__
 - ~~WINDOWS ( Unchecked )~~
 
 - EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
+  If someone is interested in this project !
 
 ## <a name="install"></a>Install Framework
 
