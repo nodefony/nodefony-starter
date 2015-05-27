@@ -40,6 +40,8 @@ __Table of content__
 
 - ~~WINDOWS ( Unchecked )~~
 
+- EMBEDDED SYSTEM ( Very difficult large memory footprint )  
+
 ## <a name="install"></a>Install Framework
 
 **Node.js** :
