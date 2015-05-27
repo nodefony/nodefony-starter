@@ -17,8 +17,9 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 
 ### Example flow JSON_RPC over BAYEUX over Websocket 
 ```json
-{"channel":"/meta/connect","clientId":"VkWgDHd0V","connectionType":"WEBSOCKET"}
+{"channel":"/meta/connect","clientId":"Ey3uru0N","connectionType":"WEBSOCKET"}
 
+{"version":"1.0","channel":"/meta/connect","successful":true,"error":"","clientId":"Ey3uru0N","timestamp":"2015-05-27T09:03:12.634Z","advice":{"reconnect":"retry"},"ext":{"address":"{\"remoteAddress\":\"nodefony.com\",\"host\":{\"protocol\":\"http:\",\"slashes\":true,\"auth\":null,\"host\":\"nodefony.com:5151\",\"port\":\"5151\",\"hostname\":\"nodefony.com\",\"hash\":null,\"search\":null,\"query\":null,\"pathname\":\"/\",\"path\":\"/\",\"href\":\"http://nodefony.com:5151/\"}}"},"data":{"monitoring":{"type":"tcp","port":1318,"domain":"nodefony.com"},"random":{"type":"tcp","port":1315,"domain":"nodefony.com"},"dmsg":{"type":"tcp","port":1316,"domain":"nodefony.com"}}}
 {"version":"1.0","channel":"/service/random","data":"READY","clientId":"Ey3uru0N"}
 {"version":"1.0","channel":"/service/random","data":"{\"jsonrpc\":\"2.0\",\"result\":68,\"error\":null,\"id\":null}","clientId":"Ey3uru0N"}
 {"version":"1.0","channel":"/service/random","data":"{\"jsonrpc\":\"2.0\",\"result\":86,\"error\":null,\"id\":null}","clientId":"Ey3uru0N"}
