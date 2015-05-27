@@ -11,7 +11,7 @@ install:
 node:
 	make clean
 	@if [  -f package.json  ] ; then  \
-		echo "###########  NODE JS  MODULES  INSTALATION  ###########" ;\
+		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
 		npm -d install  ;\
 	fi
 
