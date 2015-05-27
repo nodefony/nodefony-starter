@@ -34,8 +34,6 @@ __Table of content__
 #### System :
 - LINUX ( Checked )
  
-  Warning node must be in **/usr/local/bin/node**  
-
   Debian : sudo apt-get install nodejs-legacy
 
 - MACOS ( Checked )
