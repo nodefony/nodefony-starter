@@ -13,6 +13,7 @@ __Table of content__
 
 ## <a name="protocol"></a> Realtime Protocol
  
+The Realtime Service based on the Bayeux  [Bayeux](http://svn.cometd.org/trunk/bayeux/bayeux.html) protocol
 
 
 ## <a name="configuration"></a> Realtime Bundle Configuration
