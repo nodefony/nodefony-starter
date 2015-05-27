@@ -15,7 +15,7 @@ __Table of content__
  
 The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/bayeux.html) protocol
 
-#### Example Flow JSON_RPC over BAYEUX over Websocket 
+#### Example Flow service RANDOM  JSON_RPC over BAYEUX over Websocket 
 ```json
 {"channel":"/meta/connect","clientId":"Ey3uru0N","connectionType":"WEBSOCKET"}
 
