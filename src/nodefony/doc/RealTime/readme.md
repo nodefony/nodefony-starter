@@ -1,18 +1,21 @@
 # **NODEFONY FRAMEWORK**
 
-### ** Realtime Bundle** 
-
-
+## Realtime Bundle 
 __Table of content__
 
-- [configuration](#configuration) 
+- [Architecture](#architecture)
+- [Protocol](#protocol)
+- [Configuration](#configuration) 
 
+## <a name="architecture"></a> Realtime Architecture
 
 [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony)
 
+## <a name="protocol"></a> Realtime Protocol
+ 
 
 
-## <a name="configuration"></a> realtime bundle Configuration
+## <a name="configuration"></a> Realtime Bundle Configuration
 #### Example with 2 services random and dmsg :
 
 ```bash
