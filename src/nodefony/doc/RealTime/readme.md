@@ -1,0 +1,40 @@
+# **NODEFONY FRAMEWORK**
+
+### ** Realtime Bundle** 
+
+
+__Table of content__
+
+- [configuration](#configuration) 
+
+
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony)
+
+
+
+## <a name="configuration"></a> realtime bundle Configuration
+#### Example with 2 services random and dmsg :
+
+```bash
+#
+#  NODEFONY FRAMEWORK 
+#
+#       REALTIME BUNDLE CONFIG
+#
+#
+ system:
+    reconnect:
+      handshake:               	true
+      connect:                  true
+
+  services:
+    random:
+      type:                     tcp
+      port:                     1315
+      domain:                   nodefony.com
+      
+    dmsg:
+      type:                     tcp
+      port:                     1316
+      domain:                   nodefony.com
+```
