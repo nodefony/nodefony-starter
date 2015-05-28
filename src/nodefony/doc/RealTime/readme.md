@@ -33,6 +33,9 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 ```
 
 ## <a name="configuration"></a> Realtime Bundle Configuration
+
+For now the Realtime service works with TCP sockets it will in the future operate in sockets UDP sockets UNIX or even an internal service framework
+
 #### Example with 2 services random and dmsg :
 
 ```bash
