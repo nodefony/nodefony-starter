@@ -10,7 +10,7 @@ __Table of content__
 
 ## <a name="architecture"></a> Realtime Architecture
 
-[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony)[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/browserRealTime.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony) [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/browserRealTime.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="protocol"></a> Realtime Protocol
  
@@ -59,8 +59,8 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
       domain:                   nodefony.com
 ```
 
-## <a name="client"></a> Client Javascript Utilities
-#### See example Bundle demo
+## <a name="client"></a> Client Usage Javascript
+#### See example in Bundle demo   route : /demo/realtime
 ```javascript
 
 	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
@@ -80,11 +80,16 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 
 		var server = "/realtime"		
 		var realtime = new stage.realtime(server ,{
-			// fire when 401 http code :  need authenticate 
+			// fire when 401 http code :  need authenticate !! 
 			onUnauthorized:function(authenticate, realtime){
 			},
 			// fire when authetification success or not need authenticate
 			onAuthorized:function(authenticate, realtime){
+				// subscribe to a service ramdom sub procole JSON-RPC
+				realtime.subscribe(random, JSON.stringify({
+					method:"start",
+					params:[5000]
+				}));
 			},
 			// fire when error
 			onError:function(obj, status ,message){
@@ -92,20 +97,21 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 			},
 			// fire when message service event
 			onMessage:function(service, message){
-				log("SUCCESS", service);	
-				log("SUCCESS", message);	
+				if (service === "random"){
+					log("SUCCESS", message);	
+				}
 			},
 			// fire when socket connection ready 
 			onHandshake:function(socket){
 				log("SUCCESS", "HANSHAKE OK");
 			},
-			// fire when service is ready
+			// fire when  server is ready
 			onConnect:function(message, realtime){
-				log("SUCCESS", "CONNECT OK");
+				log("SUCCESS", "CONNECT server  OK");
 			},
 			// fire when server Disconnect
 			onDisconnect:function(){
-				log("INFO", "onDisconnect");
+				log("WARNING", "onDisconnect");
 			},
 			// fire when socket service close
 			onClose:function(){
@@ -120,7 +126,9 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 				log("INFO", "UNSUBSCRIBE service : " + service);
 			}
 		});	
-	<script>
+
+		realtime.start();
+	</script>
 
 ```
 
