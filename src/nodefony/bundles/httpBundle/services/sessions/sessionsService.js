@@ -325,7 +325,7 @@ nodefony.registerService("sessions", function(){
 
 	Session.prototype.serialize = function(){
 		var obj = {
-			attributes:this.protoService.prototype,
+			Attributes:this.protoService.prototype,
 			metaBag:this.protoParameters.prototype,
 			flashBag:this.flashBag
 		};
@@ -334,8 +334,8 @@ nodefony.registerService("sessions", function(){
 
 	Session.prototype.deSerialize = function(obj){
 		//var obj = JSON.parse(data);
-		for (var attr in obj.attributes){
-			this.set(attr, obj.attributes[attr]);
+		for (var attr in obj.Attributes){
+			this.set(attr, obj.Attributes[attr]);
 		}
 		for (var meta in obj.metaBag){
 			//console.log(meta + " : " + obj.metaBag[meta])
@@ -347,10 +347,11 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.remove = function(){
+		
 		try {
 			return this.storage.destroy( this.id, this.contextSession);	
 		}catch(e){
-			this.manager.looger(e, "ERROR");
+			this.manager.logger(e, "ERROR");
 			throw e;
 		}
 	};

@@ -6,7 +6,8 @@ all: node  framework
 install:
 	./console router:generate:routes
 	make asset
-	make orm
+	#make orm
+	make sequelize
 	
 node:
 	make clean
@@ -39,6 +40,10 @@ orm:
 	./console ORM2:generate:entities
 	./console ORM2:entity:show
 	./console ORM2:fixtures:load
+
+sequelize:
+	./console Sequelize:generate:entities
+	./console Sequelize:fixtures:load
 
 clean:
 	@if [ -e  node_modules ] ; then \

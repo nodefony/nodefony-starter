@@ -317,7 +317,7 @@ nodefony.registerService("firewall", function(){
 				}
 			};
 		}(this);
-
+		
 		this.securedAreas = {}; 
 		this.providers = {};
 		this.sessionStrategy = "invalidate" ;
@@ -328,6 +328,7 @@ nodefony.registerService("firewall", function(){
 		this.kernel.listen(this, "onBoot",function(){
 			this.sessionService = this.get("sessions");
 			this.sessionService.settings.start = "firewall";
+			this.orm = this.get(this.kernel.settings.orm);
 		});
 
 		//this.kernel.listen(this, "onReady",function(){
@@ -536,8 +537,8 @@ nodefony.registerService("firewall", function(){
 								break;
 								case "entity" :
 									this.kernel.listen(this, "onBoot",function(){
-										this.get("ORM2").listen(this, "onOrmReady", function(){
-											this.providers[provider] = this.get("ORM2").getEntity(element[pro].name) ;
+										this.orm.listen(this, "onOrmReady", function(){
+											this.providers[provider] = this.orm.getEntity(element[pro].name) ;
 											this.logger(" Register Provider  : "+provider + " ENTITY " +element[pro].name, "DEBUG")
 										})
 									}.bind(this))

@@ -5,7 +5,7 @@
  *
  */
 
-nodefony.register.call(nodefony.session.storage, "db",function(){
+nodefony.register.call(nodefony.session.storage, "orm2",function(){
 
 
 	var dbSessionStorage = function(manager){

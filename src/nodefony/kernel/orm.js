@@ -18,10 +18,10 @@ nodefony.register("orm", function(){
 		defaultSeverity:"ERROR"
 	};
 	
-	var connectionNotification = 0;
+	//var connectionNotification = 0;
 	var connectionMonitor = function(name, db, orm){
-		connectionNotification ++;
-		if(Object.keys(orm.settings.connectors).length == connectionNotification){
+		this.connectionNotification ++;
+		if(Object.keys(orm.settings.connectors).length == this.connectionNotification){
 			process.nextTick(function () {
 				orm.fire('onOrmReady', orm);
 			});
@@ -43,6 +43,7 @@ nodefony.register("orm", function(){
 		this.definitions = {};
 		this.autoLoader = autoLoader;
 		this.connections = {};
+		this.connectionNotification = 0 ;
 
 	};
 	

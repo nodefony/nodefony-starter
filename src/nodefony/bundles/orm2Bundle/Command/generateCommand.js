@@ -144,18 +144,20 @@ nodefony.registerCommand("ORM2",function(){
 							for(var bundle in bundles){
 								var fixtures = bundles[bundle].getFixtures();
 								if (Object.keys(fixtures).length ){
-									this.logger("LOAD FIXTURES BUNDLE : " + bundles[bundle].name, "INFO");
 									for(var fixture in fixtures){
-										var conn = service.getConnection( fixtures[fixture].connection );
-										var entity = service.getEntity( fixtures[fixture].entity );
-										var entityName = fixtures[fixture].entity ;
-										var connectionName = fixtures[fixture].connection ;
-										this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
-										var toPush = new Promise(fixtures[fixture].fixture.bind(this.ormService) )
-											.then(function(data){
-												this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")
-											}.bind(this));
-										tabPromise.push( toPush );
+										if ( fixtures[fixture].type === "ORM2"){
+											this.logger("LOAD FIXTURES BUNDLE : " + bundles[bundle].name, "INFO");
+											var conn = service.getConnection( fixtures[fixture].connection );
+											var entity = service.getEntity( fixtures[fixture].entity );
+											var entityName = fixtures[fixture].entity ;
+											var connectionName = fixtures[fixture].connection ;
+											this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
+											var toPush = new Promise(fixtures[fixture].fixture.bind(this.ormService) )
+												.then(function(data){
+													this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")
+												}.bind(this));
+											tabPromise.push( toPush );
+										}
 									}
 								}
 
@@ -198,7 +200,6 @@ nodefony.registerCommand("ORM2",function(){
 								try {
 									new Promise(fixtureDef.fixture.bind(this.ormService) )
 									.then(function(items){
-										console.log(items);
 										this.logger("LOAD FIXTURE ENTITY : "+ fixtureDef.entity +" SUCCESS")
 									}.bind(this))
 									.catch(function(e){

@@ -54,3 +54,13 @@ system:
 #
 templating:                     twig
 
+
+
+#
+# ENGINE ORM
+#      
+#       SEQUELIZE
+#       
+#
+orm:                     sequelize
+

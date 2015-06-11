@@ -56,7 +56,7 @@ httpBundle:
     tmp_dir:                      "tmp/upload"
     max_filesize:                 100000
   session:
-    handler:                      session.storage.db                    
+    handler:                      session.storage.sequelize                    
     #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"
     cookie:
@@ -82,16 +82,17 @@ asseticBundle:
 #
 #       OVERRIDE  Sessions / User database 
 #
-#       ORM2 
+#       sequelize 
 #
-#orm2Bundle: 
+#sequelizeBundle: 
 #  connectors:                    
 #    nodefony:
 #      driver:   mysql
-#      host:     nodefony.com
-#      database: 'nodefony'
-#      protocol: 'mysql'
-#      port:     '3306'
-#      user:     'root'
+#      dbname: 'nodefony'
+#      username:     'root'
 #      password: ''
-#
+#      options:
+#        dialect: mysql
+#        host:     nodefony.com
+#        port:     '3306'
+
