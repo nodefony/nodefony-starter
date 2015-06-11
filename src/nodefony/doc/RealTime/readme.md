@@ -6,10 +6,11 @@ __Table of content__
 - [Architecture](#architecture)
 - [Protocol](#protocol)
 - [Configuration](#configuration) 
+- [Client Usage](#client) 
 
 ## <a name="architecture"></a> Realtime Architecture
 
-[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony) [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/RealTime/browserRealTime.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="protocol"></a> Realtime Protocol
  
@@ -32,6 +33,9 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
 ```
 
 ## <a name="configuration"></a> Realtime Bundle Configuration
+
+For now the Realtime service works with TCP sockets it will in the future operate in sockets UDP sockets UNIX or even an internal service framework
+
 #### Example with 2 services random and dmsg :
 
 ```bash
@@ -57,3 +61,77 @@ The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/ba
       port:                     1316
       domain:                   nodefony.com
 ```
+
+## <a name="client"></a> Client Usage Javascript
+#### See example in Bundle demo   route : /demo/realtime
+```javascript
+
+	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
+	<script type="text/javascript" src="/vendors/stage/function.js"></script>
+	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
+	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/transports/socket.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
+
+	<script>
+
+		var server = "/realtime"		
+		var realtime = new stage.realtime(server ,{
+			// fire when 401 http code :  need authenticate !! 
+			onUnauthorized:function(authenticate, realtime){
+			},
+			// fire when authetification success or not need authenticate
+			onAuthorized:function(authenticate, realtime){
+				// subscribe to a service ramdom sub procole JSON-RPC
+				realtime.subscribe(random, JSON.stringify({
+					method:"start",
+					params:[5000]
+				}));
+			},
+			// fire when error
+			onError:function(obj, status ,message){
+				log("ERROR", message);
+			},
+			// fire when message service event
+			onMessage:function(service, message){
+				if (service === "random"){
+					log("SUCCESS", message);	
+				}
+			},
+			// fire when socket connection ready 
+			onHandshake:function(socket){
+				log("SUCCESS", "HANSHAKE OK");
+			},
+			// fire when  server is ready
+			onConnect:function(message, realtime){
+				log("SUCCESS", "CONNECT server  OK");
+			},
+			// fire when server Disconnect
+			onDisconnect:function(){
+				log("WARNING", "onDisconnect");
+			},
+			// fire when socket service close
+			onClose:function(){
+				log("WARNING", "onCLose");
+			},
+			// fire when service subcribed 
+			onSubscribe:function(service, message, realtime){
+				log("INFO", "SUBSCRIBE service : " + service);
+			},
+			// fire when service unsubcribed 
+			onUnsubscribe:function(service, message){
+				log("INFO", "UNSUBSCRIBE service : " + service);
+			}
+		});	
+
+		realtime.start();
+	</script>
+
+```
+

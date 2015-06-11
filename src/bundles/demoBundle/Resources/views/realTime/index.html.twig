@@ -74,6 +74,7 @@
 	<script type="text/javascript">
 		
 		var createButton = function(name, realtime){
+			if (name === "monitoring") return
 			var button = $(document.createElement("input"));
 			var label = $(document.createElement("label"));
 			button.addClass("btn btn-small btn-inverse");

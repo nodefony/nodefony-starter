@@ -242,29 +242,33 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 #### NPM : *Will be automatically installed by Makefile*
 
 ```bash
-	.----------------------------------------------------------------------------------------------------------------------------------------.
-	|                                                         NPM NODEFONY PACKAGES                                                          |
-	|----------------------------------------------------------------------------------------------------------------------------------------|
-	|    NAME     | VERSION |                                                  DESCRIPTION                                                   |
-	|-------------|---------|----------------------------------------------------------------------------------------------------------------|
-	| npm         | 2.7.6   | a package manager for JavaScript                                                                               |
-	| asciify     | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                      |
-	| websocket   | 1.0.18  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                |
-	| js-yaml     | 3.2.7   | YAML 1.2 parser and serializer                                                                                 |
-	| node-getopt | 0.2.3   | featured command line args parser                                                                              |
-	| shortid     | 2.2.2   | Amazingly short non-sequential url-friendly unique id generator.                                               |
-	| mkdirp      | 0.5.0   | Recursively mkdir, like `mkdir -p`                                                                             |
-	| xml2js      | 0.4.6   | Simple XML to JavaScript object converter.                                                                     |
-	| twig        | 0.8.2   | JS port of the Twig templating language.                                                                       |
-	| connect     | 2.29.1  | High performance middleware framework                                                                          |
-	| orm         | 2.1.13  | NodeJS Object-relational mapping                                                                               |
-	| sqlite3     | 3.0.5   | Asynchronous, non-blocking SQLite3 bindings                                                                    |
-	| mysql       | 2.6.1   | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed. |
-	| less        | 2.5.0   | Leaner CSS                                                                                                     |
-	| ascii-table | 0.0.8   | Easy tables for your console data                                                                              |
-	| mime        | 1.3.4   | A comprehensive library for mime-type mapping                                                                  |
-	| markdown-it | 4.1.0   | Markdown-it - modern pluggable markdown parser.                                                                |
-	'----------------------------------------------------------------------------------------------------------------------------------------'
+.-----------------------------------------------------------------------------------------------------------------------------------------.
+|                                                          NPM NODEFONY PACKAGES                                                          |
+|-----------------------------------------------------------------------------------------------------------------------------------------|
+|     NAME     | VERSION |                                                  DESCRIPTION                                                   |
+|--------------|---------|----------------------------------------------------------------------------------------------------------------|
+| npm          | 2.10.1  | a package manager for JavaScript                                                                               |
+| node-pre-gyp | 0.6.7   | Node.js native addon binary install tool                                                                       |
+| asciify      | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                      |
+| websocket    | 1.0.18  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                |
+| js-yaml      | 3.3.1   | YAML 1.2 parser and serializer                                                                                 |
+| node-getopt  | 0.2.3   | featured command line args parser                                                                              |
+| shortid      | 2.2.2   | Amazingly short non-sequential url-friendly unique id generator.                                               |
+| mkdirp       | 0.5.1   | Recursively mkdir, like `mkdir -p`                                                                             |
+| xml2js       | 0.4.8   | Simple XML to JavaScript object converter.                                                                     |
+| twig         | 0.8.2   | JS port of the Twig templating language.                                                                       |
+| connect      | 2.29.2  | High performance middleware framework                                                                          |
+| less         | 2.5.1   | Leaner CSS                                                                                                     |
+| ascii-table  | 0.0.8   | Easy tables for your console data                                                                              |
+| mime         | 1.3.4   | A comprehensive library for mime-type mapping                                                                  |
+| markdown-it  | 4.2.1   | Markdown-it - modern pluggable markdown parser.                                                                |
+| promise      | 7.0.1   | Bare bones Promises/A+ implementation                                                                          |
+| async        | 1.0.0   | Higher-order functions and common patterns for asynchronous code                                               |
+| orm          | 2.1.13  | NodeJS Object-relational mapping                                                                               |
+| mysql        | 2.7.0   | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed. |
+| sqlite3      | 3.0.8   | Asynchronous, non-blocking SQLite3 bindings                                                                    |
+'-----------------------------------------------------------------------------------------------------------------------------------------'
+
 ```
 
 **Big thanks:**
