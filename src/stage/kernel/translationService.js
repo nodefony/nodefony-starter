@@ -43,18 +43,21 @@ stage.register("i18n",function(){
 
 	service.prototype.boot = function(){
 		//GET APP locale
-		this.defaultLocale = this.container.getParameters("module.app").locale;
+		if ( this.container.getParameters("module.app") )
+			this.defaultLocale = this.container.getParameters("module.app").locale;
+
 		if  ( ! translate[this.defaultLocale])
 			translate[this.defaultLocale] = {};
 
 		this.logger("DEFAULT LOCALE APPLICATION ==> " + this.defaultLocale ,"DEBUG");
-		this.logger("//FIXME LOCALE getLang in controller etc ..." ,"WARNING");
-		window.Twig.extendFunction("getLangs", this.getLangs.bind(this));
-		window.Twig.extendFunction("trans_default_domain", this.trans_default_domain.bind(this));
-		window.Twig.extendFilter("trans", this.translation.bind(this));
-		window.Twig.extendFunction("trans", this.translation.bind(this));
-		window.Twig.extendFilter("getLangs", this.getLangs.bind(this));
-
+		//this.logger("//FIXME LOCALE getLang in controller etc ..." ,"WARNING");
+		if (window.Twig){
+			window.Twig.extendFunction("getLangs", this.getLangs.bind(this));
+			window.Twig.extendFunction("trans_default_domain", this.trans_default_domain.bind(this));
+			window.Twig.extendFilter("trans", this.translation.bind(this));
+			window.Twig.extendFunction("trans", this.translation.bind(this));
+			window.Twig.extendFilter("getLangs", this.getLangs.bind(this));
+		}
 	};
 
 	service.prototype.getLangs = function(locale, data){
