@@ -84,7 +84,8 @@ asseticBundle:
 #
 #       sequelize 
 #
-#sequelizeBundle: 
+sequelizeBundle: 
+  debug:        false
 #  connectors:                    
 #    nodefony:
 #      driver:   mysql

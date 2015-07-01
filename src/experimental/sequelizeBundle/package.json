@@ -9,6 +9,8 @@
 		"javascript"
   	],
   	"dependencies": {
+		"sqlite3": "*",
+		"mysql": "*",
 		"sequelize":"*"
   	}
 }

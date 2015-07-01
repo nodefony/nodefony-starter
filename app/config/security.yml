@@ -7,9 +7,8 @@ security:
     firewalls:
         secured_area:
             pattern:                    ^/
-            provider:                   database
+            provider:                   nodefony
 #           provider:                  in_memory          
-#           provider:                  ldap          
             form_login:
               check_path:               /secure
               login_path:               /login  
@@ -22,7 +21,7 @@ security:
               realm:                    "nodefony"
             crossDomain: 
                 allow-origin:           "*"
-                #allow-origin:          {"localhost":"localhost:83", "cci":"mydomain.com:5151"}
+                #allow-origin:          {"localhost":"localhost:83", "cci":"mydomain.com"}
                 Access-Control:         {
                         "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
                         "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
@@ -45,12 +44,6 @@ security:
              memory:
                 users:
                     admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
-        database:
+        nodefony:
              entity:
                 name:   "user"
-#        ldap:
-#            class:
-#                name:              ldapManager
-#                property:
-#                  url:              192.168.100.45/CN=test,OU=Development,DC=Home
-#                manager_name:       ldap

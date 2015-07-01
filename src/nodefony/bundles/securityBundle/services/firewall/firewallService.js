@@ -344,7 +344,7 @@ nodefony.registerService("firewall", function(){
 						for ( var area in this.securedAreas ){
 							if ( this.securedAreas[area].match(context.request, context.response) ){
 								context.security = this.securedAreas[area];
-								this.sessionService.start(context, this.securedAreas[area].sessionContext,function(error, session){;
+								this.sessionService.start(context, this.securedAreas[area].sessionContext,function(error, session){
 									var meta = session.getMetaBag("security");
 									if (meta){
 										context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
@@ -538,13 +538,13 @@ nodefony.registerService("firewall", function(){
 								case "entity" :
 									this.kernel.listen(this, "onBoot",function(){
 										this.orm.listen(this, "onOrmReady", function(){
-											this.providers[provider] = this.orm.getEntity(element[pro].name) ;
-											this.logger(" Register Provider  : "+provider + " ENTITY " +element[pro].name, "DEBUG")
+											this.providers[provider] = this.orm.getEntity(element[pro].name);
+											this.logger(" Register Provider  : "+provider + " ENTITY " +element[pro].name, "DEBUG");
 										})
-									}.bind(this))
+									}.bind(this));
 								break;
 								default:
-									this.logger("Provider type :"+pro+" not define ")
+									this.logger("Provider type :"+pro+" not define ");
 							}
 						}	
 					}

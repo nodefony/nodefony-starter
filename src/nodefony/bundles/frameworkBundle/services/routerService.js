@@ -109,6 +109,9 @@ nodefony.registerService("router", function(){
 				case result instanceof nodefony.wsResponse :
 					this.notificationsCenter.fire("onResponse", result, this.context);
 				break ;
+				case result instanceof Promise :
+					return result;
+				break ;
 				case nodefony.typeOf(result) === "object":
 					if ( this.defaultView ){
 						result = controller.render(this.defaultView, result );
@@ -120,6 +123,7 @@ nodefony.registerService("router", function(){
 						}
 					}
 				break;
+				
 				default:
 					//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
 					// CASE async controller wait fire onResponse by other entity

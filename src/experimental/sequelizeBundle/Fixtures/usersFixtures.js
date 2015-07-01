@@ -84,10 +84,6 @@ nodefony.registerFixture("users", function(){
 		
 		
 		}
-
-
-
-		
 			
 	}
 

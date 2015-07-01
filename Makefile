@@ -1,13 +1,14 @@
 DISTRIB := $(shell uname)
 
 
-all: node  framework 
+all: node  framework install 
 
 install:
-	./console router:generate:routes
+	./console npm:install
 	make asset
-	#make orm
 	make sequelize
+	./console router:generate:routes
+	./console npm:list
 	
 node:
 	make clean
@@ -16,11 +17,9 @@ node:
 		npm -d install  ;\
 	fi
 
-vendors:
 	
 doc:
 	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default
-
 
 asset:
 	./console assets:install 
@@ -32,14 +31,6 @@ framework:
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
 	fi
-	./console npm:install
-	./console npm:list
-
-orm:
-	./console ORM2:connections:state
-	./console ORM2:generate:entities
-	./console ORM2:entity:show
-	./console ORM2:fixtures:load
 
 sequelize:
 	./console Sequelize:generate:entities

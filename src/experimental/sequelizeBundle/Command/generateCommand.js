@@ -19,29 +19,30 @@ nodefony.registerCommand("Sequelize",function(){
 			case "generate" : 
 				switch( arg[2 ]){
 					case "entities" :
-						var i = 0 ;
 						var tab =[];
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
-							tab.push( function(callback){
-								connection.sync({force: true}).then(function(db) {
-									this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
-									i++;
-									callback(i);
-								}.bind(this)).catch(function(error) {
-									console.log(arguments)
-									this.logger("DATABASE :" + connection.config.database +" CONNECTION : "+connectionName+" : " + error, "ERROR");
-									callback(-1);
+							tab.push( new Promise( function(resolve, reject){
+									this.logger("DATABASE SYNC : "+connectionName);
+									connection.sync({force: false,logging:this.logger}).then(function(db) {
+										this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
+										resolve(connectionName);
+									}.bind(this)).catch(function(error) {
+										this.logger("DATABASE :" + connection.config.database +" CONNECTION : "+connectionName+" : " + error, "ERROR");
+										reject(-1);
+									}.bind(this))
 								}.bind(this))
-							}.bind(this));
+							);
 						}.bind(this));
 						this.ormService.listen(this, "onOrmReady",function(service){
-							async.series(tab, function(count){
-								var nbConnection = Object.keys(service.connections).length ;
-								if (count === nbConnection )
-									this.terminate();
-								if ( count === -1 )
-									this.terminate();
-							}.bind(this));
+							Promise.all(tab)
+							.catch(function(e){
+								this.logger(e,"ERROR");
+							}.bind(this))
+							.then(function(name){
+							}.bind(this))
+							.done(function(){
+								this.terminate();
+							}.bind(this))
 
 						}.bind(this));
 					break;

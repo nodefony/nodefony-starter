@@ -19,7 +19,12 @@ var nodefony = function(){
 	 *	
 	 */
 	var Nodefony = function(){
-		this.io = {};
+		this.io = {
+			transports:{}
+		};
+		this.session = {
+			storage:{}
+		};
 		this.version="1.0";
 		this.crypto={};
 		this.bundles={};

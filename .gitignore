@@ -7,7 +7,7 @@ node_modules/*
 web/*
 
 *.[oa]
-app/Resources/databases/nodefony.db
+app/Resources/databases/*
 
 #Ignore vin backup
 *.swp

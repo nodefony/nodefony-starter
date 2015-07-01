@@ -38,10 +38,12 @@ nodefony.registerBundle ("sequelize", function(){
 
 		// load bundle library 
 		this.autoLoader.loadDirectory(this.path+"/core");
-
+		
+		
 		this.mother = this.$super;
 		this.mother.constructor(kernel, container);
 
+		
 		/*
 		 *	If you want kernel wait sequelizeBundle event <<onReady>> 
 		 *
@@ -52,7 +54,7 @@ nodefony.registerBundle ("sequelize", function(){
 		var service =  this.get("sequelize");
 		service.listen(this, "onOrmReady",function(){
 			this.fire("onReady", this, service);	
-		});
+		}.bind(this));
 		
 	};
 

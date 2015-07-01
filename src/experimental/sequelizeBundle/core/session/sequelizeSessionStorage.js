@@ -4,7 +4,6 @@
  *
  *
  */
-
 nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 
 
@@ -162,7 +161,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			}else{
 				this.entity.create(data,{isNewRecord:true})
 				.then(function(session){
-					this.manager.logger("ADD SESSION : " + session.session_id,"INFO");
+					this.manager.logger("ADD SESSION : " + session.session_id +" user-id :" + (session.user_id ?session.user_id : "anonymous")  ,"INFO");
 					callback(null, session) ;
 				}.bind(this)).catch(function(error){
 					this.manager.logger(error);

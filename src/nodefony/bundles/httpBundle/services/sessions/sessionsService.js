@@ -3,7 +3,6 @@
  */
 var crypto = require('crypto');
 
-
 nodefony.registerService("sessions", function(){
 
 
@@ -24,7 +23,6 @@ nodefony.registerService("sessions", function(){
 		return dec;
 	}
 
-
 	var cookiesParser = function(context, name){
 		if (context.cookies[name] ){
 			return context.cookies[name];
@@ -35,7 +33,6 @@ nodefony.registerService("sessions", function(){
 	var checkSecureReferer = function(){
 		var host = this.context.request.request.headers['host'] ;
 		var meta = this.getMetaBag( "host" );
-
 		if ( host === meta ){
 			return host ;
 		}else{
@@ -52,6 +49,7 @@ nodefony.registerService("sessions", function(){
 		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
 		this.setMetaBag("context", this.contextSession );
 		this.setMetaBag("created", time );
+		this.setMetaBag("remoteAddress", this.context.request.remoteAdress );
 		this.setMetaBag("host", this.context.request.request.headers['host'] );
 		if ( this.context.request.request.headers['user-agent'] )
 			this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
@@ -59,9 +57,9 @@ nodefony.registerService("sessions", function(){
 
 	var createSession = function(lifetime, id){
 		this.id = id || this.setId();
+		setMetasSession.call(this);	
 		this.manager.logger("NEW SESSION CREATE : "+ this.id)	
 		this.cookieSession = this.setCookieSession(lifetime) ;
-		setMetasSession.call(this);	
 		return this ;
 	};
 
@@ -220,6 +218,7 @@ nodefony.registerService("sessions", function(){
 				this.contextSession = contextSession ;
 			}
 			this.storage.start(this.id, this.contextSession, function(error, result){
+				//console.log("pass srart");
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();
@@ -323,11 +322,12 @@ nodefony.registerService("sessions", function(){
 		return cookie ;
 	};
 
-	Session.prototype.serialize = function(){
+	Session.prototype.serialize = function(user){
 		var obj = {
 			Attributes:this.protoService.prototype,
 			metaBag:this.protoParameters.prototype,
-			flashBag:this.flashBag
+			flashBag:this.flashBag,
+			user_id:user
 		};
 		return  obj ;		
 	};
@@ -418,9 +418,9 @@ nodefony.registerService("sessions", function(){
 		return value ;
 	};
 
-	Session.prototype.save = function(){
+	Session.prototype.save = function(user){
 		try {
-			return this.storage.write(this.id, this.serialize(), this.contextSession,function(err, result){
+			return this.storage.write(this.id, this.serialize(user), this.contextSession,function(err, result){
 				if (err){
 					this.logger( err ,"ERROR" )
 					return ; 
@@ -484,7 +484,7 @@ nodefony.registerService("sessions", function(){
 				if ( context.session ){
 					context.session.setMetaBag("lastUsed", new Date() );
 					if ( ! this.saved ){
-						context.session.save();	
+						context.session.save(context.user ? context.user.id : null);	
 					}
 				}
 			});

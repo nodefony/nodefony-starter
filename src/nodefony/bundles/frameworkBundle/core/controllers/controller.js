@@ -5,6 +5,7 @@
  *
  *
  */
+var Promise = require('promise');
 
 nodefony.register("controller", function(){
 
@@ -301,7 +302,7 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.forward = function(name, param){
 		var resolver = this.container.get("router").resolveName(this.container, name);
-		resolver.callController(param );
+		return resolver.callController(param );
 	};
 
 	Controller.prototype.getUser = function(){

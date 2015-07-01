@@ -104,8 +104,6 @@ nodefony.registerService("sequelize", function(){
 	var sequelize = function(container, kernel, autoLoader){
 	
 		this.container = container ;	
-		this.settings = container.getParameters("bundles.sequelize");
-		this.debug = this.settings.debug ;
 		this.mother = this.$super;
 		this.mother.constructor("sequelize", container, kernel, autoLoader);
 		this.engine = require('sequelize');
@@ -124,6 +122,7 @@ nodefony.registerService("sequelize", function(){
 		this.mother.boot();	
 		this.kernel.listen(this, 'onBoot', function(kernel){
 			this.settings = this.container.getParameters("bundles.sequelize");
+			this.debug = this.settings.debug ;
 			if ( this.settings.connectors && Object.keys(this.settings.connectors).length ){
 				for(var name in this.settings.connectors){
 					this.createConnection(name, this.settings.connectors[name]);

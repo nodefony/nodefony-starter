@@ -21,9 +21,9 @@ nodefony.register("appKernel",function(){
 	 	*	Bundles to register in Application
 	 	*/
 		this.registerBundles([
-			//"./vendors/nodefony/bundles/orm2Bundle",
 			"./src/experimental/sequelizeBundle",
-			//"./src/bundles/demoBundle"
+			//"./src/bundles/stageboxBundle",
+			"./src/bundles/demoBundle",
 		]);
 
 		/*
