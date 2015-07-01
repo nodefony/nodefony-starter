@@ -53,7 +53,7 @@ $ git clone https://github.com/ccamensuli/nodefony.git
 $ cd nodefony
 
 $ make
-$ make install
+
 ```
 
 ## <a name="start"></a>Start 
@@ -130,13 +130,14 @@ Usage: node console
   -v, --version  show version
 
 Commands : [arguments]
+nodefony
+	npm:list							 List all installed packages 
+	npm:install							 Install all framework packages
 framework
 	generate:bundle nameBundle path                                  Generate a Bundle directory in path directory
 	generate:controller  nameController path                         Generate a controller js file in bundle path
 	generate:command nameCommand path                                Generate a command js file in bundle path
 	generate:service nameService path                                Generate a service js file in bundle path
-	npm:list                                                         List all installed packages 
-	npm:install                                                      install all framework packages
 	router:generate:routes                                           Generate all routes
 	router:generate:route routeName                                  Generate one route
 	router:match:url url                                             Get route who match url 
@@ -147,15 +148,9 @@ assetic
 	minification:compile [compilateur]                               Minificaton javascript compilateur : google / yahoo
 security
 	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5
-orm2
-	ORM2:fixtures:load                                               Load data fixtures to your database
-	ORM2:fixture:load bundleName:fixtureName                         Load a specific data fixture to your database
-	ORM2:generate:entity connectionName entityName                   Generate an Entity
-	ORM2:generate:bundleEntity bundleName:entityName                 Generate Bundle Entity
-	ORM2:generate:entities                                           Generate All Entities
-	ORM2:database:create                                             Create a database
-	ORM2:entity:show                                                 show  Entities
-	ORM2:connections:state                                           view  connections states
+sequelize
+	Sequelize:fixtures:load                                          Load data fixtures to your database
+	Sequelize:generate:entities                                      Generate All Entities
 App
 	server:run                                                       Run Application
 
@@ -217,6 +212,7 @@ nodefony.register("appKernel",function(){
 	 	*	Bundles to register in Application
 	 	*/
 		this.registerBundles([
+			...
 			"./src/bundles/helloBundle"
 		]);
 
