@@ -21,8 +21,7 @@ nodefony.register("appKernel",function(){
 	 	*	Bundles to register in Application
 	 	*/
 		this.registerBundles([
-			"./src/experimental/sequelizeBundle",
-			//"./src/bundles/stageboxBundle",
+			"./src/nodefony/bundles/sequelizeBundle",
 			"./src/bundles/demoBundle",
 		]);
 
