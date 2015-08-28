@@ -7,7 +7,7 @@ node_modules/*
 web/*
 
 *.[oa]
-app/Resources/databases/*
+#app/Resources/databases/*
 
 #Ignore vin backup
 *.swp
