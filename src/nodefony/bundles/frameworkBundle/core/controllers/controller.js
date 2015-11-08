@@ -233,7 +233,7 @@ nodefony.register("controller", function(){
 			var head = nodefony.extend({
 				'Content-Type': File.mimeType,
 				'Content-Length':length,	
-				'Content-Disposition:' : ' inline; filename="'+File.name+'"'
+				'Content-Disposition' : ' inline; filename="'+File.name+'"'
 			},headers);
 			var code = 200 ;
 		}
@@ -245,6 +245,7 @@ nodefony.register("controller", function(){
 			throw e ;
 		}
 		
+		//console.log(head);
 		fileStream.on("open",function(){
 			try {
 				response.response.writeHead(code, head); 
