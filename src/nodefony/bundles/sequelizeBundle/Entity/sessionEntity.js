@@ -45,7 +45,17 @@ nodefony.registerEntity("session", function(){
 			},
 			createdAt	: { type: Sequelize.DATE, defaultValue:Sequelize.NOW }
 		},{
-			logging:false
+			logging:false,
+			classMethods: {
+				fetchAll:function(callback){
+					this.findAll().then(function(result){
+                                                return callback(null, result)
+                                        }).catch(function(error){
+                                                if (error)
+                                                        return callback(error, null);
+                                        });
+				}
+			}
 		});
 
 		ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){

@@ -1,5 +1,5 @@
 DISTRIB := $(shell uname)
-
+VERBOSE = 0 
 
 all: node  framework install 
 
@@ -14,7 +14,11 @@ node:
 	make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
-		npm -d install  ;\
+		if [ $(VERBOSE) = 0 ] ; then \
+			npm  install  ;\
+		else \
+			npm -d install  ;\
+		fi \
 	fi
 
 	

@@ -1,7 +1,7 @@
 {
   "name": "nodefony",
   "version": "0.1.0",
-  "description": "tools web developpement nodefony",
+  "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
     "start": "node nodefony",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",
-  "license": "",
+  "license": "CECILL-B",
   "readmeFilename": "README.md",
   "contributors": [
     {

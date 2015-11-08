@@ -15,7 +15,7 @@
 		{% for route in routes %}
 		<tr>
 			<td>{{route.name}}</td>
-			<td>{{route.path}}</td>
+			<td><a href={{route.path}}>{{route.path}}</a></td>
 			<td>{{route.variables}}</td>
 			<td>{{route.defaults.controller}}</td>
 			<td>{{route.firstMatch}}</td>

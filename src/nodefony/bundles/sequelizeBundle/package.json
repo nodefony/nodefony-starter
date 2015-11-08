@@ -1,16 +1,17 @@
 {
-  	"name": "SEQUELIZE",
-  	"version": "1.0",
-  	"description": "",
-  	"author": " ",
-  	"contributors": [],
-  	"keywords": [
+	"name": "SEQUELIZE",
+	"version": "1.0",
+	"description": "ORM",
+	"contributors": [],
+	"keywords": [
 		"nodefony",
 		"javascript"
-  	],
-  	"dependencies": {
+	],
+	"dependencies": {
 		"sqlite3": "*",
 		"mysql": "*",
 		"sequelize":"*"
-  	}
+	},
+	"author": "cci <christophe.camensuli@gmail.com>",
+	"license": "CECILL-B"
 }

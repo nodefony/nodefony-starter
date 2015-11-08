@@ -11,6 +11,6 @@
     	},
   	"devDependencies": {},
   	"author": "cci <christophe.camensuli@gmail.com>",
-  	"license": "",
+	"license": "CECILL-B",
   	"readmeFilename": "README.md"
 }

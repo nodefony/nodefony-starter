@@ -89,6 +89,26 @@ nodefony.registerCommand("Sequelize",function(){
 						this.showHelp();
 				}
 				break;
+			case "request" :
+				this.ormService.listen(this, "onOrmReady",function(service){
+					switch( arg[2 ]){
+						case "find":
+							service.getEntity("session").fetchAll(function(error, result){
+								if (error){
+									this.logger(error, "ERROR");
+									this.terminate();
+								}
+								//console.log(result[0].dataValues)
+								for (var i ; i <  result.length ;i++){
+									console.log(result[i]);
+									//console.log(result[0].dataValues[ele].Attributes);
+								}
+								this.terminate();
+							}.bind(this))
+						break;
+					}
+				});
+			break;
 			default:
 				this.showHelp();
 				this.terminate();
@@ -104,7 +124,7 @@ nodefony.registerCommand("Sequelize",function(){
 			entities:["Sequelize:generate:entities" ,"Generate All Entities"],
 			//create:["Sequelize:database:create" ,"Create a database"],
 			//show:["Sequelize:entity:show" ,"show  Entities"],
-			//connections:["Sequelize:connections:state" ,"view  connections states"]
+			find:["Sequelize:request:find" ,"find entry in database"]
 		},
 		worker:sequelize
 
