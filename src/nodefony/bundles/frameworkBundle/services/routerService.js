@@ -86,7 +86,11 @@ nodefony.registerService("router", function(){
 	};
 	
 	Resolver.prototype.getController= function(name){
+		if (this.kernel.environment === "dev"){
+			this.bundle.reloadController(name);
+		}
 		return this.bundle.controllers[name];
+		
 	};
 
 	Resolver.prototype.logger = function(pci, severity, msgid,  msg){

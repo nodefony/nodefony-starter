@@ -42,14 +42,15 @@ module.exports = function(){
 	 * @param {String} file Path to file 
 	 *
  	 */
-	autoload.prototype.load = function(file){
+	autoload.prototype.load = function(file, force){
 		//console.log(file)
-		if (file in cache){
+		if (file in cache &&  force !== true){
 			this.logger( new Error("AUTOLOADER File : "+file + " already  loaded"),"DEBUG");
 			return cache[file];
 		}
 		if(fs.existsSync(file)){
 			var txt = fs.readFileSync(file, {encoding: 'utf8'});
+			//console.log('autoaod :' + txt ) ;
 			try {
 				cache[file] = vm.runInThisContext(txt, file);
 			}catch(e){

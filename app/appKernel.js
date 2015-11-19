@@ -22,7 +22,7 @@ nodefony.register("appKernel",function(){
 	 	*/
 		this.registerBundles([
 			"./src/nodefony/bundles/sequelizeBundle",
-			"./src/bundles/demoBundle",
+			//"./src/bundles/demoBundle",
 		]);
 
 		/*

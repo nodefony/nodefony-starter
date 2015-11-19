@@ -102,8 +102,8 @@ nodefony.register("Bundle", function(){
 		return syslog.logger(pci, severity, msgid,  msg)
 	}
 
-	Bundle.prototype.loadFile = function(path){
-		return this.autoLoader.load(path);
+	Bundle.prototype.loadFile = function(path, force){
+		return this.autoLoader.load(path, force);
 	};
 
 	Bundle.prototype.boot = function(){
@@ -175,12 +175,44 @@ nodefony.register("Bundle", function(){
 					this.controllers[name] = func ;
 					this.logger("Register Controller : "+name , "DEBUG");
 				}else{
-					this.logger("Register Controller : "+name +"  error Controller bad format");
+					this.logger("Register Controller : "+name +"  error Controller closure bad format");
 				}
 			}
 		}.bind(this));
 
 	};
+
+	Bundle.prototype.reloadController = function( nameC ){
+		if ( ! nameC ) return ;
+		var controller = this.finder.result.findByNode("controller");
+		try {
+			controller.forEach(function(ele, index, array){
+				var res = regController.exec( ele.name );
+				if ( res &&  res[1] === nameC ){
+					delete this.controllers[name] ;
+					this.controllers[name] = null
+					var name = res[1] ;
+					var Class = this.loadFile( ele.path, true);
+					if (typeof Class === "function" ){
+						//Class.prototype.path = ele.dirName;
+						Class.prototype.name = name;
+						Class.prototype.container = this.container;
+						Class.prototype.bundle = this;
+						//Class.prototype.viewFiles = this.viewsFile.findByNode(name);
+						var func = Class.herite(nodefony.controller);
+						//this.controllers[name] = new func(this.container);
+						this.controllers[name] = func ;
+						this.logger("Reload Controller : "+name , "DEBUG");
+					}else{
+						this.logger("Register Controller : "+name +"  error Controller closure bad format ");
+					}
+					throw "BREAK" ;
+				}
+			}.bind(this));
+		}catch(e){
+			return ;
+		}	
+	}
 
 	Bundle.prototype.registerViews = function(result){
 		// find  views files 
