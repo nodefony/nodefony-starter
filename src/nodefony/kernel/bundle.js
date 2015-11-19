@@ -202,7 +202,7 @@ nodefony.register("Bundle", function(){
 						var func = Class.herite(nodefony.controller);
 						//this.controllers[name] = new func(this.container);
 						this.controllers[name] = func ;
-						this.logger("Reload Controller : "+name , "DEBUG");
+						//this.logger("Reload Controller : "+name , "DEBUG");
 					}else{
 						this.logger("Register Controller : "+name +"  error Controller closure bad format ");
 					}
@@ -210,7 +210,8 @@ nodefony.register("Bundle", function(){
 				}
 			}.bind(this));
 		}catch(e){
-			return ;
+			if ( e === "BREAK" ) return ;
+			throw e ;
 		}	
 	}
 
