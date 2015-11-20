@@ -20,9 +20,22 @@ nodefony.registerController("default", function(){
 	
 
 	defaultController.prototype.webrtcAction = function(){
+		var kernel = this.get("kernel") ;
+		return this.render("webRtcBundle::webrtc.html.twig",{
+			title:"DEMO WEBRTC", 
+			login:this.context.user.name,
+			nodefony:kernel.settings.name + " " + kernel.settings.system.version
+		});
+	}
 
-		return this.render("webRtcBundle::webrtc.html.twig",{title:"DEMO WEBRTC"});
+	
+	defaultController.prototype.navAction = function(login){
 
+		return this.render('webRtcBundle::navBar.html.twig',{
+			security:this.context.user,
+			login:login ? login : false, 
+			
+		});	
 	}
 
 
@@ -34,7 +47,7 @@ nodefony.registerController("default", function(){
 			case "WEBSOCKET":
 				var service = this.get("webrtc");
 				var context = this.getContext();
-				if ( message){
+				if ( message ){
 					switch ( message.type ){
 						case "utf8" :
 							return service.handleMessage(message.utf8Data, context);
@@ -62,8 +75,6 @@ nodefony.registerController("default", function(){
 				return this.render("webRtcBundle::demo.html.twig",{title:"WEBRTC",userName:userName});
 			break;
 		}
-
-
 	};
 
 	/**

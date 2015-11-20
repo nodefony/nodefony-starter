@@ -70,6 +70,7 @@ stage.register("kernel",function(){
 		$(document).ready(this.listen(this, "onDomReady", this.domReady));
 		$(window).resize(this.listen(this,"onResize"));
 		$(window).unload(this.listen(this,"onUnLoad"));	
+		$(window).load(this.listen(this,"onLoad"));	
 
 		//BOOT	
 		this.listen(this, "onBoot" , this.boot)

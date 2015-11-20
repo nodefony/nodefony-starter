@@ -10,7 +10,7 @@ webrtcsip:
 
 
 webrtcDemo: 
-  pattern:  /webrtc/demo/1
+  pattern:  /
   defaults: {controller: "webRtcBundle:default:webrtc"}
   requirements: 
     method: get,websocket

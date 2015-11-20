@@ -198,7 +198,9 @@ nodefony.registerService("httpKernel", function(){
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
 					getLocale:translation.getLocale.bind(translation),
-					trans_default_domain:translation.trans_default_domain.bind(translation),
+					trans_default_domain:function(){
+						translation.trans_default_domain.apply(translation, arguments) ;
+					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
 

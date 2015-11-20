@@ -10,9 +10,13 @@ stage.register("appKernel",function(){
 
 		var kernel = this.$super ;
 		kernel.constructor(environnement, settings);
-		this.loadModule(url,{
-			async:false
-		});
+		if ( url ){
+			this.loadModule(url,{
+				async:false
+			});
+		}else{
+			this.fire("onBoot", this);
+		}
 			
 	}.herite(stage.kernel);
 
