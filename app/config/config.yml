@@ -63,10 +63,10 @@ httpBundle:
       maxAge:                     0   
 
 #      OVERRIDE HTTPS CONFIGURATION  see HTTP BUNDLE config for more options    
-#  https:
-#    certificats:
-#      key:                        "/config/certificates/server.key"
-#      cert:                       "/config/certificates/server.crt"
+  https:
+    certificats:
+      key:                        "/config/certificates/key.pem"
+      cert:                       "/config/certificates/cert.pem"
 
 
 #

@@ -9,13 +9,19 @@
 	<link href="/webRtcBundle/clean/assets/css/simple-line-icons.css" rel="stylesheet" media="screen">
 	<link href="/webRtcBundle/clean/assets/css/animate.css" rel="stylesheet">
 
-
 	<!-- Custom styles CSS -->
 	<link href="/webRtcBundle/clean/assets/css/style.css" rel="stylesheet" media="screen">
 
-	<script src="/webRtcBundle/clean/assets/js/modernizr.custom.js"></script>
+	<style>
+		html,body {
+			height:100%;
+		}
 
-
+		.container,.panel {
+			height:100%;
+		}
+	</style>
+	
 {% endblock %}
 
 
@@ -57,9 +63,7 @@
 
 <header class="header">
 
-
 	{{render( controller('webRtcBundle:default:nav', login) )}}
-
 
 </header>
 <!-- Navigation end -->
@@ -73,10 +77,10 @@
 			<div class="col-sm-6 col-sm-offset-3">
 
 				<div class="pfblock-header wow fadeInUp">
-					<h2 class="pfblock-title">This is what I do</h2>
+					<h2 class="pfblock-title">WEBRTC</h2>
 					<div class="pfblock-line"></div>
 					<div class="pfblock-subtitle">
-						No one lights a lamp in order to hide it behind the door: the purpose of light is to create more light, to open people’s eyes, to reveal the marvels around.
+						DEMO WEBRTC with NODEFONY FRAMENWORK 
 					</div>
 				</div>
 
@@ -95,7 +99,8 @@
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">REALTIME APPLICATION</h3>
 						<div class="iconbox-desc">
-							Good things come to those who wait, but only the things left by those who hustle
+							Application VIDEO with 
+							NODEFONY realtime bundle 	
 						</div>
 					</div>
 				</div>
@@ -159,23 +164,8 @@
 
 <section id="demo" class="pfblock ">
 
-	<div class="container">
-		<div class="row">
+	{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'login': login} %}
 
-			<div class="col-sm-12">
-				{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'foo': 'bar'} %}
-			</div>
-
-		</div><!-- .row -->
-		<div class="row">
-
-			<div class="col-sm-12">
-				
-			</div>
-
-		</div><!-- .row -->
-
-	</div>
 </section>
 
 
@@ -207,12 +197,10 @@
 
 			<div class="col-sm-12">
 
-				<p class="heart">
-					Generate with  {{ nodefony }}
-                    		</p>
+			
                     		<p class="copyright">
-				<span class="fa fa-th fa-2x animated pulse"></span>	
-                        	© 2015   {{ nodefony }}  
+					<span class="fa fa-th fa-2x animated pulse"></span>	
+					© 2015   Generate with {{ nodefony }}  
 				</p>
 
 			</div>

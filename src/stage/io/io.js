@@ -30,6 +30,12 @@ stage.register("io",function(){
 			a.protocol == loc.protocol;
 	};
 
+	var isSecure = function(url){
+		var loc = window.location;
+		var a = urlToOject(url);
+		return a.protocol === "https:" ;
+	}
+
 	/*
  	 *
  	 *   CLASS AUTHENTICATE
@@ -253,6 +259,7 @@ stage.register("io",function(){
 		encodeUriQuery:encodeUriQuery,
 		getHeaderJSON: getHeaderJSON,
 		isSameOrigin: isSameOrigin,
+		isSecure:isSecure,
 		protocols: {},
 		authentication: {
 			authenticate: authenticate,

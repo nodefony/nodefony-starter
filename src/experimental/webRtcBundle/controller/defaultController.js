@@ -19,13 +19,34 @@ nodefony.registerController("default", function(){
 
 	
 
-	defaultController.prototype.webrtcAction = function(){
-		var kernel = this.get("kernel") ;
-		return this.render("webRtcBundle::webrtc.html.twig",{
-			title:"DEMO WEBRTC", 
-			login:this.context.user.name,
-			nodefony:kernel.settings.name + " " + kernel.settings.system.version
-		});
+	defaultController.prototype.webrtcAction = function(message){
+
+		switch( this.getRequest().method ){
+			case "GET":
+				var kernel = this.get("kernel") ;
+				return this.render("webRtcBundle::webrtc.html.twig",{
+					title:"DEMO WEBRTC", 
+				        userName:this.context.username,
+					login:this.context.user.name + " " + this.context.user.surname,
+					nodefony:kernel.settings.name + " " + kernel.settings.system.version
+				});
+			break;
+			case "WEBSOCKET":
+				var service = this.get("webrtc");
+				var context = this.getContext();
+				if ( message ){
+					switch ( message.type ){
+						case "utf8" :
+							return service.handleMessage(message.utf8Data, context);
+						break;
+					}
+				}else{
+					return service.handleConnection(context);
+				}
+			break;
+			default:
+			break;
+		}
 	}
 
 	

@@ -7,11 +7,31 @@
 		<input type="button" id='bt' class="col-md-3 col-xs-6 col-centered" value="Appeler" />
 	</label>
 </div>
-<div class="row row-centered">
-	<div id="remoteDiv" class="col-md-8 col-xs-12 row-centered">
-	</div>
-	<div id="myDiv" class="col-md-4 col-xs-12 row-centered">
-		
+<div class="row" >
+	<div class="container-fluid" >
+		<div class="row col-md-8">
+			<div class="panel panel-default">
+  				<div class="panel-heading">
+    					<h3 class="panel-title">Participants</h3>
+  				</div>
+  				<div  id="remoteDiv" class="panel-body">
+  				</div>
+			</div>
+		</div>
+
+		<div class="row col-md-4">
+			<div class="panel panel-default" >
+  				<div class="panel-heading">
+    					<h3 class="panel-title">{{login}}</h3>
+  				</div>
+  				<div  id="myDiv" class="panel-body">
+					<div class="">
+						<canvas id="canvas" ></canvas>
+					</div>
+  				</div>
+			</div>
+		</div>
+			
 	</div>
 </div>
 

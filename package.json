@@ -28,7 +28,8 @@
     "mime":"*",
     "markdown-it":"*",
     "promise":"*",
-    "async":"*"
+    "async":"*",
+    "heapdump":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

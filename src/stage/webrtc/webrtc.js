@@ -87,8 +87,12 @@ stage.register("webRtc",function(){
 		this.userName = this.settings.userName ;
 		this.password = this.settings.password ;
 		this.notificationsCenter = stage.notificationsCenter.create(this.settings, this);
+		var isSecure = stage.io.isSecure(server) ;
+		if (/^http[s]:\/\//){
+			server = server.replace(/^http[s]:\/\/(.*)/,"$1") ; 
+		}
 		if ( ! transport ){
-			var wsserver = "ws://"+server ;
+			var wsserver = isSecure ? "wss://"+server : "ws://"+server ;
 			this.transport = new stage.io.transports.websocket(wsserver, settings);
 		}else{
 			this.transport = transport ;		
