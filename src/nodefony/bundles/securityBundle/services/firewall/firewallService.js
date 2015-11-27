@@ -105,6 +105,7 @@ nodefony.registerService("firewall", function(){
 		this.provider = null;
 		this.formLogin = null;
 		this.checkLogin = null;
+		this.redirect_Https = false ;
 
 		this.firewall.kernel.listen(this, "onReady",function(){
 			try {
@@ -155,7 +156,7 @@ nodefony.registerService("firewall", function(){
 
 			var ajax = context.request.isAjax() ;
 			//FIXME REDIRECT HTTPS
-			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready ){
+			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  this.redirect_Https ){
 				this.redirectHttps(context);
 			}else{
 				context.response.setStatusCode( 401 ) ;
@@ -288,6 +289,12 @@ nodefony.registerService("firewall", function(){
 	securedArea.prototype.setContextSession = function(context){
 		this.sessionContext = context ;
 	};
+
+
+	securedArea.prototype.setRedirectHttps = function(value){
+		this.redirect_Https = value || false ;
+	};
+
 
 	/*
  	 *
@@ -454,8 +461,13 @@ nodefony.registerService("firewall", function(){
 									}
 								break;
 								case "remember_me":
+									//TODO
 								break;
 								case "logout":
+									//TODO
+								break;
+								case "redirectHttps":
+									area.setRedirectHttps(param[config]);
 								break;
 								case "provider" :
 									//this.kernel.listen(this, "onReady",function(provider, context){

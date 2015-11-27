@@ -34,6 +34,7 @@ security:
             anonymous:                  ~
             context:                    ~
             stateless:                  false
+            redirectHttps:              false
         
     #TODO authorisation               
     access_control:
