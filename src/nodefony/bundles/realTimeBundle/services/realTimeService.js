@@ -428,6 +428,7 @@ nodefony.registerService("realTime", function(){
 	realTime.prototype.handleConnection = function(message, context){
 		switch(context.type){
 			case "WEBSOCKET":
+			case "WEBSOCKET SECURE":
 				return this.onMessage(message, context);
 			break;
 			case "HTTP":
@@ -532,6 +533,7 @@ nodefony.registerService("realTime", function(){
 					//return connection.response ;
 				break;
 				case "WEBSOCKET":
+				case "WEBSOCKET SECURE":
 					connection.send(message);
 				break;
 			}

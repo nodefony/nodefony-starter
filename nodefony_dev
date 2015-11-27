@@ -1,4 +1,5 @@
-#!/usr/bin/env node --debug
+#!/usr/bin/env node 
+//--debug
 
 //var profiler = require('v8-profiler');
 //var heapdump = require('heapdump');

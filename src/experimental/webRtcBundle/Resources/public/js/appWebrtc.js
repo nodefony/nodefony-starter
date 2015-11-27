@@ -255,8 +255,8 @@ $( document ).ready(function(){
 		containerRemoteSpace:$("#remoteDiv")
 	});
 
-	var server = "/realtime"
-		//var server = "/secure/realtime";
+		//var server = "/realtime"
+		var server = "/secure/realtime";
 		var service = new stage.realtime(server ,{
 			// fire when 401 http code
 			onUnauthorized:function(authenticate, realtime){
@@ -264,7 +264,7 @@ $( document ).ready(function(){
 			},
 		    // fire when authetification success or not authenticate
 		    onAuthorized:function(authenticate, realtime){
-			    //stage.ui.log("WELCOME TO REAL TIME stage WEBRTC ")
+			    //stage.ui.log("WELCOME TO REAL TIME  WEBRTC ")
 		    },
 		    // fire when error
 		    onError:function(code, realtime ,message){
@@ -282,11 +282,11 @@ $( document ).ready(function(){
 
 		    // fire when socket connection ready 
 		    onHandshake:function(message, socket, realtime){
-			    //stage.ui.info("HANSHAKE OK");
+			    stage.ui.info("HANSHAKE OK");
 		    },
 		    // fire when service is ready
 		    onConnect:function(message, realtime){
-			    //stage.ui.log("CONNECT ON : "+realtime.publicAddress);
+			    stage.ui.log("CONNECT ON : "+realtime.publicAddress);
 			    if (message.data.OPENSIP){
 				    realtime.subscribe("OPENSIP");
 			    }

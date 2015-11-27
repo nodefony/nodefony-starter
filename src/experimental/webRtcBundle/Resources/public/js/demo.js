@@ -26,6 +26,26 @@ var App = new stage.appKernel(null, "dev", {
 
 		mix = new stage.media.mediaMix();
 
+		var select = $("#bt").bind("click",function(event){
+				var user = $("#invite").val();
+				webRTC.createOffer(user)
+			});
+
+		$('#invite').keypress(function(e){
+			if (e.which == 13) {
+				var user = $("#invite").val();
+				webRTC.createOffer(user);
+				return false;
+			}
+		});
+
+		$('#startDemo').click(function(e){
+
+			var userName = $("#username").val();
+			$('#containerStart').hide();
+			$('#containerDemo').show();
+			webRTC.register( userName );
+		});
 
 	},
 	onBoot:function() {
@@ -33,13 +53,9 @@ var App = new stage.appKernel(null, "dev", {
 	},
 	onReady: function() {
 		//this.uiContainer = $(".debugContent").get(0) || $("body").get(0);
-		
 
-		var userName = $("#userName").val();
-		var url = "https://nodefony.com:5152"+$("#userName").attr("data-url");
-		//var url = "nodefony.com:5151/" ;
-		var webRTC = new stage.webRtc(url, null,{
-			protocol:"natif",	
+		var url = $("#username").attr("data-url");
+		webRTC = new stage.webRtc(url, null,{
 			onRegister:function(user, webrtc){
 				//console.log(user)
 				App.logger("register User "+user.name)
@@ -56,31 +72,30 @@ var App = new stage.appKernel(null, "dev", {
 						panner		: false,
 						analyser	: true,
 						onReady		:function(media){
-							media.play();
+							// not patch on audio output my microphone 
+							//media.play();
 							var intervalSpectrumId = setInterval(function(){
 								drawSpectrum($('#canvas').get(0) ,media.analyser);
 							}, 30);
 						}	
 					});
-
 				})
 			},
-			
 			onOffer:function(message, user, transac){
 				
-				stage.ui.Confirm("APPEL ENTRANT","call from :"+message.fromName,function(cancel, accept){
-					if (cancel){
-						//TODO DECLINED
-						message.transaction.createResponse(603, "Declined");
-						message.transaction.sendResponse();
-					}
-					if (accept){
-						transac.setRemoteDescription("offer", user, message.rawBody, message.dialog);
-					}
-				})
+				var res = confirm("APPEL ENTRANT call from : "+message.response.from ) ; 
+				if (res) {
+					transac.setRemoteDescription("offer", user, message.response.sessionDescription, message.dialog);
+				}else{
+					message.dialog.invite({
+						code:603,
+						message:"Declined"	
+					})
+				}
+				
 			},
-			onRemoteStream:function(event, remoteStream/*.urlStream*/, webRtc){
-				var vid = mv.AddRemoteMedia(remoteStream, {to:{name:""}});
+			onRemoteStream : function(event, remoteStream/*.urlStream*/, webrtc){
+				var vid = mv.AddRemoteMedia(remoteStream, webrtc);
 				remoteStream.attachMediaStream(vid);
 				var track = mix.createTrack(remoteStream,{
 					filter		: false,
@@ -93,20 +108,55 @@ var App = new stage.appKernel(null, "dev", {
 						}, 30);
 					}	
 				});					
-
 			},
-			onRinging:function(user){
+			onRinging:function(user, message){
+				console.log( user + " Sonne");
+			},
+			onTrying:function(user, message){
+				//console.log( user + " Communication ");
 			},
 			onOffHook:function(user){
+				console.log(user + " à Décrocher");
 			},
 			onOnHook:function(user){
+				console.log( user +" à Racrocher");
 				mv.removeRemoteMedia(user);
 			},
 			onDecline:function(user, code, message){
+				console.log(user + " à Décliner");
 			},
+			onError:function(method, code, message){
+				 switch (method){
+					case "INVITE" :
+						switch (code){
+							case 404 :
+								stage.ui.log(message.response.to+" n'est pas en ligne" );
+							break;
+							case 408 :
+								stage.ui.log(message.response.to+" ne repond pas" );
+							break;
+							default:
+								stage.ui.log(message.response.to+": "+ message.response.message);
+							break;
+						}
+					break;
+					case "REGISTER" :
+						switch (code){
+							case 409 :
+								stage.ui.log(message.response.to+" :" + message.response.message );
+							break;
+							default:
+								stage.ui.log(message.response.to+": "+ message.response.message);
+							break;
+						}
+					break;
+					default:
+						throw new Error(message);
+				}
 
+			}
 		});
-		webRTC.register( userName, "1234");
+		
 
 
 	},
@@ -258,7 +308,7 @@ var App = new stage.appKernel(null, "dev", {
 		this.videoSpace.addClass("video-container embed-responsive embed-responsive-16by9");	
 		row.append(this.videoSpace);
 		if (this.settings.chat){
-			this.addChatSpace(row)	
+			//this.addChatSpace(row)	
 		}
 	};		
 
@@ -266,7 +316,6 @@ var App = new stage.appKernel(null, "dev", {
 		this.name = name;
 		this.nbTrackVideo =  mediaStream.videotracks.length ;
 		this.nbTrackAudio =  mediaStream.audiotracks.length ;
-		
 
 		switch (this.nbTrackVideo){
 			case 0 :
@@ -294,7 +343,7 @@ var App = new stage.appKernel(null, "dev", {
 		this.buildControls(name, null, this.videoSpace, null, mediaStream);
 		
 		if (this.settings.chat){
-			this.addUserChat(name)	
+			//this.addUserChat(name)	
 		}
 		return this.mediaElement
 	};
@@ -371,7 +420,7 @@ var App = new stage.appKernel(null, "dev", {
 		this.buildControls(transaction.to.name, transaction, ele,  media.get(0), remoteStream);
 
 		if (this.settings.chat){
-			this.addUserChat(transaction.to.name)	
+			//this.addUserChat(transaction.to.name)	
 		}
 		return media.get(0);
 

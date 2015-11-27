@@ -35,5 +35,5 @@ realTimeBundle:
     OPENSIP:
       type:                       tcp
       port:                       5060
-      domain:                     192.168.100.171
+      domain:                     192.168.100.235
 

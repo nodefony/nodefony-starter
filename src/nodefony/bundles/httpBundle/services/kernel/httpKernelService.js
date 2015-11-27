@@ -120,6 +120,24 @@ nodefony.registerService("httpKernel", function(){
 		} );
 	};
 
+	httpKernel.prototype.onErrorWebsoket = function(container, error){
+		if ( ! error ){
+ 		       	error = {status:500,
+				message:"nodefony undefined error "
+			}
+		}else{
+			if ( error.stack ){
+				var myError =  error.stack;
+				this.logger(myError);
+				myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
+            				
+			}else{
+				var myError =  error;
+				this.logger(util.inspect(error));
+			}
+		}
+		var context = container.get('context');
+	}
 
 	var controller = function(pattern, data){
 		try {
@@ -221,7 +239,7 @@ nodefony.registerService("httpKernel", function(){
 					controller:controller.bind(container)
 				}
 				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onError);
+				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				if (! this.firewall){
 					context.notificationsCenter.fire("onRequest",container, request, response );

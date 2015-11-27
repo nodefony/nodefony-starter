@@ -22,7 +22,8 @@ nodefony.register("appKernel",function(){
 	 	*/
 		this.registerBundles([
 			"./src/nodefony/bundles/sequelizeBundle",
-			//"./src/bundles/demoBundle",
+			"./src/experimental/webRtcBundle",
+			"./src/bundles/demoBundle",
 		]);
 
 		/*
@@ -35,13 +36,13 @@ nodefony.register("appKernel",function(){
 				var http = this.get("httpServer").createServer();
 
 				// create HTTPS server
-				//var https = this.get("httpsServer").createServer();
+				var https = this.get("httpsServer").createServer();
 
 				// create WEBSOCKET server
 				var ws = this.get("websocketServer").createServer(http);
 
 				// create WEBSOCKET SECURE server
-				//var wss = this.get("websocketServerSecure").createServer(https);
+				var wss = this.get("websocketServerSecure").createServer(https);
 
 			}.bind(this));
 		};

@@ -17,16 +17,16 @@ nodefony.registerController("default", function(){
 		this.mother.constructor(container, context);
 	};
 
-	
-
 	defaultController.prototype.webrtcAction = function(message){
 
 		switch( this.getRequest().method ){
 			case "GET":
+				var url= this.getRequest().url.href ;
 				var kernel = this.get("kernel") ;
 				return this.render("webRtcBundle::webrtc.html.twig",{
 					title:"DEMO WEBRTC", 
-				        userName:this.context.username,
+					url:url,
+				        username:this.context.user.username,
 					login:this.context.user.name + " " + this.context.user.surname,
 					nodefony:kernel.settings.name + " " + kernel.settings.system.version
 				});
@@ -49,7 +49,6 @@ nodefony.registerController("default", function(){
 		}
 	}
 
-	
 	defaultController.prototype.navAction = function(login){
 
 		return this.render('webRtcBundle::navBar.html.twig',{
@@ -58,7 +57,6 @@ nodefony.registerController("default", function(){
 			
 		});	
 	}
-
 
 	defaultController.prototype.indexAction = function(userName, message){
 		switch( this.getRequest().method ){
@@ -82,7 +80,6 @@ nodefony.registerController("default", function(){
 			break;
 		}
 	};
-
 
 	/**
 	*

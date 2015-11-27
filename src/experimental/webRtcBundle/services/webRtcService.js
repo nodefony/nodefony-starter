@@ -30,16 +30,11 @@ nodefony.registerService("webrtc", function(){
 
 	Connections.prototype.removeConnection = function(id){
 		if (this.connections[id]) {
-			delete this.connections[id]
+			delete this.connections[id];
 			return true ;
 		}
 		return false ;
 	};
-
-
-	
-
-
 
 	/*
  	 *
@@ -54,11 +49,20 @@ nodefony.registerService("webrtc", function(){
 		this.state = "register";
 		this.ip = this.connection.remoteAddress;
 		this.sessionDescription = null ;
+		this.dialogs = {};
 	
 	}
 	User.prototype.getConnection = function(){
 		return this.connection ;
 	};
+
+	User.prototype.removeConnection = function(){
+		this.getConnection().removeConnection(this.connectionId);
+	}
+
+	User.prototype.setDialog = function(){
+	
+	}
 	
 	User.prototype.setSessionDescription =function(sessionDescription){
 		this.sessionDescription = sessionDescription;
@@ -83,7 +87,7 @@ nodefony.registerService("webrtc", function(){
 			type		: type,
 			userName	: this.name,
 			idConnection	: this.connectionId,
-			ip		: this.ip	
+			ip		: this.ip,	
 		}, data);
 		//console.log(ele)
 		this.send(ele);
@@ -146,7 +150,6 @@ nodefony.registerService("webrtc", function(){
 			for ( var users in this.users ){
 				if ( this.users[users].connectionId === id){
 					this.logger("delete user :" + this.users[users].name);
-					
 					delete this.users[users] ;
 				} 
 			}
@@ -154,7 +157,8 @@ nodefony.registerService("webrtc", function(){
 		});
 		return context.send(JSON.stringify({
 			type:"CONNECT",
-			idConnection:id
+			idConnection:id,
+			code:200
 		}));
 	};
 
@@ -170,21 +174,37 @@ nodefony.registerService("webrtc", function(){
 				case "REGISTER" :
 					//console.log(message)
 					if (message.idConnection in this.connections.connections){
-						//console.log("id in connection struct")
-						this.users[message.user] = new User(message.user, this.connections.connections[message.idConnection], this);
-						return this.users[message.user].ack(message.type , {
+						//console.log("id in connection struct");
+						
+						if ( this.users[message.from] ){
+							var res = nodefony.extend( message, {
+								type:"REGISTER",
+								userName:message.from,
+								code:"409",
+								message:"Already REGISTERED on : "+ this.users[message.from].ip
+							});
+							this.users[message.from].ack(message.type , res);
+							// call to new connection
+							var connection = this.connections.getConnectionById(message.idConnection);
+							var str = JSON.stringify(res);
+							this.logger("TO : "+this.name + '  Message '  + str);
+							connection.send(str);
+						}else{
+							this.users[message.from] = new User(message.from, this.connections.connections[message.idConnection], this);
+						}
+						return this.users[message.from].ack(message.type , nodefony.extend( message, {
 							type:"REGISTER",
-							userName:message.user,
+							userName:message.from,
 					        	code:"200",
 					        	message:"OK"
-						});
+						}));
 					}else{
-						return context.send({
+						return context.send(nodefony.extend( message, {
 							type:"REGISTER",
-							userName:message.user,
+							userName:message.from,
 					        	code:"501",
 					        	message:"connection dead"
-						});
+						}));
 					}
 					
 				break;
@@ -196,39 +216,53 @@ nodefony.registerService("webrtc", function(){
 						type : message.type,
 						sessionDescription:null,
 						from:null,
-						to:null
+						to:null,
+						code:message.code
 					}
 					if (this.users[message.from]) {
 						var user = this.users[message.from] ;
-						res.sessionDescription = user.setSessionDescription( message.sessionDescription );
+						if ( message.sessionDescription ){
+							res.sessionDescription = user.setSessionDescription( message.sessionDescription );
+						}
 						res.from = user.name
 						if (this.users[message.to] ){
 							var remote = this.users[message.to] ;
 							res.to = remote.name;
-							remote.ack(message.type, res);
+							remote.ack(message.type,  message   );
 						}
+					}else{
+						return context.send(nodefony.extend( message, {
+							type:message.type,
+							userName:message.from,
+					        	code:"404",
+					        	message:"User not connected"
+						}));
 					}
 				break;
-				case "CANDIDATE" :
-					//console.log((new Date()) + ' Received Message ' + message.type);
+				case "BYE" :
 					var res = {
-						label		: message.label,
-						id		: message.id,
-						candidate	: message.candidate,
-						from		: null,
-						to		: null
+						type : message.type,
+						from:null,
+						to:null,
+						code:200
 					}
 					if (this.users[message.from]) {
-						res.from = this.users[message.from].name ;
-						if (this.users[message.to]){
+						var user = this.users[message.from] ;
+						res.from = user.name ;
+						if (this.users[message.to] ){
 							var remote = this.users[message.to] ;
 							res.to = remote.name;
-							remote.ack(message.type, res);
+							remote.ack( message.type, nodefony.extend( message, res ) );
 						}
+					}else{
+						return context.send(nodefony.extend( message, {
+							type:message.type,
+							userName:message.from,
+					        	code:"404",
+					        	message:"Dialog not found"
+						}));
 					}
-				break;
-				case "BY" :
-					console.log("BY")
+
 				break;
 				case "CLOSE" :
 					console.log("CLOSE")

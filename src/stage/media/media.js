@@ -245,7 +245,7 @@ stage.register("media", function(){
 
 
 	var mediaStream = null ;
-	var MygetUserMedia = null;
+	var getUserMedia = null;
 	var attachMediaStream = null;
 	var getMediaStream =null;
 
@@ -256,7 +256,7 @@ stage.register("media", function(){
 		try {
 			if (stage.browser.Webkit){
 
-  				MygetUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+  				getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
 
 
 				getMediaStream = function(stream){
@@ -278,7 +278,7 @@ stage.register("media", function(){
 			}
 			if (stage.browser.Gecko){
 								
-  				MygetUserMedia = navigator.getUserMedia ? navigator.getUserMedia.bind(navigator) :   navigator.mozGetUserMedia.bind(navigator);
+  				getUserMedia = navigator.getUserMedia ? navigator.getUserMedia.bind(navigator) :   navigator.mozGetUserMedia.bind(navigator);
 
 				getMediaStream = function(stream){
 					return window.URL.createObjectURL(stream);
@@ -299,7 +299,7 @@ stage.register("media", function(){
 				return true;
 			}
 			if (stage.browser.Opera){
-				MygetUserMedia = navigator.getUserMedia ;
+				getUserMedia = navigator.getUserMedia ;
 				getMediaStream = function(stream){
 					return stream;
 				};
@@ -355,7 +355,7 @@ stage.register("media", function(){
 			this.settings = stage.extend( {}, defaultSettingsStream, settings)
 			this.notificationsCenter.settingsToListen(settings);
 		}
-		MygetUserMedia({
+		getUserMedia({
 				video:this.settings.video,
 				audio:this.settings.audio
 			},

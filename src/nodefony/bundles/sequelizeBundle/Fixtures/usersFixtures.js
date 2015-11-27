@@ -18,6 +18,28 @@ nodefony.registerFixture("users", function(){
 				password: "df6b3f921393a0d4ea273f044694c39c",
 				lang:"fr_fr",
 				roles:"USER"
+
+			},{
+				username:"1000",
+				name: "Utilisateur",
+				surname: "1000",
+				password: "5fb539cef0da8097c351fe3aa6c497d9",
+				lang:"fr_fr",
+				roles:"USER"
+			},{
+				username:"2000",
+				name: "Utilisateur",
+				surname: "1000",
+				password: "3e91bde18f174002ada78e2ac9267658",
+				lang:"fr_fr",
+				roles:"USER"
+			},{
+				username:"3000",
+				name: "Utilisateur",
+				surname: "1000",
+				password: "a82afd4773f6d2f6b17666d54e78dbd4",
+				lang:"fr_fr",
+				roles:"USER"
 			}];
 
 

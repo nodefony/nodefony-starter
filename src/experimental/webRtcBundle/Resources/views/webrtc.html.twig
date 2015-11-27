@@ -162,9 +162,31 @@
 <!-- Services end -->
 
 
-<section id="demo" class="pfblock ">
 
-	{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'login': login} %}
+<section id="demo" class=" calltoaction" >
+
+	<div class="container">
+
+		<div id="containerStart" class="row">
+
+			<div class="col-md-12 col-lg-12">
+				<h2 style="visibility: visible; animation-delay: 0.1s; animation-name: slideInRight;" class="wow slideInRight animated" data-wow-delay=".1s">ARE YOU READY TO START?</h2>
+				<div style="visibility: visible; animation-delay: 0.2s; animation-name: slideInRight;" class="calltoaction-decription wow slideInRight animated" data-wow-delay=".2s">
+					WEBRTC DEMO .
+				</div>
+			</div>
+
+			<div style="visibility: visible; animation-delay: 0.3s; animation-name: slideInRight;" class="col-md-12 col-lg-12 calltoaction-btn wow slideInRight animated" data-wow-delay=".3s">
+				<a  id="startDemo" class="btn btn-lg">CONNECT WEBRTC</a>
+			</div>
+
+		</div><!-- .row -->
+
+
+		<div id="containerDemo" class="container" style="display:none">
+			{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'username': username, 'url':url, 'login':login} %}
+		</div><!-- .row -->
+	</div><!-- .container -->
 
 </section>
 
@@ -243,6 +265,7 @@
 	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/webrtc/webrtc.js"></script>
 	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
 	<script type="text/javascript" src="/vendors/stage/webrtc/webrtc.js"></script>
 

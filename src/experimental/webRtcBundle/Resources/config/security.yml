@@ -2,8 +2,8 @@ security:
   firewalls:
     secured_webrtc:
       pattern:                    ^/webrtc
-      provider:                   in_memory
       context:                    webrtc
+      provider:                   nodefony
       form_login:
         login_path:               /login  
         default_target_path:      /webrtc
