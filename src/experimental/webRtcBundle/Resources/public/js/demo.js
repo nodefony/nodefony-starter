@@ -4,6 +4,12 @@
  * * * * * 
  */
 
+
+
+
+
+
+
 //== Kernel
 var App = new stage.appKernel(null, "dev", {
 	debug: true,
@@ -46,6 +52,7 @@ var App = new stage.appKernel(null, "dev", {
 			$('#containerDemo').show();
 			webRTC.register( userName );
 		});
+		notify.call(this);
 
 	},
 	onBoot:function() {
@@ -59,7 +66,7 @@ var App = new stage.appKernel(null, "dev", {
 			onRegister:function(user, webrtc){
 				//console.log(user)
 				App.logger("register User "+user.name)
-				user.mediaStream.getUserMedia({
+				var ms = user.mediaStream.getUserMedia({
 					audio:true,
 					video:true
 				},function(mediaStream){
@@ -130,23 +137,23 @@ var App = new stage.appKernel(null, "dev", {
 					case "INVITE" :
 						switch (code){
 							case 404 :
-								stage.ui.log(message.response.to+" n'est pas en ligne" );
+								console.log(message.response.to+" n'est pas en ligne" );
 							break;
 							case 408 :
-								stage.ui.log(message.response.to+" ne repond pas" );
+								console.log(message.response.to+" ne repond pas" );
 							break;
 							default:
-								stage.ui.log(message.response.to+": "+ message.response.message);
+								console.log(message.response.to+": "+ message.response.message);
 							break;
 						}
 					break;
 					case "REGISTER" :
 						switch (code){
 							case 409 :
-								stage.ui.log(message.response.to+" :" + message.response.message );
+								console.log(message.response.to+" :" + message.response.message );
 							break;
 							default:
-								stage.ui.log(message.response.to+": "+ message.response.message);
+								console.log(message.response.to+": "+ message.response.message);
 							break;
 						}
 					break;
@@ -224,11 +231,56 @@ var App = new stage.appKernel(null, "dev", {
 			mobile: false
 		});
 		wow.init();
-
 	},
-	onGetConfigError:function(module) {
-	}
 });
+
+
+
+	var notify = function () {
+  		// Voyons si le navigateur supporte les notifications
+  		if (!("Notification" in window)) {
+    			this.logger("Ce navigateur ne supporte pas les notifications desktop", "INFO");
+  		}
+
+  		// Voyons si l'utilisateur est OK pour recevoir des notifications
+  		else if (Notification.permission === "granted") {
+    			// Si c'est ok, créons une notification
+    			var notification = new Notification("Notification HTML 5 activé !",{
+				body:"NODEFONY ",
+				icon:"/webRtcBundle/images/fanout_icon.png"
+			});
+  		}
+
+  		// Sinon, nous avons besoin de la permission de l'utilisateur
+  		// Note : Chrome n'implémente pas la propriété statique permission
+  		// Donc, nous devons vérifier s'il n'y a pas 'denied' à la place de 'default'
+  		else if (Notification.permission !== 'denied') {
+    			Notification.requestPermission(function (permission) {
+
+      				// Quelque soit la réponse de l'utilisateur, nous nous assurons de stocker cette information
+      				if(!('permission' in Notification)) {
+        				Notification.permission = permission;
+      				}
+
+      				// Si l'utilisateur est OK, on crée une notification
+      				if (permission === "granted") {
+        				var notification = new Notification("Notification HTML 5 activé !",{
+						body:"NODEFONY ",
+						icon:"/webRtcBundle/images/fanout_icon.png"
+					});
+      				}else{
+					this.logger("Vous avez réfusez de recevoir des notifications ", "INFO");
+      				}
+
+    			}.bind(this));
+  		}
+		if (Notification.permission === "denied"){
+			this.logger("Notifications HTML5 Bloqué ", "INFO");	
+		}
+
+  		// Comme ça, si l'utlisateur a refusé toute notification, et que vous respectez ce choix,
+  		// il n'y a pas besoin de l'ennuyer à nouveau.
+	}
 
 
 
@@ -250,6 +302,7 @@ var App = new stage.appKernel(null, "dev", {
             	for (var i = 0; i < barCount; i++) {
                 	var magnitude = freqByteData[i];
                 	// some values need adjusting to fit on the canvas
+			ctx.fillStyle = 'rgb(150,50,250)';
                 	ctx.fillRect(bar_width * i, height, bar_width - 2, -magnitude + 60);
             	}
         };	

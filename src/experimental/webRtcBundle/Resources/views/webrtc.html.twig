@@ -12,25 +12,19 @@
 	<!-- Custom styles CSS -->
 	<link href="/webRtcBundle/clean/assets/css/style.css" rel="stylesheet" media="screen">
 
+
 	<style>
 		html,body {
 			height:100%;
 		}
 
-
-
 		.container,.panel {
 			height:100%;
 		}
-		.icon{
-			margin: 0 0 15px;
-			font-size: 32px;
-			color: #222;
-		}
-		.icon-realtime{
-			width:30px;
-			height:30px;
-			background-image:url("/webRtcBundle/images/fanout_icon.png");	
+		
+		.icon-img{
+			width:60px;
+			height:60px;
 		}
 		
 
@@ -103,12 +97,11 @@
 		</div>
 
 		<div class="row">
-
 			<div class="col-sm-3">
 
 				<div class="iconbox wow slideInLeft">
-					<div class="icon">
-						<span class="icon-realtime"></span>
+					<div class="iconbox-icon">
+						<img src = "/webRtcBundle/images/fanout_icon.png" class="icon-img"></img>
 					</div>
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">REALTIME APPLICATION</h3>
@@ -125,7 +118,7 @@
 
 				<div class="iconbox wow slideInLeft">
 					<div class="iconbox-icon">
-						<span class="icon-puzzle"></span>
+						<img src = "/webRtcBundle/images/icon-sip-trunking.png" style="width:60px;height:53px"></img>
 					</div>
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">SIP PROTOCOL</h3>
@@ -141,7 +134,7 @@
 
 				<div class="iconbox wow slideInRight">
 					<div class="iconbox-icon">
-						<span class="icon-badge"></span>
+						<img src = "/webRtcBundle/images/google-io.png" style="width:60px;height:60px"></img>
 					</div>
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">WEB AUDIO API</h3>
@@ -157,7 +150,7 @@
 
 				<div class="iconbox wow slideInRight">
 					<div class="iconbox-icon">
-						<span class="icon-question"></span>
+						<img src = "/webRtcBundle/images/Webrtc.png" style="width:60px;height:42px"></img>
 					</div>
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">WEBRTC API</h3>
@@ -235,7 +228,6 @@
 
 			
                     		<p class="copyright">
-					<span class="fa fa-th fa-2x animated pulse"></span>	
 					© 2015   Generate with {{ nodefony }}  
 				</p>
 
@@ -257,8 +249,6 @@
 {% endblock %}
 
 
-
-
 {% block javascripts %}
 	{{ parent() }}
 
@@ -267,7 +257,6 @@
 	<script src="/webRtcBundle/clean/assets/js/jquery.sticky.js"></script>
 	<script src="/webRtcBundle/clean/assets/js/smoothscroll.js"></script>
 	<script src="/webRtcBundle/clean/assets/js/wow.min.js"></script>
-
 
 	<!-- LIBRARY STAGE-->
 	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
@@ -280,9 +269,9 @@
 	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/protocols/webrtc/webrtc.js"></script>
+	<script type="text/javascript" src="/vendors/stage/media/adapter.js"></script>
 	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
-	<script type="text/javascript" src="/vendors/stage/webrtc/webrtc.js"></script>
-
+	<script type="text/javascript" src="/vendors/stage/media/webrtc/webrtc.js"></script>
 
 	<!-- KERNEL STAGE-->
 	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
@@ -296,9 +285,7 @@
 	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
 	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
 
-
 	<!-- ENTRY POINT -->
 	<script src="/webRtcBundle/js/demo.js"></script>
-
 
 {% endblock %}
