@@ -210,8 +210,7 @@ nodefony.registerService("webrtc", function(){
 				break;
 				case "ANSWER" :
 				case "OFFER" :
-					//console.log(message.type);
-					//console.log(message)
+					console.log(message.type);
 					var res = {
 						type : message.type,
 						sessionDescription:null,
@@ -219,6 +218,7 @@ nodefony.registerService("webrtc", function(){
 						to:null,
 						code:message.code
 					}
+
 					if (this.users[message.from]) {
 						var user = this.users[message.from] ;
 						if ( message.sessionDescription ){
@@ -229,14 +229,17 @@ nodefony.registerService("webrtc", function(){
 							var remote = this.users[message.to] ;
 							res.to = remote.name;
 							remote.ack(message.type,  message   );
+						}else{
+							user.ack(message.type, nodefony.extend( message, {
+								from:message.to,
+								to:message.from,
+					        		code:404,
+					        		message:"User not connected"
+							}) ) ;	
 						}
 					}else{
-						return context.send(nodefony.extend( message, {
-							type:message.type,
-							userName:message.from,
-					        	code:"404",
-					        	message:"User not connected"
-						}));
+
+						
 					}
 				break;
 				case "BYE" :

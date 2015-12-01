@@ -511,22 +511,21 @@ stage.register("webRtc",function(){
 				});
 
 				this.protocol.listen(this, "onBye",function(message){
-					//console.log(this.transactions)
-					if ( message.response.from in  this.transactions ){
+					//console.log(this.transactions[message.response.from])
+					//console.log(message.response.from)
+					//console.log(message.response.to)
+					if ( this.transactions[message.response.from] ){
 						var transac =  this.transactions[message.response.from];
 						var name = message.response.from
-					}else{
-						var transac =  this.transactions[message.response.to];
-						var name = message.response.to
+						transac.close();
 					}
-					transac.close();
 					this.notificationsCenter.fire("onOnHook", name ,message);
 					delete this.transactions[name];
 					delete this.users[name];
 				});
 
-				this.protocol.listen(this, "onError",function(message){
-					this.notificationsCenter.fire("onError", message.type, message.code, message);	
+				this.protocol.listen(this, "onError",function(type, code, message){
+					this.notificationsCenter.fire("onError", type, code, message);	
 				});
 
 				this.listen(this, "onCreateAnwser", function(to, sessionDescription, webrtcTransaction, diag ){

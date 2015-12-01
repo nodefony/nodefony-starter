@@ -52,7 +52,7 @@ var App = new stage.appKernel(null, "dev", {
 			$('#containerDemo').show();
 			webRTC.register( userName );
 		});
-		notify.call(this);
+		this.notify = new notify(this);
 
 	},
 	onBoot:function() {
@@ -101,8 +101,8 @@ var App = new stage.appKernel(null, "dev", {
 				}
 				
 			},
-			onRemoteStream : function(event, remoteStream/*.urlStream*/, webrtc){
-				var vid = mv.AddRemoteMedia(remoteStream, webrtc);
+			onRemoteStream : function(event, remoteStream, transaction){
+				var vid = mv.AddRemoteMedia(remoteStream, transaction);
 				remoteStream.attachMediaStream(vid);
 				var track = mix.createTrack(remoteStream,{
 					filter		: false,
@@ -111,53 +111,64 @@ var App = new stage.appKernel(null, "dev", {
 					onReady		:function(media){
 						media.play();
 						var intervalSpectrumId = setInterval(function(){
-							drawSpectrum($('#canvas2').get(0) ,media.analyser);
+							//drawSpectrum($('#canvas2').get(0) ,media.analyser);
+							var canvasContainer = mv.users[transaction.to.name].canvasContainer ;
+							drawSpectrum(canvasContainer.get(0) ,media.analyser);
 						}, 30);
-					}	
+						 mv.users[transaction.to.name].idInterval = intervalSpectrumId ;
+					}.bind(this)	
 				});					
 			},
 			onRinging:function(user, message){
-				console.log( user + " Sonne");
+				App.notify.logger( user + " Sonne");
 			},
 			onTrying:function(user, message){
 				//console.log( user + " Communication ");
 			},
 			onOffHook:function(user){
-				console.log(user + " à Décrocher");
+				App.notify.logger(user + " à Décrocher");
 			},
-			onOnHook:function(user){
-				console.log( user +" à Racrocher");
+			onOnHook:function(user, message){
+				//console.log(arguments);
+				//console.log(message);
+				App.notify.logger( user +" à Racrocher");
+				//console.log(mv.users)
+				if ( mv.users[user] &&  ( mv.users[user].idInterval || mv.users[user].idInterval == 0 ) ){
+					clearInterval(mv.users[user].idInterval);
+				}
 				mv.removeRemoteMedia(user);
 			},
 			onDecline:function(user, code, message){
-				console.log(user + " à Décliner");
+				App.notify(user + " à Décliner");
 			},
 			onError:function(method, code, message){
 				 switch (method){
+					case "OFFER" :
 					case "INVITE" :
 						switch (code){
 							case 404 :
-								console.log(message.response.to+" n'est pas en ligne" );
+								App.notify.logger(message.response.from+" n'est pas en ligne" );
 							break;
 							case 408 :
-								console.log(message.response.to+" ne repond pas" );
+								App.notify.logger(message.response.from+" ne repond pas" );
 							break;
 							default:
-								console.log(message.response.to+": "+ message.response.message);
+								App.notify.logger(message.response.to+": "+ message.response.message);
 							break;
 						}
 					break;
 					case "REGISTER" :
 						switch (code){
 							case 409 :
-								console.log(message.response.to+" :" + message.response.message );
+								App.notify.logger(message.response.to+" :" + message.response.message );
 							break;
 							default:
-								console.log(message.response.to+": "+ message.response.message);
+								App.notify.logger(message.response.to+": "+ message.response.message);
 							break;
 						}
 					break;
 					default:
+						App.notify.logger( message );
 						throw new Error(message);
 				}
 
@@ -234,21 +245,25 @@ var App = new stage.appKernel(null, "dev", {
 	},
 });
 
-
-
-	var notify = function () {
+	var notify = function (kernel) {
+		this.kernel = kernel ;
+		this.nofificationHTML5 = false ;
   		// Voyons si le navigateur supporte les notifications
-  		if (!("Notification" in window)) {
-    			this.logger("Ce navigateur ne supporte pas les notifications desktop", "INFO");
-  		}
+  		this.checkHTML5();
+	}
 
+	notify.prototype.checkHTML5 = function(){
+		if (!("Notification" in window)) {
+    			this.kernel.logger("Ce navigateur ne supporte pas les notifications desktop", "INFO");
+  		}
   		// Voyons si l'utilisateur est OK pour recevoir des notifications
   		else if (Notification.permission === "granted") {
     			// Si c'est ok, créons une notification
-    			var notification = new Notification("Notification HTML 5 activé !",{
-				body:"NODEFONY ",
+    			var notification = new Notification(" NODEFONY",{
+				body:"Notification HTML 5 activé ",
 				icon:"/webRtcBundle/images/fanout_icon.png"
 			});
+			this.nofificationHTML5 = true ;
   		}
 
   		// Sinon, nous avons besoin de la permission de l'utilisateur
@@ -269,25 +284,31 @@ var App = new stage.appKernel(null, "dev", {
 						icon:"/webRtcBundle/images/fanout_icon.png"
 					});
       				}else{
-					this.logger("Vous avez réfusez de recevoir des notifications ", "INFO");
+					this.kernel.logger("Vous avez réfusez de recevoir des notifications ", "INFO");
       				}
 
     			}.bind(this));
   		}
 		if (Notification.permission === "denied"){
-			this.logger("Notifications HTML5 Bloqué ", "INFO");	
+			this.kernel.logger("Notifications HTML5 Bloqué ", "INFO");	
 		}
-
   		// Comme ça, si l'utlisateur a refusé toute notification, et que vous respectez ce choix,
   		// il n'y a pas besoin de l'ennuyer à nouveau.
 	}
 
-
+	notify.prototype.logger = function(message, title, severity){
+		if ( this.nofificationHTML5 ){
+			var notification = new Notification(title || "NODEFONY",{
+					body:message,
+					icon:"/webRtcBundle/images/fanout_icon.png"
+			});
+		}else{
+			this.kernel.logger( title + " : " +  message , severity || "INFO" ) ;
+		}
+	}
 
 	var webRTC = null;
 	var mv = null;
-	
-
 	
 	var drawSpectrum = function(canvas, myAudioAnalyser) {
             	var ctx = canvas.getContext('2d');
@@ -373,7 +394,6 @@ var App = new stage.appKernel(null, "dev", {
 		switch (this.nbTrackVideo){
 			case 0 :
 				if (this.nbTrackAudio){
-					
 					var ico = $(document.createElement("span"));
 					ico.addClass("fa fa-headphones");
 					this.videoSpace.append(ico);
@@ -435,10 +455,49 @@ var App = new stage.appKernel(null, "dev", {
 
 	mediaView.prototype.removeRemoteMedia = function(user){
 		if (user in this.users){
-			this.users[user].remove();
+			this.users[user].container.remove();
 			delete this.users[user];
 		}
 	};
+
+
+	var createPannelRemote = function(type, user, transaction, remoteStream){
+		var ele = '<div id="container_'+user+'" class="panel panel-danger"> \
+  			<div class="panel-heading"> \
+    				<h3 class="panel-title">'+user+'</h3>\
+  			</div>\
+  			<div  id="remote_'+user+'" class="panel-body">\
+				<div class="">\
+					<canvas id="canvas_'+user+'" ></canvas>\
+				</div>\
+  			</div>\
+		</div>';
+		this.remoteSpace.append(ele);
+		var container = $("#remote_"+user) ;
+		var eleContainer = $("#container_"+user) ;
+		var canvasContainer = $("#canvas_"+user) ;
+
+		switch (type){
+			case "video" :
+				var media = this.buildVideo();
+			break;
+			case "audio" :
+				var media = this.buildAudio();	
+				
+			break;
+		}
+		//console.log(media);
+		//console.log(container);
+		container.prepend(media);
+		this.buildControls(user, transaction, container,  media.get(0), remoteStream);
+		this.users[user] = {
+			container : eleContainer,
+			canvasContainer: canvasContainer,
+ 			mediaElement:	media
+		} ;
+		return media ;
+	}
+
 
 	mediaView.prototype.AddRemoteMedia = function(remoteStream,  transaction){
 		this.nbTrackVideo =  remoteStream.videotracks.length ;
@@ -447,8 +506,8 @@ var App = new stage.appKernel(null, "dev", {
 		switch (this.nbTrackVideo){
 			case 0 :
 				if (this.nbTrackAudio){
-					
-					var ele = $(document.createElement("div"));
+					var media = createPannelRemote.call(this, "audio", transaction.to.name, transaction, remoteStream)
+					/*var ele = $(document.createElement("div"));
 					var ico = $(document.createElement("span"));
 					ico.addClass("fa fa-headphones");
 					ele.append(ico);
@@ -457,20 +516,21 @@ var App = new stage.appKernel(null, "dev", {
 					ele.addClass("audio-container col-md-6 col-xs-8 col-centered");
 					
 					this.remoteSpace.append(ele);
-					this.users[transaction.to.name] = ele ;
+					this.users[transaction.to.name] = ele ;*/
 				}
 				break;
 			default:
-				var media = this.buildVideo();	
+				var media = createPannelRemote.call(this, "video", transaction.to.name, transaction, remoteStream)
+				/*var media = this.buildVideo();	
 				var ele = $(document.createElement("div"));
 				ele.append(media);
 				ele.addClass("video-container col-md-6 col-xs-8 col-centered");
 				this.remoteSpace.append(ele);
-				this.users[transaction.to.name] = ele ;
+				this.users[transaction.to.name] = ele ;*/
 				break;
 		};
 		
-		this.buildControls(transaction.to.name, transaction, ele,  media.get(0), remoteStream);
+		//this.buildControls(transaction.to.name, transaction, ele,  media.get(0), remoteStream);
 
 		if (this.settings.chat){
 			//this.addUserChat(transaction.to.name)	

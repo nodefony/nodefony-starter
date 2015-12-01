@@ -318,7 +318,10 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 					case 603 :
 						this.notificationsCenter.fire("onDecline",message);
 						this.cleanDialog(message);
-					break
+					break;
+					case 404 : 
+						this.notificationsCenter.fire("onError",message.type, message.code, message);
+					break;
 					default:
 						this.notificationsCenter.fire( "onInvite",  message, message.dialog);
 						

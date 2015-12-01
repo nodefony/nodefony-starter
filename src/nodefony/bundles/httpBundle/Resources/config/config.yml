@@ -70,7 +70,7 @@ session:
   hash_function:                "md5"
   use_cookies:                  true           
   use_only_cookies:             true
-  referer_check:                true
+  referer_check:                false
   cookie:
     maxAge:                     0               # like cookie_lifetime   =>seconde
     httpOnly:                   true            # don't see by script (javascript)
