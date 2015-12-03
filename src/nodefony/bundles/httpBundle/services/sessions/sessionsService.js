@@ -106,8 +106,9 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
 		
-		if (contextSession ===  undefined)
+		if ( contextSession ===  undefined ){
 			contextSession = this.contextSession ;
+		}
 		
 		if (this.settings.use_only_cookies){
 			this.applyTranId = 0;	
@@ -259,13 +260,16 @@ nodefony.registerService("sessions", function(){
 			}
 		}
 		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
+		var now = new Date().getTime() ;
 		if (this.lifetime === 0 ) {
-			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < new Date().getTime() ){
+			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
+				this.manager.logger("SESSION INVALIDE gc_maxlifetime    ==> " + this.name + " : "+ this.id, "WARNING");
 				return false ;	
 			}
 			return true ;	
 		} 
-		if ( lastUsed + ( this.lifetime * 1000 ) < new Date().getTime() ){
+		if ( lastUsed + ( this.lifetime * 1000 ) < now ){
+			this.manager.logger("SESSION INVALIDE lifetime   ==> " + this.name + " : "+ this.id, "WARNING");
 			return false;
 		}
 		return true ;	
@@ -483,7 +487,7 @@ nodefony.registerService("sessions", function(){
 			response.on("finish",function(){
 				if ( context.session ){
 					context.session.setMetaBag("lastUsed", new Date() );
-					if ( ! this.saved ){
+					if ( ! context.session.saved ){
 						context.session.save(context.user ? context.user.id : null);	
 					}
 				}

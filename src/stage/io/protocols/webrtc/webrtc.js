@@ -296,7 +296,7 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 						this.cleanDialog(message);
 					break;
 					case "409" :
-						this.notificationsCenter.fire("onError", message)
+						this.notificationsCenter.fire("onError", message.type, message.code, message)
 						this.cleanDialog(message);
 					break;
 				}	

@@ -63,9 +63,9 @@ nodefony.register("controller", function(){
 	Controller.prototype.renderView = function(view, param ){
 		var View = this.container.get("httpKernel").getView(view);
 		var res = null;
-		nodefony.extend(param, this.context.extendTwig);
+		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 		try{ 
-			this.container.get('templating').renderFile(View, param, function(error, result){
+			this.container.get('templating').renderFile(View, extendParam, function(error, result){
 				if (error || result === undefined){
 					if ( ! error ){
 						error = new Error("ERROR PARSING TEMPLATE :" + view)

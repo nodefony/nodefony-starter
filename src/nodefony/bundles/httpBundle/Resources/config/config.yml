@@ -67,7 +67,7 @@ session:
   gc_probability:               1
   gc_divisor:                   100
   gc_maxlifetime:               1440
-  hash_function:                "md5"
+  hash_function:                "md5"           # sha1
   use_cookies:                  true           
   use_only_cookies:             true
   referer_check:                false

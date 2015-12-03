@@ -1,11 +1,10 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
 
 {% block stylesheets %}
 
-	{{parent()}}
+	{{ parent() }}
 	<!--link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"-->
-	<link href="/webRtcBundle/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/webRtcBundle/css/lobster.css" rel="stylesheet">
 	<!--link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'-->
 	
@@ -20,9 +19,7 @@
 {% block javascripts %}
 
 	{{parent()}}
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
 	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
 	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
@@ -48,10 +45,11 @@
 {% endblock %}
 
 
-{% block bodyContent %}
+{% block body %}
+	{{ parent() }}
 <p id="userName" value="{{ userName }}" style="display:none">{{ userName }}</p>
 
-<div class="container" style="background-color: #244558;margin-top:50px">
+<div class="container-fluid" style="background-color: #244558;margin-top:50px">
 	<div class="row row-centered">
 		<label id="invite-label" class="col-md-10 col-xs-10 col-centered">
 			<input id='invite' type="text" name="s" value="" placeholder="Compose ton numéro" style="color: black;" class="col-md-9 col-xs-12 col-centered">
@@ -62,17 +60,6 @@
 		<div id="remoteDiv" class="col-md-8 col-xs-12 row-centered">
 		</div>
 		<div id="myDiv" class="col-md-4 col-xs-12 row-centered">
-			<!--div class="row">
-				<div class="video-container col-md-12 col-xs-8 col-centered">
-					<div class="video col-md-12"></div>
-				</div>
-				<div id="discussion-title" class="col-md-12 col-xs-8 col-centered">Discussion</div>
-				<div id="discussion" class="col-md-12 col-xs-8 col-centered">
-					<div class="col-md-12 col-xs-8">Participants</div>
-					<hr />
-					<div class="col-md-12 col-xs-8"></div>
-				</div>
-			</div-->
 		</div>
 	</div>
 </div>

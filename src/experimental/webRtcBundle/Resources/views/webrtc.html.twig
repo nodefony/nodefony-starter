@@ -1,16 +1,14 @@
-{% extends "/src/experimental/webRtcBundle/Resources/views/layouts/layout.html.twig" %}
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
+
 
 {{trans_default_domain("webrtc")}}
 
 {% block stylesheets %}
 
-	<link href="/webRtcBundle/clean/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/webRtcBundle/clean/assets/css/font-awesome.min.css" rel="stylesheet" media="screen">
-	<link href="/webRtcBundle/clean/assets/css/simple-line-icons.css" rel="stylesheet" media="screen">
-	<link href="/webRtcBundle/clean/assets/css/animate.css" rel="stylesheet">
+	{{ parent() }}
 
-	<!-- Custom styles CSS -->
-	<link href="/webRtcBundle/clean/assets/css/style.css" rel="stylesheet" media="screen">
+	<link href="/demoBundle/clean/assets/css/simple-line-icons.css" rel="stylesheet" media="screen">
+	<link href="/demoBundle/clean/assets/css/animate.css" rel="stylesheet">
 
 
 	<style>
@@ -27,12 +25,178 @@
 			height:60px;
 		}
 		
+			
+		.galerie {
+			margin: 0 -10px;	
+		}	
 
+		.gallery .video {
+			width: 50%;
+			display: block;
+			margin-right: -10px;
+			overflow: hidden;
+			padding: 10px;
+		}
+
+		.gallery .video-inner {
+    			position: relative;
+    			background: #fff;
+    			border-radius: 3px 3px 0 0;
+		}
+
+		.gallery .video video, .gallery .video-inner {
+			width: 100%;
+    			-webkit-border-radius: 3px 3px 0 0;
+    			-moz-border-radius: 3px 3px 0 0;
+		}
+
+		.gallery .video-info {
+    			background: #fff;
+    			padding: 15px;
+    			-webkit-border-radius: 0 0 3px 3px;
+    			-moz-border-radius: 0 0 3px 3px;
+    			border-radius: 0 0 3px 3px;
+		}
+
+		.gallery .video-caption {
+    			position: absolute;
+    			top: 15px;
+    			left: 0;
+    			background: url(../img/transparent/black-0.6.png);
+    			background: rgba(0,0,0,.6);
+    			color: #fff;
+    			padding: 5px 15px;
+    			margin: 0;
+		}
+
+
+		.video-controls {
+			top: -90px;
+			float: left;
+			position: relative;
+			width: 100%;
+			height: 0;
+		}
+
+		.video-controls .control-button {
+			color: #4679BD;
+			opacity: 0.8;
+		}
+
+		.video-controls .control-button:hover {
+			color: #D6E6FC;
+			opacity: 1;
+		}
+
+		.controls-identity {
+			color:white;
+			width: 50px;
+			display: inline-table;
+			overflow: hidden;
+		}
+
+
+
+		/* Start: Recommended Isotope styles */
+
+		/**** Isotope Filtering ****/
+
+		.isotope-item {
+  			z-index: 2;
+		}
+
+		.isotope-hidden.isotope-item {
+  			pointer-events: none;
+  			z-index: 1;
+		}
+
+		/**** Isotope CSS3 transitions ****/
+
+		.isotope,
+		.isotope .isotope-item {
+  			-webkit-transition-duration: 0.8s;
+     			-moz-transition-duration: 0.8s;
+      			-ms-transition-duration: 0.8s;
+       			-o-transition-duration: 0.8s;
+          		transition-duration: 0.8s;
+		}
+
+		.isotope {
+  			-webkit-transition-property: height, width;
+     			-moz-transition-property: height, width;
+      			-ms-transition-property: height, width;
+       			-o-transition-property: height, width;
+          		transition-property: height, width;
+		}
+
+		.isotope .isotope-item {
+  			-webkit-transition-property: -webkit-transform, opacity;
+     			-moz-transition-property:    -moz-transform, opacity;
+      			-ms-transition-property:     -ms-transform, opacity;
+       			-o-transition-property:      -o-transform, opacity;
+          		transition-property:         transform, opacity;
+		}
+
+		/**** disabling Isotope CSS3 transitions ****/
+
+		.isotope.no-transition,
+		.isotope.no-transition .isotope-item,
+		.isotope .isotope-item.no-transition {
+  			-webkit-transition-duration: 0s;
+     			-moz-transition-duration: 0s;
+      			-ms-transition-duration: 0s;
+       			-o-transition-duration: 0s;
+          		transition-duration: 0s;
+		}
+
+		/* End: Recommended Isotope styles */
+
+		
 	</style>
 	
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
 
+	<!-- LIBRARY DESIGN-->
+	<script src="/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js"></script>
+	<script src="/demoBundle/clean/assets/js/jquery.sticky.js"></script>
+	<script src="/demoBundle/clean/assets/js/smoothscroll.js"></script>
+	<script src="/demoBundle/clean/assets/js/wow.min.js"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+
+	<!-- LIBRARY STAGE-->
+	<script type="text/javascript" src="/vendors/stage/io/transports/websockets/websocket.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
+	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
+	<script type="text/javascript" src="/vendors/stage/io/protocols/webrtc/webrtc.js"></script>
+	<script type="text/javascript" src="/vendors/stage/media/adapter.js"></script>
+	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
+	<script type="text/javascript" src="/vendors/stage/media/webrtc/webrtc.js"></script>
+
+	<!-- KERNEL STAGE-->
+	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
+	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
+
+	<!-- ENTRY POINT -->
+	<script src="/webRtcBundle/js/demo.js"></script>
+
+{% endblock %}
 
 
 {% block body %}
@@ -49,9 +213,20 @@
 <section id="home" class="pfblock-image screen-height">
         <div class="home-overlay"></div>
 	<div class="intro">
-		<div class="start"> {{ "welcome"|trans() }} {{login}}</div>
-		<h1 class="success"> <strong class="text-primary">WEBRTC </strong> {{ "webrtc"|trans() }}  </h1>
+		<h1 class="success" style ="font-size:70px" > <strong class="text-primary">WEBRTC </strong> DEMO  </h1>
+		<h2 class="success"> <strong class="text-primary">NODEFONY </strong> {{ "webrtc"|trans() }}  </h2>
 		<div class="start">  {{ "webrtcWelcome"|trans() }}  </div>
+
+		<div  class="row" style="margin-top:50px">
+			<div class="col-md-12 col-lg-12">
+				<h3 style="visibility: visible; animation-delay: 0.1s; animation-name: slideInRight;" class="wow slideInRight animated" data-wow-delay=".1s">ARE YOU READY TO START?</h3>
+			</div>
+
+			<div style="visibility: visible; animation-delay: 0.3s; animation-name: slideInRight;" class="col-md-12 col-lg-12 calltoaction-btn wow slideInRight animated" data-wow-delay=".3s">
+				<a href="#containerDemo" id="startDemo" class="btn btn-lg">CONNECT USER {{user.username}}</a>
+			</div>
+
+		</div><!-- .row -->
 	</div>
 
         <a href="#services">
@@ -69,16 +244,13 @@
 
 <!-- Navigation start -->
 
-<header class="header">
+	{{ parent() }}
 
-	{{render( controller('webRtcBundle:default:nav', login) )}}
-
-</header>
 <!-- Navigation end -->
 
 <!-- Services start -->
 
-<section id="services" class="pfblock pfblock-gray">
+<section id="services" class="pfblock pfblock-gray screen-height">
 	<div class="container">
 		<div class="row">
 
@@ -163,80 +335,38 @@
 			</div>
 
 		</div><!-- .row -->
+
+
 	</div><!-- .container -->
+	
 </section>
 
 <!-- Services end -->
 
 
-
-<section id="demo" class=" calltoaction" >
-
-	<div class="container">
-
-		<div id="containerStart" class="row">
-
-			<div class="col-md-12 col-lg-12">
-				<h2 style="visibility: visible; animation-delay: 0.1s; animation-name: slideInRight;" class="wow slideInRight animated" data-wow-delay=".1s">ARE YOU READY TO START?</h2>
-				<div style="visibility: visible; animation-delay: 0.2s; animation-name: slideInRight;" class="calltoaction-decription wow slideInRight animated" data-wow-delay=".2s">
-					WEBRTC DEMO .
-				</div>
-			</div>
-
-			<div style="visibility: visible; animation-delay: 0.3s; animation-name: slideInRight;" class="col-md-12 col-lg-12 calltoaction-btn wow slideInRight animated" data-wow-delay=".3s">
-				<a  id="startDemo" class="btn btn-lg">CONNECT WEBRTC</a>
-			</div>
-
-		</div><!-- .row -->
-
-
-		<div id="containerDemo" class="container" style="display:none">
+<section id="demo" class=" calltoaction screen-height" >
+	
+	<div id="containerDemo"  >
 			{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'username': username, 'url':url, 'login':login} %}
-		</div><!-- .row -->
 	</div><!-- .container -->
 
 </section>
 
 
-<section id="doc" class="pfblock pfblock-gray">
-
-	<div class="container">
-		<div class="row">
-
-			<div class="col-sm-12">
-			</div>
-
-		</div><!-- .row -->
-		<div class="row">
-
-			<div class="col-sm-12">
-				
-			</div>
-
-		</div><!-- .row -->
-
-	</div>
-</section>
 
 
 
 <footer id="footer">
 	<div class="container">
 		<div class="row">
-
 			<div class="col-sm-12">
-
-			
                     		<p class="copyright">
 					© 2015   Generate with {{ nodefony }}  
 				</p>
-
 			</div>
-
 		</div><!-- .row -->
 	</div><!-- .container -->
 </footer>
-
 
 <!-- Scroll to top -->
 
@@ -249,43 +379,4 @@
 {% endblock %}
 
 
-{% block javascripts %}
-	{{ parent() }}
 
-	<!-- LIBRARY DESIGN-->
-	<script src="/webRtcBundle/clean/assets/js/jquery.parallax-1.1.3.js"></script>
-	<script src="/webRtcBundle/clean/assets/js/jquery.sticky.js"></script>
-	<script src="/webRtcBundle/clean/assets/js/smoothscroll.js"></script>
-	<script src="/webRtcBundle/clean/assets/js/wow.min.js"></script>
-
-	<!-- LIBRARY STAGE-->
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/transports/websockets/websocket.js"></script>
-	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
-	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/webrtc/webrtc.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/adapter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/webrtc/webrtc.js"></script>
-
-	<!-- KERNEL STAGE-->
-	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
-
-	<!-- ENTRY POINT -->
-	<script src="/webRtcBundle/js/demo.js"></script>
-
-{% endblock %}

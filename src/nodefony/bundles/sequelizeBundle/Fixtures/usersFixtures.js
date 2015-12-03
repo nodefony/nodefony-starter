@@ -29,14 +29,14 @@ nodefony.registerFixture("users", function(){
 			},{
 				username:"2000",
 				name: "Utilisateur",
-				surname: "1000",
+				surname: "2000",
 				password: "3e91bde18f174002ada78e2ac9267658",
 				lang:"fr_fr",
 				roles:"USER"
 			},{
 				username:"3000",
 				name: "Utilisateur",
-				surname: "1000",
+				surname: "3000",
 				password: "a82afd4773f6d2f6b17666d54e78dbd4",
 				lang:"fr_fr",
 				roles:"USER"

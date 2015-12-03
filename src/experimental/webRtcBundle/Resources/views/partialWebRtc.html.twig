@@ -1,34 +1,48 @@
 {{trans_default_domain("webrtc")}}
 
+
 <input id="username" value="{{ username }}" data-url="{{url}}" style="display:none" ></input>
 
-<div class="row row-centered">
-	<label id="invite-label" class="col-sm-6 col-sm-offset-3">
-		<input id='invite' type="text" name="s" value="" placeholder="Compose ton numéro" style="color: black;" class="col-md-9 col-xs-12 col-centered">
-		<input type="button" id='bt' class="col-md-3 col-xs-6 col-centered" value="Appeler" />
-	</label>
-</div>
+<div class="container">
+	<div class="row" style="padding:20px">
+		<!--label id="invite-label" class="col-sm-6 col-sm-offset-3">
+			<input id='invite' type="text" name="s" value="" placeholder="Compose ton numéro" style="color: black;" class="col-md-9 col-xs-12 col-centered">
+			<input type="button" id='bt' class="col-md-3 col-xs-6 col-centered" value="Appeler" />
+		</label-->
 
-<div class="row col-md-8">
-	<div class="panel panel-primary">
-  		<div class="panel-heading">
-    			<h3 class="panel-title">Participants</h3>
-  		</div>
-  		<div  id="remoteDiv" class="panel-body">
-  		</div>
+
+		<div class="input-group" >
+  			<input id='invite' type="text" class="form-control" placeholder="Composer numéro" aria-describedby="bt" >
+  			<span id='bt' class="input-group-addon" >Appeler</span>
+		</div>
+
 	</div>
 </div>
+<div class="container-fluid">
+	<div class="row col-md-8" style="padding:25px" >
+		<!--div class="panel panel-primary">
+  			<div class="panel-heading">
+    				<h3 class="panel-title">Participants</h3>
+  			</div>
+  			<div class="panel-body ">
+				<div id="remoteDiv" class="grid">
+  				</div>
+  			</div>
+		</div-->
+		<div id="remoteDiv" class="gallery isotope"> </div>
+	</div>
 
-<div class="row col-md-4">
-	<div class="panel panel-danger" >
-  		<div class="panel-heading">
-    			<h3 class="panel-title">{{login}}</h3>
-  		</div>
-  		<div  id="myDiv" class="panel-body">
-			<div class="">
-				<canvas id="canvas" ></canvas>
-			</div>
-  		</div>
+	<div class="row col-md-4" style="padding:25px">
+		<div class="panel panel-danger" >
+  			<div class="panel-heading">
+    				<h3 class="panel-title">{{login}}</h3>
+  			</div>
+  			<div  id="myDiv" class="panel-body">
+				<div class="">
+					<canvas id="canvas" ></canvas>
+				</div>
+  			</div>
+		</div>
 	</div>
 </div>
 		

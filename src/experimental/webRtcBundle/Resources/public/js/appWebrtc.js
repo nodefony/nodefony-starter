@@ -286,7 +286,7 @@ $( document ).ready(function(){
 		    },
 		    // fire when service is ready
 		    onConnect:function(message, realtime){
-			    stage.ui.log("CONNECT ON : "+realtime.publicAddress);
+			    //stage.ui.log("CONNECT ON : "+realtime.publicAddress);
 			    if (message.data.OPENSIP){
 				    realtime.subscribe("OPENSIP");
 			    }
@@ -360,20 +360,20 @@ $( document ).ready(function(){
 						   mv.removeRemoteMedia(user);
 					   },
 					   onDecline:function(user, code, message){
-						   stage.ui.log(user+" a refusé");
+						   stage.ui.info(user+" a refusé");
 					   },
 					   onError:function(method, code, message){
 						   switch (method){
 							   case "INVITE" :
 								   switch (code){
 									   case 404 :
-										   stage.ui.log(message.toName+" n'est pas en ligne" )
+										   stage.ui.info(message.toName+" n'est pas en ligne" )
 											   break;
 									   case 408 :
-										   stage.ui.log(message.toName+" ne repond pas" )
+										   stage.ui.info(message.toName+" ne repond pas" )
 											   break;
 									   default:
-										   stage.ui.log(message.toName+": "+ message.statusLine.message)
+										   stage.ui.info(message.toName+": "+ message.statusLine.message)
 									   		   break;
 								   }
 								   break;

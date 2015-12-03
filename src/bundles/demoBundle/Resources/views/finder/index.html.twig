@@ -1,9 +1,8 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
 {% block stylesheets %}
 	{{parent()}}
 
-        <link rel="stylesheet" href="/frameworkBundle/vendors/bootstrap/css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="/demoBundle/datatable/jquery.dataTables.min.css" media="screen">
         <link rel="stylesheet" href="/demoBundle/css/flickity.min.css" media="screen">
         <link rel="stylesheet" href="/demoBundle/css/style.css" media="screen">
@@ -11,9 +10,6 @@
 	<link rel="stylesheet" href="/demoBundle/css/jquery.fancybox.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="/demoBundle/js/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
 
-
-	<!-- Awesome Font -->
-        <link href="/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 {% endblock %}
 
@@ -34,9 +30,10 @@
 
 {% endblock %}
 
-{% block content %}
+{% block body %}
+	{{parent()}}
 
-        <div id="header">
+        <div id="header" style="padding-top:50px">
             <div id="controls">
                 {% for json in files %}
                     <a href="/demo/finder?path={{json.dirName}}"><i class="fa fa-arrow-circle-left"></i> <span>{{json.dirName}}</span></a>
@@ -173,7 +170,6 @@
                 </tbody>
             </table>
         </div>
-
 
 {% endblock %}
 

@@ -182,7 +182,9 @@ stage.register("webRtc",function(){
 					this.webrtc.notificationsCenter.fire("onRemoteDescription", this.from, this);
 				}
 			}.bind(this),
-			this.webrtc.listen(this, "onError")			
+			function(error){
+				this.webrtc.fire( "onError", type, null, error )			
+			}.bind(this)
 		);
 		return this.remoteDescription;
 	};
@@ -275,6 +277,8 @@ stage.register("webRtc",function(){
 			this.transactions[trans].close();	
 			delete this.transactions[trans];
 		}	
+		delete this.protocol ;
+		this.protocol = null ;
 	};
 
 	WebRtc.prototype.register = function(userName, password, settings){
@@ -527,6 +531,12 @@ stage.register("webRtc",function(){
 				this.protocol.listen(this, "onError",function(type, code, message){
 					this.notificationsCenter.fire("onError", type, code, message);	
 				});
+
+				this.protocol.listen(this, "onClose",function(ele){
+					this.notificationsCenter.fire("onClose",ele);	
+					this.close();
+				});
+
 
 				this.listen(this, "onCreateAnwser", function(to, sessionDescription, webrtcTransaction, diag ){
 					//console.log("onCreateAnwser")

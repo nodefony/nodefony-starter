@@ -122,10 +122,18 @@ nodefony.registerController("framework", function(){
 				kernel:this.getParameters("kernel"),
 				services:services
 			};
-
-			if (options && options.view){
+			if ( options ){
 				nodefony.extend(obj, options);
-				return this.render(options.view, obj );
+				if (options.view) {
+					if ( options.renderView ){
+						return this.renderView(options.view, obj );
+					}else{
+						return this.render(options.view, obj );
+					}
+				}
+				if (options.renderView){
+					return this.renderView('frameworkBundle::system.html.twig',obj );	
+				}
 			}else{
 				return this.render('frameworkBundle::system.html.twig',obj );
 			}

@@ -1,4 +1,4 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
 
 {% block title %}  
@@ -14,31 +14,33 @@
 
 {{parent()}}
 
-<div class="container">
+<section id="services" class="pfblock pfblock-gray screen-height">
+	<div class="container">
 
-	<h1>NATIF UPLOAD</h1>
-	<form id="natif" action="/upload" method="post" enctype="multipart/form-data">
-		First name: <input type="text" name="fname"><br>
-		Last name: <input type="text" name="lname"><br>
-		Photo: <input type="file" name="photo"><br>
-		Photo2: <input type="file" name="photo2"><br>
-		<input type="submit" value="Submit">
-	</form>
-
-
-
-
-	<h1>AJAX UPLOAD</h1>
-	<form id="ajax"  method="post" enctype="multipart/form-data">
-		First name: <input type="text" name="fname"><br>
-		Last name: <input type="text" name="lname"><br>
-		Photo3: <input type="file" name="photo3"><br>
-		Photo4: <input type="file" name="photo4"><br>
-	</form>
-	<input id="ajaxButton" type="button" value="Submit">
+		<h1>NATIF UPLOAD</h1>
+		<form id="natif" action="/upload" method="post" enctype="multipart/form-data">
+			First name: <input type="text" name="fname"><br>
+			Last name: <input type="text" name="lname"><br>
+			Photo: <input type="file" name="photo"><br>
+			Photo2: <input type="file" name="photo2"><br>
+			<input type="submit" value="Submit">
+		</form>
 
 
-</div>
+
+
+		<h1>AJAX UPLOAD</h1>
+		<form id="ajax"  method="post" enctype="multipart/form-data">
+			First name: <input type="text" name="fname"><br>
+			Last name: <input type="text" name="lname"><br>
+			Photo3: <input type="file" name="photo3"><br>
+			Photo4: <input type="file" name="photo4"><br>
+		</form>
+		<input id="ajaxButton" type="button" value="Submit">
+
+
+	</div>
+</section>
 {% endblock %}
 
 
@@ -55,7 +57,6 @@
 		$(document).ready(function(){
 			var form = $("#ajaxButton") ;
 			form.bind("click", function(event){
-				console.log()
 				var formData = new FormData($('#ajax')[0]);
 				$.ajax({
     					url: '/upload',

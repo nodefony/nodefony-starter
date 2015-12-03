@@ -4,24 +4,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
-	<route id="index" pattern="/demo">
+	<route id="home" pattern="/">
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
-	<route id="user" pattern="/user/{name}">
-		<default key="controller">demoBundle:demo:user</default>
-		<requirement key="method">GET</requirement>
-	</route>
-
-	<route id="generate" pattern="/url">
-		<default key="controller">demoBundle:demo:generateUrl</default>
-	</route>
-
-	<route id="artists" pattern="/demo/artists">
-		<default key="controller">demoBundle:demo:ormConnection</default>
-	</route>
+	
 
 	
+	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
 		<requirement key="method">GET</requirement>
@@ -33,10 +23,6 @@
 	</route>
 
 	
-	<route id="poll" pattern="/poll">
-		<default key="controller">demoBundle:demo:poll</default>
-		<requirement key="method">GET,POST</requirement>
-	</route>
 
 	<!-- REALTIME --> 	
 	<route id="indexReal" pattern="/demo/realtime">

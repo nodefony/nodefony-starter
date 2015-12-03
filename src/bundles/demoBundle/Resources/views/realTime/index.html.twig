@@ -1,5 +1,4 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
-
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
 
 {{trans_default_domain("ssed")}}
@@ -26,33 +25,33 @@
 
 {% block title %} {{title| trans}} {% endblock %}
 
-{% block bodyContent %}
+{% block body %}
+	{{parent()}}	
 	
-	
+	<div class="container">
 
-      	<div class="row" style="margin-top: 50px;">
-            <div class="col-md-6">
-                    <div class="btn-group" id="services-buttons" data-toggle="buttons"></div>  
-			<canvas class="can" id="can-1" width="1200" height="257"></canvas>
-            </div>
-            <div class="col-md-6" id="l">
-                <button type="button" class="btn btn-primary pull-right" data-toggle="button" id="start">Start</button>
-		<div class="row" style="margin-top: 20px">
-			<div class="col-md-12">
-				<div id="logs"></div>
+      		<div class="row" style="margin-top: 50px;">
+            	<div class="col-md-6">
+                    	<div class="btn-group" id="services-buttons" data-toggle="buttons"></div>  
+				<canvas class="can" id="can-1" width="1200" height="257"></canvas>
+            	</div>
+            	<div class="col-md-6" id="l">
+                	<button type="button" class="btn btn-primary pull-right" data-toggle="button" id="start">Start</button>
+			<div class="row" style="margin-top: 20px">
+				<div class="col-md-12">
+					<div id="logs"></div>
+				</div>
 			</div>
+
+            	</div>
+        	</div>
+
+		<div class="row" style="margin-top: 20px; display: none;" id="terminal-container">
+            	<div class="col-md-12">
+			<p class="terminal" id="messages" style="height: 300px; overflow-y: auto;"></p>
+	    	</div>
 		</div>
-
-            </div>
-        </div>
-
-	<div class="row" style="margin-top: 20px; display: none;" id="terminal-container">
-            <div class="col-md-12">
-		<p class="terminal" id="messages" style="height: 300px; overflow-y: auto;"></p>
-	    </div>
 	</div>
-
-	
 
 {% endblock %}
 
@@ -60,7 +59,6 @@
 
 	{{parent()}}
 
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
 	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
 	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
 	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>

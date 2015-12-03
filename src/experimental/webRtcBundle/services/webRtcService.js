@@ -91,21 +91,7 @@ nodefony.registerService("webrtc", function(){
 		}, data);
 		//console.log(ele)
 		this.send(ele);
-		/*switch (type){
-			
-			case "REGISTER" :
-				
-			break;
-			case "OFFER" :
-			break;
-			case "ANSWER" :
-			break;
-		
-		}*/
-
 	}
-
-
 
 	var settingsSyslog = {
 		moduleName:"WEBRTC SERVICE",
@@ -150,9 +136,21 @@ nodefony.registerService("webrtc", function(){
 			for ( var users in this.users ){
 				if ( this.users[users].connectionId === id){
 					this.logger("delete user :" + this.users[users].name);
+					var userToDelete = this.users[users].name ;
 					delete this.users[users] ;
 				} 
 			}
+			for ( var users in this.users ){
+				var res = {
+					type : "BYE",
+					from: userToDelete,
+					to: this.users[users].name,
+					code:200
+				}
+				var user = this.users[users] ;
+				user.ack( res.type,   res  );
+			}
+
 			this.connections.removeConnection(id);
 		});
 		return context.send(JSON.stringify({
@@ -166,7 +164,6 @@ nodefony.registerService("webrtc", function(){
 		// websocket
 		return this.onMessage(JSON.parse(message), context);	
 	};
-
 
 	WebRtc.prototype.onMessage = function(message, context){
 		if (message){
@@ -183,7 +180,7 @@ nodefony.registerService("webrtc", function(){
 								code:"409",
 								message:"Already REGISTERED on : "+ this.users[message.from].ip
 							});
-							this.users[message.from].ack(message.type , res);
+							//this.users[message.from].ack(message.type , res);
 							// call to new connection
 							var connection = this.connections.getConnectionById(message.idConnection);
 							var str = JSON.stringify(res);
@@ -210,7 +207,6 @@ nodefony.registerService("webrtc", function(){
 				break;
 				case "ANSWER" :
 				case "OFFER" :
-					console.log(message.type);
 					var res = {
 						type : message.type,
 						sessionDescription:null,

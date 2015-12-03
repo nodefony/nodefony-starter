@@ -23,9 +23,25 @@ nodefony.registerController("demo", function(){
  	 *	DEMO index 
  	 *
  	 */
-	demoController.prototype.indexAction= function(module){
-		return this.forward("frameworkBundle:default:system");
+	demoController.prototype.indexAction= function(){
+		var kernel = this.get("kernel") ;
+		return this.render("demoBundle:Default:index.html.twig",{
+			user: this.context.user,
+			nodefony:kernel.settings.name + " " + kernel.settings.system.version
+		});
 	};
+
+	/**
+ 	 *
+ 	 *	DEMO navbar 
+ 	 *
+ 	 */
+	demoController.prototype.navAction = function(login){
+		
+		return this.render('demoBundle:layouts:navBar.html.twig',{
+			user: this.context.user
+		});	
+	}
 
 	/**
  	 *	@see renderView
@@ -34,7 +50,7 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.renderviewAction= function(name){
 		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
-		return this.getResponse(content)
+		return this.getResponse(content);
 	};
 
 	/**
@@ -80,7 +96,7 @@ nodefony.registerController("demo", function(){
  	 *	@see ORM2 execQuery usage
  	 *
  	 */
-	demoController.prototype.ormConnectionAction= function(){
+	/*demoController.prototype.ormConnectionAction= function(){
 
 		var orm = this.get('ORM2').getConnection('demo');
 		if ( ! orm){
@@ -94,7 +110,7 @@ nodefony.registerController("demo", function(){
 			}
 			this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
 		}.bind(this));
-	};
+	};*/
 
 		
 	/**
