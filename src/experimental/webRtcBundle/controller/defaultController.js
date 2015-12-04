@@ -49,8 +49,6 @@ nodefony.registerController("default", function(){
 			break;
 		}
 	}
-
-	
 	
 	/**
 	*

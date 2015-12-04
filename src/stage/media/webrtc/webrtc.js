@@ -244,6 +244,7 @@ stage.register("webRtc",function(){
 		this.notificationsCenter = stage.notificationsCenter.create(this.settings, this);
 		this.syslog = new stage.syslog(syslogSettings);
 		this.protocol = null;
+		this.socketState = "close" ;	
 		this.transactions = {};
 		this.users = {};
 		this.transport = transport ;
@@ -412,6 +413,9 @@ stage.register("webRtc",function(){
 				this.protocol.register();
 			break;
 			default:
+				if(this.socketState == "open" ){
+					return ;	
+				}
 				this.protocol = new stage.io.protocols.webrtc(this.server, this.transport,{
 					userName:userName,
 					password:password
@@ -499,6 +503,7 @@ stage.register("webRtc",function(){
 				});
 
 				this.protocol.listen(this, "onConnect" , function(){
+					this.socketState = "open" ;
 					this.protocol.register();
 				});
 				
@@ -515,9 +520,6 @@ stage.register("webRtc",function(){
 				});
 
 				this.protocol.listen(this, "onBye",function(message){
-					//console.log(this.transactions[message.response.from])
-					//console.log(message.response.from)
-					//console.log(message.response.to)
 					if ( this.transactions[message.response.from] ){
 						var transac =  this.transactions[message.response.from];
 						var name = message.response.from
@@ -535,6 +537,7 @@ stage.register("webRtc",function(){
 				this.protocol.listen(this, "onClose",function(ele){
 					this.notificationsCenter.fire("onClose",ele);	
 					this.close();
+					this.socketState = "close" ;
 				});
 
 

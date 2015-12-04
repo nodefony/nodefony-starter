@@ -160,6 +160,11 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 		this.transport.listen(this,"onClose",this.listen(this,"onClose"));
 	}
 
+	Protocol.prototype.clear = function(){
+		this.transport.close();
+		this.transport = null ;	
+	} 
+
 
 	Protocol.prototype.listen = function(){
 		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);	
@@ -298,6 +303,7 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 					case "409" :
 						this.notificationsCenter.fire("onError", message.type, message.code, message)
 						this.cleanDialog(message);
+						this.transport.close();
 					break;
 				}	
 			break;

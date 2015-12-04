@@ -5,12 +5,10 @@
 var http = require('http');
 var nodedomain = require('domain');
 
-
-
 nodefony.registerService("http", function(){
 	
 	var Http = function(httpKernel , security, options){
-		this.httpKernel = httpKernel ;//this.container.get("httpKernel");
+		this.httpKernel = httpKernel ;
 		this.port = this.httpKernel.kernel.httpPort ;
 		this.domain = this.httpKernel.kernel.settings.system.domain ;
 		this.firewall =  security ;
@@ -21,6 +19,9 @@ nodefony.registerService("http", function(){
 	
 	Http.prototype.createServer = function(port, domain){
 		this.settings = this.get("container").getParameters("bundles.http").http || null ;
+
+		
+
 
 		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
@@ -38,8 +39,6 @@ nodefony.registerService("http", function(){
 				d.run(function() {
 					this.kernel.fire("onServerRequest", request, response, logString, d)
 				}.bind(this));
-				//request.on
-
 			}.bind(this));
 		}.bind(this))
 

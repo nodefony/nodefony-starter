@@ -80,7 +80,12 @@ nodefony.registerService("upload", function(){
 			this.kernel.listen(this, "onHttpRequest",function(container , context){
 				context.request.request.on("data", function(){
 					if (context.request.contentType === "multipart/form-data" &&  context.request.dataSize > this.config.max_filesize ) 
-						throw new Error("File Upload size exceeded ,File size must be less than " +this.config.max_filesize + "Bytes ");
+						context.fire("onError", container, {
+							status:413,
+							error:"File Upload size exceeded ,File size must be less than " +this.config.max_filesize + " Bytes ",
+							message:"Request Entity Too Large"	
+						})
+						//throw new Error("File Upload size exceeded ,File size must be less than " +this.config.max_filesize + " Bytes " );
 				}.bind(this))
 			});	
 		});

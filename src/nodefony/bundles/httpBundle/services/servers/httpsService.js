@@ -11,7 +11,6 @@ nodefony.registerService("https", function(){
 		this.httpKernel = httpKernel;
 		this.port = this.httpKernel.kernel.httpsPort ;
 		this.domain = this.httpKernel.kernel.settings.system.domain ;
-		
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
 		this.ready = false ;

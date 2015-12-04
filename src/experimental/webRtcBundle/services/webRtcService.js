@@ -169,9 +169,7 @@ nodefony.registerService("webrtc", function(){
 		if (message){
 			switch (message.type){
 				case "REGISTER" :
-					//console.log(message)
 					if (message.idConnection in this.connections.connections){
-						//console.log("id in connection struct");
 						
 						if ( this.users[message.from] ){
 							var res = nodefony.extend( message, {
@@ -203,7 +201,6 @@ nodefony.registerService("webrtc", function(){
 					        	message:"connection dead"
 						}));
 					}
-					
 				break;
 				case "ANSWER" :
 				case "OFFER" :

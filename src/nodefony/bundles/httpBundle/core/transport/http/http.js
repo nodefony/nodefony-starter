@@ -143,6 +143,10 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	Http.prototype.listen = function(){
 		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
 	};
+	Http.prototype.fire = function(){
+		return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
+	};
+
 
 	Http.prototype.getRequest = function(){
 		return this.request;	

@@ -188,8 +188,6 @@ var App = new stage.appKernel(null, "dev", {
 			}
 		});
 		
-
-
 	},
 	onDomLoad: function() {
 		//this.router.redirect(this.router.generateUrl("index"));	
@@ -363,11 +361,11 @@ var mediaView = function(  settings){
 	this.createUserSpace();
 	this.createRemoteSpace();
 	this.users = {};
-	this.syslog = new stage.syslog(settingsSyslog);
+	//this.syslog = new stage.syslog(settingsSyslog);
 };
 
 mediaView.prototype.logger = function(){
-	return this.syslog.apply(this.syslog, arguments);
+	//return this.syslog.apply(this.syslog, arguments);
 };
 
 mediaView.prototype.setName = function(){
@@ -380,7 +378,7 @@ mediaView.prototype.mute = function(media, mute, audiotracks){
 	if (audiotracks && audiotracks.length){
 		for (var i = 0 ; i < audiotracks.length; i++){
 			audiotracks[i].muted = mute 
-				audiotracks[i].enabled =  ! mute 
+			audiotracks[i].enabled =  ! mute 
 		}
 	}
 };
@@ -442,7 +440,7 @@ mediaView.prototype.addChatSpace = function(){
 	title.text("Participants");
 	this.rowUser.append(title)			
 
-		this.box = $(document.createElement("div"));
+	this.box = $(document.createElement("div"));
 	this.box.attr("id","discussion" );
 	this.box.addClass("col-md-10 col-xs-8 col-centered");
 
@@ -460,10 +458,6 @@ mediaView.prototype.addUserChat = function(name){
 
 mediaView.prototype.createRemoteSpace = function(){
 	this.remoteSpace = this.settings.containerRemoteSpace ; 
-	//this.rowRemote = $(document.createElement("div"));
-	//this.rowRemote.addClass("row");
-	//this.remoteSpace.append(this.rowRemote);
-
 };
 
 mediaView.prototype.removeRemoteMedia = function(user){
@@ -474,46 +468,7 @@ mediaView.prototype.removeRemoteMedia = function(user){
 };
 
 
-/*var createPannelRemote = function(type, user, transaction, remoteStream){
-	var ele = '<div id="container_'+user+'" class="panel panel-danger grid-item"> \
-  		<div class="panel-heading"> \
-    			<h3 class="panel-title">'+user+'</h3>\
-  		</div>\
-  		<div  id="remote_'+user+'" class="panel-body">\
-			<div class="">\
-				<canvas id="canvas_'+user+'" ></canvas>\
-			</div>\
-  		</div>\
-	</div>';
-	this.remoteSpace.append(ele);
-	var container = $("#remote_"+user) ;
-	var eleContainer = $("#container_"+user) ;
-	var canvasContainer = $("#canvas_"+user) ;
-
-	switch (type){
-		case "video" :
-			var media = this.buildVideo();
-		break;
-		case "audio" :
-			var media = this.buildAudio();	
-			
-		break;
-	}
-	//console.log(media);
-	//console.log(container);
-	container.prepend(media);
-	this.buildControls(user, transaction, container,  media.get(0), remoteStream);
-	this.users[user] = {
-		container : eleContainer,
-		canvasContainer: canvasContainer,
- 		mediaElement:	media
-	} ;
-	return media ;
-}*/
-
-
-
-var createPannelRemote = function(type, user, transaction, remoteStream){
+mediaView.prototype.createPannelRemote = function(type, user, transaction, remoteStream){
 
 	var ele = '<div id="container_'+user+'" class="video  isotope-item">\
 		<div id="remote_'+user+'" class="video-inner">\
@@ -538,8 +493,6 @@ var createPannelRemote = function(type, user, transaction, remoteStream){
 			
 		break;
 	}
-	//console.log(media);
-	//console.log(container);
 	container.prepend(media);
 	this.buildControls(user, transaction, container,  media.get(0), remoteStream);
 	this.users[user] = {
@@ -558,31 +511,14 @@ mediaView.prototype.AddRemoteMedia = function(remoteStream,  transaction){
 	switch (this.nbTrackVideo){
 		case 0 :
 			if (this.nbTrackAudio){
-				var media = createPannelRemote.call(this, "audio", transaction.to.name, transaction, remoteStream)
-				/*var ele = $(document.createElement("div"));
-				var ico = $(document.createElement("span"));
-				ico.addClass("fa fa-headphones");
-				ele.append(ico);
-				var media = this.buildAudio();	
-				ele.append(media);
-				ele.addClass("audio-container col-md-6 col-xs-8 col-centered");
+				var media = this.createPannelRemote( "audio", transaction.to.name, transaction, remoteStream)
 				
-				this.remoteSpace.append(ele);
-				this.users[transaction.to.name] = ele ;*/
 			}
 			break;
 		default:
-			var media = createPannelRemote.call(this, "video", transaction.to.name, transaction, remoteStream)
-			/*var media = this.buildVideo();	
-			var ele = $(document.createElement("div"));
-			ele.append(media);
-			ele.addClass("video-container col-md-6 col-xs-8 col-centered");
-			this.remoteSpace.append(ele);
-			this.users[transaction.to.name] = ele ;*/
+			var media = this.createPannelRemote("video", transaction.to.name, transaction, remoteStream)
 			break;
 	};
-	
-	//this.buildControls(transaction.to.name, transaction, ele,  media.get(0), remoteStream);
 
 	if (this.settings.chat){
 		//this.addUserChat(transaction.to.name)	
@@ -595,6 +531,9 @@ mediaView.prototype.buildControls = function(name, transaction, container, media
 
 	var vidControls = $(document.createElement('span')).addClass('video-controls');
 	container.append(vidControls);
+	if ( transaction ){ 
+		vidControls.css({bottom: "90px"});
+	}
 	var stack = $(document.createElement('span')).addClass('control-button fa-stack fa-3x');
 	stack.append($(document.createElement('i')).addClass('fa fa-circle-thin fa-stack-2x'));
 	stack.append($(document.createElement('i')).addClass('fa fa-microphone fa-stack-1x'));

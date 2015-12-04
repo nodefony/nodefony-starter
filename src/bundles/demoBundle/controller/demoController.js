@@ -135,15 +135,16 @@ nodefony.registerController("demo", function(){
 	demoController.prototype.uploadAction = function(){
 	
 		var files = this.getParameters("query.files");
-	
+		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
 		for (var file in files){
-			files[file].move("/tmp/");
+			//files[file].move("/tmp/");
+			files[file].move(path);
 			//console.log( files[file].getExtention() )
 			//console.log( files[file].getMimeType() )
 			//console.log( files[file].realName() )
 		}
 		if ( ! this.isAjax() ){
-			return this.forward("demoBundle:demo:indexDownload","/tmp");
+			return this.forward("demoBundle:finder:index");
 		}else{
 			return this.renderResponse(
 					JSON.stringify({
