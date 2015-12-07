@@ -6,9 +6,16 @@
  	<div class="col-lg-12">
 		
 		<div class="jumbotron bg-danger m-t-xxl">
-			<h1 class="text-shadow m-b-lg">ERROR 404 - Not Found!</h1> 
+			
+			{% if message  %}
+				<h1 class="text-shadow m-b-lg">ERROR 404 - {{ message }}</h1> 
+
+			{% else %}
+				<h1 class="text-shadow m-b-lg">ERROR 404 - Not Found !</h1> 
+			{% endif %}
+			
 			<p>The requested URL  : <b style="font-size: 20px"></b> </p>
-			<p><pre>{{ url }} {{ status}} {{ message }}</pre></p>	
+			<p><pre>{{ url }} {{ status}} </pre></p>	
 		</div>
 	</div>
 

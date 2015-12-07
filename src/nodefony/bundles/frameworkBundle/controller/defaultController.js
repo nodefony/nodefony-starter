@@ -30,8 +30,8 @@ nodefony.registerController("framework", function(){
 			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
 		};
 
-		frameworkController.prototype["404Action"] = function(error){
-			return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, error.exception) );
+		frameworkController.prototype["404Action"] = function(message){
+			return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, message) );
 		};
 
 		frameworkController.prototype["401Action"] = function(error){

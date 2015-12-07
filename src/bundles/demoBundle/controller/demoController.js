@@ -96,14 +96,12 @@ nodefony.registerController("demo", function(){
 		return this.render("demoBundle:realTime:index.html.twig",{title:"realTime"});			
 	};
 
-
 	/*
  	 *
  	 *	UPLOAD
  	 *
  	 */
-	demoController.prototype.indexUploadAction= function(name){
-		
+	demoController.prototype.indexUploadAction= function(){
 		return this.render('demoBundle:demo:upload.html.twig');
 	};
 

@@ -50,6 +50,10 @@ nodefony.register("controller", function(){
 		return  this.sessionService.start(this.context, sessionContext || "default", callback) ;
 	};
 
+	Controller.prototype.getSession = function(){
+		return this.context.session || null ;
+	};
+
 	Controller.prototype.getResponse = function(content){
 		if (content)
 			this.context.response.setBody( content );
@@ -57,7 +61,8 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.getORM = function(){
-		return this.container.get('ORM');
+		var defaultOrm = this.container.get("kernel").settings.orm ;
+		return this.container.get(defaultOrm);
 	};
 
 	Controller.prototype.renderView = function(view, param ){
@@ -293,6 +298,15 @@ nodefony.register("controller", function(){
 			//throw error ;				
 		})
 	};
+
+
+	Controller.prototype.createNotFoundException = function(message){
+		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");
+		this.context.response.setStatusCode(404) ;
+		return resolver.callController( {
+			message:message || null 
+		} );
+	};  
 
 	Controller.prototype.redirect = function(url ,status){
 		if (! url )
