@@ -490,6 +490,9 @@ nodefony.registerService("sessions", function(){
 					if ( ! context.session.saved ){
 						context.session.save(context.user ? context.user.id : null);	
 					}
+					delete context.extendTwig ;
+					context.clean() ; 
+					delete context ; 
 				}
 			});
 		}.bind(this));

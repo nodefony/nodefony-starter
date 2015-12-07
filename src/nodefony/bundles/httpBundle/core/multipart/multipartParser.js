@@ -15,6 +15,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 	var multiPartParser = function(request){
 		this.post = {};
 		this.file = {} ;
+		this.error = null ;
 		this.parse(request);
 	};
 

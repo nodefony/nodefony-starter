@@ -87,32 +87,6 @@ nodefony.registerController("demo", function(){
 		return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
 	};
 
-	
-
-	/**
- 	 *
- 	 *	@see ORM2 usage 
- 	 *	@see sqlite usage connection
- 	 *	@see ORM2 execQuery usage
- 	 *
- 	 */
-	/*demoController.prototype.ormConnectionAction= function(){
-
-		var orm = this.get('ORM2').getConnection('demo');
-		if ( ! orm){
-			throw {
-				message:"Connection demo is not available "
-			}
-		}
-		orm.driver.execQuery('select * from Artist', function(err, data){
-			if (err){
-				this.logger(err, "ERROR")
-			}
-			this.renderAsync('demoBundle:orm:artists.html.twig',{name:"Artists", orm: data});
-		}.bind(this));
-	};*/
-
-		
 	/**
 	 *
 	 *	@method indexRealTimeAction
@@ -129,6 +103,7 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.indexUploadAction= function(name){
+		
 		return this.render('demoBundle:demo:upload.html.twig');
 	};
 
@@ -137,6 +112,9 @@ nodefony.registerController("demo", function(){
 		var files = this.getParameters("query.files");
 		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
 		for (var file in files){
+			if( files[file].error ){
+				throw files[file].error ;
+			}
 			//files[file].move("/tmp/");
 			files[file].move(path);
 			//console.log( files[file].getExtention() )

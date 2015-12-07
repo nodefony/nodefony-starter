@@ -19,6 +19,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	var Http = function(container, request, response, type){
 		this.type = type;
 		this.container = container; 
+
+		//  manage EVENTS
+		this.notificationsCenter = nodefony.notificationsCenter.create();
+		this.container.set("notificationsCenter", this.notificationsCenter);
+
 		this.request = new nodefony.Request( request , container);
 		this.response = new nodefony.Response( response , container);
 		this.session = null;
@@ -41,9 +46,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.security = null ;
 		this.user = null ;
 
-		//  manage EVENTS
-		this.notificationsCenter = nodefony.notificationsCenter.create();
-		this.container.set("notificationsCenter", this.notificationsCenter);
+		
 
 		this.url = this.request.url.href;
 		this.remoteAddress = this.request.remoteAdress ; 
@@ -94,6 +97,17 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  			 */
 			this.notificationsCenter.fire("onError", this.container, e);		
 		}
+	}
+
+
+	Http.prototype.clean = function(){
+		this.request.clean();
+		delete 	this.request ;
+		this.response.clean();
+		delete 	this.response ;
+		delete  this.domain ;
+		delete  this.notificationsCenter ;
+		delete  this.session ;
 	}
 
 	Http.prototype.getUser = function(){

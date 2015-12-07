@@ -40,17 +40,17 @@ nodefony.register("Request",function(){
 						}.bind(this));	
 					break;
 					case "multipart/form-data":
+						var service = this.container.get("upload");
 						var res = new nodefony.io.MultipartParser(this);
-						//console.log(res);
 						this.queryPost = res.post ;
 						var queryFile = res.file ;
 						if (Object.keys(queryFile).length ) {
-							var service = this.container.get("upload");
 							for(var file in queryFile){
-								this.queryFile[file] = service.createTmpFile(this, queryFile[file]);
+								this.queryFile[file] = service.createUploadFile(this, queryFile[file]);
 							}
 						}
 						this.logger("FORM  multipart/form-data   BUFFER SIZE : "+ this.body.length, "DEBUG");
+						nodefony.extend( this.query, this.queryFile);
 					break;
 					case "application/x-www-form-urlencoded":
 						this.queryPost = qs.parse(this.body.toString(this.charset));
@@ -100,19 +100,35 @@ nodefony.register("Request",function(){
 							this.query = this.queryPost ;
 						}else{
 							nodefony.extend( this.query, this.queryPost);
-							nodefony.extend( this.query, this.queryFile);
+							//nodefony.extend( this.query, this.queryFile);
 						}
 					break;
 					default:
 						nodefony.extend( this.query, this.queryPost);
-						nodefony.extend( this.query, this.queryFile);
+						//nodefony.extend( this.query, this.queryFile);
 				}
 			}catch(e){
+				if (e.status){
+					throw e ;
+				}
 				throw new Error ("Request "+this.url.href +" Content-type : " + this.contentType + " data Request :   "+ this.body.length+"   " + e );
 			}
-			//console.log(this.query)
 		}.bind(this));
+
+			
+
 	};
+
+
+	Request.prototype.clean = function(){
+		delete 	this.data ;
+		delete  this.body ; 
+		delete	this.queryPost ;
+		delete	this.queryFile;
+		delete	this.queryGet;
+		delete  this.query ;
+		delete  this.request ;
+	}
 
 	/*Request.prototype.acceptLanguage = function(request){
 		var data = request.headers["accept-language"];

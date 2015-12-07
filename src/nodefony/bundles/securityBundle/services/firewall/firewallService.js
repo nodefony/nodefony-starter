@@ -359,7 +359,11 @@ nodefony.registerService("firewall", function(){
 												throw error;
 											}
 											context.user = user ;
-											context.notificationsCenter.fire("onRequest", context.container, request, response );
+											try {
+												context.notificationsCenter.fire("onRequest", context.container, request, response );
+											}catch(e){
+												context.notificationsCenter.fire("onError", context.container, e );	
+											}
 										}.bind(this)) ;
 									}else{
 										this.handlerHttp(context, request, response);
@@ -369,7 +373,11 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if ( ! context.security ){	
-							context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							try {
+								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							}catch(e){
+								context.notificationsCenter.fire("onError", context.container, e );	
+							}
 						}
 					}.bind(this));
 				break;

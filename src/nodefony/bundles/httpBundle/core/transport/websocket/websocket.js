@@ -37,8 +37,6 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.notificationsCenter.listen(this, "onRequest", this.handle);
 
 		// LISTEN EVENTS SOCKET	
-		
-		
 
 		this.connection.on('message', this.handleMessage.bind(this));
 
@@ -50,6 +48,19 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}.bind(this));*/
 	};
 
+	websocket.prototype.listen = function(){
+		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+	};
+
+	websocket.prototype.fire = function(){
+		return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
+	};
+
+	websocket.prototype.clean = function(){
+		delete  this.response.body ;
+		delete	this.response ;
+		delete 	this.notificationsCenter ;
+	}
 
 	websocket.prototype.handleMessage = function(message){
 		try {
@@ -96,10 +107,10 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 	websocket.prototype.close = function(reasonCode, description){
 		try {
-			this.notificationsCenter.fire("onClose", reasonCode, description);
 			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
 			if (this.connection.state !== "closed")
 				this.connection.close();
+			this.notificationsCenter.fire("onClose", reasonCode, description);
 		}catch(e){
 			this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR")
 		}

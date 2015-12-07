@@ -194,12 +194,17 @@ nodefony.registerService("httpKernel", function(){
 				//response events	
 				context.response.response.on("finish",function(){
 					this.container.leaveScope(container);
+					if ( ! context.session  ){
+						delete context.extendTwig ;
+						context.clean();
+						delete context;	
+						delete request ;
+						delete response ;
+					}
 					delete domain.container ;
+					if (domain) delete domain ;
 					delete container ;
 					delete translation ;
-					delete context;
-					delete request ;
-					delete response ;
 				}.bind(this))
 
 				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
@@ -224,7 +229,11 @@ nodefony.registerService("httpKernel", function(){
 
 				if (! this.firewall){
 					request.on('end', function(){
-						context.notificationsCenter.fire("onRequest",container, request, response );	
+						try {
+							context.notificationsCenter.fire("onRequest",container, request, response );	
+						}catch(e){
+							context.notificationsCenter.fire("onError", container, e );	
+						}
 					});
 					return ;	
 				}
@@ -233,6 +242,13 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+
+				context.listen(this,"onClose" , function(){
+					delete 	context.extendTwig ;
+					context.clean();
+					delete context ;
+				});
+
 				//twig extend context
 				context.extendTwig = {
 					render:render.bind(container),

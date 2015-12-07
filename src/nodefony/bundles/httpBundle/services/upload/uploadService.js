@@ -15,8 +15,13 @@ nodefony.registerService("upload", function(){
 		this.tmpName = tmpName ;
 		this.headers = dataFile.headers ;
 		this.raw = dataFile.data ;
-		this.mother = this.$super;
-		this.mother.constructor(path);
+		this.lenght = this.raw.length ;
+		this.name = this.headers.name ;
+		this.filename = this.headers.filename ;
+		if( tmpName && path){
+			this.mother = this.$super;
+			this.mother.constructor(path);
+		}
 		this.error = null ;
 
 	}.herite(nodefony.fileClass); 
@@ -77,19 +82,19 @@ nodefony.registerService("upload", function(){
 					throw e ;
 				}
 			}
-			this.kernel.listen(this, "onHttpRequest",function(container , context){
-				context.request.request.on("data", function(){
-					if (context.request.contentType === "multipart/form-data" &&  context.request.dataSize > this.config.max_filesize ) 
-						context.fire("onError", container, {
-							status:413,
-							error:"File Upload size exceeded ,File size must be less than " +this.config.max_filesize + " Bytes ",
-							message:"Request Entity Too Large"	
-						})
-						//throw new Error("File Upload size exceeded ,File size must be less than " +this.config.max_filesize + " Bytes " );
-				}.bind(this))
-			});	
 		});
 	};
+
+	upload.prototype.createUploadFile = function(request, dataFile){
+
+		if ( dataFile.data.length > this.config.max_filesize ){ 
+			var uploadfile = new uploadedFile(null , null, dataFile, this);
+			uploadfile.error = "File Upload size exceeded ,File "+ uploadfile.filename +" : "+ uploadfile.lenght+ " size must be less than " +this.config.max_filesize + " Bytes " ;
+			return uploadfile ;
+		}else{	
+			return this.createTmpFile(request, dataFile);
+		}
+	}; 
 
 	upload.prototype.createTmpFile = function(request, dataFile){
 		// create tmp file

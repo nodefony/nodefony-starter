@@ -49,6 +49,14 @@ nodefony.register("Response",function(){
 		}.bind(this))*/
 	};
 
+	Response.prototype.clean = function(){
+		delete this.response ;	
+		delete this.cookies ;
+		delete this.headers ;
+		delete this.body ;
+	
+	}
+
 	Response.prototype.addCookie = function(cookie){
 		if ( cookie instanceof nodefony.cookies.cookie ){
 			this.cookies[cookie.name] = cookie;
@@ -142,11 +150,14 @@ nodefony.register("Response",function(){
 
 	Response.prototype.end = function(data, encoding){
 		//console.log('pass response end')
-		this.ended = true ;
-        	var ret = this.response.end(data, encoding);
-		//this.kernel.container.leaveScope(this.container);
-		return ret ;
-	};
+		if ( this.response ){
+			this.ended = true ;
+			var ret = this.response.end(data, encoding);
+			//this.kernel.container.leaveScope(this.container);
+			return ret ;
+		}
+		return null ;
+	};	
 
 	Response.prototype.redirect = function(url, status){
 		if (status === "301")

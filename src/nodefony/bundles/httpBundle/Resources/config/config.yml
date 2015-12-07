@@ -42,7 +42,7 @@ https:
 
 upload:
   tmp_dir:                      "tmp/upload"
-  max_filesize:                 10000000
+  max_filesize:                 10485760                // 10Mbits
 
 websocket:
   keepaliveInterval:            20000
