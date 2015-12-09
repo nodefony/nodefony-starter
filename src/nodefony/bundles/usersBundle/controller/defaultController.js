@@ -17,28 +17,6 @@ nodefony.registerController("default", function(){
 		};
 
 
-		/**
-		 *
-		 *	@method indexAction
-		 *
-		 */
-		defaultController.prototype.indexAction = function(){
-			// markdown read and parse readme.md
-			try {
-				var path =  this.get("kernel").rootDir+"/src/nodefony/bundles/usersBundle/readme.md";	
-				var file = new nodefony.fileClass(path);
-				var res = this.htmlMdParser(file.content(file.encoding),{
-					linkify: true,
-					typographer: true	
-				});
-				return this.render("usersBundle::index.html.twig",{readme:res});
-			}catch(e){
-				return this.forward("frameworkBundle:default:system",{view: "usersBundle::index.html.twig",bundle:this.getParameters("bundles.users")});
-			}
-		};
-
-
-
 		defaultController.prototype.connectAction = function(login){
 			return this.render('usersBundle::connect.html.twig',{
 				security:this.context.user,
@@ -46,7 +24,14 @@ nodefony.registerController("default", function(){
 			});
 		};
 
+		defaultController.prototype["401Action"] = function(error){
+			var res = nodefony.extend( {url:this.context.url}, error);
+			return this.render('frameworkBundle::401.html.twig', res );
+		};
+
+
 		defaultController.prototype.loginAction = function(){
+				
 			if ( ! this.context.session ){
 				this.startSession("default", function(error, session){
 					if (error)

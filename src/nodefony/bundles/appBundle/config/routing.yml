@@ -2,16 +2,4 @@ Default:
   pattern:  /
   defaults: 
     controller: frameworkBundle:default:index
-  
-            
-documentation:
-    pattern:   /documentation 
-    defaults:  
-      controller: frameworkBundle:default:doc 
-    
-      
-about: 
-    pattern:   /about
-    defaults: 
-      controller: frameworkBundle:default:about
 

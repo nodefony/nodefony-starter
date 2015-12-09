@@ -145,7 +145,7 @@ nodefony.registerService("firewall", function(){
 				this.logger(e, "ERROR");
 
 			var ajax = context.request.isAjax() ;
-			//FIXME REDIRECT HTTPS
+
 			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  this.redirect_Https ){
 				this.redirectHttps(context);
 			}else{
@@ -158,7 +158,7 @@ nodefony.registerService("firewall", function(){
 						});
 					}
 				}else{
-						context.setXjson(e);
+					context.setXjson(e);
 				}
 				context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
 			}
@@ -193,6 +193,7 @@ nodefony.registerService("firewall", function(){
 						tokenName:this.token.name
 					});
 					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
+						//console.log(context.request.url.path)
 						this.overrideURL(context.request, this.defaultTarget);
 						if ( context.request.isAjax() ){
 							var obj = context.setXjson( {
@@ -204,6 +205,22 @@ nodefony.registerService("firewall", function(){
 						}else{
 							this.redirect(context, this.defaultTarget);
 							return ;
+						}
+					}else{
+						if ( context.request.isAjax() ){
+							var obj = context.setXjson( {
+								message:"OK",
+								status:200,
+							});
+							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
+							return ;
+						}
+						//var url = context.session.getMetaBag("url");
+						//console.log( "HANDLE PASS" )
+						//console.log( context.request.url.path )
+						//console.log( url.path )
+						if ( context.request.url.path === this.checkLogin ){
+							return this.redirect(context, "/");
 						}
 					}
 					context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
@@ -246,6 +263,9 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.redirect = function(context, url){
+		if ( url ){
+			return context.redirect(url, 301);
+		}
 		return context.redirect(context.request.url, 301);
 	};
 		
@@ -336,29 +356,31 @@ nodefony.registerService("firewall", function(){
 					request.on('end', function(){
 						for ( var area in this.securedAreas ){
 							if ( this.securedAreas[area].match(context.request, context.response) ){
+								//FIXME PRIORITY
 								context.security = this.securedAreas[area];
-								this.sessionService.start(context, this.securedAreas[area].sessionContext,function(error, session){
-									var meta = session.getMetaBag("security");
-									if (meta){
-										context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
-											if (error){
-												throw error;
-											}
-											context.user = user ;
-											try {
-												context.notificationsCenter.fire("onRequest", context.container, request, response );
-											}catch(e){
-												context.notificationsCenter.fire("onError", context.container, e );	
-											}
-										}.bind(this)) ;
-									}else{
-										this.handlerHttp(context, request, response);
-									}
-								}.bind(this));
-								break;
+								//break;
 							}
 						}
-						if ( ! context.security ){	
+						if (  context.security ){	
+							this.sessionService.start(context, context.security.sessionContext, function(error, session){
+								var meta = session.getMetaBag("security");
+								if (meta){
+									context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
+										if (error){
+											throw error;
+										}
+										context.user = user ;
+										try {
+											context.notificationsCenter.fire("onRequest", context.container, request, response );
+										}catch(e){
+											context.notificationsCenter.fire("onError", context.container, e );	
+										}
+									}.bind(this)) ;
+								}else{
+									this.handlerHttp(context, request, response);
+								}
+							}.bind(this));	
+						}else{
 							try {
 								context.notificationsCenter.fire("onRequest", context.container, request, response);	
 							}catch(e){

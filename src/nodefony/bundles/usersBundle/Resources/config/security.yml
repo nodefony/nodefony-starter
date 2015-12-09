@@ -9,7 +9,7 @@ security:
             form_login:
               check_path:               /secure
               login_path:               /login  
-              default_target_path:      /
+              #default_target_path:      /
             #FACTORY
             #http_digest:
             #http_basic:
@@ -26,16 +26,17 @@ security:
                         "access-control-expose-headers":"WWW-Authenticate ,X-Json",
                         "access-control-max-age":10
                         }
-            remember_me:                false
+            
+            remember_me:                false           #TODO
             logout:                     ~
             anonymous:                  ~
             context:                    ~
-            stateless:                  false
+            stateless:                  false           #TODO
             redirectHttps:              true
         
     #TODO authorisation               
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }          #TODO
 
     providers:
         in_memory:

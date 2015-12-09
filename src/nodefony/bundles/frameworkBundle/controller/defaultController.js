@@ -20,11 +20,6 @@ nodefony.registerController("framework", function(){
 			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
 		};
 		
-
-		frameworkController.prototype.aboutAction= function(name){
-			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
-		};
-
 		frameworkController.prototype["404Action"] = function(message){
 			return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, message) );
 		};
@@ -45,10 +40,6 @@ nodefony.registerController("framework", function(){
 				exception:util.inspect( exp.exception )
 			}
 			return this.render('frameworkBundle::exception.html.twig', nodefony.extend(ele, exp) );	
-		};
-
-		frameworkController.prototype.docAction = function(){
-			return this.render('frameworkBundle::documentation.html.twig',{} );
 		};
 
 		frameworkController.prototype.systemAction = function(options){
