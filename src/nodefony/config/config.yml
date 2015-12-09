@@ -44,6 +44,7 @@ system:
     messages:                   "/tmp/nodefony.log"
     error:                      "/tmp/errorNodefony.log"
     services:                   "/tmp/servicesNodefony.log"
+    #TODO
     rotate:                     false
 
 #
@@ -54,13 +55,11 @@ system:
 #
 templating:                     twig
 
-
-
 #
 # ENGINE ORM
 #      
 #       SEQUELIZE
 #       
 #
-orm:                     sequelize
+orm:                            sequelize
 

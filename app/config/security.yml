@@ -1,0 +1,6 @@
+# Security
+security:
+
+    # change security context (multi firewalls) 
+    session_fixation_strategy:  migrate  # la stratégie peut être soit: none, migrate, invalidate
+

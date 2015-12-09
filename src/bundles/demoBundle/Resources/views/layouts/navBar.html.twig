@@ -31,8 +31,10 @@
                                         <ul class="dropdown-menu">
                                                 <li><a href="{{path("indexReal")}}">DEMO REALTIME</a></li>
                                                 <li role="separator" class="divider"></li>
-                                                <li><a href="{{path("webrtc")}}">DEMO WEBRTC</a></li>
-                                                <li role="separator" class="divider"></li>
+						{% if  webrtc  %}
+							<li><a href="{{path("webrtc")}}">DEMO WEBRTC</a></li>
+							<li role="separator" class="divider"></li>
+						{% endif %}
 						{% if  user.username  %}
 							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
 						{% endif %}

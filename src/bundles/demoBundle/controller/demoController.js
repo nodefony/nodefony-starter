@@ -37,9 +37,10 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.navAction = function(login){
-		
+		var webrtcBundle = this.get("kernel").getBundles("webRtc"); 
 		return this.render('demoBundle:layouts:navBar.html.twig',{
-			user: this.context.user
+			user: this.context.user,
+			webrtc:webrtcBundle
 		});	
 	}
 
