@@ -94,7 +94,6 @@ nodefony.registerService("firewall", function(){
 
 	// context security
 	var securedArea = function(name, container, firewall){
-		//this.notificationCenter = new nodefony.notificationsCenter.create();
 		this.name = name ;
 		this.container = container;
 		this.firewall = firewall ;
@@ -123,19 +122,10 @@ nodefony.registerService("firewall", function(){
 		}.bind(this))
 	};
 
-	
 	securedArea.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "\x1b[36mCONTEXT SECURITY \033[31m"+this.name+" \x1b[0m";
 		return this.firewall.logger(pci, severity, msgid,  msg);
 	};
-
-	/*securedArea.prototype.listen = function(){
-		return this.notificationCenter.listen.apply(this.notificationCenter, arguments);
-	};
-
-	securedArea.prototype.fire = function(){
-		return this.notificationCenter.fire.apply(this.notificationCenter, arguments);
-	};*/
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
 		if ( context.crossDomain ){
@@ -290,7 +280,6 @@ nodefony.registerService("firewall", function(){
 		this.sessionContext = context ;
 	};
 
-
 	securedArea.prototype.setRedirectHttps = function(value){
 		this.redirect_Https = value || false ;
 	};
@@ -337,9 +326,6 @@ nodefony.registerService("firewall", function(){
 			this.sessionService.settings.start = "firewall";
 			this.orm = this.get(this.kernel.settings.orm);
 		});
-
-		//this.kernel.listen(this, "onReady",function(){
-		//});
 
 		this.kernel.listen(this, "onSecurity",function(context){
 			switch (context.type){
