@@ -83,7 +83,6 @@ nodefony.registerCommand("Sequelize",function(){
 									this.terminate();
 								}.bind(this))
 						}.bind(this));
-
 						break;
 					default:
 						this.showHelp();

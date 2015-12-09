@@ -3,25 +3,12 @@ Default:
   defaults: 
     controller: frameworkBundle:default:index
   
-secure:
-  pattern:  /secure
-  defaults: 
-    controller:         frameworkBundle:default:401
             
 documentation:
     pattern:   /documentation 
     defaults:  
       controller: frameworkBundle:default:doc 
     
-login:
-    pattern:   /login
-    defaults: 
-      controller: frameworkBundle:default:login
-
-logout:
-    pattern:   /logout
-    defaults: 
-      controller: frameworkBundle:default:logout
       
 about: 
     pattern:   /about

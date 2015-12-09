@@ -19,12 +19,7 @@ nodefony.registerController("framework", function(){
 		frameworkController.prototype.indexAction = function(){
 			return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
 		};
-		frameworkController.prototype.connectAction = function(login){
-			return this.render('frameworkBundle::connect.html.twig',{
-				security:this.context.user,
-			        login:login ? true : false 
-			});
-		};
+		
 
 		frameworkController.prototype.aboutAction= function(name){
 			 return this.renderResponse('<html><body><h1>ABOUT</h1></body></html>');
@@ -44,37 +39,6 @@ nodefony.registerController("framework", function(){
 			return this.render('frameworkBundle::403.html.twig', res );
 		};
 		
-		frameworkController.prototype.loginAction = function(){
-			if ( ! this.context.session ){
-				this.startSession("default", function(error, session){
-					if (error)
-						throw error ;
-					var log  = session.getFlashBag("session") ;
-					if ( log )
-						log["login"] = true ;
-					else
-						log = {login :true};
-					this.renderAsync('frameworkBundle::login.html.twig',log);
-				}.bind(this));
-			}else{
-				var log = this.context.session.getFlashBag("session") ;
-				if ( log )
-					log["login"] = true ;
-				else
-					log = {login :true};
-				//this.getResponse().setHeader('WWW-Authenticate',' Basic realm="My Realm"');
-				//this.getResponse().setStatusCode(401);
-				return this.render('frameworkBundle::login.html.twig',log);
-			}
-		};
-
-		frameworkController.prototype.logoutAction = function(){
-			if (this.context.session)
-				this.context.session.invalidate() ;
-			return this.redirect("/login");
-		};
-
-
 		frameworkController.prototype.exceptionsAction = function(exp){
 			var ele = {
 				title:"Exception",

@@ -12,7 +12,10 @@
 
 
 {% block body %}
-		
+	{% block navBar %}
+		{{render( controller('usersBundle:default:connect', login) )}}
+	{% endblock %}
+	
 	{% block content %}
 		<div class="container">
 			<div class="row">
