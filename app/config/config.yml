@@ -54,7 +54,7 @@ httpBundle:
 
   upload:
     tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000               /en Bytes
+    #max_filesize:                 100000               #en Bytes
   session:
     handler:                      session.storage.sequelize                    
     #handler:                      session.storage.file                    

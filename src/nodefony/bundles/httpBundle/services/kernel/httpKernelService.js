@@ -247,6 +247,12 @@ nodefony.registerService("httpKernel", function(){
 					delete 	context.extendTwig ;
 					context.clean();
 					delete context ;
+					delete domain.container ;
+					if (domain) delete domain ;
+					delete container ;
+					delete translation ;
+					delete request ;
+					delete response ;
 				});
 
 				//twig extend context

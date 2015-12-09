@@ -102,7 +102,11 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 	websocket.prototype.send = function(data){
 		//console.log(data)
-		return this.response.send(data || this.response.body)
+		//console.log(this.response)
+		if ( this.response ){
+			return this.response.send(data || this.response.body)
+		}
+		return null ;
 	};
 
 	websocket.prototype.close = function(reasonCode, description){

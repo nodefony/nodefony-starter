@@ -115,7 +115,6 @@ nodefony.registerService("upload", function(){
 		}else{
 			throw e ;
 		}
-
 		//class upload 
 		return new uploadedFile(name , path, dataFile, this);
 		//this.uploadedFile[name] = inst ;

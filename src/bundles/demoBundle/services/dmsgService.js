@@ -108,7 +108,8 @@ nodefony.registerService("dmsg", function(){
 				this.watcher.listen(this, 'onChange', callback);
 
 				socket.on('end',function(){
-					this.logger("CLOSE CONNECTION TO SERVICE DMSG FROM : "+socket.remoteAddress, "INFO");
+					this.logger("CLOSE CONNECTION TO SERVICE DMSG FROM : "+socket.remoteAddress + " ID :" +conn.id, "INFO");
+
 					this.nbConnections-- ;
 					if (this.nbConnections === 0 ){
 						this.watcher.unWatch();

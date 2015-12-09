@@ -202,7 +202,6 @@ nodefony.registerService("realTime", function(){
 						highWaterMark:1024*64
 					});
 
-					
 					/*client.on("readable",function(){
 						console.log( client);
 						var chunk;
@@ -252,8 +251,6 @@ nodefony.registerService("realTime", function(){
 						//client.push("");
 					}.bind(this));
 
-										
-					
 
 					/*client.on("timeout",function(buffer){
 						console.log("PASS event timeout")
@@ -291,6 +288,7 @@ nodefony.registerService("realTime", function(){
 					}.bind(this));
 
 					client.on("close",function(error){
+						//console.log("close client");
 						if (error){
 							this.logger("CANNOT CONNECT SERVICE : " + name , "ERROR");
 						}else{
@@ -313,6 +311,7 @@ nodefony.registerService("realTime", function(){
 							}
 						}
 						client.destroy();
+						delete client ;
 					}.bind(this));
 
 				}catch(e){

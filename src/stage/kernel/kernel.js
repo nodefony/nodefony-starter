@@ -156,14 +156,14 @@ stage.register("kernel",function(){
 		//console.log(params.async)
 		$.ajax({
 			url:location,
-			async:params.async,
-			success:function(data, status, xhr){
+			async:async,
+			success:function(mydata, status, xhr){
 				var moduleName = this.getModuleName( location )
 			        if (precompiled === true) {
-					data = JSON.parse(data);
+					mydata = JSON.parse(mydata);
 				}
 				params.url = location;
-				params.data = data;
+				params.data = mydata;
 				template = new Twig.Template(params);
 				if (this.modules[moduleName]){
 					var module = this.modules[moduleName] ;
