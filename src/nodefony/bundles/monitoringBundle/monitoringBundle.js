@@ -38,6 +38,11 @@ nodefony.registerBundle ("monitoring", function(){
 					}
 					return obj;
 				}.call(this);
+				this.syslogContext = new nodefony.syslog({
+					moduleName:"CONTEXT",
+					maxStack: 10,
+					defaultSeverity:"INFO"	
+				}); 
 				var env = this.kernel.environment ;
 				var app = this.getParameters("bundles.App").App ;
 				var node = process.versions ;
@@ -168,6 +173,14 @@ nodefony.registerBundle ("monitoring", function(){
 									"content-type":context.response.response.getHeader('content-type')
 								}
 								nodefony.extend(obj, context.extendTwig);
+								this.syslogContext.logger({
+									session:obj["session"],
+									response:obj["response"],
+									security:obj["context_secure"],
+									request:obj["request"],
+									routing:obj["route"],
+									locale:obj["locale"]
+								});
 								if( !  context.request.isAjax() && obj.route.name !== "monitoring" ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 									if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){
