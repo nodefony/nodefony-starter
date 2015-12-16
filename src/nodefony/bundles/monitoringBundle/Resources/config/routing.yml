@@ -69,6 +69,13 @@ syslog:
   requirements: 
     method: GET
 
+syslogContext:
+  pattern:   /api/requests   
+  defaults: {controller: "monitoringBundle:api:syslogContext"}
+  requirements: 
+    method: GET
+
+
 
 realtime:
   pattern:   /api/realtime/{name}   
