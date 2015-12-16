@@ -19,7 +19,8 @@ nodefony.registerService("statics", function(){
 		this.container = container ;
 		this.kernel = this.container.get("kernel") ;
 		this.type = this.kernel.type;
-		if (this.type !== "SERVER") return  ;
+		if( ! this.kernel.settings.system.statics ) return null ;
+		if( this.type !== "SERVER") return  null ;
 		this.connect = require("connect");
 		this.syslog = this.container.get("syslog");
 		this.server = this.connect();

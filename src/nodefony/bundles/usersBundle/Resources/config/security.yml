@@ -32,7 +32,7 @@ security:
             anonymous:                  ~
             context:                    ~
             stateless:                  false           #TODO
-            redirectHttps:              true
+            #redirectHttps:              true
         
     #TODO authorisation               
     access_control:

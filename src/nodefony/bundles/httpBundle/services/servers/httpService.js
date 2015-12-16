@@ -25,7 +25,23 @@ nodefony.registerService("http", function(){
 
 		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
-			this.httpKernel.serverStatic.handle(request, response , function(){
+			if ( this.kernel.settings.system.statics ){
+				this.httpKernel.serverStatic.handle(request, response , function(){
+					var d = nodedomain.create();
+					d.on('error', function(er) {
+						if ( d.container ){
+							this.httpKernel.onError( d.container, er.stack)	
+						}else{
+							this.httpKernel.logger(er.stack);
+						}
+					}.bind(this));
+					d.add(request);
+					d.add(response);
+					d.run(function() {
+						this.kernel.fire("onServerRequest", request, response, logString, d)
+					}.bind(this));
+				}.bind(this));
+			}else{
 				var d = nodedomain.create();
 				d.on('error', function(er) {
 					if ( d.container ){
@@ -38,8 +54,8 @@ nodefony.registerService("http", function(){
 				d.add(response);
 				d.run(function() {
 					this.kernel.fire("onServerRequest", request, response, logString, d)
-				}.bind(this));
-			}.bind(this));
+				}.bind(this));	
+			}
 		}.bind(this))
 
 		

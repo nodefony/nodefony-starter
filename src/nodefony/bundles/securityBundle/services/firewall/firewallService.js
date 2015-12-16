@@ -363,6 +363,9 @@ nodefony.registerService("firewall", function(){
 						}
 						if (  context.security ){	
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
+								if (error){
+									return context.security.handleError(context, error);
+								}
 								var meta = session.getMetaBag("security");
 								if (meta){
 									context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
