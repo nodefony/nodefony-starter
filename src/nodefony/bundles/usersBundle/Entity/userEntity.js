@@ -36,7 +36,7 @@ nodefony.registerEntity("user", function(){
 						}, null)
 					}).catch(function(error){
 						if (error)
-							return callback(err, null)
+							return callback(error, null)
 					});
 				},	
 				loadUserByUsername : function(username, callback){
