@@ -1,0 +1,15 @@
+{
+	"name": "HTTP",
+	"version": "1.0",
+	"description": "Manager HTTP ",
+	"contributors": [],
+	"keywords": [
+		"nodefony",
+		"javascript"
+	],
+	"dependencies": {
+		"memcached": "*"
+	},
+	"author": "cci <christophe.camensuli@gmail.com>",
+	"license": "CECILL-B"
+}
