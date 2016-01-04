@@ -51,6 +51,20 @@ nodefony.registerBundle ("monitoring", function(){
 				var sessionService = this.container.get("sessions");
 				var domain =  translation.defaultDomain ;
 				var nbServices = Object.keys(nodefony.services).length ;
+
+
+				//ORM
+				var orm = this.container.get("sequelize") ;
+				//console.log(orm.connections.nodefony);
+				var ORM = {} ;
+				if (orm){
+					ORM = {
+						name:"sequelize",
+						version:orm.engine.version,
+						connections:orm.connections
+					}
+				}
+
 				var service = {
 					upload : {
 						tmp_dir:upload.config.tmp_dir,
@@ -63,7 +77,8 @@ nodefony.registerBundle ("monitoring", function(){
 					session:{
 						storage:sessionService.settings.handler,
 						path:sessionService.settings.save_path
-					}
+					},
+					ORM:ORM
 				}; 
 				var security = function(){
 					var obj = {};
@@ -80,6 +95,7 @@ nodefony.registerBundle ("monitoring", function(){
 					}
 					return obj ; 
 				}.call(this);
+				
 
 				this.kernel.listen(this, "onServerRequest",function(request, response, logString, d){
 					request.nodefony_time = new Date().getTime();	

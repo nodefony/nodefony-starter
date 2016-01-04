@@ -77,7 +77,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 		try {
 			fileDestroy = new nodefony.fileClass(path);
 			this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION context : "+contextSession +" ID : "+ fileDestroy.name + " DELETED");
-			return fileDestroy.unlink();;
+			return fileDestroy.unlink();
 
 		}catch(e){
 			return false ;

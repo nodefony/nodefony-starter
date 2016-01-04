@@ -83,6 +83,24 @@
 					{% else %}
 						<li><label>Storage</label><span >{{services.session.storage}}</span></li>
 					{% endif %}
+					{% if services.ORM %}
+						<li class="separator"> </li>
+						<li><label style="color:#999">ORM</label><span >{{services.ORM.name}}</span></li>
+						<li><label>Version</label><span >{{services.ORM.version}}</span></li>
+						<label style="color:#999">DATABASES CONNECTIONS : </label>
+						{% for key, value in services.ORM.connections %}
+							<li><label >{{key|upper}}</label></li>
+							<li><label >State </label><span >{{value.state}}</span></li>
+							<li><label >Type </label><span >{{value.type}}</span></li>
+							{% if value.type == "sqlite" %}
+								<li><label >database </label><span >{{value.db.config.database}}</span></li>
+							{% else %}
+								<li><label >Host </label><span >{{value.db.options.host}}</span></li>
+							{% endif %}
+							<li><label  >ORM Models </label><span title="{{value.db.models|keys}}">{{value.db.models|length}}</span></li>
+							<li class="separator"> </li>
+						{% endfor %}
+					{% endif %}
 				</ul>
 			</div>
 		</li>

@@ -18,15 +18,16 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 		this.contextSessions = [];
 		this.settings = manager.settings.memcached;
 		this.options = this.settings.options ;
-		this.servers = new Array();
+		this.servers = new Object();
 		this.clients = {};
 
 		for (var server in this.settings.servers ){
 			var port = this.settings.servers[server].port ? this.settings.servers[server].port : 11211 ;
 			var host = this.settings.servers[server].location ; 
-			this.servers.push( host+":"+port );
-
+			var weight = this.settings.servers[server].weight ? this.settings.servers[server].weight : 1 ; 
+			this.servers[ host+":"+port ] = weight ;
 		}
+
 	};
 
 
@@ -34,18 +35,15 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 		var syslog = this.manager ;
 		if (! msgid) msgid = "MEMCACHED SESSION STORAGE";
 		return syslog.logger(pci, severity || "DEBUG", msgid,  msg);
-	
 	}
 
 	memcachedSessionStorage.prototype.start = function(id, contextSession, callback){
-		
 		try {
 			this.read( id, contextSession, callback);
 
 		}catch(e){
 			callback(e, null) ;
 		}
-
 	};
 
 	memcachedSessionStorage.prototype.open = function(contextSession){
@@ -53,9 +51,9 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			namespace:contextSession
 		}) );
 		
-		this.clients[contextSession].stats(function(error, stats){
+		/*this.clients[contextSession].stats(function(error, stats){
 			this.stats = stats ;
-		}.bind(this));
+		}.bind(this));*/
 
 		this.clients[contextSession].on('issue', function(details){
 			this.logger(details, "INFO");
@@ -103,11 +101,12 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			}.bind(this));
 
 		}.bind(this));
-
 	};
 
 	var memcacheGC = function(client, msMaxlifetime ){
-
+		
+		
+		
 	};
 
 	memcachedSessionStorage.prototype.gc = function(maxlifetime, contextSession){
@@ -185,7 +184,6 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 							return ;
 						}
 						callback(null, serialize)	
-						client.end();
 					})
 				}else{
 					client.set(id, JSON.stringify(serialize) , this.gc_maxlifetime ,function(err, result){

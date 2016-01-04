@@ -244,7 +244,7 @@ nodefony.registerService("sessions", function(){
 					}
 				}
 				this.status = "active" ;
-				this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
+				//this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
 				return callback(null, this);
 			}.bind(this));
 			

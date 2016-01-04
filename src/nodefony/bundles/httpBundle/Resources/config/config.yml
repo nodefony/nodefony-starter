@@ -56,6 +56,9 @@ statics:
   settings:
     cache :                     true	
     maxAge:                     96*60*60          
+  web:
+    path:                       "/web/"
+    maxage:                     30*24*60*60*1000
 
 # SESSIONS
 session:
@@ -76,3 +79,21 @@ session:
     httpOnly:                   true            # don't see by script (javascript)
     secure:                     false           # https only
     signed:                     false
+  # MEMCACHED
+  # https://github.com/3rd-Eden/memcached
+  memcached:
+    servers:                      
+      nodefony: 
+        location:               nodefony.com
+        port:                   11211
+        weight:                 1
+      nodefony2: 
+        location:               nodefony.com
+        port:                   8888
+        weight:                 1
+    options:
+            #debug:                    true
+
+
+
+

@@ -11,6 +11,9 @@ install:
 	./console router:generate:routes
 	./console npm:list
 	
+start:
+	npm start
+
 node:
 	make clean
 	@if [  -f package.json  ] ; then  \

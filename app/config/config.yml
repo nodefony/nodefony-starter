@@ -56,7 +56,7 @@ httpBundle:
     tmp_dir:                      "tmp/upload"
     #max_filesize:                 100000               #en Bytes
   session:
-    handler:                      session.storage.sequelize                    
+    handler:                      session.storage.sequelize       # files | sequelize | memcached               
     #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"
     cookie:
@@ -86,14 +86,13 @@ asseticBundle:
 #
 sequelizeBundle: 
   debug:        false
-#  connectors:                    
-#    nodefony:
-#      driver:   mysql
-#      dbname: 'nodefony'
-#      username:     'root'
-#      password: ''
-#      options:
-#        dialect: mysql
-#        host:     nodefony.com
-#        port:     '3306'
-
+  #connectors:                    
+  #  nodefony:
+  #    driver:          mysql
+  #    dbname:          'nodefony'
+  #    username:        'user'
+  #    password:        'passwd'
+  #    options:
+  #      dialect:       mysql
+  #      host:          nodefony.com
+  #      port:          '3306'

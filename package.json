@@ -4,8 +4,7 @@
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
-    "start": "node nodefony",
-    "test": "node test/nodefony_dev"
+    "start": "node nodefony_dev &"
   },
   "repository": "./",
   "keywords": [
