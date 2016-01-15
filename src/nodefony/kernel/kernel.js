@@ -281,7 +281,7 @@ nodefony.register("kernel", function(){
 					}
 					if (! pdu.payload ) return 
 					var reg = new RegExp("\\[32m");
-					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pdu.payload.replace(reg,"");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " : "+ pdu.payload.replace(reg,"");
 					this.logStreamD.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
 				});
 			}

@@ -7,17 +7,13 @@
  *
  *
  */
-
 var url = require("url")
 var qs = require('querystring');
 var xml = require('xml2js');
 
 
-
 nodefony.register("Request",function(){
 
-	
-	
 	var settingsXml = {};
 	var parserRequestBody = function(){
 		//var contentType = this.contentType ? this.contentType : "application/x-www-form-urlencoded";

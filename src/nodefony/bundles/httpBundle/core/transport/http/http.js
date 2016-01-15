@@ -32,7 +32,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;
 
-		this.logger("request from :"+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
+		this.logger("request from : "+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
 			host:request.headers.host ,
 			domain:this.domain,
 			url:request.url,
