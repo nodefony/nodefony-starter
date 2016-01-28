@@ -28,14 +28,20 @@
 
 {% block javascripts %}
 
-	<script type="text/javascript" src="/demoBundle/js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="/demoBundle/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 
-	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
-	<script type="text/javascript" src="/vendors/stage/function.js"></script>
-	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
+	{% javascripts
+		'/demoBundle/js/jquery-2.1.4.min.js' 
+		"/demoBundle/bootstrap-3.3.5/js/bootstrap.min.js" 
+		"/vendors/stage/stage.js" 
+		"/vendors/stage/function.js" 
+		"/vendors/stage/notificationsCenter.js" 
+		"/vendors/stage/syslog/syslog.js" 
+		"/vendors/stage/io/io.js" 
+		output='/js/layout.js' 
+		filter='uglifyjs2' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
 
 {% endblock %}
 

@@ -109,11 +109,11 @@ nodefony.register("fileClass", function(){
 	File.prototype.matchName = function(ele){
 		 
 		if (ele instanceof RegExp ){
-			this.match = ele.exec(this.name)
+			this.match = ele.exec(this.name);
 			return this.match;
 		}
 		if (ele === this.name)
-			return true
+			return true;
 		return false;
 	};
 
@@ -126,19 +126,19 @@ nodefony.register("fileClass", function(){
 	};
 
 	File.prototype.matchType = function(type){
-		return type === this.type
+		return type === this.type;
 	};
 
 	File.prototype.isFile = function(){
-		return this.type === "File"
+		return this.type === "File";
 	};
 
 	File.prototype.isDirectory = function(){
-		return this.type === "Directory"
+		return this.type === "Directory";
 	};
 
 	File.prototype.isSymbolicLink = function(){
-		return this.type === "symbolicLink"
+		return this.type === "symbolicLink";
 	};
 
 	File.prototype.dirname = function(){
@@ -155,12 +155,23 @@ nodefony.register("fileClass", function(){
 		return fs.readFileSync(this.path, encode);
 	};
 
+	File.prototype.read = File.prototype.content ;
+
+	var defautWriteOption = { 
+		flags: 'w',
+		defaultEncoding: 'utf8',
+		mode: 0o666
+	};
+	File.prototype.write = function(data, options) {
+		return fs.writeFileSync( this.path, data, nodefony.extend({}, defautWriteOption ,options ) ) ;
+	};
+
 	File.prototype.move = function(target){
 		try {
 			fs.renameSync(this.path, target);
 			return new File(target);
 		}catch(e){
-			throw e
+			throw e;
 		}
 	};
 
@@ -168,7 +179,7 @@ nodefony.register("fileClass", function(){
 		try {
 			fs.unlinkSync(this.path);
 		}catch(e){
-			throw e
+			throw e;
 		}
 	};
 

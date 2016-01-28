@@ -39,6 +39,19 @@ framework:
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
 	fi
+	@if [ ! -d web ] ; then  \
+		mkdir web ;\
+	fi
+	@if [ ! -d web/js ] ; then  \
+		mkdir web/js ;\
+	fi
+	@if [ ! -d web/css ] ; then  \
+		mkdir web/css ;\
+	fi
+	@if [ ! -d web/images ] ; then  \
+		mkdir web/images ;\
+	fi
+
 
 sequelize:
 	./console Sequelize:generate:entities
