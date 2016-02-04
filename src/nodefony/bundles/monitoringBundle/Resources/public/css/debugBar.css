@@ -9,6 +9,7 @@
 
 #nodefony-container {
 	position:		fixed;
+	border-radius:		 4px;
 	left:			0;
 	right:			0;
 	bottom:			0;
@@ -155,6 +156,7 @@
 
 #nodefony-small {
 	position:		fixed;
+	border-radius:		 4px;
 	/*width:			30px;*/
 	bottom:			0;
 	right:			0;
@@ -162,7 +164,7 @@
 	height:			30px;
 	background-color:	#167b87;
 	overflow:		hidden;
-	padding:		4px 6px 6px 8px;
+	padding:		2px 8px 6px 8px;
 	font-family:		"Source Sans Pro",Helvetica,Arial,sans-serif;
 	font-size:		14px;
 }
