@@ -38,7 +38,7 @@ if ( i % 2)
 	// req.write('data\n');
 	req.end();
 	i++
-}, 100)
+}, 50)
 
 
 /*for (var i = 0; i<100000;i++){

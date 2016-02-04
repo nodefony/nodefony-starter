@@ -110,16 +110,53 @@ var nodefony = function(){
 		}
 	};
 
+	// HTML5 Storage
+	var browserStorage = function(type){
+		if (type === "local")
+			this.data =  window.localStorage;
+		else
+			this.data =  window.sessionStorage;
+	};
+	browserStorage.prototype.get = function(key){
+		var ele = this.data.getItem(key);
+		if ( ele === "" || ele === null || ele === undefined ) return null;
+		if ( ele && typeof ele === "object")
+			return JSON.parse(ele.value);
+		return JSON.parse(ele);
+	};
+	browserStorage.prototype.set = function(key, value ){
+		return this.data.setItem(key, JSON.stringify(value));
+	};
+	browserStorage.prototype.unset = function(key){
+		return this.data.removeItem(key);
+	};
+	browserStorage.prototype.clear = function(){
+		return this.data.clear();
+	};
+	browserStorage.prototype.each = function(){
+		//TODO
+	};
+
+
+
 	// EVENTS LOAD 
 	var load = function(){
 		this.debugbar = document.getElementById("nodefony-container");
 		this.smallContainer = document.getElementById("nodefony-small");
 		this.nodefonyClose = document.getElementById("nodefonyClose");
 
+		var storage = new browserStorage("local");
+		var state = storage.get("nodefony_debug") ;
+		if ( state === false){
+			removeClass( this.smallContainer, "hidden" );   
+			addClass( this.debugbar, "hidden" );
+		}
+
 		this.listen(this.nodefonyClose, "click", function(event){
 			//var ev = new coreEvent(event);
-			removeClass( this.smallContainer, "hidden" )	
-			addClass( this.debugbar, "hidden" )	
+			removeClass( this.smallContainer, "hidden" );	
+			addClass( this.debugbar, "hidden" );	
+			storage.set("nodefony_debug",false);
 			//ev.stopPropagation();
 		}.bind(this))
 
@@ -127,6 +164,7 @@ var nodefony = function(){
 			//var ev = new coreEvent(event);
 			removeClass(  this.debugbar, "hidden" )	;
 			addClass( this.smallContainer, "hidden" );
+			storage.set("nodefony_debug",true);
 			//ev.stopPropagation();	
 		}.bind(this))
 	};

@@ -56,19 +56,19 @@
 
                         {% if jsonTree.type == "File"  %}
                             {% if jsonTree.mimeType == "application/javascript" %}
-                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/js.png" data-mine="{{jsonTree.mimeType}}">
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/images/finder/js.png" data-mine="{{jsonTree.mimeType}}">
                                     <div class="icon">
                                         <a href="/demo/finder?path={{jsonTree.path}}">
-                                            <img class="small" src="/demoBundle/img/finder/js.png">
+                                            <img class="small" src="/demoBundle/images/finder/js.png">
                                         </a>
                                     </div>
                                 </div>
 
                             {% elseif jsonTree.mimeType == "application/pdf" %}
-                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/pdf.png" data-mine="{{jsonTree.mimeType}}">
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/images/finder/pdf.png" data-mine="{{jsonTree.mimeType}}">
                                     <div class="icon">
                                         <a href="/demo/finder?path={{jsonTree.path}}">
-                                            <img class="small" src="/demoBundle/img/finder/pdf.png">
+                                            <img class="small" src="/demoBundle/images/finder/pdf.png">
                                         </a>
                                     </div>
                                 </div>
@@ -86,27 +86,27 @@
                                 <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demo/finder?path={{jsonTree.path}}" data-mine="{{jsonTree.mimeType}}">
                                     <div class="icon">
                                         <a href="/demo/finder?path={{jsonTree.path}}" class="video">
-                                            <img class='miniature' src='/demoBundle/img/finder/mp4.png'>
+                                            <img class='miniature' src='/demoBundle/images/finder/mp4.png'>
                                         </a>
                                     </div>
                                 </div>
 
                             {% else %}
 
-                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/unknown.png" data-mine="{{jsonTree.mimeType}}">
+                                <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/images/finder/unknown.png" data-mine="{{jsonTree.mimeType}}">
                                     <div class="icon">
                                         <a href="/demo/finder?path={{jsonTree.path}}">
-                                            <img class="small" src="/demoBundle/img/finder/unknown.png">
+                                            <img class="small" src="/demoBundle/images/finder/unknown.png">
                                         </a>
                                     </div>
                                 </div>
                             {% endif %}
 
                         {% else %}
-                            <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/img/finder/folder.png" data-mine="{{jsonTree.type}}">
+                            <div class="gallery-cell" data-name="{{jsonTree.name|escape('html')}}" data-url="/demoBundle/images/finder/folder.png" data-mine="{{jsonTree.type}}">
                                 <div class="icon">
                                     <a href="/demo/finder?path={{jsonTree.path}}">
-                                        <img class="small" src="/demoBundle/img/finder/folder.png">
+                                        <img class="small" src="/demoBundle/images/finder/folder.png">
                                     </a>
                                 </div>
                             </div>
