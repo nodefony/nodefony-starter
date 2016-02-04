@@ -19,8 +19,10 @@ nodefony.registerBundle ("assetic", function(){
 			this.engineTwig =  this.kernel.get("templating").engine ;
 			//console.log(this.engineTwig);
 			this.createExtendJavascript();
-
+			this.createExtendStylesheets();
 		});
+		this.environment = this.kernel.environment ;
+		this.debug = this.kernel.debug ;
 	};
 	
 
@@ -36,29 +38,19 @@ nodefony.registerBundle ("assetic", function(){
 			ino+=file.stats.ino ; 
 		}
 		return 	{
-			hash : ino,
+			hash : crypto.createHash('md5').update(ino).digest("hex") ,
 			files : tab
 		}
 	}
 
-	assetic.prototype.createOutputFile = function(files, output){
+	assetic.prototype.createOutputFile = function(files, output, type){
 		var ret = this.generateFileName( files ) ;
 		if ( output  === ""){
-			var name = "/js/"+ret.hash+"_assetic.js" ;
-			fs.openSync(this.webDir + name, 'w');
-			return  {
-				name:name,	
-				output : new nodefony.fileClass( this.webDir + name ), 
-				files:ret.files
-			}
+			output = "/assets/"+type+"/"+ret.hash+"_assetic."+type ;
 		}
-		//create file if not exist
-		fs.openSync(this.webDir + output, 'w');
-
 		try {
 			return  {
 				name:output,	
-				output : new nodefony.fileClass( this.webDir + output ) ,
 				files:ret.files
 			}
 		}catch(e){
@@ -66,12 +58,24 @@ nodefony.registerBundle ("assetic", function(){
 		}
 	}
 
-	assetic.prototype.concatFiles = function(files, outputFile){
+	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		data = "";
+		if ( myFilters && myFilters.length){
+			var hasFilters = true;
+		}else{
+			var hasFilters = false;
+		}
 		for ( var i=0 ; i < files.length ; i++ ){
 			try {
-				data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
-				data += files[i].read()  ;
+				if ( hasFilters ){
+					data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
+					for ( var j=0 ; j < myFilters.length ; j++ ){
+						data += myFilters[j].filter.call(myFilters[j], files[i].path) ;
+					}
+				}else{
+					data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
+					data += files[i].read()  ;
+				}
 			}catch(err){
 				throw err ;
 			}
@@ -79,10 +83,61 @@ nodefony.registerBundle ("assetic", function(){
 		outputFile.write( data );
 	}
 
-	assetic.prototype.genetateJsFile = function(files, output){
+	assetic.prototype.genetateFile = function( block , type){
+		var files = [];  
+		var filters = [];
+		var output = "";
+		switch (type){
+			case "js" :
+				var reg = /.*\.js$/ ;
+			break;
+			case "css" :
+				var reg = /.*\.css$/ ;
+			break;
+		
+		}
+
+		for (var i=0 ; i < block.length ; i++){
+			var line = block[i].replace(/\s*/g, "");
+			if (line.match(/^\/\//) ){
+				continue ;
+			}
+			//console.log(line)
+			if ( line.match(/.*=.*/) ){
+				var ret	 = line.split("=");
+				//console.log(ret);
+				switch ( ret[0]  ){
+					case "output" :
+					case "OUTPUT" :
+						var rep = ret[1].replace(/'|\"|\s*/g, "");
+						//console.log(rep)
+						output =  rep ;
+					break;
+					case "filter" :
+					case "FILTER" :
+						var rep = ret[1].replace(/'|\"|\s*/g, "");
+						if ( rep.match(/^\?.*/) ){
+							rep = rep.replace(/^\?/,"");
+							if ( ! this.debug  && this.container.has( rep ) ){
+								filters.push( this.container.get(rep) );
+							}
+						}else{
+							if (this.container.has( rep )) {
+								filters.push( this.container.get(rep) );
+							}
+						}
+					break;
+					default :
+						continue ;
+				}
+			}else{
+				var rep = block[i].replace(/'|\"| /g, "");
+				files.push(rep);
+			}
+		}
 
 		try {
-			var nodeOutput = this.createOutputFile(files, output);
+			var nodeOutput = this.createOutputFile(files, output, type);
 			var res = [] ;
 			for ( var i=0 ; i < nodeOutput.files.length ; i++ ){
 				switch( nodeOutput.files[i].checkType() ){
@@ -94,7 +149,7 @@ nodefony.registerBundle ("assetic", function(){
 							var finder = new nodefony.finder( {
 								path:nodeOutput.files[i].path,
 								recurse:true,
-								match:/.*\.js$/,
+								match:reg,
 								onFinish:function(error, result){
 									if(error){
 										throw error ;
@@ -112,8 +167,12 @@ nodefony.registerBundle ("assetic", function(){
 						throw new Error("Asset File must be an file or directory !!");
 				}
 			}
-			
-			this.concatFiles( res, nodeOutput.output );
+			if ( this.environment === "dev" ){
+				//create file if not exist
+				fs.openSync(this.webDir + output, 'w');
+				var file = new nodefony.fileClass( this.webDir + output )
+				this.concatFiles( res, file , filters, type);
+			}
 		}catch(error){
 			throw error ;
 		}
@@ -124,13 +183,9 @@ nodefony.registerBundle ("assetic", function(){
 		//TODO
 		this.engineTwig.extendFunction("javascripts", function(value, times) {
 			console.log(arguments)
-			//return new Array(times+1).join(value);
 		});
 
-
 		this.engineTwig.extend(function(Twig) {
-    			// example of extending a tag type that would
-    			// restrict content to the specified "level"
 			
     			Twig.exports.extendTag({
         			// unique name for tag type
@@ -143,43 +198,17 @@ nodefony.registerBundle ("assetic", function(){
         			open: true,
         			compile: function (token) {
             				var expression = token.match["input"];
-					var files = [];  
-					var filters = [];
-					var output = "";
 					
 					var res = expression.replace(/javascripts/, "");
 					res = res.replace(/\s/g, "\n");
 					res = res.split("\n" );
 					res = res.filter(function(e){ return e === 0 || e });
-					//console.log(res);
 
-					for (var i=0 ; i < res.length ; i++){
-						var line = res[i].replace(/\s*/g, "");
-						//console.log(line)
-						if ( line.match(/.*=.*/) ){
-							var ret	 = line.split("=");
-							//console.log(ret);
-							switch ( ret[0]  ){
-								case "output" :
-								case "OUTPUT" :
-									var rep = ret[1].replace(/'|\"|\s*/g, "");
-									//console.log(rep)
-									output =  rep ;
-								break;
-								case "filter" :
-								case "FILTER" :
-									var rep = ret[1].replace(/'|\"|\s*/g, "");
-									filters.push( rep );
-								break;
-								default :
-									continue ;
-							}
-						}else{
-							var rep = res[i].replace(/'|\"| /g, "");
-							files.push(rep);
-						}
+					try {
+						var res = this.genetateFile( res , "js");
+					}catch(error){
+						throw error ;
 					}
-					var res = this.genetateJsFile( files , output );
             				// turn the string expression into tokens.
             				token.assetic = {
 						output:res.name
@@ -206,8 +235,65 @@ nodefony.registerBundle ("assetic", function(){
         			open: false
     			});
 		}.bind(this));
+	}
 
+	assetic.prototype.createExtendStylesheets = function(){
+		//TODO
+		this.engineTwig.extendFunction("stylesheets", function(value, times) {
+			console.log(arguments)
+		});
 
+		this.engineTwig.extend(function(Twig) {
+			
+    			Twig.exports.extendTag({
+        			// unique name for tag type
+        			type: "stylesheets",
+        			// regex for matching tag
+        			regex: /^stylesheets\s+(.*)\s*$/m,
+
+        			// what type of tags can follow this one.
+        			next: ["endstylesheets"], // match the type of the end tag
+        			open: true,
+        			compile: function (token) {
+            				var expression = token.match["input"];
+					
+					var res = expression.replace(/stylesheets/, "");
+					res = res.replace(/\s/g, "\n");
+					res = res.split("\n" );
+					res = res.filter(function(e){ return e === 0 || e });
+
+					try {
+						var res = this.genetateFile( res , "css");
+					}catch(error){
+						throw error ;
+					}
+
+            				// turn the string expression into tokens.
+            				token.assetic = {
+						output:res.name
+            				};
+
+            				delete token.match; // cleanup
+            				return token;
+        			}.bind(this),
+        			parse: function (token, context, chain) {
+					context["asset_url"] = token.assetic.output ;
+                			output = Twig.parse.apply(this, [token.output, context]);
+            				return {
+                				chain: chain,
+                				output: output
+            				};
+        			}
+    			});
+
+    			// a matching end tag type
+    			Twig.exports.extendTag({
+        			type: "endstylesheets",
+        			regex: /^endstylesheets$/,
+        			next: [ ],
+        			open: false
+    			});
+		}.bind(this));
 	}
 
 	return assetic;

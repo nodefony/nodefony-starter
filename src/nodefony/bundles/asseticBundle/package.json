@@ -1,0 +1,19 @@
+{
+	"name": "ASSETIC",
+	"version": "1.0",
+	"description": " ",
+	"contributors": [],
+	"keywords": [
+		"nodefony",
+		"javascript"
+	],
+	"dependencies": {
+		"less": "*",
+		"node-sass": "*",
+		"coffee-script": "*",
+		"uglify-js": "*",
+		"uglifycss" :"*"
+	},
+	"author": "cci <christophe.camensuli@gmail.com>",
+	"license": "CECILL-B"
+}

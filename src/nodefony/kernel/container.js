@@ -31,7 +31,7 @@ nodefony.register("Container", function(){
 	var parseParameterString = function(str, value){
 		switch( nodefony.typeOf(str) ){
 			case "string" :
-				return arguments.callee.call(this,str.split(".") , value);
+				return parseParameterString.call(this,str.split(".") , value);
 			break;
 			case "array" :
 				switch(str.length){
@@ -53,7 +53,7 @@ nodefony.register("Container", function(){
 						if ( ! this[ns] && ISDefined(value) ){
 							this[ns] = {};
 						}
-						return arguments.callee.call(this[ns], str, value);	
+						return parseParameterString.call(this[ns], str, value);	
 				}
 			break;
 			default:

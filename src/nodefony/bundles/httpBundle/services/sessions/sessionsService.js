@@ -9,20 +9,6 @@ nodefony.registerService("sessions", function(){
 	var algorithm = 'aes-256-ctr';
 	var password = 'd6F3Efeq';
 
-	var encrypt = function (text){
-		var cipher = crypto.createCipher(algorithm, password)
-		var crypted = cipher.update(text,'utf8','hex')
-		crypted += cipher.final('hex');
-		return crypted;
-	}
-
-	var decrypt = function (text){
-		var decipher = crypto.createDecipher(algorithm, password)
-		var dec = decipher.update(text,'hex','utf8')
-		dec += decipher.final('utf8');
-		return dec;
-	}
-
 	var cookiesParser = function(context, name){
 		if (context.cookies[name] ){
 			return context.cookies[name];
@@ -105,6 +91,7 @@ nodefony.registerService("sessions", function(){
 	
 	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
+		
 		
 		if ( contextSession ===  undefined ){
 			contextSession = this.contextSession ;
@@ -269,7 +256,7 @@ nodefony.registerService("sessions", function(){
 		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
 		var now = new Date().getTime() ;
 		if (this.lifetime === 0 ) {
-			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
+			if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
 				this.manager.logger("SESSION INVALIDE gc_maxlifetime    ==> " + this.name + " : "+ this.id, "WARNING");
 				return false ;	
 			}
@@ -358,7 +345,6 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.remove = function(){
-		
 		try {
 			return this.storage.destroy( this.id, this.contextSession);	
 		}catch(e){
@@ -368,7 +354,7 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.destroy = function(){
-		this.clear()
+		this.clear();
 		this.remove();
 		return true ;	
 	};
@@ -494,7 +480,9 @@ nodefony.registerService("sessions", function(){
 			response.on("finish",function(){
 				if ( context.session ){
 					context.session.setMetaBag("lastUsed", new Date() );
+					context.session.setMetaBag("url", context.request.url );
 					if ( ! context.session.saved ){
+						//console.log("SAVE")
 						context.session.save(context.user ? context.user.id : null);	
 					}
 					delete context.extendTwig ;

@@ -186,12 +186,16 @@ nodefony.registerService("firewall", function(){
 					}
 					this.token = token ;
 					context.session.migrate(true);
-					context.session.setMetaBag("security",{
+					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
 						user:context.user.username,	
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
+					//console.log("PASS secure set meta security" );
+					//console.log( ret );
+					//context.session.getMetaBag("security") ;
+					
 					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
 						//console.log(context.request.url.path)
 						this.overrideURL(context.request, this.defaultTarget);
@@ -215,10 +219,6 @@ nodefony.registerService("firewall", function(){
 							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
 							return ;
 						}
-						//var url = context.session.getMetaBag("url");
-						//console.log( "HANDLE PASS" )
-						//console.log( context.request.url.path )
-						//console.log( url.path )
 						if ( context.request.url.path === this.checkLogin ){
 							return this.redirect(context, "/");
 						}
@@ -367,6 +367,9 @@ nodefony.registerService("firewall", function(){
 									return context.security.handleError(context, error);
 								}
 								var meta = session.getMetaBag("security");
+								//console.log("PASS  get meta security" );
+								//console.log( meta );
+
 								if (meta){
 									context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
 										if (error){

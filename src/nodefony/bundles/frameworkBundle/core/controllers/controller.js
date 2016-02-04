@@ -301,6 +301,7 @@ nodefony.register("controller", function(){
 
 
 	Controller.prototype.createNotFoundException = function(message){
+		console.log("forwrd");
 		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");
 		this.context.response.setStatusCode(404) ;
 		return resolver.callController( {

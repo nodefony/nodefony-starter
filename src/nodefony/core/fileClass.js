@@ -7,6 +7,8 @@
  */
 
 var mime = require('mime');
+var crypto = require('crypto');
+
 
 nodefony.register("fileClass", function(){
 
@@ -92,6 +94,13 @@ nodefony.register("fileClass", function(){
 			return "Socket";
 		}
 		return ;
+	};
+
+	File.prototype.checkSum = function(type){
+		if (! type ){
+			var type = 'md5' ;
+		}
+		return crypto.createHash(type).update(this.content()).digest("hex") ; 
 	};
 
 	File.prototype.getMimeType = function(name){

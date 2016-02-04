@@ -45,10 +45,10 @@ nodefony.registerService("router", function(){
 	Resolver.prototype.getAction= function(name){
 		for (var func in this.controller.prototype){
 			if (typeof this.controller.prototype[func] === "function"){
-				var res = regAction.exec(func)
+				var res = regAction.exec(func);
 				if (res){
 					if ( res[1] === name)
-						return this.controller.prototype[func]
+						return this.controller.prototype[func];
 				}else{
 				
 				}
@@ -87,7 +87,7 @@ nodefony.registerService("router", function(){
 	
 	Resolver.prototype.getController= function(name){
 		if (this.kernel.environment === "dev"){
-			this.bundle.reloadController(name);
+			this.bundle.reloadController(name, this.container);
 		}
 		return this.bundle.controllers[name];
 		

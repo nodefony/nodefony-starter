@@ -8,28 +8,26 @@
 {% endblock %}
 
 
-
 {% block title %} {{ title }} {% endblock %}
 
 
 {% block stylesheets %}
-	<link href="/demoBundle/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/demoBundle/bootstrap-3.3.5/css/bootstrap-theme.css" rel="stylesheet">
-
-	<!-- Awesome Font -->
-        <link href="/demoBundle/css/font-awesome.min.css" rel="stylesheet">
-
-	<!-- Custom styles CSS -->
-	<link href="/demoBundle/clean/assets/css/style.css" rel="stylesheet" media="screen">
+	
+	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss"
+            "/demoBundle/bootstrap-3.3.5/css/bootstrap.min.css"
+            "/demoBundle/bootstrap-3.3.5/css/bootstrap-theme.css"
+            "/demoBundle/css/font-awesome.min.css"
+            "/demoBundle/clean/assets/css/style.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
 
 {% endblock %}
 
 
-
 {% block javascripts %}
 
-
-	{% javascripts
+	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
 		'/demoBundle/js/jquery-2.1.4.min.js' 
 		"/demoBundle/bootstrap-3.3.5/js/bootstrap.min.js" 
 		"/vendors/stage/stage.js" 
@@ -37,11 +35,9 @@
 		"/vendors/stage/notificationsCenter.js" 
 		"/vendors/stage/syslog/syslog.js" 
 		"/vendors/stage/io/io.js" 
-		output='/js/layout.js' 
-		filter='uglifyjs2' %}
+	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
-
 
 {% endblock %}
 

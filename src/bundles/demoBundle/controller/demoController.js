@@ -9,6 +9,8 @@
  *
  */
 
+
+
 var Promise = require('promise');
 
 nodefony.registerController("demo", function(){
@@ -16,6 +18,7 @@ nodefony.registerController("demo", function(){
 	var demoController = function(container, context){
 		this.mother = this.$super;
 		this.mother.constructor(container, context);
+
 	};
 
 	/**

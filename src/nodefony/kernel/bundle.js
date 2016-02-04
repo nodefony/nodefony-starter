@@ -167,7 +167,7 @@ nodefony.register("Bundle", function(){
 				if (typeof Class === "function" ){
 					//Class.prototype.path = ele.dirName;
 					Class.prototype.name = name;
-					Class.prototype.container = this.container;
+					//Class.prototype.container = this.container;
 					Class.prototype.bundle = this;
 					//Class.prototype.viewFiles = this.viewsFile.findByNode(name);
 					var func = Class.herite(nodefony.controller);
@@ -182,7 +182,7 @@ nodefony.register("Bundle", function(){
 
 	};
 
-	Bundle.prototype.reloadController = function( nameC ){
+	Bundle.prototype.reloadController = function( nameC, container){
 		if ( ! nameC ) return ;
 		var controller = this.finder.result.findByNode("controller");
 		try {
@@ -196,13 +196,13 @@ nodefony.register("Bundle", function(){
 					if (typeof Class === "function" ){
 						//Class.prototype.path = ele.dirName;
 						Class.prototype.name = name;
-						Class.prototype.container = this.container;
+						//Class.prototype.container = container;
 						Class.prototype.bundle = this;
 						//Class.prototype.viewFiles = this.viewsFile.findByNode(name);
 						var func = Class.herite(nodefony.controller);
 						//this.controllers[name] = new func(this.container);
 						this.controllers[name] = func ;
-						//this.logger("Reload Controller : "+name , "DEBUG");
+						//this.logger("ENV  DEVELOPPEMENT Reload Controller : "+name , "DEBUG");
 					}else{
 						this.logger("Register Controller : "+name +"  error Controller closure bad format ");
 					}
