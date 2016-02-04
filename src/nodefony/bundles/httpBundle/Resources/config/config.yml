@@ -87,10 +87,6 @@ session:
         location:               nodefony.com
         port:                   11211
         weight:                 1
-      nodefony2: 
-        location:               nodefony.com
-        port:                   8888
-        weight:                 1
     options:
             #debug:                    true
 

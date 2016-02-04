@@ -55,8 +55,10 @@ httpBundle:
   upload:
     tmp_dir:                      "tmp/upload"
     #max_filesize:                 100000               #en Bytes
+    #
+#      OVERRIDE SESSION CONFIGURATION  see HTTP BUNDLE config for more options
   session:
-    handler:                      session.storage.sequelize       # files | sequelize | memcached               
+    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached               
     #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"
     cookie:
