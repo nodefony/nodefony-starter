@@ -144,6 +144,61 @@ stage.registerController("navController", function() {
 		});
 	};
 
+	/*
+	 *
+	 */
+	controller.prototype.requestsAction = function() {
+		$.ajax("/api/requests",{
+			success:function(data, status, xhr){
+				var obj = [];
+				for (var res in data.response.data ){
+					//console.log(data.response.data[res])
+					obj.push({
+						date: new Date( data.response.data[res].timeStamp ),
+						url:data.response.data[res].payload["request"].url,
+						method:data.response.data[res].payload["request"].method,
+						contextSecurity:data.response.data[res].payload["security"].name,
+						routing:data.response.data[res].payload["routing"].name,
+						code:data.response.data[res].payload["response"].statusCode,
+						contextType:data.response.data[res].payload["context"],
+						sessionName:data.response.data[res].payload["session"].name,
+						sessionContext:data.response.data[res].payload["session"].metas.context,
+						user:data.response.data[res].payload["security"].user ? data.response.data[res].payload["security"].user.username : null ,
+						uid:data.response.data[res].uid
+					})
+				}
+				this.renderDefaultContent("appModule:request:requests",{
+					requests:obj
+				});
+				$("table").DataTable();
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		});
+	};
+
+
+	/*
+	 *
+	 */
+	controller.prototype.requestAction = function(uid) {
+		$.ajax("/api/request/"+uid,{
+			success:function(data, status, xhr){
+				console.log(data.response.data.payload["request"].url)			
+				this.renderDefaultContent("appModule:request:request",{
+					url:data.response.data.payload["request"].url,
+					payload:data.response.data.payload
+				});
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		});
+	};
+
+
+
 	
 	return controller;
 });

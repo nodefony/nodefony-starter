@@ -13,7 +13,7 @@
 						class="list-group-item font-bold" 
 						data-parent="{{ navCssId }}">
 						<i class="icon fa fa-th text-success"></i>
-						<span>Monitoring</span>
+						<span>Dashboard</span>
 					</a>
 					<a 
 						href="{{ path('routing') }}" 
@@ -35,6 +35,13 @@
 						data-parent="{{ navCssId }}">
 						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
 						<span>Syslog Serveur</span>
+					</a>
+					<a 
+						href="{{ path('requests') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Requests</span>
 					</a>
 
 					{% set length =  nav | length %}			

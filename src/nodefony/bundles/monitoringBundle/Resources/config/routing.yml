@@ -31,53 +31,58 @@
 
 ########## NODEFONY ROUTING  monitoringBundle  ############
 
-monitoring: 
+monitoring-index: 
   pattern:  /monitoring
   defaults: {controller: "monitoringBundle:default:index"}
 
-module: 
+monitoring-module: 
   pattern:  /monitoring/{module}
   defaults: {controller: "monitoringBundle:default:index"}
 
-routes:
+monitoring-routes:
   pattern:   /api/routes   
   defaults: {controller: "monitoringBundle:api:routes"}
   requirements: 
     method: GET
 
-route:
+monitoring-route:
   pattern:   /api/route/{name}   
   defaults: {controller: "monitoringBundle:api:routes"}
   requirements: 
     method: GET,DELETE,POST,PUT
 
-services:
+monitoring-services:
   pattern:   /api/services   
   defaults: {controller: "monitoringBundle:api:services"}
   requirements: 
     method: GET
 
-service:
+monitoring-service:
   pattern:   /api/service/{name}   
   defaults: {controller: "monitoringBundle:api:services"}
   requirements: 
     method: GET,DELETE,POST,PUT
 
-syslog:
+monitoring-syslog:
   pattern:   /api/syslog   
   defaults: {controller: "monitoringBundle:api:syslog"}
   requirements: 
     method: GET
 
-syslogContext:
+monitoring-requests:
   pattern:   /api/requests   
-  defaults: {controller: "monitoringBundle:api:syslogContext"}
+  defaults: {controller: "monitoringBundle:api:requests"}
+  requirements: 
+    method: GET
+
+monitoring-request:
+  pattern:   /api/request/{uid}   
+  defaults: {controller: "monitoringBundle:api:request"}
   requirements: 
     method: GET
 
 
-
-realtime:
+monitoring-realtime:
   pattern:   /api/realtime/{name}   
   defaults: {controller: "monitoringBundle:api:realtime"}
   requirements: 

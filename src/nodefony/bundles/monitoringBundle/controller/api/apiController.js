@@ -114,16 +114,47 @@ nodefony.registerController("api", function(){
 
 		/**
 		 *
-		 *	@method servicesAction
+		 *	@method requestsAction
 		 *
 		 */
-		apiController.prototype.syslogContextAction = function(){
+		apiController.prototype.requestsAction = function(){
 			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
 			        message:"OK",
 				data:JSON.stringify(syslog.ringStack)
+			});
+		}
+
+		/**
+		 *
+		 *	@method requestAction
+		 *
+		 */
+		apiController.prototype.requestAction = function(uid){
+			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
+			
+			var pdu = null ;
+			for (var i= 0 ; i < syslog.ringStack.length ; i++){
+				if ( uid == syslog.ringStack[i].uid ){
+					var pdu = syslog.ringStack[i];
+					break;
+				}
+			}
+			if ( pdu == null ){
+				return this.renderRest({
+					code:404,
+					type:"ERROR",
+					message:"not found",
+					data:null
+				});
+			}
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify(pdu)
 			});
 		}
 
@@ -176,18 +207,6 @@ nodefony.registerController("api", function(){
 			}
 			
 		};
-
-
-		/**
-		 *
-		 *	@method websocketAction
-		 *
-		 */
-		apiController.prototype.websocketAction = function(){
-			
-
-		}
-
 
 
 		

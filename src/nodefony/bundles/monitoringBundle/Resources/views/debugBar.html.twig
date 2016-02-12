@@ -4,7 +4,7 @@
 <div id="nodefony-container"  >
 	<ul class="pull-left">
 		<li> <img class="logo" src="/favicon.ico"> </li>
-		<li> <label class="label" > <a href='{{path("monitoring")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
+		<li> <label class="label" > <a href='{{path("monitoring-index")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
 			<div class="details">
 				<ul>
 					{% for key, value in kernelSettings %}
@@ -55,6 +55,9 @@
 							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.version}}</span></li>
 						{% endif %}
 					{% endfor %}
+					<li class="separator"> </li>
+					<li><label style="color:#999">ENVIRONMENT</label></li>
+					<li><label>PWD</label><span class="label label-success">{{pwd}}</span></li>
 						
 				</ul>
 			</div>
@@ -192,7 +195,12 @@
 		<li class="separator"></li>
 
 		<li>
-			<label class="label" >Request</label>
+			{% if requestId %}	
+				<label class="label" ><a href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
+			{% else %}
+				<label class="label" >Request</label>
+			{% endif %}
+			
 			<label class="label label-success" >{{ request.method }}</label>
 			{% if request.crossDomain %}
 				<label class="label label-default" >Cross Domain</label>
@@ -276,7 +284,11 @@
 		<li class="separator"></li>
 
 		<li>
-			<label class="label" >Response</label>
+			{% if requestId %}	
+				<label class="label" ><a href='{{path("monitoring-index")}}#/request/{{requestId}}'>Response</a></label>
+			{% else %}
+				<label class="label" >Response</label>
+			{% endif %}
 			<label class="label label-success" >{{ response.statusCode }}</label>
 			<label class="label label-success" >{{ timeRequest }}</label>
 			<div class="details">

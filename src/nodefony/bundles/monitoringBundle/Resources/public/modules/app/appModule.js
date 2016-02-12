@@ -58,6 +58,15 @@ stage.registerModule("app", function() {
 		this.router.createRoute("syslog", "/syslog", {
 			controller:"appModule:nav:syslog"
 		});
+
+		this.router.createRoute("requests", "/requests", {
+			controller:"appModule:nav:requests"
+		});
+
+		this.router.createRoute("request", "/request/{uid}", {
+			controller:"appModule:nav:request"
+		});
+
 	
 	};
 			

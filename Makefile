@@ -51,6 +51,20 @@ framework:
 	@if [ ! -d web/images ] ; then  \
 		mkdir web/images ;\
 	fi
+	@if [ ! -d web/assets ] ; then  \
+		mkdir  web/assets ;\
+	fi
+	@if [ ! -d web/assets/js ] ; then  \
+		mkdir web/assets/js ;\
+	fi
+	@if [ ! -d web/assets/css ] ; then  \
+		mkdir web/assets/css ;\
+	fi
+	@if [ ! -d web/assets/images ] ; then  \
+		mkdir web/assets/images ;\
+	fi
+
+
 
 
 sequelize:
