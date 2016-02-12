@@ -4,7 +4,7 @@
 <div id="nodefony-container"  >
 	<ul class="pull-left">
 		<li> <img class="logo" src="/favicon.ico"> </li>
-		<li> <label class="label" > <a href='{{path("monitoring-index")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
+		<li> <label class="label" > <a target="blank" href='{{path("monitoring-index")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
 			<div class="details">
 				<ul>
 					{% for key, value in kernelSettings %}
@@ -196,7 +196,7 @@
 
 		<li>
 			{% if requestId %}	
-				<label class="label" ><a href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
 			{% else %}
 				<label class="label" >Request</label>
 			{% endif %}
@@ -285,7 +285,7 @@
 
 		<li>
 			{% if requestId %}	
-				<label class="label" ><a href='{{path("monitoring-index")}}#/request/{{requestId}}'>Response</a></label>
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>Response</a></label>
 			{% else %}
 				<label class="label" >Response</label>
 			{% endif %}
