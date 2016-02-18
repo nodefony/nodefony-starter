@@ -52,7 +52,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.remoteAddress = this.request.remoteAdress ; 
 
 		// LISTEN EVENTS KERNEL 
-		this.notificationsCenter.listen(this, "onView", function(result, context){
+		this.notificationsCenter.listen(this, "onView", function(result, context, view, param){
 			this.response.body = result;
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
@@ -64,7 +64,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		var get = this.container.setParameters("query.get", this.request.queryGet );
 		if (this.request.queryPost  )
 			var post = this.container.setParameters("query.post", this.request.queryPost );
-		if (this.request.queryPost  )
+		if (this.request.queryFile  )
 			var post = this.container.setParameters("query.files", this.request.queryFile );
 		this.container.setParameters("query.request", this.request.query );
 

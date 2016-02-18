@@ -161,14 +161,13 @@
 		<li class="separator"></li>
 
 		<li >	
-			<label class="label label-default">{{pattern}}</label>
+			<label class="label label-default">{{routeur.pattern}}</label>
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">ROUTER SERVICE</label></li>
-					<li><label>Controller</label><span class="label label-success">{{Controller}}</span></li>
-					<li><label>Bundle</label><span class="label label-success">{{bundle}}</span></li>
-					<li><label>Controller Name</label><span class="label label-success">{{controllerName}}Controller</span></li>
-					<li><label>Action</label><span class="label label-success">{{action}}Action</span></li>
+					<li><label>Controller</label><span class="label label-success">{{routeur.Controller}}</span></li>
+					<li><label>Bundle</label><span class="label label-success">{{bundle}}Bundle</span></li>
+					<li><label>Action</label><span class="label label-success">{{routeur.action}}</span></li>
 					<li class="separator"> </li>
 					<li><label style="color:#999">ROUTE</label></li>
 					{% for key, value in route %}
@@ -195,13 +194,14 @@
 		<li class="separator"></li>
 
 		<li>
+			<label class="label label-success" >{{ request.protocol }}</label>
 			{% if requestId %}	
 				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
 			{% else %}
 				<label class="label" >Request</label>
 			{% endif %}
 			
-			<label class="label label-success" >{{ request.method }}</label>
+			<label class="label label-default" >{{ request.method }}</label>
 			{% if request.crossDomain %}
 				<label class="label label-default" >Cross Domain</label>
 			{% endif %}

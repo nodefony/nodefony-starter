@@ -10,9 +10,59 @@ stage.registerController("navController", function() {
 		this.mother.constructor();
 		
 		this.config = this.module.config;
+		this.router = container.get("router");
 
 
+
+		// ROUTES 
+		this.router.createRoute("services", "/services", {
+			controller:"appModule:nav:services"
+		});
+		this.router.createRoute("routing", "/routing", {
+			controller:"appModule:nav:routing"
+		});
+
+		this.router.createRoute("syslog", "/syslog", {
+			controller:"appModule:nav:syslog"
+		});
+
+		this.router.createRoute("requests", "/requests", {
+			controller:"appModule:nav:requests"
+		});
+
+		this.router.createRoute("request", "/request/{uid}", {
+			controller:"appModule:nav:request"
+		});
 		
+		this.router.createRoute("request-details", "/request/{uid}/details", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-details-request", "/request/{uid}/details/request", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-details-response", "/request/{uid}/details/response", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-details-flashes", "/request/{uid}/details/flashes", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-session", "/request/{uid}/session", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-firewall", "/request/{uid}/firewall", {
+			controller:"appModule:nav:request"
+		});
+
+		this.router.createRoute("request-twig", "/request/{uid}/twig", {
+			controller:"appModule:nav:request"
+		});
+
+
 		this.kernel.listen(this, "onUrlChange", function(url, fullurl, cache) {
 			// scroll to top for scrollable content
 			$("body").scrollTop(0);
@@ -183,19 +233,49 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.requestAction = function(uid) {
-		$.ajax("/api/request/"+uid,{
-			success:function(data, status, xhr){
-				console.log(data.response.data.payload["request"].url)			
-				this.renderDefaultContent("appModule:request:request",{
-					url:data.response.data.payload["request"].url,
-					payload:data.response.data.payload
-				});
-			}.bind(this),
-			error:function(xhr,stats,  error){
-				this.logger(error, "ERROR");
-			}.bind(this)
-		});
+
+		try {
+			$.ajax("/api/request/"+uid,{
+				success:function(data, status, xhr){
+					//console.log(data.response.data.payload)
+					
+					this.renderDefaultContent("appModule:request:request",{
+						uid:uid,
+						date: new Date( data.response.data.payload.timeStamp ),
+						url:data.response.data.payload["request"].url,
+						method:data.response.data.payload["request"].method,
+						status:data.response.data.payload["response"].statusCode,
+						ip:data.response.data.payload["request"].remoteAdress,
+						request:data.response.data.payload["request"],
+						response:data.response.data.payload["response"],
+						security:data.response.data.payload["security"],
+						payload:data.response.data.payload,
+						routing:data.response.data.payload["routing"],
+						route:data.response.data.payload["route"],
+						routeParmeters:data.response.data.payload["routeParmeters"],
+						cookies:data.response.data.payload.cookies,
+						queryPost:data.response.data.payload.queryPost,
+						queryGet:data.response.data.payload.queryGet,
+						queryFile:data.response.data.payload.queryFile,
+						session:data.response.data.payload.session,
+						twig:data.response.data.payload.twig,
+						timeRequest:data.response.data.payloadtimeRequest
+					});
+					
+				}.bind(this),
+				error:function(xhr,stats,  error){
+					this.logger(error, "ERROR");
+					throw error ;
+				}.bind(this)
+			});
+		}catch(error){
+			throw error ;	
+		}
+
+		
 	};
+
+
 
 
 

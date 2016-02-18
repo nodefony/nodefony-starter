@@ -8,61 +8,86 @@
 
 
 {% block stylesheets %}
-	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet'/> 
 	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
 	<link href="/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.css" rel="stylesheet"/>
+
+
+	{% stylesheets  output="/monitoringBundle/assets/style.css" filter="less"
+            "/monitoringBundle/less/style.less"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+
 {% endblock %}
 
 {% block javascripts %}
-	<script type="text/javascript" src="/frameworkBundle/vendors/jquery/jquery.-1.11.1.js"></script>
-	<script type="text/javascript" src="/frameworkBundle/vendors/bootstrap/js/bootstrap.js"></script>
-	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
+
+	{% javascripts output='/monitoringBundle/assets/js/app.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/jquery/jquery.-1.11.1.js"
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/frameworkBundle/vendors/twig/twig.js"	
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+	{% javascripts output='/monitoringBundle/assets/js/stage.js' filter='?uglifyjs2'
+
+		"/vendors/stage/stage.js"
+		"/vendors/stage/function.js"
+		"/vendors/stage/notificationsCenter.js"
+		"/vendors/stage/syslog/syslog.js"
+		"/vendors/stage/xml.js"
+		"/vendors/stage/io/io.js"	
+		"/vendors/stage/crypto/base64.js"
+		"/vendors/stage/crypto/md5.js"
+		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"
+		"/vendors/stage/io/authentication/sasl/sasl.js"
+		"/vendors/stage/io/transports/socket.js"
+		"/vendors/stage/io/protocols/bayeux/bayeux.js"
+		"/vendors/stage/io/realtime/realtime.js"
+		"/vendors/stage/kernel/autoload.js"
+		"/vendors/stage/kernel/kernel.js"
+		"/vendors/stage/kernel/appKernel.js"
+		"/vendors/stage/kernel/container.js"
+		"/vendors/stage/kernel/routerService.js"
+		"/vendors/stage/kernel/controller.js"
+		"/vendors/stage/kernel/module.js"
+		"/vendors/stage/kernel/translationService.js"
+		"/vendors/stage/kernel/locationService.js"
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 
 
-	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
-	<script type="text/javascript" src="/vendors/stage/function.js"></script>
-	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
-	<script type="text/javascript" src="/vendors/stage/xml.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>	
-	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
-	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/transports/socket.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
+	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
 
-	<script type="text/javascript" src="/monitoringBundle/vendors/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.serializeObject/jquery.serializeObject.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery-validation/jquery.validate.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery-validation/localization/messages_fr.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/nprogress/nprogress.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"></script>
+		"/monitoringBundle/vendors/toastr/toastr.min.js"
+		"/monitoringBundle/vendors/jquery.serializeObject/jquery.serializeObject.min.js"
+		"/monitoringBundle/vendors/jquery-validation/jquery.validate.js"
+		"/monitoringBundle/vendors/jquery-validation/localization/messages_fr.js"
+		"/monitoringBundle/vendors/nprogress/nprogress.js"
+		"/monitoringBundle/vendors/bootstrap-select/js/bootstrap-select.min.js"
+		"/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"
 
+		"/monitoringBundle/vendors/easy-pie-chart/jquery.easypiechart.js"
+		"/monitoringBundle/vendors/jquery.flot/jquery.flot.min.js"
+		"/monitoringBundle/vendors/jquery.flot/jquery.flot.pie.min.js"
+		"/monitoringBundle/vendors/jquery.flot/jquery.flot.stack.min.js"
+		"/monitoringBundle/vendors/jquery.flot/jquery.flot.resize.min.js"
+		"/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.tooltip.min.js"
+		"/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.spline.min.js"
+		"/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+	
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	
 	<!--[if lt IE 9]>
 		<script src="/monitoringBundle/vendors/excanvas/excanvas.min.js"></script>
 	<![endif]-->
-	<script type="text/javascript" src="/monitoringBundle/vendors/easy-pie-chart/jquery.easypiechart.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.pie.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.stack.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/jquery.flot.resize.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.tooltip.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.spline.min.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"></script>
-	<script type="text/javascript" src="/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"></script>
-
+	
 	<script type="text/javascript" src="/monitoringBundle/js/appKernel.js"></script>
 
 {% endblock %}

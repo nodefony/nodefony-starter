@@ -23,15 +23,19 @@ nodefony.registerController("api", function(){
 			var context = this.getContext() ;
 			var type = context.request.queryGet.format || context.request.headers["X-FORMAT"] || "" ;
 
+			var response = this.getResponse() ;
+			if ( data.code ){
+				response.setStatusCode(data.code) ;
+			}
 			switch( type.toLowerCase() ){
 				case "application/xml" : 
 				case "text/xml" : 
 				case "xml" : 
-					this.getResponse().setHeader('Content-Type' , "application/xml"); 
+					response.setHeader('Content-Type' , "application/xml"); 
 					return this.render('monitoringBundle:api:api.xml.twig',data);
 				break
 				default:
-					this.getResponse().setHeader('Content-Type' , "application/json"); 
+					response.setHeader('Content-Type' , "application/json"); 
 					return this.render('monitoringBundle:api:api.json.twig',data);
 			}
 
@@ -147,7 +151,7 @@ nodefony.registerController("api", function(){
 					code:404,
 					type:"ERROR",
 					message:"not found",
-					data:null
+					data:JSON.stringify(null)
 				});
 			}
 			return this.renderRest({

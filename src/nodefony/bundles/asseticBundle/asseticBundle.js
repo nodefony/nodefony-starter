@@ -59,28 +59,32 @@ nodefony.registerBundle ("assetic", function(){
 	}
 
 	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
-		data = "";
-		if ( myFilters && myFilters.length){
-			var hasFilters = true;
-		}else{
-			var hasFilters = false;
-		}
-		for ( var i=0 ; i < files.length ; i++ ){
-			try {
-				if ( hasFilters ){
-					data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
-					for ( var j=0 ; j < myFilters.length ; j++ ){
-						data += myFilters[j].filter.call(myFilters[j], files[i].path) ;
-					}
-				}else{
-					data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
-					data += files[i].read()  ;
-				}
-			}catch(err){
-				throw err ;
+		try {
+			data = "";
+			if ( myFilters && myFilters.length){
+				var hasFilters = true;
+			}else{
+				var hasFilters = false;
 			}
+			for ( var i=0 ; i < files.length ; i++ ){
+				try {
+					if ( hasFilters ){
+						data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
+						for ( var j=0 ; j < myFilters.length ; j++ ){
+							data += myFilters[j].filter.call(myFilters[j], files[i].path) ;
+						}
+					}else{
+						data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
+						data += files[i].read()  ;
+					}
+				}catch(err){
+					throw err ;
+				}
+			}
+			outputFile.write( data );
+		}catch(e){
+			throw e ;
 		}
-		outputFile.write( data );
 	}
 
 	assetic.prototype.genetateFile = function( block , type){
@@ -108,12 +112,14 @@ nodefony.registerBundle ("assetic", function(){
 				//console.log(ret);
 				switch ( ret[0]  ){
 					case "output" :
+					case "Output" :
 					case "OUTPUT" :
 						var rep = ret[1].replace(/'|\"|\s*/g, "");
 						//console.log(rep)
 						output =  rep ;
 					break;
 					case "filter" :
+					case "Filter" :
 					case "FILTER" :
 						var rep = ret[1].replace(/'|\"|\s*/g, "");
 						if ( rep.match(/^\?.*/) ){

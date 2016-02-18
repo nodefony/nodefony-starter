@@ -47,26 +47,8 @@ stage.registerModule("app", function() {
 		
 		}
 
-		// ROUTES 
-		this.router.createRoute("services", "/services", {
-			controller:"appModule:nav:services"
-		});
-		this.router.createRoute("routing", "/routing", {
-			controller:"appModule:nav:routing"
-		});
-
-		this.router.createRoute("syslog", "/syslog", {
-			controller:"appModule:nav:syslog"
-		});
-
-		this.router.createRoute("requests", "/requests", {
-			controller:"appModule:nav:requests"
-		});
-
-		this.router.createRoute("request", "/request/{uid}", {
-			controller:"appModule:nav:request"
-		});
-
+		
+		
 	
 	};
 			

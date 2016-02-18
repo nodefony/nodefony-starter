@@ -78,7 +78,7 @@ nodefony.register("controller", function(){
 					throw error ;
 				}else{
 					try {
-						this.notificationsCenter.fire("onView", result, this.context );
+						this.notificationsCenter.fire("onView", result, this.context, View , param);
 						res = result;
 					}catch(e){
 						throw e ;

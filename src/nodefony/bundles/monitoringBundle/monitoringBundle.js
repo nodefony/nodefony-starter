@@ -103,7 +103,6 @@ nodefony.registerBundle ("monitoring", function(){
 				this.kernel.listen(this, "onRequest",function(context){
 					try {
 						var trans = context.get("translation");
-						//console.log(context.session)
 						if ( context.resolver.resolve ){
 							var obj = {
 								bundle:context.resolver.bundle.name,
@@ -116,7 +115,8 @@ nodefony.registerBundle ("monitoring", function(){
 								route:{
 									name:context.resolver.route.name,
 									uri:context.resolver.route.path,
-									variables:context.resolver.variables 
+									variables:context.resolver.variables,
+									pattern:context.resolver.route.pattern.toString()	
 								},
 								varialblesName:context.resolver.route.variables,
 								kernelSettings:this.kernel.settings,
@@ -126,6 +126,7 @@ nodefony.registerBundle ("monitoring", function(){
 								request:{
 									url:context.request.url.href,
 									method:context.request.method,
+									protocol:context.type,
 									remoteAdress:context.request.remoteAdress,
 									queryPost:context.request.queryPost,
 									queryGet:context.request.queryGet,
@@ -137,11 +138,7 @@ nodefony.registerBundle ("monitoring", function(){
 									domain:trans.defaultDomain
 								}
 							};
-							if (context.session){
-								obj["session"] = {
-									name:context.session.name
-								};	 
-							}
+							
 							if ( context.security ){
 								var secu = context.session.getMetaBag("security");
 								obj["context_secure"] = {
@@ -166,20 +163,25 @@ nodefony.registerBundle ("monitoring", function(){
 								
 							if ( context.resolver.route.defaults ) {
 								var tab = context.resolver.route.defaults.controller.split(":") ;
-								obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
-								obj["action"] = tab[2] ;
-								obj["pattern"] = context.resolver.route.defaults.controller ;
-								obj["Controller"] = context.resolver.route.defaults.controller
+								var contr   =    ( tab[1] ? tab[1] : "default" );
+								obj["routeur"] =  {
+									bundle : context.resolver.bundle.name+"Bundle" ,
+									action : tab[2]+"Action" ,
+									pattern : context.resolver.route.defaults.controller ,
+									Controller : contr+"Controller"
+								}
+								
 							}
 
-
 							if ( context.session ){
-								obj["session"] = nodefony.extend(obj["session"],{
+								obj["session"] = {
+									name:context.session.name,
 									id:context.session.id,
 									metas:context.session.metaBag(),
 									attributes:context.session.attributes(),
-									flashes:context.session.flashBags()
-								});
+									flashes:context.session.flashBags(),
+									context:context.session.contextSession
+								};
 							}
 							obj["response"] = {	
 								statusCode:context.response.statusCode,
@@ -188,24 +190,67 @@ nodefony.registerBundle ("monitoring", function(){
 								encoding:context.response.encoding,
 								"content-type":context.response.response.getHeader('content-type')
 							}
-							nodefony.extend(obj, context.extendTwig);
+							
+							if ( context.request.queryFile ){
+								var queryFile = {};
+								for (var ele in context.request.queryFile){
+									queryFile[ele] = {
+										path		: context.request.queryFile[ele].path,
+										mimetype	: context.request.queryFile[ele].mimeType,
+										length		: context.request.queryFile[ele].lenght,
+										fileName	: context.request.queryFile[ele].fileName
+									}
+								}
+								//var queryPost = null ;
+							}
+							/*else{
+								var queryFile = null;
+								var queryPost = context.request.queryPost ;
+	
+							}*/
+							// PROFILING
 							if (  ! obj.route.name.match(/^monitoring-/) ){
 								this.syslogContext.logger({
+									timeStamp:context.request.request.nodefony_time,
+									queryPost:context.request.queryPost,
+									queryGet:context.request.queryGet,
+									queryFile:queryFile,
 									session:obj["session"],
 									response:obj["response"],
 									security:obj["context_secure"],
 									request:obj["request"],
 									routing:obj["route"],
 									locale:obj["locale"],
-									context:context.type
+									context:context.type,
+									session:obj["session"],
+									security:obj["context_secure"],
+									routing:obj["routeur"] || [],
+									route:obj["route"],
+									routeParmeters:obj["varialblesName"],
+									cookies:context.cookies
 								});
-								//console.log(this.syslogContext.getLogStack())
-								obj["requestId"] = this.syslogContext.getLogStack().uid ;
+								var logProfile = this.syslogContext.getLogStack();
+								obj["requestId"] = logProfile.uid ;
 							}
 
-							context.listen(this, "onView", function(result, context){
+							nodefony.extend(obj, context.extendTwig);
+							context.listen(this, "onView", function(result, context, view, viewParam){
 								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
-								
+								if ( logProfile ){
+									if ( ! logProfile.payload["twig"] ){
+										logProfile.payload["twig"] = []  ;
+									}
+									try {
+										JSON.stringify( viewParam ) ;
+									}catch(e){
+										viewParam = "view param can't be parse" ;
+									}
+									logProfile.payload["twig"].push({
+										file:view,
+										param:viewParam
+									});
+									logProfile.payload["timeRequest"] = obj["timeRequest"];
+								}
 								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 									if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){
@@ -218,6 +263,7 @@ nodefony.registerBundle ("monitoring", function(){
 									}else{
 										//context.setXjson(obj);
 									}
+									delete obj ;
 								}else{
 									//context.setXjson(obj);	
 								}
