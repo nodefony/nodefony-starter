@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+var asciify = require('asciify');
+
+//  AUTOLOAD LIBRARY nodefony NODE
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.load("./app/appKernel.js");
+autoloader.load("./vendors/nodefony/console/console.js");
+
+
+
+// START CONSOLE
+asciify("      NODEFONY", {font:'standard'}, function(err, res){
+
+	console.log('\033[31m'+res+'\033[0m');
+
+	var kernel = new nodefony.console( "dev", true, autoloader);
+});
+

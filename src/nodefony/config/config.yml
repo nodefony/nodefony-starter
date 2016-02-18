@@ -37,6 +37,7 @@ system:
   realtime:                     true
   monitoring:                   true
 
+ 
   locale:                       "en_en"   
 
   log:

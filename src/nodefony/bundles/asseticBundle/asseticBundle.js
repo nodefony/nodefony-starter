@@ -76,6 +76,7 @@ nodefony.registerBundle ("assetic", function(){
 					}else{
 						data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 						data += files[i].read()  ;
+
 					}
 				}catch(err){
 					throw err ;

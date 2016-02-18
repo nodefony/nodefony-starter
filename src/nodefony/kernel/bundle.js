@@ -12,7 +12,7 @@ nodefony.register("Bundle", function(){
  	 *	BUNDLE CLASS
  	 */
 	var Bundle = function(kernel , container){
-		this.logger("\033[32m REGISTER BUNDLE : "+this.name+"   \033[0m","DEBUG","KERNEL");
+		this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \033[0m","DEBUG","KERNEL");
 		this.kernel = kernel ;
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.waitBundleReady = false ;

@@ -8,6 +8,7 @@
         	<parameter key="less">less</parameter>
         	<parameter key="uglifyjs2">uglifyjs2</parameter>
         	<parameter key="uglifycss">uglifycss</parameter>
+        	<parameter key="cssrewrite">cssrewrite</parameter>
     	</parameters>
 
     	<services>
@@ -25,6 +26,12 @@
             		<argument type="service" id="kernel" />
             		<argument type="service" id="container" />
         	</service>
+
+		<service id="cssrewrite" class="{{cssrewrite}}">
+            		<argument type="service" id="kernel" />
+            		<argument type="service" id="container" />
+        	</service>
+
 
 		
 	</services>

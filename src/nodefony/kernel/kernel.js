@@ -156,12 +156,12 @@ nodefony.register("kernel", function(){
 		}
 
 		// REALTIME
-		if (this.settings.system.realtime) {
+		if (this.type == "SERVER" && this.settings.system.realtime) {
 			bundles.push("./vendors/nodefony/bundles/realTimeBundle");
 		}
 
 		// MONITORING
-		if (this.settings.system.monitoring) {
+		if (this.type == "SERVER" && this.settings.system.monitoring) {
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
 		this.fire("onPreRegister", this );
@@ -488,7 +488,7 @@ nodefony.register("kernel", function(){
 		this.app = this.initApplication();
 		try {
 			for (var name in this.bundles ){
-				this.logger("\033[32m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
+				this.logger("\x1b[36m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
 				this.bundles[name].boot();
 			}
 		}catch(e){

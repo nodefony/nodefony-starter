@@ -97,6 +97,7 @@ nodefony.registerService("firewall", function(){
 		this.name = name ;
 		this.container = container;
 		this.firewall = firewall ;
+		this.kernel = firewall.kernel ;
 		this.sessionContext = "default" ;
 		this.crossDomain = null;
 		this.pattern = ".*";
@@ -128,6 +129,52 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
+		var type = context.type ;
+		switch (type){
+			case "HTTP" :
+				var port = this.kernel.httpPort ;
+				var protocole = type.toLowerCase()+"://" ; 
+				var serverHost = this.kernel.domain + ":" +port ; 
+				var localUrl = protocole+serverHost ;
+			break;
+			case "HTTPS" :
+				var port = this.kernel.httpsPort ;
+				var protocole = type.toLowerCase()+"://" ; 
+				var serverHost = this.kernel.domain + ":" +port ; 
+				var localUrl = protocole+serverHost ;
+			break;
+		
+		}
+		
+		var URL = Url.parse(request.headers.referer || request.headers.origin || protocole+request.headers.host ) ;
+		switch( URL.protocol ){
+			case "http:":
+				var urlProtocol = URL.protocol+"//";
+				if( ! URL.port ){
+					var destURL = urlProtocol+URL.host+":80" ;	
+				}else{
+					var destURL = urlProtocol+URL.host ;	
+				}
+			break;
+			case "https:":
+				var urlProtocol = URL.protocol+"//";
+				if( ! URL.port ){
+					var destURL = urlProtocol+URL.host+":443" ;	
+				}else{
+					var destURL = urlProtocol+URL.host ;	
+				}
+			break;
+		}
+		if ( context.proxy ){
+			var destURL = context.proxy.proxyProto+"://"+context.proxy.proxyHost+":"+port ;
+		}
+
+		context.crossDomain = ! ( destURL  === localUrl ) ;
+		context.crossURL = URL ;
+
+		//console.log( destURL) ;
+		//console.log( localUrl) ;
+
 		if ( context.crossDomain ){
 			if ( this.crossDomain ){
 				return  this.crossDomain.match( context.request, context.response )	
@@ -147,7 +194,7 @@ nodefony.registerService("firewall", function(){
 			var ajax = context.request.isAjax() ;
 
 			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  this.redirect_Https ){
-				this.redirectHttps(context);
+					this.redirectHttps(context);
 			}else{
 				context.response.setStatusCode( 401 ) ;
 				this.overrideURL(context.request, this.formLogin);
@@ -256,6 +303,9 @@ nodefony.registerService("firewall", function(){
 	
 	securedArea.prototype.redirectHttps = function(context){
 		context.request.url.protocol = "https";
+		if ( context.proxy ){
+			return context.redirect(context.request.url, 301); 
+		}
 		context.request.url.port = this.container.get("kernel").httpsPort;
 		context.request.url.href = "";
 		context.request.url.host = "";
@@ -348,6 +398,7 @@ nodefony.registerService("firewall", function(){
 		});
 
 		this.kernel.listen(this, "onSecurity",function(context){
+			
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
@@ -362,28 +413,20 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if (  context.security ){	
+							var ajax = context.request.isAjax() ;
+
+							if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+								return context.security.redirectHttps(context);
+							}
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
 								if (error){
 									return context.security.handleError(context, error);
 								}
 								var meta = session.getMetaBag("security");
-								//console.log("PASS  get meta security" );
-								//console.log( meta );
-
-								if (meta){
-									context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
-										if (error){
-											throw error;
-										}
-										context.user = user ;
-										try {
-											context.notificationsCenter.fire("onRequest", context.container, request, response );
-										}catch(e){
-											context.notificationsCenter.fire("onError", context.container, e );	
-										}
-									}.bind(this)) ;
-								}else{
-									this.handlerHttp(context, request, response);
+								try {
+									this.handlerHttp(context, request, response, meta);
+								}catch(error){
+									context.notificationsCenter.fire("onError", context.container, error );
 								}
 							}.bind(this));	
 						}else{
@@ -414,7 +457,7 @@ nodefony.registerService("firewall", function(){
 		});
 	};
 
-	Firewall.prototype.handlerHttp = function( context, request, response){
+	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
 			//CROSS DOMAIN //FIXME width callback handle for async response  
 			var next = context.security.handleCrossDomain(context, request, response) ;
@@ -432,7 +475,23 @@ nodefony.registerService("firewall", function(){
 					this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
 				break;
 			}
-			context.security.handle( context, request, response);
+
+			if (meta){
+				context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
+					if (error){
+						context.notificationsCenter.fire("onError", context.container, error );
+					}
+					context.user = user ;
+					try {
+						context.notificationsCenter.fire("onRequest", context.container, request, response );
+					}catch(e){
+						context.notificationsCenter.fire("onError", context.container, e );	
+					}
+				}.bind(this)) ;
+			}else{
+				context.security.handle( context, request, response);
+			}
+			
 		}catch(e){
 			context.security.handleError(context, e);
 		}

@@ -9,6 +9,8 @@ var Url = require("url");
 
 nodefony.registerService("httpKernel", function(){
 
+
+
 	/*
  	 *
  	 *	HTTP KERNEL
@@ -181,9 +183,6 @@ nodefony.registerService("httpKernel", function(){
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
 		
-		//this.engineTemplate.extendFunction("render", render.bind(container));
-		//this.engineTemplate.extendFunction("controller", controller.bind(container));
-
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
@@ -207,13 +206,24 @@ nodefony.registerService("httpKernel", function(){
 					delete translation ;
 				}.bind(this))
 
-				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
-				var serverHost = this.kernel.domain + ":" +port ; ;
-				var URL = Url.parse(request.headers.referer || request.headers.origin || context.type+"://"+request.headers.host ) ;
-				var cross = ! ( URL.protocol+"//"+URL.host  === context.type.toLowerCase()+"://"+serverHost ) ;
-				//context.serverHost = serverHost ;
-				context.crossDomain = cross ;
-				context.crossURL = URL ;
+				if ( request.headers["x-forwarded-for"] ){
+					//console.log(request.headers)
+					if ( request.headers["x-forwarded-proto"] ){
+						context.type = request.headers["x-forwarded-proto"].toUpperCase();
+					}
+					context.proxy = {
+						proxyServer	: request.headers["x-forwarded-server"],	
+						proxyProto	: request.headers["x-forwarded-proto"],
+						proxyPort	: request.headers["x-forwarded-port"],
+						proxyFor	: request.headers["x-forwarded-for"],
+						proxyHost	: request.headers["x-forwarded-host"],	
+						proxyVia	: request.headers["via"] 
+					}
+					this.logger( "PROXY REQUEST x-forwarded VIA : " + context.proxy.proxyVia , "DEBUG");
+					//var protocole = type.toLowerCase()+"://" ;
+					//var destURL = protocole+context.proxy.proxyHost+":"+port ;
+				}
+
 				this.kernel.fire("onHttpRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {

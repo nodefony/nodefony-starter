@@ -166,6 +166,15 @@ nodefony.register("fileClass", function(){
 
 	File.prototype.read = File.prototype.content ;
 
+
+	File.prototype.readByLine = function(callback, encoding){
+		var res = this.content(encoding);
+		var nb = 0 ;
+		res.toString().split('\n').forEach(function(line){
+			callback(line, ++nb );	
+		})
+	}
+
 	var defautWriteOption = { 
 		flags: 'w',
 		defaultEncoding: 'utf8',
