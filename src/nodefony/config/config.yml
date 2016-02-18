@@ -32,7 +32,7 @@ system:
   domain:                       nodefony.com
   httpPort:                     5151
   httpsPort:                    5152
-  statics:                      false
+  statics:                      true
   security:                     true
   realtime:                     true
   monitoring:                   true

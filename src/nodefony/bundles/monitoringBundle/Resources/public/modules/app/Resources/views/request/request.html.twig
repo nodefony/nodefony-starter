@@ -37,35 +37,63 @@ UID : {{ uid }}
 					<div class="tab-content">
 						<div id="request" class="tab-pane active ">
 
-							<div class="container-fluid m-t-10">
+							<div class=" m-t-10">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-2">
 										<a class="block panel bg-info text-center wrapper">
-											<div  class="h3 text-white font-thin no-m"><label >PROXY REQUEST</label></div>
+											<div  class=" text-white font-thin no-m"><label >CONTEXT REQUEST</label></div>
+                                							<h4  class="rounded bg-success text-xs">{{context.type}}</h4>
+                        							</a>
+									</div>
+
+									<div class="col-md-2">
+										<a class="block panel bg-info text-center wrapper">
+											<div  class=" text-white font-thin no-m"><label >AJAX REQUEST</label></div>
+                                							<div  class="rounded bg-success text-xs">{{context.isAjax}}</div>
+                        							</a>
+									</div>
+									
+									<div class="col-md-2">
+										<a class="block panel bg-info text-center wrapper">
+											<div  class=" text-white font-thin no-m"><label >REMOTE ADRESS</label></div>
+                                							<div  class="rounded bg-success text-xs">{{ip}}</div>
+                        							</a>
+									</div>
+
+									<div class="col-md-2">
+										<a class="block panel bg-info text-center wrapper">
+											<div  class=" text-white font-thin no-m"><label >PROXY REQUEST</label></div>
 											{% if proxy | length %}
 												VIA : 
-												<span class=" label label-success"> {{proxy.proxyVia}}</span>
+												<span class="rounded bg-success text-xs"> {{proxy.proxyVia}}</span>
 											{% else %}
-												<span class=" label label-success">FALSE</span>
+												<span class="rounded bg-success text-xs">FALSE</span>
 											{% endif %}
                         							</a>
 
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-2">
 										<a class="block panel bg-info text-center wrapper">
-											<div  class="h3 text-white font-thin no-m"><label >CROSS DOMAIN REQUEST</label></div>
-                                							<div  class="h1 label label-success">{{request.crossDomain}}</div>
+											<div  class=" text-white font-thin no-m"><label >DOMAIN REQUEST</label></div>
+                                							<div  class="rounded bg-success text-xs">{{context.domain}}</div>
                         							</a>
 									</div>
-
+									<div class="col-md-2">
+										<a class="block panel bg-info text-center wrapper">
+											<div  class=" text-white font-thin no-m"><label >CROSS DOMAIN REQUEST</label></div>
+                                							<div  class="rounded bg-success text-xs">{{request.crossDomain}}</div>
+                        							</a>
+									</div>
+									
 								</div>
 
+							</div>
+
+							<div class="container-fluid">
 								<div class="row">
 									<h3>Session Token</h3>	
-									<h3><span class="label label-success">{{session.id}}</span></h3>
+									<h4><span class="label label-success">{{session.id}}</span></h4>
 								</div>
-
-
 							</div>
 
 							<div class="container-fluid">

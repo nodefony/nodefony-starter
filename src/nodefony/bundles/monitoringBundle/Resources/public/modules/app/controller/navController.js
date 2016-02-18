@@ -259,6 +259,8 @@ stage.registerController("navController", function() {
 						queryFile:data.response.data.payload.queryFile,
 						session:data.response.data.payload.session,
 						proxy:data.response.data.payload.proxy,
+						context:data.response.data.payload.context,
+						protocole:data.response.data.payload.protocole,
 						twig:data.response.data.payload.twig,
 						timeRequest:data.response.data.payloadtimeRequest
 					});

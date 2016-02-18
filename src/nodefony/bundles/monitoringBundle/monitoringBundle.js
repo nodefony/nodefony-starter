@@ -116,7 +116,8 @@ nodefony.registerBundle ("monitoring", function(){
 									name:context.resolver.route.name,
 									uri:context.resolver.route.path,
 									variables:context.resolver.variables,
-									pattern:context.resolver.route.pattern.toString()	
+									pattern:context.resolver.route.pattern.toString(),	
+									defaultView:context.resolver.defaultView
 								},
 								varialblesName:context.resolver.route.variables,
 								kernelSettings:this.kernel.settings,
@@ -138,6 +139,7 @@ nodefony.registerBundle ("monitoring", function(){
 									domain:trans.defaultDomain
 								}
 							};
+							//console.log(context);
 							
 							if ( context.security ){
 								var secu = context.session.getMetaBag("security");
@@ -206,13 +208,19 @@ nodefony.registerBundle ("monitoring", function(){
 										fileName	: context.request.queryFile[ele].fileName
 									}
 								}
-								//var queryPost = null ;
 							}
-							/*else{
-								var queryFile = null;
-								var queryPost = context.request.queryPost ;
-	
-							}*/
+
+							obj["context"] = {
+								type:context.type,	
+								isAjax:context.isAjax,
+								secureArea:context.secureArea,
+								domain:context.domain,
+								url:context.url,
+								remoteAddress:context.remoteAddress,
+								crossDomain:context.crossDomain
+							}
+							
+							
 							// PROFILING
 							if (  ! obj.route.name.match(/^monitoring-/) ){
 								this.syslogContext.logger({
@@ -227,7 +235,8 @@ nodefony.registerBundle ("monitoring", function(){
 									request:obj["request"],
 									routing:obj["route"],
 									locale:obj["locale"],
-									context:context.type,
+									context:obj["context"],
+									protocole:context.type,
 									session:obj["session"],
 									security:obj["context_secure"],
 									routing:obj["routeur"] || [],

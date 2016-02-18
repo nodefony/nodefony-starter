@@ -244,7 +244,6 @@ nodefony.registerService("firewall", function(){
 			if ( this.factory ){
 				this.factory.handle(context, function(error, token){
 					if (error){
-						console.log("ERROR LOG")
 						return this.handleError(context, error) ;
 					}
 					this.token = token ;
@@ -255,11 +254,6 @@ nodefony.registerService("firewall", function(){
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
-					console.log("PASS secure set meta security" );
-					console.log(context.request.url.path );
-					console.log(this.defaultTarget );
-					console.log(this.checkLogin );
-					console.log( ret );
 					//context.session.getMetaBag("security") ;
 					
 					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
