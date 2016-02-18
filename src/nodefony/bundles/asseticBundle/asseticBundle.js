@@ -70,7 +70,7 @@ nodefony.registerBundle ("assetic", function(){
 				if ( hasFilters ){
 					data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 					for ( var j=0 ; j < myFilters.length ; j++ ){
-						data += myFilters[j].filter.call(myFilters[j], files[i].path) ;
+						data += myFilters[j].filter.call(myFilters[j], files[i].path, files[i]) ;
 					}
 				}else{
 					data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;

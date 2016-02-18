@@ -21,6 +21,7 @@ nodefony.registerTemplate("twig", function(){
 		twig.cache(false);
 		this.rootDir = container.get("kernel").rootDir ;
 		this.kernelSettings = this.container.getParameters("kernel");
+		container.set("Twig" , this);
 	};
 
 	
@@ -53,11 +54,10 @@ nodefony.registerTemplate("twig", function(){
 	};
 	
 	Twig.prototype.compile = function(markup, options){
-		
 		option.settings = nodefony.extend({}, twigOptions, {
 			filename :options.path
 		});	
-		return this.engine.compile(markup, option)
+		return this.engine.compile(markup, option);
 	};
 
 	Twig.prototype.extendFunction = function(){

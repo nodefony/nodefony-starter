@@ -67,8 +67,8 @@ httpBundle:
 #      OVERRIDE HTTPS CONFIGURATION  see HTTP BUNDLE config for more options    
   https:
     certificats:
-      key:                        "/config/certificates/key.pem"
-      cert:                       "/config/certificates/cert.pem"
+      key:                        "/config/certificates/serverKey.pem"
+      cert:                       "/config/certificates/serverCert.pem"
 
 
 #

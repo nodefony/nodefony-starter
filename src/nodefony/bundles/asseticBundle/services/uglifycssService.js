@@ -19,7 +19,7 @@ nodefony.registerService("uglifycss", function(){
 	
 	}
 
-	uglifyjs2.prototype.filter = function(path ){
+	uglifyjs2.prototype.filter = function(path , file){
 		switch (nodefony.typeOf( path ) ){
 			case "array" :
 				try {
