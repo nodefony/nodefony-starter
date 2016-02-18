@@ -28,6 +28,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.response = new nodefony.Response( response , container);
 		this.session = null;
 		this.cookies = {};
+		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;

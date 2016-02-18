@@ -129,7 +129,27 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
-		var type = context.type ;
+		var redirect = 	context.session.getFlashBag("redirect" ) ;
+		//console.log(redirect);
+		switch ( redirect ){
+			case "HTTP" :
+				if ( context .proxy ){
+					var type = "HTTPS" ;
+				}else{
+					var type = "HTTP" ;
+				}
+			break;
+			case "HTTPS" :
+				if ( context .proxy ){
+					var type = "HTTPS" ;
+				
+				}else{
+					var type = "HTTP" ;
+				}
+			break;
+			default :
+				var type = context.type ;
+		}
 		switch (type){
 			case "HTTP" :
 				var port = this.kernel.httpPort ;
@@ -191,24 +211,19 @@ nodefony.registerService("firewall", function(){
 			else
 				this.logger(e, "ERROR");
 
-			var ajax = context.request.isAjax() ;
-
-			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  this.redirect_Https ){
-					this.redirectHttps(context);
-			}else{
-				context.response.setStatusCode( 401 ) ;
-				this.overrideURL(context.request, this.formLogin);
-				if (! ajax){
-					if ( e.message !== "Unauthorized" ){
-						context.session.setFlashBag("session", {
-							error:e.message
-						});
-					}
-				}else{
-					context.setXjson(e);
+			
+			context.response.setStatusCode( 401 ) ;
+			this.overrideURL(context.request, this.formLogin);
+			if (! context.isAjax ){
+				if ( e.message !== "Unauthorized" ){
+					context.session.setFlashBag("session", {
+						error:e.message
+					});
 				}
-				context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
+			}else{
+				context.setXjson(e);
 			}
+			context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
 		}else{
 			if (e.status){
 				context.notificationsCenter.fire("onError",context.container, {
@@ -229,6 +244,7 @@ nodefony.registerService("firewall", function(){
 			if ( this.factory ){
 				this.factory.handle(context, function(error, token){
 					if (error){
+						console.log("ERROR LOG")
 						return this.handleError(context, error) ;
 					}
 					this.token = token ;
@@ -239,14 +255,17 @@ nodefony.registerService("firewall", function(){
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
-					//console.log("PASS secure set meta security" );
-					//console.log( ret );
+					console.log("PASS secure set meta security" );
+					console.log(context.request.url.path );
+					console.log(this.defaultTarget );
+					console.log(this.checkLogin );
+					console.log( ret );
 					//context.session.getMetaBag("security") ;
 					
 					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
 						//console.log(context.request.url.path)
 						this.overrideURL(context.request, this.defaultTarget);
-						if ( context.request.isAjax() ){
+						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
 								status:200,
@@ -258,7 +277,7 @@ nodefony.registerService("firewall", function(){
 							return ;
 						}
 					}else{
-						if ( context.request.isAjax() ){
+						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
 								status:200,
@@ -302,6 +321,7 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
+		context.session.setFlashBag("redirect" , "HTTPS" );
 		context.request.url.protocol = "https";
 		if ( context.proxy ){
 			return context.redirect(context.request.url, 301); 
@@ -413,11 +433,7 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if (  context.security ){	
-							var ajax = context.request.isAjax() ;
-
-							if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-								return context.security.redirectHttps(context);
-							}
+							
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
 								if (error){
 									return context.security.handleError(context, error);
@@ -459,6 +475,10 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
+
+			if ( ! context.isAjax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+				return context.security.redirectHttps(context);
+			}
 			//CROSS DOMAIN //FIXME width callback handle for async response  
 			var next = context.security.handleCrossDomain(context, request, response) ;
 			switch (next){

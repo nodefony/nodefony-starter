@@ -172,6 +172,11 @@ nodefony.registerBundle ("monitoring", function(){
 								}
 								
 							}
+							if (context.proxy){
+								obj["proxy"] = context.proxy ;
+							}else{
+								obj["proxy"] = null ;
+							}
 
 							if ( context.session ){
 								obj["session"] = {
@@ -216,6 +221,7 @@ nodefony.registerBundle ("monitoring", function(){
 									queryGet:context.request.queryGet,
 									queryFile:queryFile,
 									session:obj["session"],
+									proxy:obj["proxy"],
 									response:obj["response"],
 									security:obj["context_secure"],
 									request:obj["request"],

@@ -194,12 +194,17 @@
 		<li class="separator"></li>
 
 		<li>
+
+			{% if proxy %}
+				<label class="label label-default" >PROXY</label>
+			{% endif %}	
 			<label class="label label-success" >{{ request.protocol }}</label>
 			{% if requestId %}	
 				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
 			{% else %}
 				<label class="label" >Request</label>
 			{% endif %}
+			
 			
 			<label class="label label-default" >{{ request.method }}</label>
 			{% if request.crossDomain %}

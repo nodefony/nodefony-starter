@@ -145,13 +145,7 @@ nodefony.registerService("sessions", function(){
 								return ;
 							}
 							this.deSerialize(result);
-							if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-								callback({
-									status:302,
-									message:"redirect HTTPS"
-								}, null);	
-								return ;
-							}
+							
 							if (  ! this.isValidSession(result, context) ){
 								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 								this.destroy();

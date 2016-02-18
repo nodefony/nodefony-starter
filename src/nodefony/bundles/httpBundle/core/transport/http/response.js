@@ -75,10 +75,10 @@ nodefony.register("Response",function(){
 	};
 
 	Response.prototype.setCookie = function(cookie){
-		this.response.on('header', function(){
+		//this.response.on('header', function(){
 			this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
 			this.setHeader('Set-Cookie', cookie.serialize());
-		}.bind(this))
+		//}.bind(this))
 	};
 
 	Response.prototype.logger = function(pci, severity, msgid,  msg){
