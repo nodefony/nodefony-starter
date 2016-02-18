@@ -1,0 +1,22 @@
+<h3>Response </h3>
+<div class="wrapper" >
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>HEARDER</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in response %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
