@@ -207,12 +207,9 @@ stage.registerController("navController", function() {
 						date: new Date( data.response.data[res].timeStamp ),
 						url:data.response.data[res].payload["request"].url,
 						method:data.response.data[res].payload["request"].method,
-						contextSecurity:data.response.data[res].payload["security"].name,
-						routing:data.response.data[res].payload["routing"].name,
+						routing:data.response.data[res].payload["route"].name,
 						code:data.response.data[res].payload["response"].statusCode,
-						contextType:data.response.data[res].payload["context"],
-						sessionName:data.response.data[res].payload["session"].name,
-						sessionContext:data.response.data[res].payload["session"].metas.context,
+						context:data.response.data[res].payload["context"],
 						user:data.response.data[res].payload["security"].user ? data.response.data[res].payload["security"].user.username : null ,
 						uid:data.response.data[res].uid
 					})
@@ -220,7 +217,11 @@ stage.registerController("navController", function() {
 				this.renderDefaultContent("appModule:request:requests",{
 					requests:obj
 				});
-				$("table").DataTable();
+				$("table").DataTable({
+					"paging":   true,
+					"ordering": true,
+					"info":     true
+				});
 			}.bind(this),
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
@@ -260,6 +261,7 @@ stage.registerController("navController", function() {
 						session:data.response.data.payload.session,
 						proxy:data.response.data.payload.proxy,
 						context:data.response.data.payload.context,
+						events:data.response.data.payload.events,
 						protocole:data.response.data.payload.protocole,
 						twig:data.response.data.payload.twig,
 						timeRequest:data.response.data.payloadtimeRequest

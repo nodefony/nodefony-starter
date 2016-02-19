@@ -3,6 +3,10 @@
  *
  *
  */
+
+var Promise = require('promise');
+
+
 nodefony.registerBundle ("assetic", function(){
 
 	var assetic = function(kernel, container){
@@ -58,6 +62,8 @@ nodefony.registerBundle ("assetic", function(){
 		}
 	}
 
+
+
 	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
 			data = "";
@@ -87,6 +93,55 @@ nodefony.registerBundle ("assetic", function(){
 			throw e ;
 		}
 	}
+
+
+
+
+	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
+		try {
+			data = "";
+			if ( myFilters && myFilters.length){
+				var hasFilters = true;
+			}else{
+				var hasFilters = false;
+			}
+			var tab =[];
+			for ( var i=0 ; i < files.length ; i++ ){
+				try {
+					if ( hasFilters ){
+						for ( var j=0 ; j < myFilters.length ; j++ ){
+							tab.push( new Promise( function(resolve, reject){
+								return myFilters[j].filter.call(myFilters[j], files[i].path, resolve, reject) ;
+							}) );
+						}
+						Promise.all(tab)
+						.catch(function(e){
+							console.log(e)
+							//this.logger(e,"ERROR");
+						}.bind(this))
+						.then(function(ele){
+							data += ele
+							console.log("THEN PROMISE")
+						}.bind(this))
+						.done(function(){
+							console.log("DONNNE ")
+							outputFile.write( data );
+							//console.log(data)
+						}.bind(this))
+					}else{
+						data += files[i].read()  ;
+					}
+				}catch(err){
+					throw err ;
+				}
+			}
+			//outputFile.write( data );
+			console.log("PASS")
+		}catch(e){
+			throw e ;
+		}
+	}*/
+
 
 	assetic.prototype.genetateFile = function( block , type){
 		var files = [];  

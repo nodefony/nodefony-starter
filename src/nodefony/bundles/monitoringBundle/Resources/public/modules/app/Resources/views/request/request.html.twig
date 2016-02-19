@@ -15,9 +15,10 @@ UID : {{ uid }}
 			
 			<ul id="myNav" class="nav nav-list ">
 				<li class="active" ><a  data-target="#requestNav" data-toggle="tab" >Request / Response</a></li>
-				<li><a data-target="#sessionNav" data-toggle="tab" > Session</a></li>	
+				<li><a data-target="#sessionNav"  data-toggle="tab"  > Session</a></li>	
 				<li><a data-target="#twigNav" data-toggle="tab" > Twig</a></li>
 				<li><a data-target="#securityNav" data-toggle="tab" > Security</a></li>
+				<li><a data-target="#eventsNav" data-toggle="tab" > Events</a></li>
 				<li><a data-target="#translationNav" data-toggle="tab" > Translation</a></li>
 				<li><a data-target="#sequelizeNav" data-toggle="tab" > Sequelize</a></li>
 				<li><a data-target="#perfNav" data-toggle="tab" > Performance</a></li>
@@ -329,9 +330,7 @@ UID : {{ uid }}
 				</div>
 
 				<div id="securityNav" class="tab-pane ">
-					
 					{% include './security.html.twig' with { 'security': security  } %}	
-
 				</div>
 
 				<div id="translationNav" class="tab-pane ">
@@ -344,10 +343,11 @@ UID : {{ uid }}
 
 				<div id="perfNav" class="tab-pane ">
 					{% include './performance.html.twig' with { 'performance': performance  } %}
-
 				</div>
 
-
+				<div id="eventsNav" class="tab-pane ">
+					{% include './events.html.twig' with { 'events': events  } %}	
+				</div>
 				
 			<!--content-->
 			</div>

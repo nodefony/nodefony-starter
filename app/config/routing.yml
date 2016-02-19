@@ -3,33 +3,11 @@ Default:
   defaults: 
     controller: frameworkBundle:default:readme
   
-secure:
-  pattern:  /secure
-  defaults: 
-    controller: frameworkBundle:default:index
             
-documentation:
-    pattern:   /documentation 
-    defaults:  
-      controller: frameworkBundle:default:doc 
 
 readme:
     pattern:   /readme 
     defaults:  
       controller: frameworkBundle:default:readme    
 
-login:
-    pattern:   /login
-    defaults: 
-      controller: frameworkBundle:default:login
-
-logout:
-    pattern:  /logout
-    defaults: 
-      controller: frameworkBundle:default:logout
-
-about: 
-    pattern:   /about
-    defaults: 
-      controller: frameworkBundle:default:about
 

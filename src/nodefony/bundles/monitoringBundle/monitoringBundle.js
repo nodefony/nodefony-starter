@@ -139,6 +139,28 @@ nodefony.registerBundle ("monitoring", function(){
 									domain:trans.defaultDomain
 								}
 							};
+
+							obj["events"] = {} ;
+							for(var event in context.notificationsCenter.event["_events"] ){
+								
+								if ( event == "onRequest"){
+									obj["events"][event] = {
+										fire:true,
+										nb:1
+									} ;
+								}else{
+									obj["events"][event] = {
+										fire:false,
+										nb:0
+									} ;
+								}
+								context.listen(context ,event, function(){
+									var ele =  arguments[ 0]  ;
+									obj["events"][ele].fire= true;
+									obj["events"][ele].nb = ++obj["events"][ele].nb
+								}.bind(context, event ) )	
+							}
+
 							//console.log(context);
 							
 							if ( context.security ){
@@ -219,6 +241,9 @@ nodefony.registerBundle ("monitoring", function(){
 								remoteAddress:context.remoteAddress,
 								crossDomain:context.crossDomain
 							}
+
+
+							
 							
 							
 							// PROFILING
@@ -239,6 +264,7 @@ nodefony.registerBundle ("monitoring", function(){
 									protocole:context.type,
 									session:obj["session"],
 									security:obj["context_secure"],
+									events:obj["events"],
 									routing:obj["routeur"] || [],
 									route:obj["route"],
 									routeParmeters:obj["varialblesName"],
@@ -265,6 +291,7 @@ nodefony.registerBundle ("monitoring", function(){
 										param:viewParam
 									});
 									logProfile.payload["timeRequest"] = obj["timeRequest"];
+									logProfile.payload["events"] = 	obj["events"] ;
 								}
 								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");

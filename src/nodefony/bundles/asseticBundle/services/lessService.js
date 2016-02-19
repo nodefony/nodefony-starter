@@ -127,53 +127,23 @@ nodefony.registerService("less", function(){
 
 
 
-	Less.prototype.filter = function(path , callback){
+	Less.prototype.filter = function(path , resolve, reject){
 		try {
-			var result = "";
-			var error = null;
 			var file = new nodefony.fileClass(path );
 			this.engine.render(file.content(), {
-					async: false,
-					fileAsync: false,
-					paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
-					filename: file.name ,		// Specify a filename, for better error messages
-				})
-    				.then(function(output) {
-					console.log("THEN")
-					callback(null, output.css)
-        				result = output.css ;
-				})
-				
-				console.log("FILTER")
-				console.log(result)
-			if (error ) throw error ;
+				async: false,
+				fileAsync: false,
+				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+				filename: file.name ,		// Specify a filename, for better error messages
+			})
+    			.then(function(output) {
+				resolve( output.css )
+			})
 
-			return result;
 		}catch(e){
-			throw e ;
+			reject( e );
 		}
-		switch (nodefony.typeOf( path ) ){
-			case "array" :
-				try {
-					var result = this.engine.render( path, { maxLineLen: 500, expandVars: true } );
-					return result ;
-				}catch(error){
-					throw error ;
-				}
-			break;
-			case "string" :
-				try {
-					path = [path];
-					var result = this.engine.processFiles( path, { maxLineLen: 500, expandVars: true } );
-					return result ;
-				}catch(error){
-					throw error ;
-				}
-			break;
-			default :
-				throw  new Error("Service  uglifycss FILTER bad path type  ");
-			
-		}
+		
 	}
 
 	return Less ;

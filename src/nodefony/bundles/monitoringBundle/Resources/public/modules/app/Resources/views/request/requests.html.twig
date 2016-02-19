@@ -1,16 +1,16 @@
 {% include '../blocks/title.html.twig' with { 'title': 'REQUESTS ', 'subtitle': 'NODEFONY requests monitoring ' } %}			
 <div class="wrapper" >
 	<div class="table-responsive" >
-		<table class="table table-striped table-bordered">
+		<table class="table table-striped table-bordered" cellspacing="0" width="100%">
 			<thead>
 				<tr>
 					<th>UID</th>
 					<th>DATE</th>
 					<th>URL</th>
+					<th>ROUTE NAME</th>
 					<th>METHOD</th>
 					<th>CODE RESPONSE</th>
 					<th>CONTEXT</th>
-					<th>ROUTE NAME</th>
 					<th>USER</th>
 					
 					
@@ -22,10 +22,10 @@
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.uid}}</a></td>
 					<td>{{request.date}}</td>
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.url}}</a></td>
+					<td>{{request.routing}}</td>
 					<td>{{request.method}}</td>
 					<td>{{request.code}}</td>
-					<td>{{request.contextType}}</td>
-					<td>{{request.routing}}</td>
+					<td>{{request.context.type}}</td>
 					<td>{{request.user}}</td>
 					
 				</tr>

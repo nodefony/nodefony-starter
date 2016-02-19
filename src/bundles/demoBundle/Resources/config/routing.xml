@@ -31,9 +31,7 @@
 	</route>
 
 	<!-- FINDER -->
-	<route id="finder_index"  pattern="/">
-		<default key="controller">demoBundle:finder:index</default>
-	</route>
+	
 	<route id="finder"  pattern="/demo/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
