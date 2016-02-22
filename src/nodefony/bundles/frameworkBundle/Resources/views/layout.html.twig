@@ -4,8 +4,8 @@
 {% block title %} {{title}} {% endblock %}
 
 
+
 {% block stylesheets %}
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/frameworkBundle/css/style.css" rel="stylesheet" media="screen">
 
 {% endblock %}
@@ -27,12 +27,18 @@
 
 
 {% block javascripts %}
-	<script type="text/javascript" src="/frameworkBundle/vendors/jquery/jquery-2.1.0.js"></script>
-	<script type="text/javascript" src="/frameworkBundle/vendors/bootstrap/js/bootstrap.js"></script>
-	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
-	<script type="text/javascript" src="/vendors/stage/function.js"></script>
-	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
+
+	{% javascripts output='/frameworkBundle/assets/js/nodefony.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/jquery/jquery-1.12.0.js"
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/vendors/stage/stage.js"
+		"/vendors/stage/function.js"
+		"/vendors/stage/notificationsCenter.js"
+		"/vendors/stage/syslog/syslog.js"
+	%}
+		<script type="text/javascript"  src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
 
 {% endblock %}
 

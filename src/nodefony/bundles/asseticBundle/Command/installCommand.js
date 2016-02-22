@@ -52,7 +52,7 @@ nodefony.registerCommand("assets",function(){
 								console.log(views[view])
 								for (var ele in views[view]){
 									console.log(views[view][ele])
-									engine.renderFile(views[view][ele], {},function(){
+									engine.compile(views[view][ele], {},function(){
 										console.log(arguments)
 									});
 								}

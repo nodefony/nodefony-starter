@@ -195,6 +195,7 @@ nodefony.registerService("httpKernel", function(){
 					this.container.leaveScope(container);
 					if ( ! context.session  ){
 						delete context.extendTwig ;
+						if (context.proxy) delete context.proxy ;
 						context.clean();
 						delete context;	
 						delete request ;

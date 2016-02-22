@@ -26,6 +26,10 @@ stage.registerController("navController", function() {
 			controller:"appModule:nav:syslog"
 		});
 
+		this.router.createRoute("configuration", "/config", {
+			controller:"appModule:nav:config"
+		});
+
 		this.router.createRoute("requests", "/requests", {
 			controller:"appModule:nav:requests"
 		});
@@ -62,6 +66,11 @@ stage.registerController("navController", function() {
 			controller:"appModule:nav:request"
 		});
 
+		this.router.createRoute("config-bundle", "/config/{bundle}", {
+			controller:"appModule:nav:config"
+		});
+	
+
 
 		this.kernel.listen(this, "onUrlChange", function(url, fullurl, cache) {
 			// scroll to top for scrollable content
@@ -91,8 +100,8 @@ stage.registerController("navController", function() {
 	 */
 	var extractMenu = function(config) {
 		try {
-			var components = config.content.components.component;
-			var navigation = undefined;
+			var components = config.content.bundles.bundle;
+			var navigation = null;
 			
 			(stage.typeOf(components) === "array")?
 				navigation = components :
@@ -108,7 +117,7 @@ stage.registerController("navController", function() {
 	 * 
 	 */
 	controller.prototype.indexAction = function() {		
-		var nav = extractMenu(this.config);
+		var nav = extractMenu.call(this, this.config);
 		var section = this.get("section");
 		var navView = this.renderPartial("appModule::navigation", {
 			"nav": nav,
@@ -152,6 +161,42 @@ stage.registerController("navController", function() {
 		})
 
 	};
+
+
+	controller.prototype.configAction = function(bundleName) {
+		if ( ! bundleName ){
+			$.ajax("/api/config",{
+				//dataType:"json",
+				success:function(data, status, xhr){
+					this.renderDefaultContent("appModule:kernel:kernel",{
+						config:data.response.data.kernel,
+						bundles:data.response.data.bundles
+					});
+					//$("table").DataTable();
+				}.bind(this),
+				error:function(xhr,stats,  error){
+					this.logger(error, "ERROR");
+				}.bind(this)
+			
+			})
+		}else{
+			$.ajax("/api/config/"+bundleName,{
+				//dataType:"json",
+				success:function(data, status, xhr){
+					this.renderDefaultContent("appModule:bundles:bundle",{
+						config:data.response.data,
+					});
+					//$("table").DataTable();
+				}.bind(this),
+				error:function(xhr,stats,  error){
+					this.logger(error, "ERROR");
+				}.bind(this)
+			
+			})
+		
+		}
+	};
+
 
 
 	/*

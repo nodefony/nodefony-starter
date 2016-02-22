@@ -10,6 +10,12 @@
 			</component>
 		</components>
 
+		<bundles>
+			{% for bundle, value in bundles %}
+				<bundle name="{{value.name}}" > {{value.name}} </bundle>
+			{% endfor %}
+		</bundles>
+
 
 	</content>
 	
@@ -36,6 +42,8 @@
 		<template name="routing" src="/monitoringBundle/modules/app/Resources/views/route/routing.html.twig" type="application/twig"/>
 		<template name="services" src="/monitoringBundle/modules/app/Resources/views/services/services.html.twig" type="application/twig"/>
 		<template name="syslog" src="/monitoringBundle/modules/app/Resources/views/syslog/index.html.twig" type="application/twig"/>
+		<template name="kernel" src="/monitoringBundle/modules/app/Resources/views/kernel/kernel.html.twig" type="application/twig"/>
+		<template name="bundle" src="/monitoringBundle/modules/app/Resources/views/bundles/bundle.html.twig" type="application/twig"/>
 		<template name="requests" src="/monitoringBundle/modules/app/Resources/views/request/requests.html.twig" type="application/twig"/>
 		<template name="request" src="/monitoringBundle/modules/app/Resources/views/request/request.html.twig" type="application/twig"/>
 		<template name="response" src="/monitoringBundle/modules/app/Resources/views/request/response.html.twig" type="application/twig"/>

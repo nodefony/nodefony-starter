@@ -1,0 +1,117 @@
+{% include '../blocks/title.html.twig' with { 'title': 'NODEFONY CONFIGURATION ', 'subtitle': 'CONFIGURATION Nodefony framework ' } %}
+
+
+<div class="container">
+	<ul id="myTab" class="nav nav-pills">
+		<li class="active" ><a data-target="#kernel" data-toggle="tab" >Kernel</a></li>
+		<li><a  data-target="#app" data-toggle="tab"  >App</a></li>
+		{% for bundle, value in bundles %}
+			<li><a  data-target="#{{bundle}}" data-toggle="tab"  >{{bundle}}</a></li>
+		{% endfor %}
+	</ul>
+
+	<div class="tab-content">
+
+		<div id="kernel" class="tab-pane active ">
+
+			{% for ele, key in config %}
+
+				{% if ele != "system" %}
+					<h3> {{ele}} </h3>
+
+					{{ key }}	
+				{% endif %}
+
+			{% endfor %}
+
+			<h3> System </h3>
+			<div class="wrapper" >
+				<div class="table-responsive"  >
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>KEY</th>
+								<th>VALUE</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for ele, key in config.system %}
+						{% if ele != "log" %}
+						<tr>
+							<td>{{ele}}</td>
+							<td>{{key}}</td>
+						</tr>
+
+						{% endif %}
+
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<h3> Log </h3>
+			<div class="wrapper" >
+				<div class="table-responsive"  >
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>KEY</th>
+								<th>VALUE</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for ele, key in config.system.log %}
+						<tr>
+							<td>{{ele}}</td>
+							<td>{{key}}</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div id="app" class="tab-pane  ">
+			<h2>App</h2>
+		
+		</div>
+
+		{% for bundle, value in bundles %}
+			<div id="{{bundle}}" class="tab-pane  ">
+				<h3> {{bundle}} </h3>
+				<div class="wrapper" >
+					<div class="table-responsive"  >
+						<table class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th>KEY</th>
+									<th>VALUE</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for ele, key in value.config %}
+							{% if ele != "log" %}
+							<tr>
+								<td>{{ele}}</td>
+								<td>{{key}}</td>
+							</tr>
+
+							{% endif %}
+
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		{% endfor %}
+
+	</div>
+</div>
+
+
+
+

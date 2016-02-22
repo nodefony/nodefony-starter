@@ -81,9 +81,22 @@ monitoring-request:
   requirements: 
     method: GET
 
+monitoring-config:
+  pattern:   /api/config   
+  defaults: {controller: "monitoringBundle:api:config"}
+  requirements: 
+    method: GET
+
+monitoring-bundle:
+  pattern:   /api/config/{bundleName}   
+  defaults: {controller: "monitoringBundle:api:bundle"}
+  requirements: 
+    method: GET
 
 monitoring-realtime:
   pattern:   /api/realtime/{name}   
   defaults: {controller: "monitoringBundle:api:realtime"}
   requirements: 
     method: GET
+
+

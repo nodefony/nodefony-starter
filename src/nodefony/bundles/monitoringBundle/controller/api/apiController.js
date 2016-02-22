@@ -162,6 +162,91 @@ nodefony.registerController("api", function(){
 			});
 		}
 
+
+		/**
+		 *
+		 *	@method requestsAction
+		 *
+		 */
+		apiController.prototype.configAction = function(){
+			var kernel = this.get("kernel");
+			var bundles = function(){
+				var obj = {};
+				for (var bundle in kernel.bundles ){
+					obj[bundle] = {
+						name:kernel.bundles[bundle].name,
+						version:kernel.bundles[bundle].settings.version,
+						config:this.container.getParameters("bundles."+bundle)
+					}	
+				}
+				return obj;
+			}.call(this);
+
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify({
+					kernel:kernel.settings,
+					bundles:bundles
+				})
+			});
+		}
+
+
+
+		/**
+		 *
+		 *	@method requestsAction
+		 *
+		 */
+		apiController.prototype.bundleAction = function( bundleName ){
+			var config = this.getParameters( "bundles."+bundleName );
+			var bundle = this.get("kernel").getBundle(bundleName)
+			//console.log(bundle)
+			var router  = this.get("router");
+			//console.log(router)
+			var routing = [] ;
+			for (var i = 0 ; i < router.routes.length ; i++ ){
+				//console.log(ele)
+				//console.log(router.routes[ele])
+				var bun = router.routes[i].defaults.controller.split(":");
+				//console.log(bun[0]);	
+				//console.log(bundleName+"Bundle");	
+				if( bun[0] === bundleName+"Bundle"){
+					routing.push( router.routes[i] );
+				}
+			}
+				//console.log(routing);	
+			var security  = this.get("security");
+			//console.log(security)
+
+
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify({
+					config:bundle.settings,
+					routing:routing,
+					services:null,
+					security:null,
+					views:bundle.views,
+					entities:bundle.entities,
+					fixtures:bundle.fixtures,
+					controllers:bundle.controllers,
+					events:bundle.notificationsCenter._events,
+					waitBundleReady:bundle.waitBundleReady,
+					locale:bundle.locale
+				})
+			});
+		}
+
+
+
+
+
+
 		/**
 		 *
 		 *	@method realTimeAction

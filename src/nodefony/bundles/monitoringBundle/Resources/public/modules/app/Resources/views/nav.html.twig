@@ -17,7 +17,7 @@
 						<span>Dashboard</span>
 					</a>
 					<a 
-						href="" 
+						href="{{ path('configuration') }}" 
 						class="list-group-item font-bold" 
 						data-parent="{{ navCssId }}">
 						<i class="icon fa glyphicon glyphicon-random text-success"></i>
@@ -54,10 +54,19 @@
 					<a 
 						href="{{ path('requests') }}" 
 						class="list-group-item font-bold" 
+						data-toggle="collapse"
+						data-target="#bundles" 
 						data-parent="{{ navCssId }}">
 						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
 						<span>Bundles</span>
 					</a>
+					<div class="collapse" id="bundles">
+						{% for bundle, value in nav %}
+						<a href="{{path('config-bundle', {bundle:value['@name']})}}" class="list-group-item">{{value['@name']}}</a>
+						{% endfor %}
+          				</div>
+
+
 
 					{% set length =  nav | length %}			
 					{% if length == 1 %}

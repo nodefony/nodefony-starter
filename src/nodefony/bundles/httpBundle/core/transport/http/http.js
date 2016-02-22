@@ -109,6 +109,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		delete  this.domain ;
 		delete  this.notificationsCenter ;
 		delete  this.session ;
+		delete  this.cookies ;
+		if (this.proxy) delete this.proxy ;
+		if (this.user)  delete this.user
+		if (this.security ) delete this.security ;
+		delete this.container ;
 	}
 
 	Http.prototype.getUser = function(){

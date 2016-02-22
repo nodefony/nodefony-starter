@@ -242,9 +242,6 @@ nodefony.registerBundle ("monitoring", function(){
 								crossDomain:context.crossDomain
 							}
 
-
-							
-							
 							
 							// PROFILING
 							if (  ! obj.route.name.match(/^monitoring-/) ){
@@ -310,6 +307,10 @@ nodefony.registerBundle ("monitoring", function(){
 									//context.setXjson(obj);	
 								}
 							});
+
+							context.response.response.on("finish",function(){
+								delete obj ;
+							}.bind(this))
 						}
 					}catch(e){
 						this.kernel.logger(e, "ERROR");

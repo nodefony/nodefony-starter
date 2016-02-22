@@ -1,4 +1,9 @@
-<link href="/monitoringBundle/css/debugBar.css" rel="stylesheet"/>	
+{% stylesheets  output="/monitoringBundle/assets/style.css" filter="?uglifycss"
+            "/monitoringBundle/css/debugBar.css"
+%}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+
 
 
 <div id="nodefony-container"  >
@@ -325,4 +330,9 @@
 	<img src="/favicon.ico">
 </div>
 
-<script type="text/javascript" src="/monitoringBundle/js/debugBar.js"></script>
+{% javascripts output='/monitoringBundle/assets/js/debugBar.js' filter='?uglifyjs2'
+		"/monitoringBundle/js/debugBar.js"
+%}
+	<script type="text/javascript"  src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
