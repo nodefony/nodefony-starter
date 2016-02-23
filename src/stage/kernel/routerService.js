@@ -252,9 +252,14 @@ stage.register("router",function(){
 		}
 		return null;
 	};
-
+	
+	var regSerch = /(.*)\?.*$/;
 	service.prototype.resolve = function(url){
 		//console.log("RESOLVE " +url)
+		//console.log(regSerch.exec(url) );
+		var test = regSerch.exec(url) ;
+		if ( test )
+			url = test[1] ;
 		var resolver = new Resolver(this.container);
 		var res = [];
 		for (var routes in this.routes){
@@ -262,10 +267,9 @@ stage.register("router",function(){
 			try {
 				res = resolver.match(route, url);
 				if (res){
-					//this.notificationsCenter.fire("onRouteStart", url, route );
+					this.notificationsCenter.fire("onBeforeAction", url, resolver );
 					var ret = resolver.callController( res)
-					//this.notificationsCenter.fire("onRouteEnd", url, route, ret );
-					//console.log("RESOLVE " +url +" :" + res)
+					this.notificationsCenter.fire("onAfterAction", url, resolver, ret );
 					break;
 				}
 			}catch(e){
@@ -361,6 +365,15 @@ stage.register("router",function(){
 	service.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "ROUTER "
 		return this.syslog.logger(pci, severity, msgid,  msg);
+	};
+
+	service.prototype.listen = function(){
+		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+	};
+
+	service.prototype.fire = function(){
+		return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
+	
 	};
 
 	

@@ -1536,8 +1536,14 @@ stage.register("io",function(){
 	};
 
 	
-
+	var regSearch = /^\?(.*)/ ;
 	var parseKeyValue = function(search){
+		//console.log(search)
+		var test = regSearch.exec(search) ;
+		//console.log(test)
+		if (test){
+			search = test[1];	
+		}
 		var obj = {}, key_value, key;
 		var tab = (search|| "").split('&') ;
 		if (tab.length){
@@ -1545,9 +1551,11 @@ stage.register("io",function(){
 				try {
 					var key_value = tab[i].replace(/\+/g,'%20').split('=');
 					var key = decodeURIComponent(key_value[0]); 
+					//console.log(key_value)
+					//console.log(key)
 					if ( key ){
 						var val =  decodeURIComponent(key_value[1])
-						if (Object.prototype.hasOwnProperty.call(obj, key) ){
+						if ( ! Object.prototype.hasOwnProperty.call(obj, key) ){
 							obj[key] = val;
 						}else{
 							switch (stage.typeOf(obj[key])){

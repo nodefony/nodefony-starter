@@ -272,6 +272,7 @@ stage.registerController("navController", function() {
 				this.logger(error, "ERROR");
 			}.bind(this)
 		});
+		
 	};
 
 
@@ -284,7 +285,6 @@ stage.registerController("navController", function() {
 			$.ajax("/api/request/"+uid,{
 				success:function(data, status, xhr){
 					//console.log(data.response.data.payload)
-					
 					this.renderDefaultContent("appModule:request:request",{
 						uid:uid,
 						date: new Date( data.response.data.payload.timeStamp ),
@@ -311,7 +311,13 @@ stage.registerController("navController", function() {
 						twig:data.response.data.payload.twig,
 						timeRequest:data.response.data.payloadtimeRequest
 					});
-					
+					var search = this.get("location").search();
+					if(search){
+						if ("tab" in search ){
+							var selector = ".nav-pills a[data-target='#"+search.tab+"']" ;
+							$(selector).tab('show')
+						}	
+					}
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");
@@ -321,8 +327,6 @@ stage.registerController("navController", function() {
 		}catch(error){
 			throw error ;	
 		}
-
-		
 	};
 
 

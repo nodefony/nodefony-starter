@@ -1717,8 +1717,14 @@ stage.register("io",function(){
 	};
 
 	
-
+	var regSearch = /^\?(.*)/ ;
 	var parseKeyValue = function(search){
+		//console.log(search)
+		var test = regSearch.exec(search) ;
+		//console.log(test)
+		if (test){
+			search = test[1];	
+		}
 		var obj = {}, key_value, key;
 		var tab = (search|| "").split('&') ;
 		if (tab.length){
@@ -1726,9 +1732,11 @@ stage.register("io",function(){
 				try {
 					var key_value = tab[i].replace(/\+/g,'%20').split('=');
 					var key = decodeURIComponent(key_value[0]); 
+					//console.log(key_value)
+					//console.log(key)
 					if ( key ){
 						var val =  decodeURIComponent(key_value[1])
-						if (Object.prototype.hasOwnProperty.call(obj, key) ){
+						if ( ! Object.prototype.hasOwnProperty.call(obj, key) ){
 							obj[key] = val;
 						}else{
 							switch (stage.typeOf(obj[key])){
@@ -4451,9 +4459,14 @@ stage.register("router",function(){
 		}
 		return null;
 	};
-
+	
+	var regSerch = /(.*)\?.*$/;
 	service.prototype.resolve = function(url){
 		//console.log("RESOLVE " +url)
+		//console.log(regSerch.exec(url) );
+		var test = regSerch.exec(url) ;
+		if ( test )
+			url = test[1] ;
 		var resolver = new Resolver(this.container);
 		var res = [];
 		for (var routes in this.routes){
@@ -4461,10 +4474,9 @@ stage.register("router",function(){
 			try {
 				res = resolver.match(route, url);
 				if (res){
-					//this.notificationsCenter.fire("onRouteStart", url, route );
+					this.notificationsCenter.fire("onBeforeAction", url, resolver );
 					var ret = resolver.callController( res)
-					//this.notificationsCenter.fire("onRouteEnd", url, route, ret );
-					//console.log("RESOLVE " +url +" :" + res)
+					this.notificationsCenter.fire("onAfterAction", url, resolver, ret );
 					break;
 				}
 			}catch(e){
@@ -4560,6 +4572,15 @@ stage.register("router",function(){
 	service.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "ROUTER "
 		return this.syslog.logger(pci, severity, msgid,  msg);
+	};
+
+	service.prototype.listen = function(){
+		return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+	};
+
+	service.prototype.fire = function(){
+		return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
+	
 	};
 
 	
@@ -5550,6 +5571,7 @@ stage.register("location",function(){
 						}
 						return url ;
 					}
+					//console.log(url)
 					if ( replace ){
 						this.location.replace(url);	
 						return url ;
@@ -5790,13 +5812,14 @@ stage.register("location",function(){
 	
 	LocationHashbangUrl.prototype.change = function(){
 		var search = stage.io.toKeyValue(this._search);
-		//console.log(search)
+		//console.log(this._search)
 		//var hash = this._hash ? '#' + stage.io.encodeUriSegment(this._hash) : '';
 
 		var hash = this._hash ? '#' + this._hash : '';
 
 		//console.log(this._path)
 		this._url = this.encodePath(this._path) + (search ? '?' + search : '') + hash		
+		//console.log(this._url)
 		//var temp = (this._url ? this.hashPrefix + this._url : '').replace("//","/");
 		//this._absUrl = this.base + temp;	
 		//console.log( this.hashPrefix)
