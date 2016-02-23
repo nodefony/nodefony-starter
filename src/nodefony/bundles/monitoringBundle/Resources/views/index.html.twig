@@ -9,8 +9,6 @@
 
 {% block stylesheets %}
 	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
-	<link href="/monitoringBundle/vendors/dataTable/css/jquery.dataTables.min.css" rel="stylesheet"/>
-	<!--link href="/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.min.css" rel="stylesheet"/-->
 
 
 	{% stylesheets  output="/monitoringBundle/assets/css/style.css" filter="less"
@@ -20,7 +18,8 @@
         {% endstylesheets %}
 
 	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" //filter=""
-            "/monitoringBundle/css/json-view/jquery.json-view.css"
+            "/monitoringBundle/css/json-view/jquery.jsonview.css"
+	    "/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -70,32 +69,14 @@
 
 	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
 
-		"/monitoringBundle/vendors/toastr/toastr.min.js"
-		"/monitoringBundle/vendors/jquery.serializeObject/jquery.serializeObject.min.js"
-		"/monitoringBundle/vendors/jquery-validation/jquery.validate.js"
-		"/monitoringBundle/vendors/jquery-validation/localization/messages_fr.js"
-		"/monitoringBundle/vendors/nprogress/nprogress.js"
-		"/monitoringBundle/vendors/bootstrap-select/js/bootstrap-select.min.js"
 		"/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"
-
-		//"/monitoringBundle/vendors/easy-pie-chart/jquery.easypiechart.js"
-		//"/monitoringBundle/vendors/jquery.flot/jquery.flot.min.js"
-		//"/monitoringBundle/vendors/jquery.flot/jquery.flot.pie.min.js"
-		//"/monitoringBundle/vendors/jquery.flot/jquery.flot.stack.min.js"
-		//"/monitoringBundle/vendors/jquery.flot/jquery.flot.resize.min.js"
-		//"/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.tooltip.min.js"
-		//"/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.spline.min.js"
 		"/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"
-		"/monitoringBundle/js/json-view/jquery.json-view.js"
+		"/monitoringBundle/js/json-view/jquery.jsonview.js"
 	
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
-	
-	<!--[if lt IE 9]>
-		<script src="/monitoringBundle/vendors/excanvas/excanvas.min.js"></script>
-	<![endif]-->
 	
 	<script type="text/javascript" src="/monitoringBundle/js/appKernel.js"></script>
 

@@ -192,7 +192,8 @@ stage.registerController("navController", function() {
 						locale:data.response.data.config.locale,
 						version:data.response.data.config.version,
 					});
-					$("#config").jsonView( data.response.data.config );
+					$("#json").JSONView(  data.response.data.config );
+					$("#json").JSONView( "collapse" );
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");

@@ -62,16 +62,16 @@ stage.register("Controller",function(){
 	};
 
 
-	var tabFxEvent = ["fx-click", "fx-dblclick", "fx-focus", "fx-blur", "fx-mouseover", "fx-mouseout", "fx-mouseenter", "fx-mouseleave", "fx-change"];
+	var tabFxEvent = ["stage-click", "stage-dblclick", "stage-focus", "stage-blur", "stage-mouseover", "stage-mouseout", "stage-mouseenter", "stage-mouseleave", "stage-change"];
 	Controller.prototype.domParser = function(domElement){
 		var controller = this ;
 		domElement.find('[' + tabFxEvent.join('],[') + ']').each(function(index, ele){
 			
 			var attributes = ele.attributes;
 			var jElement = $(ele);
-			var ctrl = jElement.closest('[fx-ctrl]');
+			var ctrl = jElement.closest('[stage-ctrl]');
 			if(ctrl.length){
-				var pattern = $(ctrl).attr("fx-ctrl") ;
+				var pattern = $(ctrl).attr("stage-ctrl") ;
 				try {
 					var scope = controller.router.resolvePattern(pattern).controller;
 				}catch (e){
@@ -86,7 +86,7 @@ stage.register("Controller",function(){
 				if(tabFxEvent.indexOf(attribute.name) > -1){
 					var ff = function(){
 						var content = attribute.value;
-						jElement.on(attribute.name.replace('fx-', ''), function(){
+						jElement.on(attribute.name.replace('stage-', ''), function(){
 							scope.evalInContext(content, this);
 						});
 					}();

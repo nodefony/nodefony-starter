@@ -48,7 +48,7 @@
 			<label class="label" >{{appSettings.projectName}} : <label class="label label-default">{{environment}}</label></label>
 			<div class="details">
 				<ul>
-					<li><label style="color:#999">APP</label></li>
+					<li><label ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/config/App'>APP</a></label></li>
 					{% for key, value in appSettings %}
 						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
 					{% endfor %}
@@ -57,7 +57,7 @@
 					<li><label style="color:#999">BUNDLES</label></li>
 					{% for key, value in bundles %}
 						{% if key != "App"  %}
-							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value.version}}</span></li>
+						<li><label><a style="color:#2f2f2f"  target="blank" href='{{path("monitoring-index")}}#/config/{{key}}'>{{ key | capitalize }}</a></label><span class="label label-success">{{value.version}}</span></li>
 						{% endif %}
 					{% endfor %}
 					<li class="separator"> </li>
@@ -72,7 +72,7 @@
 		<li class="separator"></li>
 
 		<li >	
-			<label class="label" >SERVICES</label>
+			<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/services'>SERVICES</a></label>
 			<label class="label label-default" >{{nbServices}}</label>
 			<div class="details">
 				<ul>
@@ -205,9 +205,9 @@
 			{% endif %}	
 			<label class="label label-success" >{{ request.protocol }}</label>
 			{% if requestId %}	
-				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>Request</a></label>
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>REQUEST</a></label>
 			{% else %}
-				<label class="label" >Request</label>
+				<label class="label" >REQUEST</label>
 			{% endif %}
 			
 			
@@ -295,9 +295,9 @@
 
 		<li>
 			{% if requestId %}	
-				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=response'>Response</a></label>
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=response'>RESPONSE</a></label>
 			{% else %}
-				<label class="label" >Response</label>
+				<label class="label" >RESPONSE</label>
 			{% endif %}
 			<label class="label label-success" >{{ response.statusCode }}</label>
 			<label class="label label-success" >{{ timeRequest }}</label>

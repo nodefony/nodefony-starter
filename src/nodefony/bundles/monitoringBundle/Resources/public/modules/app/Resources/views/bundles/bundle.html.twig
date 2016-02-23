@@ -37,6 +37,12 @@
 			<div class="tab-content">
 
 				<div id="config" class="tab-pane active ">
+  					<button stage-click="$('#json').JSONView('expand')" class="btn btn-primary btn-sm" id="expand-btn">Expand</button>
+					<button stage-click="$('#json').JSONView('collapse')" class="btn btn-primary btn-sm" id="collapse-btn">Collapse</button>
+  					<button stage-click="$('#json').JSONView('toggle')" class="btn btn-primary btn-sm" id="toggle-btn">Toggle</button>
+  					<button stage-click="$('#json').JSONView('toggle',1)" class="btn btn-primary btn-sm" id="toggle-level1-btn">Toggle level1</button>
+  					<button stage-click="$('#json').JSONView('toggle',2)" class="btn btn-primary btn-sm" id="toggle-level2-btn">Toggle level2</button>    
+					<div id="json"></div>
 				</div>
 
 
