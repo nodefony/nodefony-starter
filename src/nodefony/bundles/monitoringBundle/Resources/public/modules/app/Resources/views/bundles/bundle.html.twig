@@ -1,3 +1,19 @@
+{% set  subtitle %}
+	<p >Name	: {{ name }} &nbsp; &nbsp; &nbsp; 
+	    Locale	: {{locale}} &nbsp; &nbsp; &nbsp;
+	    Version	: {{version}} &nbsp; &nbsp; &nbsp;
+	</p>
+{% endset %}
+{% set  title %}
+
+	<h3> DESCRIPTIONS BUNDLE {{bundleName| upper}} </h3>
+
+{% endset %}
+
+
+{% include '../blocks/title.html.twig' with { 'title':title , 'subtitle': subtitle } %}
+
+
 <div class="container-fluid">
 
 	<div class="row m-t-10">
@@ -5,17 +21,38 @@
 		<div class="col-md-3 ">
 			
 			<ul id="myNav" class="nav nav-list ">
-				<li class="active" ><a  data-target="#requestNav" data-toggle="tab" >Configuration</a></li>
-				<li><a data-target="#sessionNav"  data-toggle="tab"  > routing</a></li>	
-				<li><a data-target="#twigNav" data-toggle="tab" > views</a></li>
-				<li><a data-target="#securityNav" data-toggle="tab" > entities</a></li>
-				<li><a data-target="#eventsNav" data-toggle="tab" > Events</a></li>
+				<li class="active" ><a  data-target="#config" data-toggle="tab" >Configuration</a></li>
+				<li><a data-target="#routing"  data-toggle="tab"  > routing</a></li>	
+				<li><a data-target="#views" data-toggle="tab" > views</a></li>
+				<li><a data-target="#entities" data-toggle="tab" > entities</a></li>
+				<li><a data-target="#events" data-toggle="tab" > Events</a></li>
 			</ul>
 
 		</div >
 
 
 		<div class="col-md-9 " >
+
+
+			<div class="tab-content">
+
+				<div id="config" class="tab-pane active ">
+				</div>
+
+
+				<div id="routing" class="tab-pane ">
+				</div>
+
+				<div id="views" class="tab-pane ">
+				</div>
+
+				<div id="entities" class="tab-pane ">
+				</div>
+
+				<div id="events" class="tab-pane ">
+				</div>
+		
+			</div>
 
 		<div>
 

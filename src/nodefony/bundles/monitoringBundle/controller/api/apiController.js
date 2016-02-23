@@ -170,17 +170,11 @@ nodefony.registerController("api", function(){
 		 */
 		apiController.prototype.configAction = function(){
 			var kernel = this.get("kernel");
-			var bundles = function(){
-				var obj = {};
-				for (var bundle in kernel.bundles ){
-					obj[bundle] = {
-						name:kernel.bundles[bundle].name,
-						version:kernel.bundles[bundle].settings.version,
-						config:this.container.getParameters("bundles."+bundle)
-					}	
-				}
-				return obj;
-			}.call(this);
+			
+
+			var events = kernel.notificationsCenter.event["_events"] ;
+			//console.log(events)
+			
 
 			return this.renderRest({
 				code:200,
@@ -188,7 +182,9 @@ nodefony.registerController("api", function(){
 			        message:"OK",
 				data:JSON.stringify({
 					kernel:kernel.settings,
-					bundles:bundles
+					debug:kernel.debug,
+					nodejs:process.versions,
+					events:events
 				})
 			});
 		}

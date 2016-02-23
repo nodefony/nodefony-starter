@@ -230,6 +230,28 @@ stage.registerController("appController", function() {
 			}
 			
 		}.bind(this))
+
+		/******** AJAX SETUP *************/
+		$.ajaxSetup({
+			statusCode : {
+				401: function() {
+					 window.location = "/";
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				if (textStatus === "error"){
+					switch (errorThrown){
+						case "Unauthorized" :
+							window.location = "/";
+						break;
+						default:
+							App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
+					}
+					return ;
+				}
+				//App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
+			}.bind(this)
+		});
 	};
 	
 	/**

@@ -1,116 +1,145 @@
-{% include '../blocks/title.html.twig' with { 'title': 'NODEFONY CONFIGURATION ', 'subtitle': 'CONFIGURATION Nodefony framework ' } %}
+{% include '../blocks/title.html.twig' with { 'title': 'NODEFONY KERNEL ', 'subtitle': 'KERNEL Nodefony framework ' } %}
 
 
-<div class="container">
-	<ul id="myTab" class="nav nav-pills">
-		<li class="active" ><a data-target="#kernel" data-toggle="tab" >Kernel</a></li>
-		<li><a  data-target="#app" data-toggle="tab"  >App</a></li>
-		{% for bundle, value in bundles %}
-			<li><a  data-target="#{{bundle}}" data-toggle="tab"  >{{bundle}}</a></li>
-		{% endfor %}
-	</ul>
+<div class="container-fluid">
 
-	<div class="tab-content">
+	<div class="row m-t-10">
 
-		<div id="kernel" class="tab-pane active ">
+		<div class="col-md-3 ">
+			
+			<ul id="myNav" class="nav nav-list ">
+				<li class="active" ><a  data-target="#config" data-toggle="tab" >Configuration</a></li>
+				<li><a data-target="#events"  data-toggle="tab"  > Events</a></li>	
+			</ul>
 
-			{% for ele, key in config %}
+		</div >
 
-				{% if ele != "system" %}
-					<h3> {{ele}} </h3>
-
-					{{ key }}	
-				{% endif %}
-
-			{% endfor %}
-
-			<h3> System </h3>
-			<div class="wrapper" >
-				<div class="table-responsive"  >
-					<table class="table table-striped table-bordered">
-						<thead>
-							<tr>
-								<th>KEY</th>
-								<th>VALUE</th>
-							</tr>
-						</thead>
-						<tbody>
-						{% for ele, key in config.system %}
-						{% if ele != "log" %}
-						<tr>
-							<td>{{ele}}</td>
-							<td>{{key}}</td>
-						</tr>
-
-						{% endif %}
-
-						{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-
-			<h3> Log </h3>
-			<div class="wrapper" >
-				<div class="table-responsive"  >
-					<table class="table table-striped table-bordered">
-						<thead>
-							<tr>
-								<th>KEY</th>
-								<th>VALUE</th>
-							</tr>
-						</thead>
-						<tbody>
-						{% for ele, key in config.system.log %}
-						<tr>
-							<td>{{ele}}</td>
-							<td>{{key}}</td>
-						</tr>
-						{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div id="app" class="tab-pane  ">
-			<h2>App</h2>
-		
-		</div>
-
-		{% for bundle, value in bundles %}
-			<div id="{{bundle}}" class="tab-pane  ">
-				<h3> {{bundle}} </h3>
-				<div class="wrapper" >
-					<div class="table-responsive"  >
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th>KEY</th>
-									<th>VALUE</th>
-								</tr>
-							</thead>
-							<tbody>
-							{% for ele, key in value.config %}
-							{% if ele != "log" %}
-							<tr>
-								<td>{{ele}}</td>
-								<td>{{key}}</td>
-							</tr>
-
-							{% endif %}
-
-							{% endfor %}
-							</tbody>
-						</table>
+		<div class="col-md-9 " >
+			<div class="tab-content">
+				<div id="config" class="tab-pane active ">
+					<div class=" m-t-10">
+						<div class="row">
+							<div class="col-md-2">
+								<a class="block panel bg-info text-center wrapper">
+									<div  class=" text-white font-thin no-m"><label >NAME</label></div>
+                                					<h4  class="rounded bg-success text-xs">{{config.name}}</h4>
+                                					<h4  class="rounded bg-success text-xs">{{config.system.version}}</h4>
+                        					</a>
+							</div>
+							<div class="col-md-2">
+								<a class="block panel bg-info text-center wrapper">
+									<div  class=" text-white font-thin no-m"><label >ENGINE TEMPLATING</label></div>
+                                					<h4  class="rounded bg-success text-xs">{{config.templating}}</h4>
+                        					</a>
+							</div>
+							<div class="col-md-2">
+								<a class="block panel bg-info text-center wrapper">
+									<div  class=" text-white font-thin no-m"><label >ORM</label></div>
+                                					<h4  class="rounded bg-success text-xs">{{config.orm}}</h4>
+                        					</a>
+							</div>
+							<div class="col-md-2">
+								<a class="block panel bg-info text-center wrapper">
+									<div  class=" text-white font-thin no-m"><label >ENVIRONMENT</label></div>
+                                					<h4  class="rounded bg-success text-xs">{{config.environment}}</h4>
+                        					</a>
+							</div>
+							<div class="col-md-2">
+								<a class="block panel bg-info text-center wrapper">
+									<div  class=" text-white font-thin no-m"><label >DEBUG</label></div>
+                                					<h4  class="rounded bg-success text-xs">{{debug}}</h4>
+                        					</a>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
 
-		{% endfor %}
 
-	</div>
-</div>
+					<h3> System </h3>
+					<div class="wrapper" >
+						<div class="table-responsive"  >
+							<table class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>KEY</th>
+										<th>VALUE</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for ele, key in config.system %}
+								{% if ele != "log" %}
+								<tr>
+									<td>{{ele}}</td>
+									<td>{{key}}</td>
+								</tr>
+
+								{% endif %}
+
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<h3> NODE JS </h3>
+					<div class="wrapper" >
+						<div class="table-responsive"  >
+							<table class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>KEY</th>
+										<th>VALUE</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for ele, key in nodejs %}
+								<tr>
+									<td>{{ele}}</td>
+									<td>{{key}}</td>
+								</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+
+
+
+					<h3> Log </h3>
+					<div class="wrapper" >
+						<div class="table-responsive"  >
+							<table class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>KEY</th>
+										<th>VALUE</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for ele, key in config.system.log %}
+								<tr>
+									<td>{{ele}}</td>
+									<td>{{key}}</td>
+								</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				</div >
+
+
+				
+
+				<div id="events" class="tab-pane  ">
+				</div >
+
+
+			</div >
+		</div >
+	</div >
+</div >
 
 
 

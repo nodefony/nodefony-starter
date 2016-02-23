@@ -13,11 +13,18 @@
 	<!--link href="/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.min.css" rel="stylesheet"/-->
 
 
-	{% stylesheets  output="/monitoringBundle/assets/style.css" filter="less"
+	{% stylesheets  output="/monitoringBundle/assets/css/style.css" filter="less"
             "/monitoringBundle/less/style.less"
         %}
             <!--link rel="stylesheet" href="{{ asset_url }}" /-->
         {% endstylesheets %}
+
+	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" //filter=""
+            "/monitoringBundle/css/json-view/jquery.json-view.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
 
 
 {% endblock %}
@@ -80,6 +87,7 @@
 		//"/monitoringBundle/vendors/jquery.flot/plugins/jquery.flot.spline.min.js"
 		"/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+		"/monitoringBundle/js/json-view/jquery.json-view.js"
 	
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>

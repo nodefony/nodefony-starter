@@ -146,12 +146,14 @@ nodefony.registerBundle ("monitoring", function(){
 								if ( event == "onRequest"){
 									obj["events"][event] = {
 										fire:true,
-										nb:1
+										nb:1,
+										listeners:context.notificationsCenter.event["_events"][event].length
 									} ;
 								}else{
 									obj["events"][event] = {
 										fire:false,
-										nb:0
+										nb:0,
+										listeners:context.notificationsCenter.event["_events"][event].length
 									} ;
 								}
 								context.listen(context ,event, function(){

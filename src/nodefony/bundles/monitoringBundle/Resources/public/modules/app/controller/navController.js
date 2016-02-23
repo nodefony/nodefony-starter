@@ -168,11 +168,13 @@ stage.registerController("navController", function() {
 			$.ajax("/api/config",{
 				//dataType:"json",
 				success:function(data, status, xhr){
+					//console.log(data.response.data)
 					this.renderDefaultContent("appModule:kernel:kernel",{
 						config:data.response.data.kernel,
-						bundles:data.response.data.bundles
+						debug:data.response.data.debug,
+						nodejs:data.response.data.nodejs
 					});
-					//$("table").DataTable();
+					
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");
@@ -183,10 +185,14 @@ stage.registerController("navController", function() {
 			$.ajax("/api/config/"+bundleName,{
 				//dataType:"json",
 				success:function(data, status, xhr){
+					//console.log(data.response.data)
 					this.renderDefaultContent("appModule:bundles:bundle",{
-						config:data.response.data,
+						name: data.response.data.config.name ,
+						bundleName:bundleName,
+						locale:data.response.data.config.locale,
+						version:data.response.data.config.version,
 					});
-					//$("table").DataTable();
+					$("#config").jsonView( data.response.data.config );
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");
