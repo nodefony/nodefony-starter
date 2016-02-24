@@ -63,6 +63,7 @@ nodefony.register("kernel", function(){
 			//this.preboot = true;
 		}
 		this.booted = false;
+		this.ready = false;
 		this.autoLoader = autoLoader;
 		this.settings = null;
 
@@ -131,7 +132,6 @@ nodefony.register("kernel", function(){
 
 		}.bind(this));
 
-		
 		//  manage GLOBAL EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 		this.container.set("notificationsCenter", this.notificationsCenter);
@@ -164,11 +164,13 @@ nodefony.register("kernel", function(){
 		if (this.type == "SERVER" && this.settings.system.monitoring) {
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
+		if (this.type === "SERVER"){
+			this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
+		}
+
 		this.fire("onPreRegister", this );
 		this.registerBundles(bundles, function(){
-			if (this.type === "SERVER"){
-				this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
-			}
+			
 			this.preboot = true ;
 			this.fire("onPreBoot", this );
 		}.bind(this), false);
@@ -229,10 +231,10 @@ nodefony.register("kernel", function(){
 					console.log(   blue + "              "+reset + " "+ pdu.payload);	
 					return ;
 				}
-				if ( this.preboot ){
+				//if ( this.preboot ){
 					var date = new Date(pdu.timeStamp) ;
 					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
-				}
+				//}
 			});
 
 			syslog.listenWithConditions(this,{
@@ -240,10 +242,10 @@ nodefony.register("kernel", function(){
 					data:"WARNING"
 				}		
 			},function(pdu){
-				if ( this.preboot ){
+				//if ( this.preboot ){
 					var date = new Date(pdu.timeStamp) ;
 					console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
-				}
+				//}
 			});
 
 
@@ -373,15 +375,13 @@ nodefony.register("kernel", function(){
 				try {
 					this.logger("\x1B[33m EVENT KERNEL READY\033[0m", "DEBUG")
 					this.fire("onReady", this)	
+					this.ready = true ;
 				}catch(e){
 					this.logger(e, "ERROR");
 				}
 			}.bind(this))
 	};
 
-
-
-	
 	kernel.prototype.loadBundle =  function(file){
 		try {
 			var name = this.getBundleName(file.name);

@@ -25,7 +25,60 @@ nodefony.registerBundle ("monitoring", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
-		this.kernel.listen(this, "onReady", function(){
+		this.infoKernel = {};
+		this.kernel.listen(this, "onPreBoot", function(kernel){
+			this.infoKernel["events"] = {} ;
+			for(var event in kernel.notificationsCenter.event["_events"] ){
+				switch (event){
+					case "onPreBoot":
+						this.infoKernel["events"][event] = {
+							fire:kernel.preboot,
+							nb:1,
+							listeners:kernel.notificationsCenter.event["_events"][event].length
+						} ;
+					break;
+					default:
+						this.infoKernel["events"][event] = {
+							fire:false,
+							nb:0,
+							listeners:kernel.notificationsCenter.event["_events"][event].length
+						} ;
+						kernel.listen(kernel ,event, function(){
+							var ele =  arguments[0]  ;
+							this.infoKernel["events"][ele].fire= true;
+							this.infoKernel["events"][ele].nb = ++this.infoKernel["events"][ele].nb
+						}.bind(this, event ) )	
+				}
+			}
+		});
+
+		this.kernel.listen(this, "onReady", function(kernel){
+
+			this.infoBundles = {};
+			for(var bund in kernel.bundles ){
+				//console.log( kernel.bundles[bund] );
+				this.infoBundles[bund] = {} ;
+				this.infoBundles[bund]["waitBundleReady"] = kernel.bundles[bund].waitBundleReady
+				this.infoBundles[bund]["version"] = kernel.bundles[bund].settings.version 
+			}
+			//console.log(this.infoBundles);
+			for(var event in this.kernel.notificationsCenter.event["_events"] ){
+				switch (event){
+					case "onReady":
+						this.infoKernel["events"][event] = {
+							fire:kernel.ready,
+							nb:0,
+							listeners:this.kernel.notificationsCenter.event["_events"][event].length
+						} ;
+					break;
+					default:
+						this.infoKernel["events"][event] = nodefony.extend( true, this.infoKernel["events"][event],{
+							listeners:this.kernel.notificationsCenter.event["_events"][event].length
+						}) ;
+				}
+			}
+
+
 			if ( this.container.getParameters("bundles."+this.name).debugBar) {
 				this.logger("ADD DEBUG BAR MONITORING", "WARNING");
 				var bundles = function(){
@@ -142,6 +195,7 @@ nodefony.registerBundle ("monitoring", function(){
 
 							obj["events"] = {} ;
 							for(var event in context.notificationsCenter.event["_events"] ){
+								//console.log(context.notificationsCenter.event["_events"][event].length)
 								
 								if ( event == "onRequest"){
 									obj["events"][event] = {

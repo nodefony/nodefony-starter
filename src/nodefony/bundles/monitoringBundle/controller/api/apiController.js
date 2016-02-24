@@ -170,11 +170,6 @@ nodefony.registerController("api", function(){
 		 */
 		apiController.prototype.configAction = function(){
 			var kernel = this.get("kernel");
-			
-
-			var events = kernel.notificationsCenter.event["_events"] ;
-			//console.log(events)
-			
 
 			return this.renderRest({
 				code:200,
@@ -184,7 +179,8 @@ nodefony.registerController("api", function(){
 					kernel:kernel.settings,
 					debug:kernel.debug,
 					nodejs:process.versions,
-					events:events
+					events:this.bundle.infoKernel.events,
+					bundles:this.bundle.infoBundles
 				})
 			});
 		}
@@ -215,7 +211,7 @@ nodefony.registerController("api", function(){
 			}
 				//console.log(routing);	
 			var security  = this.get("security");
-			//console.log(security)
+			console.log(bundle.resourcesFiles.files)
 
 
 			return this.renderRest({
@@ -233,7 +229,8 @@ nodefony.registerController("api", function(){
 					controllers:bundle.controllers,
 					events:bundle.notificationsCenter._events,
 					waitBundleReady:bundle.waitBundleReady,
-					locale:bundle.locale
+					locale:bundle.locale,
+					files:bundle.resourcesFiles.files
 				})
 			});
 		}

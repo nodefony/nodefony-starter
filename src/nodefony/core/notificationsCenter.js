@@ -109,9 +109,9 @@ nodefony.register("notificationsCenter",function(){
 	 *	@method listeners 
 	 *
 	 */ 
-	Notification.prototype.removeAllListeners =function(){
-		return this.event.listeners.apply(this.event, arguments);	
-	};
+	//Notification.prototype.removeAllListeners =function(){
+	//	return this.event.listeners.apply(this.event, arguments);	
+	//};
 
 	/**
 	 *

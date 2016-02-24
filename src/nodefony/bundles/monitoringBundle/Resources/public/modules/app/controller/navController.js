@@ -38,7 +38,7 @@ stage.registerController("navController", function() {
 			controller:"appModule:nav:request"
 		});
 		
-		this.router.createRoute("request-details", "/request/{uid}/details", {
+		/*this.router.createRoute("request-details", "/request/{uid}/details", {
 			controller:"appModule:nav:request"
 		});
 
@@ -64,7 +64,7 @@ stage.registerController("navController", function() {
 
 		this.router.createRoute("request-twig", "/request/{uid}/twig", {
 			controller:"appModule:nav:request"
-		});
+		});*/
 
 		this.router.createRoute("config-bundle", "/config/{bundle}", {
 			controller:"appModule:nav:config"
@@ -162,7 +162,6 @@ stage.registerController("navController", function() {
 
 	};
 
-
 	controller.prototype.configAction = function(bundleName) {
 		if ( ! bundleName ){
 			$.ajax("/api/config",{
@@ -172,7 +171,9 @@ stage.registerController("navController", function() {
 					this.renderDefaultContent("appModule:kernel:kernel",{
 						config:data.response.data.kernel,
 						debug:data.response.data.debug,
-						nodejs:data.response.data.nodejs
+						nodejs:data.response.data.nodejs,
+						events:data.response.data.events,
+						bundles:data.response.data.bundles
 					});
 					
 				}.bind(this),
@@ -185,15 +186,21 @@ stage.registerController("navController", function() {
 			$.ajax("/api/config/"+bundleName,{
 				//dataType:"json",
 				success:function(data, status, xhr){
-					//console.log(data.response.data)
+					//console.log(data.response.data.routing)
 					this.renderDefaultContent("appModule:bundles:bundle",{
 						name: data.response.data.config.name ,
 						bundleName:bundleName,
 						locale:data.response.data.config.locale,
 						version:data.response.data.config.version,
+						routing:data.response.data.routing,
+						//files:data.response.data.files
 					});
 					$("#json").JSONView(  data.response.data.config );
 					$("#json").JSONView( "collapse" );
+					$("#tableRouting").DataTable();
+					$("#filesData").JSONView(  data.response.data.files );
+					$("#filesData").JSONView('toggle',2);
+
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");

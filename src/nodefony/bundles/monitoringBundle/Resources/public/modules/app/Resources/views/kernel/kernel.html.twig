@@ -10,8 +10,8 @@
 			<ul id="myNav" class="nav nav-list ">
 				<li class="active" ><a  data-target="#config" data-toggle="tab" >Configuration</a></li>
 				<li><a data-target="#events"  data-toggle="tab"  > Events</a></li>	
+				<li><a data-target="#bundlesKernel"  data-toggle="tab"  > Bundles</a></li>	
 			</ul>
-
 		</div >
 
 		<div class="col-md-9 " >
@@ -52,7 +52,6 @@
 							</div>
 						</div>
 					</div>
-
 
 					<h3> System </h3>
 					<div class="wrapper" >
@@ -128,11 +127,68 @@
 					</div>
 
 				</div >
-
-
 				
 
 				<div id="events" class="tab-pane  ">
+					<div class="wrapper" >
+					{% for key, ele in events %}
+
+						<h3>EVENTS  : {{key}}</h3>
+						<div class="wrapper" >
+							<div class="table-responsive" >
+								<table class="table table-striped table-bordered">
+									<thead>
+										<tr>
+											<th>KEY</th>
+											<th>VALUE</th>
+										</tr>
+									</thead>
+									<tbody>
+									{% for data, value in ele %}
+
+									<tr>
+										<td>{{data}}</td>
+										<td>{{value}}</td>
+									</tr>
+
+
+									{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+
+					{% endfor %}
+					</div >
+				</div >
+
+
+				<div id="bundlesKernel" class="tab-pane  ">
+					<div class="wrapper" >
+						<div class="table-responsive"  >
+							<table class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>BUNDLE NAME</th>
+										<th>VERSION</th>
+										<th>KERNEL WAIT BUNDLE READY</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for key, value  in bundles %}
+								<tr>
+									<td><a href='{{ path("config-bundle",{"bundle":key } ) }}'>{{key}}</a></td>
+									<td>{{value.version}}</a></td>
+									<td>{{value.waitBundleReady}}</a></td>
+								</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+
+					</div >
 				</div >
 
 
