@@ -211,7 +211,7 @@ nodefony.registerController("api", function(){
 			}
 				//console.log(routing);	
 			var security  = this.get("security");
-			console.log(bundle.resourcesFiles.files)
+			//console.log(bundle.resourcesFiles.files)
 
 
 			return this.renderRest({

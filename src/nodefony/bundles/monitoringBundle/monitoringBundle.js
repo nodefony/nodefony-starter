@@ -177,21 +177,70 @@ nodefony.registerBundle ("monitoring", function(){
 								environment:env,
 								debug:this.kernel.debug,
 								appSettings:app,
-								request:{
-									url:context.request.url.href,
-									method:context.request.method,
-									protocol:context.type,
-									remoteAdress:context.request.remoteAdress,
-									queryPost:context.request.queryPost,
-									queryGet:context.request.queryGet,
-									headers:context.request.headers,
-									crossDomain:context.crossDomain
-								},
 								locale:{
 									default:trans.defaultLocale,
 									domain:trans.defaultDomain
 								}
 							};
+							switch (context.type){
+								case "HTTP":
+								case "HTTPS":
+									obj["request"] = {
+										url:context.request.url.href,
+										method:context.request.method,
+										protocol:context.type,
+										remoteAdress:context.request.remoteAdress,
+										queryPost:context.request.queryPost,
+										queryGet:context.request.queryGet,
+										headers:context.request.headers,
+										crossDomain:context.crossDomain
+									};
+									obj["response"] = {	
+										statusCode:context.response.statusCode,
+										message:context.response.response.statusMessage,
+										size:context.response.body.length ,
+										encoding:context.response.encoding,
+										"content-type":context.response.response.getHeader('content-type')
+									};
+									var timeStamp = context.request.request.nodefony_time ;
+									
+								break;
+								case "WEBSOCKET":
+								case "WEBSOCKET SECURE":
+									//console.log(context)
+									var timeStamp = context.request.nodefony_time ;
+									var configServer = {};
+									for (var conf in context.request.serverConfig){
+										if ( conf == "httpServer")
+											continue ;
+										configServer[conf] = context.request.serverConfig[conf];	
+									}
+
+									obj["request"] = {
+										url:context.request.httpRequest.url,
+										headers:context.request.httpRequest.headers,
+										method:context.request.httpRequest.method,
+										protocol:context.type,
+										remoteAdress:context.request.remoteAddress,
+										serverConfig:configServer,
+									};
+									var config = {};
+									for (var conf in context.response.config){
+										if ( conf == "httpServer")
+											continue ;
+										config[conf] = 	context.response.config[conf];	
+									}
+									obj["response"] = {
+										statusCode:context.response.statusCode,	
+										connection:"WEBSOCKET",
+										config:config,
+										webSocketVersion:context.response.webSocketVersion,
+										message:[],
+									};
+									
+								break;
+							
+							}
 
 							obj["events"] = {} ;
 							for(var event in context.notificationsCenter.event["_events"] ){
@@ -268,13 +317,7 @@ nodefony.registerBundle ("monitoring", function(){
 									context:context.session.contextSession
 								};
 							}
-							obj["response"] = {	
-								statusCode:context.response.statusCode,
-								message:context.response.response.statusMessage,
-								size:context.response.body.length ,
-								encoding:context.response.encoding,
-								"content-type":context.response.response.getHeader('content-type')
-							}
+							
 							
 							if ( context.request.queryFile ){
 								var queryFile = {};
@@ -298,11 +341,10 @@ nodefony.registerBundle ("monitoring", function(){
 								crossDomain:context.crossDomain
 							}
 
-							
 							// PROFILING
 							if (  ! obj.route.name.match(/^monitoring-/) ){
 								this.syslogContext.logger({
-									timeStamp:context.request.request.nodefony_time,
+									timeStamp:timeStamp,
 									queryPost:context.request.queryPost,
 									queryGet:context.request.queryGet,
 									queryFile:queryFile,
@@ -316,7 +358,7 @@ nodefony.registerBundle ("monitoring", function(){
 									context:obj["context"],
 									protocole:context.type,
 									session:obj["session"],
-									security:obj["context_secure"],
+									security:obj["context_secure"] || {},
 									events:obj["events"],
 									routing:obj["routeur"] || [],
 									route:obj["route"],
@@ -325,6 +367,38 @@ nodefony.registerBundle ("monitoring", function(){
 								});
 								var logProfile = this.syslogContext.getLogStack();
 								obj["requestId"] = logProfile.uid ;
+							}
+
+							// EVENTS 
+							switch (context.type){
+								case "HTTP":
+								case "HTTPS":
+									context.response.response.on("finish",function(){
+										delete obj ;
+									}.bind(this))
+								break;
+								case "WEBSOCKET":
+								case "WEBSOCKET SECURE":
+
+									context.listen(this,"onMessage", function(message, context, reolver){
+										var ele = {
+											date:new Date().toTimeString(),
+											data:message
+										}
+										if (logProfile ){
+											if (message){
+												logProfile.payload["response"].message.push( ele ) ;
+											}
+										}		
+									})
+									context.listen(this,"onClose" , function(reasonCode, description, connection){
+										delete obj ;	
+										if (logProfile ){
+											//console.log(connection.state)
+											logProfile.payload["response"].statusCode = connection.state  ;	
+										}
+									})
+								break;
 							}
 
 							nodefony.extend(obj, context.extendTwig);
@@ -364,9 +438,7 @@ nodefony.registerBundle ("monitoring", function(){
 								}
 							});
 
-							context.response.response.on("finish",function(){
-								delete obj ;
-							}.bind(this))
+							
 						}
 					}catch(e){
 						this.kernel.logger(e, "ERROR");

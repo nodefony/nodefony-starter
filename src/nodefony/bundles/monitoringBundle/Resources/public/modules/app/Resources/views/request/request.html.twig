@@ -14,7 +14,7 @@ UID : {{ uid }}
 		<div class="col-md-3 ">
 			
 			<ul id="myNav" class="nav nav-list ">
-				<li class="active" ><a  data-target="#requestNav" data-toggle="tab" >Request / Response</a></li>
+				<li class="active" ><a  data-target="#requestNav" data-toggle="tab" >Context</a></li>
 				<li><a data-target="#sessionNav"  data-toggle="tab"  > Session</a></li>	
 				<li><a data-target="#twigNav" data-toggle="tab" > Twig</a></li>
 				<li><a data-target="#securityNav" data-toggle="tab" > Security</a></li>
@@ -31,8 +31,14 @@ UID : {{ uid }}
 			<div class="tab-content">
 				<div id="requestNav" class="tab-pane active ">
 					<ul id="myTab" class="nav nav-pills">
-						<li class="active" ><a data-target="#request" data-toggle="tab" >Request</a></li>
-						<li><a  data-target="#response" data-toggle="tab"  >Response</a></li>
+						{% if response.connection == "WEBSOCKET"  %}
+							<li class="active" ><a data-target="#request" data-toggle="tab" >Websosket</a></li>
+							<li><a  data-target="#response" data-toggle="tab"  >Connection</a></li>
+							<li><a  data-target="#messages" data-toggle="tab"  >Messages</a></li>
+						{% else %}
+							<li class="active" ><a data-target="#request" data-toggle="tab" >Request</a></li>
+							<li><a  data-target="#response" data-toggle="tab"  >Response</a></li>
+						{% endif %}
 					</ul>
 
 					<div class="tab-content">
@@ -47,13 +53,25 @@ UID : {{ uid }}
                         							</a>
 									</div>
 
-									<div class="col-md-2">
-										<a class="block panel bg-info text-center wrapper">
-											<div  class=" text-white font-thin no-m"><label >AJAX REQUEST</label></div>
-                                							<div  class="rounded bg-success text-xs">{{context.isAjax}}</div>
-                        							</a>
-									</div>
+									{% if response.connection == "WEBSOCKET"  %}
+
+										<div class="col-md-2">
+											<a class="block panel bg-info text-center wrapper">
+												<div  class=" text-white font-thin no-m"><label >WEBSOKET STATE</label></div>
+                                								<div  class="rounded bg-success text-xs">{{response.statusCode}}</div>
+                        								</a>
+										</div>
 									
+									{% else %}
+
+										<div class="col-md-2">
+											<a class="block panel bg-info text-center wrapper">
+												<div  class=" text-white font-thin no-m"><label >AJAX REQUEST</label></div>
+                                								<div  class="rounded bg-success text-xs">{{context.isAjax}}</div>
+                        								</a>
+										</div>
+
+									{% endif %}
 									<div class="col-md-2">
 										<a class="block panel bg-info text-center wrapper">
 											<div  class=" text-white font-thin no-m"><label >REMOTE ADRESS</label></div>
@@ -172,30 +190,55 @@ UID : {{ uid }}
 								{% endif %}
 								{% if queryFile | length %}
 								<h3>QUERY Files</h3>
-								{% for key, ele in queryFile %}
-								<div class="wrapper" >
-									<div class="table-responsive" >
-										<table class="table table-striped table-bordered">
-											<thead>
+									{% for key, ele in queryFile %}
+									<div class="wrapper" >
+										<div class="table-responsive" >
+											<table class="table table-striped table-bordered">
+												<thead>
+													<tr>
+														<th>{{key}}</th>
+														<th>VALUE</th>
+													</tr>
+												</thead>
+												<tbody>
+												{% for file, data in ele %}
 												<tr>
-													<th>{{key}}</th>
-													<th>VALUE</th>
+													<td>{{file}}</td>
+													<td>{{data}}</td>
 												</tr>
-											</thead>
-											<tbody>
-											{% for file, data in ele %}
-											<tr>
-												<td>{{file}}</td>
-												<td>{{data}}</td>
-											</tr>
-											{% endfor %}
-											</tbody>
-										</table>
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
 									</div>
-								</div>
 
-								{% endfor %}
+									{% endfor %}
 								{% endif %}	
+
+								{% if request.serverConfig | length %} 
+									<h3>WEBSOCKET SERVER CONFIG</h3>
+									<div class="wrapper" >
+										<div class="table-responsive" >
+											<table class="table table-striped table-bordered">
+												<thead>
+													<tr>
+														<th>KEY</th>
+														<th>VALUE</th>
+													</tr>
+												</thead>
+												<tbody>
+												{% for key, ele in request.serverConfig %}
+												<tr>
+													<td>{{key}}</td>
+													<td>{{ele}}</td>
+												</tr>
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								{% endif %}	
+
 								<h3>Routeur</h3>
 								<div class="wrapper" >
 									<div class="table-responsive" >
@@ -314,7 +357,7 @@ UID : {{ uid }}
 						<!-- end request-->
 						</div>
 						<div id="response" class="tab-pane ">
-							{% include './response.html.twig' with { 'response': response  } %}
+							{% include './response.html.twig' with { 'response': response ,'message' : message } %}
 							
     						</div>
 					</div>

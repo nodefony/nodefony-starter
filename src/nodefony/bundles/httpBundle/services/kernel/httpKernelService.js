@@ -253,6 +253,7 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
 
 				context.listen(this,"onClose" , function(){
 					delete 	context.extendTwig ;
@@ -266,18 +267,26 @@ nodefony.registerService("httpKernel", function(){
 					delete response ;
 				});
 
+				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
 					render:render.bind(container),
-					controller:controller.bind(container)
+					controller:controller.bind(container),
+					trans:translation.trans.bind(translation),
+					getLocale:translation.getLocale.bind(translation),
+					trans_default_domain:function(){
+						translation.trans_default_domain.apply(translation, arguments) ;
+					},
+					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
-				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
-				this.kernel.fire("onWebsocketRequest", container, context, type);
-				if (! this.firewall){
-					context.notificationsCenter.fire("onRequest",container, request, response );
+				//if (! this.firewall){
+					try {
+						context.notificationsCenter.fire("onRequest",container, request, response );
+					}catch(e){
+						context.notificationsCenter.fire("onError", container, e );	
+					}
 					return ;	
-				}
+				//}
 			break;
 		}
 		this.kernel.fire("onSecurity", context);

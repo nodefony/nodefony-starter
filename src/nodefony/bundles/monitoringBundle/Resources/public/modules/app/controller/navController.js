@@ -299,6 +299,32 @@ stage.registerController("navController", function() {
 			$.ajax("/api/request/"+uid,{
 				success:function(data, status, xhr){
 					//console.log(data.response.data.payload)
+					//
+					if (data.response.data.payload["response"].message){
+						try {
+							var message = data.response.data.payload["response"].message;
+							var parse =[];
+							for (var i = 0 ; message.length ; i++){
+								var ele = {} ;
+								if (message[i].data.utf8Data){
+									try {
+										ele["type"] = message[i].data.type ;
+										ele["utf8Data"]  = JSON.parse(message[i].data.utf8Data);
+									}catch(e){
+										ele["type"] = message[i].data.type ;
+										ele["utf8Data"]  = message[i].data.utf8Data;	
+									}
+								}
+								parse.push(ele);	
+							}
+							//console.log(message)
+						}catch(e){
+							var message = data.response.data.payload["response"].message ;
+						}
+						
+					}
+					console.log(message)
+
 					this.renderDefaultContent("appModule:request:request",{
 						uid:uid,
 						date: new Date( data.response.data.payload.timeStamp ),
@@ -323,7 +349,8 @@ stage.registerController("navController", function() {
 						events:data.response.data.payload.events,
 						protocole:data.response.data.payload.protocole,
 						twig:data.response.data.payload.twig,
-						timeRequest:data.response.data.payloadtimeRequest
+						timeRequest:data.response.data.payloadtimeRequest,
+						message:message
 					});
 					var search = this.get("location").search();
 					if(search){
@@ -332,6 +359,11 @@ stage.registerController("navController", function() {
 							$(selector).tab('show')
 						}	
 					}
+					if ( parse ){
+						$("#jsonMessage").JSONView(  parse  );
+						$("#filesData").JSONView('toggle',2);
+					}
+	
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");

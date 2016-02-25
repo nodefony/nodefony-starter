@@ -17,6 +17,9 @@ nodefony.register("wsResponse",function(){
 	var Response = function(connection){
 		this.connection = connection ;
 		this.body = "";
+		this.statusCode = this.connection.state;
+		this.config = this.connection.config ;
+		this.webSocketVersion = this.connection.webSocketVersion ;
 	};
 
 	
