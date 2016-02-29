@@ -19,27 +19,20 @@ nodefony.registerService("uglifycss", function(){
 	
 	}
 
-	uglifyjs2.prototype.filter = function(path , file){
-		switch (nodefony.typeOf( path ) ){
-			case "array" :
-				try {
-					var result = this.engine.processFiles( path, { maxLineLen: 500, expandVars: true } );
-					return result ;
-				}catch(error){
-					throw error ;
-				}
-			break;
+	uglifyjs2.prototype.filter = function(file ){
+		switch (nodefony.typeOf( file.path ) ){
+			
 			case "string" :
 				try {
-					path = [path];
+					var path = [file.path];
 					var result = this.engine.processFiles( path, { maxLineLen: 500, expandVars: true } );
 					return result ;
 				}catch(error){
-					throw error ;
+					throw error  ;
 				}
 			break;
 			default :
-				throw  new Error("Service  uglifycss FILTER bad path type  ");
+				reject(  new Error("Service  uglifycss FILTER bad path type  ") );
 			
 		}
 	}

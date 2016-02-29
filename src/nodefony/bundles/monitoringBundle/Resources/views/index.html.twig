@@ -10,20 +10,18 @@
 {% block stylesheets %}
 	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
 
-
 	{% stylesheets  output="/monitoringBundle/assets/css/style.css" filter="less"
             "/monitoringBundle/less/style.less"
         %}
             <!--link rel="stylesheet" href="{{ asset_url }}" /-->
         {% endstylesheets %}
 
-	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" //filter=""
+	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" filter="?uglifycss"
             "/monitoringBundle/css/json-view/jquery.jsonview.css"
 	    "/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
-
 
 {% endblock %}
 
@@ -38,7 +36,6 @@
 	{% endjavascripts %}
 
 	{% javascripts output='/monitoringBundle/assets/js/stage.js' filter='?uglifyjs2'
-
 		"/vendors/stage/stage.js"
 		"/vendors/stage/function.js"
 		"/vendors/stage/notificationsCenter.js"
@@ -65,14 +62,11 @@
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-
 	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
-
 		"/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"
 		"/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"
 		"/monitoringBundle/js/json-view/jquery.jsonview.js"
-	
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}

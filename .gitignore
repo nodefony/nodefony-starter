@@ -1,7 +1,6 @@
 #Ignore directory 
 build/*
 docs/*
-bin/*
 tmp/*
 node_modules/*
 web/*

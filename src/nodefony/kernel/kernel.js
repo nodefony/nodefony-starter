@@ -486,13 +486,14 @@ nodefony.register("kernel", function(){
          */	
 	kernel.prototype.initializeBundles = function(error, result){
 		this.app = this.initApplication();
-		try {
-			for (var name in this.bundles ){
-				this.logger("\x1b[36m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
+		for (var name in this.bundles ){
+			this.logger("\x1b[36m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
+			try {
 				this.bundles[name].boot();
+			}catch (e){
+				this.logger("BUNDLE :"+name+" "+ e);
+				continue ;
 			}
-		}catch(e){
-			this.logger("BUNDLE :"+name+" "+ e);	
 		}
 		if ( this.eventReadywait  === 0) waitingBundle.call(this) ;
 		this.logger("\x1B[33m EVENT KERNEL BOOT\033[0m", "DEBUG")

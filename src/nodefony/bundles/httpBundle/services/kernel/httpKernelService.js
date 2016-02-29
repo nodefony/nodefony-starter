@@ -51,7 +51,7 @@ nodefony.registerService("httpKernel", function(){
 		return nodefony.templatings[name];
 	};
 
-	httpKernel.prototype.getView = function(name){
+	httpKernel.prototype.getView = function( name ){
 		var tab = name.split(":");
 		var bundle = tab[0] ;
 		var controller = tab[1] || ".";

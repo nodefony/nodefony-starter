@@ -4,7 +4,7 @@ VERBOSE = 0
 all: node  framework install 
 
 install:
-	npm  install
+	#npm  install
 	./console npm:install
 	make asset
 	make sequelize

@@ -23,12 +23,12 @@ nodefony.registerCommand("Sequelize",function(){
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 							tab.push( new Promise( function(resolve, reject){
 									this.logger("DATABASE SYNC : "+connectionName);
-									connection.sync({force: false,logging:this.logger}).then(function(db) {
+									connection.sync({force: false,logging:this.logger,hooks:true}).then(function(db) {
 										this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
 										resolve(connectionName);
 									}.bind(this)).catch(function(error) {
 										this.logger("DATABASE :" + connection.config.database +" CONNECTION : "+connectionName+" : " + error, "ERROR");
-										reject(-1);
+										reject(error);
 									}.bind(this))
 								}.bind(this))
 							);
@@ -37,8 +37,6 @@ nodefony.registerCommand("Sequelize",function(){
 							Promise.all(tab)
 							.catch(function(e){
 								this.logger(e,"ERROR");
-							}.bind(this))
-							.then(function(name){
 							}.bind(this))
 							.done(function(){
 								this.terminate();

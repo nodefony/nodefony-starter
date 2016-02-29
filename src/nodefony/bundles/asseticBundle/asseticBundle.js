@@ -6,7 +6,6 @@
 
 var Promise = require('promise');
 
-
 nodefony.registerBundle ("assetic", function(){
 
 	var assetic = function(kernel, container){
@@ -77,8 +76,9 @@ nodefony.registerBundle ("assetic", function(){
 					if ( hasFilters ){
 						data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 						for ( var j=0 ; j < myFilters.length ; j++ ){
-							data += myFilters[j].filter.call(myFilters[j], files[i].path) ;
+							data += myFilters[j].filter.call(myFilters[j], files[i] ) ;
 						}
+						
 					}else{
 						data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 						data += files[i].read()  ;
@@ -94,9 +94,6 @@ nodefony.registerBundle ("assetic", function(){
 		}
 	}
 
-
-
-
 	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
 			data = "";
@@ -111,32 +108,35 @@ nodefony.registerBundle ("assetic", function(){
 					if ( hasFilters ){
 						for ( var j=0 ; j < myFilters.length ; j++ ){
 							tab.push( new Promise( function(resolve, reject){
-								return myFilters[j].filter.call(myFilters[j], files[i].path, resolve, reject) ;
+								return myFilters[j].filter.call(myFilters[j], files[i], resolve, reject) ;
 							}) );
 						}
 						Promise.all(tab)
 						.catch(function(e){
-							console.log(e)
-							//this.logger(e,"ERROR");
+							this.logger(e,"ERROR");
+							throw e ;
 						}.bind(this))
-						.then(function(ele){
-							data += ele
-							console.log("THEN PROMISE")
+						.then(function(ele, name){
+							console.log(name)
+							data+="\n NODEFONY  CONCAT : "+ name +"  \n" ;
+							data += ele ;
+							console.log("\n NODEFONY  CONCAT : "+ name +"  \n")
 						}.bind(this))
 						.done(function(){
-							console.log("DONNNE ")
+							//console.log("DONNNE ")
 							outputFile.write( data );
 							//console.log(data)
 						}.bind(this))
 					}else{
+						data+="\n NODEFONY  CONCAT : "+ files[i].name +"  \n" ;
 						data += files[i].read()  ;
+						//console.log(data);
+						outputFile.write( data );
 					}
 				}catch(err){
 					throw err ;
 				}
 			}
-			//outputFile.write( data );
-			console.log("PASS")
 		}catch(e){
 			throw e ;
 		}

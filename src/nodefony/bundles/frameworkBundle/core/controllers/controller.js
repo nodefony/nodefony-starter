@@ -66,7 +66,11 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.renderView = function(view, param ){
-		var View = this.container.get("httpKernel").getView(view);
+		try {
+			var View = this.container.get("httpKernel").getView(view);
+		}catch(e){
+			throw e ;
+		}
 		var res = null;
 		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 		try{ 
@@ -106,7 +110,12 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.render = function(view, param){
-		var res = this.renderView(view, param);
+		try {
+			var res = this.renderView(view, param);
+		}catch(e){
+			 this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 return ;
+		}
 		if (res !== null ){
 			return this.getResponse() ;
 		}

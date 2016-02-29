@@ -5,6 +5,7 @@
  *
  *
  */
+var sync = require('async');
 
 nodefony.registerService("less", function(){
 
@@ -80,8 +81,8 @@ nodefony.registerService("less", function(){
 	
 	Less.prototype.parse = function(file, dest, callback){
 		var vendors = process.cwd()+"/web/vendors" ;
-		var settings = nodefony.extend(this.settings,{
-			paths: [file.dirName, vendors ],  // Specify search paths for @import directives
+		var settings = nodefony.extend({}, this.settings,{
+			paths: [".", file.dirName, vendors , process.cwd() ],  // Specify search paths for @import directives
 			filename: file.name ,   //'style.less', // Specify a filename, for better error messages
 			async: false,
 			//logLevel: 2,
@@ -126,25 +127,61 @@ nodefony.registerService("less", function(){
 
 
 
-
-	Less.prototype.filter = function(path , resolve, reject){
+	Less.prototype.filter = function(file){
 		try {
-			var file = new nodefony.fileClass(path );
+			//var file = new nodefony.fileClass( file.path );
+			var content = file.content() ;
+			//console.log(this.engine.parse);
+
+			var result = this.engine.render(content, {
+				async: false,
+				fileAsync: false,
+				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+				filename: file.name ,		// Specify a filename, for better error messages
+			}, function(e, data){
+				result = data.css
+
+			});
+			console.log(result)
+			return result ;
+
+
+			
+
+			/*var render =  sync(this.engine.render.bind(this.engine));
+
+			var result = null ;
+			sync.fiber(function() {
+				result = render( content, {
+					async: false,
+					fileAsync: false,
+					paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+					filename: file.name ,		// Specify a filename, for better error messages
+				})
+				console.log(result)
+			})
+			return result ;
+
 			this.engine.render(file.content(), {
 				async: false,
 				fileAsync: false,
 				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
 				filename: file.name ,		// Specify a filename, for better error messages
 			})
-    			.then(function(output) {
-				resolve( output.css )
+			.catch(function(){
+				reject(e);
 			})
+    			.then(function(output) {
+				resolve( output.css , file.name);
+			})*/
 
 		}catch(e){
-			reject( e );
+			console.log(e)
+			throw e ;
 		}
-		
+
 	}
+
 
 	return Less ;
 });
