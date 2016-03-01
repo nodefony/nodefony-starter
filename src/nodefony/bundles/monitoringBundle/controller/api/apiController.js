@@ -185,8 +185,6 @@ nodefony.registerController("api", function(){
 			});
 		}
 
-
-
 		/**
 		 *
 		 *	@method requestsAction

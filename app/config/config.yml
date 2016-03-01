@@ -23,6 +23,9 @@
 #  FRAMEWORK NODEFONY
 #
 #     APP CONFIG  
+name :				AppBundle
+locale :			en_en
+version :                       "1.0"
 App:
         projectName:                    "App" 
         projectYear:                    2015

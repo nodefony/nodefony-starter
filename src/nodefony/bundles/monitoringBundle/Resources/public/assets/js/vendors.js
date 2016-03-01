@@ -1,5 +1,5 @@
 
-/***** NODEFONY  CONCAT : jquery.timeago.js  *******/
+ /**** NODEFONY  CONCAT : jquery.timeago.js  ***/
 /**
  * Timeago is a jQuery plugin that makes it easy to support automatically
  * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
@@ -215,7 +215,8 @@
   document.createElement("time");
 }));
 
-/***** NODEFONY  CONCAT : jquery.dataTables.js  *******/
+
+ /**** NODEFONY  CONCAT : jquery.dataTables.js  ***/
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -15485,7 +15486,8 @@
 	return $.fn.dataTable;
 }));
 
-/***** NODEFONY  CONCAT : dataTables.bootstrap.js  *******/
+
+ /**** NODEFONY  CONCAT : dataTables.bootstrap.js  ***/
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -15668,7 +15670,8 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-/***** NODEFONY  CONCAT : jquery.jsonview.js  *******/
+
+ /**** NODEFONY  CONCAT : jquery.jsonview.js  ***/
 
 /*!
 jQuery JSONView.

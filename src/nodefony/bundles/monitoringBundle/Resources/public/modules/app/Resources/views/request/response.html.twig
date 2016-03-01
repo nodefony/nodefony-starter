@@ -14,10 +14,17 @@
 			<tbody>
 			{% for key, ele in response %}
 				{% if key != "config"  %}
-					<tr>
-						<td>{{key}}</td>
-						<td>{{ele}}</td>
-					</tr>
+					{% if key == "message"  %}
+						<tr>
+							<td>{{key}}</td>
+							<td>{{ele|length}}</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td>{{key}}</td>
+							<td>{{ele}}</td>
+						</tr>
+					{% endif %}
 				{% endif %}
 			{% endfor %}
 			</tbody>
@@ -27,7 +34,6 @@
 
 
 <h3>CONNECTION WEBSOCKET CONFIG</h3>
-
 
 	<div class="wrapper" >
 	<div class="table-responsive" >
@@ -49,41 +55,6 @@
 		</table>
 	</div>
 </div>
-
-<h3>Messages</h3>
-
-<div class="wrapper" >
-	<div class="table-responsive" >
-		<table class="table table-striped table-bordered">
-			<thead>
-				<tr>
-					<th>DATE</th>
-					<th>ENCODING</th>
-					<th>VALUE</th>
-				</tr>
-			</thead>
-			<tbody>
-			{% for key in message %}
-				<tr>
-					<td>{{key.date}}</td>
-					<td>{{key.data.type}}</td>
-					<td>{{key.data.utf8Data}}</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	</div>
-</div>
-
-<div >
-  	<button stage-click="$('#jsonMessage').JSONView('expand')" class="btn btn-primary btn-sm" id="expand-btn">Expand</button>
-	<button stage-click="$('#jsonMessage').JSONView('collapse')" class="btn btn-primary btn-sm" id="collapse-btn">Collapse</button>
-  	<button stage-click="$('#jsonMessage').JSONView('toggle')" class="btn btn-primary btn-sm" id="toggle-btn">Toggle</button>
-  	<button stage-click="$('#jsonMessage').JSONView('toggle',1)" class="btn btn-primary btn-sm" id="toggle-level1-btn">Toggle level1</button>
-  	<button stage-click="$('#jsonMessage').JSONView('toggle',2)" class="btn btn-primary btn-sm" id="toggle-level2-btn">Toggle level2</button>    
-	<pre id="jsonMessage"></pre>
-</div>
-
 
 
 {% else %}

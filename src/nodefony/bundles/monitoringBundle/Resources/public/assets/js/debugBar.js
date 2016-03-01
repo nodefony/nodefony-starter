@@ -1,5 +1,5 @@
 
-/***** NODEFONY  CONCAT : debugBar.js  *******/
+ /**** NODEFONY  CONCAT : debugBar.js  ***/
 var nodefony = function(){
 
 	

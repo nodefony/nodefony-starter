@@ -5,6 +5,9 @@
  */
 
 var Promise = require('promise');
+var sync = require('synchronize');
+
+
 
 nodefony.registerBundle ("assetic", function(){
 
@@ -63,7 +66,7 @@ nodefony.registerBundle ("assetic", function(){
 
 
 
-	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
+	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
 			data = "";
 			if ( myFilters && myFilters.length){
@@ -74,13 +77,11 @@ nodefony.registerBundle ("assetic", function(){
 			for ( var i=0 ; i < files.length ; i++ ){
 				try {
 					if ( hasFilters ){
-						data +="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 						for ( var j=0 ; j < myFilters.length ; j++ ){
 							data += myFilters[j].filter.call(myFilters[j], files[i] ) ;
 						}
 						
 					}else{
-						data+="\n/***** NODEFONY  CONCAT : "+ files[i].name +"  *******/\n" ;
 						data += files[i].read()  ;
 
 					}
@@ -92,11 +93,10 @@ nodefony.registerBundle ("assetic", function(){
 		}catch(e){
 			throw e ;
 		}
-	}
+	}*/
 
-	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
+	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
-			data = "";
 			if ( myFilters && myFilters.length){
 				var hasFilters = true;
 			}else{
@@ -104,43 +104,63 @@ nodefony.registerBundle ("assetic", function(){
 			}
 			var tab =[];
 			for ( var i=0 ; i < files.length ; i++ ){
+				//console.log(files[i].name);
 				try {
 					if ( hasFilters ){
 						for ( var j=0 ; j < myFilters.length ; j++ ){
+							var name = myFilters[j].name ;
+							var logger = this.logger ;
 							tab.push( new Promise( function(resolve, reject){
-								return myFilters[j].filter.call(myFilters[j], files[i], resolve, reject) ;
+								return myFilters[j].filter.call(myFilters[j], files[i], function(e, mydata){
+									if (e){
+										return reject(e);
+									}else{
+										//console.log(this);
+										//logger( "APPLY FILTER ASSETIC : " + name, "DEBUG");
+										//console.log(myFilters)
+										resolve(mydata);	
+										return mydata ;
+									}
+								}.bind(this))
 							}) );
 						}
-						Promise.all(tab)
-						.catch(function(e){
-							this.logger(e,"ERROR");
-							throw e ;
-						}.bind(this))
-						.then(function(ele, name){
-							console.log(name)
-							data+="\n NODEFONY  CONCAT : "+ name +"  \n" ;
-							data += ele ;
-							console.log("\n NODEFONY  CONCAT : "+ name +"  \n")
-						}.bind(this))
-						.done(function(){
-							//console.log("DONNNE ")
-							outputFile.write( data );
-							//console.log(data)
-						}.bind(this))
 					}else{
-						data+="\n NODEFONY  CONCAT : "+ files[i].name +"  \n" ;
-						data += files[i].read()  ;
-						//console.log(data);
-						outputFile.write( data );
+						tab.push( new Promise( function(resolve, reject){
+							try {
+								var mydata ="\n /**** NODEFONY  CONCAT : "+ files[i].name +"  ***/\n" ;
+								mydata += files[i].content() ;
+								resolve(mydata);
+								return mydata ;
+							}catch(e){
+								return reject(e);	
+							}
+						}) );
 					}
 				}catch(err){
 					throw err ;
 				}
 			}
+			Promise.all(tab)
+			.catch(function(e){
+				this.logger(e,"ERROR");
+				throw e ;
+			}.bind(this))
+			.then(function(ele){
+				return ele ;
+			}.bind(this))
+			.done(function(ele){
+				this.logger( "GENERATE ASSETIC " + outputFile.name, "DEBUG");
+				try {
+					var res = ele.join("\n");
+					outputFile.write( res );
+				}catch(e){
+					throw e ;
+				}
+			}.bind(this))
 		}catch(e){
 			throw e ;
 		}
-	}*/
+	}
 
 
 	assetic.prototype.genetateFile = function( block , type){
@@ -330,6 +350,7 @@ nodefony.registerBundle ("assetic", function(){
 						throw error ;
 					}
 
+					//console.log("COMPILE : " +res.name)
             				// turn the string expression into tokens.
             				token.assetic = {
 						output:res.name
@@ -339,6 +360,7 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
+					//console.log("PARSE : " + token.assetic.output)
 					context["asset_url"] = token.assetic.output ;
                 			output = Twig.parse.apply(this, [token.output, context]);
             				return {

@@ -37,6 +37,17 @@ stage.registerController("navController", function() {
 		this.router.createRoute("request", "/request/{uid}", {
 			controller:"appModule:nav:request"
 		});
+
+		this.router.createRoute("bundles", "/bundles", {
+			controller:"appModule:nav:config"
+		});
+
+
+		this.router.createRoute("config-bundle", "/config/{bundle}", {
+			controller:"appModule:nav:config"
+		});
+
+
 		
 		/*this.router.createRoute("request-details", "/request/{uid}/details", {
 			controller:"appModule:nav:request"
@@ -66,10 +77,7 @@ stage.registerController("navController", function() {
 			controller:"appModule:nav:request"
 		});*/
 
-		this.router.createRoute("config-bundle", "/config/{bundle}", {
-			controller:"appModule:nav:config"
-		});
-	
+		
 
 
 		this.kernel.listen(this, "onUrlChange", function(url, fullurl, cache) {
@@ -175,7 +183,13 @@ stage.registerController("navController", function() {
 						events:data.response.data.events,
 						bundles:data.response.data.bundles
 					});
-					
+					var search = this.get("location").search();
+					if(search){
+						if ("tab" in search ){
+							var selector = "a[data-target='#"+search.tab+"']" ;
+							$(selector).tab('show')
+						}	
+					}
 				}.bind(this),
 				error:function(xhr,stats,  error){
 					this.logger(error, "ERROR");
@@ -306,13 +320,26 @@ stage.registerController("navController", function() {
 							var parse =[];
 							for (var i = 0 ; message.length ; i++){
 								var ele = {} ;
-								if (message[i].data.utf8Data){
-									try {
-										ele["type"] = message[i].data.type ;
-										ele["utf8Data"]  = JSON.parse(message[i].data.utf8Data);
-									}catch(e){
-										ele["type"] = message[i].data.type ;
-										ele["utf8Data"]  = message[i].data.utf8Data;	
+								ele["direction"] = message[i].direction ;
+								if ( message[i].direction === "RECEIVE" ){
+									if (message[i].data.utf8Data){
+										//ele["type"] = message[i].data.type ;
+										try {
+											ele["data"]  = JSON.parse(message[i].data.utf8Data);
+										}catch(e){
+											ele["utf8Data"]  = message[i].data.utf8Data;	
+										}
+									}
+								}
+								if ( message[i].direction === "SEND" ){
+									if (message[i].data ){
+										//ele["type"] = stage.typeOf(message[i].data) ;
+										try {
+											ele["data"]  = JSON.parse(message[i].data);
+										}catch(e){
+											ele["data"]  = message[i].data;
+										}
+										
 									}
 								}
 								parse.push(ele);	
@@ -321,9 +348,8 @@ stage.registerController("navController", function() {
 						}catch(e){
 							var message = data.response.data.payload["response"].message ;
 						}
-						
 					}
-					console.log(message)
+					//console.log(data.response.data.payload)
 
 					this.renderDefaultContent("appModule:request:request",{
 						uid:uid,
@@ -335,7 +361,7 @@ stage.registerController("navController", function() {
 						request:data.response.data.payload["request"],
 						response:data.response.data.payload["response"],
 						security:data.response.data.payload["security"],
-						payload:data.response.data.payload,
+						//payload:data.response.data.payload,
 						routing:data.response.data.payload["routing"],
 						route:data.response.data.payload["route"],
 						routeParmeters:data.response.data.payload["routeParmeters"],
@@ -355,7 +381,7 @@ stage.registerController("navController", function() {
 					var search = this.get("location").search();
 					if(search){
 						if ("tab" in search ){
-							var selector = ".nav-pills a[data-target='#"+search.tab+"']" ;
+							var selector = " a[data-target='#"+search.tab+"']" ;
 							$(selector).tab('show')
 						}	
 					}

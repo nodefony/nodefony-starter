@@ -29,6 +29,12 @@ nodefony.register("wsResponse",function(){
 		this.body = "";
 	};
 
+	Response.prototype.clean = function(){
+		delete this.connection ;	
+		delete this.body ;
+	}
+
+
 
 	return Response;
 

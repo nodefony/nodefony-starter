@@ -1,4 +1,4 @@
-{% stylesheets  output="/monitoringBundle/assets/style.css" filter="?uglifycss"
+{% stylesheets  output="/monitoringBundle/assets/debugbar.css" filter="?uglifycss"
             "/monitoringBundle/css/debugBar.css"
 %}
         <link rel="stylesheet" href="{{ asset_url }}" />
@@ -45,7 +45,11 @@
 		<li class="separator"></li>
 
 		<li >
-			<label class="label" >{{appSettings.projectName}} : <label class="label label-default">{{environment}}</label></label>
+			<label class="label" >
+				<a  target="blank" href='{{path("monitoring-index")}}#/config/App'>{{appSettings.projectName}}
+				: <label class="label label-default">{{environment}}</label>
+
+			</label>
 			<div class="details">
 				<ul>
 					<li><label ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/config/App'>APP</a></label></li>
@@ -116,7 +120,14 @@
 		<li class="separator"></li>
 
 		<li >	
-			<label class="label" >FIREWALL</label>
+			<label class="label" >
+				{% if requestId %}
+					<a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=securityNav'> FIREWALL</a>
+				{% else %} 
+					 FIREWALL
+				{% endif %}
+
+			</label>
 			{% if context_secure  %}
 				<label class="label label-success" >{{context_secure.name}}</label>
 				{% if context_secure.user %}
@@ -166,7 +177,13 @@
 		<li class="separator"></li>
 
 		<li >	
-			<label class="label label-default">{{routeur.pattern}}</label>
+			<label class="label label-default">
+				{% if requestId %}
+					<a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=request'>{{routeur.pattern}}<a>
+				{% else %}
+					 {{routeur.pattern}}
+				{% endif %}
+			</label>
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">ROUTER SERVICE</label></li>

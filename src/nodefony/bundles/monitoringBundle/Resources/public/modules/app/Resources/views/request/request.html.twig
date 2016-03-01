@@ -108,13 +108,7 @@ UID : {{ uid }}
 
 							</div>
 
-							<div class="container-fluid">
-								<div class="row">
-									<h3>Session Token</h3>	
-									<h4><span class="label label-success">{{session.id}}</span></h4>
-								</div>
-							</div>
-
+							
 							<div class="container-fluid">
 								{% if proxy | length %}
 								<h3>PROXY Headers</h3>
@@ -357,9 +351,12 @@ UID : {{ uid }}
 						<!-- end request-->
 						</div>
 						<div id="response" class="tab-pane ">
-							{% include './response.html.twig' with { 'response': response ,'message' : message } %}
+							{% include './response.html.twig' with { 'response': response  } %}
 							
     						</div>
+						<div id="messages" class="tab-pane ">
+							{% include './messagesWs.html.twig' with { 'message' : message  } %}	
+						</div>
 					</div>
 				</div>
 
@@ -391,6 +388,9 @@ UID : {{ uid }}
 				<div id="eventsNav" class="tab-pane ">
 					{% include './events.html.twig' with { 'events': events  } %}	
 				</div>
+
+				
+
 				
 			<!--content-->
 			</div>

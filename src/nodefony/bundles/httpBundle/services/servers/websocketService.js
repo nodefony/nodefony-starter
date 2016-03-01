@@ -34,7 +34,7 @@ nodefony.registerService("websocket", function(){
 			var d = nodedomain.create();
 				d.on('error', function(er) {
 					if ( d.container ){
-						this.httpKernel.onError( d.container, er.stack)	
+						this.httpKernel.onErrorWebsoket( d.container, er.stack)	
 					}else{
 						this.httpKernel.logger(er.stack);
 					}

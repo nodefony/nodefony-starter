@@ -450,7 +450,17 @@ nodefony.registerService("firewall", function(){
 				break;
 				case "WEBSOCKET" :
 				case "WEBSOCKET SECURE" :
-					var request = context.request ;
+
+					// TODO FIREWALL WEBSOCKET
+
+					try {
+						context.notificationsCenter.fire("onRequest", context.container, request, response);	
+					}catch(e){
+						context.notificationsCenter.fire("onError", context.container, e );	
+					}
+
+					
+					/*var request = context.request ;
 					var response = context.response ;	
 					for ( var area in this.securedAreas ){
 						if ( this.securedAreas[area].match(context.request, context.response) ){
@@ -461,7 +471,7 @@ nodefony.registerService("firewall", function(){
 					}
 					if ( ! context.security ){
 						context.notificationsCenter.fire("onRequest", context.container, request, response );
-					}
+					}*/
 				break;
 			}
 		});

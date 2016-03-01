@@ -380,10 +380,11 @@ nodefony.registerBundle ("monitoring", function(){
 								case "WEBSOCKET":
 								case "WEBSOCKET SECURE":
 
-									context.listen(this,"onMessage", function(message, context, reolver){
+									context.listen(this,"onMessage", function(message, context, direction ){
 										var ele = {
 											date:new Date().toTimeString(),
-											data:message
+											data:message,
+											direction:direction
 										}
 										if (logProfile ){
 											if (message){

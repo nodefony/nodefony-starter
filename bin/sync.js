@@ -24,52 +24,35 @@ var file = new nodefony.fileClass( filePath );
 var content = file.content() ;
 
 
-console.log("pass1")
+console.log("BEGIN")
 
-var myFunc = function(file, callback){
-	var fiber = Fiber.current;
-	less.render( content, {
-			//async: false,
-			//force:true,
-			//fileAsync: false,
+
+function processFile(file, done) {
+  sync.fiber(function() {
+	try {
+		var data = sync.await( less.render( content, {
 			paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
 			filename: file.name ,		// Specify a filename, for better error messages
 			
-	}, function(e, data){
-	
-		fiber.run();
-		callback(e, data)
-	})
-	Fiber.yield();
+		}, sync.defer() ))
+	} catch(e) {
+		return done(e, null );
+	}
+	return done(null,data);
+  }, done);
 }
 
-	
+
+processFile(file, function(error, data){
+
+	console.log(arguments)
+})
 
 
-
-function sleep(ms) {
-    var fiber = Fiber.current;
-    setTimeout(function() {
-        fiber.run();
-    }, ms);
-    Fiber.yield();
-}
-
-Fiber(function() {
-    console.log('wait... ' + new Date);
-    //myFunc(file,function(){
-//	console.log("pass work")
-  //  })
-    sleep(1000);
-    console.log('ok... ' + new Date);
-}).run();
 console.log('back in main');
 
 
 
-//console.log(ele)
-
-console.log("pass end")
 
 
 

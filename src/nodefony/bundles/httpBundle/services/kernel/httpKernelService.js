@@ -9,8 +9,6 @@ var Url = require("url");
 
 nodefony.registerService("httpKernel", function(){
 
-
-
 	/*
  	 *
  	 *	HTTP KERNEL
@@ -279,14 +277,14 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
-				//if (! this.firewall){
+				if (! this.firewall){
 					try {
 						context.notificationsCenter.fire("onRequest",container, request, response );
 					}catch(e){
 						context.notificationsCenter.fire("onError", container, e );	
 					}
 					return ;	
-				//}
+				}
 			break;
 		}
 		this.kernel.fire("onSecurity", context);

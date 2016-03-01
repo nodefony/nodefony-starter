@@ -20,12 +20,16 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.originUrl = url.parse( request.origin );
 		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
 		this.secureArea = null ;
-		this.cookies = this.parseCookies( request.cookies );
+		this.cookies = {};
 		this.domain =  this.container.getParameters("kernel").system.domain;
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 			remoteAddress:this.remoteAddress,
 			origin:request.origin
 		});
+
+		//parse cookies
+		this.parseCookies();
+
 
 		this.security = null ;
 		this.user = null ;
@@ -57,12 +61,20 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}.bind(this));*/
 	};
 
-	websocket.prototype.parseCookies = function(cookies){
-		var obj = {};
-		for (var i = 0 ; i<cookies.length ; i++ ){
-			obj[cookies[i].name] = 	cookies[i].value ;
-		}
-		return obj ;	
+	websocket.prototype.addCookie = function(cookie){
+		if ( cookie instanceof nodefony.cookies.cookie ){
+			this.cookies[cookie.name] = cookie;
+		}else{
+			throw {
+				message:"",
+				error:"Response addCookies not valid cookies"
+			}
+		}	
+	};
+
+
+	websocket.prototype.parseCookies = function(){
+		return  nodefony.cookies.cookiesParser(this);
 	};
 
 	websocket.prototype.listen = function(){
@@ -74,15 +86,17 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	};
 
 	websocket.prototype.clean = function(){
-		delete  this.response.body ;
+		delete this.request ;
+		this.response.clean();
 		delete	this.response ;
 		delete 	this.notificationsCenter ;
+		delete this.cookies ;
 	}
 
 	websocket.prototype.handleMessage = function(message){
 		try {
 			this.resolver = this.get("router").resolve(this.container, this.request);
-			this.fire("onMessage", message, this, this.resolver) ;
+			this.fire("onMessage", message, this, "RECEIVE") ;
 			if (this.resolver.resolve) {
 				return this.resolver.callController(message);
 			}else{
@@ -94,9 +108,8 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 	};
 
-
 	websocket.prototype.handle = function(container, request, response, data){
-		this.container.get("translation").handle( request );
+		this.container.get("translation").handle( this );
 		try {
 			this.resolver  = this.get("router").resolve(this.container, this.request);
 			//WARNING EVENT KERNEL
@@ -124,6 +137,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		//console.log(data)
 		//console.log(this.response)
 		if ( this.response ){
+			this.fire("onMessage", data, this, "SEND") ;
 			return this.response.send(data || this.response.body)
 		}
 		return null ;

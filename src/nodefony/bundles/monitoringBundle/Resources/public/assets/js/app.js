@@ -1,5 +1,5 @@
 
-/***** NODEFONY  CONCAT : jquery-1.12.0.js  *******/
+ /**** NODEFONY  CONCAT : jquery-1.12.0.js  ***/
 /*!
  * jQuery JavaScript Library v1.12.0
  * http://jquery.com/
@@ -11028,7 +11028,8 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-/***** NODEFONY  CONCAT : bootstrap.js  *******/
+
+ /**** NODEFONY  CONCAT : bootstrap.js  ***/
 /*!
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
@@ -13393,7 +13394,8 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 
-/***** NODEFONY  CONCAT : twig.js  *******/
+
+ /**** NODEFONY  CONCAT : twig.js  ***/
 /**
  * Twig.js 0.7.0
  *

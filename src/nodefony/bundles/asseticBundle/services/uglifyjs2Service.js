@@ -19,20 +19,20 @@ nodefony.registerService("uglifyjs2", function(){
 	
 	}
 
-	uglifyjs2.prototype.filter = function(file ){
+	uglifyjs2.prototype.filter = function(file , done){
 		var options = {};
 		switch (nodefony.typeOf( file.path ) ){
 			case "array" :
 			case "string" :
 				try {
 					var result = this.engine.minify( file.path, options );
-					return result.code ;
+					return done( null, result.code ) ;
 				}catch(error){
-					throw  error ;
+					return done( error, null ) ;
 				}
 			break;
 			default :
-				reject(  new Error("Service  uglifyjs2 FILTER bad path type  ") );
+				return done(  new Error("Service  uglifyjs2 FILTER bad path type  ") , null);
 			
 		}
 	}

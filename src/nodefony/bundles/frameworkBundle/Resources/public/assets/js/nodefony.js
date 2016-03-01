@@ -1,5 +1,5 @@
 
-/***** NODEFONY  CONCAT : jquery-1.12.0.js  *******/
+ /**** NODEFONY  CONCAT : jquery-1.12.0.js  ***/
 /*!
  * jQuery JavaScript Library v1.12.0
  * http://jquery.com/
@@ -11028,7 +11028,8 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-/***** NODEFONY  CONCAT : bootstrap.js  *******/
+
+ /**** NODEFONY  CONCAT : bootstrap.js  ***/
 /*!
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
@@ -13393,7 +13394,8 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 
-/***** NODEFONY  CONCAT : stage.js  *******/
+
+ /**** NODEFONY  CONCAT : stage.js  ***/
 /**
  *
  *	@module library
@@ -13584,7 +13586,8 @@ var stage = function(){
 
 }();
 
-/***** NODEFONY  CONCAT : function.js  *******/
+
+ /**** NODEFONY  CONCAT : function.js  ***/
 /**
  *
  * @module library
@@ -13890,7 +13893,8 @@ stage.register("functions" , function(){
 
 });
 
-/***** NODEFONY  CONCAT : notificationsCenter.js  *******/
+
+ /**** NODEFONY  CONCAT : notificationsCenter.js  ***/
 /**
  * @module library
  * @namespace NotificationCenter
@@ -14040,7 +14044,8 @@ stage.register("notificationsCenter", function(){
  
 });
 
-/***** NODEFONY  CONCAT : syslog.js  *******/
+
+ /**** NODEFONY  CONCAT : syslog.js  ***/
 /*
  * Depandances PROVIDE :
  * =====================
