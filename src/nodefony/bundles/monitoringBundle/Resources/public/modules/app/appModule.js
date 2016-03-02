@@ -23,7 +23,7 @@ stage.registerModule("app", function() {
 		this.logger("INITIALIZE APP", "DEBUG");
 		
 		try {
-			var server = "/realtime"; 
+			var server = "/modefony/realtime"; 
 			this.realtime = new stage.realtime(server ,{
  				onConnect:function(message, realtime){
 					//console.log("welcome to realtime " )

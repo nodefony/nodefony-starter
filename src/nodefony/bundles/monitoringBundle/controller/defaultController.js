@@ -19,7 +19,7 @@ nodefony.registerController("default", function(){
 
 		/**
 		 *
-		 *	DEMO index 
+		 *	 index 
 		 *
 		 */
 		defaultController.prototype.indexAction= function(module){
@@ -47,6 +47,34 @@ nodefony.registerController("default", function(){
 				return this.render('monitoringBundle::index.html.twig')
 			}
 		};
+
+
+		/**
+ 		* 
+ 		*
+ 		*
+ 		*
+ 		**/
+		defaultController.prototype.realTimeAction= function(message){
+			var realtime = this.get("realTime");
+			var context = this.getContext();
+			switch( this.getRequest().method ){
+				case "GET" :
+					return this.getResponse("PING");
+				break;
+				case "POST" :
+					return realtime.handleConnection(this.getParameters("query").request, context );	
+				break;
+				case "WEBSOCKET" :
+					if (message){
+						realtime.handleConnection(message.utf8Data, context );
+					}
+				break;
+				default :
+					throw new Error("REALTIME METHOD NOT ALLOWED")
+			};
+		}
+
 
 		
 		return defaultController;

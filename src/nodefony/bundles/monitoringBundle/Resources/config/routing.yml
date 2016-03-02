@@ -32,69 +32,73 @@
 ########## NODEFONY ROUTING  monitoringBundle  ############
 
 monitoring-index: 
-  pattern:  /monitoring
+  pattern:  /nodefony
   defaults: {controller: "monitoringBundle:default:index"}
 
 monitoring-module: 
-  pattern:  /monitoring/{module}
+  pattern:  /nodefony/{module}
   defaults: {controller: "monitoringBundle:default:index"}
 
+monitoring-realtime: 
+  pattern:  /modefony/realtime
+  defaults: {controller: "monitoringBundle:default:realTime"}
+          
 monitoring-routes:
-  pattern:   /api/routes   
+  pattern:   /nodefony/api/routes   
   defaults: {controller: "monitoringBundle:api:routes"}
   requirements: 
     method: GET
 
 monitoring-route:
-  pattern:   /api/route/{name}   
+  pattern:   /nodefony/api/route/{name}   
   defaults: {controller: "monitoringBundle:api:routes"}
   requirements: 
     method: GET,DELETE,POST,PUT
 
 monitoring-services:
-  pattern:   /api/services   
+  pattern:   /nodefony/api/services   
   defaults: {controller: "monitoringBundle:api:services"}
   requirements: 
     method: GET
 
 monitoring-service:
-  pattern:   /api/service/{name}   
+  pattern:   /nodefony/api/service/{name}   
   defaults: {controller: "monitoringBundle:api:services"}
   requirements: 
     method: GET,DELETE,POST,PUT
 
 monitoring-syslog:
-  pattern:   /api/syslog   
+  pattern:   /nodefony/api/syslog   
   defaults: {controller: "monitoringBundle:api:syslog"}
   requirements: 
     method: GET
 
 monitoring-requests:
-  pattern:   /api/requests   
+  pattern:   /nodefony/api/requests   
   defaults: {controller: "monitoringBundle:api:requests"}
   requirements: 
     method: GET
 
 monitoring-request:
-  pattern:   /api/request/{uid}   
+  pattern:   /nodefony/api/request/{uid}   
   defaults: {controller: "monitoringBundle:api:request"}
   requirements: 
     method: GET
 
 monitoring-config:
-  pattern:   /api/config   
+  pattern:   /nodefony/api/config   
   defaults: {controller: "monitoringBundle:api:config"}
   requirements: 
     method: GET
 
 monitoring-bundle:
-  pattern:   /api/config/{bundleName}   
+  pattern:   /nodefony/api/config/{bundleName}   
   defaults: {controller: "monitoringBundle:api:bundle"}
   requirements: 
     method: GET
 
-monitoring-realtime:
-  pattern:   /api/realtime/{name}   
+monitoring-real:
+  pattern:   /nodefony/api/realtime/{name}   
   defaults: {controller: "monitoringBundle:api:realtime"}
   requirements: 
     method: GET

@@ -5,7 +5,7 @@
  */
 
 //== Kernel
-appKernel = new stage.appKernel("/monitoring/app", "dev", {
+appKernel = new stage.appKernel("/nodefony/app", "dev", {
 	debug: true,
 	location:{
 		html5Mode:false

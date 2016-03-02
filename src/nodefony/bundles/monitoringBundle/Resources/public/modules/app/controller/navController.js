@@ -154,7 +154,7 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.routingAction = function() {
-		$.ajax("/api/routes",{
+		$.ajax("/nodefony/api/routes",{
 			//dataType:"json",
 			success:function(data, status, xhr){
 				this.renderDefaultContent("appModule:route:routing",{
@@ -172,7 +172,7 @@ stage.registerController("navController", function() {
 
 	controller.prototype.configAction = function(bundleName) {
 		if ( ! bundleName ){
-			$.ajax("/api/config",{
+			$.ajax("/nodefony/api/config",{
 				//dataType:"json",
 				success:function(data, status, xhr){
 					//console.log(data.response.data)
@@ -197,7 +197,7 @@ stage.registerController("navController", function() {
 			
 			})
 		}else{
-			$.ajax("/api/config/"+bundleName,{
+			$.ajax("/nodefony/api/config/"+bundleName,{
 				//dataType:"json",
 				success:function(data, status, xhr){
 					//console.log(data.response.data.routing)
@@ -232,7 +232,7 @@ stage.registerController("navController", function() {
 	 */
 	controller.prototype.servicesAction = function() {
 
-		$.ajax("/api/services",{
+		$.ajax("/nodefony/api/services",{
 			//dataType:"json",
 			success:function(data, status, xhr){
 				this.renderDefaultContent("appModule:services:services",{
@@ -251,7 +251,7 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.syslogAction = function() {
-		$.ajax("/api/syslog",{
+		$.ajax("/nodefony/api/syslog",{
 			success:function(data, status, xhr){
 				this.module.serverSyslog.loadStack( data.response.data, true ,function(pdu){
 					pdu.timeago = jQuery.timeago(pdu.timeStamp)
@@ -271,7 +271,7 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.requestsAction = function() {
-		$.ajax("/api/requests",{
+		$.ajax("/nodefony/api/requests",{
 			success:function(data, status, xhr){
 				var obj = [];
 				for (var res in data.response.data ){
@@ -310,7 +310,7 @@ stage.registerController("navController", function() {
 	controller.prototype.requestAction = function(uid) {
 
 		try {
-			$.ajax("/api/request/"+uid,{
+			$.ajax("/nodefony/api/request/"+uid,{
 				success:function(data, status, xhr){
 					//console.log(data.response.data.payload)
 					//
