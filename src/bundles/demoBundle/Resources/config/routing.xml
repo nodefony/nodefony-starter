@@ -22,6 +22,12 @@
 		<requirement key="method">POST</requirement>
 	</route>
 
+	<route id="orm" pattern="/sequelize">
+		<default key="controller">demoBundle:demo:sequelize</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+
 	
 
 	<!-- REALTIME --> 	

@@ -112,6 +112,7 @@ nodefony.register("controller", function(){
 	Controller.prototype.render = function(view, param){
 		try {
 			var res = this.renderView(view, param);
+			
 		}catch(e){
 			 this.context.notificationsCenter.fire("onError", this.context.container, e);
 			 return ;

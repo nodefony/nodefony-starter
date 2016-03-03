@@ -99,9 +99,13 @@ nodefony.registerService("less", function(){
 					if (callback) callback(e, null);
 				}else{
 					try {
-						var res = fs.writeFileSync(dest, css.css);
-						this.logger("CREATE LESS FILE: " + dest);
-						if (callback) callback(null, dest);
+						if ( dest  ){
+							var res = fs.writeFileSync(dest, css.css);
+							this.logger("CREATE LESS FILE: " + dest);
+							if (callback) callback(null, dest);
+						}else{
+							if (callback) callback(null, css.css);	
+						}
 					}catch(err){
 						this.logger( err,"ERROR");
 						if (callback) callback(err, null);
@@ -128,7 +132,7 @@ nodefony.registerService("less", function(){
 		return false;
 	};
 
-	Less.prototype.filter = function(file, callback){
+	/*Less.prototype.filter = function(file, callback){
 		try {
 			var content = file.content() ;
 
@@ -150,7 +154,13 @@ nodefony.registerService("less", function(){
 			callback( e , null ) ;
 		}
 
+	}*/
+
+	Less.prototype.filter = function(file, callback){
+
+		return this.parse(file, null, callback)
 	}
+
 
 
 	/*Less.prototype.filter = function(file, callback){

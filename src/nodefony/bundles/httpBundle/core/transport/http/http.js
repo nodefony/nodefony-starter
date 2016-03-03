@@ -131,6 +131,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//case response instanceof nodefony.Response :
 			//break ;
 		}
+		this.notificationsCenter.fire("onSend", response, context);
 		// cookies
 		this.response.setCookies();
 		/*
@@ -150,6 +151,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	}
 
 	Http.prototype.close = function(){
+		this.notificationsCenter.fire("onClose", this);
 		// END REQUEST
 		return this.response.end();
 	};

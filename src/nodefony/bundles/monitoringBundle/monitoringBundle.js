@@ -404,7 +404,6 @@ nodefony.registerBundle ("monitoring", function(){
 
 							nodefony.extend(obj, context.extendTwig);
 							context.listen(this, "onView", function(result, context, view, viewParam){
-								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
 								if ( logProfile ){
 									if ( ! logProfile.payload["twig"] ){
 										logProfile.payload["twig"] = []  ;
@@ -418,17 +417,24 @@ nodefony.registerBundle ("monitoring", function(){
 										file:view,
 										param:viewParam
 									});
+								}
+							
+							});
+
+							context.listen(this, "onSend", function(response, context){
+								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
+								if ( logProfile ){
 									logProfile.payload["timeRequest"] = obj["timeRequest"];
 									logProfile.payload["events"] = 	obj["events"] ;
 								}
 								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-									if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){
+									if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
 										this.get("templating").renderFile(View, obj,function(error , result){
 											if (error){
 												throw error ;
 											}
-											context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
+											response.body = response.body.replace("</body>",result+"\n </body>") ;
 										});
 									}else{
 										//context.setXjson(obj);
@@ -437,7 +443,7 @@ nodefony.registerBundle ("monitoring", function(){
 								}else{
 									//context.setXjson(obj);	
 								}
-							});
+							})
 
 							
 						}

@@ -115,9 +115,7 @@ nodefony.registerBundle ("assetic", function(){
 									if (e){
 										return reject(e);
 									}else{
-										//console.log(this);
 										//logger( "APPLY FILTER ASSETIC : " + name, "DEBUG");
-										//console.log(myFilters)
 										resolve(mydata);	
 										return mydata ;
 									}
@@ -360,9 +358,9 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
-					//console.log("PARSE : " + token.assetic.output)
 					context["asset_url"] = token.assetic.output ;
                 			output = Twig.parse.apply(this, [token.output, context]);
+					//console.log("PARSE : " + token.assetic.output)
             				return {
                 				chain: chain,
                 				output: output

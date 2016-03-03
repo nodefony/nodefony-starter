@@ -127,7 +127,6 @@ nodefony.registerService("router", function(){
 						}
 					}
 				break;
-				
 				default:
 					//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
 					// CASE async controller wait fire onResponse by other entity

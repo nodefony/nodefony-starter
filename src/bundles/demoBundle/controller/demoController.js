@@ -10,9 +10,6 @@
  */
 
 
-
-var Promise = require('promise');
-
 nodefony.registerController("demo", function(){
 
 	var demoController = function(container, context){
@@ -46,6 +43,52 @@ nodefony.registerController("demo", function(){
 			webrtc:webrtcBundle
 		});	
 	}
+
+	/**
+ 	 *
+ 	 *	DEMO navbar 
+ 	 *
+ 	 */
+	demoController.prototype.sequelizeAction = function(){
+		var orm = this.getORM() ;
+		
+		
+		this.sessionEntity = orm.getEntity("session");
+		this.userEntity = orm.getEntity("user");
+
+
+		var sessions = null ; 
+		var users = null ; 
+		/*this.sessionEntity.findAll()
+		.then( function(results){
+			sessions = results
+		})
+		.catch(function(error){
+			throw error ;
+		})
+		.done(function(){
+			return this.renderAsync('demoBundle:orm:artists.html.twig', {
+				sessions:sessions,
+			});
+		}.bind(this))*/
+
+		// MULTIPLE ASYNC RESPONSE WITH PROMISE 
+		Promise.all([this.sessionEntity.findAll(), this.userEntity.findAll()] )
+		.then(function(result){
+			sessions = result[0];
+			users = result[1];
+		}).catch(function(error){
+			throw error ;
+		}).done(function(){
+			return this.renderAsync('demoBundle:orm:artists.html.twig', {
+				sessions:sessions,
+				users:users,
+			});
+		}.bind(this))
+
+	}
+
+
 
 	/**
  	 *	@see renderView

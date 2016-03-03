@@ -161,9 +161,10 @@ nodefony.register("kernel", function(){
 		}
 
 		// MONITORING
-		if (this.type == "SERVER" && this.settings.system.monitoring) {
+		if ( this.settings.system.monitoring) {
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
+
 		if (this.type === "SERVER"){
 			this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
 		}
