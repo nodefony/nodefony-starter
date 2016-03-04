@@ -18,7 +18,7 @@
 
 	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" filter="?uglifycss"
             "/monitoringBundle/css/json-view/jquery.jsonview.css"
-	    "/monitoringBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -28,7 +28,7 @@
 {% block javascripts %}
 
 	{% javascripts output='/monitoringBundle/assets/js/app.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/jquery/jquery-1.12.0.js"
+		"/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js"
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
 		"/frameworkBundle/vendors/twig/twig.js"	
 	%}
@@ -63,9 +63,9 @@
 	{% endjavascripts %}
 
 	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
 		"/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"
-		"/monitoringBundle/vendors/dataTable/js/jquery.dataTables.js"
-		"/monitoringBundle/vendors/dataTable/js/dataTables.bootstrap.js"
 		"/monitoringBundle/js/json-view/jquery.jsonview.js"
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>

@@ -80,7 +80,7 @@ nodefony.registerController("demo", function(){
 		}).catch(function(error){
 			throw error ;
 		}).done(function(){
-			return this.renderAsync('demoBundle:orm:artists.html.twig', {
+			return this.renderAsync('demoBundle:orm:orm.html.twig', {
 				sessions:sessions,
 				users:users,
 			});

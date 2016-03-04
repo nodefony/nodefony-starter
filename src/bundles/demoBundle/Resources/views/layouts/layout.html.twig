@@ -7,55 +7,10 @@
 {% block stylesheets %}
 	
 	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss" 
-            "/demoBundle/bootstrap-3.3.5/css/bootstrap.min.css"
-            "/demoBundle/bootstrap-3.3.5/css/bootstrap-theme.css"
-            "/demoBundle/css/font-awesome.min.css"
-            "/demoBundle/clean/assets/css/style.css"
-        %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-
-{% endblock %}
-
-
-{% block javascripts %}
-
-	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
-		'/demoBundle/js/jquery-2.1.4.min.js' 
-		"/demoBundle/bootstrap-3.3.5/js/bootstrap.min.js" 
-		"/vendors/stage/stage.js" 
-		"/vendors/stage/function.js" 
-		"/vendors/stage/notificationsCenter.js" 
-		"/vendors/stage/syslog/syslog.js" 
-		"/vendors/stage/io/io.js" 
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
-{% endblock %}
-
-
-{% block body %}
-
-	<header class="header">
-		{{ render( controller("demoBundle:demo:nav")) }}
-	</header>
-
-{% endblock %}
-
-{% extends "/app/Resources/views/base.html.twig" %}
-
-
-{% block title %} {{ title }} {% endblock %}
-
-
-{% block stylesheets %}
-	
-	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss" 
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
             "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
-	    "/demoBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
             "/demoBundle/clean/assets/css/style.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
@@ -67,10 +22,10 @@
 {% block javascripts %}
 
 	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
-		'/demoBundle/js/jquery-2.1.4.min.js'
+		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
-		"/demoBundle/vendors/dataTable/js/jquery.dataTables.js"
-		"/demoBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
 		"/vendors/stage/stage.js" 
 		"/vendors/stage/function.js" 
 		"/vendors/stage/notificationsCenter.js" 
