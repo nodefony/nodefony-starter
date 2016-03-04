@@ -40,7 +40,7 @@ monitoring-module:
   defaults: {controller: "monitoringBundle:default:index"}
 
 monitoring-realtime: 
-  pattern:  /modefony/realtime
+  pattern:  /nodefony/monitoring/realtime
   defaults: {controller: "monitoringBundle:default:realTime"}
           
 monitoring-routes:

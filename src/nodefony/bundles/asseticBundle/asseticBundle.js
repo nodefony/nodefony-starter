@@ -66,7 +66,7 @@ nodefony.registerBundle ("assetic", function(){
 
 
 
-	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
+	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
 			data = "";
 			if ( myFilters && myFilters.length){
@@ -77,8 +77,15 @@ nodefony.registerBundle ("assetic", function(){
 			for ( var i=0 ; i < files.length ; i++ ){
 				try {
 					if ( hasFilters ){
+						//TODO multiple filter
 						for ( var j=0 ; j < myFilters.length ; j++ ){
-							data += myFilters[j].filter.call(myFilters[j], files[i] ) ;
+							myFilters[j].filter.call(myFilters[j], files[i] ,function(e, myData){
+								if ( e) {
+									throw e ;
+								}
+								data += myData ;
+								
+							}) ;
 						}
 						
 					}else{
@@ -93,9 +100,10 @@ nodefony.registerBundle ("assetic", function(){
 		}catch(e){
 			throw e ;
 		}
-	}*/
+	}
 
-	assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
+	// try filter asunc !!!!!
+	/*assetic.prototype.concatFiles = function(files, outputFile, myFilters, type){
 		try {
 			if ( myFilters && myFilters.length){
 				var hasFilters = true;
@@ -125,7 +133,7 @@ nodefony.registerBundle ("assetic", function(){
 					}else{
 						tab.push( new Promise( function(resolve, reject){
 							try {
-								var mydata ="\n /**** NODEFONY  CONCAT : "+ files[i].name +"  ***/\n" ;
+								var mydata ="\n \/**** NODEFONY  CONCAT : "+ files[i].name +"  ***\/\n" ;
 								mydata += files[i].content() ;
 								resolve(mydata);
 								return mydata ;
@@ -158,7 +166,7 @@ nodefony.registerBundle ("assetic", function(){
 		}catch(e){
 			throw e ;
 		}
-	}
+	}*/
 
 
 	assetic.prototype.genetateFile = function( block , type){

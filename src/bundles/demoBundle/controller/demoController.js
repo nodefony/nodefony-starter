@@ -72,7 +72,7 @@ nodefony.registerController("demo", function(){
 			});
 		}.bind(this))*/
 
-		// MULTIPLE ASYNC RESPONSE WITH PROMISE 
+		// MULTIPLE ORM CALL ASYNC RENDER WITH PROMISE 
 		Promise.all([this.sessionEntity.findAll(), this.userEntity.findAll()] )
 		.then(function(result){
 			sessions = result[0];

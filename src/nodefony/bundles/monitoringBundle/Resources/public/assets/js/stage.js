@@ -1,5 +1,3 @@
-
- /**** NODEFONY  CONCAT : stage.js  ***/
 /**
  *
  *	@module library
@@ -189,9 +187,6 @@ var stage = function(){
 	return new stage(jQuery)
 
 }();
-
-
- /**** NODEFONY  CONCAT : function.js  ***/
 /**
  *
  * @module library
@@ -496,9 +491,6 @@ stage.register("functions" , function(){
 	}
 
 });
-
-
- /**** NODEFONY  CONCAT : notificationsCenter.js  ***/
 /**
  * @module library
  * @namespace NotificationCenter
@@ -647,9 +639,6 @@ stage.register("notificationsCenter", function(){
         };
  
 });
-
-
- /**** NODEFONY  CONCAT : syslog.js  ***/
 /*
  * Depandances PROVIDE :
  * =====================
@@ -1372,9 +1361,6 @@ stage.register("syslog", function(){
 
 });
 
-
-
- /**** NODEFONY  CONCAT : xml.js  ***/
 /*
  *
  *
@@ -1568,9 +1554,6 @@ stage.register("xml", function(){
 
 
 });
-
-
- /**** NODEFONY  CONCAT : io.js  ***/
 /*
  *
  *
@@ -1853,9 +1836,6 @@ stage.register("io",function(){
 });
 
 
-
-
- /**** NODEFONY  CONCAT : base64.js  ***/
 /*
  *
  *
@@ -2070,9 +2050,6 @@ stage.register.call(stage.crypto, "base64", function(){
 });
 
 
-
-
- /**** NODEFONY  CONCAT : md5.js  ***/
 
 
 /*
@@ -2478,9 +2455,6 @@ stage.register.call(stage.crypto, "md5", function(){
 	}
 })
 
-
-
- /**** NODEFONY  CONCAT : digestMd5.js  ***/
 /*
  *
  *
@@ -2678,9 +2652,6 @@ stage.register.call(stage.io.authentication.mechanisms, "Digest",function(){
 	return digestMd5
 
 })
-
-
- /**** NODEFONY  CONCAT : sasl.js  ***/
 /*
  *
  *
@@ -2772,9 +2743,6 @@ stage.register.call(stage.io.authentication, "SASL",function(){
 	return Sasl
 
 })
-
-
- /**** NODEFONY  CONCAT : socket.js  ***/
 /*
  *
  *
@@ -2852,9 +2820,6 @@ stage.register.call(stage.io, "socket", function(){
 
 
 });
-
-
- /**** NODEFONY  CONCAT : bayeux.js  ***/
 /*
  *
  *	CLIENT
@@ -3130,9 +3095,6 @@ stage.register.call(stage.io.protocols, "bayeux",function(){
 	return bayeux ;
 });
 
-
-
- /**** NODEFONY  CONCAT : realtime.js  ***/
 /*
  *
  *
@@ -3402,9 +3364,6 @@ stage.register("realtime",function(){
 	return realtime ;
 
 });
-
-
- /**** NODEFONY  CONCAT : autoload.js  ***/
 /*
  *
  *
@@ -3601,9 +3560,6 @@ stage.register("autoload", function(){
 	return autoload ; 
 
 });
-
-
- /**** NODEFONY  CONCAT : kernel.js  ***/
 /*
  *
  *
@@ -4015,9 +3971,6 @@ stage.register("kernel",function(){
 
 	return  Kernel;
 });
-
-
- /**** NODEFONY  CONCAT : appKernel.js  ***/
 /*
  *
  *
@@ -4043,9 +3996,6 @@ stage.register("appKernel",function(){
 	return appKernel;
 });
 
-
-
- /**** NODEFONY  CONCAT : container.js  ***/
 /*
  *
  *
@@ -4219,9 +4169,6 @@ stage.register("Container", function(){
 
 	return Container;
 });
-
-
- /**** NODEFONY  CONCAT : routerService.js  ***/
 stage.register("router",function(){
 		
 		
@@ -4621,9 +4568,6 @@ stage.register("router",function(){
 	return service;		
 		
 });
-
-
- /**** NODEFONY  CONCAT : controller.js  ***/
 /*
  *
  *
@@ -4801,9 +4745,6 @@ stage.register("Controller",function(){
 
 
 
-
-
- /**** NODEFONY  CONCAT : module.js  ***/
 /*
  *
  *
@@ -5376,9 +5317,6 @@ stage.register("Module" , function(){
 	return Module;	
 		
 })
-
-
- /**** NODEFONY  CONCAT : translationService.js  ***/
 stage.register("i18n",function(){
 
 	var translate = {};
@@ -5501,9 +5439,6 @@ stage.register("i18n",function(){
 
 
 });
-
-
- /**** NODEFONY  CONCAT : locationService.js  ***/
 stage.register("location",function(){
 
 

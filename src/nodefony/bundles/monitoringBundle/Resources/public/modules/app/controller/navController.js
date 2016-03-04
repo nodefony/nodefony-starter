@@ -386,6 +386,7 @@ stage.registerController("navController", function() {
 						}	
 					}
 					if ( parse ){
+						$("#wsMessage").DataTable();
 						$("#jsonMessage").JSONView(  parse  );
 						$("#filesData").JSONView('toggle',2);
 					}

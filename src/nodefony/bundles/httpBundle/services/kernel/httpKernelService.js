@@ -36,7 +36,7 @@ nodefony.registerService("httpKernel", function(){
 		});
 
 		this.kernel.listen(this, "onClientError", function(e, socket){
-			this.logger(e, "ERROR", "HTTP KERNEL CLIENT ERROR")
+			this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
 		});
 	};
 	

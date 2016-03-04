@@ -1,5 +1,3 @@
-
- /**** NODEFONY  CONCAT : debugBar.js  ***/
 var nodefony = function(){
 
 	

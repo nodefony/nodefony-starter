@@ -15,7 +15,9 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.container = container;
 		this.kernel = this.container.get("kernel") ;
 		this.request = request ; 
-		this.connection = request.accept(null, request.origin);
+		this.origin = request.origin;
+		//TODO acceptProtocol header sec-websocket-protocol   
+		this.connection = request.accept(null, this.origin);
 		this.response = new nodefony.wsResponse( this.connection );
 		this.originUrl = url.parse( request.origin );
 		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
@@ -29,7 +31,6 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 		//parse cookies
 		this.parseCookies();
-
 
 		this.security = null ;
 		this.user = null ;
