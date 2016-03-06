@@ -291,11 +291,12 @@ nodefony.register("Bundle", function(){
 				}
 			}
 		}
-		//console.log(files);
 		files.getFiles().forEach(function(file, index, array){
 			//var basename = path.basename(file.dirName)
 			var domain = file.match[1] ;
 			var Locale = file.match[2] ;
+			//console.log(file.path)
+			//console.log(file.match)
 			translation.reader(file.path, Locale, domain)
 		}.bind(this));
 	};

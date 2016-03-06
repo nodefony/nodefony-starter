@@ -3,8 +3,7 @@
 {% block stylesheets %}
 	{{ parent() }}
 
-	{% stylesheets  output="/demoBundle/assets/css/clean.css" filter="?uglifycss" 
-            "/demoBundle/clean/assets/css/font-awesome.min.css"
+	{% stylesheets  output="/assets/css/clean.css" filter="?uglifycss" 
             "/demoBundle/clean/assets/css/simple-line-icons.css"
             "/demoBundle/clean/assets/css/animate.css"
         %}
@@ -17,7 +16,7 @@
 	{{ parent() }}
 
 	<!-- LIBRARY DESIGN-->
-	{% javascripts output='/demoBundle/assets/js/vendor.js' filter='?uglifyjs2'
+	{% javascripts output='/assets/js/vendor.js' filter='?uglifyjs2'
 		"/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js" 
 		"/demoBundle/clean/assets/js/jquery.sticky.js" 
 		"/demoBundle/clean/assets/js/smoothscroll.js" 
@@ -27,9 +26,8 @@
 	{% endjavascripts %}
 
 	<!-- KERNEL STAGE-->
-	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
-
 	{% javascripts output='/assets/js/stage.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/twig/twig.js" 
 		"/vendors/stage/kernel/autoload.js" 
 		"/vendors/stage/kernel/kernel.js" 
 		"/vendors/stage/kernel/appKernel.js" 

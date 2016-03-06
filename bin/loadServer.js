@@ -16,7 +16,7 @@ if ( i % 2)
 		//options.path="/api/syslog";
 		options.path="/demo/finder";
 	else
-		options.path="/monitoring";
+		options.path="/nodefony";
 
 	var req = http.request(options, function(it, res) {
 	  	//console.log('STATUS: ' + res.statusCode);
@@ -38,7 +38,7 @@ if ( i % 2)
 	// req.write('data\n');
 	req.end();
 	i++
-}, 50)
+}, 20)
 
 
 /*for (var i = 0; i<100000;i++){
