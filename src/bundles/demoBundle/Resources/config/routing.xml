@@ -37,6 +37,17 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
+	<route id="syscall" pattern="/syscall">
+		<default key="controller">demoBundle:demo:syscall</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="httpRequest" pattern="/demo/httpRequest">
+		<default key="controller">demoBundle:demo:httpRequest</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	httpRequest
 
 	<!-- REALTIME --> 	
 	<route id="indexReal" pattern="/demo/realtime">

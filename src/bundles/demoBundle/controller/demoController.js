@@ -9,6 +9,10 @@
  *
  */
 
+var spawn = require('child_process').spawn;
+var execSync = require('child_process').execSync;
+var exec = require('child_process').exec;
+
 
 nodefony.registerController("demo", function(){
 
@@ -102,7 +106,6 @@ nodefony.registerController("demo", function(){
 
 		var nodefonyDb = orm.getConnection("nodefony") ;
 
-
 		var users = null ;
 		nodefonyDb.query('SELECT * FROM users')
 		.then(function(result){
@@ -141,8 +144,144 @@ nodefony.registerController("demo", function(){
 				joins:joins,
 			});
 		}.bind(this))
-
 	}
+
+	/*
+ 	 *
+ 	 *	SYSTEM CALL NODEJS WITH PROMISE
+ 	 */
+	demoController.prototype.syscallAction = function(){
+
+		var tab =[];
+
+		// system call  exec synchrone hostname
+		tab.push (new Promise( function(resolve, reject){
+			try {
+				var childHost =  execSync('hostname');
+				var res = childHost.toString() ;
+				resolve(res);	
+				return 	res ;	
+			}catch(e){
+				reject(e) ;	
+			}
+		}));
+			
+		// exec PWD
+		tab.push (new Promise( function(resolve, reject){
+			return exec("pwd", function(error, stdout, stderr){
+				if ( error ){
+					return reject(error);
+				}
+				if ( stderr ){
+					this.logger(stderr, "ERROR");
+				}
+				return resolve(stdout) ;	
+			}.bind(this))
+		
+		}.bind(this)));
+
+
+		// system call  spawn ping  
+		tab.push (new Promise( function(resolve, reject){
+			var du = spawn('ping', ['-c', "6", "google.com"]);
+			var str = "" ;
+			var err = "" ;
+			var code = "" ;
+
+			du.stdout.on('data',function(data){
+				str+= data ;
+			});
+
+			du.stderr.on('data',function(data){
+				err+= data ;
+				this.logger("ERROR : " +  err,"ERROR");
+			}.bind(this));
+
+			du.on('close',function(code){
+				code = code ;
+				this.logger("child process exited with code : " + code, "INFO");
+				resolve({
+					ping:str,
+					code:code,
+					error:err
+				});
+			}.bind(this));
+		}.bind(this)));
+
+		var ping = "" ;
+		var err = "" ;
+		var code = "" ;
+		var hostname = "";
+		var pwd = "" ;
+
+		// CALL PROMISE 
+		Promise.all(tab)
+		.catch(function(e){
+			this.logger(e,"ERROR");
+			throw e ;
+		}.bind(this))
+		.then(function(result){
+			// format result for pass in renderAsync view   
+			hostname = result[0];
+			pwd = result[1] ;
+			ping = result[2].ping ;
+			code = result[2].code ;
+			err = result[2].err ;
+		}.bind(this))
+		.done(function(ele){
+			this.logger( "PROMISE SYSCALL DONE" , "DEBUG");
+			try {
+				this.renderAsync("demoBundle:Default:exec.html.twig", {
+					hostname:hostname,
+					ping:ping,
+					pwd:pwd,
+					code:code,
+					error:err,
+					date:new Date()
+				});
+			}catch(e){
+				throw e ;
+			}
+		}.bind(this))
+	}
+
+
+	/*
+ 	 *
+ 	 *	HTTP REQUEST FOR PROXY  
+ 	 */
+	demoController.prototype.httpRequestAction = function(){
+
+		var options = {
+  			hostname: 'www.google.com',
+  			port: 80,
+  			method: 'GET'
+		};
+
+		var req = http.request(options, function(res) {
+			//console.log('STATUS: ' + res.statusCode);
+			//console.log('HEADERS: ' + JSON.stringify(res.headers));
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				this.logger( chunk, "DEBUG");
+				this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+					bodyRaw:chunk,
+				});
+			}.bind(this));
+		}.bind(this));
+
+
+		req.on('error', function(e) {
+			this.logger('problem with request: ' + e.message, "ERROR");
+		}.bind(this));
+
+		// write data to request body
+		// req.write('data\n');
+		// req.write('data\n');
+		req.end();
+	}
+
+
 
 	/**
  	 *	@see renderView

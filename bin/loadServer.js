@@ -12,7 +12,7 @@ var options = {
 var i = 0 ;
 setInterval(function(){
 
-if ( i % 2) 
+	if ( i % 2) 
 		//options.path="/api/syslog";
 		options.path="/demo/finder";
 	else
