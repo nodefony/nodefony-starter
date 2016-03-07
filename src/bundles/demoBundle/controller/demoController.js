@@ -46,7 +46,7 @@ nodefony.registerController("demo", function(){
 
 	/**
  	 *
- 	 *	DEMO navbar 
+ 	 *	DEMO ORM ASYNC CALL WITH ENTITIES 
  	 *
  	 */
 	demoController.prototype.sequelizeAction = function(){
@@ -59,6 +59,8 @@ nodefony.registerController("demo", function(){
 
 		var sessions = null ; 
 		var users = null ; 
+
+		// SIMPLE ORM CALL RENDER WITH SEQUELIZE PROMISE
 		/*this.sessionEntity.findAll()
 		.then( function(results){
 			sessions = results
@@ -80,7 +82,7 @@ nodefony.registerController("demo", function(){
 		}).catch(function(error){
 			throw error ;
 		}).done(function(){
-			return this.renderAsync('demoBundle:orm:orm.html.twig', {
+			this.renderAsync('demoBundle:orm:orm.html.twig', {
 				sessions:sessions,
 				users:users,
 			});
@@ -88,7 +90,59 @@ nodefony.registerController("demo", function(){
 
 	}
 
+	/**
+ 	 *
+ 	 *	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
+ 	 *	SQL SELECT
+ 	 *
+ 	 */
+	demoController.prototype.querySqlAction = function(){
 
+		var orm = this.getORM() ;
+
+		var nodefonyDb = orm.getConnection("nodefony") ;
+
+
+		var users = null ;
+		nodefonyDb.query('SELECT * FROM users')
+		.then(function(result){
+			users = result[0];
+		}.bind(this))
+		.done(function(){
+			this.renderAsync('demoBundle:orm:orm.html.twig', {
+				users:users,
+			});
+		}.bind(this))
+	}
+
+	/**
+ 	 *
+ 	 *	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
+ 	 *	SQL WITH JOIN 
+ 	 *
+ 	 *
+ 	 */
+	demoController.prototype.querySqlJoinAction = function(){
+
+		var orm = this.getORM() ;
+
+		var nodefonyDb = orm.getConnection("nodefony") ;
+
+		var joins = null ;
+		nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+		.then(function(result){
+			joins = result[0];
+			for (var i = 0 ; i < joins.length ; i++){
+				joins[i].metaBag = JSON.parse( joins[i].metaBag )
+			}
+		}.bind(this))
+		.done(function(){
+			this.renderAsync('demoBundle:orm:orm.html.twig', {
+				joins:joins,
+			});
+		}.bind(this))
+
+	}
 
 	/**
  	 *	@see renderView

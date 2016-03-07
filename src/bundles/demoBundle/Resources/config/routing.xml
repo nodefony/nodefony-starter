@@ -27,8 +27,16 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
+	<route id="sql" pattern="/query/sql">
+		<default key="controller">demoBundle:demo:querySql</default>
+		<requirement key="method">GET</requirement>
+	</route>
 
-	
+	<route id="sqlJoin" pattern="/query/join">
+		<default key="controller">demoBundle:demo:querySqlJoin</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
 
 	<!-- REALTIME --> 	
 	<route id="indexReal" pattern="/demo/realtime">
@@ -46,7 +54,6 @@
 		<default key="controller">demoBundle:finder:download</default>
 		<requirement key="method">GET</requirement>
 	</route>
-
 
 	<!-- TODO -->	
 	<!--  <import resource="routing2.xml" prefix="/prefix" />

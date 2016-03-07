@@ -144,7 +144,7 @@ nodefony.register("controller", function(){
 			"Expires": "0",
 			'Content-Description': 'File Transfer',
 			'Content-Type': File.mimeType
-		}, headers);
+		}, headers || {});
 
 		var response = this.getResponse();
 		var request = this.getRequest().request;

@@ -28,8 +28,6 @@ nodefony.registerService("sequelize", function(){
 	};
 
 
-
-
 	/*
 	 * 
 	 * CLASS LIBRARY CONNECTION
