@@ -8,9 +8,6 @@
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
-	
-
-	
 	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
@@ -47,7 +44,16 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
-	httpRequest
+	<route id="xmlResponse" pattern="/demo/xmlResponse">
+		<default key="controller">demoBundle:demo:rawResponseSync</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="xmlAsyncResponse" pattern="/demo/xmlAsyncResponse">
+		<default key="controller">demoBundle:demo:rawResponseAsync</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
 
 	<!-- REALTIME --> 	
 	<route id="indexReal" pattern="/demo/realtime">

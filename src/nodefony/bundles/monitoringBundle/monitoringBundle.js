@@ -426,6 +426,14 @@ nodefony.registerBundle ("monitoring", function(){
 								if ( logProfile ){
 									logProfile.payload["timeRequest"] = obj["timeRequest"];
 									logProfile.payload["events"] = 	obj["events"] ;
+									logProfile.payload["response"] = {
+										statusCode:response.statusCode,
+										message:response.response.statusMessage,
+										size:response.body.length ,
+										encoding:response.encoding,
+										"content-type":response.response.getHeader('content-type'),
+										headers:response.response._headers	
+									}
 								}
 								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");

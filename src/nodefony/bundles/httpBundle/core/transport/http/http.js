@@ -131,13 +131,14 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//case response instanceof nodefony.Response :
 			//break ;
 		}
-		this.notificationsCenter.fire("onSend", response, context);
 		// cookies
 		this.response.setCookies();
 		/*
  		* HTTP WRITE HEAD  
  		*/
 		this.response.writeHead();
+
+		this.notificationsCenter.fire("onSend", response, context);
 		/*
  	 	* WRITE RESPONSE
  	 	*/  

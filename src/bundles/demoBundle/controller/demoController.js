@@ -19,7 +19,6 @@ nodefony.registerController("demo", function(){
 	var demoController = function(container, context){
 		this.mother = this.$super;
 		this.mother.constructor(container, context);
-
 	};
 
 	/**
@@ -47,6 +46,61 @@ nodefony.registerController("demo", function(){
 			webrtc:webrtcBundle
 		});	
 	}
+
+	/**
+ 	 *
+ 	 *	DEMO RENDER RAW RESPONSE  SYNC  
+ 	 *
+ 	 */
+	demoController.prototype.rawResponseSyncAction= function(){
+		
+		var kernel = this.get("kernel") ;
+		var settings = kernel.settings ;
+		var content = '<xml><nodefony>\
+			<kernel name="'+settings.name+'" version="'+settings.system.version+'">\
+				<server type="HTTP" port="'+settings.system.httpPort+'"></server>\
+				<server type="HTTPS" port="'+settings.system.httpsPort+'"></server>\
+			</kernel>\
+		</nodefony></xml>';
+		return this.renderResponse(content, 200 , {
+			"content-type" :"Application/xml"
+		})
+	};
+
+	/**
+ 	 *
+ 	 *	DEMO RENDER RAW RESPONSE ASYNC  
+ 	 *
+ 	 */
+	demoController.prototype.rawResponseAsyncAction= function(){
+		var kernel = this.get("kernel") ;
+		var settings = kernel.settings ;
+
+		// async CALL
+		var childHost =  exec('hostname', function(error, stdout, stderr){
+			var hostname = stdout ;	
+
+			var content = '<xml><nodefony>\
+			<kernel name="'+settings.name+'" version="'+settings.system.version+'">\
+				<server type="HTTP" port="'+settings.system.httpPort+'"></server>\
+				<server type="HTTPS" port="'+settings.system.httpsPort+'"></server>\
+				<hostname>'+hostname+'</hostname>\
+			</kernel>\
+			</nodefony></xml>';
+			return this.renderResponse(content, 200 , {
+				"content-type" :"Application/xml"
+			})
+		}.bind(this));
+	};
+
+	/**
+ 	 *	 renderView 
+ 	 *		
+ 	 */
+	demoController.prototype.renderviewAction= function(name){
+		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
+		return this.getResponse(content);
+	};
 
 	/**
  	 *
@@ -91,7 +145,6 @@ nodefony.registerController("demo", function(){
 				users:users,
 			});
 		}.bind(this))
-
 	}
 
 	/**
@@ -183,7 +236,7 @@ nodefony.registerController("demo", function(){
 
 		// system call  spawn ping  
 		tab.push (new Promise( function(resolve, reject){
-			var du = spawn('ping', ['-c', "6", "google.com"]);
+			var du = spawn('ping', ['-c', "3", "google.com"]);
 			var str = "" ;
 			var err = "" ;
 			var code = "" ;
@@ -257,42 +310,34 @@ nodefony.registerController("demo", function(){
   			port: 80,
   			method: 'GET'
 		};
-
 		var req = http.request(options, function(res) {
 			//console.log('STATUS: ' + res.statusCode);
 			//console.log('HEADERS: ' + JSON.stringify(res.headers));
+			var bodyRaw = "";
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
 				this.logger( chunk, "DEBUG");
-				this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
-					bodyRaw:chunk,
-				});
+				bodyRaw += chunk ;
 			}.bind(this));
-		}.bind(this));
 
+			res.on('end', function(){
+				this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+					bodyRaw:bodyRaw,
+				});
+			}.bind(this))
+
+		}.bind(this));
 
 		req.on('error', function(e) {
-			this.logger('problem with request: ' + e.message, "ERROR");
+			this.logger('Problem with request: ' + e.message, "ERROR");
 		}.bind(this));
 
-		// write data to request body
-		// req.write('data\n');
-		// req.write('data\n');
 		req.end();
 	}
 
 
 
-	/**
- 	 *	@see renderView
- 	 *	@see getResponse
- 	 *
- 	 */
-	demoController.prototype.renderviewAction= function(name){
-		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
-		return this.getResponse(content);
-	};
-
+	
 	/**
  	 *	@see getResponse() with content
  	 *
