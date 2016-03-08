@@ -423,17 +423,18 @@ nodefony.registerBundle ("monitoring", function(){
 
 							context.listen(this, "onSend", function(response, context){
 								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
+								obj["response"] = {
+									statusCode:response.statusCode,
+									message:response.response.statusMessage,
+									size:response.body.length ,
+									encoding:response.encoding,
+									"content-type":response.response.getHeader('content-type'),
+									headers:response.response._headers	
+								}
 								if ( logProfile ){
 									logProfile.payload["timeRequest"] = obj["timeRequest"];
 									logProfile.payload["events"] = 	obj["events"] ;
-									logProfile.payload["response"] = {
-										statusCode:response.statusCode,
-										message:response.response.statusMessage,
-										size:response.body.length ,
-										encoding:response.encoding,
-										"content-type":response.response.getHeader('content-type'),
-										headers:response.response._headers	
-									}
+									logProfile.payload["response"] = obj["response"] ; 
 								}
 								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
@@ -452,8 +453,6 @@ nodefony.registerBundle ("monitoring", function(){
 									//context.setXjson(obj);	
 								}
 							})
-
-							
 						}
 					}catch(e){
 						this.kernel.logger(e, "ERROR");

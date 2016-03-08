@@ -387,7 +387,7 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.indexUploadAction= function(){
-		return this.render('demoBundle:demo:upload.html.twig');
+		return this.render('demoBundle:demo:upload2.html.twig');
 	};
 
 	demoController.prototype.uploadAction = function(){
@@ -405,12 +405,31 @@ nodefony.registerController("demo", function(){
 			//console.log( files[file].realName() )
 		}
 		if ( ! this.isAjax() ){
-			return this.forward("demoBundle:finder:index");
+			//return this.forward("demoBundle:finder:index");
+			return this.redirect ( this.generateUrl("finder") );
 		}else{
+			var res = {
+				"files": [],
+				"metas": []
+			}
+			for (var file in files){
+				var name = files[file].realName();
+				res.files.push(path+"/"+name);
+				var meta = {
+					date : new Date(),
+					extention:files[file].getExtention(),
+					file:path+"/"+name,
+					name:name,
+					old_name:files[file].name,
+					size:files[file].stats.size,
+					size2:files[file].stats.size,
+					type:files[file].getMimeType().split("/")
+				}
+				res.metas.push(meta);
+			}
+
 			return this.renderResponse(
-					JSON.stringify({
-						res : "ok"
-					}), 
+				JSON.stringify(res), 
 				200, 
 				{'Content-Type': 'application/json; charset=utf-8'}
 			);
