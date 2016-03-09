@@ -42,6 +42,15 @@ nodefony.registerController("framework", function(){
 			return this.render('frameworkBundle::exception.html.twig', nodefony.extend(ele, exp) );	
 		};
 
+		frameworkController.prototype.timeoutAction = function(exp){
+			var ele = {
+				title:"Timeout",
+				exception:util.inspect( exp.exception )
+			}
+			return this.render('frameworkBundle::timeout.html.twig', nodefony.extend(ele, exp) );	
+		};
+
+
 		frameworkController.prototype.systemAction = function(options){
 			var router = this.get("router");
 			var kernel = this.get("kernel");

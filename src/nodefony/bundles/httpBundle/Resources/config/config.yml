@@ -31,11 +31,11 @@ version :			"1.0"
 # SERVERS
 http:                         
   maxHeadersCount:              null
-  timeout:                      null
+  timeout:                      30000           # 30 seconds
 
 https:
   maxHeadersCount:              null
-  timeout:                      null
+  timeout:                      30000           # 30 seconds
   certificats:
     key:                        "/config/certificates/server.key"
     cert:                       "/config/certificates/server.crt"
