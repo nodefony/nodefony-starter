@@ -14,7 +14,7 @@
 nodefony.register("Response",function(){
 
 
-	var Response = function(response, container){
+	var Response = function(response, container, type){
 		this.container = container ;
 		this.kernel = this.container.get("kernel") ;
 		if (response instanceof  http.ServerResponse)
@@ -33,6 +33,10 @@ nodefony.register("Response",function(){
 
 		// default http code 
 		this.setStatusCode(200);
+
+		//timeout default
+		var settings = this.container.getParameters("bundles.http");
+		this.timeout = type === "HTTP" ? settings.http.responseTimeout : settings.https.responseTimeout ;
 
 		//default Content-Type to implicit headers
 		this.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -55,6 +59,10 @@ nodefony.register("Response",function(){
 		delete this.headers ;
 		delete this.body ;
 	
+	}
+
+	Response.prototype.setTimeout = function(ms){
+		this.timeout = ms ;
 	}
 
 	Response.prototype.addCookie = function(cookie){

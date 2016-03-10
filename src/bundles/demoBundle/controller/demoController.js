@@ -13,6 +13,8 @@ var spawn = require('child_process').spawn;
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
 
+var https = require('https');
+
 
 nodefony.registerController("demo", function(){
 
@@ -304,15 +306,47 @@ nodefony.registerController("demo", function(){
  	 *	HTTP REQUEST FOR PROXY  
  	 */
 	demoController.prototype.httpRequestAction = function(){
+		//this.getResponse().setTimeout(5000)
+		//return 
 
+		var path = this.generateUrl("xmlAsyncResponse");
+		var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
+		var type = this.context.type ;
+		// cookie session 
+		var headers = {}
+		headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
 		var options = {
-  			hostname: 'www.google.com',
-  			port: 80,
-  			method: 'GET'
-		};
-		var req = http.request(options, function(res) {
-			//console.log('STATUS: ' + res.statusCode);
-			//console.log('HEADERS: ' + JSON.stringify(res.headers));
+  			hostname: this.context.request.url.hostname,
+  			port: this.context.request.url.port,
+			path:path,
+  			method: 'GET',
+			headers:headers
+		}	
+		var wrapper = http.request ;
+
+		// https 
+		if (this.context.request.url.protocol === "https:"){
+			// keepalive if multiple request in same socket
+			var keepAliveAgent = new https.Agent({ keepAlive: true });
+			// certificat
+			var kernel = this.get("kernel");
+			var settings =  this.get("httpsServer").settings ;
+
+			nodefony.extend(options,{
+				key: fs.readFileSync(kernel.rootDir+settings.certificats.key),
+				cert:fs.readFileSync(kernel.rootDir+settings.certificats.cert),
+				rejectUnauthorized: false,
+				requestCert: true,
+				agent: keepAliveAgent
+			});
+			var wrapper = https.request ;
+		}else{
+			// keepalive
+			var keepAliveAgent = new http.Agent({ keepAlive: true });
+			options.agent = keepAliveAgent;	
+		}
+		
+		var req = wrapper(options, function(res) {
 			var bodyRaw = "";
 			res.setEncoding('utf8');
 			res.on('data', function (chunk) {
@@ -322,6 +356,8 @@ nodefony.registerController("demo", function(){
 
 			res.on('end', function(){
 				this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+					host: host,
+					type: type,
 					bodyRaw:bodyRaw,
 				});
 			}.bind(this))
@@ -330,6 +366,11 @@ nodefony.registerController("demo", function(){
 
 		req.on('error', function(e) {
 			this.logger('Problem with request: ' + e.message, "ERROR");
+			this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+				host: host,
+				type: type,
+				bodyRaw:e,
+			});
 		}.bind(this));
 
 		req.end();

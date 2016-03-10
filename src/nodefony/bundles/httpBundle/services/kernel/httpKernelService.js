@@ -21,7 +21,7 @@ nodefony.registerService("httpKernel", function(){
 		this.reader = this.container.get("reader");
 		this.serverStatic = serverStatic;
 		this.engineTemplate = this.container.get("templating");
-		this.settings =  this.container.getParameters("bundles.http");
+		//this.settings =  this.container.getParameters("bundles.http");
 
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
@@ -207,15 +207,6 @@ nodefony.registerService("httpKernel", function(){
 					if (domain) delete domain ;
 					delete container ;
 					delete translation ;
-				}.bind(this))
-
-				// timeout response 
-				var timeout =  type === "HTTP" ? this.settings.http.timeout : this.settings.https.timeout ;
-				context.response.response.setTimeout(timeout, function(){
-					context.notificationsCenter.fire("onError", container, {
-						status:408,
-						message:new Error("Timeout :" + context.url)
-					} );	
 				}.bind(this))
 
 				if ( request.headers["x-forwarded-for"] ){

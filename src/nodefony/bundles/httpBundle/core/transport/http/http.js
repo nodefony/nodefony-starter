@@ -24,8 +24,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
-		this.request = new nodefony.Request( request , container);
-		this.response = new nodefony.Response( response , container);
+		this.request = new nodefony.Request( request, container, type);
+		this.response = new nodefony.Response( response, container, type);
 		this.session = null;
 		this.cookies = {};
 		this.isAjax = this.request.isAjax() ;
@@ -82,7 +82,15 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	
 			if (this.resolver.resolve) {
-				return  this.resolver.callController(data);
+				var ret = this.resolver.callController(data);
+				// timeout response 
+				this.response.response.setTimeout(this.response.timeout, function(){
+					this.notificationsCenter.fire("onError", this.container, {
+						status:408,
+						message:new Error("Timeout :" + this.url)
+					} );	
+				}.bind(this))
+				return ret ;
 			}
 			/*
  			 *	NOT FOUND

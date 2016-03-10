@@ -25,6 +25,7 @@ nodefony.registerService("http", function(){
 
 		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
+			response.setHeader("Server", "nodefony");
 			if ( this.kernel.settings.system.statics ){
 				this.httpKernel.serverStatic.handle(request, response , function(){
 					var d = nodedomain.create();

@@ -325,8 +325,18 @@
 							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}} {{response.message}}</span></li>
 						{% else %}
 							
-							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+							{% if key != "headers" %}
+								<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+							{% else %}
+								<li class="separator"></li>
+								<li><label style="color:#999">HEADERS</label></li>
 
+								{% for header, val in response["headers"] %}
+									<li><label>{{ header | capitalize }}</label><span class="label label-success">{{val}}</span></li>
+								{% endfor %}
+
+
+							{% endif %}
 						{% endif %}
 					{% endfor %}
 						
