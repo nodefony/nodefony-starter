@@ -26,6 +26,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 
 		}
 		var boundary = '\r\n--' + request.rawContentType.boundary.replace('"',"")
+		//console.log(boundary)
 		var isRaw = typeof(request.body) !== 'string';
 
 		var s = null;
@@ -37,6 +38,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 		s = '\r\n' + s;
 
 		var parts = s.split(new RegExp(boundary));
+		//console.log(parts)
 		var partsByName = {post: {}, file: {}};
 
 		// loop boundaries  

@@ -58,6 +58,13 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen( this, "onRequest" , this.handle );
+		this.notificationsCenter.listen( this, "onTimeout" , function(context){
+			this.notificationsCenter.fire("onError", this.container, {
+				status:408,
+				message:new Error("Timeout :" + this.url)
+			} );	
+		} );
+
 
 	};
 
@@ -85,10 +92,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 				var ret = this.resolver.callController(data);
 				// timeout response 
 				this.response.response.setTimeout(this.response.timeout, function(){
-					this.notificationsCenter.fire("onError", this.container, {
-						status:408,
-						message:new Error("Timeout :" + this.url)
-					} );	
+					this.notificationsCenter.fire("onTimeout", this);
 				}.bind(this))
 				return ret ;
 			}

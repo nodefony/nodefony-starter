@@ -135,7 +135,7 @@ nodefony.registerBundle ("monitoring", function(){
 				}; 
 				var security = function(){
 					var obj = {};
-					var firewall = this.container.get("security")
+					var firewall = this.container.get("security");
 					if (firewall){
 						for (var area in firewall.securedAreas ){
 							//console.log(firewall.securedAreas[area])
@@ -185,6 +185,26 @@ nodefony.registerBundle ("monitoring", function(){
 							switch (context.type){
 								case "HTTP":
 								case "HTTPS":
+									switch (context.request.contentType){
+										case "multipart/form-data":
+											//console.log(context.request.queryFile)
+											try{
+												var content = JSON.stringfy(context.request.queryFile)
+											}catch(e){
+												var content = null ;
+											}
+										break;
+										case "application/xml":
+										case "text/xml":
+										case "application/json":
+										case "text/json":
+										case "application/x-www-form-urlencoded":
+											var content = context.request.body.toString(context.request.charset);
+										break;
+										default:
+											var content = null ;
+									}
+									
 									obj["request"] = {
 										url:context.request.url.href,
 										method:context.request.method,
@@ -193,7 +213,10 @@ nodefony.registerBundle ("monitoring", function(){
 										queryPost:context.request.queryPost,
 										queryGet:context.request.queryGet,
 										headers:context.request.headers,
-										crossDomain:context.crossDomain
+										crossDomain:context.crossDomain,
+										dataSize:context.request.dataSize,
+										content:content,
+										"content-type":context.request.contentType
 									};
 									obj["response"] = {	
 										statusCode:context.response.statusCode,
@@ -259,6 +282,7 @@ nodefony.registerBundle ("monitoring", function(){
 										listeners:context.notificationsCenter.event["_events"][event].length
 									} ;
 								}
+								//console.log(event)
 								context.listen(context ,event, function(){
 									var ele =  arguments[ 0]  ;
 									obj["events"][ele].fire= true;

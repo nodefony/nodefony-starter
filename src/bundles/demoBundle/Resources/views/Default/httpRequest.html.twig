@@ -21,9 +21,18 @@
 	{{ parent() }}
 
 	<script>
-		
 
-	</script>
+		$(document).ready(function(){
+
+			$.ajax({
+				url:"{{path("xmlAsyncResponse")}}",
+				success:function(data){
+					var res = stage.xml.parseXml(data);
+				}
+			
+			})
+		})	
+	</script>	
 
 {% endblock %}
 
@@ -36,11 +45,11 @@
 		<div class="row">
 			<div class="panel panel-default ">
 				<!-- Default panel contents -->
-				<div class="panel-heading"><strong> RAW RESULT REQUEST PROXY {{type}} GET on {{host}}    </strong></div>
+				<div class="panel-heading"><strong>View HOSTNAME RAW RESULT REQUEST PROXY {{type}} GET on {{host}}    </strong></div>
 				<div class="panel-body">
-					<pre>
-{{bodyRaw}}
-					</pre>
+					<code>
+{{bodyRaw}} 
+					</code>
 				</div>
 			</div>
 		</div>

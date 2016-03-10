@@ -345,7 +345,28 @@ UID : {{ uid }}
 									</div>
 								</div>
 
-								<h3>Request Content</h3>
+								<h3>Request Content</h3> 
+								<div class="wrapper" >
+									<div class="table-responsive" >
+										<table class="table table-striped table-bordered">
+											<thead>
+												<tr>
+													<th>Data Type</th>
+													<th>Data Size</th>
+												</tr>
+											</thead>
+											<tbody>
+											<tr>
+												<td>{{ request["content-type"]}}</td>
+												<td>{{ request.dataSize }}</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<code>
+									{{ request.content}}	
+								</code>	
 							</div>
 
 						<!-- end request-->

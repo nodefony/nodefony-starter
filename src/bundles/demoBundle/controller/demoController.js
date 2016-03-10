@@ -55,6 +55,9 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.rawResponseSyncAction= function(){
+		// override timeout response 
+		//this.getResponse().setTimeout(10000);
+		//return ;
 		
 		var kernel = this.get("kernel") ;
 		var settings = kernel.settings ;

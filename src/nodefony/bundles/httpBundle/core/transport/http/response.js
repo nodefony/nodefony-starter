@@ -21,7 +21,7 @@ nodefony.register("Response",function(){
 			this.response =response;
 		//BODY
 		this.body = "";
-		this.encoding = null;
+		this.encoding = this.setEncoding('utf8');;
 
 		//cookies
 		this.cookies = {};

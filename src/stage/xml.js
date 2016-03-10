@@ -181,9 +181,9 @@ stage.register("xml", function(){
 
 
 	return {
-		parseXml:parseXml
+		parseXml:parseXml,
 		//parseNode:parseDOM,
-	  	//stringToDocumentXML : stringToDocumentXML ,
+	  	stringToDocumentXML : stringToDocumentXML ,
 	  	//getDocumentRoot :getDocumentRoot
 	
 	
