@@ -50,7 +50,7 @@ nodefony.registerCommand("encoders",function(){
 	return {
 		name:"encoders",
 		commands:{
-			md5:["encoders:Digest firewall login password [realm]" ,"Generate encoding keys digest MD5"],
+			md5:["encoders:Digest firewall login password [realm]" ,"Generate encoding keys digest MD5 Example : ./console encoders:Digest secured_area login password"],
 		},
 		worker:encoders	
 	}
