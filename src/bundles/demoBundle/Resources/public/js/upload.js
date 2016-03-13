@@ -1,5 +1,6 @@
 $(document).ready(function(){
 
+
 	$('#filer_input').filer({
 		limit: 3,
 		maxSize: 3,
@@ -7,6 +8,8 @@ $(document).ready(function(){
 		addMore: true,
 		showThumbs: true		
 	}); 
+
+	var uri = $('#form2').attr("data-uri");
 
 	$('#filer_input2').filer({
     		changeInput: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop files here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue">Browse Files</a></div></div>',
@@ -74,7 +77,7 @@ $(document).ready(function(){
         		drop: null,
     		},
     		uploadFile: {
-        		url: "/upload",
+        		url: uri,
         		data: null,
         		type: 'POST',
         		enctype: 'multipart/form-data',

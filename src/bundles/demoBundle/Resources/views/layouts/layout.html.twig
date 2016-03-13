@@ -42,7 +42,14 @@
 {% block body %}
 
 	<header class="header">
-		{{ render( controller("demoBundle:demo:nav")) }}
+		{{ render( controller("demoBundle:demo:nav", login )) }}
 	</header>
 
 {% endblock %}
+
+{% block footer %}
+	<footer  >
+		{{ render( controller("demoBundle:demo:footer" )) }}
+	</footer>
+{% endblock %}
+

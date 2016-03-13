@@ -75,18 +75,21 @@ nodefony.registerService("translation", function(){
 		this.reader = reader(this);
 	};
 
+	i18n.prototype.getLangs = function(){
+
+		var obj = [];
+		for ( var ele in translateDispo){
+			obj.push({
+				name:translateDispo[ele],
+				value:ele
+			})	
+		}
+		return obj;
+	}
+
 	i18n.prototype.boot = function(){
 		this.defaultLocale = this.container.getParameters("kernel.system.locale"); 
-		this.engineTemplate.extendFunction("getLangs", function(){
-			var obj = [];
-			for ( var ele in translateDispo){
-				obj.push({
-					name:translateDispo[ele],
-					value:ele
-				})	
-			}
-			return obj;
-		}.bind(this));
+		this.engineTemplate.extendFunction("getLangs", this.getLangs.bind(this));
 
 		 this.kernel.listen(this, "onBoot", function(){
 			var dl =  this.container.getParameters("bundles.App").App.locale;

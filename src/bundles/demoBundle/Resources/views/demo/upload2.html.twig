@@ -39,7 +39,7 @@
                         <div class="col-md-6">
                                 <b>Result:</b>
                                 <br><br>
-                                <form action="/upload" method="post" enctype="multipart/form-data">
+                                <form id="form1" action="{{path("uploadFile")}}" data-uri="{{path("uploadFile")}}" method="post" enctype="multipart/form-data">
 					<input type="file" name="files[]" id="filer_input" multiple="multiple">
 					<input type="submit" value="Submit">
 				</form>
@@ -56,7 +56,7 @@
                         <div class="col-md-6">
                                 <b>Result:</b>
                                 <br><br>
-                                <form action="/upload" method="post" enctype="multipart/form-data">
+                                <form id="form2" action="{{path("uploadFile")}}" data-uri="{{path("uploadFile")}}" method="post" enctype="multipart/form-data">
 					<input type="file" name="files[]" id="filer_input2" multiple="multiple">
 					<input type="submit" value="Submit">
 				</form>

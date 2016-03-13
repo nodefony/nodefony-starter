@@ -124,27 +124,6 @@ var login = function(){
 
 	});*/
 
-	$("#password").bind("focus", function(){
-		new auth( "/secure") ;
-	});
-
-
-	$("#login").bind("submit",function(e){
-		
-		var username = $("#email").val();
-		var password = $("#password").val();
-		if (! username || ! password) 
-			return false;
-		if (authenticate)
-			authenticate.register(username, password);
-		//e.preventDefault();
-		//return false;
-	})
-
-	$("#langs").bind("change",function(){
-		window.location.href = "?lang="+$(this).val();
-	})
-
 
 	$(document).ready(function(){
 		
@@ -157,6 +136,31 @@ var login = function(){
 				data:message	
 			});
 		}
+
+		var path = $("#login").attr("action");
+		$("#password").bind("focus", function(){
+			new auth( path) ;
+		});
+
+
+		$("#login").bind("submit",function(e){
+			
+			var username = $("#email").val();
+			var password = $("#password").val();
+			if (! username || ! password) 
+				return false;
+			if (authenticate)
+				authenticate.register(username, password);
+			//e.preventDefault();
+			//return false;
+		})
+
+		$("#langs").bind("change",function(){
+			window.location.href = "?lang="+$(this).val();
+		})
+
+
+
 	})
 
 

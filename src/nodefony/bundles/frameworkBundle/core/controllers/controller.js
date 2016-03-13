@@ -54,15 +54,15 @@ nodefony.register("controller", function(){
 		return this.context.session || null ;
 	};
 
+	Controller.prototype.getORM = function(){
+		var defaultOrm = this.container.get("kernel").settings.orm ;
+		return this.container.get(defaultOrm);
+	};
+
 	Controller.prototype.getResponse = function(content){
 		if (content)
 			this.context.response.setBody( content );
 		return this.context.response;
-	};
-
-	Controller.prototype.getORM = function(){
-		var defaultOrm = this.container.get("kernel").settings.orm ;
-		return this.container.get(defaultOrm);
 	};
 
 	Controller.prototype.renderView = function(view, param ){

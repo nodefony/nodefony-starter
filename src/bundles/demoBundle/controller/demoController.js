@@ -35,6 +35,15 @@ nodefony.registerController("demo", function(){
 			nodefony:kernel.settings.name + " " + kernel.settings.system.version
 		});
 	};
+	
+	/*
+	 *	SECURE 
+	 *	
+	 */
+	demoController.prototype["401Action"] = function(error){
+		var res = nodefony.extend( {url:this.context.url}, error);
+		return this.render('frameworkBundle::401.html.twig', res );
+	};
 
 	/**
  	 *
@@ -45,9 +54,64 @@ nodefony.registerController("demo", function(){
 		var webrtcBundle = this.get("kernel").getBundles("webRtc"); 
 		return this.render('demoBundle:layouts:navBar.html.twig',{
 			user: this.context.user,
-			webrtc:webrtcBundle
+			webrtc:webrtcBundle,
+			login:login
 		});	
 	}
+
+	/**
+ 	 *
+ 	 *	DEMO footer
+	 *
+ 	 *
+ 	 */
+	demoController.prototype.footerAction = function(){
+		var kernel = this.get("kernel");
+		var translateService = this.get("translation");
+		var version =  kernel.settings.system.version ;
+		var path = this.generateUrl("home");
+		var year = new Date().getFullYear();
+		var langs = translateService.getLangs();
+		var locale = translateService.getLocale();
+		var langOptions = "";
+		for (var ele in langs ){
+			if (locale === langs[ele].value){
+				langOptions += '<option value="'+langs[ele].value+'" selected >'+langs[ele].name+'</option>' ;	
+			}else{
+				langOptions += '<option value="'+langs[ele].value+'" >'+langs[ele].name+'</option>';	
+			}
+		}
+		var html = '<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">\
+			<div class"container-fluid">\
+			<div class="navbar-header">\
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#footer-collapse">\
+					<span class="sr-only">Toggle navigation</span>\
+					<span class="icon-bar"></span>\
+					<span class="icon-bar"></span>\
+					<span class="icon-bar"></span>\
+				</button>\
+				<a class=" text-primary navbar-text" href="'+path+'" style="margin-left:20px" >\
+				'+year+'\
+				<strong class="text-primary"> NODEFONY '+version+'  ©</strong> \
+				</a>\
+			</div>\
+			<div class="collapse navbar-collapse" id="footer-collapse">\
+				<ul class="nav navbar-nav navbar-left">\
+				</ul>\
+				<ul class="nav navbar-nav navbar-right">\
+					<li  class="navbar-btn pull-right" style="margin-right:40px">\
+						<select id="langs" name="hl" class="form-control">\
+						'+langOptions+'\
+						</select>\
+					</li>\
+				</div>\
+			</div>\
+			</div>\
+		</div>'
+		return this.getResponse(html);	
+	}
+
+
 
 	/**
  	 *
@@ -98,15 +162,7 @@ nodefony.registerController("demo", function(){
 		}.bind(this));
 	};
 
-	/**
- 	 *	 renderView 
- 	 *		
- 	 */
-	demoController.prototype.renderviewAction= function(name){
-		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
-		return this.getResponse(content);
-	};
-
+	
 	/**
  	 *
  	 *	DEMO ORM ASYNC CALL WITH ENTITIES 
@@ -150,6 +206,24 @@ nodefony.registerController("demo", function(){
 				users:users,
 			});
 		}.bind(this))
+	}
+
+	/**
+ 	 *
+ 	 *	DEMO ORM INSERT ENTITIES 
+ 	 *
+ 	 */
+	demoController.prototype.addUserAction = function(){
+		var orm = this.getORM() ;
+		this.userEntity = orm.getEntity("user");
+		
+		//
+		var query = this.getParameters("query");
+		console.log(query)
+
+		var users = null ; 
+
+
 	}
 
 	/**
@@ -303,7 +377,6 @@ nodefony.registerController("demo", function(){
 		}.bind(this))
 	}
 
-
 	/*
  	 *
  	 *	HTTP REQUEST FOR PROXY  
@@ -380,42 +453,6 @@ nodefony.registerController("demo", function(){
 	}
 
 
-
-	
-	/**
- 	 *	@see getResponse() with content
- 	 *
- 	 */
-	demoController.prototype.htmlAction= function(name){
-		var name = "nodefony";
-		return this.getResponse('<html><script>alert("'+name+'")</script></html>');
-	};
-
-	/**
- 	 *
- 	 *	@see forward
- 	 */
-	demoController.prototype.forwardAction= function(){
-		return this.forward("frameworkBundle:default:index")
-	};
-	
-	/**
- 	 *
- 	 *	@see redirect
- 	 */
-	demoController.prototype.redirectGoogleAction= function(){
-		return this.redirect("http://google.com");
-	};
-
-	/**
- 	 *
- 	 *	@see redirect with variables 
- 	 *	@see generateUrl 
- 	 */
-	demoController.prototype.generateUrlAction = function(){
-		return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
-	};
-
 	/**
 	 *
 	 *	@method indexRealTimeAction
@@ -480,6 +517,57 @@ nodefony.registerController("demo", function(){
 		}
 	};
 
+
+	/**
+ 	 *	 renderView 
+ 	 *		
+ 	 */
+	demoController.prototype.renderviewAction= function(name){
+		var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
+		return this.renderResponse(content);
+	};
+	
+	/**
+ 	 *	@see renderResponse() with content html
+ 	 *
+ 	 */
+	demoController.prototype.htmlAction= function(name){
+		var name = "nodefony";
+		return this.renderResponse('<html><script>alert("'+name+'")</script></html>');
+	};
+
+	/**
+ 	 *
+ 	 *	@see forward
+ 	 */
+	demoController.prototype.forwardAction= function(){
+		return this.forward("frameworkBundle:default:index")
+	};
+	
+	/**
+ 	 *
+ 	 *	@see redirect
+ 	 */
+	demoController.prototype.redirectGoogleAction= function(){
+		// status 301 or 302
+		return this.redirect("http://google.com"/*, status*/);
+	};
+
+	/**
+ 	 *
+ 	 *	@see redirect with variables 
+ 	 *	@see generateUrl 
+ 	 */
+	demoController.prototype.generateUrlAction = function(){
+		// absolute
+		return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
+
+		// relatice
+		//return this.redirect ( this.generateUrl("user", {name:"cci"} );
+
+	};
+
+	
 	return demoController;
 });
 

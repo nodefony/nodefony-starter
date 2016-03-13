@@ -11,4 +11,6 @@ security:
         private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
         realm:                    "nodefony"
       redirectHttps:              true
+      crossDomain: 
+        allow-origin:           "*"
 

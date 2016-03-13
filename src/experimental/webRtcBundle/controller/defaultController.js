@@ -27,7 +27,7 @@ nodefony.registerController("default", function(){
 					title:"DEMO WEBRTC", 
 					url:url,
 				        username:this.context.user.username,
-					login:this.context.user.name + " " + this.context.user.surname,
+					name:this.context.user.name + " " + this.context.user.surname,
 					nodefony:kernel.settings.name + " " + kernel.settings.system.version,
 					user:this.context.user
 				});

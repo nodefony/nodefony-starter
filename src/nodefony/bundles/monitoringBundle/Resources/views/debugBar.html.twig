@@ -52,7 +52,10 @@
 			</label>
 			<div class="details">
 				<ul>
-					<li><label ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/config/App'>APP</a></label></li>
+					<li>
+						<strong><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/config/App'> 
+							APP</a></strong>
+					</li>
 					{% for key, value in appSettings %}
 						<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
 					{% endfor %}

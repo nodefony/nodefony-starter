@@ -1,18 +1,30 @@
 # Security
 security:
-
     firewalls:
+        #  
+        #       name secured_area
+        #
+        #       // FACTORY TOKENS
+        #       http_digest:
+        #         private_key:          mykey
+        #         realm:                myreal
+        #
+        #       http_basic
+        #         realm:                myreal
+        #
+        #       sasl:
+        #         private_key:          mykey
+        #         realm:                myreal
+        #
         secured_area:
-            pattern:                    ^/
+            pattern:                    ^/demo
             provider:                   nodefony
 #           provider:                  in_memory          
             form_login:
               check_path:               /secure
               login_path:               /login  
-              #default_target_path:      /
+              default_target_path:      /demo
             #FACTORY
-            #http_digest:
-            #http_basic:
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"

@@ -4,9 +4,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
-	<route id="home" pattern="/">
+	<route id="home" pattern="/demo">
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
+
+	<route id="demoSecure" pattern="/demo/secure">
+		<default key="controller">demoBundle:demo:401</default>
+	</route>
+
 
 	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
@@ -14,26 +19,34 @@
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="uploadFile" pattern="/upload">
+	<route id="uploadFile" pattern="/demo/fileupload">
 		<default key="controller">demoBundle:demo:upload</default>
 		<requirement key="method">POST</requirement>
 	</route>
 
-	<route id="orm" pattern="/sequelize">
+	<!-- ORM -->
+	<route id="orm" pattern="/demo/sequelize">
 		<default key="controller">demoBundle:demo:sequelize</default>
 		<requirement key="method">GET</requirement>
 	</route>
+	
+	<route id="adduser" pattern="/demo/adduser">
+		<default key="controller">demoBundle:demo:addUser</default>
+		<requirement key="method">POST</requirement>
+	</route>
 
-	<route id="sql" pattern="/query/sql">
+
+	<route id="sql" pattern="/demo/query/sql">
 		<default key="controller">demoBundle:demo:querySql</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="sqlJoin" pattern="/query/join">
+	<route id="sqlJoin" pattern="/demo/query/join">
 		<default key="controller">demoBundle:demo:querySqlJoin</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
+	<!-- SYSTEM -->
 	<route id="syscall" pattern="/syscall">
 		<default key="controller">demoBundle:demo:syscall</default>
 		<requirement key="method">GET</requirement>
@@ -67,7 +80,7 @@
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
 
-	<route id="download"   pattern="/download">
+	<route id="download"   pattern="/demo/download">
 		<default key="controller">demoBundle:finder:download</default>
 		<requirement key="method">GET</requirement>
 	</route>
