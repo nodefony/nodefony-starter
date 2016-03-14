@@ -41,6 +41,13 @@ stage.registerController("navController", function() {
 		this.router.createRoute("bundles", "/bundles", {
 			controller:"appModule:nav:config"
 		});
+		this.router.createRoute("users", "/users", {
+			controller:"appModule:nav:users"
+		});
+		this.router.createRoute("sessions", "/sessions", {
+			controller:"appModule:nav:sessions"
+		});
+
 
 
 		this.router.createRoute("config-bundle", "/config/{bundle}", {
@@ -404,8 +411,45 @@ stage.registerController("navController", function() {
 
 
 
+	/*
+	 *
+	 */
+	controller.prototype.usersAction = function() {
 
+		$.ajax("/nodefony/api/users",{
+			//dataType:"json",
+			success:function(data, status, xhr){
+				console.log(data.response.data)
+				this.renderDefaultContent("appModule::users",{
+					users:data.response.data
+				});
+				$("table").DataTable();
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		
+		})
+	};
 
+	/*
+	 *
+	 */
+	controller.prototype.sessionsAction = function() {
+
+		$.ajax("/nodefony/api/sessions",{
+			//dataType:"json",
+			success:function(data, status, xhr){
+				this.renderDefaultContent("appModule::sessions",{
+					sessions:data.response.data
+				});
+				$("table").DataTable();
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		})
+	};
 	
 	return controller;
 });

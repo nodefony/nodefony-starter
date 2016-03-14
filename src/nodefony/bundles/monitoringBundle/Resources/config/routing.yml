@@ -103,4 +103,15 @@ monitoring-real:
   requirements: 
     method: GET
 
+monitoring-users:
+  pattern:   /nodefony/api/users   
+  defaults: {controller: "monitoringBundle:api:users"}
+  requirements: 
+    method: GET
+
+monitoring-sessions:
+  pattern:   /nodefony/api/sessions   
+  defaults: {controller: "monitoringBundle:api:sessions"}
+  requirements: 
+    method: GET
 

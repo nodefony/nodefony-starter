@@ -38,6 +38,20 @@
 						<span>Services</span>
 					</a>
 					<a 
+						href="{{ path('users') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Users</span>
+					</a>
+					<a 
+						href="{{ path('sessions') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Sessions</span>
+					</a>
+					<a 
 						href="{{ path('syslog') }}" 
 						class="list-group-item font-bold" 
 						data-parent="{{ navCssId }}">

@@ -1,35 +1,35 @@
 {% include '../blocks/title.html.twig' with { 'title': 'SERVICES ', 'subtitle': 'Services Nodefony framework ' } %}			
 <div class="wrapper" >
 	<div class="table-responsive" >
-					<table class="table table-striped table-bordered">
-						<thead>
-							<tr>
-								<th>NAME</th>
-								<th>INSTANCE BY</th>
-								<th>SCOPE</th>
-								<th>CALLS AFTER INSTANCE</th>
-								<th>INJECTIONS</th>
-								<th>ORDER INJECTIONS</th>
-								<th>PROPERTIES</th>
-								
-							</tr>
-						</thead>
-						<tbody>
-						{% for service in services %}
-							<tr>
-								<td>{{service.name}}</td>
-								<td>{{service.run}}</td>
-								<td>{{service.scope}}</td>
-								<td>{{service.calls}}</td>
-								<td>{{service.injections}}</td>
-								<td>{{service.orderInjections}}</td>
-								<td>{{service.properties}}</td>
-								
-							</tr>
-						{% endfor %}
-						</tbody>
-					</table>
-				</div>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>NAME</th>
+					<th>INSTANCE BY</th>
+					<th>SCOPE</th>
+					<th>CALLS AFTER INSTANCE</th>
+					<th>INJECTIONS</th>
+					<th>ORDER INJECTIONS</th>
+					<th>PROPERTIES</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+			{% for service in services %}
+				<tr>
+					<td>{{service.name}}</td>
+					<td>{{service.run}}</td>
+					<td>{{service.scope}}</td>
+					<td>{{service.calls}}</td>
+					<td>{{service.injections}}</td>
+					<td>{{service.orderInjections}}</td>
+					<td>{{service.properties}}</td>
+					
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 

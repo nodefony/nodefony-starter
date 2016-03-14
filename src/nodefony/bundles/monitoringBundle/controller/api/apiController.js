@@ -18,7 +18,7 @@ nodefony.registerController("api", function(){
 		};
 
 
-		apiController.prototype.renderRest = function(data){
+		apiController.prototype.renderRest = function(data, async){
 		
 			var context = this.getContext() ;
 			var type = context.request.queryGet.format || context.request.headers["X-FORMAT"] || "" ;
@@ -32,11 +32,19 @@ nodefony.registerController("api", function(){
 				case "text/xml" : 
 				case "xml" : 
 					response.setHeader('Content-Type' , "application/xml"); 
-					return this.render('monitoringBundle:api:api.xml.twig',data);
+					if (async){
+						return this.renderAsync('monitoringBundle:api:api.xml.twig',data);
+					}else{
+						return this.render('monitoringBundle:api:api.xml.twig',data);
+					}
 				break
 				default:
-					response.setHeader('Content-Type' , "application/json"); 
-					return this.render('monitoringBundle:api:api.json.twig',data);
+					response.setHeader('Content-Type' , "application/json");
+					if (async){
+						return this.renderAsync('monitoringBundle:api:api.json.twig',data);
+					}else{
+						return this.render('monitoringBundle:api:api.json.twig',data);
+					}
 			}
 
 			
@@ -287,6 +295,65 @@ nodefony.registerController("api", function(){
 			}
 			
 		};
+
+
+
+		/**
+		 *
+		 *	@method 
+		 *
+		 */
+		apiController.prototype.usersAction = function(name){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			var users = null ;
+			nodefonyDb.query('SELECT * FROM users')
+			.then(function(result){
+				users = result[0];
+			}.bind(this))
+			.done(function(){
+				this.renderRest({
+					code:200,
+					type:"SUCCESS",
+					message:"OK",
+					data:JSON.stringify(users)
+				}, true);
+			}.bind(this))
+
+		}
+
+		/**
+		 *
+		 *	@method 
+		 *
+		 */
+		apiController.prototype.sessionsAction = function(name){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			var joins = null ;
+			nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+			.then(function(result){
+				joins = result[0];
+				for (var i = 0 ; i < joins.length ; i++){
+					joins[i].metaBag = JSON.parse( joins[i].metaBag )
+				}
+			}.bind(this))
+			.done(function(){
+				this.renderRest({
+					code:200,
+					type:"SUCCESS",
+					message:"OK",
+					data:JSON.stringify(joins)
+				}, true);
+			}.bind(this))
+
+		}
 
 
 		
