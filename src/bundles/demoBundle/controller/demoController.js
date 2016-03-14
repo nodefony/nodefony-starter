@@ -179,7 +179,7 @@ nodefony.registerController("demo", function(){
 			throw error ;
 		})
 		.done(function(){
-			return this.renderAsync('demoBundle:orm:artists.html.twig', {
+			return this.renderAsync('demoBundle:orm:orm.html.twig', {
 				sessions:sessions,
 			});
 		}.bind(this))*/
@@ -205,15 +205,51 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.addUserAction = function(){
-		var orm = this.getORM() ;
-		this.userEntity = orm.getEntity("user");
-		
-		//
-		var query = this.getParameters("query");
-		console.log(query)
 
-		var users = null ; 
+		// here start session for flashbag because action is not on secure area and not autostart session 
+		this.startSession("default", function(error, session){
+			if (error){
+				this.setFlashBag("error",error );
+				return this.redirect("login");
+			}
 
+			var orm = this.getORM() ;
+			this.userEntity = orm.getEntity("user");
+
+			// FORM DATA
+			var query = this.getParameters("query");
+
+			// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
+			var firewall = this.get("security");
+			var area = firewall.getSecuredArea("secured_area") ; 
+			var factory = area.getFactory();
+			var realm = factory.settings.realm ;
+			var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
+				
+			var users = null ; 
+			var error = null ;
+			this.userEntity.create({ 
+				username:	query.post.usernameCreate, 
+				email:		query.post.emailCreate, 
+				password:	cryptpwd,
+				name:		query.post.nameCreate  ,
+				surname:	query.post.surnameCreate,  
+			})
+			.then( function(results){
+				users = results
+			})
+			.catch(function(error){
+				this.logger(error.errors);
+				this.setFlashBag("error",error.message );
+				this.redirect("login");
+			}.bind(this))
+			.done(function(){
+				if (error ){
+					return ; 
+				}
+			}.bind(this))
+			
+		}.bind(this));
 
 	}
 

@@ -89,11 +89,6 @@ nodefony.registerService("sequelize", function(){
 	};
 
 
-
-
-
-
-
 	/*
 	 * 
 	 * CLASS SERVICE sequelize

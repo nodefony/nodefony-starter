@@ -29,7 +29,7 @@ nodefony.registerCommand("encoders",function(){
 					if (command[4]) 
 						var realm = command[4] ;
 					else 
-						var realm = security.securedAreas[context].factory.settings.realm //  //this.container.getParameters("kernel").system.domain+":"+this.container.getParameters("kernel").system.httpsPort;
+						var realm = security.securedAreas[context].factory.settings.realm ; //  //this.container.getParameters("kernel").system.domain+":"+this.container.getParameters("kernel").system.httpsPort;
 
 						
 					this.logger("FIREWALL = " + security.securedAreas[context].name)

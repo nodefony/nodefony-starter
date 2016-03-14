@@ -304,6 +304,11 @@ nodefony.registerService("firewall", function(){
 			}
 		}
 	};
+
+	securedArea.prototype.getFactory = function(auth){
+		return this.factory ;
+	};
+
 	
 	securedArea.prototype.setProvider = function(provider){
 		this.providerName = provider;
@@ -680,6 +685,14 @@ nodefony.registerService("firewall", function(){
 			this.logger("securedAreas :" + name +"already exist ")
 		}
 	};
+
+	Firewall.prototype.getSecuredArea = function(name){
+		if (name in this.securedAreas){
+			return this.securedAreas[name] ;
+		}
+		return null ;
+	};
+
 
 	Firewall.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "\x1b[36mSERVICE FIREWALL\x1b[0m";

@@ -36,10 +36,14 @@ nodefony.registerController("default", function(){
 					if (error)
 						throw error ;
 					var log  = session.getFlashBag("session") ;
+					var error  = session.getFlashBag("error") ;
 					if ( log )
 						log["login"] = true ;
 					else
 						log = {login :true};
+					if (error){
+						log["error"]=  error ;
+					}
 					this.renderAsync('usersBundle::login.html.twig',log);
 				}.bind(this));
 			/*}else{

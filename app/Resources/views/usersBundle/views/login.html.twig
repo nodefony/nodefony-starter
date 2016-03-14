@@ -195,10 +195,10 @@
 							<!-- register -->
 							<div class="tab-pane" id="register">
 								<form  id="create" class="form-signin" action="{{ path("adduser") }}" method="POST">
-									<input type="text" class="form-control" placeholder="{{"user"|trans}}" required autofocus>
-									<input type="email" class="form-control" placeholder="{{"email"|trans}}" required>
-									<input type="password" class="form-control" placeholder="{{"pwd"|trans}}" required>
-									<input type="submit" class="btn btn-lg btn-default btn-block" value="{{"validation"|trans}}" />
+									<input name="usernameCreate" type="text" class="form-control" placeholder="{{"user"|trans}}" required autofocus>
+									<input name="emailCreate" type="email" class="form-control" placeholder="{{"email"|trans}}" required>
+									<input name="passwordCreate" type="password" class="form-control" placeholder="{{"pwd"|trans}}" required>
+									<input id="submitCreate" type="submit" class="btn btn-lg btn-default btn-block" value="{{"validation"|trans}}" />
 								</form>
 								<div id="tabs" data-tabs="tabs">
 									<p class="text-center"><a href="#homelogin" data-toggle="tab">{{"have"|trans}}</a></p>

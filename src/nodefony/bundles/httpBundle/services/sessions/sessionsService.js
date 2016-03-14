@@ -298,7 +298,11 @@ nodefony.registerService("sessions", function(){
 		if (! key ){
 			throw new Error ("FlashBag key must be define : " + key)
 		}
-		this.logger("ADD FlashBag : " + key ,"WARNING")
+		if ( ! value ){
+			this.logger("ADD FlashBag  : " + key  + " value not defined ","WARNING");	
+		}else{
+			this.logger("ADD FlashBag : " + key ,"DEBUG");
+		}
 		return this.flashBag[key] = value ;
 	};
 
