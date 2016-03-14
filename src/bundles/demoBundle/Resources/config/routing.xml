@@ -4,15 +4,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
+	<!-- MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  -->
+	<route id="login" pattern="/">
+		<default key="controller">usersBundle:default:login</default>
+	</route>
+
+	<route id="adduser" pattern="/adduser">
+		<default key="controller">demoBundle:demo:addUser</default>
+		<requirement key="method">POST</requirement>
+	</route>
+
+	<!-- MANAGE SECURE  -->
+	<route id="demoSecure" pattern="/demo/secure">
+		<default key="controller">usersBundle:default:401</default>
+	</route>
+
+	<route id="demoLogout" pattern="/demo/logout">
+		<default key="controller">usersBundle:default:logout</default>
+	</route>
+
+	<!-- HOME -->
 	<route id="home" pattern="/demo">
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
-	<route id="demoSecure" pattern="/demo/secure">
-		<default key="controller">demoBundle:demo:401</default>
-	</route>
-
-
+	
 	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
@@ -30,10 +46,7 @@
 		<requirement key="method">GET</requirement>
 	</route>
 	
-	<route id="adduser" pattern="/demo/adduser">
-		<default key="controller">demoBundle:demo:addUser</default>
-		<requirement key="method">POST</requirement>
-	</route>
+	
 
 
 	<route id="sql" pattern="/demo/query/sql">
@@ -47,7 +60,7 @@
 	</route>
 
 	<!-- SYSTEM -->
-	<route id="syscall" pattern="/syscall">
+	<route id="syscall" pattern="/demo/syscall">
 		<default key="controller">demoBundle:demo:syscall</default>
 		<requirement key="method">GET</requirement>
 	</route>
@@ -75,7 +88,6 @@
 	</route>
 
 	<!-- FINDER -->
-	
 	<route id="finder"  pattern="/demo/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>

@@ -208,7 +208,7 @@ nodefony.registerService("sessions", function(){
 				this.contextSession = contextSession ;
 			}
 			this.storage.start(this.id, this.contextSession, function(error, result){
-				//console.log("pass srart");
+				//console.log("pass start");
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();

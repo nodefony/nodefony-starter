@@ -16,15 +16,24 @@ security:
         #         private_key:          mykey
         #         realm:                myreal
         #
+        #       // PROVIDER
+        #       provider:                   nodefony || in_memory
+        #
+        #
+        #       // CROSS DOMAIN CORS SERVER 
+        #       crossDomain: 
+        #         allow-origin:         * || {"name":"domain", "myName":"mydomain.com"}
+        #         Access-Control:       headers to allow in request {access-control-allow-methods :"GET"}      
+        #
+        #
         secured_area:
             pattern:                    ^/demo
             provider:                   nodefony
-#           provider:                  in_memory          
             form_login:
-              check_path:               /secure
+              check_path:               /demo/secure
               login_path:               /login  
               default_target_path:      /demo
-            #FACTORY
+            #FACTORY AUTHENTICATION
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"
@@ -38,9 +47,8 @@ security:
                         "access-control-expose-headers":"WWW-Authenticate ,X-Json",
                         "access-control-max-age":10
                         }
-            
             remember_me:                false           #TODO
-            logout:                     ~
+            logout:                     /logout
             anonymous:                  ~
             context:                    ~
             stateless:                  false           #TODO

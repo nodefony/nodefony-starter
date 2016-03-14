@@ -452,7 +452,6 @@ nodefony.registerService("firewall", function(){
 				case "WEBSOCKET SECURE" :
 
 					// TODO FIREWALL WEBSOCKET
-
 					try {
 						context.notificationsCenter.fire("onRequest", context.container, request, response);	
 					}catch(e){

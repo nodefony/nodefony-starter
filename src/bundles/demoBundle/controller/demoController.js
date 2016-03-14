@@ -36,15 +36,6 @@ nodefony.registerController("demo", function(){
 		});
 	};
 	
-	/*
-	 *	SECURE 
-	 *	
-	 */
-	demoController.prototype["401Action"] = function(error){
-		var res = nodefony.extend( {url:this.context.url}, error);
-		return this.render('frameworkBundle::401.html.twig', res );
-	};
-
 	/**
  	 *
  	 *	DEMO navbar 
