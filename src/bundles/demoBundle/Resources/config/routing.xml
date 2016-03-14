@@ -28,7 +28,6 @@
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
-	
 	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>

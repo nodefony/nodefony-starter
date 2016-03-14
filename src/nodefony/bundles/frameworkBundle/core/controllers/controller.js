@@ -54,6 +54,25 @@ nodefony.register("controller", function(){
 		return this.context.session || null ;
 	};
 
+	Controller.prototype.getFlashBag = function(key){
+		var session = this.getSession() ;
+		if (session){
+			return session.getFlashBag() ;
+		}else{
+			return null ;
+		}
+	};
+
+	Controller.prototype.setFlashBag = function(key, value){
+		var session = this.getSession() ;
+		if (session){
+			return session.setFlashBag(key, value) ;
+		}else{
+			return null ;
+		}
+	};
+
+
 	Controller.prototype.getORM = function(){
 		var defaultOrm = this.container.get("kernel").settings.orm ;
 		return this.container.get(defaultOrm);

@@ -31,8 +31,7 @@ nodefony.registerController("default", function(){
 
 
 		defaultController.prototype.loginAction = function(){
-				
-			if ( ! this.context.session ){
+			//if ( ! this.context.session ){
 				this.startSession("default", function(error, session){
 					if (error)
 						throw error ;
@@ -43,14 +42,14 @@ nodefony.registerController("default", function(){
 						log = {login :true};
 					this.renderAsync('usersBundle::login.html.twig',log);
 				}.bind(this));
-			}else{
+			/*}else{
 				var log = this.context.session.getFlashBag("session") ;
 				if ( log )
 					log["login"] = true ;
 				else
 					log = {login :true};
 				return this.render('usersBundle::login.html.twig',log);
-			}
+			}*/
 		};
 
 		defaultController.prototype.logoutAction = function(){

@@ -203,16 +203,18 @@ nodefony.registerService("sessions", function(){
 				}
 				return ;
 			}
+			//console.log('pass status ' + this.status)
+			//console.log(this.id)
 
 			if ( contextSession ){
 				this.contextSession = contextSession ;
 			}
 			this.storage.start(this.id, this.contextSession, function(error, result){
-				//console.log("pass start");
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();
 				}
+				//console.log(result);
 				if (result){
 					this.deSerialize(result);
 					if (  ! this.isValidSession(result, context) ){
@@ -277,10 +279,12 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.getMetaBag = function(key){
+		
 		return this.getParameters(key);
 	};
 
 	Session.prototype.getFlashBag = function(key){
+		//this.logger("GET FlashBag : " + key ,"WARNING")
 		var res = this.flashBag[key];
 		if ( res ){
 			this.logger("Delete FlashBag : " + key ,"WARNING")
@@ -466,10 +470,11 @@ nodefony.registerService("sessions", function(){
 		this.kernel.listen(this, "onHttpRequest", function(container, context, type){
 			var request = context.request.request ;
 			request.on('end', function(){
-				if ( this.settings.start === "autostart" )
+				if ( this.settings.start === "autostart" ){
 					 this.start(context, "default", function(err, session){
 						this.logger("AUTOSTART SESSION","DEBUG")
 					 }.bind(this));
+				}
 			}.bind(this));
 			var response = context.response.response ;
 			response.on("finish",function(){
@@ -522,6 +527,11 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	SessionsManager.prototype.start = function(context, sessionContext, callback){
+		if ( context.session ){
+			if ( context.session.status === "active" ){
+				return callback(null, context.session)  ;
+			}
+		}
 		var inst = this.createSession(this.defaultSessionName, this.settings );
 		var ret = inst.start(context, sessionContext, function(err, session){
 			context.session = session ;
