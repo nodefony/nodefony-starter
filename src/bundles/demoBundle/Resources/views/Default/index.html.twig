@@ -1,5 +1,9 @@
 {% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
+
+{{trans_default_domain("demo")}}
+
+
 {% block stylesheets %}
 	{{ parent() }}
 
@@ -61,7 +65,7 @@
 		<div class="intro">
 			<div class="start"> {{ "welcome"|trans() }} {{user.name }} {{user.surname}}</div>
 			<h1 class="success" style="font-size:60px"> <strong class="text-primary">NODEFONY </strong> FRAMEWORK  </h1>
-			<h3 class="success"> <strong class="text-primary"> </strong> FRAMEWORK REALTIME SYMFONY LIKE  </h3>
+			<h3 class="success"> <strong class="text-primary"> </strong> {{ "framework"|trans }}   </h3>
 		</div>
 
         	<a href="#system">

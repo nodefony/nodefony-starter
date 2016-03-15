@@ -38,7 +38,7 @@ setInterval(function(){
 	// req.write('data\n');
 	req.end();
 	i++
-}, 600)
+}, 50)
 
 
 /*for (var i = 0; i<100000;i++){

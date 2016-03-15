@@ -90,6 +90,13 @@ var App = new stage.appKernel(null, "dev", {
 		});
 		wow.init();
 
+		/* ---------------------------------------------- /*
+		 * LANG IN URL CHANGE
+		/* ---------------------------------------------- */
+		$("#langs").bind("change",function(){
+			window.location.href = "?lang="+$(this).val();
+		})
+
 	}
 
 

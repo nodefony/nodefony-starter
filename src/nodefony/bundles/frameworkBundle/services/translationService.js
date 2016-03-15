@@ -161,10 +161,15 @@ nodefony.registerService("translation", function(){
 					this.defaultLocale = Lang;	
 				}
 			}else{
+				var queryGetlang = this.container.getParameters("query.request").lang ;
 				if (context.user){
-					var Lang  = context.user.lang
+					if ( queryGetlang ){
+						var Lang  = queryGetlang ;
+					}else{
+						var Lang  = context.user.lang
+					}
 				}else{
-					var Lang =  this.container.getParameters("query.request").lang || context.session.get("lang");
+					var Lang =  queryGetlang || context.session.get("lang");
 				}
 				if ( Lang ){
 					this.defaultLocale = Lang;	
