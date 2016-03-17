@@ -7,12 +7,12 @@ var util = require('util')
 module.exports = function(){
 
 	var self = this;
-	// copy require not present see load runInThisContext 
+	// copy require not present see load runInThisContext
 	self.require = require;
 
 
 	/**
-	 *  Nodefony autoloader 
+	 *  Nodefony autoloader
 	 *
 	 * @class autoload
 	 * @constructor
@@ -20,7 +20,7 @@ module.exports = function(){
 	 *
 	 */
 	var autoload = function(){
-		//this.prefixes = new Array();	
+		//this.prefixes = new Array();
 		this.load("vendors/nodefony/core/core.js");
 		this.load("vendors/nodefony/core/function.js");
 		this.load("vendors/nodefony/core/notificationsCenter.js");
@@ -39,7 +39,7 @@ module.exports = function(){
 	/**
  	 * @method load
 	 *
-	 * @param {String} file Path to file 
+	 * @param {String} file Path to file
 	 *
  	 */
 	autoload.prototype.load = function(file, force){
@@ -52,16 +52,17 @@ module.exports = function(){
 			var txt = fs.readFileSync(file, {encoding: 'utf8'});
 			//console.log('autoaod :' + txt ) ;
 			try {
-				cache[file] = vm.runInThisContext(txt, file);
+				var script = vm.createScript(txt, file, true);
+				cache[file] = script.runInThisContext();
 			}catch(e){
 				//console.log(util.inspect(e, { showHidden: true, depth: null }));
 				console.log(file);
-				throw e;	
+				throw e;
 			}
 			return cache[file];
 		}else{
 			throw new Error("AUTOLOADER file :"+file+" not exist !!!!");
-		}	
+		}
 	};
 
 	/**
@@ -101,7 +102,7 @@ module.exports = function(){
 				onFinish:function(error, res){
 					if (error)
 						throw error;
-					res.forEach(autoloadEach.bind(this))	
+					res.forEach(autoloadEach.bind(this))
 				}.bind(this)
 			});
 			return finder.result
@@ -111,9 +112,8 @@ module.exports = function(){
 
 	autoload.prototype.addPrefix = function(prefix){
 		//TODO check if prefix exist
-		this.prefixes.push(prefix);	
+		this.prefixes.push(prefix);
 	};
 
 	return new autoload();
 }();
-	
