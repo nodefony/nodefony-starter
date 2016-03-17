@@ -339,7 +339,7 @@ nodefony.registerController("demo", function(){
 		
 		}.bind(this)));
 
-
+		
 		// system call  spawn ping  
 		tab.push (new Promise( function(resolve, reject){
 			var du = spawn('ping', ['-c', "3", "google.com"]);

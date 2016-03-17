@@ -116,6 +116,10 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.renderResponse = function(data, status , headers ){
 		var res = this.getResponse(data);
+		if (! res ){
+			this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+			return ;
+		}
 		this.notificationsCenter.fire("onView", data, this.context );
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
@@ -129,6 +133,11 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.render = function(view, param){
+		var response = this.getResponse() ;
+		if (! response ){
+			this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+			return ;
+		}
 		try {
 			var res = this.renderView(view, param);
 			
@@ -137,7 +146,7 @@ nodefony.register("controller", function(){
 			 return ;
 		}
 		if (res !== null ){
-			return this.getResponse() ;
+			return response ;
 		}
 		return res ;
 	};
