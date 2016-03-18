@@ -31,6 +31,8 @@ remember:                       Se rappeller de moi
 help:                           Besoin d'aide?
 user:                           Utilisateur
 pwd:                            Mot de Passe
+name:                           Nom
+surname:                        Prénom
 need:                           Créer un compte 
 select:                         Sélectioner un compte
 have:                           J'ai un compte

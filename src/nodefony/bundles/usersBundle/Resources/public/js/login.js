@@ -136,11 +136,21 @@ var login = function(){
 				data:message	
 			});
 		}
+		var add = $("#adduser");
+		if (add.length) {
+			var message = add.html();
+			$("#adduser").remove();
+			log({
+				type:"INFO",
+				data:message	
+			});
+		}
 
 		var path = $("#login").attr("action");
 		$("#password").bind("focus", function(){
 			new auth( path) ;
 		});
+		new auth( path) ;
 
 
 		$("#login").bind("submit",function(e){

@@ -164,6 +164,9 @@
 		{% if error %}
 			<div id="error">{{error}}</div>
 		{% endif %}
+		{% if adduser %}
+			<div id="adduser">{{adduser}}</div>
+		{% endif %}
 		<div class="container">
 			<div class="row">
 				<h2 class="block text-center text-primary ">{{ "loginMessage"|trans() }}</h2>
@@ -195,8 +198,10 @@
 							<!-- register -->
 							<div class="tab-pane" id="register">
 								<form  id="create" class="form-signin" action="{{ path("adduser") }}" method="POST">
-									<input name="usernameCreate" type="text" class="form-control" placeholder="{{"user"|trans}}" required autofocus>
-									<input name="emailCreate" type="email" class="form-control" placeholder="{{"email"|trans}}" required>
+									<input name="usernameCreate" type="text" class="form-control" placeholder="{{"user"|trans}}" required >
+									<input name="nameCreate" type="text" class="form-control" placeholder="{{"name"|trans}}" required >
+									<input name="surnameCreate" type="text" class="form-control" placeholder="{{"surname"|trans}}" required >
+									<input name="emailCreate" type="email" class="form-control" placeholder="{{"email"|trans}}" >
 									<input name="passwordCreate" type="password" class="form-control" placeholder="{{"pwd"|trans}}" required>
 									<input id="submitCreate" type="submit" class="btn btn-lg btn-default btn-block" value="{{"validation"|trans}}" />
 								</form>

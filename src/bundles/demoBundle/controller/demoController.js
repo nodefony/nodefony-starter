@@ -247,6 +247,8 @@ nodefony.registerController("demo", function(){
 				if (error ){
 					return ; 
 				}
+				this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
+				return this.redirect("login");
 			}.bind(this))
 			
 		}.bind(this));

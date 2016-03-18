@@ -30,6 +30,8 @@ validation:                     Sign in
 remember:                       Remember me
 help:                           need help ?
 user:                           Username
+name:                           Name
+surname:                        Surname
 pwd:                            Password
 need:                           Need an Account 
 select:                         Select Account 
