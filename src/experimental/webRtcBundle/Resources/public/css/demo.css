@@ -58,7 +58,7 @@ html,body {
 
 .video-controls {
 	/*top: -90px;*/
-	position: relative;
+	position: absolute;
 	width: 100%;
 	height: 0;
 }

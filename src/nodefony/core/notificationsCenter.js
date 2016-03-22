@@ -92,9 +92,6 @@ nodefony.register("notificationsCenter",function(){
 		return this.event.removeListener.apply(this.event, arguments);	
 	};
 
-
-
-
 	/**
 	 *
 	 *	@method removeAllListeners 
@@ -106,15 +103,6 @@ nodefony.register("notificationsCenter",function(){
 
 	/**
 	 *
-	 *	@method listeners 
-	 *
-	 */ 
-	//Notification.prototype.removeAllListeners =function(){
-	//	return this.event.listeners.apply(this.event, arguments);	
-	//};
-
-	/**
-	 *
 	 *	@method setMaxListeners 
 	 *
 	 */
@@ -122,8 +110,6 @@ nodefony.register("notificationsCenter",function(){
 		return this.event.setMaxListeners.apply(this.event, arguments);	
 	};
 	
-	
-
 	return {
 	
 		notification:Notification,

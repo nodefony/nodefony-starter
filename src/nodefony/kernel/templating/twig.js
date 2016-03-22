@@ -28,7 +28,7 @@ nodefony.registerTemplate("twig", function(){
 	Twig.prototype.extention = "twig";
 
 	Twig.prototype.renderFile = function(file, option, callback){
-		if (! option) option = {};
+		if (! option) var option = {};
 		var env = this.kernelSettings.environment ;
 		option.settings = nodefony.extend(true, {}, twigOptions, {
 			views :this.rootDir,
@@ -53,11 +53,35 @@ nodefony.registerTemplate("twig", function(){
 		}
 	};
 	
-	Twig.prototype.compile = function(markup, options){
-		option.settings = nodefony.extend({}, twigOptions, {
-			filename :options.path
-		});	
-		return this.engine.compile(markup, option);
+	Twig.prototype.compile = function( file , callback){
+		//console.log(file)
+		//console.trace(this.engine.compile)
+		//if (! options) var options = {};
+		//var env = this.kernelSettings.environment ;
+		/*option.settings = nodefony.extend(true, {}, twigOptions, {
+			views :this.rootDir,
+			'twig options':{
+				cache: ( env === "dev" ) ? false : true  ,
+			}
+		});*/	
+		//return this.engine.compile( markup, option);
+
+		return this.engine.twig({
+			path: file.path,	
+		        async:false,
+			base:this.rootDir,
+			//precompiled:false,
+		        name:file.name,
+			load:function(template){
+				callback(null, template)
+			},
+		        error:function(error){
+				callback(error, null)
+			}
+			
+		})
+
+
 	};
 
 	Twig.prototype.extendFunction = function(){

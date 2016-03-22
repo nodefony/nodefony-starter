@@ -211,7 +211,7 @@ nodefony.registerService("firewall", function(){
 			else
 				this.logger(e, "ERROR");
 
-			
+				
 			context.response.setStatusCode( 401 ) ;
 			this.overrideURL(context.request, this.formLogin);
 			if (! context.isAjax ){

@@ -177,8 +177,8 @@ nodefony.register("fileClass", function(){
 
 	var defautWriteOption = { 
 		flags: 'w',
-		defaultEncoding: 'utf8',
-		mode: 0o666
+		defaultEncoding: 'utf8'
+		//mode: 0o666
 	};
 	File.prototype.write = function(data, options) {
 		return fs.writeFileSync( this.path, data, nodefony.extend({}, defautWriteOption ,options ) ) ;

@@ -21,7 +21,7 @@ nodefony.registerBundle ("assetic", function(){
 		this.mother = this.$super;
 		this.mother.constructor(kernel, container);
 
-		this.kernel.listen(this,"onBoot",function(){
+		this.kernel.listen(this,"onPreBoot",function(){
 			this.engineTwig =  this.kernel.get("templating").engine ;
 			//console.log(this.engineTwig);
 			this.createExtendJavascript();
@@ -29,6 +29,7 @@ nodefony.registerBundle ("assetic", function(){
 		});
 		this.environment = this.kernel.environment ;
 		this.debug = this.kernel.debug ;
+		this.kernelType  =  kernel.type ;
 	};
 	
 
@@ -53,6 +54,9 @@ nodefony.registerBundle ("assetic", function(){
 		var ret = this.generateFileName( files ) ;
 		if ( output  === ""){
 			output = "/assets/"+type+"/"+ret.hash+"_assetic."+type ;
+		}
+		if (this.kernelType === "CONSOLE"){
+			this.kernel.workerSyslog.logger("GENERATE FILE : " + output ,"INFO" );	
 		}
 		try {
 			return  {
@@ -79,12 +83,15 @@ nodefony.registerBundle ("assetic", function(){
 					if ( hasFilters ){
 						//TODO multiple filter
 						for ( var j=0 ; j < myFilters.length ; j++ ){
+							if (this.kernelType === "CONSOLE"){
+								this.kernel.workerSyslog.logger("FILE : " + files[i].path + " FILTER : "+myFilters[j].name,"INFO" );	
+							}
 							myFilters[j].filter.call(myFilters[j], files[i] ,function(e, myData){
 								if ( e) {
 									throw e ;
 								}
 								data += myData ;
-								
+									
 							}) ;
 						}
 						
@@ -206,8 +213,15 @@ nodefony.registerBundle ("assetic", function(){
 						var rep = ret[1].replace(/'|\"|\s*/g, "");
 						if ( rep.match(/^\?.*/) ){
 							rep = rep.replace(/^\?/,"");
-							if ( ! this.debug  && this.container.has( rep ) ){
-								filters.push( this.container.get(rep) );
+							if (this.kernelType === "CONSOLE"){
+								if (  this.container.has( rep ) ){
+									var fi = this.container.get(rep) ;
+									filters.push( fi );
+								}
+							}else{
+								if ( ! this.debug  && this.container.has( rep ) ){
+									filters.push( this.container.get(rep) );
+								}
 							}
 						}else{
 							if (this.container.has( rep )) {
@@ -255,7 +269,7 @@ nodefony.registerBundle ("assetic", function(){
 						throw new Error("Asset File must be an file or directory !!");
 				}
 			}
-			if ( this.environment === "dev" ){
+			if ( this.environment === "dev" || this.kernelType === "CONSOLE" ){
 				//create file if not exist
 				fs.openSync(this.webDir + output, 'w');
 				var file = new nodefony.fileClass( this.webDir + output )

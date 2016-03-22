@@ -47,16 +47,16 @@ nodefony.registerCommand("assets",function(){
 						this.bundles = this.kernel.getBundles();
 						for ( var bundle in this.bundles ){
 							var views = this.bundles[bundle].views;
-							var engine = container.get("Twig") ;
+							var engine = container.get("templating") ;
 							for (var view in views){
-								console.log(views[view])
 								for (var ele in views[view]){
-									console.log(views[view][ele])
-									engine.compile(views[view][ele], {},function(){
-										console.log(arguments)
-									});
+									engine.compile(views[view][ele], function(error, template){
+										if (error){
+											this.logger(error , 'ERROR')	
+										}
+										this.logger("COMPILE TEMPLATE : " + template.path ,"INFO")
+									}.bind(this));
 								}
-								
 							}
 						}
 					break;

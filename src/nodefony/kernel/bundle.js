@@ -216,12 +216,16 @@ nodefony.register("Bundle", function(){
 	}
 
 	Bundle.prototype.registerViews = function(result){
+
+		var serviceTemplate = this.get("templating") ;
+
 		// find  views files 
 		var views = result.findByNode("views") ;
 		views.getFiles().forEach(function(file, index, array){
 			var basename = path.basename(file.dirName);
 			if (basename !== "views"){
 				// directory 
+				//console.log(basename)
 				if ( ! this.views[basename] ){
 					this.views[basename] = {};
 				}
@@ -230,22 +234,40 @@ nodefony.register("Bundle", function(){
 					var name = res[1];
 					this.views[basename][name]= file;
 					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+					if (this.kernel.type !== "CONSOLE"){
+						serviceTemplate.compile( file, function(error, template){
+							if (error){
+								this.logger(error, "ERROR");
+								return ;
+							}
+							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+						}.bind(this) )
+					}
 				}
 			}else{
 				// racine
-				//var basename = "Default";
 				var basename = ".";
 				var res = this.regTemplateExt.exec( file.name );
 				if (res){
 					var name = res[1];
 					this.views[basename][name]= file;
 					this.logger("Register View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+					if (this.kernel.type !== "CONSOLE"){
+						serviceTemplate.compile( file, function(error, template){
+							if (error){
+								this.logger(error, "ERROR");
+								return ;
+							}
+							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+						}.bind(this) )
+					}
 				}
 			}
 		}.bind(this));
 	};
 
 	Bundle.prototype.getView = function(viewDirectory, viewName){
+		
 		if ( this.views[viewDirectory] ){
 			var res = this.regTemplateExt.exec( viewName );
 			if (res){
