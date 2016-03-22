@@ -131,7 +131,7 @@ Usage: node console
 
 Commands : [arguments]
 nodefony
-	npm:list							 List all installed packages
+	npm:list								 List all installed packages
 	npm:install							 Install all framework packages
 framework
 	generate:bundle nameBundle path                                  Generate a Bundle directory in path directory
@@ -139,17 +139,17 @@ framework
 	generate:command nameCommand path                                Generate a command js file in bundle path
 	generate:service nameService path                                Generate a service js file in bundle path
 	router:generate:routes                                           Generate all routes
-	router:generate:route routeName                                  Generate one route Example : ./console router:generate:route home
-	router:match:url url                                             Get route who match url Example : ./console router:match:url /nodefony
+	router:generate:route routeName                                  Generate one route 
+	router:match:url url                                             Get route who match url
 assetic
 	assets:install                                                   Installs bundles web assets link under a public web directory
 	assets:dump                                                      Dump  all bundles web assets under a public web directory
 security
-	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5 Example : ./console encoders:Digest secured_area login password
+	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5 
 sequelize
 	Sequelize:fixtures:load                                          Load data fixtures to your database
 	Sequelize:generate:entities                                      Generate All Entities
-	Sequelize:query:sql connectionName SQL                           query sql in database connection  example : ./console  Sequelize:query:sql nodefony  'select * from users'
+	Sequelize:query:sql connectionName SQL                           query sql in database connection  
 	Sequelize:entity:findAll entity                                  query findAll ENTITY
 App
 	server:run                                                       Run Application                                                     Run Application
@@ -242,12 +242,12 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 .-----------------------------------------------------------------------------------------------------------------------------------------.
 |                                                       NPM NODEFONY PACKAGES                                                             |
 |-----------------------------------------------------------------------------------------------------------------------------------------|
-|     NAME      | VERSION |						   DESCRIPTION                                                                            |
+|     NAME      | VERSION |						   DESCRIPTION                                                    |
 |---------------|---------|---------------------------------------------------------------------------------------------------------------|
 | coffee-script | 1.10.0  | Unfancy JavaScript                                                                                            |
 | less          | 2.6.1   | Leaner CSS                                                                                                    |
-| memcached     | 2.2.1   | A fully featured Memcached API client, supporting both ...						                              |
-| mysql         | 2.10.2  | A node.js driver for mysql. It is written in JavaScript, does not require compiling ...			              |
+| memcached     | 2.2.1   | A fully featured Memcached API client, supporting both ...						          |
+| mysql         | 2.10.2  | A node.js driver for mysql. It is written in JavaScript, does not require compiling ...			  |
 | sequelize     | 3.19.3  | Multi dialect ORM for Node.JS/io.js                                                                           |
 | sqlite3       | 3.1.1   | Asynchronous, non-blocking SQLite3 bindings                                                                   |
 | synchronize   | 0.9.15  | Turns asynchronous function into synchronous                                                                  |
