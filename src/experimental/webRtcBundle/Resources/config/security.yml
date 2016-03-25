@@ -5,12 +5,12 @@ security:
       context:                    webrtc
       provider:                   nodefony
       form_login:
-        login_path:               /login  
+        login_path:               /demo/login  
         default_target_path:      /webrtc
       sasl:
         private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
         realm:                    "nodefony"
       redirectHttps:              true
       crossDomain: 
-        allow-origin:           "*"
+        allow-origin:             "*"
 
