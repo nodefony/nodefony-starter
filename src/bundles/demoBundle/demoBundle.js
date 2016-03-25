@@ -14,5 +14,5 @@ nodefony.registerBundle ("demo", function(){
 		this.mother.constructor(kernel, container);
 	}
 
-	return demo
+	return demo ;
 });

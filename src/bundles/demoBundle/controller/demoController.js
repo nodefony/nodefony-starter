@@ -591,10 +591,55 @@ nodefony.registerController("demo", function(){
 		// absolute
 		return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
 
-		// relatice
+		// relative
 		//return this.redirect ( this.generateUrl("user", {name:"cci"} );
 
 	};
+
+
+	/**
+ 	 *
+ 	 *	DEMO WEBSOCKET
+ 	 */
+	demoController.prototype.websoketAction= function(message){
+		var context = this.getContext();
+		switch( this.getRequest().method ){
+			case "GET" :
+				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+			break;
+			case "WEBSOCKET" :
+				if (message){
+					// MESSAGES CLIENT
+					this.logger( message.utf8Data , "INFO");
+				}else{
+					// PREPARE  PUSH MESSAGES SERVER 
+					// SEND MESSAGES TO CLIENTS
+					var i = 0 ;
+					var id = setInterval(function(){
+						var mess = "I am a  message "+ i +"\n" ;
+						context.send(mess);
+						this.logger( "SEND TO CLIENT :" + mess , "INFO");
+						i++
+					}.bind(this), 1000);
+
+					setTimeout(function(){
+						clearInterval(id);
+						// close reason , descripton
+						context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
+						id = null ;
+					}, 10000);
+					this.context.listen(this, "onClose" , function(){
+						if (id){
+							clearInterval(id);	
+						}
+					})
+				}
+			break;
+			default :
+				throw new Error("REALTIME METHOD NOT ALLOWED")
+		}
+	};
+
 
 	
 	return demoController;

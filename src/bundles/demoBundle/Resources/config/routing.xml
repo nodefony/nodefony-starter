@@ -9,15 +9,16 @@
 		<default key="controller">usersBundle:default:login</default>
 	</route>
 
+	<!-- MANAGE SECURE FOR AJAX CHALENGE -->
+	<route id="demoSecure" pattern="/demo/secure">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
+
 	<route id="adduser" pattern="/adduser">
 		<default key="controller">demoBundle:demo:addUser</default>
 		<requirement key="method">POST</requirement>
 	</route>
 
-	<!-- MANAGE SECURE  -->
-	<route id="demoSecure" pattern="/demo/secure">
-		<default key="controller">usersBundle:default:401</default>
-	</route>
 
 	<route id="demoLogout" pattern="/demo/logout">
 		<default key="controller">usersBundle:default:logout</default>
@@ -94,6 +95,12 @@
 	<route id="download"   pattern="/demo/download">
 		<default key="controller">demoBundle:finder:download</default>
 		<requirement key="method">GET</requirement>
+	</route>
+
+
+	<!-- websoket -->
+	<route id="websoket"  pattern="/demo/websoket">
+		<default key="controller">demoBundle:demo:websoket</default>
 	</route>
 
 	<!-- TODO -->	

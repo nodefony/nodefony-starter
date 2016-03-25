@@ -14,7 +14,7 @@ __Table of content__
 
 ## <a name="protocol"></a> Realtime Protocol
  
-The Realtime Service based on the [Bayeux](http://svn.cometd.org/trunk/bayeux/bayeux.html) protocol
+The Realtime Service based on the [Bayeux](https://docs.cometd.org/current/reference/#_bayeux) protocol
 
 #### Example Flow service RANDOM :  JSON_RPC over BAYEUX over Websocket 
 ```json

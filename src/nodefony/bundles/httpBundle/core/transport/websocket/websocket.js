@@ -54,7 +54,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 		this.connection.on('message', this.handleMessage.bind(this));
 
-		this.connection.on('close', this.close.bind(this)); 
+		this.connection.on('close', onClose.bind(this)); 
 
 		/* // assembleFragments:false 
  		 * this.connection.on('frame', function(webSocketFrame) {
@@ -144,18 +144,26 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		return null ;
 	};
 
-	websocket.prototype.close = function(reasonCode, description ){
-		try {
-			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
-			if (this.connection.state !== "closed")
+	var onClose = function(reasonCode, description){
+		this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
+		if (this.connection.state !== "closed"){
+			try {
 				this.connection.close();
-			this.notificationsCenter.fire("onClose", reasonCode, description, this.connection);
-		}catch(e){
-			this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR")
-		}
+				this.fire("onClose", reasonCode, description, this.connection);
+			}catch(e){
+				this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR");
+			}
+		}else{
+			this.fire("onClose", reasonCode, description, this.connection);	
+		}	
 		this.kernel.container.leaveScope(this.container);
-	};
+	}
 
+	websocket.prototype.close = function(reasonCode, description ){
+		if ( this.connection ){
+			this.connection.close(reasonCode, description);
+		}
+	};
 
 	websocket.prototype.get = function(name){
 		if (this.container)

@@ -4,15 +4,15 @@ security:
         #  
         #       name secured_area
         #
-        #       // FACTORY TOKENS
-        #       http_digest:
+        #       // FACTORY TOKENS   
+        #       http_digest:            # browser window authentication pattern area must be in  /
         #         private_key:          mykey
         #         realm:                myreal
         #
-        #       http_basic
+        #       http_basic              # browser window authentication pattern area must be in  /
         #         realm:                myreal
         #
-        #       sasl:
+        #       sasl:                   # FORM LOCAL
         #         private_key:          mykey
         #         realm:                myreal
         #
@@ -26,7 +26,7 @@ security:
         #         Access-Control:       headers to allow in request {access-control-allow-methods :"GET"}      
         #
         #
-        secured_area:
+        demo_area:
             pattern:                    ^/demo
             provider:                   nodefony
             form_login:

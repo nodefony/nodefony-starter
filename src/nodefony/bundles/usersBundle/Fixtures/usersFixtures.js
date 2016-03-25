@@ -50,33 +50,45 @@ nodefony.registerFixture("users", function(){
 			case "mysql" : 
 				connection.query('SET FOREIGN_KEY_CHECKS = 0')
 				.then(function(){
-			 		return user.sync({ force: true });
+			 		return user.sync({ force: false });
 				})
 				.then(function(){
-			    		console.log('Database synchronised.');
+					this.logger("Database synchronised  " ,"INFO");
+					
 					for (var i = 0 ; i<tab.length; i++){
-						var res = user.create(tab[i],{isNewRecord:true})
-						res.then(function(User){
-							this.logger("ADD USER : " +User.username,"INFO")
-						}.bind(this)).done(function(count,error, result){
+						var username = tab[i].username  ;
+						//var res = user.create(tab[i],{isNewRecord:true});
+						var res = user.findOrCreate({where: {username: username}, defaults:tab[i]});
+
+						res.spread(function(User, created){
+							if (created){
+								this.logger("ADD USER : " +User.username,"INFO");
+							}else{
+								this.logger("ALREADY EXIST USER : " +User.username,"INFO");
+							}
+						}.bind(this))
+						.done(function(count,error, result){
 							if (error){
 								this.logger(error);
 								reject(error);	
 								return ;	
 							}
 							if (count+1 == tab.length ){
-								resolve(result)
+								//resolve(result)
 							}
 						}.bind(this, i))	
 					}
 				}.bind(this))
 				.then(function(){
-			    		return connection.query('SET FOREIGN_KEY_CHECKS = 1')
+			    		return connection.query('SET FOREIGN_KEY_CHECKS = 1');
 				})
 				.catch( function(error){
 					this.logger(error);
 					reject(error)
-				}.bind(this));
+				}.bind(this))
+				.done(function(error, result){
+					//resolve(result);
+				});
 			break;
 			case "sqlite":
 				user.sync({force:true}).then(function() {

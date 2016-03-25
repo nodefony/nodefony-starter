@@ -133,7 +133,7 @@ nodefony.registerService("firewall", function(){
 		//console.log(redirect);
 		switch ( redirect ){
 			case "HTTP" :
-				if ( context .proxy ){
+				if ( context.proxy ){
 					var type = "HTTPS" ;
 				}else{
 					var type = "HTTP" ;
@@ -205,13 +205,15 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleError = function(context, e){
+		if (context.session){
+			context.session.clear();	
+		}
 		if (this.formLogin) {
-			if (e.message)
+			if (e.message){
 				this.logger(e.message, "ERROR");
-			else
+			}else{
 				this.logger(e, "ERROR");
-
-				
+			}
 			context.response.setStatusCode( 401 ) ;
 			this.overrideURL(context.request, this.formLogin);
 			if (! context.isAjax ){
@@ -255,9 +257,7 @@ nodefony.registerService("firewall", function(){
 						tokenName:this.token.name
 					});
 					//context.session.getMetaBag("security") ;
-					
-					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
-						//console.log(context.request.url.path)
+					if ( this.defaultTarget && context.request.url.pathname === this.checkLogin){
 						this.overrideURL(context.request, this.defaultTarget);
 						if ( context.isAjax ){
 							var obj = context.setXjson( {
@@ -279,7 +279,7 @@ nodefony.registerService("firewall", function(){
 							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
 							return ;
 						}
-						if ( context.request.url.path === this.checkLogin ){
+						if ( context.request.url.pathname === this.checkLogin ){
 							return this.redirect(context, "/");
 						}
 					}
@@ -507,7 +507,7 @@ nodefony.registerService("firewall", function(){
 			if (meta){
 				context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
 					if (error){
-						context.notificationsCenter.fire("onError", context.container, error );
+						return context.notificationsCenter.fire("onError", context.container, error );
 					}
 					context.user = user ;
 					try {
