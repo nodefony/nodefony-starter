@@ -1,9 +1,8 @@
 Default:
   pattern:  /
   defaults: 
-    controller: frameworkBundle:default:readme
+    controller: demoBundle:demo:login
   
-            
 
 readme:
     pattern:   /readme 

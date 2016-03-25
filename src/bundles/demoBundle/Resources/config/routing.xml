@@ -5,11 +5,11 @@
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
 	<!-- MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  -->
-	<route id="login" pattern="/">
+	<route id="login" pattern="/demo/login">
 		<default key="controller">usersBundle:default:login</default>
 	</route>
 
-	<!-- MANAGE SECURE FOR AJAX CHALENGE -->
+	<!-- MANAGE SECURE FOR AJAX CHALENGE AND FORM VALID -->
 	<route id="demoSecure" pattern="/demo/secure">
 		<default key="controller">frameworkBundle:default:401</default>
 	</route>

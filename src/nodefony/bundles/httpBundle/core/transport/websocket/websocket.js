@@ -49,6 +49,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen(this, "onRequest", this.handle);
+		this.notificationsCenter.listen(this, "onError", this.handleError);
 
 		// LISTEN EVENTS SOCKET	
 
@@ -125,6 +126,12 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}		
 
 	};
+
+
+	websocket.prototype.handleError = function(container, error){
+		return 	onClose.call(this, error.status, error.message );
+	
+	}; 
 
 	websocket.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");

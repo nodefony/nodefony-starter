@@ -25,6 +25,16 @@ nodefony.registerController("demo", function(){
 
 	/**
  	 *
+ 	 *	DEMO login 
+ 	 *
+ 	 */
+	demoController.prototype.loginAction= function(){
+		return this.redirect(this.generateUrl("login"));	
+	};
+
+
+	/**
+ 	 *
  	 *	DEMO index 
  	 *
  	 */
@@ -210,7 +220,7 @@ nodefony.registerController("demo", function(){
 		this.startSession("default", function(error, session){
 			if (error){
 				this.setFlashBag("error",error );
-				return this.redirect("login");
+				return this.redirect(this.generateUrl("login"));
 			}
 
 			var orm = this.getORM() ;
@@ -221,7 +231,7 @@ nodefony.registerController("demo", function(){
 
 			// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
 			var firewall = this.get("security");
-			var area = firewall.getSecuredArea("secured_area") ; 
+			var area = firewall.getSecuredArea("demo_area") ; 
 			var factory = area.getFactory();
 			var realm = factory.settings.realm ;
 			var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
@@ -241,14 +251,14 @@ nodefony.registerController("demo", function(){
 			.catch(function(error){
 				this.logger(error.errors);
 				this.setFlashBag("error",error.message );
-				this.redirect("login");
+				this.redirect(this.generateUrl("login"));
 			}.bind(this))
 			.done(function(){
 				if (error ){
 					return ; 
 				}
 				this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
-				return this.redirect("login");
+				return this.redirect(this.generateUrl("login"));
 			}.bind(this))
 			
 		}.bind(this));

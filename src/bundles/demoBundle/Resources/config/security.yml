@@ -5,11 +5,11 @@ security:
         #       name secured_area
         #
         #       // FACTORY TOKENS   
-        #       http_digest:            # browser window authentication pattern area must be in  /
+        #       http_digest:            # browser window authentication 
         #         private_key:          mykey
         #         realm:                myreal
         #
-        #       http_basic              # browser window authentication pattern area must be in  /
+        #       http_basic              # browser window authentication 
         #         realm:                myreal
         #
         #       sasl:                   # FORM LOCAL
@@ -31,7 +31,7 @@ security:
             provider:                   nodefony
             form_login:
               check_path:               /demo/secure
-              login_path:               /login  
+              login_path:               /demo/login  
               default_target_path:      /demo
             #FACTORY AUTHENTICATION
             sasl:

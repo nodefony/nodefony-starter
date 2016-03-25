@@ -17,7 +17,16 @@ nodefony.registerService("sessions", function(){
 	};
 
 	var checkSecureReferer = function(){
-		var host = this.context.request.request.headers['host'] ;
+		switch (this.context.type ){
+			case "HTTP" :
+			case "HTTPS" :
+				var host = this.context.request.request.headers['host'] ;
+			break;	
+			case "WEBSOCKET":
+			case "WEBSOCKET SECURE":
+				var host = this.context.request.httpRequest.headers['host'] ;
+			break;	
+		}
 		var meta = this.getMetaBag( "host" );
 		if ( host === meta ){
 			return host ;
