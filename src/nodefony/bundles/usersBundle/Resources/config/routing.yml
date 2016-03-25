@@ -31,15 +31,15 @@
 
 ########## App ROUTING  usersBundle  ############
 
-secure:
-  pattern:              /secure
-  defaults: 
-    controller:         usersBundle:default:401
+#secure:
+#  pattern:              /secure
+#  defaults: 
+#    controller:         usersBundle:default:401
 
-login:
-    pattern:            /login
-    defaults: 
-      controller:       usersBundle:default:login
+#login:
+#    pattern:            /login
+#    defaults: 
+#      controller:       usersBundle:default:login
 
 logout:
     pattern:            /logout

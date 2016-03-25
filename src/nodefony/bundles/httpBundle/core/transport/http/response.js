@@ -14,14 +14,14 @@
 nodefony.register("Response",function(){
 
 
-	var Response = function(response, container){
+	var Response = function(response, container, type){
 		this.container = container ;
 		this.kernel = this.container.get("kernel") ;
 		if (response instanceof  http.ServerResponse)
 			this.response =response;
 		//BODY
 		this.body = "";
-		this.encoding = null;
+		this.encoding = this.setEncoding('utf8');;
 
 		//cookies
 		this.cookies = {};
@@ -33,6 +33,10 @@ nodefony.register("Response",function(){
 
 		// default http code 
 		this.setStatusCode(200);
+
+		//timeout default
+		var settings = this.container.getParameters("bundles.http");
+		this.timeout = type === "HTTP" ? settings.http.responseTimeout : settings.https.responseTimeout ;
 
 		//default Content-Type to implicit headers
 		this.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -57,6 +61,10 @@ nodefony.register("Response",function(){
 	
 	}
 
+	Response.prototype.setTimeout = function(ms){
+		this.timeout = ms ;
+	}
+
 	Response.prototype.addCookie = function(cookie){
 		if ( cookie instanceof nodefony.cookies.cookie ){
 			this.cookies[cookie.name] = cookie;
@@ -75,10 +83,10 @@ nodefony.register("Response",function(){
 	};
 
 	Response.prototype.setCookie = function(cookie){
-		this.response.on('header', function(){
+		//this.response.on('header', function(){
 			this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
 			this.setHeader('Set-Cookie', cookie.serialize());
-		}.bind(this))
+		//}.bind(this))
 	};
 
 	Response.prototype.logger = function(pci, severity, msgid,  msg){

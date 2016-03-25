@@ -313,7 +313,7 @@ stage.registerController("dashboardController", function() {
 			kernel:this.kernel
 		});
 
-		$.ajax("/api/syslog",{
+		$.ajax("/nodefony/api/syslog",{
 			success:function(data, status, xhr){
 				try {
 					this.module.serverSyslog.loadStack( data.response.data, true, function(pdu){
@@ -330,7 +330,7 @@ stage.registerController("dashboardController", function() {
 		});
 
 
-		$.ajax("/api/routes",{
+		$.ajax("/nodefony/api/routes",{
 			success:function(data, status, xhr){
 				try {
 					$("#nbRoutes").html(data.response.data.length);
@@ -343,7 +343,7 @@ stage.registerController("dashboardController", function() {
 			}.bind(this)
 		});
 
-		$.ajax("/api/services",{
+		$.ajax("/nodefony/api/services",{
 			success:function(data, status, xhr){
 				try {
 					

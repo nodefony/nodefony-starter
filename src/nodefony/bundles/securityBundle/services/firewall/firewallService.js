@@ -97,6 +97,7 @@ nodefony.registerService("firewall", function(){
 		this.name = name ;
 		this.container = container;
 		this.firewall = firewall ;
+		this.kernel = firewall.kernel ;
 		this.sessionContext = "default" ;
 		this.crossDomain = null;
 		this.pattern = ".*";
@@ -128,53 +129,151 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
-		if ( context.crossDomain ){
-			if ( this.crossDomain ){
-				return  this.crossDomain.match( context.request, context.response )	
-			}else{
-				return  401;
-			}
+
+		switch ( context.type ){
+			case "HTTP" :
+			case "HTTPS" :
+				var redirect = 	context.session.getFlashBag("redirect" ) ;
+				//console.log(redirect);
+				switch ( redirect ){
+					case "HTTP" :
+						if ( context.proxy ){
+							var type = "HTTPS" ;
+						}else{
+							var type = "HTTP" ;
+						}
+					break;
+					case "HTTPS" :
+						if ( context .proxy ){
+							var type = "HTTPS" ;
+						
+						}else{
+							var type = "HTTP" ;
+						}
+					break;
+					default :
+						var type = context.type ;
+				}
+				switch (type){
+					case "HTTP" :
+						var port = this.kernel.httpPort ;
+						var protocole = type.toLowerCase()+"://" ; 
+						var serverHost = this.kernel.domain + ":" +port ; 
+						var localUrl = protocole+serverHost ;
+					break;
+					case "HTTPS" :
+						var port = this.kernel.httpsPort ;
+						var protocole = type.toLowerCase()+"://" ; 
+						var serverHost = this.kernel.domain + ":" +port ; 
+						var localUrl = protocole+serverHost ;
+					break;
+				
+				}
+				
+				var URL = Url.parse(request.headers.referer || request.headers.origin || protocole+request.headers.host ) ;
+				switch( URL.protocol ){
+					case "http:":
+						var urlProtocol = URL.protocol+"//";
+						if( ! URL.port ){
+							var destURL = urlProtocol+URL.host+":80" ;	
+						}else{
+							var destURL = urlProtocol+URL.host ;	
+						}
+					break;
+					case "https:":
+						var urlProtocol = URL.protocol+"//";
+						if( ! URL.port ){
+							var destURL = urlProtocol+URL.host+":443" ;	
+						}else{
+							var destURL = urlProtocol+URL.host ;	
+						}
+					break;
+				}
+				if ( context.proxy ){
+					var destURL = context.proxy.proxyProto+"://"+context.proxy.proxyHost+":"+port ;
+				}
+
+				context.crossDomain = ! ( destURL  === localUrl ) ;
+				context.crossURL = URL ;
+
+				if ( context.crossDomain ){
+					if ( this.crossDomain ){
+						return  this.crossDomain.match( context.request, context.response )	
+					}else{
+						return  401;
+					}
+				}
+
+			break ;	
+			case "WEBSOCKET":
+			case "WEBSOCKET SECURE":
+				if ( context.crossDomain ){
+					if ( this.crossDomain ){
+						return  this.crossDomain.match( context.request, context.response )	
+					}else{
+						return  401;
+					}
+				}
+			break;
 		}
 	};
 
 	securedArea.prototype.handleError = function(context, e){
-		if (this.formLogin) {
-			if (e.message)
-				this.logger(e.message, "ERROR");
-			else
-				this.logger(e, "ERROR");
-
-			var ajax = context.request.isAjax() ;
-
-			if ( ! ajax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  this.redirect_Https ){
-				this.redirectHttps(context);
-			}else{
-				context.response.setStatusCode( 401 ) ;
-				this.overrideURL(context.request, this.formLogin);
-				if (! ajax){
-					if ( e.message !== "Unauthorized" ){
-						context.session.setFlashBag("session", {
-							error:e.message
+		if (context.session){
+			context.session.clear();	
+		}
+		switch ( context.type ){
+			case "HTTP" :
+			case "HTTPS" :
+				if (this.formLogin) {
+					if (e.message){
+						this.logger(e.message, "ERROR");
+					}else{
+						this.logger(e, "ERROR");
+					}
+					context.response.setStatusCode( 401 ) ;
+					this.overrideURL(context.request, this.formLogin);
+					if (! context.isAjax ){
+						if ( e.message !== "Unauthorized" ){
+							context.session.setFlashBag("session", {
+								error:e.message
+							});
+						}
+					}else{
+						context.setXjson(e);
+					}
+					context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
+				}else{
+					if (e.status){
+						context.notificationsCenter.fire("onError",context.container, {
+							status:e.status,
+							message:e.message
+						});
+					}else{
+						context.notificationsCenter.fire("onError",context.container, {
+							status:500,
+							message:e
 						});
 					}
-				}else{
-					context.setXjson(e);
 				}
-				context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
-			}
-		}else{
-			if (e.status){
-				context.notificationsCenter.fire("onError",context.container, {
-					status:e.status,
-					message:e.message
-				});
-			}else{
-				context.notificationsCenter.fire("onError",context.container, {
-					status:500,
-					message:e
-				});
-			}
+			break;
+			case "WEBSOCKET":
+			case "WEBSOCKET SECURE":
+				//console.trace(e);
+				if (e.status){
+					context.notificationsCenter.fire("onError",context.container, {
+						status:e.status,
+						message:e.message
+					});
+				}else{
+					context.notificationsCenter.fire("onError",context.container, {
+						status:500,
+						message:e
+					});
+				}	
+			break;	
 		}
+	
 	};
 
 	securedArea.prototype.handle = function(context){
@@ -186,16 +285,16 @@ nodefony.registerService("firewall", function(){
 					}
 					this.token = token ;
 					context.session.migrate(true);
-					context.session.setMetaBag("security",{
+					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
 						user:context.user.username,	
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
-					if ( this.defaultTarget && context.request.url.path === this.checkLogin){
-						//console.log(context.request.url.path)
+					//context.session.getMetaBag("security") ;
+					if ( this.defaultTarget && context.request.url.pathname === this.checkLogin){
 						this.overrideURL(context.request, this.defaultTarget);
-						if ( context.request.isAjax() ){
+						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
 								status:200,
@@ -207,7 +306,7 @@ nodefony.registerService("firewall", function(){
 							return ;
 						}
 					}else{
-						if ( context.request.isAjax() ){
+						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
 								status:200,
@@ -215,11 +314,7 @@ nodefony.registerService("firewall", function(){
 							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
 							return ;
 						}
-						//var url = context.session.getMetaBag("url");
-						//console.log( "HANDLE PASS" )
-						//console.log( context.request.url.path )
-						//console.log( url.path )
-						if ( context.request.url.path === this.checkLogin ){
+						if ( context.request.url.pathname === this.checkLogin ){
 							return this.redirect(context, "/");
 						}
 					}
@@ -244,6 +339,11 @@ nodefony.registerService("firewall", function(){
 			}
 		}
 	};
+
+	securedArea.prototype.getFactory = function(auth){
+		return this.factory ;
+	};
+
 	
 	securedArea.prototype.setProvider = function(provider){
 		this.providerName = provider;
@@ -255,7 +355,11 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
+		context.session.setFlashBag("redirect" , "HTTPS" );
 		context.request.url.protocol = "https";
+		if ( context.proxy ){
+			return context.redirect(context.request.url, 301); 
+		}
 		context.request.url.port = this.container.get("kernel").httpsPort;
 		context.request.url.href = "";
 		context.request.url.host = "";
@@ -348,6 +452,7 @@ nodefony.registerService("firewall", function(){
 		});
 
 		this.kernel.listen(this, "onSecurity",function(context){
+			
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
@@ -362,25 +467,16 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if (  context.security ){	
+							
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
 								if (error){
 									return context.security.handleError(context, error);
 								}
 								var meta = session.getMetaBag("security");
-								if (meta){
-									context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
-										if (error){
-											throw error;
-										}
-										context.user = user ;
-										try {
-											context.notificationsCenter.fire("onRequest", context.container, request, response );
-										}catch(e){
-											context.notificationsCenter.fire("onError", context.container, e );	
-										}
-									}.bind(this)) ;
-								}else{
-									this.handlerHttp(context, request, response);
+								try {
+									this.handlerHttp(context, request, response, meta);
+								}catch(error){
+									context.notificationsCenter.fire("onError", context.container, error );
 								}
 							}.bind(this));	
 						}else{
@@ -395,24 +491,52 @@ nodefony.registerService("firewall", function(){
 				case "WEBSOCKET" :
 				case "WEBSOCKET SECURE" :
 					var request = context.request ;
-					var response = context.response ;	
+					var response = context.response ;
 					for ( var area in this.securedAreas ){
 						if ( this.securedAreas[area].match(context.request, context.response) ){
-							context.security = this.securedAreas[area] ;
-							this.handlerWebsocket(context, request, response);
-							break;
+							//FIXME PRIORITY
+							context.security = this.securedAreas[area];
+							//break;
 						}
 					}
-					if ( ! context.security ){
-						context.notificationsCenter.fire("onRequest", context.container, request, response );
+					if (  context.security ){	
+						this.sessionService.start(context, context.security.sessionContext, function(error, session){
+							if (error){
+								return context.security.handleError(context, error);
+							}
+							var meta = session.getMetaBag("security");
+							try {
+								this.handlerHttp(context, request, response, meta);
+							}catch(error){
+								context.notificationsCenter.fire("onError", context.container, error );
+							}
+						}.bind(this));	
+					}else{
+						try {
+							context.notificationsCenter.fire("onRequest", context.container, request, response);	
+						}catch(e){
+							context.notificationsCenter.fire("onError", context.container, e );	
+						}
 					}
+
+					// TODO FIREWALL WEBSOCKET
+					/*try {
+						context.notificationsCenter.fire("onRequest", context.container, request, response);	
+					}catch(e){
+						context.notificationsCenter.fire("onError", context.container, e );	
+					}*/
+					
 				break;
 			}
 		});
 	};
 
-	Firewall.prototype.handlerHttp = function( context, request, response){
+	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
+
+			if ( ! context.isAjax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+				return context.security.redirectHttps(context);
+			}
 			//CROSS DOMAIN //FIXME width callback handle for async response  
 			var next = context.security.handleCrossDomain(context, request, response) ;
 			switch (next){
@@ -429,16 +553,28 @@ nodefony.registerService("firewall", function(){
 					this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
 				break;
 			}
-			context.security.handle( context, request, response);
+
+			if (meta){
+				context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
+					if (error){
+						return context.notificationsCenter.fire("onError", context.container, error );
+					}
+					context.user = user ;
+					try {
+						context.notificationsCenter.fire("onRequest", context.container, request, response );
+					}catch(e){
+						context.notificationsCenter.fire("onError", context.container, e );	
+					}
+				}.bind(this)) ;
+			}else{
+				context.security.handle( context, request, response);
+			}
+			
 		}catch(e){
 			context.security.handleError(context, e);
 		}
 	};
 
-	Firewall.prototype.handlerWebsocket = function(context, request, response){
-		// TODO FIREWALL FOR WEBSOCKET
-		context.notificationsCenter.fire("onRequest", context.container, request, response );
-	};
 
 	Firewall.prototype.setSessionStrategy = function(strategy){
 		if (strategy in optionStrategy ){
@@ -595,6 +731,14 @@ nodefony.registerService("firewall", function(){
 			this.logger("securedAreas :" + name +"already exist ")
 		}
 	};
+
+	Firewall.prototype.getSecuredArea = function(name){
+		if (name in this.securedAreas){
+			return this.securedAreas[name] ;
+		}
+		return null ;
+	};
+
 
 	Firewall.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "\x1b[36mSERVICE FIREWALL\x1b[0m";

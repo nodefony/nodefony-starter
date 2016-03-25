@@ -23,24 +23,38 @@
 #  FRAMEWORK NODEFONY
 #
 #     APP CONFIG  
+name :				AppBundle
+locale :			en_en
+version :                       "1.0"
 App:
-        projectName:                    "App" 
-        projectYear:                    2015
-        locale:                         "en_en"
-        authorName:                     "admin"
-        authorMail:                     "admin@nodefony.com"
+  projectName:                  "App" 
+  locale:                       "en_en"
+  authorName:                   "admin"
+  authorMail:                   "admin@nodefony.com"
 
 
 #
-#  OVERRIDE BUNDLE MONITORING
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
 #
 monitoringBundle:
-        debugBar:                 true
+        debugBar:               true
 
 #
-#  OVERRIDE BUNDLE HTTP 
+#       OVERRIDE BUNDLE HTTP 
 #
-#      STATICS FILES WITH CONNECT LIBRARY
+#       see HTTP BUNDLE config for more options
+#       
+#       // SERVICES
+#       statics files
+#       session
+#       http server
+#       https server
+#       upload 
+#       websocket server 
+#       websocket secure server 
 #
 #
 httpBundle:
@@ -55,22 +69,22 @@ httpBundle:
   upload:
     tmp_dir:                      "tmp/upload"
     #max_filesize:                 100000               #en Bytes
+
   session:
-    handler:                      session.storage.sequelize       # files | sequelize | memcached               
+    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
     #handler:                      session.storage.file                    
-    #save_path:                    "./tmp/sessions"
+    #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
       maxAge:                     0   
 
-#      OVERRIDE HTTPS CONFIGURATION  see HTTP BUNDLE config for more options    
   https:
     certificats:
-      key:                        "/config/certificates/key.pem"
-      cert:                       "/config/certificates/cert.pem"
+      key:                        "/config/certificates/serverKey.pem"
+      cert:                       "/config/certificates/serverCert.pem"
 
 
 #
-#  OVERRIDE BUNDLE ASSETIC
+#       OVERRIDE BUNDLE ASSETIC
 #
 #       LESS SERVICE CONFIGURATION
 #
@@ -80,20 +94,28 @@ asseticBundle:
     cache:                        true 
 
 #
-#       OVERRIDE  Sessions / User database 
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
 #
-#       sequelize 
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors
+#
 #
 sequelizeBundle: 
   debug:        false
 #  connectors:                    
 #    nodefony:
-#      driver:           mysql
-#      dbname:           'nodefony'
-#      username:         'user'
-#      password:         'passwd'
+#      driver:          mysql
+#      dbname:          'nodefony'
+#      username:        'username'
+#      password:        'password'
 #      options:
 #        dialect:       mysql
 #        host:          nodefony.com
 #        port:          '3306'
-

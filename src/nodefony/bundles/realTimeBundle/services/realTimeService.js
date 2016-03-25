@@ -291,6 +291,9 @@ nodefony.registerService("realTime", function(){
 						//console.log("close client");
 						if (error){
 							this.logger("CANNOT CONNECT SERVICE : " + name , "ERROR");
+							client.destroy();
+							delete client ;
+							throw error ;
 						}else{
 							var connection = this.connections.getConnection(client);
 							if (connection && connection.mustClose){

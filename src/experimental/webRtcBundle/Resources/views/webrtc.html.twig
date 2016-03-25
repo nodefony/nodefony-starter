@@ -3,51 +3,70 @@
 {{trans_default_domain("webrtc")}}
 
 {% block stylesheets %}
-
 	{{ parent() }}
 
-	<link href="/demoBundle/clean/assets/css/simple-line-icons.css" rel="stylesheet" media="screen">
-	<link href="/demoBundle/clean/assets/css/animate.css" rel="stylesheet">
+	{% stylesheets  output="/assets/css/clean.css" filter="?uglifycss" 
+            "/demoBundle/clean/assets/css/simple-line-icons.css"
+            "/demoBundle/clean/assets/css/animate.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
 	<link href="/webRtcBundle/css/demo.css" rel="stylesheet">
-	
+
 {% endblock %}
+
 
 {% block javascripts %}
 	{{ parent() }}
 
 	<!-- LIBRARY DESIGN-->
-	<script src="/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js"></script>
-	<script src="/demoBundle/clean/assets/js/jquery.sticky.js"></script>
-	<script src="/demoBundle/clean/assets/js/smoothscroll.js"></script>
-	<script src="/demoBundle/clean/assets/js/wow.min.js"></script>
+	{% javascripts output='/assets/js/vendor.js' filter='?uglifyjs2'
+		"/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js" 
+		"/demoBundle/clean/assets/js/jquery.sticky.js" 
+		"/demoBundle/clean/assets/js/smoothscroll.js" 
+		"/demoBundle/clean/assets/js/wow.min.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
 
 	<!-- LIBRARY STAGE-->
-	<script type="text/javascript" src="/vendors/stage/io/transports/websockets/websocket.js"></script>
-	<script type="text/javascript" src="/vendors/stage/crypto/base64.js"></script>
-	<script type="text/javascript" src="/vendors/stage/crypto/md5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/authentication/sasl/sasl.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/bayeux/bayeux.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/realtime/realtime.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/sip/sip.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/protocols/webrtc/webrtc.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/adapter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/media.js"></script>
-	<script type="text/javascript" src="/vendors/stage/media/webrtc/webrtc.js"></script>
+
+	{% javascripts output='/assets/js/stageLib.js' filter='?uglifyjs2'
+		"/vendors/stage/io/transports/websockets/websocket.js" 
+		"/vendors/stage/crypto/base64.js" 
+		"/vendors/stage/crypto/md5.js" 
+		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js" 
+		"/vendors/stage/io/authentication/sasl/sasl.js" 
+		"/vendors/stage/io/protocols/bayeux/bayeux.js" 
+		"/vendors/stage/io/realtime/realtime.js" 
+		"/vendors/stage/io/protocols/sip/sip.js" 
+		"/vendors/stage/io/protocols/webrtc/webrtc.js" 
+		"/vendors/stage/media/adapter.js" 
+		"/vendors/stage/media/media.js" 
+		"/vendors/stage/media/webrtc/webrtc.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 
 	<!-- KERNEL STAGE-->
-	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
+	{% javascripts output='/assets/js/stage.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/twig/twig.js" 
+		"/vendors/stage/kernel/autoload.js" 
+		"/vendors/stage/kernel/kernel.js" 
+		"/vendors/stage/kernel/appKernel.js" 
+		"/vendors/stage/kernel/container.js" 
+		"/vendors/stage/kernel/routerService.js" 
+		"/vendors/stage/kernel/controller.js" 
+		"/vendors/stage/kernel/module.js" 
+		"/vendors/stage/kernel/translationService.js" 
+		"/vendors/stage/kernel/locationService.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 
 	<!-- ENTRY POINT -->
 	<script src="/webRtcBundle/js/demo.js"></script>
@@ -134,8 +153,7 @@
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">REALTIME APPLICATION</h3>
 						<div class="iconbox-desc">
-							Application VIDEO with 
-							NODEFONY realtime bundle 	
+							 	
 						</div>
 					</div>
 				</div>
@@ -167,7 +185,7 @@
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">WEB AUDIO API</h3>
 						<div class="iconbox-desc">
-							Good things come to those who wait, but only the things left by those who hustle
+							
 						</div>
 					</div>
 				</div>
@@ -183,7 +201,7 @@
 					<div class="iconbox-text">
 						<h3 class="iconbox-title">WEBRTC API</h3>
 						<div class="iconbox-desc">
-							Good things come to those who wait, but only the things left by those who hustle
+							
 						</div>
 					</div>
 				</div>
@@ -203,7 +221,7 @@
 <section id="demo" class=" calltoaction screen-height" >
 	
 	<div id="containerDemo"  >
-			{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'username': username, 'url':url, 'login':login} %}
+			{% include '/src/experimental/webRtcBundle/Resources/views/partialWebRtc.html.twig' with {'username': username, 'url':url, 'name':name} %}
 	</div><!-- .container -->
 
 </section>

@@ -5,6 +5,8 @@
  *
  *
  */
+var async = require('async');
+var sync = require('synchronize');
 
 
 nodefony.registerService("less", function(){
@@ -14,6 +16,8 @@ nodefony.registerService("less", function(){
 	//var regexCssComp =/^(.+)(\.|-)min\.css$|^(.+)\.css$/
 
 
+	//less.logger.addListener(
+
 	var Less = function(kernel, container){
 		this.engine = require("less");	
 		this.kernel = kernel ;
@@ -21,6 +25,7 @@ nodefony.registerService("less", function(){
 		this.environment = this.kernel.environment ;
 		this.filesLess = [];
 		this.hasLess = false ;
+		this.name = "LESS" ;
 
 		this.kernel.listen(this, "onBoot", function(){
 			this.settings = container.getParameters("bundles.assetic").less;
@@ -79,8 +84,8 @@ nodefony.registerService("less", function(){
 	
 	Less.prototype.parse = function(file, dest, callback){
 		var vendors = process.cwd()+"/web/vendors" ;
-		var settings = nodefony.extend(this.settings,{
-			paths: [file.dirName, vendors ],  // Specify search paths for @import directives
+		var settings = nodefony.extend({}, this.settings,{
+			paths: [".", file.dirName, vendors , process.cwd() ],  // Specify search paths for @import directives
 			filename: file.name ,   //'style.less', // Specify a filename, for better error messages
 			async: false,
 			//logLevel: 2,
@@ -94,9 +99,13 @@ nodefony.registerService("less", function(){
 					if (callback) callback(e, null);
 				}else{
 					try {
-						var res = fs.writeFileSync(dest, css.css);
-						this.logger("CREATE LESS FILE: " + dest);
-						if (callback) callback(null, dest);
+						if ( dest  ){
+							var res = fs.writeFileSync(dest, css.css);
+							this.logger("CREATE LESS FILE: " + dest);
+							if (callback) callback(null, dest);
+						}else{
+							if (callback) callback(null, css.css);	
+						}
 					}catch(err){
 						this.logger( err,"ERROR");
 						if (callback) callback(err, null);
@@ -122,5 +131,112 @@ nodefony.registerService("less", function(){
 		}
 		return false;
 	};
+
+	/*Less.prototype.filter = function(file, callback){
+		try {
+			var content = file.content() ;
+
+			var result = this.engine.render(content, {
+				async: false,
+				fileAsync: false,
+				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+				filename: file.name ,		// Specify a filename, for better error messages
+			}, function(e, data){
+				if ( e ){
+					callback( e , null );	
+				}
+				var mydata ="\n \/*** NODEFONY  LESS COMPILE : "+ file.name +"  ***\/\n" ;
+				mydata+=data.css
+				callback( null, mydata )
+			});
+
+		}catch(e){
+			callback( e , null ) ;
+		}
+
+	}*/
+
+	Less.prototype.filter = function(file, callback){
+
+		return this.parse(file, null, callback)
+	}
+
+
+
+	/*Less.prototype.filter = function(file, callback){
+		try {
+			//var file = new nodefony.fileClass( file.path );
+			var content = file.content() ;
+
+			var result = this.engine.render(content, {
+				async: false,
+				fileAsync: false,
+				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+				filename: file.name ,		// Specify a filename, for better error messages
+			}).then(function(data){
+				var mydata ="\n \/*** NODEFONY  LESS COMPILE : "+ file.name +"  ***\/\n" ;
+				mydata+=data.css
+				callback( null, mydata );
+			}, function(e){
+				if ( e ){
+					callback( e , null );	
+				}
+			});
+		}catch(e){
+			//console.log(e)
+			callback( e , null ) ;
+		}
+
+	}*/
+
+
+	/*Less.prototype.filter = function(file, done){
+
+		var content = file.content() ;
+
+		try {
+			sync.fiber(function() {
+				try {
+					var data = sync.await( this.engine.render( content, {
+						paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+						filename: file.name ,		// Specify a filename, for better error messages
+					}, sync.defer() ))
+				} catch(e) {
+					return [e, null ];
+				}
+				var mydata ="\n \/*** NODEFONY  LESS COMPILE : "+ file.name +"  ***\/\n" ;
+				mydata+=data.css
+				return [null, mydata] ;
+  			}.bind(this), done);
+
+		}catch(e){
+			throw e ;
+		}
+
+	}*/
+
+
+	/*Less.prototype.filter = function(file, resolve, reject){
+
+		console.log("PASS")
+		var content = file.content() ;
+		try {
+			this.engine.render( content, {
+				paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
+				filename: file.name ,		// Specify a filename, for better error messages
+			}, function(e, data){
+				if (e){
+					return reject(e);
+				}
+				console.log(mydata)
+				mydata+=data.css ;
+				resolve(mydata);
+				return mydata ;
+			} )
+		} catch(e) {
+			return reject(e);
+		}
+	}*/
+
 	return Less ;
 });

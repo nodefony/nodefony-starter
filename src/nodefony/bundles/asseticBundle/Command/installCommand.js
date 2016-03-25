@@ -18,21 +18,52 @@ nodefony.registerCommand("assets",function(){
 		this.kernel = container.get("kernel");
 
 		var arg = command[0].split(":");
-		switch ( arg[1] ){
-			case "install" :
-				this.table = new AsciiTable("INSTALL LINK IN /web/");	
-				this.table.setHeading(
-					"BUNDLE",
-					"DESTINATION PATH",
-					"SOURCE PATH",
-					"SIZE"
-				);
+		switch( arg[0] ){
+			case "assets" :
+				switch ( arg[1] ){
+					case "install" :
+						this.table = new AsciiTable("INSTALL LINK IN /web/");	
+						this.table.setHeading(
+							"BUNDLE",
+							"DESTINATION PATH",
+							"SOURCE PATH",
+							"SIZE"
+						);
 
-				this.publicDirectory = this.kernel.rootDir+"/web/";
-				this.createAssetDirectory(this.publicDirectory, function(stat){
-					this.parseBundles();
-				}.bind(this));
-				console.log(this.table.render());
+						this.publicDirectory = this.kernel.rootDir+"/web/";
+						this.createAssetDirectory(this.publicDirectory, function(stat){
+							this.parseBundles();
+						}.bind(this));
+						console.log(this.table.render());
+					break;
+					case "dump" :
+						this.table = new AsciiTable("DUMP ASSET  IN /web/");	
+						this.table.setHeading(
+							"BUNDLE",
+							"DESTINATION PATH",
+							"SOURCE PATH",
+							"SIZE"
+						);
+						this.bundles = this.kernel.getBundles();
+						for ( var bundle in this.bundles ){
+							var views = this.bundles[bundle].views;
+							var engine = container.get("templating") ;
+							for (var view in views){
+								for (var ele in views[view]){
+									engine.compile(views[view][ele], function(error, template){
+										if (error){
+											this.logger(error , 'ERROR')	
+										}
+										this.logger("COMPILE TEMPLATE : " + template.path ,"INFO")
+									}.bind(this));
+								}
+							}
+						}
+					break;
+					default:
+						this.logger(new Error(command[0] + " command error"),"ERROR")
+						this.showHelp();
+				}
 			break;
 			default:
 				this.logger(new Error(command[0] + " command error"),"ERROR")
@@ -142,7 +173,9 @@ nodefony.registerCommand("assets",function(){
 	return {
 		name:"assets",
 		commands:{
-			install:["assets:install" ,"Installs bundles web assets under a public web directory "]
+			install:["assets:install" ,"Installs bundles web assets link under a public web directory "],
+			dump:["assets:dump" ,"Dump  all bundles web assets under a public web directory "]
+			//watch:["assetic:watch" ,"Installs bundles web assets under a public web directory "]
 		},
 		worker:Asset
 	}

@@ -23,7 +23,7 @@ stage.registerModule("app", function() {
 		this.logger("INITIALIZE APP", "DEBUG");
 		
 		try {
-			var server = "/realtime"; 
+			var server = "/nodefony/monitoring/realtime"; 
 			this.realtime = new stage.realtime(server ,{
  				onConnect:function(message, realtime){
 					//console.log("welcome to realtime " )
@@ -47,17 +47,8 @@ stage.registerModule("app", function() {
 		
 		}
 
-		// ROUTES 
-		this.router.createRoute("services", "/services", {
-			controller:"appModule:nav:services"
-		});
-		this.router.createRoute("routing", "/routing", {
-			controller:"appModule:nav:routing"
-		});
-
-		this.router.createRoute("syslog", "/syslog", {
-			controller:"appModule:nav:syslog"
-		});
+		
+		
 	
 	};
 			

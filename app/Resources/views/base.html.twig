@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-	{% block meta %}{% endblock %}
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	{% block meta %}
+		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% endblock %}
         <title>{% block title %} NODEFONY ! {% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
 	{% block body %}{% endblock %}
+	{% block footer %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>

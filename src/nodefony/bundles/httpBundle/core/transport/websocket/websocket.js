@@ -14,16 +14,30 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.type = type ;
 		this.container = container;
 		this.kernel = this.container.get("kernel") ;
-		this.request =request ; 
-		this.connection = request.accept(null, request.origin);
+		this.request = request ; 
+		this.origin = request.origin;
+		//TODO acceptProtocol header sec-websocket-protocol   
+		this.connection = request.accept(null, this.origin);
 		this.response = new nodefony.wsResponse( this.connection );
 		this.originUrl = url.parse( request.origin );
-		this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
+		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
 		this.secureArea = null ;
+		this.cookies = {};
+		this.domain =  this.container.getParameters("kernel").system.domain;
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 			remoteAddress:this.remoteAddress,
 			origin:request.origin
 		});
+
+		//parse cookies
+		this.parseCookies();
+
+		this.security = null ;
+		this.user = null ;
+
+		this.url = this.request.resourceURL.href;
+		this.remoteAdress = this.request.remoteAddress ;
+		//console.log(this)
 
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
@@ -35,17 +49,34 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen(this, "onRequest", this.handle);
+		this.notificationsCenter.listen(this, "onError", this.handleError);
 
 		// LISTEN EVENTS SOCKET	
 
 		this.connection.on('message', this.handleMessage.bind(this));
 
-		this.connection.on('close', this.close.bind(this)); 
+		this.connection.on('close', onClose.bind(this)); 
 
 		/* // assembleFragments:false 
  		 * this.connection.on('frame', function(webSocketFrame) {
 			console.log(webSocketFrame.binaryPayload.toString())
 		}.bind(this));*/
+	};
+
+	websocket.prototype.addCookie = function(cookie){
+		if ( cookie instanceof nodefony.cookies.cookie ){
+			this.cookies[cookie.name] = cookie;
+		}else{
+			throw {
+				message:"",
+				error:"Response addCookies not valid cookies"
+			}
+		}	
+	};
+
+
+	websocket.prototype.parseCookies = function(){
+		return  nodefony.cookies.cookiesParser(this);
 	};
 
 	websocket.prototype.listen = function(){
@@ -57,16 +88,19 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	};
 
 	websocket.prototype.clean = function(){
-		delete  this.response.body ;
+		delete this.request ;
+		this.response.clean();
 		delete	this.response ;
 		delete 	this.notificationsCenter ;
+		delete this.cookies ;
 	}
 
 	websocket.prototype.handleMessage = function(message){
 		try {
-			var resolver = this.get("router").resolve(this.container, this.request);
-			if (resolver.resolve) {
-				return resolver.callController(message);
+			this.resolver = this.get("router").resolve(this.container, this.request);
+			this.fire("onMessage", message, this, "RECEIVE") ;
+			if (this.resolver.resolve) {
+				return this.resolver.callController(message);
 			}else{
 				this.request.reject();
 			}
@@ -76,13 +110,14 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 	};
 
-
 	websocket.prototype.handle = function(container, request, response, data){
-		this.container.get("translation").handle( request );
+		this.container.get("translation").handle( this );
 		try {
-			var resolver = this.get("router").resolve(this.container, this.request);
-			if (resolver.resolve) {
-				return resolver.callController(data || null);
+			this.resolver  = this.get("router").resolve(this.container, this.request);
+			//WARNING EVENT KERNEL
+			this.kernel.fire("onRequest", this, this.resolver);
+			if (this.resolver.resolve) {
+				return this.resolver.callController(data || null);
 			}else{
 				request.reject();
 			}
@@ -91,6 +126,12 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}		
 
 	};
+
+
+	websocket.prototype.handleError = function(container, error){
+		return 	onClose.call(this, error.status, error.message );
+	
+	}; 
 
 	websocket.prototype.logger = function(pci, severity, msgid,  msg){
 		var syslog = this.container.get("syslog");
@@ -104,23 +145,32 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		//console.log(data)
 		//console.log(this.response)
 		if ( this.response ){
+			this.fire("onMessage", data, this, "SEND") ;
 			return this.response.send(data || this.response.body)
 		}
 		return null ;
 	};
 
-	websocket.prototype.close = function(reasonCode, description){
-		try {
-			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
-			if (this.connection.state !== "closed")
+	var onClose = function(reasonCode, description){
+		this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
+		if (this.connection.state !== "closed"){
+			try {
 				this.connection.close();
-			this.notificationsCenter.fire("onClose", reasonCode, description);
-		}catch(e){
-			this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR")
-		}
+				this.fire("onClose", reasonCode, description, this.connection);
+			}catch(e){
+				this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR");
+			}
+		}else{
+			this.fire("onClose", reasonCode, description, this.connection);	
+		}	
 		this.kernel.container.leaveScope(this.container);
-	};
+	}
 
+	websocket.prototype.close = function(reasonCode, description ){
+		if ( this.connection ){
+			this.connection.close(reasonCode, description);
+		}
+	};
 
 	websocket.prototype.get = function(name){
 		if (this.container)

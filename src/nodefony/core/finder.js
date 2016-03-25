@@ -192,11 +192,7 @@ nodefony.register("finder", function(){
 		//this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
 		if (this.settings.path){	
 			this.in(this.settings.path);
-			if ( this.path.length ){
-				this.result = this.find();
-			}else{
-				this.result = new Result();
-			}
+			this.result = this.find();
 		}
 	};
 

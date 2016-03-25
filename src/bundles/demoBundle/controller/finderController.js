@@ -38,7 +38,7 @@ nodefony.registerController("finder", function(){
 							};
 						},
 						onFinish:function(error, files){
-							response = this.render('demoBundle:finder:index.html.twig',{
+							this.renderAsync('demoBundle:finder:index.html.twig',{
 								title:"Finder",
 								files:files.json
 							});
@@ -48,7 +48,7 @@ nodefony.registerController("finder", function(){
 				case "File" :
 					switch (file.mimeType) {
 						case "text/plain":
-							return this.render('demoBundle:finder:files.html.twig',{
+							this.renderAsync('demoBundle:finder:files.html.twig',{
 								content:file.content(file.encoding),
 								mime:file.mimeType,
 								encoding:file.encoding
@@ -59,56 +59,35 @@ nodefony.registerController("finder", function(){
 								linkify: true,
 								typographer: true	
 							});
-							return  this.render('demoBundle:finder:files.html.twig',{
+							this.renderAsync('demoBundle:finder:files.html.twig',{
 								title:file.name,
 								content:res,
 								mime:file.mimeType,
 								encoding:file.encoding
 							});
+						break;
 						default:
-							return encode.call(this, file);	
+							encode.call(this, file);	
 					}
 				break;
 			}
-			if (! response ) throw new Error("Search File system Error")
-			return response ;
+			//if (! response ) throw new Error("Search File system Error")
+			//return response ;
 		}catch(e){
 			throw e ;
 		}
 	};
 
-	var renderFileSync = function(file){
-		var response = this.getResponse();
-		var request = this.getRequest().request;
-
-		try {
-			var img = fs.readFileSync(file.path);
-			response.writeHead(200, {
-				'Content-Type': file.mimeType ,
-				'Content-Disposition:' : ' inline; filename="'+file.name+'"'
-			});
-			response.end(img, 'binary');
-		}catch(e){
-			throw e ;
-		}	
-	};
-
+	
 	var encode = function(file){
 		switch (true) {
-			// stream
-			/*case /^image/.test(file.mimeType):
-				try{
-					return renderFileSync.call(this, file);
-				}catch(e){
-					throw e ;
-				}
-			break;*/
+			
 			case /^image/.test(file.mimeType):
 			case /^video/.test(file.mimeType):
 			case /^audio/.test(file.mimeType):
 			case /application\/pdf/.test(file.mimeType):
 				try {
-					return this.renderMediaStream( file );
+					this.renderMediaStream( file );
 					
 				}catch(error){
 					switch (error.code){
@@ -122,7 +101,7 @@ nodefony.registerController("finder", function(){
 			// download
 			default:
 				try {
-					return this.renderFileDownload(file) ; 
+					this.renderFileDownload(file) ; 
 				}catch(error){
 					switch (error.code){
 						case "EISDIR":
@@ -160,7 +139,7 @@ nodefony.registerController("finder", function(){
 		}
 
 		try{ 
-			return search.call(this, path) ;
+			search.call(this, path) ;
 		}catch(e){
 			throw e ;
 		}

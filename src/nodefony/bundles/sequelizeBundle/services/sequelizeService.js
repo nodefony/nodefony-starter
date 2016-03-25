@@ -28,8 +28,6 @@ nodefony.registerService("sequelize", function(){
 	};
 
 
-
-
 	/*
 	 * 
 	 * CLASS LIBRARY CONNECTION
@@ -89,11 +87,6 @@ nodefony.registerService("sequelize", function(){
 		if (! msgid) msgid = "SERVICE sequelize CONNECTION";
 		return this.orm.logger(pci, severity, msgid,  msg);
 	};
-
-
-
-
-
 
 
 	/*

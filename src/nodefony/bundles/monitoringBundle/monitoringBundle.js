@@ -25,7 +25,60 @@ nodefony.registerBundle ("monitoring", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
-		this.kernel.listen(this, "onReady", function(){
+		this.infoKernel = {};
+		this.kernel.listen(this, "onPreBoot", function(kernel){
+			this.infoKernel["events"] = {} ;
+			for(var event in kernel.notificationsCenter.event["_events"] ){
+				switch (event){
+					case "onPreBoot":
+						this.infoKernel["events"][event] = {
+							fire:kernel.preboot,
+							nb:1,
+							listeners:kernel.notificationsCenter.event["_events"][event].length
+						} ;
+					break;
+					default:
+						this.infoKernel["events"][event] = {
+							fire:false,
+							nb:0,
+							listeners:kernel.notificationsCenter.event["_events"][event].length
+						} ;
+						kernel.listen(kernel ,event, function(){
+							var ele =  arguments[0]  ;
+							this.infoKernel["events"][ele].fire= true;
+							this.infoKernel["events"][ele].nb = ++this.infoKernel["events"][ele].nb
+						}.bind(this, event ) )	
+				}
+			}
+		});
+
+		this.kernel.listen(this, "onReady", function(kernel){
+
+			this.infoBundles = {};
+			for(var bund in kernel.bundles ){
+				//console.log( kernel.bundles[bund] );
+				this.infoBundles[bund] = {} ;
+				this.infoBundles[bund]["waitBundleReady"] = kernel.bundles[bund].waitBundleReady
+				this.infoBundles[bund]["version"] = kernel.bundles[bund].settings.version 
+			}
+			//console.log(this.infoBundles);
+			for(var event in this.kernel.notificationsCenter.event["_events"] ){
+				switch (event){
+					case "onReady":
+						this.infoKernel["events"][event] = {
+							fire:kernel.ready,
+							nb:0,
+							listeners:this.kernel.notificationsCenter.event["_events"][event].length
+						} ;
+					break;
+					default:
+						this.infoKernel["events"][event] = nodefony.extend( true, this.infoKernel["events"][event],{
+							listeners:this.kernel.notificationsCenter.event["_events"][event].length
+						}) ;
+				}
+			}
+
+
 			if ( this.container.getParameters("bundles."+this.name).debugBar) {
 				this.logger("ADD DEBUG BAR MONITORING", "WARNING");
 				var bundles = function(){
@@ -40,7 +93,7 @@ nodefony.registerBundle ("monitoring", function(){
 				}.call(this);
 				this.syslogContext = new nodefony.syslog({
 					moduleName:"CONTEXT",
-					maxStack: 10,
+					maxStack: 50,
 					defaultSeverity:"INFO"	
 				}); 
 				var env = this.kernel.environment ;
@@ -82,7 +135,7 @@ nodefony.registerBundle ("monitoring", function(){
 				}; 
 				var security = function(){
 					var obj = {};
-					var firewall = this.container.get("security")
+					var firewall = this.container.get("security");
 					if (firewall){
 						for (var area in firewall.securedAreas ){
 							//console.log(firewall.securedAreas[area])
@@ -103,11 +156,11 @@ nodefony.registerBundle ("monitoring", function(){
 				this.kernel.listen(this, "onRequest",function(context){
 					try {
 						var trans = context.get("translation");
-						//console.log(context.session)
 						if ( context.resolver.resolve ){
 							var obj = {
 								bundle:context.resolver.bundle.name,
 								bundles:bundles,
+								pwd:process.env["PWD"],
 								node:node,
 								services:service,
 								nbServices:nbServices,
@@ -115,32 +168,130 @@ nodefony.registerBundle ("monitoring", function(){
 								route:{
 									name:context.resolver.route.name,
 									uri:context.resolver.route.path,
-									variables:context.resolver.variables 
+									variables:context.resolver.variables,
+									pattern:context.resolver.route.pattern.toString(),	
+									defaultView:context.resolver.defaultView
 								},
 								varialblesName:context.resolver.route.variables,
 								kernelSettings:this.kernel.settings,
 								environment:env,
 								debug:this.kernel.debug,
 								appSettings:app,
-								request:{
-									url:context.request.url.href,
-									method:context.request.method,
-									remoteAdress:context.request.remoteAdress,
-									queryPost:context.request.queryPost,
-									queryGet:context.request.queryGet,
-									headers:context.request.headers,
-									crossDomain:context.crossDomain
-								},
 								locale:{
 									default:trans.defaultLocale,
 									domain:trans.defaultDomain
 								}
 							};
-							if (context.session){
-								obj["session"] = {
-									name:context.session.name
-								};	 
+							switch (context.type){
+								case "HTTP":
+								case "HTTPS":
+									switch (context.request.contentType){
+										case "multipart/form-data":
+											//console.log(context.request.queryFile)
+											try{
+												var content = JSON.stringfy(context.request.queryFile)
+											}catch(e){
+												var content = null ;
+											}
+										break;
+										case "application/xml":
+										case "text/xml":
+										case "application/json":
+										case "text/json":
+										case "application/x-www-form-urlencoded":
+											var content = context.request.body.toString(context.request.charset);
+										break;
+										default:
+											var content = null ;
+									}
+									
+									obj["request"] = {
+										url:context.request.url.href,
+										method:context.request.method,
+										protocol:context.type,
+										remoteAdress:context.request.remoteAdress,
+										queryPost:context.request.queryPost,
+										queryGet:context.request.queryGet,
+										headers:context.request.headers,
+										crossDomain:context.crossDomain,
+										dataSize:context.request.dataSize,
+										content:content,
+										"content-type":context.request.contentType
+									};
+									obj["response"] = {	
+										statusCode:context.response.statusCode,
+										message:context.response.response.statusMessage,
+										size:context.response.body.length ,
+										encoding:context.response.encoding,
+										"content-type":context.response.response.getHeader('content-type')
+									};
+									var timeStamp = context.request.request.nodefony_time ;
+									
+								break;
+								case "WEBSOCKET":
+								case "WEBSOCKET SECURE":
+									//console.log(context)
+									var timeStamp = context.request.nodefony_time ;
+									var configServer = {};
+									for (var conf in context.request.serverConfig){
+										if ( conf == "httpServer")
+											continue ;
+										configServer[conf] = context.request.serverConfig[conf];	
+									}
+
+									obj["request"] = {
+										url:context.request.httpRequest.url,
+										headers:context.request.httpRequest.headers,
+										method:context.request.httpRequest.method,
+										protocol:context.type,
+										remoteAdress:context.request.remoteAddress,
+										serverConfig:configServer,
+									};
+									var config = {};
+									for (var conf in context.response.config){
+										if ( conf == "httpServer")
+											continue ;
+										config[conf] = 	context.response.config[conf];	
+									}
+									obj["response"] = {
+										statusCode:context.response.statusCode,	
+										connection:"WEBSOCKET",
+										config:config,
+										webSocketVersion:context.response.webSocketVersion,
+										message:[],
+									};
+									
+								break;
+							
 							}
+
+							obj["events"] = {} ;
+							for(var event in context.notificationsCenter.event["_events"] ){
+								//console.log(context.notificationsCenter.event["_events"][event].length)
+								
+								if ( event == "onRequest"){
+									obj["events"][event] = {
+										fire:true,
+										nb:1,
+										listeners:context.notificationsCenter.event["_events"][event].length
+									} ;
+								}else{
+									obj["events"][event] = {
+										fire:false,
+										nb:0,
+										listeners:context.notificationsCenter.event["_events"][event].length
+									} ;
+								}
+								//console.log(event)
+								context.listen(context ,event, function(){
+									var ele =  arguments[ 0]  ;
+									obj["events"][ele].fire= true;
+									obj["events"][ele].nb = ++obj["events"][ele].nb
+								}.bind(context, event ) )	
+							}
+
+							//console.log(context);
+							
 							if ( context.security ){
 								var secu = context.session.getMetaBag("security");
 								obj["context_secure"] = {
@@ -165,54 +316,167 @@ nodefony.registerBundle ("monitoring", function(){
 								
 							if ( context.resolver.route.defaults ) {
 								var tab = context.resolver.route.defaults.controller.split(":") ;
-								obj["controllerName"] = ( tab[1] ? tab[1] : "default" ) ;
-								obj["action"] = tab[2] ;
-								obj["pattern"] = context.resolver.route.defaults.controller ;
-								obj["Controller"] = context.resolver.route.defaults.controller
+								var contr   =    ( tab[1] ? tab[1] : "default" );
+								obj["routeur"] =  {
+									bundle : context.resolver.bundle.name+"Bundle" ,
+									action : tab[2]+"Action" ,
+									pattern : context.resolver.route.defaults.controller ,
+									Controller : contr+"Controller"
+								}
+								
+							}
+							if (context.proxy){
+								obj["proxy"] = context.proxy ;
+							}else{
+								obj["proxy"] = null ;
 							}
 
-							context.listen(this, "onView", function(result, context){
-								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
-								if ( context.session ){
-									obj["session"] = nodefony.extend(obj["session"],{
-										id:context.session.id,
-										metas:context.session.metaBag(),
-										attributes:context.session.attributes(),
-										flashes:context.session.flashBags()
-									});
+							if ( context.session ){
+								obj["session"] = {
+									name:context.session.name,
+									id:context.session.id,
+									metas:context.session.metaBag(),
+									attributes:context.session.attributes(),
+									flashes:context.session.flashBags(),
+									context:context.session.contextSession
+								};
+							}
+							
+							
+							if ( context.request.queryFile ){
+								var queryFile = {};
+								for (var ele in context.request.queryFile){
+									queryFile[ele] = {
+										path		: context.request.queryFile[ele].path,
+										mimetype	: context.request.queryFile[ele].mimeType,
+										length		: context.request.queryFile[ele].lenght,
+										fileName	: context.request.queryFile[ele].fileName
+									}
 								}
-								obj["response"] = {	
-									statusCode:context.response.statusCode,
-									message:context.response.response.statusMessage,
-									size:context.response.body.length ,
-									encoding:context.response.encoding,
-									"content-type":context.response.response.getHeader('content-type')
-								}
-								nodefony.extend(obj, context.extendTwig);
+							}
+
+							obj["context"] = {
+								type:context.type,	
+								isAjax:context.isAjax,
+								secureArea:context.secureArea,
+								domain:context.domain,
+								url:context.url,
+								remoteAddress:context.remoteAddress,
+								crossDomain:context.crossDomain
+							}
+
+							// PROFILING
+							if (  ! obj.route.name.match(/^monitoring-/) ){
 								this.syslogContext.logger({
+									timeStamp:timeStamp,
+									queryPost:context.request.queryPost,
+									queryGet:context.request.queryGet,
+									queryFile:queryFile,
 									session:obj["session"],
+									proxy:obj["proxy"],
 									response:obj["response"],
 									security:obj["context_secure"],
 									request:obj["request"],
 									routing:obj["route"],
-									locale:obj["locale"]
+									locale:obj["locale"],
+									context:obj["context"],
+									protocole:context.type,
+									session:obj["session"],
+									security:obj["context_secure"] || {},
+									events:obj["events"],
+									routing:obj["routeur"] || [],
+									route:obj["route"],
+									routeParmeters:obj["varialblesName"],
+									cookies:context.cookies
 								});
-								if( !  context.request.isAjax() && obj.route.name !== "monitoring" ){
+								var logProfile = this.syslogContext.getLogStack();
+								obj["requestId"] = logProfile.uid ;
+							}
+
+							// EVENTS 
+							switch (context.type){
+								case "HTTP":
+								case "HTTPS":
+									context.response.response.on("finish",function(){
+										delete obj ;
+									}.bind(this))
+								break;
+								case "WEBSOCKET":
+								case "WEBSOCKET SECURE":
+
+									context.listen(this,"onMessage", function(message, context, direction ){
+										var ele = {
+											date:new Date().toTimeString(),
+											data:message,
+											direction:direction
+										}
+										if (logProfile ){
+											if (message){
+												logProfile.payload["response"].message.push( ele ) ;
+											}
+										}		
+									})
+									context.listen(this,"onClose" , function(reasonCode, description, connection){
+										delete obj ;	
+										if (logProfile ){
+											//console.log(connection.state)
+											logProfile.payload["response"].statusCode = connection.state  ;	
+										}
+									})
+								break;
+							}
+
+							nodefony.extend(obj, context.extendTwig);
+							context.listen(this, "onView", function(result, context, view, viewParam){
+								if ( logProfile ){
+									if ( ! logProfile.payload["twig"] ){
+										logProfile.payload["twig"] = []  ;
+									}
+									try {
+										JSON.stringify( viewParam ) ;
+									}catch(e){
+										viewParam = "view param can't be parse" ;
+									}
+									logProfile.payload["twig"].push({
+										file:view,
+										param:viewParam
+									});
+								}
+							
+							});
+
+							context.listen(this, "onSend", function(response, context){
+								obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
+								obj["response"] = {
+									statusCode:response.statusCode,
+									message:response.response.statusMessage,
+									size:response.body.length ,
+									encoding:response.encoding,
+									"content-type":response.response.getHeader('content-type'),
+									headers:response.response._headers	
+								}
+								if ( logProfile ){
+									logProfile.payload["timeRequest"] = obj["timeRequest"];
+									logProfile.payload["events"] = 	obj["events"] ;
+									logProfile.payload["response"] = obj["response"] ; 
+								}
+								if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-									if (typeof context.response.body === "string" && context.response.body.indexOf("</body>") > 0 ){
+									if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
 										this.get("templating").renderFile(View, obj,function(error , result){
 											if (error){
 												throw error ;
 											}
-											context.response.body = context.response.body.replace("</body>",result+"\n </body>") ;
+											response.body = response.body.replace("</body>",result+"\n </body>") ;
 										});
 									}else{
 										//context.setXjson(obj);
 									}
+									delete obj ;
 								}else{
 									//context.setXjson(obj);	
 								}
-							});
+							})
 						}
 					}catch(e){
 						this.kernel.logger(e, "ERROR");

@@ -21,11 +21,13 @@ nodefony.registerController("framework", function(){
 		};
 		
 		frameworkController.prototype["404Action"] = function(message){
+			this.getResponse().setStatusCode(404,"Not Found");
 			return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, message) );
 		};
 
 		frameworkController.prototype["401Action"] = function(error){
 			var res = nodefony.extend( {url:this.context.url}, error);
+			this.getResponse().setStatusCode(401,"Unauthorized");
 			return this.render('frameworkBundle::401.html.twig', res );
 		};
 
@@ -41,6 +43,15 @@ nodefony.registerController("framework", function(){
 			}
 			return this.render('frameworkBundle::exception.html.twig', nodefony.extend(ele, exp) );	
 		};
+
+		frameworkController.prototype.timeoutAction = function(exp){
+			var ele = {
+				title:"Timeout",
+				exception:util.inspect( exp.exception )
+			}
+			return this.render('frameworkBundle::timeout.html.twig', nodefony.extend(ele, exp) );	
+		};
+
 
 		frameworkController.prototype.systemAction = function(options){
 			var router = this.get("router");

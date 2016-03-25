@@ -9,20 +9,6 @@ nodefony.registerService("sessions", function(){
 	var algorithm = 'aes-256-ctr';
 	var password = 'd6F3Efeq';
 
-	var encrypt = function (text){
-		var cipher = crypto.createCipher(algorithm, password)
-		var crypted = cipher.update(text,'utf8','hex')
-		crypted += cipher.final('hex');
-		return crypted;
-	}
-
-	var decrypt = function (text){
-		var decipher = crypto.createDecipher(algorithm, password)
-		var dec = decipher.update(text,'hex','utf8')
-		dec += decipher.final('utf8');
-		return dec;
-	}
-
 	var cookiesParser = function(context, name){
 		if (context.cookies[name] ){
 			return context.cookies[name];
@@ -31,7 +17,16 @@ nodefony.registerService("sessions", function(){
 	};
 
 	var checkSecureReferer = function(){
-		var host = this.context.request.request.headers['host'] ;
+		switch (this.context.type ){
+			case "HTTP" :
+			case "HTTPS" :
+				var host = this.context.request.request.headers['host'] ;
+			break;	
+			case "WEBSOCKET":
+			case "WEBSOCKET SECURE":
+				var host = this.context.request.httpRequest.headers['host'] ;
+			break;	
+		}
 		var meta = this.getMetaBag( "host" );
 		if ( host === meta ){
 			return host ;
@@ -48,6 +43,7 @@ nodefony.registerService("sessions", function(){
 		var time = new Date() ;
 		this.setMetaBag("lifetime", this.settings.cookie["maxAge"] );
 		this.setMetaBag("context", this.contextSession );
+		this.setMetaBag("request", this.context.type );
 		this.setMetaBag("created", time );
 		this.setMetaBag("remoteAddress", this.context.request.remoteAdress );
 		this.setMetaBag("host", this.context.request.request.headers['host'] );
@@ -106,6 +102,7 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
 		
+		
 		if ( contextSession ===  undefined ){
 			contextSession = this.contextSession ;
 		}
@@ -158,13 +155,7 @@ nodefony.registerService("sessions", function(){
 								return ;
 							}
 							this.deSerialize(result);
-							if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-								callback({
-									status:302,
-									message:"redirect HTTPS"
-								}, null);	
-								return ;
-							}
+							
 							if (  ! this.isValidSession(result, context) ){
 								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 								this.destroy();
@@ -221,16 +212,18 @@ nodefony.registerService("sessions", function(){
 				}
 				return ;
 			}
+			//console.log('pass status ' + this.status)
+			//console.log(this.id)
 
 			if ( contextSession ){
 				this.contextSession = contextSession ;
 			}
 			this.storage.start(this.id, this.contextSession, function(error, result){
-				//console.log("pass srart");
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();
 				}
+				//console.log(result);
 				if (result){
 					this.deSerialize(result);
 					if (  ! this.isValidSession(result, context) ){
@@ -269,7 +262,7 @@ nodefony.registerService("sessions", function(){
 		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
 		var now = new Date().getTime() ;
 		if (this.lifetime === 0 ) {
-			if ( lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
+			if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
 				this.manager.logger("SESSION INVALIDE gc_maxlifetime    ==> " + this.name + " : "+ this.id, "WARNING");
 				return false ;	
 			}
@@ -295,10 +288,12 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.getMetaBag = function(key){
+		
 		return this.getParameters(key);
 	};
 
 	Session.prototype.getFlashBag = function(key){
+		//this.logger("GET FlashBag : " + key ,"WARNING")
 		var res = this.flashBag[key];
 		if ( res ){
 			this.logger("Delete FlashBag : " + key ,"WARNING")
@@ -312,7 +307,11 @@ nodefony.registerService("sessions", function(){
 		if (! key ){
 			throw new Error ("FlashBag key must be define : " + key)
 		}
-		this.logger("ADD FlashBag : " + key ,"WARNING")
+		if ( ! value ){
+			this.logger("ADD FlashBag  : " + key  + " value not defined ","WARNING");	
+		}else{
+			this.logger("ADD FlashBag : " + key ,"DEBUG");
+		}
 		return this.flashBag[key] = value ;
 	};
 
@@ -358,7 +357,6 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.remove = function(){
-		
 		try {
 			return this.storage.destroy( this.id, this.contextSession);	
 		}catch(e){
@@ -368,7 +366,7 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.destroy = function(){
-		this.clear()
+		this.clear();
 		this.remove();
 		return true ;	
 	};
@@ -485,16 +483,19 @@ nodefony.registerService("sessions", function(){
 		this.kernel.listen(this, "onHttpRequest", function(container, context, type){
 			var request = context.request.request ;
 			request.on('end', function(){
-				if ( this.settings.start === "autostart" )
+				if ( this.settings.start === "autostart" ){
 					 this.start(context, "default", function(err, session){
 						this.logger("AUTOSTART SESSION","DEBUG")
 					 }.bind(this));
+				}
 			}.bind(this));
 			var response = context.response.response ;
 			response.on("finish",function(){
 				if ( context.session ){
 					context.session.setMetaBag("lastUsed", new Date() );
+					context.session.setMetaBag("url", context.request.url );
 					if ( ! context.session.saved ){
+						//console.log("SAVE")
 						context.session.save(context.user ? context.user.id : null);	
 					}
 					delete context.extendTwig ;
@@ -539,6 +540,11 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	SessionsManager.prototype.start = function(context, sessionContext, callback){
+		if ( context.session ){
+			if ( context.session.status === "active" ){
+				return callback(null, context.session)  ;
+			}
+		}
 		var inst = this.createSession(this.defaultSessionName, this.settings );
 		var ret = inst.start(context, sessionContext, function(err, session){
 			context.session = session ;

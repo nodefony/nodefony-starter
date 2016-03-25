@@ -21,12 +21,14 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 						status:401
 					}
 				}
-				var tab2 = tab[1].split(",");
-				var decode = new Buffer(tab2[1], 'base64').toString('ascii');
-				request.headers["authorization"] = decode ;
-				return {
-					mechanism:tab2[0].split("=")[1] ? tab2[0].split("=")[1].replace(/"/g,"") : null,
-					decode:decode
+				if ( tab[0] === "SASL" ){
+					var tab2 = tab[1].split(",");
+					var decode = new Buffer(tab2[1], 'base64').toString('ascii');
+					request.headers["authorization"] = decode ;
+					return {
+						mechanism:tab2[0].split("=")[1] ? tab2[0].split("=")[1].replace(/"/g,"") : null,
+						decode:decode
+					}
 				}
 			}catch(e){
 				throw {

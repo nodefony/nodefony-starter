@@ -205,15 +205,36 @@ nodefony.register("cookies",function(){
 	};
 
 	var cookiesParser = function(context){
-		var cookies = context.request.request.headers.cookie ;
-		if ( cookies ){
-			var obj = parse(cookies);
-			for (var cookie in obj){
-				var co = new Cookie(cookie, obj[cookie]);
-				context.addCookie(co);
-			}
+		var cookies = null ;
+		switch (context.type){
+			case "HTTP" :
+			case "HTTPS" :
+
+				if ( context.request.request && context.request.request.headers.cookie ){
+					cookies = context.request.request.headers.cookie ;
+				}
+				if ( cookies ){
+					var obj = parse(cookies);
+					for (var cookie in obj){
+						var co = new Cookie(cookie, obj[cookie]);
+						context.addCookie(co);
+					}
+				}
+			break;
+			case "WEBSOCKET" :
+			case "WEBSOCKET SECURE" :
+				if ( context.request.cookies ){
+					cookies = context.request.cookies ;	
+				}	
+				if ( cookies ){
+					for ( var i= 0 ; i < cookies.length; i++){
+						var co = new Cookie(cookies[i].name, cookies[i].value);
+						context.addCookie(co);
+					}
+				}
+			break ;
 		}
-	};
+	}
 
 	return {
 		cookie:Cookie,

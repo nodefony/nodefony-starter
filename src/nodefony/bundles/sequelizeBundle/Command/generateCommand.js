@@ -6,7 +6,7 @@
 
 var Sequelize =require("sequelize");
 var Promise = require('promise');
-var async = require('async');
+//var async = require('async');
 
 nodefony.registerCommand("Sequelize",function(){
 
@@ -14,7 +14,6 @@ nodefony.registerCommand("Sequelize",function(){
 	var sequelize = function(container, command, options){
 		var arg = command[0].split(":");
 		this.ormService = this.container.get("sequelize");
-		
 		switch ( arg[1] ){
 			case "generate" : 
 				switch( arg[2 ]){
@@ -23,12 +22,12 @@ nodefony.registerCommand("Sequelize",function(){
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 							tab.push( new Promise( function(resolve, reject){
 									this.logger("DATABASE SYNC : "+connectionName);
-									connection.sync({force: false,logging:this.logger}).then(function(db) {
+									connection.sync({force: false,logging:this.logger,hooks:true}).then(function(db) {
 										this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
 										resolve(connectionName);
 									}.bind(this)).catch(function(error) {
 										this.logger("DATABASE :" + connection.config.database +" CONNECTION : "+connectionName+" : " + error, "ERROR");
-										reject(-1);
+										reject(error);
 									}.bind(this))
 								}.bind(this))
 							);
@@ -37,8 +36,6 @@ nodefony.registerCommand("Sequelize",function(){
 							Promise.all(tab)
 							.catch(function(e){
 								this.logger(e,"ERROR");
-							}.bind(this))
-							.then(function(name){
 							}.bind(this))
 							.done(function(){
 								this.terminate();
@@ -88,23 +85,70 @@ nodefony.registerCommand("Sequelize",function(){
 						this.showHelp();
 				}
 				break;
-			case "request" :
+			case "query" :
 				this.ormService.listen(this, "onOrmReady",function(service){
 					switch( arg[2 ]){
-						case "find":
-							service.getEntity("session").fetchAll(function(error, result){
-								if (error){
-									this.logger(error, "ERROR");
-									this.terminate();
-								}
-								//console.log(result[0].dataValues)
-								for (var i ; i <  result.length ;i++){
-									console.log(result[i]);
-									//console.log(result[0].dataValues[ele].Attributes);
-								}
+						case "sql":
+							var db = command[1];	
+							var conn = this.ormService.getConnection(db);
+							if ( ! conn){
+								this.logger("CONNECTION : "+db +" NOT FOUND" , "ERROR");
+								this.terminate();
+								return ;	
+							}
+							var sql = command[2];	
+							this.logger("CONNECTION : " + db + " \nEXECUTE REQUEST  : "+sql , "INFO");
+							conn.query(sql)
+							.catch(function(error){
+								this.logger(error, "ERROR");
+								this.terminate();	
+							}.bind(this))
+							.then(function(result){
+								//console.log(result[0])
+								var ele =  JSON.stringify(result);
+								console.log(ele)
+
+							}.bind(this))
+							.done(function(){
 								this.terminate();
 							}.bind(this))
 						break;
+						default:
+							this.showHelp();
+							this.terminate();
+					}
+				});
+			break;
+			case "entity" :
+				this.ormService.listen(this, "onOrmReady",function(service){
+					switch( arg[2 ]){
+						case "findAll" :
+							var entity = command[1];
+							var conn = this.ormService.getEntity(entity);
+							if ( ! conn){
+								this.logger("ENTITY : "+entity +" NOT FOUND" , "ERROR");
+								this.terminate();
+								return ;	
+							}
+							this.logger( "ENTITY :"+ entity +" \nEXECUTE findAll   " , "INFO");
+							conn.findAll()
+							.catch(function(error){
+								this.logger(error, "ERROR");
+								this.terminate();	
+							}.bind(this))
+							.then(function(result){
+								//var attribute = result[0].$options.attributes ;
+								var ele =  JSON.stringify(result);
+								console.log(ele)
+								
+							}.bind(this))
+							.done(function(){
+								this.terminate();
+							}.bind(this))
+						break;
+						default:
+							this.showHelp();
+							this.terminate();
 					}
 				});
 			break;
@@ -123,7 +167,8 @@ nodefony.registerCommand("Sequelize",function(){
 			entities:["Sequelize:generate:entities" ,"Generate All Entities"],
 			//create:["Sequelize:database:create" ,"Create a database"],
 			//show:["Sequelize:entity:show" ,"show  Entities"],
-			find:["Sequelize:request:find" ,"find entry in database"]
+			sql:["Sequelize:query:sql connectionName SQL" ,"query sql in database connection  example : ./console  Sequelize:query:sql nodefony  'select * from users'"],
+			entity:["Sequelize:entity:findAll entity " ,"query findAll ENTITY"]
 		},
 		worker:sequelize
 

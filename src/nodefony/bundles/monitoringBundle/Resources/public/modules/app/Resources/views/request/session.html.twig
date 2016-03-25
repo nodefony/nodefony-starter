@@ -1,0 +1,154 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<a class="block panel bg-info text-center wrapper">
+				<div  class="h3 text-white font-thin no-m"><label >SESSION NAME</label></div>
+                                <span class=" label label-success">{{session.name}}</span>
+                        </a>
+
+		</div>
+		<div class="col-md-6">
+			<a class="block panel bg-info text-center wrapper">
+				<div  class="h3 text-white font-thin no-m"><label >SESSION CONTEXT</label></div>
+                                <div  class="h1 label label-success">{{session.context}}</div>
+                        </a>
+		</div>
+
+	</div>
+	
+	<div class="row">
+		<h3>Session Token</h3>	
+		<h3><span class="label label-success">{{session.id}}</span></h3>
+	</div>
+
+
+</div>
+
+<h3>Session Metas</h3>
+<div class="wrapper" >
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>KEY</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in session.metas %}
+			{% if key == "security"  %}
+
+			{% elseif key == "url" %}
+
+			{% else %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+
+			{% endif %}
+
+
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	{% if session.metas.security | length %}
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>META SESSION SECURITY</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in session.metas.security %}
+			{% if key != "security" %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+
+			{% endif %}
+
+
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	{% endif %}
+	{% if session.metas.url | length %}
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>META SESSION URL</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in session.metas.url %}
+			{% if key != "security" %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+
+			{% endif %}
+
+
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	{% endif %}
+</div>
+
+<h3>Session Attributes</h3>
+<div class="wrapper" >
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>KEY</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in session.attributes %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<h3>Session Flashes</h3>
+<div class="wrapper" >
+	<div class="table-responsive" >
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>KEY</th>
+					<th>VALUE</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for key, ele in session.flashes %}
+			<tr>
+				<td>{{key}}</td>
+				<td>{{ele}}</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+

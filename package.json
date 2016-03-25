@@ -22,7 +22,6 @@
     "xml2js": "*",
     "twig": "*",
     "connect": ">= 2.8 < 3",
-    "less": "*",
     "ascii-table": "*",
     "mime":"*",
     "markdown-it":"*",

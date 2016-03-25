@@ -1,41 +1,40 @@
 {% extends "/app/Resources/views/base.html.twig" %}
 
 
-{% block meta %}
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-{% endblock %}
-
-
-
 {% block title %} {{ title }} {% endblock %}
 
 
 {% block stylesheets %}
-	<link href="/demoBundle/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/demoBundle/bootstrap-3.3.5/css/bootstrap-theme.css" rel="stylesheet">
-
-	<!-- Awesome Font -->
-        <link href="/demoBundle/css/font-awesome.min.css" rel="stylesheet">
-
-	<!-- Custom styles CSS -->
-	<link href="/demoBundle/clean/assets/css/style.css" rel="stylesheet" media="screen">
+	
+	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss" 
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
+            "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
+	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+            "/demoBundle/clean/assets/css/style.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
 
 {% endblock %}
 
 
-
 {% block javascripts %}
 
-	<script type="text/javascript" src="/demoBundle/js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="/demoBundle/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-
-	<script type="text/javascript" src="/vendors/stage/stage.js"></script>
-	<script type="text/javascript" src="/vendors/stage/function.js"></script>
-	<script type="text/javascript" src="/vendors/stage/notificationsCenter.js"></script>
-	<script type="text/javascript" src="/vendors/stage/syslog/syslog.js"></script>
-	<script type="text/javascript" src="/vendors/stage/io/io.js"></script>
+	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
+		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+		"/vendors/stage/stage.js" 
+		"/vendors/stage/function.js" 
+		"/vendors/stage/notificationsCenter.js" 
+		"/vendors/stage/syslog/syslog.js" 
+		"/vendors/stage/io/io.js" 
+		"/vendors/stage/xml.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 
 {% endblock %}
 
@@ -43,7 +42,14 @@
 {% block body %}
 
 	<header class="header">
-		{{ render( controller("demoBundle:demo:nav")) }}
+		{{ render( controller("demoBundle:demo:nav", login )) }}
 	</header>
 
 {% endblock %}
+
+{% block footer %}
+	<footer  >
+		{{ render( controller("demoBundle:demo:footer" )) }}
+	</footer>
+{% endblock %}
+

@@ -184,6 +184,7 @@ nodefony.register("Request",function(){
 	};
 
 	Request.prototype.getRemoteAdress = function(){
+		// proxy mode
 		if ( this.headers && this.headers['x-forwarded-for'] ){
 			return this.headers['x-forwarded-for'] ;
 		}

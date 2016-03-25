@@ -8,6 +8,9 @@
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#custom-collapse">
 				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand text-primary" href="" style="margin-left:20px" ><strong class="text-primary">NODEFONY</strong></a>
 		</div>
@@ -15,6 +18,7 @@
 		<div class="collapse navbar-collapse" id="custom-collapse">
 
 			<ul class="nav navbar-nav navbar-left">
+				{% if not  login  %}
 				<li><a href="{{path("home")}}">Home</a></li>
 				<li><a href="#services">PRESENTATION</a></li>
 
@@ -24,6 +28,18 @@
 						<li><a href="{{path("finder")}}">DEMO FINDER</a></li>
 						<li role="separator" class="divider"></li>
 						<li><a href="{{path("upload")}}">DEMO UPLOAD</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("orm")}}">ORM SEQUELIZE</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("sql")}}">QUERY SQL</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("sqlJoin")}}">QUERY SQL JOIN</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("syscall")}}">SYSTEM CALL</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("httpRequest")}}">HTTP REQUEST</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="{{path("websoket")}}">WEBSOCKET</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -40,6 +56,7 @@
 						{% endif %}
                                         </ul>
                                 </li>
+				{% endif %}
 				<li><a href="#doc">DOCUMENTATION</a></li>
 			</ul>
 
@@ -51,7 +68,7 @@
 					{% if  user.username  %}
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}} <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="{{path('logout')}}">{{ "logout"|trans() }}</a></li>
+							<li><a href="{{path('demoLogout')}}">{{ "logout"|trans() }}</a></li>
 						</ul>
 					{% else %}
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">anonymous <span class="caret"></span></a>

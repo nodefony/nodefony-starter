@@ -24,10 +24,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
-		this.request = new nodefony.Request( request , container);
-		this.response = new nodefony.Response( response , container);
+		this.request = new nodefony.Request( request, container, type);
+		this.response = new nodefony.Response( response, container, type);
 		this.session = null;
 		this.cookies = {};
+		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
 		this.domain =  this.container.getParameters("kernel").system.domain;
@@ -52,11 +53,18 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.remoteAddress = this.request.remoteAdress ; 
 
 		// LISTEN EVENTS KERNEL 
-		this.notificationsCenter.listen(this, "onView", function(result, context){
+		this.notificationsCenter.listen(this, "onView", function(result, context, view, param){
 			this.response.body = result;
 		}.bind(this));
 		this.notificationsCenter.listen(this, "onResponse", this.send);
 		this.notificationsCenter.listen( this, "onRequest" , this.handle );
+		this.notificationsCenter.listen( this, "onTimeout" , function(context){
+			this.notificationsCenter.fire("onError", this.container, {
+				status:408,
+				message:new Error("Timeout :" + this.url)
+			} );	
+		} );
+
 
 	};
 
@@ -64,7 +72,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		var get = this.container.setParameters("query.get", this.request.queryGet );
 		if (this.request.queryPost  )
 			var post = this.container.setParameters("query.post", this.request.queryPost );
-		if (this.request.queryPost  )
+		if (this.request.queryFile  )
 			var post = this.container.setParameters("query.files", this.request.queryFile );
 		this.container.setParameters("query.request", this.request.query );
 
@@ -81,7 +89,12 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	
 			if (this.resolver.resolve) {
-				return  this.resolver.callController(data);
+				var ret = this.resolver.callController(data);
+				// timeout response 
+				this.response.response.setTimeout(this.response.timeout, function(){
+					this.notificationsCenter.fire("onTimeout", this);
+				}.bind(this))
+				return ret ;
 			}
 			/*
  			 *	NOT FOUND
@@ -108,6 +121,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		delete  this.domain ;
 		delete  this.notificationsCenter ;
 		delete  this.session ;
+		delete  this.cookies ;
+		if (this.proxy) delete this.proxy ;
+		if (this.user)  delete this.user
+		if (this.security ) delete this.security ;
+		delete this.container ;
 	}
 
 	Http.prototype.getUser = function(){
@@ -131,6 +149,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  		* HTTP WRITE HEAD  
  		*/
 		this.response.writeHead();
+
+		this.notificationsCenter.fire("onSend", response, context);
 		/*
  	 	* WRITE RESPONSE
  	 	*/  
@@ -144,6 +164,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	}
 
 	Http.prototype.close = function(){
+		this.notificationsCenter.fire("onClose", this);
 		// END REQUEST
 		return this.response.end();
 	};

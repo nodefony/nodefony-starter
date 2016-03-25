@@ -26,29 +26,52 @@ nodefony.registerController("default", function(){
 
 		defaultController.prototype["401Action"] = function(error){
 			var res = nodefony.extend( {url:this.context.url}, error);
+			this.getResponse().setStatusCode(401,"Unauthorized");
 			return this.render('frameworkBundle::401.html.twig', res );
 		};
 
 
 		defaultController.prototype.loginAction = function(){
-				
 			if ( ! this.context.session ){
 				this.startSession("default", function(error, session){
 					if (error)
 						throw error ;
 					var log  = session.getFlashBag("session") ;
-					if ( log )
+					
+					if ( log ){
 						log["login"] = true ;
-					else
+					}else{
 						log = {login :true};
+					}
+					var error  = session.getFlashBag("error");
+					if (error){
+						log["error"]=  error ;
+					}
+					var adduser  = session.getFlashBag("adduser");
+					if ( adduser){
+						log["adduser"] = adduser ;	
+					}
+					//this.getResponse().setStatusCode(401,"Unauthorized");
 					this.renderAsync('usersBundle::login.html.twig',log);
 				}.bind(this));
 			}else{
 				var log = this.context.session.getFlashBag("session") ;
-				if ( log )
+				if ( log ){
 					log["login"] = true ;
-				else
+				}else{
 					log = {login :true};
+				}
+				var error  = this.context.session.getFlashBag("error") ;
+				if (error){
+					log["error"]=  error ;
+				}
+				var adduser  = this.context.session.getFlashBag("adduser") ;
+				if ( adduser){
+					log["adduser"] = adduser ;	
+				}
+
+				this.context.session.clear();
+				//this.getResponse().setStatusCode(401,"Unauthorized");
 				return this.render('usersBundle::login.html.twig',log);
 			}
 		};
@@ -56,7 +79,7 @@ nodefony.registerController("default", function(){
 		defaultController.prototype.logoutAction = function(){
 			if (this.context.session)
 				this.context.session.invalidate() ;
-			return this.redirect("/login");
+			return this.redirect( this.generateUrl("login") );
 		};
 
 		return defaultController;

@@ -4,25 +4,82 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
-	<route id="home" pattern="/">
+	<!-- MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  -->
+	<route id="login" pattern="/demo/login">
+		<default key="controller">usersBundle:default:login</default>
+	</route>
+
+	<!-- MANAGE SECURE FOR AJAX CHALENGE AND FORM VALID -->
+	<route id="demoSecure" pattern="/demo/secure">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
+
+	<route id="adduser" pattern="/adduser">
+		<default key="controller">demoBundle:demo:addUser</default>
+		<requirement key="method">POST</requirement>
+	</route>
+
+
+	<route id="demoLogout" pattern="/demo/logout">
+		<default key="controller">usersBundle:default:logout</default>
+	</route>
+
+	<!-- HOME -->
+	<route id="home" pattern="/demo">
 		<default key="controller">demoBundle:demo:index</default>
 	</route>
 
-	
-
-	
 	<!-- UPLOAD -->
 	<route id="upload" pattern="/demo/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="uploadFile" pattern="/upload">
+	<route id="uploadFile" pattern="/demo/fileupload">
 		<default key="controller">demoBundle:demo:upload</default>
 		<requirement key="method">POST</requirement>
 	</route>
 
+	<!-- ORM -->
+	<route id="orm" pattern="/demo/sequelize">
+		<default key="controller">demoBundle:demo:sequelize</default>
+		<requirement key="method">GET</requirement>
+	</route>
 	
+	
+
+
+	<route id="sql" pattern="/demo/query/sql">
+		<default key="controller">demoBundle:demo:querySql</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="sqlJoin" pattern="/demo/query/join">
+		<default key="controller">demoBundle:demo:querySqlJoin</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<!-- SYSTEM -->
+	<route id="syscall" pattern="/demo/syscall">
+		<default key="controller">demoBundle:demo:syscall</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="httpRequest" pattern="/demo/httpRequest">
+		<default key="controller">demoBundle:demo:httpRequest</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="xmlResponse" pattern="/demo/xmlResponse">
+		<default key="controller">demoBundle:demo:rawResponseSync</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
+	<route id="xmlAsyncResponse" pattern="/demo/xmlAsyncResponse">
+		<default key="controller">demoBundle:demo:rawResponseAsync</default>
+		<requirement key="method">GET</requirement>
+	</route>
+
 
 	<!-- REALTIME --> 	
 	<route id="indexReal" pattern="/demo/realtime">
@@ -31,18 +88,20 @@
 	</route>
 
 	<!-- FINDER -->
-	<route id="finder_index"  pattern="/">
-		<default key="controller">demoBundle:finder:index</default>
-	</route>
 	<route id="finder"  pattern="/demo/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
 
-	<route id="download"   pattern="/download">
+	<route id="download"   pattern="/demo/download">
 		<default key="controller">demoBundle:finder:download</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
+
+	<!-- websoket -->
+	<route id="websoket"  pattern="/demo/websoket">
+		<default key="controller">demoBundle:demo:websoket</default>
+	</route>
 
 	<!-- TODO -->	
 	<!--  <import resource="routing2.xml" prefix="/prefix" />

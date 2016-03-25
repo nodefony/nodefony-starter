@@ -9,10 +9,7 @@
  */
 nodefony.registerService("translation", function(){
 
-	var translate = {
-	
-	
-	};
+	var translate = {};
 	
 	var translateDispo = {
 		fr_fr:"français",
@@ -30,7 +27,6 @@ nodefony.registerService("translation", function(){
 
 		// TODO
 		var getObjectTransXML = function(){};
-
 
 		var getObjectTransJSON = function(file, callback, parser){
 			if (parser){
@@ -79,25 +75,29 @@ nodefony.registerService("translation", function(){
 		this.reader = reader(this);
 	};
 
+	i18n.prototype.getLangs = function(){
+
+		var obj = [];
+		for ( var ele in translateDispo){
+			obj.push({
+				name:translateDispo[ele],
+				value:ele
+			})	
+		}
+		return obj;
+	}
+
 	i18n.prototype.boot = function(){
 		this.defaultLocale = this.container.getParameters("kernel.system.locale"); 
-		this.engineTemplate.extendFunction("getLangs", function(){
-			var obj = [];
-			for ( var ele in translateDispo){
-				obj.push({
-					name:translateDispo[ele],
-					value:ele
-				})	
-			}
-			return obj;
-		}.bind(this));
+		this.engineTemplate.extendFunction("getLangs", this.getLangs.bind(this));
 
 		 this.kernel.listen(this, "onBoot", function(){
 			var dl =  this.container.getParameters("bundles.App").App.locale;
-			if (dl && dl !== this.defaultLocale ){
+			if (dl  ){
+			//if (dl && dl !== this.defaultLocale ){
 				this.defaultLocale = dl ; 
-				this.getFileLocale(dl);
 			}
+				this.getFileLocale(dl);
 			this.kernel.logger("default Local APPLICATION ==> " + this.defaultLocale ,"DEBUG");
 		 }.bind(this));
 
@@ -106,14 +106,21 @@ nodefony.registerService("translation", function(){
 	};
 
 	i18n.prototype.trans = function(value, args){
-		var str = this.container.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value) || value;
-		if (args){
-			if (args[0]){
-				for (var ele in args[0]){
-					str = str.replace(ele, args[0][ele])
+		try {
+			var str = this.container.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value) || value;
+			//console.log("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value);
+			if (args){
+				if (args[0]){
+					for (var ele in args[0]){
+						str = str.replace(ele, args[0][ele])
+					}
 				}
+				var domain = args[1] ? this.trans_default_domain( args[1]) : null ;		
 			}
-			var domain = args[1] ? this.trans_default_domain( args[1]) : null ;		
+		}catch (e){
+			this.kernel.logger("TRANSALTION : ", "ERROR");
+			this.kernel.logger(e,"ERROR");
+			return value ;
 		}
 		return str;
 	};
@@ -121,7 +128,7 @@ nodefony.registerService("translation", function(){
 	i18n.prototype.nodeReader = function(locale, domain, value){
 		if ( locale ){
 			if( !translate[locale] )
-				translate[locale] = nodefony.extend(true, {}, translate[this.defaultLocale]);	
+				translate[locale] = {} ;//nodefony.extend(true, {}, translate[this.defaultLocale]);	
 		}
 		if ( domain ){
 			if( !translate[locale][domain] )
@@ -154,18 +161,27 @@ nodefony.registerService("translation", function(){
 					this.defaultLocale = Lang;	
 				}
 			}else{
+				var queryGetlang = this.container.getParameters("query.request").lang ;
 				if (context.user){
-					var Lang  = context.user.lang
+					if ( queryGetlang ){
+						var Lang  = queryGetlang ;
+					}else{
+						var Lang  = context.user.lang
+					}
 				}else{
-					var Lang =  this.container.getParameters("query.request").lang || context.session.get("lang");
+					var Lang =  queryGetlang || context.session.get("lang");
 				}
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
 				context.session.set("lang",this.defaultLocale );
 			}
-			if ( ! this.container.getParameters("translate."+this.defaultLocale) || !  this.container.getParameters("translate."+this.defaultLocale[this.defaultDomain]) ){
+			if ( ! this.container.getParameters("translate."+this.defaultLocale)   ){
 				this.getFileLocale(this.defaultLocale);
+			}else{
+				if ( ! this.container.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain) ){
+					this.getFileLocale(this.defaultLocale);	
+				}
 			}
 		}else{
 				// TODO WEBSOCKET SPEC LANG

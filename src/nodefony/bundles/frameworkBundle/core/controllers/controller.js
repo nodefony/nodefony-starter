@@ -54,19 +54,42 @@ nodefony.register("controller", function(){
 		return this.context.session || null ;
 	};
 
-	Controller.prototype.getResponse = function(content){
-		if (content)
-			this.context.response.setBody( content );
-		return this.context.response;
+	Controller.prototype.getFlashBag = function(key){
+		var session = this.getSession() ;
+		if (session){
+			return session.getFlashBag() ;
+		}else{
+			return null ;
+		}
 	};
+
+	Controller.prototype.setFlashBag = function(key, value){
+		var session = this.getSession() ;
+		if (session){
+			return session.setFlashBag(key, value) ;
+		}else{
+			return null ;
+		}
+	};
+
 
 	Controller.prototype.getORM = function(){
 		var defaultOrm = this.container.get("kernel").settings.orm ;
 		return this.container.get(defaultOrm);
 	};
 
+	Controller.prototype.getResponse = function(content){
+		if (content)
+			this.context.response.setBody( content );
+		return this.context.response;
+	};
+
 	Controller.prototype.renderView = function(view, param ){
-		var View = this.container.get("httpKernel").getView(view);
+		try {
+			var View = this.container.get("httpKernel").getView(view);
+		}catch(e){
+			throw e ;
+		}
 		var res = null;
 		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 		try{ 
@@ -78,7 +101,7 @@ nodefony.register("controller", function(){
 					throw error ;
 				}else{
 					try {
-						this.notificationsCenter.fire("onView", result, this.context );
+						this.notificationsCenter.fire("onView", result, this.context, View , param);
 						res = result;
 					}catch(e){
 						throw e ;
@@ -93,6 +116,10 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.renderResponse = function(data, status , headers ){
 		var res = this.getResponse(data);
+		if (! res ){
+			this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+			return ;
+		}
 		this.notificationsCenter.fire("onView", data, this.context );
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
@@ -106,9 +133,20 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.render = function(view, param){
-		var res = this.renderView(view, param);
+		var response = this.getResponse() ;
+		if (! response ){
+			this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+			return ;
+		}
+		try {
+			var res = this.renderView(view, param);
+			
+		}catch(e){
+			 this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 return ;
+		}
 		if (res !== null ){
-			return this.getResponse() ;
+			return response ;
 		}
 		return res ;
 	};
@@ -134,7 +172,7 @@ nodefony.register("controller", function(){
 			"Expires": "0",
 			'Content-Description': 'File Transfer',
 			'Content-Type': File.mimeType
-		}, headers);
+		}, headers || {});
 
 		var response = this.getResponse();
 		var request = this.getRequest().request;

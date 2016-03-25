@@ -12,7 +12,7 @@ nodefony.register("Bundle", function(){
  	 *	BUNDLE CLASS
  	 */
 	var Bundle = function(kernel , container){
-		this.logger("\033[32m REGISTER BUNDLE : "+this.name+"   \033[0m","DEBUG","KERNEL");
+		this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \033[0m","DEBUG","KERNEL");
 		this.kernel = kernel ;
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.waitBundleReady = false ;
@@ -167,7 +167,7 @@ nodefony.register("Bundle", function(){
 				if (typeof Class === "function" ){
 					//Class.prototype.path = ele.dirName;
 					Class.prototype.name = name;
-					Class.prototype.container = this.container;
+					//Class.prototype.container = this.container;
 					Class.prototype.bundle = this;
 					//Class.prototype.viewFiles = this.viewsFile.findByNode(name);
 					var func = Class.herite(nodefony.controller);
@@ -182,7 +182,7 @@ nodefony.register("Bundle", function(){
 
 	};
 
-	Bundle.prototype.reloadController = function( nameC ){
+	Bundle.prototype.reloadController = function( nameC, container){
 		if ( ! nameC ) return ;
 		var controller = this.finder.result.findByNode("controller");
 		try {
@@ -196,13 +196,13 @@ nodefony.register("Bundle", function(){
 					if (typeof Class === "function" ){
 						//Class.prototype.path = ele.dirName;
 						Class.prototype.name = name;
-						Class.prototype.container = this.container;
+						//Class.prototype.container = container;
 						Class.prototype.bundle = this;
 						//Class.prototype.viewFiles = this.viewsFile.findByNode(name);
 						var func = Class.herite(nodefony.controller);
 						//this.controllers[name] = new func(this.container);
 						this.controllers[name] = func ;
-						//this.logger("Reload Controller : "+name , "DEBUG");
+						//this.logger("ENV  DEVELOPPEMENT Reload Controller : "+name , "DEBUG");
 					}else{
 						this.logger("Register Controller : "+name +"  error Controller closure bad format ");
 					}
@@ -216,12 +216,16 @@ nodefony.register("Bundle", function(){
 	}
 
 	Bundle.prototype.registerViews = function(result){
+
+		var serviceTemplate = this.get("templating") ;
+
 		// find  views files 
 		var views = result.findByNode("views") ;
 		views.getFiles().forEach(function(file, index, array){
 			var basename = path.basename(file.dirName);
 			if (basename !== "views"){
 				// directory 
+				//console.log(basename)
 				if ( ! this.views[basename] ){
 					this.views[basename] = {};
 				}
@@ -230,22 +234,40 @@ nodefony.register("Bundle", function(){
 					var name = res[1];
 					this.views[basename][name]= file;
 					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+					if (this.kernel.type !== "CONSOLE"){
+						serviceTemplate.compile( file, function(error, template){
+							if (error){
+								this.logger(error, "ERROR");
+								return ;
+							}
+							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+						}.bind(this) )
+					}
 				}
 			}else{
 				// racine
-				//var basename = "Default";
 				var basename = ".";
 				var res = this.regTemplateExt.exec( file.name );
 				if (res){
 					var name = res[1];
 					this.views[basename][name]= file;
 					this.logger("Register View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+					if (this.kernel.type !== "CONSOLE"){
+						serviceTemplate.compile( file, function(error, template){
+							if (error){
+								this.logger(error, "ERROR");
+								return ;
+							}
+							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+						}.bind(this) )
+					}
 				}
 			}
 		}.bind(this));
 	};
 
 	Bundle.prototype.getView = function(viewDirectory, viewName){
+		
 		if ( this.views[viewDirectory] ){
 			var res = this.regTemplateExt.exec( viewName );
 			if (res){
@@ -291,11 +313,12 @@ nodefony.register("Bundle", function(){
 				}
 			}
 		}
-		//console.log(files);
 		files.getFiles().forEach(function(file, index, array){
 			//var basename = path.basename(file.dirName)
 			var domain = file.match[1] ;
 			var Locale = file.match[2] ;
+			//console.log(file.path)
+			//console.log(file.match)
 			translation.reader(file.path, Locale, domain)
 		}.bind(this));
 	};

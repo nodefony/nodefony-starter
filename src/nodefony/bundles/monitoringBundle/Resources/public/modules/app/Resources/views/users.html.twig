@@ -1,0 +1,33 @@
+{% include 'blocks/title.html.twig' with { 'title': 'USERS', 'subtitle': 'USERS Nodefony framework ' } %}			
+
+<div class="panel panel-default ">
+	<!-- Default panel contents -->
+	<div class="panel-heading"><strong>USERS    </strong></div>
+	<div class="panel-body">
+		<div class="table-responsive" >
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Username</th>
+						<th>Name</th>
+						<th>Surname</th>
+						<th>Locale</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in users %}
+						<tr>
+							<td>{{user.id}}</td>
+							<td>{{user.username}}</td>
+							<td>{{user.name}}</td>
+							<td>{{user.surname}}</td>
+							<td>{{user.lang}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+

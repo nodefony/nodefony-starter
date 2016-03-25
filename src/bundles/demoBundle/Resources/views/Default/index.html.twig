@@ -1,46 +1,56 @@
 {% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
+
+{{trans_default_domain("demo")}}
+
+
 {% block stylesheets %}
 	{{ parent() }}
-	<link href="/demoBundle/clean/assets/css/font-awesome.min.css" rel="stylesheet" media="screen">
-	<link href="/demoBundle/clean/assets/css/simple-line-icons.css" rel="stylesheet" media="screen">
-	<link href="/demoBundle/clean/assets/css/animate.css" rel="stylesheet">
+
+	{% stylesheets  output="/assets/css/clean.css" filter="?uglifycss" 
+            "/demoBundle/clean/assets/css/simple-line-icons.css"
+            "/demoBundle/clean/assets/css/animate.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
 
 {% endblock %}
-
 
 {% block javascripts %}
 	{{ parent() }}
 
 	<!-- LIBRARY DESIGN-->
-	<script src="/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js"></script>
-	<script src="/demoBundle/clean/assets/js/jquery.sticky.js"></script>
-	<script src="/demoBundle/clean/assets/js/smoothscroll.js"></script>
-	<script src="/demoBundle/clean/assets/js/wow.min.js"></script>
-
+	{% javascripts output='/assets/js/vendor.js' filter='?uglifyjs2'
+		"/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js" 
+		"/demoBundle/clean/assets/js/jquery.sticky.js" 
+		"/demoBundle/clean/assets/js/smoothscroll.js" 
+		"/demoBundle/clean/assets/js/wow.min.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 
 	<!-- KERNEL STAGE-->
-	<script type="text/javascript" src="/frameworkBundle/vendors/twig/twig.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/autoload.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/kernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/appKernel.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/container.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/routerService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/controller.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/module.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/translationService.js"></script>
-	<script type="text/javascript" src="/vendors/stage/kernel/locationService.js"></script>
-
-
+	{% javascripts output='/assets/js/stage.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/twig/twig.js" 
+		"/vendors/stage/kernel/autoload.js" 
+		"/vendors/stage/kernel/kernel.js" 
+		"/vendors/stage/kernel/appKernel.js" 
+		"/vendors/stage/kernel/container.js" 
+		"/vendors/stage/kernel/routerService.js" 
+		"/vendors/stage/kernel/controller.js" 
+		"/vendors/stage/kernel/module.js" 
+		"/vendors/stage/kernel/translationService.js" 
+		"/vendors/stage/kernel/locationService.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	
 	<!-- ENTRY POINT -->
 	<script src="/demoBundle/js/demo.js"></script>
-
-
 
 {% endblock %}
 
 {% block body %}
-
 
 	<!-- Preloader -->
 
@@ -55,7 +65,7 @@
 		<div class="intro">
 			<div class="start"> {{ "welcome"|trans() }} {{user.name }} {{user.surname}}</div>
 			<h1 class="success" style="font-size:60px"> <strong class="text-primary">NODEFONY </strong> FRAMEWORK  </h1>
-			<h3 class="success"> <strong class="text-primary"> </strong> FRAMEWORK REALTIME SYMFONY LIKE  </h3>
+			<h3 class="success"> <strong class="text-primary"> </strong> {{ "framework"|trans }}   </h3>
 		</div>
 
         	<a href="#system">
@@ -65,37 +75,176 @@
             			</span>
 			</div>
         	</a>
-
 	</section>
 
 	{{ parent() }}
 
+	<section id="system" class=" pfblock-gray screen-height" >
+		<div class="container"  >
+			<div class="row">
 
-	<section id="system" class=" pfblock-gray screen-height">
-        	
+				<div class="col-sm-6 col-sm-offset-3" style="margin-top:60px">
+
+					<div class="pfblock-header wow fadeInUp">
+						<h2 class="pfblock-title "> WEB APPLICATION</h2>
+						<div class="pfblock-line"></div>
+						<div class="pfblock-subtitle text-primary">
+							NODE.JS  
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		
+
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/web-server-icon.png" style="width:60px;height:42px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">SERVEURS</h3>
+							<div class="iconbox-desc">
+								Http Https </br>
+								Websoket Secure </br>
+								Statics Files 
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/framework.jpg" style="width:60px;height:42px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">FRAMEWORK SERVICE</h3>
+							<div class="iconbox-desc">
+								 MVC Design</br>
+								 Dynamic Routing</br>
+								 Translations, Assetics </br>
+								 
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/sequelize.png" style="width:60px;height:42px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">ORM SERVICE</h3>
+							<div class="iconbox-desc">
+								 Sequelize</br>
+								 MYSQL SQLITE</br> 
+								 sessions, users
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/monitoring.jpg" style="width:60px;height:42px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">NONITORING APPICATION</h3>
+							<div class="iconbox-desc">
+								 Monitoring websoket</br>
+								 Monitoring http</br>
+								 Monitoring Sessions</br>
+								 
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+			</div><!-- .row -->
+			<div class="row">
+				<div class="col-sm-3">
+
+					<div class="iconbox wow slideInLeft">
+						<div class="iconbox-icon">
+							<img src = "/webRtcBundle/images/fanout_icon.png" style="width:60px;height:60px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">REALTIME APPLICATION</h3>
+							<div class="iconbox-desc">
+								API realtime </br>
+								Services Subscription	
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-3">
+
+					<div class="iconbox wow slideInLeft">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/authentication.png" style="width:60px;height:53px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">AUTHENTICATION MANAGER</h3>
+							<div class="iconbox-desc">
+								Factory authentication </br>
+								Digest Basic
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-sm-3">
+
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/http.png" style="width:60px;height:60px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">SESSIONS MANAGER</h3>
+							<div class="iconbox-desc">
+								Session Storage  </br>
+								session Context Secure	
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-sm-3">
+
+					<div class="iconbox wow slideInRight">
+						<div class="iconbox-icon">
+							<img src = "/demoBundle/images/firewall.png" style="width:60px;height:42px"></img>
+						</div>
+						<div class="iconbox-text">
+							<h3 class="iconbox-title">SECURITY</h3>
+							<div class="iconbox-desc">
+								Firewall in application level </br>
+								Cors Manager 
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div><!-- .row -->
+			
+
+		</div><!-- .container -->
 
 	</section>
 
-
-	<footer id="footer" >
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-12">
-                    			<p class="copyright">
-						© 2015   Generate with {{ nodefony }}  
-					</p>
-				</div>
-			</div><!-- .row -->
-		</div><!-- .container -->
-	</footer>
-
+	
 	<!-- Scroll to top -->
 
 	<div class="scroll-up">
 		<a href="#home"><i class="fa fa-angle-up"></i></a>
 	</div>
-
-
 
 {% endblock %}
 

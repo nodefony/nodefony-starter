@@ -177,8 +177,8 @@ nodefony.registerCommand("router",function(){
 		name:"router",
 		commands:{
 			routes:["router:generate:routes" ,"Generate all routes"],
-			route:["router:generate:route routeName" ,"Generate one route"],
-			url:["router:match:url url", "Get route who match url "]
+			route:["router:generate:route routeName" ,"Generate one route Example : ./console router:generate:route home "],
+			url:["router:match:url url", "Get route who match url Example : ./console router:match:url /nodefony"]
 		},
 		worker:router
 	}

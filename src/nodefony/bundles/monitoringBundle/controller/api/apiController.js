@@ -18,21 +18,33 @@ nodefony.registerController("api", function(){
 		};
 
 
-		apiController.prototype.renderRest = function(data){
+		apiController.prototype.renderRest = function(data, async){
 		
 			var context = this.getContext() ;
 			var type = context.request.queryGet.format || context.request.headers["X-FORMAT"] || "" ;
 
+			var response = this.getResponse() ;
+			if ( data.code ){
+				response.setStatusCode(data.code) ;
+			}
 			switch( type.toLowerCase() ){
 				case "application/xml" : 
 				case "text/xml" : 
 				case "xml" : 
-					this.getResponse().setHeader('Content-Type' , "application/xml"); 
-					return this.render('monitoringBundle:api:api.xml.twig',data);
+					response.setHeader('Content-Type' , "application/xml"); 
+					if (async){
+						return this.renderAsync('monitoringBundle:api:api.xml.twig',data);
+					}else{
+						return this.render('monitoringBundle:api:api.xml.twig',data);
+					}
 				break
 				default:
-					this.getResponse().setHeader('Content-Type' , "application/json"); 
-					return this.render('monitoringBundle:api:api.json.twig',data);
+					response.setHeader('Content-Type' , "application/json");
+					if (async){
+						return this.renderAsync('monitoringBundle:api:api.json.twig',data);
+					}else{
+						return this.render('monitoringBundle:api:api.json.twig',data);
+					}
 			}
 
 			
@@ -114,10 +126,10 @@ nodefony.registerController("api", function(){
 
 		/**
 		 *
-		 *	@method servicesAction
+		 *	@method requestsAction
 		 *
 		 */
-		apiController.prototype.syslogContextAction = function(){
+		apiController.prototype.requestsAction = function(){
 			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
 			return this.renderRest({
 				code:200,
@@ -126,6 +138,113 @@ nodefony.registerController("api", function(){
 				data:JSON.stringify(syslog.ringStack)
 			});
 		}
+
+		/**
+		 *
+		 *	@method requestAction
+		 *
+		 */
+		apiController.prototype.requestAction = function(uid){
+			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
+			
+			var pdu = null ;
+			for (var i= 0 ; i < syslog.ringStack.length ; i++){
+				if ( uid == syslog.ringStack[i].uid ){
+					var pdu = syslog.ringStack[i];
+					break;
+				}
+			}
+			if ( pdu == null ){
+				return this.renderRest({
+					code:404,
+					type:"ERROR",
+					message:"not found",
+					data:JSON.stringify(null)
+				});
+			}
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify(pdu)
+			});
+		}
+
+
+		/**
+		 *
+		 *	@method requestsAction
+		 *
+		 */
+		apiController.prototype.configAction = function(){
+			var kernel = this.get("kernel");
+
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify({
+					kernel:kernel.settings,
+					debug:kernel.debug,
+					nodejs:process.versions,
+					events:this.bundle.infoKernel.events,
+					bundles:this.bundle.infoBundles
+				})
+			});
+		}
+
+		/**
+		 *
+		 *	@method requestsAction
+		 *
+		 */
+		apiController.prototype.bundleAction = function( bundleName ){
+			var config = this.getParameters( "bundles."+bundleName );
+			var bundle = this.get("kernel").getBundle(bundleName)
+			//console.log(bundle)
+			var router  = this.get("router");
+			//console.log(router)
+			var routing = [] ;
+			for (var i = 0 ; i < router.routes.length ; i++ ){
+				//console.log(ele)
+				//console.log(router.routes[ele])
+				var bun = router.routes[i].defaults.controller.split(":");
+				//console.log(bun[0]);	
+				//console.log(bundleName+"Bundle");	
+				if( bun[0] === bundleName+"Bundle"){
+					routing.push( router.routes[i] );
+				}
+			}
+				//console.log(routing);	
+			var security  = this.get("security");
+			//console.log(bundle.resourcesFiles.files)
+
+
+			return this.renderRest({
+				code:200,
+			        type:"SUCCESS",
+			        message:"OK",
+				data:JSON.stringify({
+					config:bundle.settings,
+					routing:routing,
+					services:null,
+					security:null,
+					views:bundle.views,
+					entities:bundle.entities,
+					fixtures:bundle.fixtures,
+					controllers:bundle.controllers,
+					events:bundle.notificationsCenter._events,
+					waitBundleReady:bundle.waitBundleReady,
+					locale:bundle.locale,
+					files:bundle.resourcesFiles.files
+				})
+			});
+		}
+
+
+
+
+
 
 		/**
 		 *
@@ -178,16 +297,63 @@ nodefony.registerController("api", function(){
 		};
 
 
+
 		/**
 		 *
-		 *	@method websocketAction
+		 *	@method 
 		 *
 		 */
-		apiController.prototype.websocketAction = function(){
-			
+		apiController.prototype.usersAction = function(name){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			var users = null ;
+			nodefonyDb.query('SELECT * FROM users')
+			.then(function(result){
+				users = result[0];
+			}.bind(this))
+			.done(function(){
+				this.renderRest({
+					code:200,
+					type:"SUCCESS",
+					message:"OK",
+					data:JSON.stringify(users)
+				}, true);
+			}.bind(this))
 
 		}
 
+		/**
+		 *
+		 *	@method 
+		 *
+		 */
+		apiController.prototype.sessionsAction = function(name){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			var joins = null ;
+			nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+			.then(function(result){
+				joins = result[0];
+				for (var i = 0 ; i < joins.length ; i++){
+					joins[i].metaBag = JSON.parse( joins[i].metaBag )
+				}
+			}.bind(this))
+			.done(function(){
+				this.renderRest({
+					code:200,
+					type:"SUCCESS",
+					message:"OK",
+					data:JSON.stringify(joins)
+				}, true);
+			}.bind(this))
+
+		}
 
 
 		

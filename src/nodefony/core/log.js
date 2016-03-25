@@ -79,10 +79,9 @@ nodefony.register("log", function(){
 		var ret = this.stream.write.apply(this.stream, arguments);
 		if ( ! ret){
 			//console.log("pass drain")
-			this.stream.once('drain');
+		//	this.stream.once('drain');
 		}
 		return ret ;
-		//return this.stream.write.apply(this.stream, arguments);
 	};
 
 	Log.prototype.close = function(txt){

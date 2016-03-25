@@ -25,6 +25,7 @@ nodefony.registerService("https", function(){
 
 		var logString ="HTTPS";
 		this.server = https.createServer(this.options, function(request, response){
+			response.setHeader("Server", "nodefony");
 			if (  this.kernel.settings.system.statics ){
 				this.httpKernel.serverStatic.handle(request, response , function(){
 					var d = nodedomain.create();

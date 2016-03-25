@@ -49,18 +49,4 @@ realTimeBundle:
       port:                       1316
       domain:                     nodefony.com
 
-#
-#  OVERRIDE BUNDLE ORM2 
-#
-#       ORM2 
-#
-#       CONFIG 
-#       https://github.com/dresende/node-orm2
-#
-#       MULTI CONNECTION !!!!
-#
-orm2Bundle:
-  connectors:                    
-    demo: 
-      driver: sqlite
-      dbname: "/src/bundles/demoBundle/Resources/databases/demo.db"
+

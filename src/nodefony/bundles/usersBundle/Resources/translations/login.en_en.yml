@@ -24,9 +24,15 @@
 ########### TRANSLATION nodefony LOGIN  ############
 
 title:                          Login nodefony
-loginMessage:                   One account. All of nodefony.
+loginMessage:                   Authentication
 sousTitre:                      Sign in to continue to nodefony.
 validation:                     Sign in
 remember:                       Remember me
 help:                           need help ?
-user:                           admin
+user:                           Username
+name:                           Name
+surname:                        Surname
+pwd:                            Password
+need:                           Need an Account 
+select:                         Select Account 
+have:                           Have an Account 

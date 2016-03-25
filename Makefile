@@ -1,10 +1,9 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: node  framework install 
+all: node framework install 
 
 install:
-	npm  install
 	./console npm:install
 	make asset
 	make sequelize
@@ -30,6 +29,7 @@ doc:
 	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default
 
 asset:
+	./console assets:dump 
 	./console assets:install 
 
 framework:
@@ -38,6 +38,30 @@ framework:
 	fi
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
+	fi
+	@if [ ! -d web ] ; then  \
+		mkdir web ;\
+	fi
+	@if [ ! -d web/js ] ; then  \
+		mkdir web/js ;\
+	fi
+	@if [ ! -d web/css ] ; then  \
+		mkdir web/css ;\
+	fi
+	@if [ ! -d web/images ] ; then  \
+		mkdir web/images ;\
+	fi
+	@if [ ! -d web/assets ] ; then  \
+		mkdir  web/assets ;\
+	fi
+	@if [ ! -d web/assets/js ] ; then  \
+		mkdir web/assets/js ;\
+	fi
+	@if [ ! -d web/assets/css ] ; then  \
+		mkdir web/assets/css ;\
+	fi
+	@if [ ! -d web/assets/images ] ; then  \
+		mkdir web/assets/images ;\
 	fi
 
 sequelize:

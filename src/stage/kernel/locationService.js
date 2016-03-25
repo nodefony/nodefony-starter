@@ -86,6 +86,7 @@ stage.register("location",function(){
 						}
 						return url ;
 					}
+					//console.log(url)
 					if ( replace ){
 						this.location.replace(url);	
 						return url ;
@@ -326,13 +327,14 @@ stage.register("location",function(){
 	
 	LocationHashbangUrl.prototype.change = function(){
 		var search = stage.io.toKeyValue(this._search);
-		//console.log(search)
+		//console.log(this._search)
 		//var hash = this._hash ? '#' + stage.io.encodeUriSegment(this._hash) : '';
 
 		var hash = this._hash ? '#' + this._hash : '';
 
 		//console.log(this._path)
 		this._url = this.encodePath(this._path) + (search ? '?' + search : '') + hash		
+		//console.log(this._url)
 		//var temp = (this._url ? this.hashPrefix + this._url : '').replace("//","/");
 		//this._absUrl = this.base + temp;	
 		//console.log( this.hashPrefix)

@@ -21,6 +21,7 @@ nodefony.registerService("httpKernel", function(){
 		this.reader = this.container.get("reader");
 		this.serverStatic = serverStatic;
 		this.engineTemplate = this.container.get("templating");
+		//this.settings =  this.container.getParameters("bundles.http");
 
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
@@ -36,7 +37,7 @@ nodefony.registerService("httpKernel", function(){
 		});
 
 		this.kernel.listen(this, "onClientError", function(e, socket){
-			this.logger(e, "ERROR", "HTTP KERNEL CLIENT ERROR")
+			this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
 		});
 	};
 	
@@ -49,7 +50,7 @@ nodefony.registerService("httpKernel", function(){
 		return nodefony.templatings[name];
 	};
 
-	httpKernel.prototype.getView = function(name){
+	httpKernel.prototype.getView = function( name ){
 		var tab = name.split(":");
 		var bundle = tab[0] ;
 		var controller = tab[1] || ".";
@@ -103,6 +104,9 @@ nodefony.registerService("httpKernel", function(){
 			break;
 			case 403:
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:403");
+			break;
+			case 408:
+				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:timeout");
 			break;
 			default:
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
@@ -181,9 +185,6 @@ nodefony.registerService("httpKernel", function(){
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
 		
-		//this.engineTemplate.extendFunction("render", render.bind(container));
-		//this.engineTemplate.extendFunction("controller", controller.bind(container));
-
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
@@ -196,6 +197,7 @@ nodefony.registerService("httpKernel", function(){
 					this.container.leaveScope(container);
 					if ( ! context.session  ){
 						delete context.extendTwig ;
+						if (context.proxy) delete context.proxy ;
 						context.clean();
 						delete context;	
 						delete request ;
@@ -207,13 +209,24 @@ nodefony.registerService("httpKernel", function(){
 					delete translation ;
 				}.bind(this))
 
-				var port = ( type === "HTTP" ) ? this.kernel.httpPort : this.kernel.httpsPort ;
-				var serverHost = this.kernel.domain + ":" +port ; ;
-				var URL = Url.parse(request.headers.referer || request.headers.origin || context.type+"://"+request.headers.host ) ;
-				var cross = ! ( URL.protocol+"//"+URL.host  === context.type.toLowerCase()+"://"+serverHost ) ;
-				//context.serverHost = serverHost ;
-				context.crossDomain = cross ;
-				context.crossURL = URL ;
+				if ( request.headers["x-forwarded-for"] ){
+					//console.log(request.headers)
+					if ( request.headers["x-forwarded-proto"] ){
+						context.type = request.headers["x-forwarded-proto"].toUpperCase();
+					}
+					context.proxy = {
+						proxyServer	: request.headers["x-forwarded-server"],	
+						proxyProto	: request.headers["x-forwarded-proto"],
+						proxyPort	: request.headers["x-forwarded-port"],
+						proxyFor	: request.headers["x-forwarded-for"],
+						proxyHost	: request.headers["x-forwarded-host"],	
+						proxyVia	: request.headers["via"] 
+					}
+					this.logger( "PROXY REQUEST x-forwarded VIA : " + context.proxy.proxyVia , "DEBUG");
+					//var protocole = type.toLowerCase()+"://" ;
+					//var destURL = protocole+context.proxy.proxyHost+":"+port ;
+				}
+
 				this.kernel.fire("onHttpRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
@@ -242,6 +255,7 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
+				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
 
 				context.listen(this,"onClose" , function(){
 					delete 	context.extendTwig ;
@@ -255,16 +269,24 @@ nodefony.registerService("httpKernel", function(){
 					delete response ;
 				});
 
+				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
 					render:render.bind(container),
-					controller:controller.bind(container)
+					controller:controller.bind(container),
+					trans:translation.trans.bind(translation),
+					getLocale:translation.getLocale.bind(translation),
+					trans_default_domain:function(){
+						translation.trans_default_domain.apply(translation, arguments) ;
+					},
+					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
-				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
-				this.kernel.fire("onWebsocketRequest", container, context, type);
 				if (! this.firewall){
-					context.notificationsCenter.fire("onRequest",container, request, response );
+					try {
+						context.notificationsCenter.fire("onRequest",container, request, response );
+					}catch(e){
+						context.notificationsCenter.fire("onError", container, e );	
+					}
 					return ;	
 				}
 			break;
