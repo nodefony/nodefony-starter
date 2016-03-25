@@ -109,13 +109,13 @@ asseticBundle:
 #
 sequelizeBundle: 
   debug:        false
-  connectors:                    
-    nodefony:
-      driver:          mysql
-      dbname:          'nodefony'
-      username:        'cci'
-      password:        '91984869'
-      options:
-        dialect:       mysql
-        host:          nodefony.com
-        port:          '3306'
+#  connectors:                    
+#    nodefony:
+#      driver:          mysql
+#      dbname:          'nodefony'
+#      username:        'username'
+#      password:        'password'
+#      options:
+#        dialect:       mysql
+#        host:          nodefony.com
+#        port:          '3306'
