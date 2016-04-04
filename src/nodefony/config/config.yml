@@ -35,7 +35,7 @@ system:
   statics:                      true
   security:                     true
   realtime:                     true
-#  monitoring:                   true
+  monitoring:                   true
 
  
   locale:                       "en_en"   

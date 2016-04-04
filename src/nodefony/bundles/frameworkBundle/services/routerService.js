@@ -27,16 +27,15 @@ nodefony.registerService("router", function(){
 	};
 
 	Resolver.prototype.match = function(route, request){
-		//console.log(route)
 		var match = route.match(request); 
 		if ( match ){
 			this.variables = match;
 			this.request = request;
 			this.route = route;
-			this.parsePathernController(route.defaults.controller)
+			this.parsePathernController(route.defaults.controller);
 			
 		}		
-		return match
+		return match;
 	};
 
 

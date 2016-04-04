@@ -65,14 +65,14 @@ nodefony.register("Request",function(){
 	var Request = function(request, container){
 		this.container = container ;
 		this.request = request;
-		this.host = request.headers.host;
+		this.host = this.getHost() ; //request.headers.host;
 		this.url = this.getUrl(request) ;
 		this.queryPost = {}; 
 		this.queryFile = {}; 
 		this.queryGet = this.getUrl(request, true).query;
 		this.query = this.getUrl(request, true).query;
 		this.headers = 	request.headers ;
-		this.method = request.method;
+		this.method = this.getMethod() ;// request.method;
 		this.rawContentType = {} ;
 		this.contentType = this.getContentType(this.request);
 		this.charset = this.getCharset(this.request);
@@ -115,6 +115,17 @@ nodefony.register("Request",function(){
 
 	};
 
+	Request.prototype.getHost = function(){
+		return this.request.headers.host ;
+	}
+
+	Request.prototype.getUserAgent = function(){
+		return this.request.headers['user-agent'];	
+	}
+
+	Request.prototype.getMethod = function(){
+		return this.request.method ;
+	}
 
 	Request.prototype.clean = function(){
 		delete 	this.data ;

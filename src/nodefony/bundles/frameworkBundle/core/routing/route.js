@@ -6,6 +6,8 @@
  *
  */
 
+var Url = require('url') ;
+
 nodefony.register("Route", function(){
 
 
@@ -100,12 +102,20 @@ nodefony.register("Route", function(){
 	}
 
 	Route.prototype.match = function(request){
-		if ( request.url )	
-			var url = request.url.pathname  ;
-		if ( request.resourceURL &&  request.httpRequest ){
-			var url = request.resourceURL.pathname;
-			request.method = "WEBSOCKET";
+		if ( request.url ){	
+			if (typeof request.url == "string"){
+				var url = Url.parse(request.url).pathname ;	
+			}else{
+				var url = request.url.pathname  ;
+			}
+		}else{
+			if ( request.resourceURL &&  request.httpRequest ){
+				var url = request.resourceURL.pathname;
+				request.method = "WEBSOCKET";
+			}
 		}
+		//console.log(request.url)
+		//console.log(url)
 		var res = url.match(this.pattern);
 		//console.log(res)
 		if (!res) {

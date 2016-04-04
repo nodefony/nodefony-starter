@@ -232,7 +232,7 @@ nodefony.registerService("firewall", function(){
 						this.logger(e, "ERROR");
 					}
 					context.response.setStatusCode( 401 ) ;
-					this.overrideURL(context.request, this.formLogin);
+					context.resolver = this.overrideURL(context, this.formLogin);
 					if (! context.isAjax ){
 						if ( e.message !== "Unauthorized" ){
 							context.session.setFlashBag("session", {
@@ -293,7 +293,7 @@ nodefony.registerService("firewall", function(){
 					});
 					//context.session.getMetaBag("security") ;
 					if ( this.defaultTarget && context.request.url.pathname === this.checkLogin){
-						this.overrideURL(context.request, this.defaultTarget);
+						context.resolver = this.overrideURL(context, this.defaultTarget);
 						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
@@ -349,9 +349,10 @@ nodefony.registerService("firewall", function(){
 		this.providerName = provider;
 	};
 
-	securedArea.prototype.overrideURL = function(request, url ){
-		request.url = Url.parse( Url.resolve(request.url, url) ) ;
-		return request.url ;
+	securedArea.prototype.overrideURL = function(context, url ){
+		context.request.url = Url.parse( Url.resolve(context.request.url, url) ) ;
+		var router = this.kernel.get("router") ; 
+		return router.resolve(context.container, context.request);
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){

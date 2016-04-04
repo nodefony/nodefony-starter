@@ -189,12 +189,14 @@ nodefony.registerService("httpKernel", function(){
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
+
 		
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
 				var context = new nodefony.io.transports.http(container, request, response, type);
 				container.set("context", context);
+				
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				//response events	
@@ -213,6 +215,18 @@ nodefony.registerService("httpKernel", function(){
 					delete container ;
 					delete translation ;
 				}.bind(this))
+
+				var resolver  = this.get("router").resolve(container, request);
+				if (resolver.resolve) {
+					context.resolver = resolver ;	
+				}else{
+					var error = new Error("Not Found", 404);	
+					return context.notificationsCenter.fire("onError", container, {
+						status:404,
+						error:"URI :" + request.url,
+						message:"not Found"
+					});
+				}
 
 				if ( request.headers["x-forwarded-for"] ){
 					//console.log(request.headers)
@@ -244,7 +258,6 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
-
 				if (! this.firewall){
 					request.on('end', function(){
 						try {
@@ -283,6 +296,19 @@ nodefony.registerService("httpKernel", function(){
 					delete request ;
 					delete response ;
 				});
+
+				var resolver  = this.get("router").resolve(container, request);
+				if (resolver.resolve) {
+					context.resolver = resolver ;	
+				}else{
+					var error = new Error("Not Found", 404);	
+					return context.notificationsCenter.fire("onError", container, {
+						status:404,
+						error:"URI :" + request.url,
+						message:"not Found"
+					});
+				}
+
 
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context

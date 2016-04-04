@@ -45,10 +45,11 @@ nodefony.registerService("sessions", function(){
 		this.setMetaBag("context", this.contextSession );
 		this.setMetaBag("request", this.context.type );
 		this.setMetaBag("created", time );
-		this.setMetaBag("remoteAddress", this.context.request.remoteAdress );
-		this.setMetaBag("host", this.context.request.request.headers['host'] );
-		if ( this.context.request.request.headers['user-agent'] )
-			this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
+		this.setMetaBag("remoteAddress", this.context.getRemoteAdress() );
+		this.setMetaBag("host", this.context.getHost() );
+		var ua = this.context.getUserAgent() ;
+		if ( ua )
+			this.setMetaBag("user_agent",ua );	
 	};
 
 	var createSession = function(lifetime, id){
@@ -457,8 +458,8 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	Session.prototype.getRemoteAdress = function(){
-		var request = this.context.request ;
-		return request.getRemoteAdress() ; 
+		//var request = this.context.request ;
+		return this.context.getRemoteAdress() ; 
 	};
 
 	/*

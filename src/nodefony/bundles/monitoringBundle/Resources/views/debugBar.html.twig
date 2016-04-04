@@ -247,9 +247,11 @@
 							<li class="separator"></li>
 						{% endif %}
 						{% if key == "headers" %}
-							<li><label style="color:#999">HEADERS</label></li>
+							{% if requestId %}
+								<li><label class="label" ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>SHOW HEADERS</a></label></li>
+							{% endif %}
 							{% for key, value in request.headers %}
-								<li><label>{{ key | capitalize }}</label><span class="label black">{{value}}</span></li>
+								<!--li><label>{{ key | capitalize }}</label><span class="label black">{{value}}</span></li-->
 							{% endfor %}
 						{% endif %}
 						{% if key == "queryPost" and request.queryPost is not empty  %}

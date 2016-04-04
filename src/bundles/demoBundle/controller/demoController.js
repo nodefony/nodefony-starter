@@ -613,7 +613,7 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.websoketAction= function(message){
 		var context = this.getContext();
-		switch( this.getRequest().method ){
+		switch( this.getMethod() ){
 			case "GET" :
 				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
 			break;

@@ -10,17 +10,43 @@ install:
 	./console router:generate:routes
 	./console npm:list
 	
+node:
+	make framework
+	make install
+
+
+#
+# PM2 MANAGEMENT PRODUCTION 
+#
+startup:
+	./node_modules/pm2/bin/pm2 startup
+
 start:
 	./nodefony_pm2 &
 
 stop:
-	pm2 stop nodefony
+	./node_modules/pm2/bin/pm2 stop nodefony
+
+kill:
+	./node_modules/pm2/bin/pm2 kill
 
 show:
-	pm2 show nodefony
+	./node_modules/pm2/bin/pm2 show nodefony
 
 monit:
-	pm2 monit nodefony
+	./node_modules/pm2/bin/pm2 monit nodefony
+
+status:
+	./node_modules/pm2/bin/pm2 status
+
+reload:
+	./node_modules/pm2/bin/pm2 reload all
+
+restart:
+	./node_modules/pm2/bin/pm2 restart all
+
+
+# NODEFONY BUILD FRAMEWORK 
 npm:
 	make clean
 	@if [  -f package.json  ] ; then  \
@@ -31,13 +57,6 @@ npm:
 			npm -d install  ;\
 		fi \
 	fi
-
-node:
-	make framework
-	make install
-	
-doc:
-	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default
 
 asset:
 	./console assets:dump 

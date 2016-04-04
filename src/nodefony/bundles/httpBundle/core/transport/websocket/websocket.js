@@ -18,7 +18,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.origin = request.origin;
 		//TODO acceptProtocol header sec-websocket-protocol   
 		this.connection = request.accept(null, this.origin);
-		this.response = new nodefony.wsResponse( this.connection );
+		this.response = new nodefony.wsResponse( this.connection ,container , type);
 		this.originUrl = url.parse( request.origin );
 		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
 		this.secureArea = null ;
@@ -43,6 +43,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.remoteAdress = this.request.remoteAddress ;
 		//console.log(this)
 
+		this.resolver = null ;
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.container.set("notificationsCenter", this.notificationsCenter);
@@ -65,6 +66,22 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
  		 * this.connection.on('frame', function(webSocketFrame) {
 			console.log(webSocketFrame.binaryPayload.toString())
 		}.bind(this));*/
+	};
+
+	websocket.prototype.getRemoteAdress = function(){
+		return this.remoteAdress ;
+	};
+
+	websocket.prototype.getHost = function(){
+		return this.request.httpRequest.headers['host'] ;
+	};
+
+	websocket.prototype.getUserAgent = function(){
+		return this.request.httpRequest.headers['user-agent'] ;
+	};
+
+	websocket.prototype.getMethod = function(){
+		return "WEBSOCKET" ;
 	};
 
 	websocket.prototype.addCookie = function(cookie){
@@ -99,9 +116,15 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		delete this.cookies ;
 	}
 
+
+
 	websocket.prototype.handleMessage = function(message){
 		try {
-			this.resolver = this.get("router").resolve(this.container, this.request);
+			if ( ! this.resolver ){
+				this.resolver = this.get("router").resolve(this.container, this.request);
+			}else{
+				this.resolver.match(this.resolver.route, this.request)	;
+			}
 			this.fire("onMessage", message, this, "RECEIVE") ;
 			if (this.resolver.resolve) {
 				return this.resolver.callController(message);
@@ -117,7 +140,11 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	websocket.prototype.handle = function(container, request, response, data){
 		this.container.get("translation").handle( this );
 		try {
-			this.resolver  = this.get("router").resolve(this.container, this.request);
+			if ( ! this.resolver ){
+				this.resolver  = this.get("router").resolve(this.container, this.request);
+			}else{
+				this.resolver.match(this.resolver.route, this.request);	
+			}
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);
 			if (this.resolver.resolve) {
@@ -146,7 +173,6 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 
 	websocket.prototype.send = function(data){
-		//console.log(data)
 		//console.log(this.response)
 		if ( this.response ){
 			this.fire("onMessage", data, this, "SEND") ;
