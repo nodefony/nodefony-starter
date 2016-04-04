@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: node framework install 
+all: npm framework install 
 
 install:
 	./console npm:install
@@ -11,9 +11,17 @@ install:
 	./console npm:list
 	
 start:
-	npm start
+	./nodefony_pm2 &
 
-node:
+stop:
+	pm2 stop nodefony
+
+show:
+	pm2 show nodefony
+
+monit:
+	pm2 monit nodefony
+npm:
 	make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
@@ -24,6 +32,9 @@ node:
 		fi \
 	fi
 
+node:
+	make framework
+	make install
 	
 doc:
 	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default

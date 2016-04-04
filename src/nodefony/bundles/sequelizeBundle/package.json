@@ -3,6 +3,7 @@
 	"version": "1.0",
 	"description": "ORM",
 	"contributors": [],
+	"scripts": {},
 	"keywords": [
 		"nodefony",
 		"javascript"

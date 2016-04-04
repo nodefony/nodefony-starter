@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+var pm2 = require('pm2');
+
+var instances = process.env.WEB_CONCURRENCY || require('os').cpus().length ;	// Set by Heroku or -1 to scale to max cpu core -1
+var maxMemory = process.env.WEB_MEMORY || 512;		// " " "
+
+require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
+	console.log('\033[31m'+res+'\033[0m');
+});
+
+pm2.connect(true, function() {
+	
+  	pm2.start({
+    		script    : 'nodefony',
+    		name      : 'nodefony',     
+    		exec_mode : 'cluster',            
+		instances : instances,
+    		max_memory_restart : maxMemory + 'M',   // Auto restart if process taking more than XXmo
+    		env: {					// If needed declare some environment variables
+      			"NODE_ENV":	"production",
+			"MODE_START":	"PM2"
+    		},
+  	}, function(err) {
+    		if (err) return console.error('Error while launching applications', err.stack || err);
+
+    		// Display logs in standard output 
+    		pm2.launchBus(function(err, bus) {
+
+			/*pm2.describe("nodefony",function(err, list){
+				//console.log(list)
+			});*/
+
+      			bus.on('log:out', function(packet) {
+       				console.log( packet.data );
+      			});
+
+      			bus.on('log:err', function(packet) {
+        			//console.error('[App:%s][Err] %s', packet.process.name, packet.data);
+      			});
+    		});
+  	});
+});
