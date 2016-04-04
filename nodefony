@@ -1,7 +1,24 @@
 #!/usr/bin/env node
 
 var cluster = require('cluster');	
-var domain = require('domain');
+
+
+// AUTOLOADER 
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.load("./app/appKernel.js");
+
+/*
+ *
+ * NODEFONY FRAMEWORK START WITH PM2
+ *
+ *	PRODUCTION / DEVELOPEMENT
+ *
+ */
+if ( process.env["MODE_START"] && process.env["MODE_START"] === "PM2"){
+
+	return new nodefony.appKernel("SERVER", "prod", false, autoloader);
+}
+
 
 /*
  *
@@ -10,12 +27,6 @@ var domain = require('domain');
  *	PRODUCTION
  *
  */
-
-// AUTOLOADER 
-var autoloader = require("./vendors/nodefony/core/autoloader");
-autoloader.load("./app/appKernel.js");
-
-
 if (cluster.isMaster) {
 	
 	require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
@@ -33,7 +44,7 @@ if (cluster.isMaster) {
 	});
 
 }else {
-	var kernel =new nodefony.appKernel("SERVER", "prod", false, autoloader);
+	return new nodefony.appKernel("SERVER", "prod", false, autoloader);
 }
 
 

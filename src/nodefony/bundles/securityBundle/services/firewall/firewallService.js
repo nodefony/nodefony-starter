@@ -447,12 +447,12 @@ nodefony.registerService("firewall", function(){
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onBoot",function(){
 			this.sessionService = this.get("sessions");
-			this.sessionService.settings.start = "firewall";
+			//this.sessionService.settings.start = "firewall";
 			this.orm = this.get(this.kernel.settings.orm);
 		});
 
 		this.kernel.listen(this, "onSecurity",function(context){
-			
+				
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
@@ -467,7 +467,7 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if (  context.security ){	
-							
+							context.sessionAutoStart = "firewall" ;	
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
 								if (error){
 									return context.security.handleError(context, error);
@@ -481,7 +481,17 @@ nodefony.registerService("firewall", function(){
 							}.bind(this));	
 						}else{
 							try {
-								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								if ( context.sessionAutoStart === "autostart" ){
+					 				this.sessionService.start(context, "default", function(err, session){
+						 				if (err){
+											throw err ;
+						 				}
+										this.logger("AUTOSTART SESSION","DEBUG")
+										context.notificationsCenter.fire("onRequest", context.container, request, response);
+					 				}.bind(this));
+								}else{
+									context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								}
 							}catch(e){
 								context.notificationsCenter.fire("onError", context.container, e );	
 							}
@@ -499,7 +509,8 @@ nodefony.registerService("firewall", function(){
 							//break;
 						}
 					}
-					if (  context.security ){	
+					if (  context.security ){
+						context.sessionAutoStart = "firewall" ;
 						this.sessionService.start(context, context.security.sessionContext, function(error, session){
 							if (error){
 								return context.security.handleError(context, error);
@@ -513,19 +524,21 @@ nodefony.registerService("firewall", function(){
 						}.bind(this));	
 					}else{
 						try {
-							context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							if ( context.sessionAutoStart === "autostart" ){
+					 			this.sessionService.start(context, "default", function(err, session){
+						 			if (err){
+										throw err ;
+						 			}
+									this.logger("AUTOSTART SESSION","DEBUG")
+									context.notificationsCenter.fire("onRequest", context.container, request, response);
+					 			}.bind(this));
+							}else{
+								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							}	
 						}catch(e){
 							context.notificationsCenter.fire("onError", context.container, e );	
 						}
 					}
-
-					// TODO FIREWALL WEBSOCKET
-					/*try {
-						context.notificationsCenter.fire("onRequest", context.container, request, response);	
-					}catch(e){
-						context.notificationsCenter.fire("onError", context.container, e );	
-					}*/
-					
 				break;
 			}
 		});

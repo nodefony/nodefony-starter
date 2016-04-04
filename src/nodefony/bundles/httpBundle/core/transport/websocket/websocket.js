@@ -29,6 +29,10 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 			origin:request.origin
 		});
 
+		this.session = null;
+		this.sessionService = this.get("sessions");
+		this.sessionAutoStart = this.sessionService.settings.start ;
+
 		//parse cookies
 		this.parseCookies();
 

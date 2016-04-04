@@ -4,7 +4,6 @@
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
-    "start": "node nodefony_dev &"
   },
   "keywords": [
     "Node.js"
@@ -39,7 +38,8 @@
     "mime":"*",
     "markdown-it":"*",
     "promise":"*",
-    "async":"*"
+    "async":"*",
+    "pm2":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

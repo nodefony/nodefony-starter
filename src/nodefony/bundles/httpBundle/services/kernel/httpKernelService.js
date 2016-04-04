@@ -35,6 +35,11 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel.listen(this, "onReady", function(){
 			this.firewall = this.get("security") ;
 		});
+		// listen KERNEL EVENTS
+		this.kernel.listen(this, "onBoot",function(){
+			this.sessionService = this.get("sessions");
+		});
+
 
 		this.kernel.listen(this, "onClientError", function(e, socket){
 			this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
@@ -243,11 +248,21 @@ nodefony.registerService("httpKernel", function(){
 				if (! this.firewall){
 					request.on('end', function(){
 						try {
-							context.notificationsCenter.fire("onRequest",container, request, response );	
+							if ( context.sessionAutoStart === "autostart" ){
+					 			this.sessionService.start(context, "default", function(err, session){
+						 			if (err){
+										throw err ;
+						 			}
+									this.logger("AUTOSTART SESSION","DEBUG")
+									context.notificationsCenter.fire("onRequest",container, request, response );	
+					 			}.bind(this));
+							}else{
+								context.notificationsCenter.fire("onRequest",container, request, response );	
+							}
 						}catch(e){
 							context.notificationsCenter.fire("onError", container, e );	
 						}
-					});
+					}.bind(this));
 					return ;	
 				}
 			break;
@@ -283,7 +298,17 @@ nodefony.registerService("httpKernel", function(){
 				}
 				if (! this.firewall){
 					try {
-						context.notificationsCenter.fire("onRequest",container, request, response );
+						if ( context.sessionAutoStart === "autostart" ){
+					 		this.sessionService.start(context, "default", function(err, session){
+						 		if (err){
+									throw err ;
+						 		}
+								this.logger("AUTOSTART SESSION","DEBUG")
+								context.notificationsCenter.fire("onRequest",container, request, response );	
+					 		}.bind(this));
+						}else{
+							context.notificationsCenter.fire("onRequest",container, request, response );	
+						}
 					}catch(e){
 						context.notificationsCenter.fire("onError", container, e );	
 					}

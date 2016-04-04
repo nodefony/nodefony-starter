@@ -27,6 +27,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.request = new nodefony.Request( request, container, type);
 		this.response = new nodefony.Response( response, container, type);
 		this.session = null;
+		this.sessionService = this.get("sessions");
+		this.sessionAutoStart = this.sessionService.settings.start ; 
 		this.cookies = {};
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;

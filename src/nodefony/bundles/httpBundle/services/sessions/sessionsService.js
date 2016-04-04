@@ -102,7 +102,6 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
 		
-		
 		if ( contextSession ===  undefined ){
 			contextSession = this.contextSession ;
 		}
@@ -482,13 +481,6 @@ nodefony.registerService("sessions", function(){
 
 		this.kernel.listen(this, "onHttpRequest", function(container, context, type){
 			var request = context.request.request ;
-			request.on('end', function(){
-				if ( this.settings.start === "autostart" ){
-					 this.start(context, "default", function(err, session){
-						this.logger("AUTOSTART SESSION","DEBUG")
-					 }.bind(this));
-				}
-			}.bind(this));
 			var response = context.response.response ;
 			response.on("finish",function(){
 				if ( context.session ){
@@ -504,6 +496,11 @@ nodefony.registerService("sessions", function(){
 				}
 			});
 		}.bind(this));
+
+		/*this.kernel.listen(this, "onWebsocketRequest", function(container, context, type){
+			//var request = context.request ;
+			//var response = context.response ;
+		})*/
 
 		this.kernel.listen(this, "onTerminate",function(){
 			if ( this.storage )
