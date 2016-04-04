@@ -262,13 +262,13 @@ nodefony.registerService("sessions", function(){
 		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
 		var now = new Date().getTime() ;
 		if (this.lifetime === 0 ) {
-			if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
+			/*if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
 				this.manager.logger("SESSION INVALIDE gc_maxlifetime    ==> " + this.name + " : "+ this.id, "WARNING");
 				return false ;	
-			}
+			}*/
 			return true ;	
 		} 
-		if ( lastUsed + ( this.lifetime * 1000 ) < now ){
+		if ( lastUsed && lastUsed + ( this.lifetime * 1000 ) < now ){
 			this.manager.logger("SESSION INVALIDE lifetime   ==> " + this.name + " : "+ this.id, "WARNING");
 			return false;
 		}
