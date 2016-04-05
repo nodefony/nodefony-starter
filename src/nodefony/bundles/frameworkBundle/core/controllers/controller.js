@@ -30,8 +30,16 @@ nodefony.register("controller", function(){
 		return this.container.get(name);
 	};
 
+	Controller.prototype.set = function(key, value){
+		return this.container.set(key, value);
+	};
+
 	Controller.prototype.getParameters = function(name){
 		return this.container.getParameters(name);
+	};
+	
+	Controller.prototype.setParameters = function(name, str){
+		return this.container.setParameters(name, str);
 	};
 
 	Controller.prototype.has = function(name){
@@ -40,6 +48,12 @@ nodefony.register("controller", function(){
 
 	Controller.prototype.getRequest = function(){
 		return this.context.request;
+	};
+
+	Controller.prototype.getResponse = function(content){
+		if (content)
+			this.context.response.setBody( content );
+		return this.context.response;
 	};
 
 	Controller.prototype.getContext = function(){
@@ -76,16 +90,9 @@ nodefony.register("controller", function(){
 		}
 	};
 
-
 	Controller.prototype.getORM = function(){
 		var defaultOrm = this.container.get("kernel").settings.orm ;
 		return this.container.get(defaultOrm);
-	};
-
-	Controller.prototype.getResponse = function(content){
-		if (content)
-			this.context.response.setBody( content );
-		return this.context.response;
 	};
 
 	Controller.prototype.renderView = function(view, param ){
@@ -230,7 +237,6 @@ nodefony.register("controller", function(){
 			response.end();
 			throw error ;				
 		});
-		
 	};
 		
 	Controller.prototype.renderMediaStream = function(file , options, headers){
@@ -340,7 +346,6 @@ nodefony.register("controller", function(){
 			//throw error ;				
 		})
 	};
-
 
 	Controller.prototype.createNotFoundException = function(message){
 		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");

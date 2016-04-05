@@ -84,6 +84,11 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		return "WEBSOCKET" ;
 	};
 
+	websocket.prototype.getUser = function(){
+		return this.user || null ; 	
+	};
+
+
 	websocket.prototype.addCookie = function(cookie){
 		if ( cookie instanceof nodefony.cookies.cookie ){
 			this.cookies[cookie.name] = cookie;

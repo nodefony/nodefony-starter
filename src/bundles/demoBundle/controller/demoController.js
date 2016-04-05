@@ -603,7 +603,6 @@ nodefony.registerController("demo", function(){
 
 		// relative
 		//return this.redirect ( this.generateUrl("user", {name:"cci"} );
-
 	};
 
 
@@ -649,8 +648,6 @@ nodefony.registerController("demo", function(){
 				throw new Error("REALTIME METHOD NOT ALLOWED")
 		}
 	};
-
-
 	
 	return demoController;
 });
