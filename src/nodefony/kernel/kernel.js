@@ -127,7 +127,7 @@ nodefony.register("kernel", function(){
 			// manage LOG
 			if (this.environment === "prod")
 				this.environment = result.system.debug ? "dev" : "prod" ;
-			this.syslog = this.initializeLog();
+			this.syslog = this.initializeLog(options);
 			this.container.set("syslog",this.syslog);
 
 		}.bind(this));
@@ -201,7 +201,8 @@ nodefony.register("kernel", function(){
 	/**
 	 *	@method initializeLog
          */
-	kernel.prototype.initializeLog = function(){
+	kernel.prototype.initializeLog = function(options){
+
 		var red, blue, green, reset;
 		red   = '\033[31m';
 		blue  = '\033[34m';
@@ -253,8 +254,40 @@ nodefony.register("kernel", function(){
 
 		}else{
 			//FIXME do service with nodefony.log
-			if (this.type === "CONSOLE") return syslog ; 
-			if ( this.settings.system.log.active ){
+			if (this.type === "CONSOLE") return syslog ;
+
+			// PM2
+			if ( this.settings.system.log.active && options.node_start !== "PM2" ){
+				syslog.listenWithConditions(this,{
+					severity:{
+						data:"CRITIC,ERROR"
+					}		
+				},function(pdu){
+					var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ;
+					var reg = new RegExp("\\[32m");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pay.replace(reg,"");
+					console.log( new Date(pdu.timeStamp) + " " +line +"\n" );
+				});
+					
+				this.debug ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
+				syslog.listenWithConditions(this,{
+					severity:{
+						data:data
+					}		
+				},function(pdu){
+					if ( pdu.msgid === "SERVER WELCOME"){
+						console.log(  pdu.payload );	
+						return ;
+					}
+					if (! pdu.payload ) return 
+					var reg = new RegExp("\\[32m");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " : "+ pdu.payload.replace(reg,"");
+					console.error( new Date(pdu.timeStamp) + " " +line +"\n" );
+				});
+				return syslog ;
+			}
+
+			if ( this.settings.system.log.active   ){
 				this.logStream = new nodefony.log(this.rootDir+this.settings.system.log.error,{
 					rotate:this.settings.system.log.rotate
 				});
