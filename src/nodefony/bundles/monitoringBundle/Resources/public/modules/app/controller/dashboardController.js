@@ -20,14 +20,17 @@ stage.registerController("dashboardController", function() {
 				this.serverSyslog.unListen("onLog", this.eventRealTime);	
 				this.serverSyslog.unListen("onLog", this.eventSyslog);	
 				this.serverSyslog.unListen("onLog", this.eventHttp);	
-				this.serverSyslog.unListen("onLog", this.eventGraph);	
+				//this.serverSyslog.unListen("onLog", this.eventGraph);	
 				delete this.eventRealTime ;
 				delete this.eventSyslog ;
 				delete this.eventHttp ;
-				delete this.eventGraph ;
+				//delete this.eventGraph ;
 				
 			}
-		}.bind(this))
+		}.bind(this));
+		
+
+	
 
 	};
 	
@@ -358,6 +361,85 @@ stage.registerController("dashboardController", function() {
 		});
 
 
+		$.ajax("/nodefony/api/pm2/status",{
+			success:function(data, status, xhr){
+				try {
+					//console.log(data)
+					$("#widget-pm2Status").show();	
+					var pm2_service = this.get("pm2_graph");
+						
+					pm2_service.createTable( $("#pm2-status") );
+					pm2_service.updateTable($("#pm2-status"), data.response.data);
+					
+
+					for (var i= 0 ; i < data.response.data.length ; i++){
+						
+						// GRAPH
+						var row = $(document.createElement('div'));
+						row.addClass("row");
+
+						var id = data.response.data[i].pm_id ;
+						// left
+						var left = $(document.createElement('div'));
+						left.addClass("col-md-2");
+						left.append('<h3 class="text-center"> '+data.response.data[i].name+' </h3>')
+						left.append('<h4 class="text-center"> <a href="#">Cluster <span class="badge">'+id+'</span></a> </h4>')
+						
+						row.append(left);
+
+						// center CANVAS
+						var center = $(document.createElement('div'));
+						center.addClass("col-md-8");
+						var canvas = $(document.createElement('canvas'));
+						canvas.attr("id", data.response.data[i].pm_id) ;
+						canvas.attr("width", 600) ;
+						canvas.attr("height", 100) ;
+						center.append(canvas);
+						row.append(center);
+						
+						// right
+						var memory = parseFloat( data.response.data[i].monit.memory / 1000000 ).toFixed(2) ; 
+						var right = $(document.createElement('div'));
+						right.addClass("col-md-2");
+						right.append('<h3>Memory <span id="pm2Memory_'+id+'" class="badge bg-danger  text-md">'+ memory +'</span></h3>');
+						right.append('<h3>CPU <span id="pm2CPU_'+id+'" class="badge bg-primary  text-md">'+data.response.data[i].monit.cpu+'</span></h3>');
+						row.append(right);
+
+						$('#widget-pm2').append(row);
+						canvas.attr("width",  center.width() ) ;
+						 
+						var smoothie = new SmoothieChart({
+							millisPerPixel:100,
+							minValue:0,
+							maxValue:512,
+							labels:{
+								fillStyle:'#ff7e10'
+							}
+						});
+						smoothie.streamTo(canvas.get(0), 2000);
+						var lineM = new TimeSeries() ;
+						smoothie.addTimeSeries(lineM, {
+							lineWidth:3,
+							strokeStyle:'#ff0810'
+						});
+						pm2_service.addTimeSerieMemory(data.response.data[i].pm_id,  lineM )
+
+						var lineC = new TimeSeries() ;
+						smoothie.addTimeSeries(lineC, {
+							lineWidth:1.5,
+							strokeStyle:'#945fff',
+							fillStyle:'rgba(33,18,206,0.58)'
+						});
+						pm2_service.addTimeSerieCpu(data.response.data[i].pm_id,  lineC )
+					}
+				}catch(e){
+					this.logger(e, "ERROR");
+				}
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		});
 
 
 		this.syslogWidget();

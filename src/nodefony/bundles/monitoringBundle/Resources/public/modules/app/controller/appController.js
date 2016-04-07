@@ -160,12 +160,43 @@ stage.registerController("appController", function() {
 		}	
 	}
 
-	var syslogServerMessage = function(service, message){
+
+
+	var parseMessage = function(message){
+		//console.log(message)
+		try {
+			var json = JSON.parse(message) ; 
+			if ( json.pdu ){
+				//return fragment.call(this, JSON.stringify( message.pdu) );
+			}
+			if ( json.pm2){
+				var pm2_graph = this.get("pm2_graph");
+				//console.log(pm2_graph)
+				for (var i= 0 ; i < json.pm2.length ; i++){
+					var id = json.pm2[i].pm_id ;
+					//console.log("ID : "+ id + " data : "  + json.pm2[i].monit.memory)
+					var mem = json.pm2[i].monit.memory/1000000 ;
+					pm2_graph.updateMemory(id, mem );
+					var val = parseFloat( mem ).toFixed(2)
+					$("#pm2Memory_"+id).text(val);
+					pm2_graph.updateCpu(id, json.pm2[i].monit.cpu);
+					$("#pm2CPU_"+id).text(json.pm2[i].monit.cpu);
+
+				}
+				pm2_graph.updateTable($("#pm2-status"), json.pm2);
+				//this.logger(json.pm2,"INFO");	
+			}	
+		}catch(e){
+			this.logger(e,"ERROR");	
+		}
+	}
+
+	var serverMessages = function(service, message){
 		if (service === "monitoring" ){
 			try {
-				fragment.call(this, message);
+				parseMessage.call(this, message);
 			}catch(e){
-				this.logger(e,"ERROR")
+				this.logger(e,"ERROR");
 			}
 		}
 	}
@@ -196,18 +227,13 @@ stage.registerController("appController", function() {
 				}
 			});
 			this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
-				//console.log("subscribe service : " + service)
-				if (service === "random")
-					this.realtime.listen(this, "onMessage", onRandomMessage );
 				if (service === "monitoring"){
-					this.realtime.listen(this, "onMessage", syslogServerMessage );
+					this.realtime.listen(this, "onMessage", serverMessages );
 				}
 			})
 
 			this.realtime.listen(this, "onUnSubscribe", function(service, message, realtime){
 				console.log("onUnSubscribe service : " + service)
-				if (service === "random")
-					this.realtime.unListen("onMessage", onRandomMessage );
 			})
 		});
 

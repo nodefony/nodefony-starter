@@ -356,6 +356,21 @@ nodefony.registerController("api", function(){
 		}
 
 
+		apiController.prototype.pm2Action = function(action){
+			var pm2 = require("pm2");
+			pm2.connect(true, function() {
+				this.logger("CONNECT PM2", "DEBUG")
+				pm2.describe("nodefony",function(err, list){
+					this.renderRest({
+						code:200,
+						type:"SUCCESS",
+						message:"OK",
+						data:JSON.stringify(list)
+					}, true);
+				}.bind(this));	
+			}.bind(this));
+		}
+
 		
 		return apiController;
 });

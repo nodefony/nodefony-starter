@@ -483,14 +483,15 @@ nodefony.registerService("realTime", function(){
 								remoteAddress : context.remoteAddress,
 								host:url.parse(context.request.origin)	
 							};
+							var connectionId = this.connections.setConnection(context, obj) ;
+							cleanConnection.call(this, message.clientId);
+							 message.clientId = connectionId ;
 							//var remoteAddress = context.request.remoteAddress ;
 							//var remoteAddress = context.request.domain ;
 							//console.log(context.request)
 							context.notificationsCenter.listen(this,"onClose", function(code, info){
-							//context.connection.on('close',function(code, info){
 								cleanConnection.call(this, message.clientId)
 							}.bind(this));
-							//setTimeout(function(){context.connection.close()},10000)
 							return this.send( context, this.onConnect(message, JSON.stringify(obj)) );
 						break;
 						case "/meta/disconnect":

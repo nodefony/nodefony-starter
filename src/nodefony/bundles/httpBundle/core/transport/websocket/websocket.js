@@ -177,11 +177,11 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 	};
 
 
-	websocket.prototype.send = function(data){
+	websocket.prototype.send = function(data, type){
 		//console.log(this.response)
 		if ( this.response ){
 			this.fire("onMessage", data, this, "SEND") ;
-			return this.response.send(data || this.response.body)
+			return this.response.send(data || this.response.body, type)
 		}
 		return null ;
 	};

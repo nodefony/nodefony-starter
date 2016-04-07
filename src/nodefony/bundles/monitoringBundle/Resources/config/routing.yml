@@ -115,3 +115,9 @@ monitoring-sessions:
   requirements: 
     method: GET
 
+monitoring-pm2:
+  pattern:   /nodefony/api/pm2/{action}   
+  defaults: {controller: "monitoringBundle:api:pm2"}
+  requirements: 
+    method: GET
+

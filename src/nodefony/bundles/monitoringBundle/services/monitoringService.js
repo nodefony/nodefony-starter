@@ -1,5 +1,6 @@
 
 var net = require('net');
+var pm2 = require('pm2');
 
 
 nodefony.registerService("monitoring", function(){
@@ -69,20 +70,51 @@ nodefony.registerService("monitoring", function(){
 			this.connections[conn.id] = this.connections[this.connections.length-1];
 
 			var callback = function(pdu){
-				if (closed || this.stopped )
-					return 
-				conn.write(JSON.stringify(pdu));	
-			}.bind(this);
+				if (closed || this.stopped ){
+					if ( this.syslog ){
+						if (this.connections && this.connections[conn.id] )
+							this.syslog.unListen("onLog", this.connections[conn.id]["listener"]);
+					}
+					return; 
+				}
+				var ele ={
+					pdu:pdu
+				} 
+				conn.write(JSON.stringify(ele));	
+			};
 
-			this.connections[conn.id]["listener"]  = this.syslog.listenWithConditions(this,{
+			/*this.connections[conn.id]["listener"]  = this.syslog.listenWithConditions(this,{
 				severity:{
 					data:"INFO"
 				}		
-			},callback);	
+			},callback);*/	
+
+			pm2.connect( function() {
+				this.logger("CONNECT PM2 REALTIME MONITORING", "DEBUG");
+			}.bind(this));
+			// PM2 REALTIME
+			var pm2Interval = setInterval(function(){
+				pm2.describe("nodefony",function(err, list){
+					//console.log(list)
+					if (closed || this.stopped ){
+						clearInterval( pm2Interval );
+						return ;	
+					}
+					var ele = {
+						pm2:list
+					};
+					conn.write(JSON.stringify(ele));	
+				});
+				
+			},1000);
 
 			socket.on('end',function(){
 				closed = true ;
-				this.syslog.unListen("onLog", this.connections[conn.id]["listener"]);
+				if ( this.syslog ){
+					if (this.connections && this.connections[conn.id] && this.connections[conn.id]["listener"] )
+						this.syslog.unListen("onLog", this.connections[conn.id]["listener"]);
+				}
+				clearInterval( pm2Interval );
 				this.logger("CLOSE CONNECTION TO SERVICE MONITORING FROM : "+socket.remoteAddress + " ID :" +conn.id, "INFO");
 				socket.end();
 				delete this.connections[conn.id];

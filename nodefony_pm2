@@ -26,9 +26,9 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
     			// Display logs in standard output 
     			pm2.launchBus(function(err, bus) {
 
-				pm2.describe("nodefony",function(err, list){
+				/*pm2.describe("nodefony",function(err, list){
 					//console.log(list)
-				});
+				});*/
 
       				bus.on('log:out', function(packet) {
        					console.log( packet.data );

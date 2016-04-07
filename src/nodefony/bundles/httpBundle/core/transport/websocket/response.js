@@ -38,9 +38,18 @@ nodefony.register("wsResponse",function(){
 	};
 
 
-	Response.prototype.send = function(data){
+	Response.prototype.send = function(data, type){
 		//console.log(data)
-		this.connection.send(data);
+		switch (type){
+			case "utf8":
+				this.connection.sendUTF(data.utf8Data);
+			break;
+			case "binary":
+				this.connection.sendBytes(data.binaryData)
+			break;
+			default:
+				this.connection.send(data);
+		}
 		this.body = "";
 	};
 
