@@ -130,13 +130,67 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.requestsAction = function(){
-			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
-			return this.renderRest({
-				code:200,
-			        type:"SUCCESS",
-			        message:"OK",
-				data:JSON.stringify(syslog.ringStack)
-			});
+			var bundle = this.get("kernel").getBundles("monitoring") ;
+			var storageProfiling = bundle.settings.storage.requests ;
+			switch( storageProfiling ){
+				case "syslog":
+					var syslog = bundle.syslogContext ;
+					return this.renderRest({
+						code:200,
+			        		type:"SUCCESS",
+			        		message:"OK",
+						data:JSON.stringify(syslog.ringStack)
+					});
+				break;
+				case "orm":
+					var requestEntity = bundle.requestEntity ;
+					requestEntity.findAll()
+					.then( function(results){
+						try{
+							var ele = [];
+							for (var i = 0 ; i < results.length  ; i++){
+								var ret = {};
+								ret["uid"] = results[i].id ;
+								ret["payload"] = JSON.parse( results[i].data ) ;
+								ret["timeStamp"] = results[i].createdAt ;
+								ele.push(ret);	
+							}
+							var res = JSON.stringify(ele); 
+						}catch(e){
+							return this.renderRest({
+								code:500,
+								type:"ERROR",
+								message:"internal error",
+								data:e
+							},true);	
+						}
+						return this.renderRest({
+							code:200,
+							type:"SUCCESS",
+							message:"OK",
+							data:res
+						},true);
+					}.bind(this))
+					.catch(function(error){
+						if (error){
+							return this.renderRest({
+								code:500,
+								type:"ERROR",
+								message:"internal error",
+								data:error
+							},true);
+						}	
+					}.bind(this))
+				break;
+				default:
+					return this.renderRest({
+						code:500,
+						type:"ERROR",
+						message:"not found",
+						data:"Storage request monitoring not found"
+					});
+			}
+			
 		}
 
 		/**
@@ -145,31 +199,78 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.requestAction = function(uid){
-			var syslog = this.get("kernel").getBundles("monitoring").syslogContext ;
-			
-			var pdu = null ;
-			for (var i= 0 ; i < syslog.ringStack.length ; i++){
-				if ( uid == syslog.ringStack[i].uid ){
-					var pdu = syslog.ringStack[i];
-					break;
-				}
-			}
-			if ( pdu == null ){
-				return this.renderRest({
-					code:404,
-					type:"ERROR",
-					message:"not found",
-					data:JSON.stringify(null)
-				});
-			}
-			return this.renderRest({
-				code:200,
-			        type:"SUCCESS",
-			        message:"OK",
-				data:JSON.stringify(pdu)
-			});
-		}
+			var bundle = this.get("kernel").getBundles("monitoring") ;
+			var storageProfiling = bundle.settings.storage.requests ;
+			switch( storageProfiling ){
+				case "syslog":
+					var syslog = bundle.syslogContext ;
+					var pdu = null ;
+					for (var i= 0 ; i < syslog.ringStack.length ; i++){
+						if ( uid == syslog.ringStack[i].uid ){
+							var pdu = syslog.ringStack[i];
+							break;
+						}
+					}
+					if ( pdu == null ){
+						return this.renderRest({
+							code:404,
+							type:"ERROR",
+							message:"not found",
+							data:JSON.stringify(null)
+						});
+					}
+					return this.renderRest({
+						code:200,
+			        		type:"SUCCESS",
+			        		message:"OK",
+						data:JSON.stringify(pdu)
+					});
+ 				break;
+				case "orm":	
+					var requestEntity = bundle.requestEntity ;
+					requestEntity.findOne({where:{id:uid}})
+					.then(function( result) {
+						if ( result  ){
+							var ret = {};
+							ret["uid"] = result.id ;
+							ret["payload"] = JSON.parse( result.data ) ;
+							ret["timeStamp"] = result.createdAt ;
 
+							return this.renderRest({
+								code:200,
+								type:"SUCCESS",
+								message:"OK",
+								data:JSON.stringify(ret)
+							},true);
+						}else{
+							return this.renderRest({
+								code:404,
+								type:"ERROR",
+								message:"not found",
+								data:JSON.stringify(null)
+							},true);
+						}
+					}.bind(this))
+					.catch(function(error){
+						if (error){
+							return this.renderRest({
+								code:500,
+								type:"ERROR",
+								message:"internal error",
+								data:error
+							}, true);
+						}
+					}.bind(this))
+ 				break;
+				default:
+					return this.renderRest({
+						code:500,
+						type:"ERROR",
+						message:"not found",
+						data:"Storage request monitoring not found"
+					},true);
+			}
+		}
 
 		/**
 		 *

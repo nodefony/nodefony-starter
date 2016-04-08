@@ -26,6 +26,9 @@ version:			"1.0"
 locale :			en_en
 debugBar:                       true
 
+storage:
+  requests:                     orm               
+
 realTimeBundle:
   services:
     monitoring:

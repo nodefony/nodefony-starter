@@ -282,7 +282,6 @@ stage.registerController("navController", function() {
 			success:function(data, status, xhr){
 				var obj = [];
 				for (var res in data.response.data ){
-					//console.log(data.response.data[res])
 					obj.push({
 						date: new Date( data.response.data[res].timeStamp ),
 						url:data.response.data[res].payload["request"].url,

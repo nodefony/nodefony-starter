@@ -16,8 +16,6 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	config.out_file = process.cwd()+"/tmp/nodefony.log"; 
 	config.merge_logs= true;
 
-	console.log(config);
-
 	pm2.connect(true, function() {
 		
   		pm2.start(config, function(err) {
