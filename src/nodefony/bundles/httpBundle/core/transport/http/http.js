@@ -66,6 +66,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 				status:408,
 				message:new Error("Timeout :" + this.url)
 			} );	
+			//context.clean();
 		} );
 	};
 

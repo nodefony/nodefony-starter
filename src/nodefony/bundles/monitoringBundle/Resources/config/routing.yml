@@ -121,3 +121,9 @@ monitoring-pm2:
   requirements: 
     method: GET
 
+monitoring-security:
+  pattern:   /nodefony/api/security  
+  defaults: {controller: "monitoringBundle:api:security"}
+  requirements: 
+    method: GET
+

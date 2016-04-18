@@ -47,6 +47,10 @@ stage.registerController("navController", function() {
 		this.router.createRoute("sessions", "/sessions", {
 			controller:"appModule:nav:sessions"
 		});
+		this.router.createRoute("firewall", "/firewall", {
+			controller:"appModule:nav:firewall"
+		});
+
 
 
 
@@ -278,7 +282,34 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.requestsAction = function() {
-		$.ajax("/nodefony/api/requests",{
+		
+		this.renderDefaultContent("appModule:request:requests",{
+			requests:[]
+		});
+		$("table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				url:"/nodefony/api/requests",
+				data:function ( d ) {
+					d.type = "dataTable";
+				},
+				"type": "GET",
+				"dataSrc": "response.data",
+			},
+			"columns": [
+            			{ "name":"uid","data": "uid" },
+            			{ "name":"timeStamp", "data": "timeStamp" },
+            			{ "name":"uri","data": "payload.request.uri" },
+            			{ "name":"name","data": "payload.route.name" },
+            			{ "name":"method","data": "payload.request.method" },
+            			{ "name":"statusCode","data": "payload.response.statusCode" },
+            			{ "name":"context","data": "payload.route.name" },
+            			{ "name":"user", "data": "payload.route.name" }
+        		]
+		});
+
+		/*$.ajax("/nodefony/api/requests",{
 			success:function(data, status, xhr){
 				var obj = [];
 				for (var res in data.response.data ){
@@ -305,8 +336,7 @@ stage.registerController("navController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		});
-		
+		});*/
 	};
 
 
@@ -366,7 +396,8 @@ stage.registerController("navController", function() {
 						ip:data.response.data.payload["request"].remoteAdress,
 						request:data.response.data.payload["request"],
 						response:data.response.data.payload["response"],
-						security:data.response.data.payload["security"],
+						security:data.response.data.payload["context_secure"],
+						area_security:data.response.data.payload["security"],
 						//payload:data.response.data.payload,
 						routing:data.response.data.payload["routing"],
 						route:data.response.data.payload["route"],
@@ -418,7 +449,6 @@ stage.registerController("navController", function() {
 		$.ajax("/nodefony/api/users",{
 			//dataType:"json",
 			success:function(data, status, xhr){
-				console.log(data.response.data)
 				this.renderDefaultContent("appModule::users",{
 					users:data.response.data
 				});
@@ -450,5 +480,23 @@ stage.registerController("navController", function() {
 		})
 	};
 	
+	/*
+	 *
+	 */
+	controller.prototype.firewallAction = function() {
+
+		$.ajax("/nodefony/api/security",{
+			//dataType:"json",
+			success:function(data, status, xhr){
+				this.renderDefaultContent("appModule:security:firewall",{
+					security:data.response.data
+				});
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		})
+	};
+
 	return controller;
 });

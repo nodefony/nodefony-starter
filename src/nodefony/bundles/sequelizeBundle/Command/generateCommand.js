@@ -18,11 +18,15 @@ nodefony.registerCommand("Sequelize",function(){
 			case "generate" : 
 				switch( arg[2 ]){
 					case "entities" :
+						var force = false ;
+						if (command[1] === "force"){
+							force= true ;
+						}
 						var tab =[];
 						this.ormService.listen(this, "onReadyConnection",function(connectionName, connection , service){
 							tab.push( new Promise( function(resolve, reject){
 									this.logger("DATABASE SYNC : "+connectionName);
-									connection.sync({force: false,logging:this.logger,hooks:true}).then(function(db) {
+									connection.sync({force: force,logging:this.logger,hooks:true}).then(function(db) {
 										this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
 										resolve(connectionName);
 									}.bind(this)).catch(function(error) {
@@ -164,7 +168,7 @@ nodefony.registerCommand("Sequelize",function(){
 			//fixture:["Sequelize:fixture:load bundleName:fixtureName" ,"Load a specific data fixture to your database"],
 			//entity:["Sequelize:generate:entity connectionName entityName" ,"Generate an Entity"],
 			//entity2:["Sequelize:generate:bundleEntity bundleName:entityName" ,"Generate Bundle Entity"],
-			entities:["Sequelize:generate:entities" ,"Generate All Entities"],
+			entities:["Sequelize:generate:entities [force]" ,"Generate All Entities force to delete table if exist  example : ./console Sequelize:generate:entities force "],
 			//create:["Sequelize:database:create" ,"Create a database"],
 			//show:["Sequelize:entity:show" ,"show  Entities"],
 			sql:["Sequelize:query:sql connectionName SQL" ,"query sql in database connection  example : ./console  Sequelize:query:sql nodefony  'select * from users'"],

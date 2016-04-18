@@ -110,7 +110,7 @@ nodefony.registerService("firewall", function(){
 		this.firewall.kernel.listen(this, "onReady",function(){
 			try {
 				if ( this.providerName in this.firewall.providers){
-					this.provider = this.firewall.providers[ this.providerName ] ;	
+					this.provider = this.firewall.providers[ this.providerName ].Class ;	
 				}else{
 					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
 					return ;
@@ -345,8 +345,9 @@ nodefony.registerService("firewall", function(){
 	};
 
 	
-	securedArea.prototype.setProvider = function(provider){
+	securedArea.prototype.setProvider = function(provider, type){
 		this.providerName = provider;
+		this.providerType = type ;
 	};
 
 	securedArea.prototype.overrideURL = function(context, url ){
@@ -661,6 +662,8 @@ nodefony.registerService("firewall", function(){
 								default:
 									if ( config in nodefony.security.factory ){
 										area.setFactory(config, param[config]);
+									}else{
+										this.logger("FACTORY : "+config +" not found in nodefony namespace","ERROR");
 									}
 							}
 						}
@@ -676,7 +679,11 @@ nodefony.registerService("firewall", function(){
 				break;
 				case "providers" : 
 					for ( var provider in obj[ele] ){
-						this.providers[provider] = null;
+						this.providers[provider] = {
+							name:null,
+							Class:null,
+							type:null
+						};
 						for (var pro in obj[ele][provider] ){
 							var element = obj[ele][provider] ;
 							switch (pro){
@@ -684,7 +691,11 @@ nodefony.registerService("firewall", function(){
 									for (var api in element[pro]){
 										switch (api){
 											case "users":
-												this.providers[provider] = new nodefony.usersProvider(provider, element[pro][api]);
+												this.providers[provider] = {
+													name:provider,
+													Class:new nodefony.usersProvider(provider, element[pro][api]),
+													type:pro
+												};
 												this.logger(" Register Provider  : "+provider + " API " +this.providers[provider].name, "DEBUG")
 											break;
 											default:
@@ -710,16 +721,33 @@ nodefony.registerService("firewall", function(){
 									}
 									if (Class){
 										if (manager_name && manager_name !== "~"){
-											this.providers[manager_name] =  new Class(property);	
+											this.providers[manager_name] ={
+												name:manager_name,
+												Class:new Class(property),
+												type:pro
+											}
 										}else{
-											this.providers[provider] = new Class(property);
+											this.providers[provider] = {
+												name:manager_name,
+												Class:new Class(property),
+												type:pro
+											}
 										}
 									}
 								break;
 								case "entity" :
 									this.kernel.listen(this, "onBoot",function(){
 										this.orm.listen(this, "onOrmReady", function(){
-											this.providers[provider] = this.orm.getEntity(element[pro].name);
+											var ent = this.orm.getEntity(element[pro].name)
+											if (! ent){
+												this.logger("ENTITY PROVIDER : "+ provider+ "not found","ERROR");
+												return ;
+											}
+											this.providers[provider] = {
+												name:provider,
+												Class:ent,
+												type:pro
+											}
 											this.logger(" Register Provider  : "+provider + " ENTITY " +element[pro].name, "DEBUG");
 										})
 									}.bind(this));

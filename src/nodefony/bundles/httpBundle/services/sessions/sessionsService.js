@@ -491,9 +491,9 @@ nodefony.registerService("sessions", function(){
 						//console.log("SAVE")
 						context.session.save(context.user ? context.user.id : null);	
 					}
-					delete context.extendTwig ;
-					context.clean() ; 
-					delete context ; 
+					//delete context.extendTwig ;
+					//context.clean() ; 
+					//delete context ; 
 				}
 			});
 		}.bind(this));

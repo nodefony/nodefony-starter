@@ -223,7 +223,11 @@ stage.registerController("appController", function() {
 					}
 				}
 				if  ( message.data.monitoring ){
-					realtime.subscribe("monitoring");
+					switch (this.kernel.router.location.url()){
+						case "/dashboard":
+							realtime.subscribe("monitoring");
+						break
+					}
 				}
 			});
 			this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
@@ -252,7 +256,6 @@ stage.registerController("appController", function() {
 				case "dashboard" :
 					this.realtime.unSubscribe("monitoring");
 				break;
-			
 			}
 			
 		}.bind(this))
@@ -306,8 +309,6 @@ stage.registerController("appController", function() {
 		} else {
 			browser.url(location.initialUrl);	
 		}
-
-
 	};
 
 	/**

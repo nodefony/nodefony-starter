@@ -123,7 +123,182 @@ nodefony.registerController("api", function(){
 		};
 
 
+		var recursifQuery = function( res, value){
+			if (res.length  >= 2){
+				var name = res[1] ;
+				if ( ! this[name] ){
+					// create
+					//console.log("CREATE : " +name+  " nb :" +res.length)
+					Array.prototype.shift.call(res);
+					Array.prototype.shift.call(res);
+					if (res.length == 0){
+						this[name] = value;		
+					}else{
+						this[name] = {};
+						recursifQuery.call(this[name], res, value);
+					}
+					//return this[name];
+				}else{
+					// continue
+					//console.log("EXIST : " + name);
+					Array.prototype.shift.call(res);
+					Array.prototype.shift.call(res);
+					recursifQuery.call(this[name], res, value);
+					//return this;
+				}
+			}
+		}
 
+		var reg = /(:?\[(\d)\])?(:?\[(\w*)\])?(:?\[(\w*)\])?$/ ;
+		var parsingQueryDatatable = function(query){
+			var obj = {}
+			for (var ele in query ){
+				switch(true){
+					case /^draw$/.test(ele) :
+						obj["draw"] = parseInt( query[ele], 10 );
+					break;
+					case /^start$/.test(ele) :
+						obj["start"] = parseInt( query[ele], 10 );
+					break;
+					case /^length$/.test(ele) :
+						obj["length"] = parseInt ( query[ele], 10 );
+					break;
+					default:
+						var res = /^columns(.*)$/.exec(ele) ;
+						if (res){
+							if (! obj["columns"] ){
+								obj["columns"] =[];	
+							}
+							var ret = reg.exec(res[1]);
+							if ( ret ){
+								Array.prototype.shift.call(ret);
+								ret[1] = parseInt(ret[1], 10); 
+								var tab = ret.filter(function(eletab){
+									return eletab !== undefined ;
+								})
+								recursifQuery.call(obj["columns"], tab, query[ele] ) ;
+							}
+						}
+
+						res =  /^search(.*)$/.exec(ele);
+						if ( res ){
+							if (! obj["search"] ){
+								obj["search"] ={};
+							}
+							var ret = reg.exec(res[1]);
+							if ( ret ){
+								Array.prototype.shift.call(ret);
+								var tab = ret.filter(function(eletab){
+									return eletab !== undefined ;
+								})
+								recursifQuery.call(obj["search"], tab, query[ele] ) 
+							}
+
+						}
+						res =  /^order(.*)$/.exec(ele);
+						if ( res ){
+							if (! obj["order"] ){
+								obj["order"] =[];
+							}
+							var ret = reg.exec(res[1]);
+							if ( ret ){
+								Array.prototype.shift.call(ret);
+								ret[1] = parseInt(ret[1], 10);
+								var tab = ret.filter(function(eletab){
+									return eletab !== undefined ;
+								})
+								recursifQuery.call(obj["order"], tab, query[ele] ) 
+							}
+
+						}
+				}
+			}
+			return obj ;
+		}
+
+		var ISDefined = function(ele){
+			if (ele !== null && ele !== undefined )
+				return true
+			return false;
+		}
+
+		var parseParameterString = function(str, value){
+			console.log(str)
+			switch( nodefony.typeOf(str) ){
+				case "string" :
+					return parseParameterString.call(this,str.split(".") , value);
+				break;
+				case "array" :
+					switch(str.length){
+						case 1 :
+							console.log(this)
+							var ns = Array.prototype.shift.call(str);
+							
+							if ( ISDefined(value) ){
+								this[ns] = value ;
+							}else{
+								return this[ns];
+							}
+							return value ;
+						break;
+						default :
+							var ns = Array.prototype.shift.call(str);
+							if ( ! this[ns] && ISDefined(value) ){
+								this[ns] = {};
+							}
+							return parseParameterString.call(this[ns], str, value);	
+					}
+				break;
+				default:
+					return false;
+			}
+		};
+
+		var dataTableParsing = function(parsing, results){
+
+			var dataTable = {
+				draw:parsing.draw,
+				recordsTotal:results.count,
+				recordsFiltered:results.rows.length,
+				data:[]
+			}; 
+
+			for (var i = 0 ; i < results.rows.length  ; i++){
+				//console.log(parsing.columns[i])
+				var payload= {};
+				payload["uid"] = results.rows[i].id ;
+				payload["payload"] = JSON.parse( results.rows[i].data ) ;
+				payload["timeStamp"] = results.rows[i].createdAt ;
+				//console.log(payload)
+
+				for (var j = 0 ; i < parsing.columns.length  ; j++){
+					var name = parsing.columns[j].name ;
+					if ( name ){
+						var ret = {};
+						if (parsing.columns[j].data){
+							var param = parseParameterString.call(payload, parsing.columns[j].data, null)
+							//console.log(param)
+							ret[name] =  param ;
+						}else{
+							ret[name] = results.rows[i][name]; 
+						}
+					}else{
+						var ret = [];
+						if (parsing.columns[j].data){
+							var paylaod = JSON.parse( results.rows[i].data ) ;
+							var param = parseParameterString.call(payload, parsing.columns[j].data, null)
+							ret.push(param);	
+						}
+					}
+				}
+				console.log("PASS")
+				
+				dataTable.data.push(ret);	
+			}
+			console.log(dataTable);
+			return dataTable ;
+		}
+		
 		/**
 		 *
 		 *	@method requestsAction
@@ -132,6 +307,7 @@ nodefony.registerController("api", function(){
 		apiController.prototype.requestsAction = function(){
 			var bundle = this.get("kernel").getBundles("monitoring") ;
 			var storageProfiling = bundle.settings.storage.requests ;
+			
 			switch( storageProfiling ){
 				case "syslog":
 					var syslog = bundle.syslogContext ;
@@ -144,43 +320,83 @@ nodefony.registerController("api", function(){
 				break;
 				case "orm":
 					var requestEntity = bundle.requestEntity ;
-					requestEntity.findAll()
-					.then( function(results){
-						try{
-							var ele = [];
-							for (var i = 0 ; i < results.length  ; i++){
-								var ret = {};
-								ret["uid"] = results[i].id ;
-								ret["payload"] = JSON.parse( results[i].data ) ;
-								ret["timeStamp"] = results[i].createdAt ;
-								ele.push(ret);	
+					/*if (this.query.type && this.query.type === "dataTable"){
+
+						var parsing = parsingQueryDatatable(this.query);
+
+						var options = { 
+							offset: parsing.start, 
+							limit: parsing.length 
+						};	
+						requestEntity.findAndCountAll(options)
+						.then( function(results){
+							try{
+								var dataTable = dataTableParsing(parsing, results);
+								var res = JSON.stringify(dataTable); 
+							}catch(e){
+								return this.renderRest({
+									code:500,
+									type:"ERROR",
+									message:"internal error",
+									data:e
+								},true);	
 							}
-							var res = JSON.stringify(ele); 
-						}catch(e){
 							return this.renderRest({
-								code:500,
-								type:"ERROR",
-								message:"internal error",
-								data:e
-							},true);	
-						}
-						return this.renderRest({
-							code:200,
-							type:"SUCCESS",
-							message:"OK",
-							data:res
-						},true);
-					}.bind(this))
-					.catch(function(error){
-						if (error){
-							return this.renderRest({
-								code:500,
-								type:"ERROR",
-								message:"internal error",
-								data:error
+								code:200,
+								type:"SUCCESS",
+								message:"OK",
+								data:res
 							},true);
-						}	
-					}.bind(this))
+						}.bind(this))
+						.catch(function(error){
+							if (error){
+								return this.renderRest({
+									code:500,
+									type:"ERROR",
+									message:"internal error",
+									data:error
+								},true);
+							}	
+						}.bind(this))
+					}else{*/
+						requestEntity.findAll()
+						.then( function(results){
+							try{
+								var ele = [];
+								for (var i = 0 ; i < results.length  ; i++){
+									var ret = {};
+									ret["uid"] = results[i].id ;
+									ret["payload"] = JSON.parse( results[i].data ) ;
+									ret["timeStamp"] = results[i].createdAt ;
+									ele.push(ret);	
+								}
+								var res = JSON.stringify(ele); 
+							}catch(e){
+								return this.renderRest({
+									code:500,
+									type:"ERROR",
+									message:"internal error",
+									data:e
+								},true);	
+							}
+							return this.renderRest({
+								code:200,
+								type:"SUCCESS",
+								message:"OK",
+								data:res
+							},true);
+						}.bind(this))
+						.catch(function(error){
+							if (error){
+								return this.renderRest({
+									code:500,
+									type:"ERROR",
+									message:"internal error",
+									data:error
+								},true);
+							}	
+						}.bind(this))
+					//}
 				break;
 				default:
 					return this.renderRest({
@@ -354,7 +570,7 @@ nodefony.registerController("api", function(){
 		 */
 		apiController.prototype.realtimeAction = function(name){
 
-			var service  = this.get("realTime")
+			var service  = this.get("realTime");
 			if ( ! service){
 				return this.renderRest({
 					code:404,
@@ -423,7 +639,6 @@ nodefony.registerController("api", function(){
 					data:JSON.stringify(users)
 				}, true);
 			}.bind(this))
-
 		}
 
 		/**
@@ -471,6 +686,57 @@ nodefony.registerController("api", function(){
 				}.bind(this));	
 			}.bind(this));
 		}
+
+		apiController.prototype.securityAction = function(action){
+			var service  = this.get("security");
+			if ( ! service){
+				return this.renderRest({
+					code:404,
+			        	type:"ERROR",
+			        	message:"Service security not found",
+				}); 
+			}
+
+			var ele ={
+				securedAreas:{},
+				sessionStrategy:service.sessionStrategy,
+				providers:[],
+				factories:[]
+			}
+			for (var factory in nodefony.security.factory){
+				ele.factories.push(factory)		
+			}
+
+			for (var provider in service.providers){
+				ele.providers.push({
+					name:service.providers[provider].name,
+					type:service.providers[provider].type
+				});
+			}
+			for (var area in service.securedAreas){
+				ele.securedAreas[area] = {
+					name:area,
+					regPartten:service.securedAreas[area]["regPartten"],
+					redirect_Https:service.securedAreas[area]["redirect_Https"],
+					sessionContext:service.securedAreas[area]["sessionContext"],
+					provider:service.securedAreas[area]["providerName"],
+					formLogin:service.securedAreas[area]["formLogin"],
+					checkLogin:service.securedAreas[area]["checkLogin"],
+					defaultTarget:service.securedAreas[area]["defaultTarget"],
+					factory:null
+				}
+				if ( service.securedAreas[area].factory ){
+					ele.securedAreas[area]["factory"] = service.securedAreas[area].factory["name"];
+				}
+			}
+			return this.renderRest({
+				code:200,
+				type:"SUCCESS",
+				message:"OK",
+				data:JSON.stringify(ele)
+			});
+		}
+
 
 		
 		return apiController;

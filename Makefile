@@ -48,7 +48,7 @@ restart:
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
-	make clean
+	#make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
 		if [ $(VERBOSE) = 0 ] ; then \

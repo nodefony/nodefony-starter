@@ -14,6 +14,10 @@ nodefony.register("controller", function(){
 		this.container = container;
 		this.notificationsCenter = this.container.get("notificationsCenter");
 		this.sessionService = this.container.get("sessions");
+		this.query = context.request.query ;
+		/*this.queryFile = context.request.queryFile;
+		this.queryGet = context.request.queryGet;
+		this.queryPost = context.request.queryPost;*/
 	};
 	
 	Controller.prototype.logger = function(pci, severity, msgid,  msg){

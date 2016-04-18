@@ -199,23 +199,7 @@ nodefony.registerService("httpKernel", function(){
 				
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
-				//response events	
-				context.response.response.on("finish",function(){
-					this.container.leaveScope(container);
-					if ( ! context.session  ){
-						delete context.extendTwig ;
-						if (context.proxy) delete context.proxy ;
-						context.clean();
-						delete context;	
-						delete request ;
-						delete response ;
-					}
-					delete domain.container ;
-					if (domain) delete domain ;
-					delete container ;
-					delete translation ;
-				}.bind(this))
-
+				
 				var resolver  = this.get("router").resolve(container, request);
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
@@ -258,6 +242,30 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
+
+				//response events	
+				context.response.response.on("finish",function(){
+					context.fire("onFinish", context);
+					this.container.leaveScope(container);
+					if ( ! context.session  ){
+						delete context.extendTwig ;
+						if (context.proxy) delete context.proxy ;
+						context.clean();
+						delete context;	
+						delete request ;
+						delete response ;
+					}
+					
+					//if (context.profiling) delete context.profiling ;
+					delete container ;
+					delete translation ;
+					if (domain) {
+						//domain.return(context);
+						delete domain.container ;
+						delete domain ;
+					}
+				}.bind(this));
+
 				if (! this.firewall){
 					request.on('end', function(){
 						try {
@@ -283,19 +291,7 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.io.transports.websocket(container, request, response, type);
 				container.set("context", context);
-				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);
-
-				context.listen(this,"onClose" , function(){
-					delete 	context.extendTwig ;
-					context.clean();
-					delete context ;
-					delete domain.container ;
-					if (domain) delete domain ;
-					delete container ;
-					delete translation ;
-					delete request ;
-					delete response ;
-				});
+				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
 				var resolver  = this.get("router").resolve(container, request);
 				if (resolver.resolve) {
@@ -309,7 +305,6 @@ nodefony.registerService("httpKernel", function(){
 					});
 				}
 
-
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
@@ -322,6 +317,21 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
+				context.listen(this,"onClose" , function(reasonCode, description){
+					context.fire("onFinish", context, reasonCode, description);
+					delete 	context.extendTwig ;
+					context.clean();
+					delete context ;
+					if (domain) {
+						delete domain.container ;
+						delete domain ;
+					}
+					//if (context.profiling) delete context.profiling ;
+					delete container ;
+					delete translation ;
+					delete request ;
+					delete response ;
+				});
 				if (! this.firewall){
 					try {
 						if ( context.sessionAutoStart === "autostart" ){

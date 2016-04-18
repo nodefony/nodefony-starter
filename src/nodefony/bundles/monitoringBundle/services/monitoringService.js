@@ -108,6 +108,16 @@ nodefony.registerService("monitoring", function(){
 				
 			},1000);
 
+			//SESSIONS  INTERVAL
+				//CONTEXT
+
+
+			//REQUESTS  INTERVAL
+			
+				//WEBSOCKET OPEN
+				//WEBSOCKET CLOSE
+				//HTTP 
+
 			socket.on('end',function(){
 				closed = true ;
 				if ( this.syslog ){
@@ -169,7 +179,9 @@ nodefony.registerService("monitoring", function(){
 		this.stopped = true ;
 		for (var i = 0 ; i < this.connections.length ; i++){
 			this.logger("CLOSE CONNECTIONS SERVICE REALTIME : " + this.name);
-			this.syslog.unListen("onLog", this.connections[i]["listener"]);
+			if ( this.connections[i]["listener"] ){
+				this.syslog.unListen("onLog", this.connections[i]["listener"]);
+			}
 			this.connections[i].socket.end();	
 			var id = this.connections[i].id;
 			delete this.connections[id];

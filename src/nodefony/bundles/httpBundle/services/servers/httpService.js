@@ -16,18 +16,32 @@ nodefony.registerService("http", function(){
 		this.ready = false ;
 
 	};
+
+
+	Http.prototype.createZone = function(request, response, logString){
+
+		require("zone").enable();
+		zone.create(function httpZone() {
+			this.kernel.fire("onServerRequest", request, response, logString, zone)
+		}.bind(this))
+		.then(function(result) {
+			// Runs when succesful
+			this.httpKernel.logger("ZONE SUCCES","INFO");
+		}.bind(this))
+		.catch(function(err) {
+			this.httpKernel.logger(err);
+		}.bind(this));
+	}
 	
 	Http.prototype.createServer = function(port, domain){
 		this.settings = this.get("container").getParameters("bundles.http").http || null ;
-
-		
-
 
 		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
 			response.setHeader("Server", "nodefony");
 			if ( this.kernel.settings.system.statics ){
 				this.httpKernel.serverStatic.handle(request, response , function(){
+					//this.createZone(request, response, logString);
 					var d = nodedomain.create();
 					d.on('error', function(er) {
 						if ( d.container ){

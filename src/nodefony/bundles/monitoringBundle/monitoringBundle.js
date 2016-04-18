@@ -1,3 +1,4 @@
+var util = require('util');
 
 nodefony.registerBundle ("monitoring", function(){
 
@@ -109,18 +110,34 @@ nodefony.registerBundle ("monitoring", function(){
 				this.sessionService = this.container.get("sessions");
 				this.domain =  this.translation.defaultDomain ;
 				this.nbServices = Object.keys(nodefony.services).length ;
-				
 
 				//ORM
-				//console.log(orm.connections.nodefony);
 				var ORM = {} ;
 				if (this.orm){
 					ORM = {
 						name:this.orm.name,
 						version:this.orm.engine.version,
-						connections:this.orm.connections
+						connections:{}
 					}
 				}
+				for (var connection in this.orm.connections){
+					ORM.connections[connection] = {
+						state:this.orm.connections[connection].state,
+						name:this.orm.connections[connection].name,
+						type:this.orm.connections[connection].type,
+						db:{
+							config:this.orm.connections[connection].db.config,
+							options:this.orm.connections[connection].db.options,
+							models:{}
+						}
+					} ;
+					for (var model in this.orm.connections[connection].db.models){
+						ORM.connections[connection]["db"]["models"][model] ={
+							name:model
+						}	
+					}
+				}
+				//console.log( util.inspect(ORM.connections,  {depth:5} ) );	
 
 				this.service = {
 					upload : {
@@ -159,324 +176,336 @@ nodefony.registerBundle ("monitoring", function(){
 			request.nodefony_time = new Date().getTime();	
 		});
 
+
 		this.kernel.listen(this, "onRequest",function(context){
 
 			context.profiling = null ;
+			if ( context.resolver.route.name.match(/^monitoring-/) )
+				return ;
 
-			if ( context.resolver.resolve ){
-				var trans = context.get("translation");
-				var obj = {
-					bundle:context.resolver.bundle.name,
-					bundles:this.bundles,
-					pwd:process.env["PWD"],
-					node:this.node,
-					services:this.service,
-					nbServices:this.nbServices,
-					security:this.security,
-					route:{
-						name:context.resolver.route.name,
-						uri:context.resolver.route.path,
-						variables:context.resolver.variables,
-						pattern:context.resolver.route.pattern.toString(),	
-						defaultView:context.resolver.defaultView
-					},
-					varialblesName:context.resolver.route.variables,
-					kernelSettings:this.kernel.settings,
-					environment:this.env,
-					debug:this.kernel.debug,
-					appSettings:this.app,
-					locale:{
-						default:trans.defaultLocale,
-						domain:trans.defaultDomain
-					}
-				};
-				nodefony.extend(obj, context.extendTwig);
+			if ( ! context.resolver.resolve )
+				return ;
 
-				obj["events"] = {} ;
-				for(var event in context.notificationsCenter.event["_events"] ){
-					if ( event == "onRequest"){
-						obj["events"][event] = {
-							fire:true,
-							nb:1,
-							listeners:context.notificationsCenter.event["_events"][event].length
-						} ;
-					}else{
-						obj["events"][event] = {
-							fire:false,
-							nb:0,
-							listeners:context.notificationsCenter.event["_events"][event].length
-						} ;
-					}
-					//console.log(event)
-					context.listen(context ,event, function(){
-						var ele =  arguments[ 0]  ;
-						obj["events"][ele].fire= true;
-						obj["events"][ele].nb = ++obj["events"][ele].nb
-					}.bind(context, event ) )	
+
+			var trans = context.get("translation");
+			context.profiling = {
+				id:null,
+				bundle:context.resolver.bundle.name,
+				bundles:this.bundles,
+				pwd:process.env["PWD"],
+				node:this.node,
+				services:this.service,
+				nbServices:this.nbServices,
+				security:this.security,
+				route:{
+					name:context.resolver.route.name,
+					uri:context.resolver.route.path,
+					variables:context.resolver.variables,
+					pattern:context.resolver.route.pattern.toString(),	
+					defaultView:context.resolver.defaultView
+				},
+				varialblesName:context.resolver.route.variables,
+				kernelSettings:this.kernel.settings,
+				environment:this.env,
+				debug:this.kernel.debug,
+				appSettings:this.app,
+				queryPost:  context.request.queryPost ,	
+				queryGet:  context.request.queryGet ,
+				protocole:  context.type ,
+				cookies:  context.cookies ,
+				events:{},
+				twig:[],
+				locale:{
+					default:trans.defaultLocale,
+					domain:trans.defaultDomain
 				}
+			};
+			nodefony.extend(context.profiling, context.extendTwig);
 
-				if ( context.security ){
-					var secu = context.session.getMetaBag("security");
-					obj["context_secure"] = {
-						name: context.security.name ,
-						factory : context.security.factory.name,
-						token:secu  ? secu.tokenName : context.security.factory.token,
+			for(var event in context.notificationsCenter.event["_events"] ){
+				if ( event == "onRequest"){
+					context.profiling["events"][event] = {
+						fire:true,
+						nb:1,
+						listeners:context.notificationsCenter.event["_events"][event].length
+					} ;
+				}else{
+					context.profiling["events"][event] = {
+						fire:false,
+						nb:0,
+						listeners:context.notificationsCenter.event["_events"][event].length
+					} ;
+				}
+				//console.log(event)
+				context.listen(context ,event, function(){
+					var ele =  arguments[ 0]  ;
+					this.profiling["events"][ele].fire= true;
+					this.profiling["events"][ele].nb = ++this.profiling["events"][ele].nb
+				}.bind(context, event ) )	
+			}
+
+			if ( context.security ){
+				var secu = context.session.getMetaBag("security");
+				context.profiling["context_secure"] = {
+					name: context.security.name ,
+					factory : context.security.factory.name,
+					token:secu  ? secu.tokenName : context.security.factory.token,
+					user:context.user
+				}	
+			}else{
+				var secu = context.session ? context.session.getMetaBag("security") : null;
+				if ( secu ){
+					context.profiling["context_secure"] = {
+						name:	"OFF",
+						factory : null,
+						token:null,
 						user:context.user
-					}	
-				}else{
-					var secu = context.session ? context.session.getMetaBag("security") : null;
-					if ( secu ){
-						obj["context_secure"] = {
-							name:	"OFF",
-							factory : null,
-							token:null,
-							user:context.user
-						}
-					}else{
-						obj["context_secure"] = null ;	
 					}
-				}
-					
-				if ( context.resolver.route.defaults ) {
-					var tab = context.resolver.route.defaults.controller.split(":") ;
-					var contr   =    ( tab[1] ? tab[1] : "default" );
-					obj["routeur"] =  {
-						bundle : context.resolver.bundle.name+"Bundle" ,
-						action : tab[2]+"Action" ,
-						pattern : context.resolver.route.defaults.controller ,
-						Controller : contr+"Controller"
-					}
-					
-				}
-				if (context.proxy){
-					obj["proxy"] = context.proxy ;
 				}else{
-					obj["proxy"] = null ;
+					context.profiling["context_secure"] = null ;	
 				}
-
-				if ( context.session ){
-					obj["session"] = {
-						name:context.session.name,
-						id:context.session.id,
-						metas:context.session.metaBag(),
-						attributes:context.session.attributes(),
-						flashes:context.session.flashBags(),
-						context:context.session.contextSession
-					};
+			}
+				
+			if ( context.resolver.route.defaults ) {
+				var tab = context.resolver.route.defaults.controller.split(":") ;
+				var contr   =    ( tab[1] ? tab[1] : "default" );
+				context.profiling["routeur"] =  {
+					bundle : context.resolver.bundle.name+"Bundle" ,
+					action : tab[2]+"Action" ,
+					pattern : context.resolver.route.defaults.controller ,
+					Controller : contr+"Controller"
 				}
 				
-				if ( context.request.queryFile ){
-					obj["queryFile"] = {};
-					for (var ele in context.request.queryFile){
-						obj["queryFile"][ele] = {
-							path		: context.request.queryFile[ele].path,
-							mimetype	: context.request.queryFile[ele].mimeType,
-							length		: context.request.queryFile[ele].lenght,
-							fileName	: context.request.queryFile[ele].fileName
-						}
+			}
+			if (context.proxy){
+				context.profiling["proxy"] = context.proxy ;
+			}else{
+				context.profiling["proxy"] = null ;
+			}
+
+			if ( context.session ){
+				context.profiling["session"] = {
+					name:context.session.name,
+					id:context.session.id,
+					metas:context.session.metaBag(),
+					attributes:context.session.attributes(),
+					flashes:context.session.flashBags(),
+					context:context.session.contextSession
+				};
+			}
+			
+			if ( context.request.queryFile ){
+				context.profiling["queryFile"] = {};
+				for (var ele in context.request.queryFile){
+					context.profiling["queryFile"][ele] = {
+						path		: context.request.queryFile[ele].path,
+						mimetype	: context.request.queryFile[ele].mimeType,
+						length		: context.request.queryFile[ele].lenght,
+						fileName	: context.request.queryFile[ele].fileName
 					}
 				}
-				obj["context"] = {
-					type:context.type,	
-					isAjax:context.isAjax,
-					secureArea:context.secureArea,
-					domain:context.domain,
-					url:context.url,
-					remoteAddress:context.remoteAddress,
-					crossDomain:context.crossDomain
-				}
+			}
+			context.profiling["context"] = {
+				type:context.type,	
+				isAjax:context.isAjax,
+				secureArea:context.secureArea,
+				domain:context.domain,
+				url:context.url,
+				remoteAddress:context.remoteAddress,
+				crossDomain:context.crossDomain
+			}
 
-				switch (context.type){
-					case "HTTP":
-					case "HTTPS":
-						obj["timeStamp"] = context.request.request.nodefony_time ;
-						switch (context.request.contentType){
-							case "multipart/form-data":
-								//console.log(context.request.queryFile)
-								try{
-									var content = JSON.stringfy(context.request.queryFile)
-								}catch(e){
-									var content = null ;
-								}
-							break;
-							case "application/xml":
-							case "text/xml":
-							case "application/json":
-							case "text/json":
-							case "application/x-www-form-urlencoded":
-								var content = context.request.body.toString(context.request.charset);
-							break;
-							default:
+			switch (context.type){
+				case "HTTP":
+				case "HTTPS":
+					context.profiling["timeStamp"] = context.request.request.nodefony_time ;
+					switch (context.request.contentType){
+						case "multipart/form-data":
+							try{
+								var content = JSON.stringfy(context.request.queryFile)
+							}catch(e){
 								var content = null ;
+							}
+						break;
+						case "application/xml":
+						case "text/xml":
+						case "application/json":
+						case "text/json":
+						case "application/x-www-form-urlencoded":
+							var content = context.request.body.toString(context.request.charset);
+						break;
+						default:
+							var content = null ;
+					}
+					
+					context.profiling["request"] = {
+						url:context.request.url.href,
+						method:context.request.method,
+						protocol:context.type,
+						remoteAdress:context.request.remoteAdress,
+						queryPost:context.request.queryPost,
+						queryGet:context.request.queryGet,
+						headers:context.request.headers,
+						crossDomain:context.crossDomain,
+						dataSize:context.request.dataSize,
+						content:content,
+						"content-type":context.request.contentType
+					};
+					context.profiling["response"] = {	
+						statusCode:context.response.statusCode,
+						message:context.response.response.statusMessage,
+						size:context.response.body.length ,
+						encoding:context.response.encoding,
+						"content-type":context.response.response.getHeader('content-type')
+					};
+					
+					context.listen(this, "onSend", function(response, Context){
+						context.profiling["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
+						context.profiling["response"] = {
+							statusCode:response.statusCode,
+							message:response.response.statusMessage,
+							size:response.body.length ,
+							encoding:response.encoding,
+							"content-type":response.response.getHeader('content-type'),
+							headers:response.response._headers	
 						}
 						
-						obj["request"] = {
-							url:context.request.url.href,
-							method:context.request.method,
-							protocol:context.type,
-							remoteAdress:context.request.remoteAdress,
-							queryPost:context.request.queryPost,
-							queryGet:context.request.queryGet,
-							headers:context.request.headers,
-							crossDomain:context.crossDomain,
-							dataSize:context.request.dataSize,
-							content:content,
-							"content-type":context.request.contentType
-						};
-						obj["response"] = {	
-							statusCode:context.response.statusCode,
-							message:context.response.response.statusMessage,
-							size:context.response.body.length ,
-							encoding:context.response.encoding,
-							"content-type":context.response.response.getHeader('content-type')
-						};
-						context.response.response.on("finish",function(){
-							if (  this.settings.storage.requests == "orm"  ){
-								this.updateProfile(context.profiling, context.profilingObject);	
-							}
-							delete obj ;
-						}.bind(this))
-
-
-						context.listen(this, "onSend", function(response, context){
-							obj["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
-							obj["response"] = {
-								statusCode:response.statusCode,
-								message:response.response.statusMessage,
-								size:response.body.length ,
-								encoding:response.encoding,
-								"content-type":response.response.getHeader('content-type'),
-								headers:response.response._headers	
-							}
-							if ( context.profiling ){
-								context.profiling["timeRequest"] = obj["timeRequest"];
-								context.profiling["events"] = 	obj["events"] ;
-								context.profiling["response"] = obj["response"] ; 
-							}
-							if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
-								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-								if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-									this.get("templating").renderFile(View, obj,function(error , result){
-										if (error){
-											throw error ;
-										}
-										response.body = response.body.replace("</body>",result+"\n </body>") ;
-									});
-								}else{
-									//context.setXjson(obj);
-								}
-								delete obj ;
+						if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
+							var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+							if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
+								this.get("templating").renderFile(View, context.profiling,function(error , result){
+									if (error){
+										throw error ;
+									}
+									response.body = response.body.replace("</body>",result+"\n </body>") ;
+								});
 							}else{
-								//context.setXjson(obj);	
+								//context.setXjson(context.profiling);
 							}
-						})
-
-					break;
-					case "WEBSOCKET":
-					case "WEBSOCKET SECURE":
-						//console.log(context)
-						var configServer = {};
-						obj["timeStamp"] = context.request.nodefony_time ;
-						for (var conf in context.request.serverConfig){
-							if ( conf == "httpServer")
-								continue ;
-							configServer[conf] = context.request.serverConfig[conf];	
+						}else{
+							//context.setXjson(context.profiling);	
 						}
-
-						obj["request"] = {
-							url:context.request.httpRequest.url,
-							headers:context.request.httpRequest.headers,
-							method:context.request.httpRequest.method,
-							protocol:context.type,
-							remoteAdress:context.request.remoteAddress,
-							serverConfig:configServer,
-						};
-						var config = {};
-						for (var conf in context.response.config){
-							if ( conf == "httpServer")
-								continue ;
-							config[conf] = 	context.response.config[conf];	
+					})
+					context.listen(this, "onFinish",function(Context){
+						if (context.profiling){
+							this.saveProfile(context, function(error, res){
+								if (error){
+									this.kernel.logger(error);
+								}
+								if (context){
+									delete context.profiling ;	
+								}
+							}.bind(this));
 						}
-						obj["response"] = {
-							statusCode:context.response.statusCode,	
-							connection:"WEBSOCKET",
-							config:config,
-							webSocketVersion:context.response.webSocketVersion,
-							message:[],
-						};
-						context.listen(this,"onMessage", function(message, context, direction ){
-							var ele = {
-								date:new Date().toTimeString(),
-								data:message,
-								direction:direction
-							}
-							if (message && context.profiling ){
-								context.profiling["response"].message.push( ele ) ;
-							}
-							this.updateProfile(context.profiling, context.profilingObject);
-						})
+					}.bind(this));
 
-						context.listen(this,"onClose" , function(reasonCode, description, connection){
-							if ( context.profiling ){
-								context.profiling["response"].statusCode = connection.state  ;	
-							}
-
-							this.updateProfile(context.profiling, context.profilingObject);
-							
-							delete obj ;
-						})
-					break;
-				
-				}
-
-				context.listen(this, "onView", function(result, context, view, viewParam){
-					if ( context.profiling ){
-						try {
-							JSON.stringify( viewParam ) ;
-						}catch(e){
-							viewParam = "view param can't be parse" ;
-						}
-						context.profiling["twig"].push({
-							file:view,
-							param:viewParam
-						});
+				break;
+				case "WEBSOCKET":
+				case "WEBSOCKET SECURE":
+					//console.log(context)
+					context.profiling["timeStamp"] = context.request.nodefony_time ;
+					var configServer = {};
+					for (var conf in context.request.serverConfig){
+						if ( conf == "httpServer")
+							continue ;
+						configServer[conf] = context.request.serverConfig[conf];	
 					}
-				});
 
-				this.profiling(context, obj, function(error, result, ele){
-					if (error){
-						this.kernel.logger(error, "ERROR");
-						return ;
-					}	
-					context.profiling = result ;
-					context.profilingObject = ele ;
-					obj["requestId"] = result.id ;
-				})	
+					context.profiling["request"] = {
+						url:context.request.httpRequest.url,
+						headers:context.request.httpRequest.headers,
+						method:context.request.httpRequest.method,
+						protocol:context.type,
+						remoteAdress:context.request.remoteAddress,
+						serverConfig:configServer,
+					};
+					var config = {};
+					for (var conf in context.response.config){
+						if ( conf == "httpServer")
+							continue ;
+						config[conf] = 	context.response.config[conf];	
+					}
+					context.profiling["response"] = {
+						statusCode:context.response.statusCode,	
+						connection:"WEBSOCKET",
+						config:config,
+						webSocketVersion:context.response.webSocketVersion,
+						message:[],
+					};
+						
+					context.listen(this,"onMessage", function(message, Context, direction ){
+						var ele = {
+							date:new Date().toTimeString(),
+							data:message,
+							direction:direction
+						}
+						if (message && context.profiling ){
+							context.profiling["response"].message.push( ele ) ;
+						}
+						this.updateProfile(context,function(error, result){
+							if (error){
+								this.kernel.logger(error);
+							}
+						}.bind(this));
+					})
+					
+					context.listen(this, "onFinish",function(Context, reasonCode, description ){
+						if ( context.profiling ){
+							context.profiling["response"].statusCode = context.connection.state  ;	
+						}
+						this.updateProfile(context, function(error, result){
+							if (error){
+								this.kernel.logger(error);
+							}
+							if (context){
+								delete context.profiling ;	
+							}
+						}.bind(this));
+					}.bind(this));	
+
+					this.saveProfile(context, function(error, result){
+						if (error){
+							this.kernel.logger(error);
+						}
+					});
+				break;
+			}
+
+			context.listen(this, "onView", function(result, Context, view, viewParam){
+				try {
+					JSON.stringify( viewParam ) ;
+				}catch(e){
+					viewParam = "view param can't be parse" ;
+				}
+				context.profiling["twig"].push({
+					file:view,
+					param:viewParam
+				});
+			});
 
 			
-			}
 		});
 	}		
 
 	
-	monitoring.prototype.updateProfile = function(obj, profilingObject){
-		if ( obj) {
+	monitoring.prototype.updateProfile = function( context , callback){
+		if ( context.profiling) {
 			switch( this.storageProfiling ){
 				case "syslog" :
-					profilingObject.payload = obj ;
+					context.profilingObject.payload = context.profiling ;
 					return ;
 				break;
 				case "orm":
-					this.requestEntity.update({data:JSON.stringify(obj)}, {
+					this.requestEntity.update({data:JSON.stringify(context.profiling)}, {
   						where: {
-    							id:obj.id,
+    							id:context.profiling.id,
   						}
-					}).then(function(){
-						//callback(null, serialize) ;	
-						this.kernel.logger("ORM REQUEST SAVE","DEBUG");
+					}).then(function(result){
+						this.kernel.logger("ORM REQUEST UPDATE","DEBUG");
+						callback(null, result);
 					}.bind(this)).catch(function(error){
 						this.kernel.logger(error);
-						//callback(error, null) ;
+						callback(error, null) ;
 					}.bind(this))
 				break;
 				default:
@@ -485,59 +514,33 @@ nodefony.registerBundle ("monitoring", function(){
 		}
 	}
 
-	monitoring.prototype.profiling = function(context, obj , callback){
-	
-		if (  ! obj.route.name.match(/^monitoring-/) ){
+	monitoring.prototype.saveProfile = function(context , callback){
 
-			var requestObj = {
-				id:null,
-				timeStamp:obj["timeStamp"],
-				queryPost:context.request.queryPost,
-				queryGet:context.request.queryGet,
-				queryFile:obj["queryFile"],
-				proxy:obj["proxy"],
-				response:obj["response"],
-				request:obj["request"],
-				locale:obj["locale"],
-				context:obj["context"],
-				protocole:context.type,
-				session:obj["session"],
-				security:obj["context_secure"] || {},
-				events:obj["events"],
-				routing:obj["routeur"] || [],
-				route:obj["route"],
-				routeParmeters:obj["varialblesName"],
-				cookies:context.cookies,
-				twig:[]
-			};
-			switch( this.storageProfiling ){
-				
-				case "syslog" :
-					this.syslogContext.logger(requestObj);
-					var logProfile = this.syslogContext.getLogStack();
-					requestObj.id = logProfile.uid ;
-					callback(null , requestObj, logProfile)
-					return ;
-				break;
-				case "orm":
-					// DATABASE ENTITY 
-					this.requestEntity.create({id:null,data:JSON.stringify(requestObj) },{isNewRecord:true})
-					.then(function(request){
-						requestObj.id = request.id ;
-						callback(null , requestObj, request);
-					}.bind(this)).catch(function(error){
-						this.kernel.logger(error);
-						callback(error, null)
-					}.bind(this));
-				break;
-				default:
-					callback(new Error("No PROFILING"), null)
-			}
+		switch( this.storageProfiling ){
+			case "syslog" :
+				this.syslogContext.logger(context.profiling);
+				var logProfile = this.syslogContext.getLogStack();
+				context.profiling.id = logProfile.uid ;
+				callback(null, logProfile)
+				return ;
+			break;
+			case "orm":
+				// DATABASE ENTITY 
+				this.requestEntity.create({id:null,data:JSON.stringify(context.profiling) },{isNewRecord:true})
+				.then(function(request){
+					this.kernel.logger("ORM REQUEST SAVE","DEBUG");
+					if ( context && context.profiling)
+						context.profiling.id = request.id ;
+					callback(null ,  request);
+				}.bind(this)).catch(function(error){
+					this.kernel.logger(error);
+					callback(error, null)
+				}.bind(this));
+			break;
+			default:
+				callback(new Error("No PROFILING"), null)
 		}
-	
 	}
-	
-
 
 	return monitoring;
 });
