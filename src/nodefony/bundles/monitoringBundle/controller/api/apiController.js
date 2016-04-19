@@ -50,6 +50,22 @@ nodefony.registerController("api", function(){
 			
 		};
 
+		apiController.prototype.renderDatatable = function(data, async){
+		
+			var context = this.getContext() ;
+
+			var response = this.getResponse() ;
+			if ( data.code ){
+				response.setStatusCode(data.code) ;
+			}
+			return this.renderResponse(
+				JSON.stringify(data), 
+				200, 
+				{'Content-Type': 'application/json; charset=utf-8'}
+			);
+		};
+
+
 		/**
 		 *
 		 *	@method routesAction
@@ -209,93 +225,33 @@ nodefony.registerController("api", function(){
 								})
 								recursifQuery.call(obj["order"], tab, query[ele] ) 
 							}
-
 						}
 				}
 			}
 			return obj ;
 		}
 
-		var ISDefined = function(ele){
-			if (ele !== null && ele !== undefined )
-				return true
-			return false;
-		}
-
-		var parseParameterString = function(str, value){
-			console.log(str)
-			switch( nodefony.typeOf(str) ){
-				case "string" :
-					return parseParameterString.call(this,str.split(".") , value);
-				break;
-				case "array" :
-					switch(str.length){
-						case 1 :
-							console.log(this)
-							var ns = Array.prototype.shift.call(str);
-							
-							if ( ISDefined(value) ){
-								this[ns] = value ;
-							}else{
-								return this[ns];
-							}
-							return value ;
-						break;
-						default :
-							var ns = Array.prototype.shift.call(str);
-							if ( ! this[ns] && ISDefined(value) ){
-								this[ns] = {};
-							}
-							return parseParameterString.call(this[ns], str, value);	
-					}
-				break;
-				default:
-					return false;
-			}
-		};
-
 		var dataTableParsing = function(parsing, results){
-
 			var dataTable = {
 				draw:parsing.draw,
 				recordsTotal:results.count,
-				recordsFiltered:results.rows.length,
+				recordsFiltered: ( parsing.search.value !== "" ? results.rows.length : results.count ) ,
 				data:[]
 			}; 
 
 			for (var i = 0 ; i < results.rows.length  ; i++){
-				//console.log(parsing.columns[i])
 				var payload= {};
 				payload["uid"] = results.rows[i].id ;
 				payload["payload"] = JSON.parse( results.rows[i].data ) ;
 				payload["timeStamp"] = results.rows[i].createdAt ;
-				//console.log(payload)
-
-				for (var j = 0 ; i < parsing.columns.length  ; j++){
-					var name = parsing.columns[j].name ;
-					if ( name ){
-						var ret = {};
-						if (parsing.columns[j].data){
-							var param = parseParameterString.call(payload, parsing.columns[j].data, null)
-							//console.log(param)
-							ret[name] =  param ;
-						}else{
-							ret[name] = results.rows[i][name]; 
-						}
-					}else{
-						var ret = [];
-						if (parsing.columns[j].data){
-							var paylaod = JSON.parse( results.rows[i].data ) ;
-							var param = parseParameterString.call(payload, parsing.columns[j].data, null)
-							ret.push(param);	
-						}
-					}
-				}
-				console.log("PASS")
-				
-				dataTable.data.push(ret);	
+				payload["username"] =  results.rows[i].username ;
+				payload["url"] =  results.rows[i].url ;
+				payload["route"] =  results.rows[i].route ;
+				payload["method"] =  results.rows[i].method ;
+				payload["state"] =  results.rows[i].state ;
+				payload["protocole"] =  results.rows[i].protocole ;
+				dataTable.data.push(payload);	
 			}
-			console.log(dataTable);
 			return dataTable ;
 		}
 		
@@ -320,18 +276,57 @@ nodefony.registerController("api", function(){
 				break;
 				case "orm":
 					var requestEntity = bundle.requestEntity ;
-					/*if (this.query.type && this.query.type === "dataTable"){
+					if (this.query.type && this.query.type === "dataTable"){
 
 						var parsing = parsingQueryDatatable(this.query);
+						//console.log(parsing);
 
 						var options = { 
 							offset: parsing.start, 
 							limit: parsing.length 
 						};	
+						if (parsing.order.length){
+							options["order"] = [];
+							for ( var i = 0 ; i < parsing.order.length ; i++){
+								var tab = []
+								tab.push( parsing.columns[ parseInt( parsing.order[i].column , 10 ) ].name ) ;	
+								tab.push( parsing.order[i].dir ) ;	
+								options["order"].push(tab);
+							}
+						}
+						if (parsing.search.value !== "" ){
+							options["where"] = {
+								$or: [{
+									username: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								},{
+									url: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								},{
+									route: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								},{
+									method: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								},{
+									state: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								},{
+									protocole: {
+										$like: "%"+parsing.search.value+"%"
+									}
+								}]
+							}
+						}
 						requestEntity.findAndCountAll(options)
 						.then( function(results){
 							try{
-								var dataTable = dataTableParsing(parsing, results);
+								var dataTable = dataTableParsing.call(this, parsing, results);
 								var res = JSON.stringify(dataTable); 
 							}catch(e){
 								return this.renderRest({
@@ -341,12 +336,7 @@ nodefony.registerController("api", function(){
 									data:e
 								},true);	
 							}
-							return this.renderRest({
-								code:200,
-								type:"SUCCESS",
-								message:"OK",
-								data:res
-							},true);
+							return this.renderDatatable(dataTable);
 						}.bind(this))
 						.catch(function(error){
 							if (error){
@@ -358,7 +348,7 @@ nodefony.registerController("api", function(){
 								},true);
 							}	
 						}.bind(this))
-					}else{*/
+					}else{
 						requestEntity.findAll()
 						.then( function(results){
 							try{
@@ -396,7 +386,7 @@ nodefony.registerController("api", function(){
 								},true);
 							}	
 						}.bind(this))
-					//}
+					}
 				break;
 				default:
 					return this.renderRest({
@@ -406,7 +396,6 @@ nodefony.registerController("api", function(){
 						data:"Storage request monitoring not found"
 					});
 			}
-			
 		}
 
 		/**

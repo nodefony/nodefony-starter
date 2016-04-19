@@ -486,7 +486,6 @@ nodefony.registerBundle ("monitoring", function(){
 			
 		});
 	}		
-
 	
 	monitoring.prototype.updateProfile = function( context , callback){
 		if ( context.profiling) {
@@ -496,7 +495,10 @@ nodefony.registerBundle ("monitoring", function(){
 					return ;
 				break;
 				case "orm":
-					this.requestEntity.update({data:JSON.stringify(context.profiling)}, {
+					this.requestEntity.update({
+							data:JSON.stringify(context.profiling),
+							state	: context.profiling.response.statusCode
+						}, {
   						where: {
     							id:context.profiling.id,
   						}
@@ -525,8 +527,22 @@ nodefony.registerBundle ("monitoring", function(){
 				return ;
 			break;
 			case "orm":
-				// DATABASE ENTITY 
-				this.requestEntity.create({id:null,data:JSON.stringify(context.profiling) },{isNewRecord:true})
+				// DATABASE ENTITY
+				if ( context.profiling.context_secure ){
+					var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 
+				}else{
+					var user = "none" ;	
+				}
+				this.requestEntity.create({
+					id		: null,
+					url		: context.profiling.request.url,
+					route		: context.profiling.route.name,
+					method		: context.profiling.request.method,
+					state		: context.profiling.response.statusCode,
+					protocole	: context.profiling.context.type,
+					username	: user,
+					data		: JSON.stringify(context.profiling) 
+				},{isNewRecord:true})
 				.then(function(request){
 					this.kernel.logger("ORM REQUEST SAVE","DEBUG");
 					if ( context && context.profiling)

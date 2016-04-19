@@ -14,6 +14,12 @@ nodefony.registerEntity("requests", function(){
 	var requests = function(db, ormService){
 		var model = db.define("requests", {
 				id		:	{type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+				url		:	{type: Sequelize.TEXT },
+				route		:	{type:Sequelize.STRING },
+				method		:	{type:Sequelize.STRING },
+				state		:	{type:Sequelize.STRING },
+				protocole	:	{type:Sequelize.STRING },
+				username	:	{type:Sequelize.STRING },
 				data		:	{type: Sequelize.TEXT },
     		},{
 			classMethods: {
@@ -21,11 +27,11 @@ nodefony.registerEntity("requests", function(){
 			}
 		});
 
-		ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){
+		/*ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){
 			if(connectionName == 'nodefony'){
 				
 			}
-		});
+		});*/
 		return model ;
 	};
 

@@ -295,20 +295,26 @@ stage.registerController("navController", function() {
 					d.type = "dataTable";
 				},
 				"type": "GET",
-				"dataSrc": "response.data",
+				//"dataSrc": "response.data",
 			},
 			"columns": [
-            			{ "name":"uid","data": "uid" },
-            			{ "name":"timeStamp", "data": "timeStamp" },
-            			{ "name":"uri","data": "payload.request.uri" },
-            			{ "name":"name","data": "payload.route.name" },
-            			{ "name":"method","data": "payload.request.method" },
-            			{ "name":"statusCode","data": "payload.response.statusCode" },
-            			{ "name":"context","data": "payload.route.name" },
-            			{ "name":"user", "data": "payload.route.name" }
-        		]
+            			{ "name":"id","data": "uid" },
+            			{ "name":"createdAt", "data": "timeStamp" },
+            			{ "name":"url","data": "url" },
+            			{ "name":"route","data": "route" },
+            			{ "name":"method","data": "method" },
+            			{ "name":"state","data": "state" },
+            			{ "name":"protocole","data": "protocole" },
+            			{ "name":"username", "data": "username" }
+        		],
+			"rowCallback": function( row, data ) {
+				$(row).click(function(){
+					this.redirect( this.generateUrl("request",{uid:data.uid}) ) ;
+				}.bind(this))
+			}.bind(this)
 		});
 
+		// SYSLOG
 		/*$.ajax("/nodefony/api/requests",{
 			success:function(data, status, xhr){
 				var obj = [];
