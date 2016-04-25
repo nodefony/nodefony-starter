@@ -9,8 +9,8 @@
  */
 var url = require("url")
 var qs = require('querystring');
+var QS = require('qs');
 var xml = require('xml2js');
-
 
 nodefony.register("Request",function(){
 
@@ -49,14 +49,13 @@ nodefony.register("Request",function(){
 						nodefony.extend( this.query, this.queryFile);
 					break;
 					case "application/x-www-form-urlencoded":
-						this.queryPost = qs.parse(this.body.toString(this.charset));
+						this.queryPost = QS.parse(this.body.toString(this.charset));
 					break;
 					default:
 						//console.log(bodyParser(request,null,function(){console.log(arguments)}))
 						this.queryPost = this.body.toString(this.charset);
 						this.logger("you must use a parser for "+this.contentType  +" FORM : " + this.body.length, "WARNING");
 						//this.queryPost = qs.parse(this.body);
-
 				}
 			break;
 		}
@@ -66,11 +65,17 @@ nodefony.register("Request",function(){
 		this.container = container ;
 		this.request = request;
 		this.host = this.getHost() ; //request.headers.host;
-		this.url = this.getUrl(request) ;
+		this.sUrl = this.getFullUrl( request );
+		this.url = this.getUrl(this.sUrl) ;
+		if ( this.url.search ){
+			this.url.query = QS.parse( this.url.search.replace(/^\?/,"") ) ;
+		}else{
+			this.url.query = {} ;
+		}
 		this.queryPost = {}; 
 		this.queryFile = {}; 
-		this.queryGet = this.getUrl(request, true).query;
-		this.query = this.getUrl(request, true).query;
+		this.queryGet = this.url.query;
+		this.query = this.url.query;
 		this.headers = 	request.headers ;
 		this.method = this.getMethod() ;// request.method;
 		this.rawContentType = {} ;
@@ -110,9 +115,6 @@ nodefony.register("Request",function(){
 				throw new Error ("Request "+this.url.href +" Content-type : " + this.contentType + " data Request :   "+ this.body.length+"   " + e );
 			}
 		}.bind(this));
-
-			
-
 	};
 
 	Request.prototype.getHost = function(){
@@ -175,7 +177,6 @@ nodefony.register("Request",function(){
 			this.extentionContentType = request.headers["content-type"] ;
 			return  tab[0];		
 		}
-		
 		return null;
 	}
 
@@ -211,12 +212,16 @@ nodefony.register("Request",function(){
 		return null ;
 	};
 
-	Request.prototype.getUrl = function(request, query){
-		if ( request.connection.encrypted )
-			var fullURL =  'https://' + this.host + request.url;
-		else
-			var fullURL = 'http://' + this.host + request.url;
-		return url.parse(fullURL, query);
+	Request.prototype.getUrl = function(sUrl, query){
+		return url.parse( sUrl, query);
+	};
+
+	Request.prototype.getFullUrl = function(request){
+		if ( request.connection.encrypted ){
+			return 'https://' + this.host + request.url;
+		}else{
+			return 'http://' + this.host + request.url;
+		}
 	};
 
 	Request.prototype.isAjax = function(){
@@ -226,7 +231,6 @@ nodefony.register("Request",function(){
 	}
 
 	return Request;
-
 });
 
 

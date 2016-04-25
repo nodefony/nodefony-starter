@@ -297,6 +297,7 @@ stage.registerController("navController", function() {
 				"type": "GET",
 				//"dataSrc": "response.data",
 			},
+			"order": [[ 1, "desc" ]],
 			"columns": [
             			{ "name":"id","data": "uid" },
             			{ "name":"createdAt", "data": "timeStamp" },

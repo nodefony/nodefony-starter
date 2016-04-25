@@ -139,103 +139,11 @@ nodefony.registerController("api", function(){
 		};
 
 
-		var recursifQuery = function( res, value){
-			if (res.length  >= 2){
-				var name = res[1] ;
-				if ( ! this[name] ){
-					// create
-					//console.log("CREATE : " +name+  " nb :" +res.length)
-					Array.prototype.shift.call(res);
-					Array.prototype.shift.call(res);
-					if (res.length == 0){
-						this[name] = value;		
-					}else{
-						this[name] = {};
-						recursifQuery.call(this[name], res, value);
-					}
-					//return this[name];
-				}else{
-					// continue
-					//console.log("EXIST : " + name);
-					Array.prototype.shift.call(res);
-					Array.prototype.shift.call(res);
-					recursifQuery.call(this[name], res, value);
-					//return this;
-				}
-			}
-		}
-
-		var reg = /(:?\[(\d)\])?(:?\[(\w*)\])?(:?\[(\w*)\])?$/ ;
-		var parsingQueryDatatable = function(query){
-			var obj = {}
-			for (var ele in query ){
-				switch(true){
-					case /^draw$/.test(ele) :
-						obj["draw"] = parseInt( query[ele], 10 );
-					break;
-					case /^start$/.test(ele) :
-						obj["start"] = parseInt( query[ele], 10 );
-					break;
-					case /^length$/.test(ele) :
-						obj["length"] = parseInt ( query[ele], 10 );
-					break;
-					default:
-						var res = /^columns(.*)$/.exec(ele) ;
-						if (res){
-							if (! obj["columns"] ){
-								obj["columns"] =[];	
-							}
-							var ret = reg.exec(res[1]);
-							if ( ret ){
-								Array.prototype.shift.call(ret);
-								ret[1] = parseInt(ret[1], 10); 
-								var tab = ret.filter(function(eletab){
-									return eletab !== undefined ;
-								})
-								recursifQuery.call(obj["columns"], tab, query[ele] ) ;
-							}
-						}
-
-						res =  /^search(.*)$/.exec(ele);
-						if ( res ){
-							if (! obj["search"] ){
-								obj["search"] ={};
-							}
-							var ret = reg.exec(res[1]);
-							if ( ret ){
-								Array.prototype.shift.call(ret);
-								var tab = ret.filter(function(eletab){
-									return eletab !== undefined ;
-								})
-								recursifQuery.call(obj["search"], tab, query[ele] ) 
-							}
-
-						}
-						res =  /^order(.*)$/.exec(ele);
-						if ( res ){
-							if (! obj["order"] ){
-								obj["order"] =[];
-							}
-							var ret = reg.exec(res[1]);
-							if ( ret ){
-								Array.prototype.shift.call(ret);
-								ret[1] = parseInt(ret[1], 10);
-								var tab = ret.filter(function(eletab){
-									return eletab !== undefined ;
-								})
-								recursifQuery.call(obj["order"], tab, query[ele] ) 
-							}
-						}
-				}
-			}
-			return obj ;
-		}
-
-		var dataTableParsing = function(parsing, results){
+		var dataTableParsing = function(query, results){
 			var dataTable = {
-				draw:parsing.draw,
+				draw: parseInt( query.draw, 10),
 				recordsTotal:results.count,
-				recordsFiltered: ( parsing.search.value !== "" ? results.rows.length : results.count ) ,
+				recordsFiltered: ( query.search.value !== "" ? results.rows.length : results.count ) ,
 				data:[]
 			}; 
 
@@ -278,47 +186,44 @@ nodefony.registerController("api", function(){
 					var requestEntity = bundle.requestEntity ;
 					if (this.query.type && this.query.type === "dataTable"){
 
-						var parsing = parsingQueryDatatable(this.query);
-						//console.log(parsing);
-
 						var options = { 
-							offset: parsing.start, 
-							limit: parsing.length 
+							offset: parseInt( this.query.start, 10), 
+							limit: parseInt ( this.query.length ,10),
 						};	
-						if (parsing.order.length){
+						if (this.query.order.length){
 							options["order"] = [];
-							for ( var i = 0 ; i < parsing.order.length ; i++){
+							for ( var i = 0 ; i < this.query.order.length ; i++){
 								var tab = []
-								tab.push( parsing.columns[ parseInt( parsing.order[i].column , 10 ) ].name ) ;	
-								tab.push( parsing.order[i].dir ) ;	
+								tab.push( this.query.columns[ parseInt( this.query.order[i].column , 10 ) ].name ) ;	
+								tab.push( this.query.order[i].dir ) ;	
 								options["order"].push(tab);
 							}
 						}
-						if (parsing.search.value !== "" ){
+						if (this.query.search.value !== "" ){
 							options["where"] = {
 								$or: [{
 									username: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								},{
 									url: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								},{
 									route: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								},{
 									method: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								},{
 									state: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								},{
 									protocole: {
-										$like: "%"+parsing.search.value+"%"
+										$like: "%"+this.query.search.value+"%"
 									}
 								}]
 							}
@@ -326,7 +231,7 @@ nodefony.registerController("api", function(){
 						requestEntity.findAndCountAll(options)
 						.then( function(results){
 							try{
-								var dataTable = dataTableParsing.call(this, parsing, results);
+								var dataTable = dataTableParsing.call(this, this.query, results);
 								var res = JSON.stringify(dataTable); 
 							}catch(e){
 								return this.renderRest({
