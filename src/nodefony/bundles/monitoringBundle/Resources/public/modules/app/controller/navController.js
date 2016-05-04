@@ -473,7 +473,42 @@ stage.registerController("navController", function() {
 	 */
 	controller.prototype.sessionsAction = function() {
 
-		$.ajax("/nodefony/api/sessions",{
+		
+		this.renderDefaultContent("appModule::sessions",{
+			sessions:[]
+		});
+
+		$("table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				url:"/nodefony/api/sessions",
+				data:function ( d ) {
+					d.type = "dataTable";
+				},
+				"type": "GET",
+			},
+			"order": [[ 0, "desc" ]],
+			"columns": [
+            			{ "name":"updatedAt", "data": "updatedAt" },
+            			{ "name":"username", "data": "user.username" },
+            			{ "name":"metaBag","data": "metaBag.request" },
+            			{ "name":"session_id", "data": "session_id" },
+            			{ "name":"context", "data": "context" },
+            			{ "name":"metaBag", "data": "metaBag.remoteAddress" },
+            			{ "name":"Attributes","data": "Attributes.lang" },
+            			{ "name":"ua","data": "metaBag.user_agent" },
+        		],
+			"rowCallback": function( row, data ) {
+				$(row).click(function(){
+					//this.redirect( this.generateUrl("request",{uid:data.uid}) ) ;
+				}.bind(this))
+			}.bind(this)
+		});
+
+
+
+		/*$.ajax("/nodefony/api/sessions",{
 			//dataType:"json",
 			success:function(data, status, xhr){
 				this.renderDefaultContent("appModule::sessions",{
@@ -484,7 +519,7 @@ stage.registerController("navController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		})
+		})*/
 	};
 	
 	/*

@@ -72,7 +72,6 @@ httpBundle:
 
   session:
     handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
-    #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
       maxAge:                     0   

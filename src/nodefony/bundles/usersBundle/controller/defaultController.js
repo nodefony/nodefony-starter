@@ -70,7 +70,7 @@ nodefony.registerController("default", function(){
 					log["adduser"] = adduser ;	
 				}
 
-				this.context.session.clear();
+				//this.context.session.clear();
 				//this.getResponse().setStatusCode(401,"Unauthorized");
 				return this.render('usersBundle::login.html.twig',log);
 			}

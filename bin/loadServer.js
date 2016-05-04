@@ -26,9 +26,9 @@ setInterval(function(){
 
 		if ( i % 2) 
 			//options.path="/api/syslog";
-			options.path="/demo/finder";
+			options.path="/demo/login";
 		else
-			options.path="/nodefony";
+			options.path="/nodefony/api/syslog";
 
 		var req = http.request(options, function(it, res) {
 	  		//console.log('STATUS: ' + res.statusCode);

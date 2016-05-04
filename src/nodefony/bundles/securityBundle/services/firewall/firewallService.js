@@ -220,7 +220,7 @@ nodefony.registerService("firewall", function(){
 
 	securedArea.prototype.handleError = function(context, e){
 		if (context.session){
-			context.session.clear();	
+			//context.session.clear();	
 		}
 		switch ( context.type ){
 			case "HTTP" :

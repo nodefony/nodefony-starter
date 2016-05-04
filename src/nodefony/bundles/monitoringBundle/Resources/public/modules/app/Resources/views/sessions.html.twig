@@ -8,23 +8,27 @@
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
+						<th>LAST USE</th>
 						<th>USERNAME</th>
 						<th>REQUEST</th>
 						<th>SESSION TOKEN</th>
 						<th>SESSION CONTEXT</th>
 						<th>REMOTE ADRESS</th>
 						<th>LOCALE</th>
+						<th>USER AGENT</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for session in sessions %}
 						<tr>
+							<td>{{session.timestamp}}</td>
 							<td>{{session.username}}</td>
 							<td>{{session.metaBag.request}}</td>
 							<td class="ellipsis">{{session.session_id}}</td>
 							<td>{{session.context}}</td>
 							<td>{{session.metaBag.remoteAddress }}</td>
 							<td>{{session.lang}}</td>
+							<td>{{session.metaBag.user_agent}}</td>
 						</tr>
 					{% endfor %}
 				</tbody>

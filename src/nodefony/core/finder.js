@@ -43,6 +43,15 @@ nodefony.register("finder", function(){
 		return this.files.length;
 	}
 
+
+	Result.prototype.slice = function(offset, limit){
+		return new Result( Array.prototype.slice.call(this.files, offset, limit) ) ;
+	}
+
+	Result.prototype.sort = function(callback){
+		return new Result( Array.prototype.sort.call(this.files, callback) ) ;
+	}
+
 	Result.prototype.sortByName = function(){
 		var res = this.files.sort(function(a,b){
 			if ( a.name.toString() > b.name.toString()) return 1;

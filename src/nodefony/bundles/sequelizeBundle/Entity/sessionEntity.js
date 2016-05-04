@@ -60,8 +60,14 @@ nodefony.registerEntity("session", function(){
 
 		ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){
 			if(connectionName == 'nodefony'){
-				
-			}
+				var user = ormService.getEntity("user");
+				if ( user){
+					model.belongsTo(user, {  foreignKey: 'user_id'  });
+				}else{
+					throw "ENTITY ASSOCIATION user NOT AVAILABLE"
+				}
+	
+			}	
 		});
 
 		return model;
