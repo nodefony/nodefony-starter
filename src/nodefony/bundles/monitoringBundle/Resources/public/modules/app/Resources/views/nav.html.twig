@@ -85,6 +85,14 @@
 						<span>Requests</span>
 					</a>
 
+					<a 
+						href="{{ path('tests') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Tests</span>
+					</a>
+
 					{% set length =  nav | length %}			
 					{% if length == 1 %}
 						{% for component in nav %}

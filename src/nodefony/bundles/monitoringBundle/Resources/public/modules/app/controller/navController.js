@@ -505,21 +505,7 @@ stage.registerController("navController", function() {
 				}.bind(this))
 			}.bind(this)
 		});
-
-
-
-		/*$.ajax("/nodefony/api/sessions",{
-			//dataType:"json",
-			success:function(data, status, xhr){
-				this.renderDefaultContent("appModule::sessions",{
-					sessions:data.response.data
-				});
-				$("table").DataTable();
-			}.bind(this),
-			error:function(xhr,stats,  error){
-				this.logger(error, "ERROR");
-			}.bind(this)
-		})*/
+		
 	};
 	
 	/*

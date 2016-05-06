@@ -39,9 +39,9 @@ nodefony.registerService("monitoring", function(){
 	service.prototype.logger = function(pci, severity, msgid,  msg){
 		if (! msgid) msgid = "SERVICE MONITORING ";
 		if ( this.realTime )
-			this.realTime.logger(pci, severity,"SERVICE MONITORING");
+			this.realTime.logger(pci, severity,msgid);
 		else
-			this.kernel.logger(pci, severity,"SERVICE MONITORING");
+			this.kernel.logger(pci, severity,msgid);
 	};
 
 

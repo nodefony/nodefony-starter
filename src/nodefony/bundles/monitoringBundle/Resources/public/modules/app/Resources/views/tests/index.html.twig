@@ -1,0 +1,152 @@
+{% include '../blocks/title.html.twig' with { 'title': 'NODEFONY TESTS ', 'subtitle': 'TESTS Nodefony framework ' } %}
+
+
+<div class="container-fluid">
+
+	<div class="row m-t-10">
+
+		<div class="col-md-3 ">
+			<ul id="myNav" class="nav nav-list ">
+				<li class="active" ><a  data-target="#loadHTTP" data-toggle="tab" >Load test HTTP</a></li>
+				<li ><a  data-target="#loadHTTPS" data-toggle="tab" >Load test HTTPS</a></li>
+			</ul>
+		</div >
+
+		<div class="col-md-9 " >
+			<div class="tab-content">
+				<div id="loadHTTP" class="tab-pane active ">
+					<div class="container-fluid"> 
+						<form id="loadForm">
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Hostname </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="hostname" value="nodefony.com"  class="form-control" placeholder="nodefony.com" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Path Uri </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="path" value="/demo/login"  class="form-control" placeholder="/demo/login" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Port </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="port" value="5151"  class="form-control" placeholder="80" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Nb Requests</strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="nbRequest" value="100"  class="form-control" placeholder="1000" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Concurence Requests </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="concurence" value="10"  class="form-control" placeholder="10" type="text" />
+									</div>
+								</div>
+							</div>
+							<button id="startLoad" type="button" class="btn btn-primary center-block m-t-10">START</button>
+						</form>
+						
+
+					</div >
+					<div class="container m-t-10">
+						<div id="result" class="terminal" >
+
+						</div>
+					</div >
+
+				</div >
+
+
+				<div id="loadHTTPS" class="tab-pane  ">
+					<div class="container-fluid"> 
+						<form id="loadFormHttps">
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Hostname </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="hostname" value="nodefony.com"  class="form-control" placeholder="nodefony.com" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Path Uri </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="path" value="/demo/login"  class="form-control" placeholder="/demo/login" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Port </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="port" value="5152"  class="form-control" placeholder="80" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Nb Requests</strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="nbRequest" value="100"  class="form-control" placeholder="1000" type="text" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<label  class="col-md-4 control-label">
+										<strong>Concurence Requests </strong><br/>
+									</label>
+									<div class="col-md-8 text-center">
+										<input name="concurence" value="10"  class="form-control" placeholder="10" type="text" />
+									</div>
+								</div>
+							</div>
+							<button id="startLoadHttps" type="button" class="btn btn-primary center-block m-t-10">START</button>
+						</form>
+						
+
+					</div >
+					<div class="container m-t-10">
+						<div id="resultHttps" class="terminal" >
+
+						</div>
+					</div >
+
+				</div >
+			</div >
+		</div >
+	</div >
+</div>

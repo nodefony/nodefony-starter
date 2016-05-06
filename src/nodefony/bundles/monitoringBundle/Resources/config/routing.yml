@@ -127,3 +127,10 @@ monitoring-security:
   requirements: 
     method: GET
 
+monitoring-test-load:
+  pattern:   /nodefony/test/load  
+  defaults: {controller: "monitoringBundle:default:testLoad"}
+  requirements: 
+    method: WEBSOCKET
+
+
