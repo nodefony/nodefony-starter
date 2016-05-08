@@ -12,6 +12,7 @@ nodefony.registerService("serverLoad", function(){
 	var averaging = function(){
 		this.times = [];
 		this.status = {};
+		this.requestBySec= [];
 	}
 
 	averaging.prototype.addTime = function(tab){
@@ -25,12 +26,27 @@ nodefony.registerService("serverLoad", function(){
 		return res ;	
 	}
 
+	averaging.prototype.addRequestBySec = function(nb){
+		
+		this.requestBySec.push( nb ) ;
+	}
+
+
+	averaging.prototype.averageResquestBySec = function(){
+		var nb = 0 ;
+		for (var i= 0 ; i< this.requestBySec.length ; i++){
+			nb += this.requestBySec[i];
+		}
+		return  (nb / this.times.length).toFixed(2) ;
+	}
+
+
 	averaging.prototype.average = function(){
 		var time = 0 ;
 		for (var i= 0 ; i< this.times.length ; i++){
-			time += tab[i].time;
+			time += this.times[i];
 		}
-		return  time / tab.length ;
+		return  ( time / this.times.length ).toFixed(2) ;
 	}
 
 	averaging.prototype.addStatus = function(tab){
@@ -76,6 +92,8 @@ nodefony.registerService("serverLoad", function(){
 
 		var myResult = null ; 
 
+				
+		var startTimeRequest = new Date().getTime();
 		Promise.all(tab)
 		.catch(function(e){
 			this.manager.logger(e,"ERROR");
@@ -84,25 +102,39 @@ nodefony.registerService("serverLoad", function(){
 		.then(function(result){
 			this.manager.logger( "PROMISE HTTP THEN" , "DEBUG");	
 			myResult = result ;
-			
+			if ( result ){
+				var average  = this.averaging.addTime( result ).toFixed(2);
+				var status = this.averaging.addStatus( result );
+				var stopTimeRequest = new Date().getTime();
+				var sec = ( stopTimeRequest - startTimeRequest ) / 1000 ;
+				var nbRequestSec = this.concurrence /  sec    ;
+		        	this.averaging.addRequestBySec( nbRequestSec );
+				this.context.send( JSON.stringify({
+					average:average,
+					status:status,
+					requestBySecond:nbRequestSec.toFixed(2),
+					percentEnd:( (this.nbRequestSent * 100) / this.nbRequest ).toFixed(2) ,
+					nbResquest:this.nbRequestSent,
+					type:prototcol
+				}) );
+				if ( this.nbRequestSent < this.nbRequest ) {
+					this.requests(prototcol);
+				}else{
+					this.context.send( JSON.stringify({
+						message:"END LOAD TEST",
+						average:this.averaging.average(),
+						//status:status,
+						requestBySecond:this.averaging.averageResquestBySec(),
+						percentEnd:100 ,
+						nbResquest:this.nbRequestSent,
+						type:prototcol
+					}) );
+					this.context.close();	
+				}
+			}
 		}.bind(this))
 		.done(function(ele){
 			this.manager.logger( "PROMISE HTTP DONE" , "DEBUG");
-
-			var average  = this.averaging.addTime( myResult );
-			var status = this.averaging.addStatus( myResult );
-			this.context.send( JSON.stringify({
-				average:average,
-				status:status,
-				percentEnd:( (this.nbRequestSent * 100) / this.nbRequest ) ,
-				nbResquest:this.nbRequestSent,
-				type:prototcol
-			}) );
-			if ( this.nbRequestSent < this.nbRequest ) {
-				this.requests(prototcol);
-			}else{
-				this.context.close();	
-			}
 
 		}.bind(this))
 	}
@@ -114,7 +146,7 @@ nodefony.registerService("serverLoad", function(){
 		if ( this.context.session  ){
 			headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
 		}
-		headers["user-agent"] = "nodefony" ;
+		headers["user-agent"] = "console nodefony" ;
 		var options = {
   			hostname: this.options.hostname,
   			port: this.options.port,
@@ -167,9 +199,16 @@ nodefony.registerService("serverLoad", function(){
 
 			}.bind(this));
 
-			req.on('error', function(chunk){
+			req.on('error', function(res){
+				console.log(res.code);
 				this.nbRequestSent+=1 ;
-				reject(chunk);
+				var stop = new Date().getTime() ;
+				this.nbError +=1 ;
+				//reject(chunk);
+				resolve({
+					statusCode:res.code,
+					time:stop - start
+				});
 			}.bind(this));
 
 			req.end();	
@@ -203,6 +242,8 @@ nodefony.registerService("serverLoad", function(){
 				if (message.query){
 					var obj = QS.parse(message.query) ;
 					this.loadHTTP( context, message.type,  obj );
+				}else{
+					this.loadHTTP( context, message.type,  message );	
 				}
 			break;
 		}
@@ -210,6 +251,14 @@ nodefony.registerService("serverLoad", function(){
 	}
 
 	service.prototype.loadHTTP = function(context, type, options){
+		context.send( JSON.stringify({
+			message:"START LOAD TEST",
+			nbRequest:options.nbRequest,
+			concurence:options.concurence,
+			percentEnd:0 ,
+			type:type
+		}) );
+
 		
 		var test = new testLoad(context, this, options );
 		test.requests( type );		

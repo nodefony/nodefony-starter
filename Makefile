@@ -52,9 +52,9 @@ npm:
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
-			npm  install  ;\
+			npm -s install  ;\
 		else \
-			npm -d install  ;\
+			npm -ddd install  ;\
 		fi \
 	fi
 

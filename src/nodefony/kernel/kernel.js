@@ -7,7 +7,6 @@
 var fs = require("fs");
 var util = require('util');
 var path = require("path");
-var npm = require("npm");
 
 
 nodefony.register("kernel", function(){

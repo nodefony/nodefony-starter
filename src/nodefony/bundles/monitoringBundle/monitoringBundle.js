@@ -28,8 +28,8 @@ nodefony.registerBundle ("monitoring", function(){
 		
 		this.infoKernel = {};
 		this.infoBundles = {};
-		this.storageProfiling = this.settings.storage.requests ;
-		 
+		
+
 		this.kernel.listen(this, "onPreBoot", function(kernel){
 			this.infoKernel["events"] = {} ;
 			for(var event in kernel.notificationsCenter.event["_events"] ){
@@ -57,6 +57,13 @@ nodefony.registerBundle ("monitoring", function(){
 		});
 
 		this.kernel.listen(this, "onReady", function(kernel){
+
+			if ( this.settings.storage ){
+				this.storageProfiling = this.settings.storage.requests ;
+			}else{
+				this.storageProfiling = null ;	
+			}
+
 			var ormName = this.kernel.settings.orm ;
 			this.orm = this.get(ormName);
 			this.requestEntity = this.orm.getEntity("requests"); 
@@ -85,7 +92,7 @@ nodefony.registerBundle ("monitoring", function(){
 			}
 
 
-			if ( this.container.getParameters("bundles."+this.name).debugBar) {
+			if ( this.settings.debugBar ) {
 				this.logger("ADD DEBUG BAR MONITORING", "WARNING");
 				this.bundles = function(){
 					var obj = {};
@@ -180,6 +187,12 @@ nodefony.registerBundle ("monitoring", function(){
 		this.kernel.listen(this, "onRequest",function(context){
 
 			context.profiling = null ;
+
+			var stop = this.storageProfiling && this.settings.debugBar ;
+			if( ! stop){
+				return ;
+			} 
+
 			if ( context.resolver.route.name.match(/^monitoring-/) )
 				return ;
 
@@ -482,8 +495,6 @@ nodefony.registerBundle ("monitoring", function(){
 					param:viewParam
 				});
 			});
-
-			
 		});
 	}		
 	

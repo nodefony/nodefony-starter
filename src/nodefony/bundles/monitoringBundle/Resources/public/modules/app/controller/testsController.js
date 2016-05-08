@@ -21,6 +21,12 @@ stage.registerController("testsController", function() {
 
 
 
+	var cleanResult = function(ele){
+		$("#result-http").show();
+		$("#result").empty();
+		$('#progress-http').css('width', '0%').attr('aria-valuenow', 1).html("0%");
+		$('#progress-http').addClass("active");
+	}
 
 	controller.prototype.indexAction = function(){
 	
@@ -44,7 +50,8 @@ stage.registerController("testsController", function() {
 				break;
 			}	
 			this.loadSocket.onopen = function (event) {
-				$("#result").empty();
+				cleanResult("http")
+				
 				isClose=false;
 				var toSend = $("#loadForm").serialize() ;
 				$("#result").append('WEBSOCKET EVENT OPEN </br>');
@@ -59,9 +66,12 @@ stage.registerController("testsController", function() {
 			};
 			this.loadSocket.onmessage = function(message){
 				$("#result").append( message.data + "</br>")
+				var res = JSON.parse( message.data) ;
+				$('#progress-http').css('width', res.percentEnd+'%').attr('aria-valuenow', res.percentEnd).html(res.percentEnd+"%"); 
 			};
 			this.loadSocket.onclose = function(event){
 				isClose = true ;
+				$('#progress-http').removeClass("active");
 				$("#result").append("WEBSOCKET SERVER CLOSE : "+event.reason)
 			};
 

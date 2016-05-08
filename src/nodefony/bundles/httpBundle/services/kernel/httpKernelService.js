@@ -51,7 +51,7 @@ nodefony.registerService("httpKernel", function(){
 		 });*/
 	};
 	
-	httpKernel.prototype.getTemplate = function(name){
+	httpKernel.prototype.getEngineTemplate = function(name){
 		return nodefony.templatings[name];
 	};
 
@@ -70,9 +70,24 @@ nodefony.registerService("httpKernel", function(){
 			throw e;	
 		}
 	};
+	httpKernel.prototype.getTemplate = function( name ){
+		var tab = name.split(":");
+		var bundle = tab[0] ;
+		var controller = tab[1] || ".";
+		var action = tab[2];
+		bundle = this.kernel.getBundle( this.kernel.getBundleName(bundle) );
+		if (! bundle ){
+			throw new Error("BUNDLE :" + bundle +"NOT exist")
+		}
+		try {
+			return bundle.getTemplate(controller, action);
+		}catch (e){
+			throw e;	
+		}
+	};
 
 	httpKernel.prototype.initTemplate = function(){
-		var classTemplate = this.getTemplate(this.settings.templating);
+		var classTemplate = this.getEngineTemplate(this.settings.templating);
 		this.templating = new classTemplate(this.container, this.settings[this.settings.templating]);
 		this.set("templating", this.templating );
 	};

@@ -40,8 +40,9 @@ App:
 #
 #
 monitoringBundle:
-        debugBar:               true
-
+  debugBar:                     true
+  #storage:                      false
+  
 #
 #       OVERRIDE BUNDLE HTTP 
 #

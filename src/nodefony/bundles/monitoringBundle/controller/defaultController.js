@@ -75,14 +75,12 @@ nodefony.registerController("default", function(){
 			};
 		}
 
-
-
-			/**
- 		* 
- 		*
- 		*
- 		*
- 		**/
+		/**
+ 		 * 
+ 		 *
+ 		 *
+ 		 *
+ 		 **/
 		defaultController.prototype.testLoadAction= function(message){
 			var context = this.getContext();
 			var serverLoad = this.get("serverLoad");
@@ -96,9 +94,6 @@ nodefony.registerController("default", function(){
 					throw new Error("REALTIME METHOD NOT ALLOWED")
 			};
 		}
-
-
-
 		
 		return defaultController;
 });

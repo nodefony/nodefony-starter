@@ -38,7 +38,6 @@
     "mime":"*",
     "markdown-it":"*",
     "promise":"*",
-    "zone":"*",
     "async":"*",
     "pm2":"*"
   },

@@ -45,25 +45,39 @@ module.exports = function(){
 	autoload.prototype.load = function(file, force){
 		//console.log(file)
 		if (file in cache &&  force !== true){
-			this.logger( new Error("AUTOLOADER File : "+file + " already  loaded"),"DEBUG");
-			return cache[file];
+			this.logger( new Error("AUTOLOADER File : "+file + " already  loaded"),"WARNING");
+			return cache[file].runInThisContext({
+				filename:file,
+				displayErrors:true
+			});
 		}
 		if(fs.existsSync(file)){
 			var txt = fs.readFileSync(file, {encoding: 'utf8'});
 			//console.log('autoaod :' + txt ) ;
 			try {
-				var script = vm.createScript(txt, file, true);
-				cache[file] = script.runInThisContext();
+				cache[file] = vm.createScript(txt, file, true);
 			}catch(e){
-				//console.log(util.inspect(e, { showHidden: true, depth: null }));
-				console.log(file);
 				throw e;
 			}
-			return cache[file];
+			return cache[file].runInThisContext({
+				filename:file,
+				displayErrors:true
+			});
 		}else{
 			throw new Error("AUTOLOADER file :"+file+" not exist !!!!");
 		}
 	};
+
+	autoload.prototype.run = function(file, force){
+		if (file in cache &&  force !== true){
+			cache[file] = script.runInThisContext({
+				filename:file,
+				displayErrors:true
+			});
+		}else{
+			return this.load( file, force );
+		}
+	}
 
 	/**
  	 * @method logger

@@ -18,6 +18,7 @@ nodefony.register("controller", function(){
 		/*this.queryFile = context.request.queryFile;
 		this.queryGet = context.request.queryGet;
 		this.queryPost = context.request.queryPost;*/
+		this.serviceTemplating = this.container.get('templating') ;
 	};
 	
 	Controller.prototype.logger = function(pci, severity, msgid,  msg){
@@ -100,15 +101,36 @@ nodefony.register("controller", function(){
 	};
 
 	Controller.prototype.renderView = function(view, param ){
+
+		var res = null;
+		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+
+		if ( this.serviceTemplating.cache ){
+			try {
+				var templ = this.container.get("httpKernel").getTemplate(view);
+			}catch(e){
+				throw e ;
+			}
+			try {
+				var res = templ.render(extendParam) ;
+				try {
+					this.notificationsCenter.fire("onView", res, this.context, null , param);
+				}catch(e){
+					throw e ;
+				}
+			}catch(e){
+				throw e ;
+			}
+			return res ;
+		}
+
 		try {
 			var View = this.container.get("httpKernel").getView(view);
 		}catch(e){
 			throw e ;
 		}
-		var res = null;
-		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 		try{ 
-			this.container.get('templating').renderFile(View, extendParam, function(error, result){
+			this.serviceTemplating.renderFile(View, extendParam, function(error, result){
 				if (error || result === undefined){
 					if ( ! error ){
 						error = new Error("ERROR PARSING TEMPLATE :" + view)

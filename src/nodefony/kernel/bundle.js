@@ -232,7 +232,10 @@ nodefony.register("Bundle", function(){
 				var res = this.regTemplateExt.exec( file.name );
 				if (res){
 					var name = res[1];
-					this.views[basename][name]= file;
+					this.views[basename][name] = {
+						file:file,
+						template:null
+					};
 					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE"){
 						serviceTemplate.compile( file, function(error, template){
@@ -240,6 +243,7 @@ nodefony.register("Bundle", function(){
 								this.logger(error, "ERROR");
 								return ;
 							}
+							this.views[basename][name]["template"] = template ;
 							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 						}.bind(this) )
 					}
@@ -250,7 +254,10 @@ nodefony.register("Bundle", function(){
 				var res = this.regTemplateExt.exec( file.name );
 				if (res){
 					var name = res[1];
-					this.views[basename][name]= file;
+					this.views[basename][name]= {
+						file:file,
+						template:null
+					};
 					this.logger("Register View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE"){
 						serviceTemplate.compile( file, function(error, template){
@@ -258,6 +265,7 @@ nodefony.register("Bundle", function(){
 								this.logger(error, "ERROR");
 								return ;
 							}
+							this.views[basename][name]["template"] = template ;
 							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 						}.bind(this) )
 					}
@@ -273,7 +281,7 @@ nodefony.register("Bundle", function(){
 			if (res){
 				var name = res[1];
 				if ( this.views[viewDirectory][name] )
-					return this.views[viewDirectory][name];
+					return this.views[viewDirectory][name]["file"];
 				throw new Error("Bundle "+ this.name+" directory : "+viewDirectory +" GET view file Name : "+ viewName +" Not Found");
 			}else{
 				throw new Error("Bundle "+ this.name+" directory : "+viewDirectory +" GET view file Name : "+ viewName +" Not Found");
@@ -282,6 +290,24 @@ nodefony.register("Bundle", function(){
 			throw new Error("Bundle "+ this.name+" GET view directory : "+viewDirectory +" Not Found");
 		}
 	};
+
+	Bundle.prototype.getTemplate = function(viewDirectory, viewName){
+		
+		if ( this.views[viewDirectory] ){
+			var res = this.regTemplateExt.exec( viewName );
+			if (res){
+				var name = res[1];
+				if ( this.views[viewDirectory][name] )
+					return this.views[viewDirectory][name]["template"];
+				throw new Error("Bundle "+ this.name+" directory : "+viewDirectory +" GET view file Name : "+ viewName +" Not Found");
+			}else{
+				throw new Error("Bundle "+ this.name+" directory : "+viewDirectory +" GET view file Name : "+ viewName +" Not Found");
+			}
+		}else{
+			throw new Error("Bundle "+ this.name+" GET view directory : "+viewDirectory +" Not Found");
+		}
+	};
+
 
 	Bundle.prototype.registerI18n = function(locale, result){
 		var translation = this.get("translation");
