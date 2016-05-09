@@ -371,25 +371,25 @@ stage.registerController("appController", function() {
 			    		//series: { shadowSize: 3 }, 
 			    		grid: {
 				    		show: true,
-			    		hoverable: true,
-			    		borderWidth: 0,
-			    		color: '#a1a7ac',
-			    		markings: [ 
-					{ xaxis: { from: 0, to: 500 }, yaxis: { from: 0, to: 0 }, color: colors['muted'] },
-	            	    		{ xaxis: { from: 0, to: 0 }, yaxis: { from: 0, to: 110 }, color: colors['muted'] }
-            				]
+						hoverable: true,
+						borderWidth: 0,
+						color: '#a1a7ac',
+						markings: [ 
+							{ xaxis: { from: 0, to: 500 }, yaxis: { from: 0, to: 0 }, color: colors['muted'] },
+							{ xaxis: { from: 0, to: 0 }, yaxis: { from: 0, to: 110 }, color: colors['muted'] }
+						]
 			    		},
 			    		xaxis:{
 				    		show: true,
-			    		tickLength: 0
+						tickLength: 0
 			    		},
 			    		yaxis:{
 				    		show: true,
-			    		tickLength: 0,
-			    		tickSize: 10,
-			    		tickFormatter: function(val){return Math.round(val)},
-			    		max:110,
-			    		min: 0
+						tickLength: 0,
+						tickSize: 10,
+						tickFormatter: function(val){return Math.round(val)},
+						max:110,
+						min: 0
 			    		},
 			    		tooltip: true,
 			    		tooltipOpts: {

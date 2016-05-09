@@ -729,7 +729,6 @@ nodefony.registerController("api", function(){
 								options["order"].push(tab);
 							}
 						}
-						console.log(options);
 					
 						sessionEntity.findAndCountAll(options)
 						.then( function(results){
