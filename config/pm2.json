@@ -2,7 +2,7 @@
 	"script"		: "nodefony",
 	"name"			: "nodefony",
 	"exec_mode"		: "cluster",
-	"max_memory_restart"	: "512M",
+	"max_memory_restart"	: "1024M",
 	"autorestart"		: true,
 	"max_restarts"		: 10,
 	"watch"			: false,

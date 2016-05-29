@@ -66,7 +66,6 @@ nodefony.registerTemplate("twig", function(){
 			}
 		});*/	
 		//return this.engine.compile( markup, option);
-
 		return this.engine.twig({
 			path: file.path,	
 		        async:false,
@@ -79,7 +78,6 @@ nodefony.registerTemplate("twig", function(){
 		        error:function(error){
 				callback(error, null)
 			}
-			
 		})
 
 

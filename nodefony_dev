@@ -15,6 +15,7 @@
  */
 // AUTOLOADER
 var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.setEnv("dev");
 autoloader.load("./app/appKernel.js");
 
 require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){

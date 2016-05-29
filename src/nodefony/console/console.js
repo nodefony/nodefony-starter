@@ -9,6 +9,7 @@
 var Getopt = require('node-getopt');
 var AsciiTable = require('ascii-table');
 var npm = require("npm");
+var npmi = require('npmi');
 
 
 nodefony.register("console", function(){
@@ -24,6 +25,22 @@ nodefony.register("console", function(){
     		}
     		return deps;
 	};
+
+	var createNpmiDependenciesArray = function (packageFilePath, opt) {
+    		var p = require(packageFilePath);
+    		if (!p.dependencies) return [];
+
+    		var deps = [];
+    		for (var mod in p.dependencies) {
+			var options = {
+				name: mod,    // your module name
+				version:  p.dependencies[mod],       // expected version [default: 'latest']
+			}
+        		deps.push(nodefony.extend({}, opt, options));
+    		}
+    		return deps;
+	};
+
 
 	
 	var settingsSysLog = {
@@ -56,11 +73,11 @@ nodefony.register("console", function(){
 		 *
  		 *       READ GLOBAL CONSOLE CONFIG
  	 	 */
-                this.readConfigDirectory("./config", function(result){
+                /*this.readConfigDirectory("./config", function(result){
  	 	        if (result){
  	 	                this.settings = nodefony.extend(true, this.settings, result)
  	 	        }
- 	 	}.bind(this));
+ 	 	}.bind(this));*/
 
 		if ( process.argv[2] && process.argv[2] === "npm:install" ||  process.argv[2] && process.argv[2] === "npm:list" ){
 			return ;
@@ -105,9 +122,10 @@ nodefony.register("console", function(){
 					onFile:function(file){
 						if (file.matchName(this.regBundle)){
 							try {
+								//this.loadBundle(file);
 								if ( process.argv[2] && process.argv[2] === "npm:install" ){
 									var name = this.getBundleName(file.name);
-									this.installPackage(name, file);	
+									this.InstallPackage(name, file);	
 								}else{
 									this.loadBundle( file)
 								}
@@ -128,8 +146,6 @@ nodefony.register("console", function(){
 			func.apply(this)	
 		}
 	};
-
-
 	
 	var displayTable = function(titre, ele){
 		var table = new AsciiTable(titre);
@@ -198,6 +214,50 @@ nodefony.register("console", function(){
 					this.loadBundle(file);	
 				}.bind(this));
 			}.bind(this))
+
+		}catch(e){
+			if (e.code != "ENOENT"){
+				this.workerSyslog.logger("Install Package BUNDLE : "+ name +":"+e,"ERROR");
+				throw e ;
+			}
+		}
+	};
+
+	Console.prototype.InstallPackage = function(name, file){
+		try {
+			var conf = new nodefony.fileClass(file.dirName+"/package.json");
+			var options = {
+    				path: '.',              // installation path [default: '.']
+    				forceInstall: false,    // force install if set to true 
+    				npmLoad: {              // npm.load(options, callback): this is the "options" given to npm.load()
+        				loglevel: 'silent'  // [default: {loglevel: 'silent'}]
+    				}
+			};
+
+			var dependencies = createNpmiDependenciesArray(conf.path, options) ;
+
+			for (var i= 0 ; i < dependencies.length ; i++){
+				//console.log(dependencies[i])
+				this.workerSyslog.logger("INSTALL BUNDLE " + name +" dependence : " + dependencies[i].name);	
+				var nodeDep =  dependencies[i].name ;
+				var nodeDepVersion = dependencies[i].version ;
+				npmi(dependencies[i], function (err, result) {
+    					if (err) {
+        					if (err.code === npmi.LOAD_ERR)    
+							this.workerSyslog.logger(err.message, "ERROR", "NMP load error");
+        					else if (err.code === npmi.INSTALL_ERR) 
+							this.workerSyslog.logger(err.message, "ERROR", "NMP install error");
+						this.terminate();
+    					}
+					// installed
+					this.workerSyslog.logger(nodeDep+'@'+nodeDepVersion+' installed successfully in nodefony');
+					if ( i === dependencies.length-1){
+						this.loadBundle(file);
+					}
+				}.bind(this));
+
+			}
+			//this.terminate();
 
 		}catch(e){
 			if (e.code != "ENOENT"){

@@ -114,7 +114,6 @@ nodefony.register("kernel", function(){
 		this.reader = new nodefony.Reader(this.container);
 		this.container.set("reader",this.reader);
 		this.container.set("autoLoader",this.autoLoader);
-		this.autoLoader.syslog = this.syslog;
 
 		this.reader.readConfig(this.configPath, function(result){
 			this.settings = result;
@@ -127,6 +126,7 @@ nodefony.register("kernel", function(){
 			if (this.environment === "prod")
 				this.environment = result.system.debug ? "dev" : "prod" ;
 			this.syslog = this.initializeLog(options);
+			this.autoLoader.syslog = this.syslog;
 			this.container.set("syslog",this.syslog);
 
 		}.bind(this));
@@ -155,7 +155,7 @@ nodefony.register("kernel", function(){
 		}
 
 		// REALTIME
-		if (this.type == "SERVER" && this.settings.system.realtime) {
+		if ( this.settings.system.realtime) {
 			bundles.push("./vendors/nodefony/bundles/realTimeBundle");
 		}
 
@@ -170,7 +170,6 @@ nodefony.register("kernel", function(){
 
 		this.fire("onPreRegister", this );
 		this.registerBundles(bundles, function(){
-			
 			this.preboot = true ;
 			this.fire("onPreBoot", this );
 		}.bind(this), false);
@@ -200,63 +199,70 @@ nodefony.register("kernel", function(){
 	/**
 	 *	@method initializeLog
          */
-	kernel.prototype.initializeLog = function(options){
 
+	var logConsole = function(syslog){
 		var red, blue, green, reset;
 		red   = '\033[31m';
 		blue  = '\033[34m';
 		green = '\033[32m';
 		yellow = '\x1B[33m';
 		reset = '\033[0m';
-		var syslog =  new nodefony.syslog(settingsSyslog);
-		if (this.environment === "dev"){
+
 		// CRITIC ERROR
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:"CRITIC,ERROR"
-				}		
-			},function(pdu){
-				var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"CRITIC,ERROR"
+			}		
+		},function(pdu){
+			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+			var date = new Date(pdu.timeStamp) ;
+			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+		});
+		// INFO DEBUG
+		var data ;
+		this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:data
+			}		
+		},function(pdu){
+			if ( pdu.msgid === "SERVER WELCOME"){
+				console.log(   blue + "              "+reset + " "+ pdu.payload);	
+				return ;
+			}
+			//if ( this.preboot ){
 				var date = new Date(pdu.timeStamp) ;
-				console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
-			});
-			// INFO DEBUG
-			var data ;
-			this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:data
-				}		
-			},function(pdu){
-				if ( pdu.msgid === "SERVER WELCOME"){
-					console.log(   blue + "              "+reset + " "+ pdu.payload);	
-					return ;
-				}
-				//if ( this.preboot ){
-					var date = new Date(pdu.timeStamp) ;
-					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
-				//}
-			});
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+			//}
+		});
 
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:"WARNING"
-				}		
-			},function(pdu){
-				//if ( this.preboot ){
-					var date = new Date(pdu.timeStamp) ;
-					console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
-				//}
-			});
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"WARNING"
+			}		
+		},function(pdu){
+			//if ( this.preboot ){
+				var date = new Date(pdu.timeStamp) ;
+				console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
+			//}
+		});
+	}
+	kernel.prototype.initializeLog = function(options){
 
-
+		
+		var syslog =  new nodefony.syslog(settingsSyslog);
+		if ( this.settings.system.log.console ||  this.environment === "dev"){
+		
+			logConsole.call(this, syslog);
 
 		}else{
 			//FIXME do service with nodefony.log
 			if (this.type === "CONSOLE") return syslog ;
 
+			if ( options.node_start === "PM2" ) return syslog ;
+
 			// PM2
-			if ( this.settings.system.log.active && options.node_start !== "PM2" ){
+			/*if ( this.settings.system.log.active && options.node_start !== "PM2" ){
 				syslog.listenWithConditions(this,{
 					severity:{
 						data:"CRITIC,ERROR"
@@ -284,9 +290,9 @@ nodefony.register("kernel", function(){
 					console.error( new Date(pdu.timeStamp) + " " +line +"\n" );
 				});
 				return syslog ;
-			}
+			}*/
 
-			if ( this.settings.system.log.active   ){
+			if ( this.settings.system.log.file   ){
 				this.logStream = new nodefony.log(this.rootDir+this.settings.system.log.error,{
 					rotate:this.settings.system.log.rotate
 				});
@@ -403,7 +409,7 @@ nodefony.register("kernel", function(){
 	kernel.prototype.regBundle = /^(.*)Bundle.js$/;
 	var waitingBundle = function(){
 		this.eventReadywait -= 1 ;
-		if ( this.eventReadywait === 0 || this.eventReadywait === -1 )
+		if ( this.eventReadywait === 0 || this.eventReadywait === -1 ){
 			process.nextTick(function(){
 				try {
 					this.logger("\x1B[33m EVENT KERNEL READY\033[0m", "DEBUG")
@@ -413,6 +419,7 @@ nodefony.register("kernel", function(){
 					this.logger(e, "ERROR");
 				}
 			}.bind(this))
+		}
 	};
 
 	kernel.prototype.loadBundle =  function(file){

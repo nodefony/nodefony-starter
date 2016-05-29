@@ -22,6 +22,7 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
+	make asset
 	./nodefony_pm2 &
 
 stop:

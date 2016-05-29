@@ -32,9 +32,30 @@ module.exports = function(){
 		this.load("vendors/nodefony/core/protocol.js");
 		this.load("vendors/nodefony/core/watcher.js");
 		this.loadDirectory("vendors/nodefony/kernel");
+		this.syslog = null ;
+		this.setEnv();
 	};
 
-	var cache = {};
+	autoload.prototype.setEnv = function(environment){
+		this.environment = environment;
+		switch( this.environment ){
+			case "prod":
+			case "PROD":
+				this.environment = "prod";
+				this.dataCache = true;	
+			break;
+			case "dev":
+			case "DEV":
+				this.environment = "dev";
+				this.dataCache = false;	
+			break;
+			default:
+				this.environment = "prod";
+				this.dataCache = true;	
+		}
+	}
+
+
 
 	/**
  	 * @method load
@@ -42,31 +63,45 @@ module.exports = function(){
 	 * @param {String} file Path to file
 	 *
  	 */
+	var cache = {};
 	autoload.prototype.load = function(file, force){
-		//console.log(file)
 		if (file in cache &&  force !== true){
-			this.logger( new Error("AUTOLOADER File : "+file + " already  loaded"),"WARNING");
+			this.logger( file, "WARNING","AUTOLOADER ALREADY LOADED ADD FORCE TO RELOAD ");
 			return cache[file].runInThisContext({
 				filename:file,
 				displayErrors:true
 			});
 		}
 		if(fs.existsSync(file)){
-			var txt = fs.readFileSync(file, {encoding: 'utf8'});
-			//console.log('autoaod :' + txt ) ;
 			try {
-				cache[file] = vm.createScript(txt, file, true);
+				if ( vm.Script ){
+					var txt = fs.readFileSync(file, {encoding: 'utf8'});
+					cache[file] =  new vm.Script(txt, {
+						filename:file,
+						displayErrors:true,
+						timeout:10000,
+						produceCachedData:true,
+					});
+				}else{
+					var txt = fs.readFileSync(file, {encoding: 'utf8'});
+					cache[file] = vm.createScript(txt, file, true);
+				}
+				if ( force ){
+					if (this.syslog) this.logger(file, "WARNING","AUTOLOADER RELOAD FORCE");
+				}else{
+					if (this.syslog) this.logger(file, "DEBUG","AUTOLOADER LOAD");	
+				}
+				return cache[file].runInThisContext({
+					filename:file,
+					displayErrors:true
+				});
 			}catch(e){
 				throw e;
-			}
-			return cache[file].runInThisContext({
-				filename:file,
-				displayErrors:true
-			});
+			}	
 		}else{
 			throw new Error("AUTOLOADER file :"+file+" not exist !!!!");
 		}
-	};
+	}
 
 	autoload.prototype.run = function(file, force){
 		if (file in cache &&  force !== true){
@@ -99,7 +134,7 @@ module.exports = function(){
 	var autoloadEach = function(ele, index, array){
 		if ( regJs.exec(ele.path) ){
 			var res = this.load.call(self, ele.path)
-			this.logger("AUTOLOAD : "+ele.name, "DEBUG");
+			//this.logger("AUTOLOAD : "+ele.name, "DEBUG");
 		}
 	};
 

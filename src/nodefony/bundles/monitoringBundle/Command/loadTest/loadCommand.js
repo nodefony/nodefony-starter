@@ -29,9 +29,7 @@ nodefony.registerCommand("Monitoring",function(){
 							type:url.protocol.replace(":", "") ,
 							nbRequest:nb || 1000,
 							concurence:concurence || 40,
-							hostname:url.hostname , 
-							port:url.port ,
-							path:url.path ,
+							url:url.href,
 							method:'GET'
 						},this)
 					break;
@@ -61,7 +59,7 @@ nodefony.registerCommand("Monitoring",function(){
 	return {
 		name:"Monitoring",
 		commands:{
-			Test:["Monitoring:test:load URL [nbRequests] [concurence]" ,"load test example ./console http://nodefony.com:5151/demo 10000 100 "],
+			Test:["Monitoring:test:load URL [nbRequests] [concurence]" ,"load test example ./console Monitoring:test:load http://nodefony.com:5151/demo 10000 100 "],
 		},
 		worker:monitoring
 

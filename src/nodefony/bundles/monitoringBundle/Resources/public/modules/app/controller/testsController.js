@@ -80,29 +80,32 @@ stage.registerController("testsController", function() {
 
 	var data = [];
 	var data2 = [];
-	var plot = function(res){
-	
-
-		data.push([res.percentEnd, res.requestBySecond ]);
-		data2.push([res.percentEnd, res.average  ])
 		
+	var addPlot = function(res){
+		data.push([res.percentEnd, res.requestBySecond ]);
+		data2.push([res.percentEnd, res.cpu.percent  ]);
+	}
 
+	var plotDisplay = function(res){
+
+		data.push( [ res.percentEnd, res.requestBySecond ] );
+		data2.push( [ res.percentEnd, res.cpu.percent ] );
+		
 		var settings = {
 			show: true,
 			lineWidth: 0.5,
 			fill: false,
-			
 		};
 
 		var settings2 = {
 			show: true,
 			lineWidth: 0.5,
 			fill: false,
-			
 		};
+
 		var tab = [{
 			data: data2,
-			label:"Average concurence in ms"
+			label:"CPU Usage (%)"
 			//lines: settings2
 		}, {
 			data: data,
@@ -124,7 +127,6 @@ stage.registerController("testsController", function() {
 		});
 
 		$("#http-rps").bind("plothover",  function (event, pos, item) {
-			console.log("pass")
 			latestPosition = pos;
 			if (!updateLegendTimeout) {
 				updateLegendTimeout = setTimeout(updateLegend, 50);
@@ -141,10 +143,10 @@ stage.registerController("testsController", function() {
 	var pie = function(res){
 
 		var i = 0 ;
-		for (var ele in res.status ) {
+		for (var ele in res.statusCode ) {
 			dataPie[i] = {
 				label: ele,
-				data: res.status[ele]
+				data: res.statusCode[ele]
 			}
 			i++;
 		}
@@ -166,111 +168,135 @@ stage.registerController("testsController", function() {
 	}
 
 	var cleanResult = function(ele){
+		data.length = 0 ;
+		data2.length = 0 ;
 		$("#result-http").show();
-		$("#result").empty();
+		//$("#result").empty();
 		$('#progress-http').css('width', '0%').attr('aria-valuenow', 1).html("0%");
 		$('#progress-http').addClass("active");
 	}
 
+
+	var connect = function(sid){
+		var location = window.location ;
+		var protocol = location.protocol ;
+		switch (protocol){
+			case "https:":
+				this.loadSocket = new WebSocket("wss://"+location.host+"/nodefony/test/load");
+			break;
+			case "http:":
+				this.loadSocket = new WebSocket("ws://"+location.host+"/nodefony/test/load");
+			break;
+		}	
+		this.loadSocket.onopen = function (event) {
+			cleanResult("http")
+			
+			this.close = false;
+			var toSend = $("#loadForm").serialize() ;
+			$("#result").append('WEBSOCKET EVENT OPEN </br>');
+			this.loadSocket.send(JSON.stringify({
+				query:toSend,
+				sid:sid || null
+			})); 
+
+			this.canvas.attr("width", this.canvas.parent().css("width"));
+			
+		}.bind(this);
+		
+		this.loadSocket.onerror = function(error){
+			$("#result").append('WEBSOCKET SOCKET ERROR : '+error);
+		};
+		this.loadSocket.onmessage = function(message){
+			//console.log(message.data)
+			//$("#result").append( message.data + "</br>")
+			var res = JSON.parse( message.data) ;
+			if (res.sid){
+				this.sid = res.sid ;
+			}
+			this.percent = res.percentEnd ;
+			if ( !  res.running ){
+				plotDisplay(res);
+				pie(res);
+				$("#startLoad").text("START");
+				if ( res.percentEnd = 100 ){
+					$("#avg").text( res.average );
+					$("#rbs").text( res.requestBySecond);
+					$("#tt").text( res.totalTime);
+					$("#abc").text( res.average);
+					$("#cpu").text( res.cpu.percent);
+				}
+				return ;
+			}
+			$('#progress-http').css('width', res.percentEnd+'%').attr('aria-valuenow', res.percentEnd).html(res.percentEnd+"%"); 
+			if ( ! res.message ){
+				this.lineRBS.append(new Date().getTime(), res.requestBySecond);
+				this.lineCPU.append(new Date().getTime(), res.cpu.percent);
+				addPlot(res);
+				//pie(res);
+			}
+		}.bind(this);
+		this.loadSocket.onclose = function(event){
+			
+			$('#progress-http').removeClass("active");
+			$("#result").append("WEBSOCKET SERVER CLOSE : "+event.reason);
+			if ( this.close == null && this.percent != 100){
+				//reconnect
+				this.loadSocket = null ;
+				return connect.call(this, this.sid);
+			}
+			$("#startLoad").text("START");
+			this.close = null ;
+		}.bind(this);	
+	
+	}
+
+
 	controller.prototype.indexAction = function(){
 	
-		var navView = this.renderDefaultContent("appModule:tests:tests", {
-		});
+		var navView = this.renderDefaultContent("appModule:tests:tests", {});
 
-		var isClose = true ;
-		$("#startLoad").click(function(){
-			data.length = 0 ;
-			data2.length = 0 ;
-			if ( ! isClose ){
-				$("#result").append('WEBSOCKET ALREADY OPEN : </br>');
+		this.close = null ;
+		$("#startLoad").click(function(event){
+			
+			if (  this.close === false ){
+				this.close = true ;
+				this.loadSocket.send(JSON.stringify({
+					type:"action",
+					action:"stop",
+					message:"STOP BY USER",
+					sid : this.sid 
+				}));
+				$("#result").append('STOP TEST : </br>');
+				$(event.currentTarget).text("START");
 				return ;
 			}
-			var location = window.location ;
-			var protocol = location.protocol ;
-			switch (protocol){
-				case "https:":
-					this.loadSocket = new WebSocket("wss://"+location.host+"/nodefony/test/load");
-				break;
-				case "http:":
-					this.loadSocket = new WebSocket("ws://"+location.host+"/nodefony/test/load");
-				break;
-			}	
-			this.loadSocket.onopen = function (event) {
-				cleanResult("http")
-				
-				isClose=false;
-				var toSend = $("#loadForm").serialize() ;
-				$("#result").append('WEBSOCKET EVENT OPEN </br>');
-				this.loadSocket.send(JSON.stringify({
-					query:toSend,
-					type:"http"
-				})); 
-				
-			}.bind(this);
-			
-			this.loadSocket.onerror = function(error){
-				$("#result").append('WEBSOCKET SOCKET ERROR : '+error);
-			};
-			this.loadSocket.onmessage = function(message){
-				$("#result").append( message.data + "</br>")
-				var res = JSON.parse( message.data) ;
-				$('#progress-http').css('width', res.percentEnd+'%').attr('aria-valuenow', res.percentEnd).html(res.percentEnd+"%"); 
-				if ( ! res.message ){
-					plot(res);
-					pie(res);
+
+			this.canvas = $("#http-canvas-rbs") ;
+			$(event.currentTarget).text("STOP");
+			var smoothie = new SmoothieChart({
+				millisPerPixel:100,
+				minValue:0,
+				maxValue:500,
+				labels:{
+					fillStyle:'#ff7e10'
 				}
-			};
-			this.loadSocket.onclose = function(event){
-				isClose = true ;
-				$('#progress-http').removeClass("active");
-				$("#result").append("WEBSOCKET SERVER CLOSE : "+event.reason)
-				
-			};
+			});
+			smoothie.streamTo(this.canvas.get(0), 2000);
+			this.lineRBS = new TimeSeries() ;
+			smoothie.addTimeSeries(this.lineRBS, {
+				lineWidth:3,
+				strokeStyle:'#ff0810'
+			});	
 
-		}.bind(this));
+			this.lineCPU = new TimeSeries() ;
+			smoothie.addTimeSeries(this.lineCPU, {
+				lineWidth:3,
+				strokeStyle:'#1008FF'
+			});
 
-
-		var isClose = true ;
-		$("#startLoadHttps").click(function(){
-			if ( ! isClose ){
-				$("#resultHttps").append('WEBSOCKET ALREADY OPEN : </br>');
-				return ;
-			}
-			var location = window.location ;
-			var protocol = location.protocol ;
-			switch (protocol){
-				case "https:":
-					this.loadSocket = new WebSocket("wss://"+location.host+"/nodefony/test/load");
-				break;
-				case "http:":
-					this.loadSocket = new WebSocket("ws://"+location.host+"/nodefony/test/load");
-				break;
-			}	
-			this.loadSocket.onopen = function (event) {
-				$("#resultHttps").empty();
-				isClose=false;
-				var toSend = $("#loadFormHttps").serialize() ;
-				$("#resultHttps").append('WEBSOCKET EVENT OPEN </br>');
-				this.loadSocket.send(JSON.stringify({
-					query:toSend,
-					type:"https"
-				})); 
-			}.bind(this);
+			connect.call(this) ;
 			
-			this.loadSocket.onerror = function(error){
-				$("#resultHttps").append('WEBSOCKET SOCKET ERROR : '+error);
-			};
-			this.loadSocket.onmessage = function(message){
-				$("#resultHttps").append( message.data + "</br>")
-			};
-			this.loadSocket.onclose = function(event){
-				isClose = true ;
-				$("#resultHttps").append("WEBSOCKET SERVER CLOSE : "+event.reason)
-			};
-
 		}.bind(this));
-
-
 
 		return navView ;
 

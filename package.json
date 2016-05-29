@@ -24,6 +24,9 @@
   ],
   "dependencies": {
     "npm":"*",
+    "npmi":"*",
+    "sqlite3": "*",
+    "mysql": "*",
     "node-pre-gyp":"*",
     "asciify":"*",
     "websocket": "*",

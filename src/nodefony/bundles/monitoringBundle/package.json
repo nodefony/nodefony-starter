@@ -1,5 +1,5 @@
 {
-	"name": "ASSETIC",
+	"name": "MONITORING",
 	"version": "1.0",
 	"description": " ",
 	"contributors": [],
@@ -9,9 +9,7 @@
 		"javascript"
 	],
 	"dependencies": {
-		"less": "*",
-		"uglify-js": "*",
-		"uglifycss" :"*"
+		"request": "*"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

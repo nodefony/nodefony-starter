@@ -6,7 +6,6 @@
  *
  */
 var async = require('async');
-var sync = require('synchronize');
 
 
 nodefony.registerService("less", function(){

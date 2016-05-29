@@ -124,6 +124,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 
 	websocket.prototype.handleMessage = function(message){
+		this.response.body = message ;
 		try {
 			if ( ! this.resolver ){
 				this.resolver = this.get("router").resolve(this.container, this.request);

@@ -179,18 +179,22 @@ nodefony.registerService("httpKernel", function(){
 		}	
 	};
 
-	var render = function(uri, options){
+	var render = function(response){
 		switch (true){
-			case uri instanceof nodefony.Response :
-				return uri.body;
+			case response instanceof nodefony.Response :
+				return response.body;
 			break ;
-			case uri instanceof nodefony.wsResponse :
-				return uri.body
+			case response instanceof nodefony.wsResponse :
+				return response.body;
 			break ;
-			case  nodefony.typeOf( uri ) === "string" :
-				var router = this.get("router");
-				return uri ;
+			case response instanceof Promise :
+				return response;
+			break ;
+			case nodefony.typeOf(response) === "object":
+				return nodefony.extend(true , this, response);
+			break;
 			default:
+				return response ;
 		}
 	}
 
@@ -248,7 +252,7 @@ nodefony.registerService("httpKernel", function(){
 				this.kernel.fire("onHttpRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
-					render:render.bind(container),
+					render:render,
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
 					getLocale:translation.getLocale.bind(translation),

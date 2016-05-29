@@ -80,7 +80,7 @@ stage.registerModule("app", function() {
 	pm2graph.prototype.updateCpu = function(id, data){
 		if ( this.timeSeriesCpu[id] ){
 			//console.log("ID : "+ id + " data : "  + data)
-			var scale = ( 512 * data ) / 100 ;
+			var scale = ( 1024 * data ) / 100 ;
 			this.timeSeriesCpu[id].append(new Date().getTime(), scale);
 		}	
 	}

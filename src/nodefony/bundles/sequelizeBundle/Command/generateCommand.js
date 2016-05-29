@@ -66,20 +66,25 @@ nodefony.registerCommand("Sequelize",function(){
 											var entityName = fixtures[fixture].entity ;
 											var connectionName = fixtures[fixture].connection ;
 											this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
-											var toPush = new Promise(fixtures[fixture].fixture.bind(this.ormService) )
-												.then(function(data){
-													this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")
-												}.bind(this));
+											var toPush = fixtures[fixture].fixture.bind(this.ormService) ;
+												
 											tabPromise.push( toPush );
 										}
 									}
 								}
 
 							}
-							Promise.all(tabPromise)
+							var actions = tabPromise.map(function(ele){
+								return new Promise(ele);
+							})
+							Promise.all(actions)
 								.catch(function(e){
 									this.logger(e, "ERROR");	
 									}.bind(this))
+								.then(function(){
+									this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")		
+									this.terminate();
+								}.bind(this))
 								.done(function(){
 									this.terminate();
 								}.bind(this))

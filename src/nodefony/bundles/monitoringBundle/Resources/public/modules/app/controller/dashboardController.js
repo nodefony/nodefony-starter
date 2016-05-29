@@ -273,7 +273,7 @@ stage.registerController("dashboardController", function() {
 						var smoothie = new SmoothieChart({
 							millisPerPixel:100,
 							minValue:0,
-							maxValue:512,
+							maxValue:1024,
 							labels:{
 								fillStyle:'#ff7e10'
 							}

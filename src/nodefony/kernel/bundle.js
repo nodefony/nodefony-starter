@@ -237,7 +237,7 @@ nodefony.register("Bundle", function(){
 						template:null
 					};
 					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
-					if (this.kernel.type !== "CONSOLE"){
+					if (this.kernel.type !== "CONSOLE" ){
 						serviceTemplate.compile( file, function(error, template){
 							if (error){
 								this.logger(error, "ERROR");
@@ -246,6 +246,17 @@ nodefony.register("Bundle", function(){
 							this.views[basename][name]["template"] = template ;
 							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 						}.bind(this) )
+					}else{
+						/*if ( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
+							serviceTemplate.compile( file, function(error, template){
+								if (error){
+									this.logger(error, "ERROR");
+									return ;
+								}
+								this.views[basename][name]["template"] = template ;
+								this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+							}.bind(this) )	
+						}*/
 					}
 				}
 			}else{
@@ -268,6 +279,17 @@ nodefony.register("Bundle", function(){
 							this.views[basename][name]["template"] = template ;
 							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 						}.bind(this) )
+					}else{
+						/*if( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
+							serviceTemplate.compile( file, function(error, template){
+								if (error){
+									this.logger(error, "ERROR");
+									return ;
+								}
+								this.views[basename][name]["template"] = template ;
+								this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+							}.bind(this) )
+						}*/
 					}
 				}
 			}

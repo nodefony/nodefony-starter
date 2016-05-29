@@ -120,7 +120,7 @@ nodefony.registerService("firewall", function(){
 				this.logger(this.name +"  "+e,"ERROR");	
 				throw e;
 			}
-		}.bind(this))
+		})
 	};
 
 	securedArea.prototype.logger = function(pci, severity, msgid,  msg){

@@ -77,7 +77,10 @@ httpBundle:
     cookie:
       maxAge:                     0   
 
+  http:
+    responseTimeout:              40000
   https:
+    responseTimeout:              40000
     certificats:
       key:                        "/config/certificates/serverKey.pem"
       cert:                       "/config/certificates/serverCert.pem"
