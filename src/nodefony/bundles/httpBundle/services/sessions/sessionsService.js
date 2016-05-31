@@ -511,7 +511,7 @@ nodefony.registerService("sessions", function(){
 			if ( ! err ){ 
 				context.listen(session, "onFinish",function(){
 					this.setMetaBag("lastUsed", new Date() );
-					this.setMetaBag("url", context.request.url );
+					this.setMetaBag("url", context.request.url || context.request.resourceURL );
 					if ( ! this.saved ){
 						this.save(context.user ? context.user.id : null);	
 					}

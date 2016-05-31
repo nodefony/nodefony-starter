@@ -266,14 +266,14 @@ nodefony.registerService("httpKernel", function(){
 				context.response.response.on("finish",function(){
 					context.fire("onFinish", context);
 					this.container.leaveScope(container);
-					if ( ! context.session  ){
+					//if ( ! context.session  ){
 						delete context.extendTwig ;
 						if (context.proxy) delete context.proxy ;
 						context.clean();
 						delete context;	
 						delete request ;
 						delete response ;
-					}
+					//}
 					
 					//if (context.profiling) delete context.profiling ;
 					delete container ;

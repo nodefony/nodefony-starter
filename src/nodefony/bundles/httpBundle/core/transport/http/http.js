@@ -110,11 +110,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	
 			if (this.resolver.resolve) {
-				var ret = this.resolver.callController(data);
 				// timeout response 
 				this.response.response.setTimeout(this.response.timeout, function(){
 					this.notificationsCenter.fire("onTimeout", this);
 				}.bind(this))
+				var ret = this.resolver.callController(data);
 				return ret ;
 			}
 			/*
