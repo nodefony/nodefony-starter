@@ -82,7 +82,8 @@ nodefony.registerFixture("users", function(){
 				});
 			break;
 			case "sqlite":
-				user.sync({force:false})
+				/*user.sync({force:false})
+
 				.then(function(){
 					this.logger("Database synchronised  " ,"INFO");
 					
@@ -106,7 +107,36 @@ nodefony.registerFixture("users", function(){
 				}.bind(this))
 				.done(function(){
 					resolve("userEntity");
+				}.bind(this))*/
+
+				//connection.query('SELECT * FROM users  ')
+				connection.query('PRAGMA foreign_keys = 0  ')
+				.then(function(){
+			 		return user.sync({ force: false });
+				})
+				.then(function(User){
+					this.logger("Database synchronised  " ,"INFO");
+					return Sequelize.Promise.map( tab, function(obj) {
+						return User.findOrCreate({where: {username: obj.username}, defaults:obj});
+					})
 				}.bind(this))
+				.spread(function(ele){
+					for (var i = 0 ; i< arguments.length ;i++){
+						if (arguments[i][1]){
+							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
+						}else{
+							this.logger("ALREADY EXIST USER : " +arguments[i][0].username,"INFO");
+						}
+					}
+				}.bind(this))
+				.catch(function(error){
+					this.logger(error);
+					reject(error)
+				}.bind(this))
+				.done(function(){
+					resolve("userEntity");
+				}.bind(this))
+
 			break;
 		
 		

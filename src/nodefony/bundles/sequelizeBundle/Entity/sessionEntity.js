@@ -62,7 +62,7 @@ nodefony.registerEntity("session", function(){
 			if(connectionName == 'nodefony'){
 				var user = ormService.getEntity("user");
 				if ( user){
-					model.belongsTo(user, {  foreignKey: 'user_id'  });
+					model.belongsTo(user, {  foreignKey: 'user_id'  ,constraints: false});
 				}else{
 					throw "ENTITY ASSOCIATION user NOT AVAILABLE"
 				}
