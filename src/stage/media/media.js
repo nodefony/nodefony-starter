@@ -351,7 +351,7 @@ stage.register("media", function(){
 			this.settings = stage.extend( {}, defaultSettingsStream, settings)
 			this.notificationsCenter.settingsToListen(settings);
 		}
-		return getUserMedia({
+		return navigator.getUserMedia({
 				video:this.settings.video,
 				audio:this.settings.audio
 			},
