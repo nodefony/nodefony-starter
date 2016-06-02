@@ -41,6 +41,9 @@ https:
   certificats:
     key:                        "/config/certificates/server.key"
     cert:                       "/config/certificates/server.crt"
+    ca:                         ""
+    options:
+      rejectUnauthorized:       false
 
 #                  
 #       SERVERS WEBSOCKET 

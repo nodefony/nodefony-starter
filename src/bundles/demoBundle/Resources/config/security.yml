@@ -22,7 +22,7 @@ security:
         #
         #       // CROSS DOMAIN CORS SERVER 
         #       crossDomain: 
-        #         allow-origin:         * || {"name":"domain", "myName":"mydomain.com"}
+        #         allow-origin:         "*" || {"name":"domain", "myName":"mydomain.com"}
         #         Access-Control:       headers to allow in request {access-control-allow-methods :"GET"}      
         #
         #

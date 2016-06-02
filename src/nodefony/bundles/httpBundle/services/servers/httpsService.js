@@ -14,14 +14,23 @@ nodefony.registerService("https", function(){
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
 		this.ready = false ;
+		
 	};
 	
 	Https.prototype.createServer = function(port, domain){
 		this.settings = this.get("container").getParameters("bundles.http").https || null ;
-		this.options = {
+		
+		var opt = {
 			key: fs.readFileSync(this.kernel.rootDir+this.settings.certificats.key),
 			cert:fs.readFileSync(this.kernel.rootDir+this.settings.certificats.cert)
 		};
+		if ( this.settings.certificats.ca ){
+			opt["ca"] = fs.readFileSync(this.kernel.rootDir+this.settings.certificats.ca);
+		}
+
+		this.options = nodefony.extend(opt, this.settings.certificats.options);
+
+	
 
 		var logString ="HTTPS";
 		this.server = https.createServer(this.options, function(request, response){

@@ -64,6 +64,7 @@ nodefony.register("Request",function(){
 	var Request = function(request, container){
 		this.container = container ;
 		this.request = request;
+		this.headers = 	request.headers ;
 		this.host = this.getHost() ; //request.headers.host;
 		this.sUrl = this.getFullUrl( request );
 		this.url = this.getUrl(this.sUrl) ;
@@ -76,7 +77,7 @@ nodefony.register("Request",function(){
 		this.queryFile = {}; 
 		this.queryGet = this.url.query;
 		this.query = this.url.query;
-		this.headers = 	request.headers ;
+		
 		this.method = this.getMethod() ;// request.method;
 		this.rawContentType = {} ;
 		this.contentType = this.getContentType(this.request);
@@ -217,6 +218,10 @@ nodefony.register("Request",function(){
 	};
 
 	Request.prototype.getFullUrl = function(request){
+		// proxy mode
+		if ( this.headers && this.headers['x-forwarded-for'] ){
+			return this.headers['x-forwarded-proto'] + "://" + this.host+ ":"+  this.headers['x-forwarded-port']+ request.url ;
+		}
 		if ( request.connection.encrypted ){
 			return 'https://' + this.host + request.url;
 		}else{
