@@ -138,6 +138,20 @@ nodefony.registerService("serverLoad", function(){
 		this.stopChain = false ;
 		this.running = false ;
 
+		/*this.agentOptions = {
+			key: fs.readFileSync(this.rootDir+this.httpsSettings.certificats.key),
+			cert: fs.readFileSync(this.rootDir+this.httpsSettings.certificats.cert),
+			rejectUnauthorized: false,
+		};
+
+		if ( this.httpsSettings.certificats.ca ){
+			this.agentOptions["ca"] = fs.readFileSync(this.rootDir+this.httpsSettings.certificats.ca) ;	
+		}*/
+
+		this.agentOptions = {
+			"rejectUnauthorized": false
+		}
+
 	}
 
 	testLoad.prototype.requests = function( start ){
@@ -215,19 +229,14 @@ nodefony.registerService("serverLoad", function(){
 
 	testLoad.prototype.HttpRequest = function(){
 
-		var agentOptions = {
-			//key: fs.readFileSync(this.rootDir+this.httpsSettings.certificats.key),
-			//cert: fs.readFileSync(this.rootDir+this.httpsSettings.certificats.cert),
-			//rejectUnauthorized: false,
-			//requestCert: true
-		};
+		
 
 		var options = {
 			url: this.options.url,
 			method:this.options.method || "GET" ,
 			forever:true, // keepAlive
 			followRedirect:true,
-			agentOptions:agentOptions,
+			agentOptions:this.agentOptions,
 			headers: {
 				'User-Agent': 'NODEFONY'
 			},
