@@ -7,6 +7,7 @@
 var fs = require("fs");
 var util = require('util');
 var path = require("path");
+var cluster = require('cluster');
 
 
 nodefony.register("kernel", function(){
@@ -78,6 +79,9 @@ nodefony.register("kernel", function(){
 		process.on('SIGTERM', function() {
 			this.terminate(0);	
 		}.bind(this));
+
+		
+
 	};
 
 	/**
@@ -134,6 +138,7 @@ nodefony.register("kernel", function(){
 		//  manage GLOBAL EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 		this.container.set("notificationsCenter", this.notificationsCenter);
+		this.initCluster();
 
 		this.eventReadywait = 0 ;
 
@@ -144,6 +149,9 @@ nodefony.register("kernel", function(){
 		this.injection = new nodefony.injection(this.container);
 		this.container.set("injection", this.injection);
 
+		/*
+ 		 *	BUNDLES
+ 		 */
 		var bundles = [];
 		bundles.push("./vendors/nodefony/bundles/httpBundle");
 		bundles.push("./vendors/nodefony/bundles/frameworkBundle");
@@ -164,17 +172,46 @@ nodefony.register("kernel", function(){
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
 
-		if (this.type === "SERVER"){
+		/*if (this.type === "SERVER"){
 			this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
-		}
+		}*/
 
 		this.fire("onPreRegister", this );
 		this.registerBundles(bundles, function(){
 			this.preboot = true ;
+			this.logger("\x1B[33m EVENT KERNEL onPreBoot\033[0m", "DEBUG");
 			this.fire("onPreBoot", this );
 		}.bind(this), false);
 
 	};
+
+	kernel.prototype.initCluster = function(){
+		this.process = process.pid ;
+		if (cluster.isMaster) {
+			this.logger("		      \033[34mNODEFONY "+this.type+" MASTER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process+"\n", "INFO", "SERVER WELCOME");
+			this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
+			this.fire("onCluster", "MASTER", this,  process);
+
+		}else if (cluster.isWorker) {
+			//this.logger("		      \033[34m"+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process+"\n", "INFO", "SERVER WELCOME");
+			console.log("		      \033[34mNODEFONY "+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process);
+			this.worker = cluster.worker.id ;
+			this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
+			this.fire("onCluster", "WORKER",  this, process);
+			process.on("message" , this.listen(this, "onMessage" ) ); 
+			/*this.listen(this, "onMessage", function(worker, message){
+				//console.log(this.worker)
+				//console.log(this.process)
+				//console.log(arguments)
+				console.log("PASS")
+			})*/
+		}
+	}
+
+	kernel.prototype.sendMessage = function(message){
+		return process.send(message);
+		
+	}
 
 	/**
 	 *	@method fire
@@ -525,7 +562,12 @@ nodefony.register("kernel", function(){
 	 *	@method initializeBundles 
          */	
 	kernel.prototype.initializeBundles = function(error, result){
+
 		this.app = this.initApplication();
+		
+		this.logger("\x1B[33m EVENT KERNEL onPostRegister\033[0m", "DEBUG");
+		this.fire("onPostRegister", this);
+
 		for (var name in this.bundles ){
 			this.logger("\x1b[36m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
 			try {
@@ -536,9 +578,12 @@ nodefony.register("kernel", function(){
 			}
 		}
 		if ( this.eventReadywait  === 0) waitingBundle.call(this) ;
-		this.logger("\x1B[33m EVENT KERNEL BOOT\033[0m", "DEBUG")
-		this.fire("onBoot", this)
+		this.logger("\x1B[33m EVENT KERNEL BOOT\033[0m", "DEBUG");
+		this.fire("onBoot", this);
 		this.booted = true ;
+
+		
+
 		return;
 	};
 	
@@ -637,16 +682,6 @@ nodefony.register("kernel", function(){
 			process.exit(code);
 		}.bind(this));
 		return ;
-	};
-
-	/**
-	 *	 
-	 *	@method generateAscii 
-         */
-	kernel.prototype.generateAscii = function(str, callback){
-		var exec = require('child_process').exec ;
-		var commandLine = './bin/figlet -c -f vendors/asciiArt/figlet222/fonts/standard.flf ' + str ;
-		var ASCII = exec(commandLine, callback);
 	};
 
 	return kernel ;

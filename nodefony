@@ -29,6 +29,7 @@ if ( process.env["MODE_START"] && process.env["MODE_START"] === "PM2"){
  *	PRODUCTION
  *
  */
+process.env["MODE_START"] = "NODEFONY" ;
 if (cluster.isMaster) {
 	
 	require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
@@ -44,6 +45,20 @@ if (cluster.isMaster) {
 	cluster.on('disconnect', function(worker) {
 		console.error('disconnect!');
 	});
+
+
+	cluster.on('fork', function(worker) {
+		worker.on('message', function(msg){
+			var wid = worker.id ;
+			Object.keys(cluster.workers).forEach(function(id) {
+				if ( id != wid){
+					//console.log("SEND FROM  "+ wid + " to " + id)
+					cluster.workers[id].send(msg);		
+				}
+			});	
+		});
+	});
+	
 
 }else {
 	return new nodefony.appKernel("SERVER", "prod", false, autoloader,{
