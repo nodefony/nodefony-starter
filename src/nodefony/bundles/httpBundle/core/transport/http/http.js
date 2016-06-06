@@ -34,7 +34,9 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
-		this.domain =  this.container.getParameters("kernel").system.domain;
+		this.kernelHttp = this.container.get("httpKernel");
+		this.domain =  this.request.domain ; 
+		this.validDomain = this.isValidDomain() ;
 
 		this.logger("request from : "+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
 			host:request.headers.host ,
@@ -70,6 +72,10 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		} );
 	};
 
+	Http.prototype.isValidDomain = function(){
+		return this.kernelHttp.isDomainAlias(  this.getHostName() );
+	}
+
 	Http.prototype.getRemoteAdress = function(){
 		return this.request.getRemoteAdress() ;
 	};
@@ -77,6 +83,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	Http.prototype.getHost = function(){
 		return this.request.getHost() ;
 	};
+
+	Http.prototype.getHostName = function(){
+		return this.request.getHostName() ;
+	};
+
 
 	Http.prototype.getUserAgent = function(){
 		return this.request.getUserAgent();
@@ -139,7 +150,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		delete 	this.request ;
 		this.response.clean();
 		delete 	this.response ;
-		delete  this.domain ;
 		delete  this.notificationsCenter ;
 		delete  this.session ;
 		delete  this.cookies ;

@@ -126,6 +126,7 @@ nodefony.register("kernel", function(){
 			this.httpPort = result.system.httpPort || null;
 			this.httpsPort = result.system.httpsPort || null;
 			this.domain = result.system.domain || null;
+			this.domainAlias = result.system.domainAlias ;
 			// manage LOG
 			if (this.environment === "prod")
 				this.environment = result.system.debug ? "dev" : "prod" ;

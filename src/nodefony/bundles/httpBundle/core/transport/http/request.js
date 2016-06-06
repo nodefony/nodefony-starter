@@ -120,7 +120,14 @@ nodefony.register("Request",function(){
 
 	Request.prototype.getHost = function(){
 		return this.request.headers.host ;
+		//return this.url.host ;
 	}
+
+	Request.prototype.getHostName = function(){
+		//console.log( this.url)
+		return this.url.hostname ; 
+	}
+
 
 	Request.prototype.getUserAgent = function(){
 		return this.request.headers['user-agent'];	
@@ -193,7 +200,8 @@ nodefony.register("Request",function(){
 	}
 
 	Request.prototype.getDomain = function(){
-		return this.host.split(":")[0];
+		return this.getHostName() ;
+		//return this.host.split(":")[0];
 	};
 
 	Request.prototype.getRemoteAdress = function(){

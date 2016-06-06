@@ -38,18 +38,51 @@ nodefony.registerService("httpKernel", function(){
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onBoot",function(){
 			this.sessionService = this.get("sessions");
+			this.compileAlias();
 		});
-
 
 		this.kernel.listen(this, "onClientError", function(e, socket){
 			this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
 		});
+
+		
 	};
-	
+
 	httpKernel.prototype.boot = function(){
 		 /*this.kernel.listen(this, "onBoot", function(){
 		 });*/
 	};
+
+	httpKernel.prototype.compileAlias = function(){
+
+		try {
+			var alias = [] ;
+			if ( this.kernel.domainAlias && typeof this.kernel.domainAlias === "string" ){
+				var alias = this.kernel.domainAlias.split(" ");
+				Array.prototype.unshift.call(alias,  "^"+this.kernel.domain+"$" );
+				var str = "";
+				for ( var i = 0 ; i <alias.length ;i++ ){
+					if (i === 0) 
+						str = alias[i];
+					else
+						str += "|"+ alias[i] ;
+				}
+				if (str){
+					this.regAlias = new RegExp(str);
+				}
+
+			}else{
+				this.logger("Config file bad format for domain alias ", "ERROR", "HTTP KERNEL DOMAIN");	
+			}
+		}catch(e){
+			throw e ;
+		}
+	}
+
+	httpKernel.prototype.isDomainAlias = function(host){
+		return this.regAlias.test(host);
+	}
+
 	
 	httpKernel.prototype.getEngineTemplate = function(name){
 		return nodefony.templatings[name];

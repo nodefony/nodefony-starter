@@ -16,10 +16,10 @@ const numCPUs = require('os').cpus().length;
 
 if (cluster.isMaster) {
   // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
-    cluster.fork();
-    
-  }
+  	for (var i = 0; i < numCPUs; i++) {
+    		cluster.fork();
+
+  	}
 
 
 	Object.keys(cluster.workers).forEach(function(id){
@@ -30,13 +30,12 @@ if (cluster.isMaster) {
 	});
 
 
- setTimeout(function(){
-  	Object.keys(cluster.workers).forEach((id) => {
-	  	console.log(id)
-    		cluster.workers[id].send('vier');
-  	});
-}, 2000 );
-
+ 	setTimeout(function(){
+  		Object.keys(cluster.workers).forEach((id) => {
+	  		console.log(id)
+    			cluster.workers[id].send('vier');
+  		});
+	}, 2000 );
 
   
 } else {

@@ -30,6 +30,7 @@ name:                           "NODEFONY"
 system:                         
   version:                      "1.0"
   domain:                       nodefony.com
+  domainAlias:                  ".*\\.nodefony.com ^nodefony.eu$"       # regexp  
   httpPort:                     5151
   httpsPort:                    5152
   statics:                      true

@@ -129,7 +129,6 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
-
 		switch ( context.type ){
 			case "HTTP" :
 			case "HTTPS" :
@@ -427,7 +426,6 @@ nodefony.registerService("firewall", function(){
 	var Firewall = function(container, kernel ){
 		this.container = container;
 		this.kernel = kernel;
-		this.kernelHttp = this.get("httpKernel");
 		this.reader = function(context){
 			var func = context.container.get("reader").loadPlugin("security", pluginReader);
 			return function(result){
@@ -553,20 +551,23 @@ nodefony.registerService("firewall", function(){
 				return context.security.redirectHttps(context);
 			}
 			//CROSS DOMAIN //FIXME width callback handle for async response  
-			var next = context.security.handleCrossDomain(context, request, response) ;
-			switch (next){
-				case 204 :
-					return ;
-				case 401 :
-					this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR");
-					context.notificationsCenter.fire("onError",context.container, {
-						status:next,
-						message:"crossDomain Unauthorized "
-					});
-					return ;
-				case 200 :
-					this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
-				break;
+			if (  ! context.validDomain ){
+			
+				var next = context.security.handleCrossDomain(context, request, response) ;
+				switch (next){
+					case 204 :
+						return ;
+					case 401 :
+						this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR");
+						context.notificationsCenter.fire("onError",context.container, {
+							status:next,
+							message:"crossDomain Unauthorized "
+						});
+						return ;
+					case 200 :
+						this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
+					break;
+				}
 			}
 
 			if (meta){

@@ -14,6 +14,7 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.type = type ;
 		this.container = container;
 		this.kernel = this.container.get("kernel") ;
+		this.kernelHttp = this.container.get("httpKernel");
 		this.request = request ; 
 		this.origin = request.origin;
 		//TODO acceptProtocol header sec-websocket-protocol   
@@ -23,7 +24,9 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
 		this.secureArea = null ;
 		this.cookies = {};
-		this.domain =  this.container.getParameters("kernel").system.domain;
+		this.domain =  this.getHostName();
+		this.validDomain = this.isValidDomain() ;
+
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 			remoteAddress:this.remoteAddress,
 			origin:request.origin
@@ -41,7 +44,6 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 
 		this.url = this.request.resourceURL.href;
 		this.remoteAdress = this.request.remoteAddress ;
-		//console.log(this)
 
 		this.resolver = null ;
 		//  manage EVENTS
@@ -68,12 +70,20 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		}.bind(this));*/
 	};
 
+	websocket.prototype.isValidDomain = function(){
+		return this.kernelHttp.isDomainAlias(  this.getHostName() );
+	}
+
 	websocket.prototype.getRemoteAdress = function(){
 		return this.remoteAdress ;
 	};
 
 	websocket.prototype.getHost = function(){
 		return this.request.httpRequest.headers['host'] ;
+	};
+
+	websocket.prototype.getHostName = function(){
+		return this.originUrl.hostname ;
 	};
 
 	websocket.prototype.getUserAgent = function(){
