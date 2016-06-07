@@ -303,6 +303,12 @@ nodefony.registerService("sessions", function(){
 		return this.flashBag ;
 	}
 
+	Session.prototype.clearFlashBags = function(){
+		delete this.flashBag ;
+		this.flashBag = {} ;
+	}
+
+
 
 	Session.prototype.setCookieSession = function( leftTime){
 		if (leftTime){

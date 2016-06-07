@@ -66,6 +66,10 @@ nodefony.register("Request",function(){
 		this.request = request;
 		this.headers = 	request.headers ;
 		this.host = this.getHost() ; //request.headers.host;
+		this.hostname = this.getHostName(this.host) ;
+		//console.log( request.url )
+		//console.log( request )
+		//console.log( request.headers.host )
 		this.sUrl = this.getFullUrl( request );
 		this.url = this.getUrl(this.sUrl) ;
 		if ( this.url.search ){
@@ -123,9 +127,13 @@ nodefony.register("Request",function(){
 		//return this.url.host ;
 	}
 
-	Request.prototype.getHostName = function(){
-		//console.log( this.url)
-		return this.url.hostname ; 
+	Request.prototype.getHostName = function(host){
+		if ( this.url && this.url.hostname )
+			return this.url.hostname ;
+		if ( host ){
+			return host.split(":")[0] ;
+		}
+		return  this.getHost().split(":")[0] ; 
 	}
 
 
@@ -221,6 +229,10 @@ nodefony.register("Request",function(){
 		return null ;
 	};
 
+	Request.prototype.setUrl = function(Url){
+		this.url = this.getUrl(Url);
+	};
+
 	Request.prototype.getUrl = function(sUrl, query){
 		return url.parse( sUrl, query);
 	};
@@ -228,7 +240,7 @@ nodefony.register("Request",function(){
 	Request.prototype.getFullUrl = function(request){
 		// proxy mode
 		if ( this.headers && this.headers['x-forwarded-for'] ){
-			return this.headers['x-forwarded-proto'] + "://" + this.host+ ":"+  this.headers['x-forwarded-port']+ request.url ;
+			return this.headers['x-forwarded-proto'] + "://" + this.host +  request.url ;
 		}
 		if ( request.connection.encrypted ){
 			return 'https://' + this.host + request.url;

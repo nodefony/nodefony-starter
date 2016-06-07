@@ -356,15 +356,17 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
-		context.session.setFlashBag("redirect" , "HTTPS" );
-		context.request.url.protocol = "https";
+		return context.redirectHttps(301) ;
+		//context.session.setFlashBag("redirect" , "HTTPS" );
+		/*context.request.url.protocol = "https";
+		
 		if ( context.proxy ){
 			return context.redirect(context.request.url, 301); 
 		}
 		context.request.url.port = this.container.get("kernel").httpsPort;
 		context.request.url.href = "";
 		context.request.url.host = "";
-		return context.redirect(context.request.url, 301);
+		return context.redirect(context.request.url, 301);*/
 	};
 
 	securedArea.prototype.redirect = function(context, url){
@@ -546,7 +548,6 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
-
 			if ( ! context.isAjax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
 				return context.security.redirectHttps(context);
 			}

@@ -52,9 +52,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.security = null ;
 		this.user = null ;
 
-		
-
-		this.url = this.request.url.href;
+		this.url =url.format(this.request.url);
 		this.remoteAddress = this.request.remoteAdress ; 
 
 		// LISTEN EVENTS KERNEL 
@@ -239,6 +237,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(url.format(Url), status)
 		else	
 			this.response.redirect(Url, status)
+		this.notificationsCenter.fire("onResponse", this.response, this.context);
+	};
+
+	Http.prototype.redirectHttps = function( status ){
+		this.response.redirect( this.url.replace("http" , "https"), status );
 		this.notificationsCenter.fire("onResponse", this.response, this.context);
 	};
 
