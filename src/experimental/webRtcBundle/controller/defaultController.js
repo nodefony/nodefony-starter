@@ -33,7 +33,16 @@ nodefony.registerController("default", function(){
 				});
 			break;
 			case "WEBSOCKET":
-				var service = this.get("webrtc");
+				var settings = this.getParameters("bundles.webRtc") ;
+				switch ( settings.adapter.type ){
+					case "redis" :
+						var service = this.get("webrtcRedis");
+					break;
+					default:
+						var service = this.get("webrtc");
+						
+				}
+				
 				var context = this.getContext();
 				if ( message ){
 					switch ( message.type ){

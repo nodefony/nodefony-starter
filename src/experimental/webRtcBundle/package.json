@@ -10,7 +10,8 @@
 		"webrtc"
 	],
 	"dependencies": {
-		"webrtc-adapter"	: "*"
+		"webrtc-adapter"	: "*",
+		"redis"			: "*"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

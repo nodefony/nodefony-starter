@@ -25,6 +25,13 @@ name :				webRtcBundle
 locale :			fr_fr
 version :                       "1.0"
 
+adapter:
+  type:                         "redis"
+  options:
+    host:                       "nodefony.com"
+    password:                   "passwd"
+
+
 realTimeBundle:
   services:
           #    SIP:
