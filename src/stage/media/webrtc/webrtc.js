@@ -437,6 +437,11 @@ stage.register("webRtc",function(){
 					}
 				});
 
+				this.protocol.listen(this, "onQuit",function(protocol){
+					
+					this.notificationsCenter.fire("onQuit", this);
+				});
+
 				this.protocol.listen(this, "onInvite",function(message, dialog){
 					if ( message.response.sessionDescription ){
 						var to = new User(message.response.from);
@@ -524,10 +529,10 @@ stage.register("webRtc",function(){
 						var transac =  this.transactions[message.response.from];
 						var name = message.response.from
 						transac.close();
-					}
-					this.notificationsCenter.fire("onOnHook", name ,message);
-					delete this.transactions[name];
-					delete this.users[name];
+						this.notificationsCenter.fire("onOnHook", name ,message);
+						delete this.transactions[name];
+						delete this.users[name];
+					}	
 				});
 
 				this.protocol.listen(this, "onError",function(type, code, message){
@@ -556,8 +561,8 @@ stage.register("webRtc",function(){
 		transac.createOffer();
 	};
 
-	WebRtc.prototype.byAll = function() {
-		this.protocol.byAll();
+	WebRtc.prototype.quit = function() {
+		this.protocol.by();
 	};
 	return WebRtc ;
 

@@ -3,7 +3,6 @@ var redis = require("redis") ;
 
 nodefony.registerService("webrtcRedis", function(){
 
-
 	/*
 	 *
 	 *	CLASS CONNECTION
@@ -21,7 +20,6 @@ nodefony.registerService("webrtcRedis", function(){
 		this.pub = null ;
 		this.setConnection();
 
-
 		this.context.notificationsCenter.listen(this,"onClose", function(){
 			this.logger("close websocket client ");
 			this.close();
@@ -32,7 +30,6 @@ nodefony.registerService("webrtcRedis", function(){
 	Connections.prototype.generateId = function(){
 		return shortId.generate();
 	};
-
 
 	Connections.prototype.setConnection = function(){
 
@@ -50,7 +47,6 @@ nodefony.registerService("webrtcRedis", function(){
 			this.logger("PUBLISH CONNECT REDIS SERVER  AUTHENTICATION OK  ", "INFO");	
 		}.bind(this))
 		
-
 		this.sub.auth(this.options.password, function(){
 			this.logger("SUBSCRIBE CONNECT REDIS SERVER  AUTHENTICATION OK  ", "INFO");
 		}.bind(this))
@@ -62,9 +58,7 @@ nodefony.registerService("webrtcRedis", function(){
 					user:this.username,
 					code:200
 				});
-				
 				this.logger(this.username + " SUBSCRIBE ROOM  : " + this.room, "INFO");
-
 			}
 		}.bind(this));
 
@@ -100,12 +94,12 @@ nodefony.registerService("webrtcRedis", function(){
 				ip		: this.ip,	
 			}, data) ; 
 			var str = JSON.stringify(message);
-			this.service.logger("WEBSOCKET TO : "+this.username + '  Message '  + str);
+			this.service.logger("WEBSOCKET FROM : "+this.username + '  Message '  + str);
 			this.context.send(str);
 			return str ;
 		}
 		if (typeof data === "string"){
-			this.service.logger("WEBSOCKET TO : "+this.username + '  Message ' + data);
+			this.service.logger("WEBSOCKET FROM : "+this.username + '  Message ' + data);
 			this.context.send(data);
 			return data ;
 		}
@@ -120,17 +114,20 @@ nodefony.registerService("webrtcRedis", function(){
 				ip		: this.ip,	
 			}, data) ; 
 			var str = JSON.stringify(message);
-			this.service.logger("REDIS PUBLISH TO : "+this.username + '  Message '  + str);
+			this.service.logger("REDIS PUBLISH FROM : "+this.username + '  Message '  + str);
 			this.pub.publish(this.room, str);
 		}
 		if (typeof data === "string"){
-			this.service.logger("REDIS PUBLISH TO : "+this.username + '  Message ' + data);
+			this.service.logger("REDIS PUBLISH FROM : "+this.username + '  Message ' + data);
 			this.pub.publish(this.room, data);
 		}
 	}
 
-	Connections.prototype.close = function(id){
-		this.logger("CLOSE");	
+	Connections.prototype.close = function(){
+		this.publish( {
+			type:"BYE"
+		} );
+
 	};
 
 	Connections.prototype.logger = function(pci, severity, msgid,  msg){
@@ -154,7 +151,11 @@ nodefony.registerService("webrtcRedis", function(){
 				case "OFFER" :
 					this.send( message );
 				break;
+				case "BYE" :
+					this.send( message );
+				break;
 			}
+			return ;
 		}else{
 			switch (message.type){
 				case "ANSWER" :
@@ -162,17 +163,18 @@ nodefony.registerService("webrtcRedis", function(){
 					if ( !  publih )
 						this.publish( message );
 				break;
+				case "BYE" :
+					this.send( message );
+				break;
 			}
+			return ;
 		}
 	}	
-
-
 
 	var settingsSyslog = {
 		moduleName:"REDIS WEBRTC SERVICE",
 		defaultSeverity:"INFO"
 	};
-
 
 	var WebRtc = function(container, kernel){
 	
@@ -194,7 +196,6 @@ nodefony.registerService("webrtcRedis", function(){
 		},function(pdu){
 			this.kernel.logger(pdu);
 		});
-		
 	};
 
 	WebRtc.prototype.logger = function(pci, severity, msgid,  msg){
@@ -203,9 +204,7 @@ nodefony.registerService("webrtcRedis", function(){
 	};
 
 	WebRtc.prototype.handleConnection = function( context ){
-		this.logger("ADPATER REDIS")
 		context.webrtc = new Connections( this, context, this.options.adapter.options );		
-
 	}
 
 	WebRtc.prototype.handleMessage = function(message, context){
@@ -213,10 +212,8 @@ nodefony.registerService("webrtcRedis", function(){
 		var message = JSON.parse( message ) ; 
 		return context.webrtc.onMessage(message) ;	
 	};
-
 	
 	return WebRtc ;
-
 });
 
 

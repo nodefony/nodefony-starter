@@ -41,7 +41,6 @@
     "mime":"*",
     "markdown-it":"*",
     "promise":"*",
-    "async":"*",
     "pm2":"*"
   },
   "devDependencies": {},

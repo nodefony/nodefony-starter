@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: npm framework install 
+all: framework npm  install 
 
 install:
 	./console npm:install

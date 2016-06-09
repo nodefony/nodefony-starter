@@ -5,7 +5,6 @@
  *
  *
  */
-var async = require('async');
 
 
 nodefony.registerService("less", function(){
