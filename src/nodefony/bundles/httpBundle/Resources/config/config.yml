@@ -91,7 +91,7 @@ statics:
 #               only for handler  session.storage.memcached
 
 session:
-  start:                        null            #"autostart"
+  start:                        "autostart"            #"autostart"
   use_strict_mode:              true                    
   name:                         "nodefony"
   handler:                      session.storage.files

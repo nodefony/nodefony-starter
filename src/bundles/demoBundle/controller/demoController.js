@@ -29,6 +29,8 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.loginAction= function(){
+		if ( this.context.session )
+			return this.redirect("demo");
 		return this.redirect(this.generateUrl("login"));	
 	};
 
