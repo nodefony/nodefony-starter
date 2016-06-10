@@ -43,5 +43,5 @@ realTimeBundle:
     OPENSIP:
       type:                       tcp
       port:                       5060
-      domain:                     192.168.100.112
+      domain:                     nodefony.com
 
