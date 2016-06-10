@@ -19,6 +19,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	var Http = function(container, request, response, type){
 		this.type = type;
 		this.container = container; 
+		
 
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
@@ -34,6 +35,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
+		if ( this.kernel.environment === "dev" ){
+			this.autoloadCache = {
+				bundles:{}
+			} ;
+		}
 		this.kernelHttp = this.container.get("httpKernel");
 		this.domain =  this.request.domain ; 
 		this.validDomain = this.isValidDomain() ;

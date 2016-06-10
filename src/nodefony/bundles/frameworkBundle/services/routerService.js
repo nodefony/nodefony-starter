@@ -24,6 +24,7 @@ nodefony.registerService("router", function(){
 		this.variables = new Array();
 		this.notificationsCenter = this.container.get("notificationsCenter") ;
 		this.context = this.container.get("context") ;
+		
 	};
 
 	Resolver.prototype.match = function(route, request){
@@ -60,6 +61,11 @@ nodefony.registerService("router", function(){
 		var tab = name.split(":")
 		this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
 		if ( this.bundle ){
+			if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
+				this.context.autoloadCache.bundles[this.bundle.name] = {
+					controllers:{}	
+				}
+			}
 			if (this.bundle.name !== "framework")
 				this.container.set("bundle", this.bundle)
 			this.controller = this.getController(tab[1]);
@@ -85,7 +91,8 @@ nodefony.registerService("router", function(){
 	};
 	
 	Resolver.prototype.getController= function(name){
-		if (this.kernel.environment === "dev"){
+		if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name].controllers[name]){
+			this.context.autoloadCache.bundles[this.bundle.name].controllers[name] = true ;
 			this.bundle.reloadController(name, this.container);
 		}
 		return this.bundle.controllers[name];

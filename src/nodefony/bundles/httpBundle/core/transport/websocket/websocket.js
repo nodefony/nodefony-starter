@@ -14,6 +14,11 @@ nodefony.register.call(nodefony.io.transports, "websocket", function(){
 		this.type = type ;
 		this.container = container;
 		this.kernel = this.container.get("kernel") ;
+		if ( this.kernel.environment === "dev" ){
+			this.autoloadCache = {
+				bundles:{}
+			} ;
+		}	
 		this.kernelHttp = this.container.get("httpKernel");
 		this.request = request ; 
 		this.origin = request.origin;
