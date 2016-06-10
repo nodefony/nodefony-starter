@@ -26,21 +26,22 @@ locale :			fr_fr
 version :                       "1.0"
 
 adapter:
-  type:                         "redis"
-  options:
-    host:                       "nodefony.com"
-    password:                   "passwd"
+  type:                         "memory"
+
+# cluster mode or proxy load balanced
+#
+#adapter:
+#  type:                         "redis"
+#  options:
+#    host:                       "nodefony.com"
+#    password:                   "passwd"
 
 
 realTimeBundle:
   services:
-          #    SIP:
-            #      type:                       tcp
-            #      port:                       5060
-            #      domain:                     192.168.100.171
 
     OPENSIP:
       type:                       tcp
       port:                       5060
-      domain:                     192.168.100.235
+      domain:                     192.168.100.112
 

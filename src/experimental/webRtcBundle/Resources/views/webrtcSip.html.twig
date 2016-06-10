@@ -69,7 +69,7 @@
 	{% endjavascripts %}
 
 	<!-- ENTRY POINT -->
-	<script src="/webRtcBundle/js/demo.js"></script>
+	<script src="/webRtcBundle/js/appWebrtc.js"></script>
 
 {% endblock %}
 
@@ -88,7 +88,7 @@
 <section id="home" class="pfblock-image screen-height">
         <div class="home-overlay"></div>
 	<div class="intro">
-		<h1 class="success" style ="font-size:70px" > <strong class="text-primary">WEBRTC </strong> DEMO  </h1>
+		<h1 class="success" style ="font-size:70px" > <strong class="text-primary">WEBRTC </strong> DEMO SIP </h1>
 		<h2 class="success"> <strong class="text-primary">NODEFONY </strong> {{ "webrtc"|trans() }}  </h2>
 		<div class="start">  {{ "webrtcWelcome"|trans() }}  </div>
 
@@ -132,7 +132,7 @@
 			<div class="col-sm-6 col-sm-offset-3">
 
 				<div class="pfblock-header wow fadeInUp">
-					<h2 class="pfblock-title">WEBRTC</h2>
+					<h2 class="pfblock-title">WEBRTC OPENSIPS SERVER</h2>
 					<div class="pfblock-line"></div>
 					<div class="pfblock-subtitle">
 						DEMO WEBRTC with NODEFONY FRAMENWORK 
@@ -144,7 +144,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 
 				<div class="iconbox wow slideInLeft">
 					<div class="iconbox-icon">
@@ -160,7 +160,23 @@
 
 			</div>
 
-			<div class="col-sm-4">
+			<div class="col-sm-3">
+
+				<div class="iconbox wow slideInLeft">
+					<div class="iconbox-icon">
+						<img src = "/webRtcBundle/images/icon-sip-trunking.png" style="width:60px;height:53px"></img>
+					</div>
+					<div class="iconbox-text">
+						<h3 class="iconbox-title">SIP PROTOCOL</h3>
+						<div class="iconbox-desc">
+							
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-sm-3">
 
 				<div class="iconbox wow slideInRight">
 					<div class="iconbox-icon">
@@ -173,9 +189,10 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 
 				<div class="iconbox wow slideInRight">
 					<div class="iconbox-icon">
@@ -234,6 +251,7 @@
 
 
 {% endblock %}
+
 
 
 

@@ -66,9 +66,19 @@ nodefony.registerController("default", function(){
 	*/
 	defaultController.prototype.demoAction = function(userName, message){
 		//console.log(arguments)
+		var url= this.getRequest().url.href ;
+				var kernel = this.get("kernel") ;
 		switch( this.getRequest().method ){
 			case "GET":
-				return this.render("webRtcBundle::demo.html.twig",{title:"WEBRTC",userName:userName});
+				return this.render("webRtcBundle::webrtcSip.html.twig",{
+					title:"WEBRTC SIP DEMO",
+					//userName:userName
+					url:url,
+				        username:this.context.user.username,
+					name:this.context.user.name + " " + this.context.user.surname,
+					nodefony:kernel.settings.name + " " + kernel.settings.system.version,
+					user:this.context.user
+				});
 			break;
 		}
 	};
