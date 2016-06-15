@@ -3040,7 +3040,6 @@ stage.register.call(stage.io.protocols, "bayeux",function(){
 	};
 
 	bayeux.prototype.onMessage = function(message){
-		//console.log(message)
 		try {
 			if (typeof message === "string" ){
 				message = JSON.parse(message);
@@ -3355,7 +3354,6 @@ stage.register("realtime",function(){
 				this.notificationCenter.fire("onMessage", message.channel.split("/")[2], message.data);
 			else
 				this.notificationCenter.fire("onMessage",message.id, message.successful);
-	
 		}
 	};
 

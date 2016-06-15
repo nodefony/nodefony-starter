@@ -258,7 +258,6 @@ stage.register("realtime",function(){
 				this.notificationCenter.fire("onMessage", message.channel.split("/")[2], message.data);
 			else
 				this.notificationCenter.fire("onMessage",message.id, message.successful);
-	
 		}
 	};
 

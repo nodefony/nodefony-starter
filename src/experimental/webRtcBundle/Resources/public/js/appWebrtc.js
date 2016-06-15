@@ -506,7 +506,6 @@ var App = new stage.appKernel(null, "dev", {
 		    },
 		    // fire when service is ready
 		    onConnect:function(message, realtime){
-			    console.log(realtime)
 			    App.notify.logger("CONNECT ON : "+realtime.publicAddress);
 			    if (message.data.OPENSIP){
 				    realtime.subscribe("OPENSIP");
@@ -612,9 +611,10 @@ var App = new stage.appKernel(null, "dev", {
 								   transac.setRemoteDescription("offer", user, message.rawBody, message.dialog);
 							   }
 						   })*/
-							var res = confirm("APPEL ENTRANT call from : "+message.response.from ) ; 
+							console.log(message)
+							var res = confirm("APPEL ENTRANT call from : "+message.fromName ) ; 
 							if (res) {
-								transac.setRemoteDescription("offer", user, message.response.sessionDescription, message.dialog);
+								transac.setRemoteDescription("offer", user, message.rawBody, message.dialog);
 							}else{
 								message.dialog.invite({
 									code:603,

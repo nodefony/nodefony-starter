@@ -250,6 +250,7 @@ stage.register("webRtc",function(){
 		this.transport = transport ;
 		if ( this.transport && this.transport.publicAddress ){
 			this.publicAddress = this.transport.publicAddress;	
+			//this.publicAddress = this.transport.domain;	
 		}
 		this.server = server ;
 	};
@@ -288,6 +289,7 @@ stage.register("webRtc",function(){
 			case "SIP":
 				this.protocol = new stage.io.protocols.sip(this.server, this.transport,{
 					portServer	: this.settings.sipPort ,
+					transport	: this.settings.sipTransport,
 					userName	: userName,
 					password	: password	
 				});
@@ -313,7 +315,6 @@ stage.register("webRtc",function(){
 				});
 
 				this.protocol.listen(this, "onInvite", function(message, dialog){
-					
 					switch(message.header["Content-Type"]){
 						case "application/sdp" :
 							if ( message.rawBody ){
@@ -463,7 +464,6 @@ stage.register("webRtc",function(){
 				});
 
 				this.protocol.listen(this, "onCandidate", function(message, dialog){
-
 					var transaction = this.transactions[message.response.from];
 					if ( ! transaction ) return ;
 					if (message.response.candidates){

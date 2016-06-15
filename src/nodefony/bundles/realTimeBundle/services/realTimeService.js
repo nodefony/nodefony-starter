@@ -22,6 +22,7 @@
  *	THE SOFTWARE.
  */
 var net = require('net');
+var dgram = require('dgram');
 var xml = require('xml2js');
 var shortId = require('shortid');
 
@@ -194,12 +195,15 @@ nodefony.registerService("realTime", function(){
 			return this.send( context , this.protocol.send( message ));
 		}
 		switch (serv.type){
+			case "TCP" :
 			case "tcp" :
 				try {
 					var client = new net.Socket({
 						allowHalfOpen : true,
 						//highWaterMark:16384*2
-						highWaterMark:1024*64
+						highWaterMark:1024*64,
+						//readable: true,
+						//writable: true
 					});
 
 					/*client.on("readable",function(){
@@ -228,13 +232,13 @@ nodefony.registerService("realTime", function(){
 							//message.data = id;
 							message.clientId = id ;
 							//console.log(client)
-							this.logger("SUBCRIBE SERVICE : " + name +" ID = "+id, "INFO")	
+							this.logger("SUBCRIBE SERVICE TCP : " + name +" ID = "+id, "INFO");	
 						}catch(e){
 							if (id){
 								this.connections.removeClient(client);	
 							}
 							message.successful = false ;
-							this.logger("SUBCRIBE SERVICE : " + name +" ID = "+id + " "+e,"ERROR");	
+							this.logger("SUBCRIBE SERVICE TCP: " + name +" ID = "+id + " "+e,"ERROR");	
 						}
 						this.send(context, this.protocol.send( message ) );
 					}.bind(this))	
@@ -324,7 +328,105 @@ nodefony.registerService("realTime", function(){
 			break;
 			case "socket" :
 			break;
+			case "UDP" :
 			case "udp" :
+				var client = dgram.createSocket({
+					type:'udp4',
+					reuseAddr:true
+				});
+
+				client.write = function(message, callback){
+					this.send(message, 0, message.length ,serv.port, serv.domain, callback ) ;	
+				}.bind(client);
+
+
+				client.bind({
+					//port:8000,
+					address:this.kernel.domain,
+					exclusive:true
+				})
+
+				client.on("listening", function () {
+					var address = client.address();
+						
+					var id = this.connections.setClient(message.clientId, client);
+					message.successful = true ;
+					//message.data = id;
+					message.clientId = id ;
+					//console.log(client)
+					this.logger("SUBCRIBE SERVICE "+ name+" UDP LISTEN ON : " + address.address + ":" + address.port +" ID = "+id, "INFO");
+
+					if (data){
+						client.write(data, function(error){
+							if (error){
+							
+							}
+							console.log("SEND")
+						});
+					}
+					this.send(context, this.protocol.send( message ) );
+
+				}.bind(this));
+				
+								
+				// Listen for messages from client
+				client.on('message', function (buffer, rinfo) {
+					console.log("MESSAGE UDP")
+					this.send( context , this.protocol.publishMessage( message.subscription, buffer.toString(), message.clientId ) );
+				}.bind(this));
+
+				client.on("close", function() { 
+					console.log("CLOSE UDP") 
+					//console.log("close client");
+					if (error){
+						this.logger("CANNOT CONNECT SERVICE : " + name , "ERROR");
+						client.destroy();
+						delete client ;
+						throw error ;
+					}else{
+						var connection = this.connections.getConnection(client);
+						if (connection && connection.mustClose){
+							var size = Object.keys(connection.clients).length ;
+						}
+						var id = this.connections.removeClient(client);
+						this.logger("UNSUBCRIBE SERVICE : " + name +" ID = "+id, "INFO");
+						if (connection && connection.mustClose){
+							//console.log("SIZE clients struck :" + size)
+							if ( size === 1 ){
+								if (connection.disconnect){
+									//console.log(connection.disconnect)
+									this.send( connection.context, connection.disconnect );
+								}
+								this.connections.removeConnection(connection.id);	
+								this.logger("REMOVE ID connection : "+connection.id, "INFO");	
+							}
+						}
+					}
+					client.destroy();
+					delete client ;
+				}.bind(this)); 
+
+				client.on("error", function (error) { 
+					//FIXME other error socket
+					switch (error.code){
+						case "ECONNREFUSED" :
+							//this.send( context ,this.protocol.errorResponse(403, message.clientId+","+message.channel,error.errno ) );
+							var res = this.protocol.subscribeResponse(message);
+							res.error = this.protocol.errorResponse(403, message.clientId+","+message.channel,error.errno ) ;
+							res.successful = false ;
+							this.send(context, this.protocol.send( res ));
+						break;
+						case "ETIMEDOUT" :
+							var res = this.protocol.subscribeResponse(message);
+							res.error = this.protocol.errorResponse(408, message.clientId+","+message.channel,error.errno ) ;
+							res.successful = false ;
+							this.send(context, this.protocol.send( res ));
+						break;
+					}
+					//console.log(error);
+					this.logger("ERROR SERVER DOMAIN : "+serv.domain+" SERVER PORT : "+serv.port+" SERVICE : " + name + " " + error, "ERROR");
+				}.bind(this))
+
 			break ;
 			case "spawn" :
 				var spawn = require('child_process').spawn ;
@@ -468,7 +570,7 @@ nodefony.registerService("realTime", function(){
 							//var remoteAddress = context.request.remoteAdress
 							//var remoteAddress = context.request.domain
 							var obj = {
-								remoteAddress : context.remoteAddress || context.request.remoteAdress,
+								remoteAddress : context.remoteAdress || context.request.remoteAdress,
 								host:url.parse(context.request.headers.host)	
 							};
 							//console.log(remoteAddress + " : " + context.request.domain)
@@ -480,7 +582,7 @@ nodefony.registerService("realTime", function(){
 						break;
 						case "/meta/connect":
 							var obj = {
-								remoteAddress : context.remoteAddress,
+								remoteAddress : context.remoteAdress,
 								host:url.parse(context.request.origin)	
 							};
 							var connectionId = this.connections.setConnection(context, obj) ;

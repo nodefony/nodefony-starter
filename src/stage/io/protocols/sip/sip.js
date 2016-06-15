@@ -412,7 +412,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		var tagTo = this.transaction.dialog.tagTo ? ";tag="+this.transaction.dialog.tagTo : "" ;
 
 		//this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +this["request-uri"]+":"+this["request-port"]+";rport;"+"branch=z9hG4bK16C8CB9433A5";	
-		this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+this["request-port"]+";"+"branch="+this.transaction.branch;	
+		if ( rport ){
+			this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+rport+";"+"branch="+this.transaction.branch;
+		}else{
+			this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+this["request-port"]+";"+"branch="+this.transaction.branch;	
+		}	
 		this.header.cseq = "CSeq: "+this.transaction.dialog.cseq + " " + this.transaction.method;
 		this.header.from = "From: "+ from+ " " + fromSip + ";tag="+this.transaction.dialog.tagFrom ;
 		//console.log("toSip : "+toSip);
@@ -493,9 +497,8 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.header.push ( "To: "+ to + " "+ toSip + tagTo);
 
 
-		//this.header.push(  "Call-ID: " + this.transaction.dialog.callIdSip);
-		//FIXME
-		this.header.push(  "Call-ID: " + this.message.callId);
+		this.header.push(  "Call-ID: " + this.transaction.dialog.callIdSip);
+		//this.header.push(  "Call-ID: " + this.message.callId);
 		//this.header.push( "Expires: " + this.transaction.dialog.expires);
 		this.header.push( "Max-Forwards: " + this.transaction.dialog.maxForward);
 		this.header.push( "User-Agent: " + this.transaction.dialog.sip.settings.userAgent);
@@ -504,10 +507,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 			this.header.push(this.message.header.Via[i].raw);	
 		}
 		this.header.push( "CSeq: "+this.transaction.dialog.cseq + " " + this.transaction.method);
-		if ( rport )
+		if ( rport ){
 			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
-		else
+		}else{
 			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+		}
 	};
 	
 	sipResponse.prototype.getHeader = function(){
@@ -673,14 +677,17 @@ stage.register.call(stage.io.protocols, "sip",function(){
 
 	var parseMessage = function(message){
 		var splt = message.split(/\r\n\r\n/);
-		if (splt.length === 2){
+		if (splt.length && splt.length <= 2){
 			this.header = new headerSip(this,  splt[0]);
 			this.contentLength = parseInt(this.header["Content-Length"],10);
-			this.body = new bodySip(this, splt[1]);
+			if ( splt[1] )
+				this.body = new bodySip(this, splt[1]);
+			else
+				this.body = new bodySip(this, ""); ;
 			this.statusLine =firstline(this.header.firstLine) 
 			this.code = parseInt( this.statusLine.code, 10);
 		}else{
-			throw new Error("BAD SLIT") 
+			throw splt ;
 		}
 	};
 
@@ -862,7 +869,6 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	};
 
 	var onMessage = function(response){
-		//console.log("SIP :"+ response);
 		try {
 			//console.log(this.fragment)
 			if ( this.fragment ){
@@ -874,12 +880,24 @@ stage.register.call(stage.io.protocols, "sip",function(){
 			var message = new Message(this.lastResponse, this);
 			this.fragment = false ;
 		}catch(e){
-			//console.log("FRAGMENTE")
-			this.fragment = true ;
-			//console.log(e)
+			// bad split 
+			for ( var i = 0 ; i < e.length ; i++){
+				if ( e[i] ){
+					try {
+						onMessage.call(this, e[i]);			
+						continue;
+					}catch(e){
+						//console.log("FRAGMENTE")
+						this.fragment = true ;	
+						return ;		
+					}
+				}
+			}	
 			return ;
-
+				
 		}
+		//console.log("SIP RECEIVE :"+ response);
+		//console.log(message.method)
 		switch (message.method){
 			case "REGISTER" :
 					this.rport = message.header.Via[0].rport;
@@ -902,7 +920,7 @@ stage.register.call(stage.io.protocols, "sip",function(){
 						break;	
 						case 403 :
 							this.registered = message.code ;
-							console.log("Forbidden (bad auth)")
+							//console.log("Forbidden (bad auth)")
 							this.authenticate = false;
 						break;	
 						case 200 :
@@ -972,6 +990,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 							message.transaction.ack();
 							this.notificationsCenter.fire("onCall",message);
 						break;
+						case 500 :
+							this.notificationsCenter.fire("onError",message);
+						break;
 						default:
 							this.notificationsCenter.fire("on"+message.code,message);
 						break;
@@ -1019,9 +1040,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.transport = transport ;
 
 		// GET REMOTE IP
+		//console.log(this.transport)
 		if (this.transport.publicAddress){
 			//this.publicAddress = this.transport.publicAddress ;	
 			this.publicAddress = this.transport.domain.hostname ;	
+			//console.log(this.publicAddress)
 		}else{
 			this.publicAddress = server ;	
 		}
