@@ -339,7 +339,6 @@ nodefony.registerService("realTime", function(){
 					this.send(message, 0, message.length ,serv.port, serv.domain, callback ) ;	
 				}.bind(client);
 
-
 				client.bind({
 					//port:8000,
 					address:this.kernel.domain,
@@ -371,16 +370,16 @@ nodefony.registerService("realTime", function(){
 								
 				// Listen for messages from client
 				client.on('message', function (buffer, rinfo) {
-					console.log("MESSAGE UDP")
+					//console.log("MESSAGE UDP")
 					this.send( context , this.protocol.publishMessage( message.subscription, buffer.toString(), message.clientId ) );
 				}.bind(this));
 
-				client.on("close", function() { 
+				client.on("close", function(error) { 
 					console.log("CLOSE UDP") 
 					//console.log("close client");
 					if (error){
 						this.logger("CANNOT CONNECT SERVICE : " + name , "ERROR");
-						client.destroy();
+						//client.destroy();
 						delete client ;
 						throw error ;
 					}else{
@@ -402,7 +401,7 @@ nodefony.registerService("realTime", function(){
 							}
 						}
 					}
-					client.destroy();
+					//client.destroy();
 					delete client ;
 				}.bind(this)); 
 
@@ -475,7 +474,10 @@ nodefony.registerService("realTime", function(){
 			var pass = false ;
 			for (var cli in this.connections.connections[connectionID].clients){
 				pass = true;
-				this.connections.connections[connectionID].clients[cli].end();
+				if ( this.connections.connections[connectionID].clients[cli].end )
+					this.connections.connections[connectionID].clients[cli].end();
+				if ( this.connections.connections[connectionID].clients[cli].close )
+					this.connections.connections[connectionID].clients[cli].close();
 			}
 			if ( pass ){
 				this.connections.connections[connectionID].mustClose = true ;

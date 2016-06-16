@@ -24,48 +24,6 @@ stage.register("webRtc",function(){
 		return newline;
 	}*/
 
-	/*var RTCPeerConnection = null;	
-	var updater = function(){
-		try {
-			if (stage.browser.Webkit){
-  				// The RTCPeerConnection object.
-  				RTCPeerConnection = webkitRTCPeerConnection;
-  				
-  				// New syntax of getXXXStreams method in M26.
-  				if (!webkitRTCPeerConnection.prototype.getLocalStreams) {
-					webkitRTCPeerConnection.prototype.getLocalStreams = function() {
-						return this.localStreams;
-					};
-					webkitRTCPeerConnection.prototype.getRemoteStreams = function() {
-						return this.remoteStreams;
-					};
-  				}
-				return true;
-			}
-			if (stage.browser.Gecko){
-		
-  				// The RTCPeerConnection object.
-  				RTCPeerConnection = mozRTCPeerConnection;
-
-  				// The RTCSessionDescription object.
-  				RTCSessionDescription = mozRTCSessionDescription;
-
-  				// The RTCIceCandidate object.
-  				RTCIceCandidate = mozRTCIceCandidate;
-
-  				return true;
-			}
-			if (stage.browser.Opera){
-				RTCPeerConnection = RTCPeerConnection
-				return true;
-			}
-			stage.ui.error("Browser does not appear to be WebRTC-capable")
-			return false;
-		}catch (e){
-			stage.ui.error("Browser does not appear to be WebRTC-capable")
-		}
-	}();
-	*/
 
 	/*
  	 *
@@ -367,6 +325,11 @@ stage.register("webRtc",function(){
 					this.notificationsCenter.fire("onError", message.method, message.code, message);	
 				});
 
+				this.protocol.listen(this, "onQuit",function(protocol){
+					
+					this.notificationsCenter.fire("onQuit", this);
+				});				
+
 				this.protocol.listen(this, "onBye",function(message){
 					if ( message.fromName in  this.transactions ){
 						var transac =  this.transactions[message.fromName];
@@ -375,10 +338,18 @@ stage.register("webRtc",function(){
 						var transac =  this.transactions[message.toName];
 						var name = message.toName
 					}
-					transac.close();
-					this.notificationsCenter.fire("onOnHook", name ,message);
-					delete this.transactions[name];
-					delete this.users[name];
+					if ( transac ){
+						transac.close();
+						this.notificationsCenter.fire("onOnHook", name ,message);
+						delete this.transactions[name];
+						delete this.users[name];
+					}else{
+						//console.log(message)
+						//console.log(this.user)
+						if ( message.fromName === this.user.name ){
+							this.notificationsCenter.fire("onQuit", this);	
+						}
+					}
 				});
 
 				this.protocol.listen(this, "onCall", function(message){

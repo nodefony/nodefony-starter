@@ -3343,6 +3343,7 @@ stage.register("realtime",function(){
 		throw new Error("connection already stoped");
 	};
 
+
 	realtime.prototype.onMessage = function(message){
 		if (message.error){
 			if (message.channel)

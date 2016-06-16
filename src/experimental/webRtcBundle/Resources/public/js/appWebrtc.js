@@ -519,7 +519,7 @@ var App = new stage.appKernel(null, "dev", {
 		    onClose:function(){
 			    App.notify.logger( "onCLose");
 			    if(webRTC){
-
+				webRTC.quit();
 			    }
 		    },
 		    // fire when service subcribed 
@@ -589,8 +589,13 @@ var App = new stage.appKernel(null, "dev", {
 								media.play();
 								var intervalSpectrumId = setInterval(function(){
 									//drawSpectrum($('#canvas2').get(0) ,media.analyser);
-									var canvasContainer = mv.users[transaction.to.name].canvasContainer ;
-									drawSpectrum(canvasContainer.get(0) ,media.analyser);
+									if (  mv.users[transaction.to.name] ){
+										var canvasContainer = mv.users[transaction.to.name].canvasContainer ;
+										drawSpectrum(canvasContainer.get(0) ,media.analyser);
+									}else{
+										clearInterval(intervalSpectrumId);
+									}
+
 								}, 30);
 						 		mv.users[transaction.to.name].idInterval = intervalSpectrumId ;
 							}.bind(this)	
@@ -611,7 +616,6 @@ var App = new stage.appKernel(null, "dev", {
 								   transac.setRemoteDescription("offer", user, message.rawBody, message.dialog);
 							   }
 						   })*/
-							console.log(message)
 							var res = confirm("APPEL ENTRANT call from : "+message.fromName ) ; 
 							if (res) {
 								transac.setRemoteDescription("offer", user, message.rawBody, message.dialog);
@@ -641,18 +645,22 @@ var App = new stage.appKernel(null, "dev", {
 							   case "INVITE" :
 								   switch (code){
 									   case 404 :
-										   App.notify.logger(message.toName+" n'est pas en ligne" )
-											   break;
+										   App.notify.logger(message.toName+" n'est pas en ligne" );
+									   break;
 									   case 408 :
-										   App.notify.logger(message.toName+" ne repond pas" )
-											   break;
+										   App.notify.logger(message.toName+" ne repond pas" );
+									   break;
 									   default:
-										   App.notify.logger(message.toName+": "+ message.statusLine.message)
-									   		   break;
+										   App.notify.logger(message.toName+": "+ message.statusLine.message);
+									   break;
 								   }
 								   break;
+							   case "answer" :
+								App.notify.logger( message )
+							   break;
 							   default:
-								   console.log(arguments);	
+								App.notify.logger( message )
+								console.log(arguments);	
 						   }
 					   }
 				    });

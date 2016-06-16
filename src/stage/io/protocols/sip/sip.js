@@ -663,6 +663,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	var firstline = function(firstLine){
 		var method = firstLine[0];	
 		var code = firstLine[1];
+		if ( method === "BYE" && ! code){
+			code = 200 ;
+		}
 		var message = "";
 		for (var i = 2 ;i<firstLine.length;i++){
 			message+=firstLine[i]+" ";	
@@ -797,6 +800,7 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		//this.cseqType = this.cseq+ " REGISTER";
 		var request = trans.createRequest();
 		trans.sendRequest();
+		this.to = this.from ;
 		return trans;
 				
 	};
@@ -1062,6 +1066,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 			if (service === "SIP" || service === "OPENSIP")
 				onMessage.call(this, message);
 		} );
+
+		this.transport.listen(this, "onClose", function( message){
+			this.notificationsCenter.fire("onQuit",this);
+		} );
+
 		
 		// URL
 		this.server = server ;
@@ -1105,10 +1114,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	};
 
 	SIP.prototype.register = function(){
-		var diagReg = new dialog("REGISTER", this);
-		this.dialogs[diagReg.callId] = diagReg;
-		diagReg.register();
-		return diagReg;
+		this.diagRegister = new dialog("REGISTER", this);
+		this.dialogs[this.diagRegister.callId] = this.diagRegister;
+		this.diagRegister.register();
+		
+		return this.diagRegister;
 	};
 
 	SIP.prototype.invite = function(userTo, description){
@@ -1131,9 +1141,26 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		}	
 	};
 
+	SIP.prototype.clear = function(){
+		if (this.diagRegister){
+			this.diagRegister.by();	
+		}
+		for (var diag in this.dialogs ){
+			this.dialogs[diag].by();	
+		}
+		this.stop();
+		//this.transport.stop();
+		//this.transport = null ;	
+	} 
+
 	SIP.prototype.by = function(callId){
-		if (callId in this.dialogs ){
-			this.dialogs[callId].by();	
+		if( ! callId){
+			this.clear();
+			this.notificationsCenter.fire("onQuit",this);	
+		}else{
+			if (callId in this.dialogs ){
+				this.dialogs[callId].by();	
+			}
 		}
 	};
 

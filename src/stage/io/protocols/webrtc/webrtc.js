@@ -158,6 +158,10 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 		this.transport.listen(this,"onMessage",this.listen(this,"onMessage",this.onMessage) );
 		this.transport.listen(this,"onError",this.listen(this,"onError"));
 		this.transport.listen(this,"onClose",this.listen(this,"onClose"));
+
+		this.listen(this, "onClose", function(){
+			this.by();
+		})
 	}
 
 	Protocol.prototype.clear = function(){
