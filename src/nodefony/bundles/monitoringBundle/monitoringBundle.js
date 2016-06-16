@@ -452,14 +452,22 @@ nodefony.registerBundle ("monitoring", function(){
 							data:message,
 							direction:direction
 						}
-						if (message && context.profiling ){
-							context.profiling["response"].message.push( ele ) ;
+
+						if (  JSON.stringify(context.profiling).length  < 60000 ){
+							if (message && context.profiling ){
+								context.profiling["response"].message.push( ele ) ;
+							}
+						}else{
+							context.profiling["response"].message.length = 0 ;
+							context.profiling["response"].message.push( ele ) ;	
 						}
+						 
 						this.updateProfile(context,function(error, result){
 							if (error){
 								this.kernel.logger(error);
 							}
 						}.bind(this));
+						
 					})
 					
 					context.listen(this, "onFinish",function(Context, reasonCode, description ){

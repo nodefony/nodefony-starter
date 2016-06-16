@@ -426,9 +426,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.header.maxForward = "Max-Forwards: " + this.transaction.dialog.maxForward;
 		this.header.userAgent = "User-Agent: " + this.transaction.dialog.sip.settings.userAgent;
 		if ( rport )
-			this.header.contact = "Contact:  <sip:" +from+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
+			this.header.contact = "Contact: <sip:" +from+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
 		else
-			this.header.contact = "Contact:  <sip:" +from+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
+			this.header.contact = "Contact: <sip:" +from+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
 	};
 
 	sipRequest.prototype.getHeader = function(){
@@ -503,14 +503,17 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.header.push( "Max-Forwards: " + this.transaction.dialog.maxForward);
 		this.header.push( "User-Agent: " + this.transaction.dialog.sip.settings.userAgent);
 		//console.log(this.message.header.Via)
-		for (var i = 0 ; i<this.message.header.Via.length ; i++){
-			this.header.push(this.message.header.Via[i].raw);	
+
+		for (var i = 0, j = 0   ; i<this.message.header.Via.length ; i++){
+			if ( i != 0 ){
+				this.header.push(this.message.header.Via[j++].raw);	
+			}
 		}
 		this.header.push( "CSeq: "+this.transaction.dialog.cseq + " " + this.transaction.method);
 		if ( rport ){
-			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+			this.header.push( "Contact: <sip:" +this.transaction.to+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
 		}else{
-			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+			this.header.push( "Contact: <sip:" +this.transaction.to+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
 		}
 	};
 	
