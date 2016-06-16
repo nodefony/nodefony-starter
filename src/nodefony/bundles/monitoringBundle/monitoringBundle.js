@@ -72,7 +72,12 @@ nodefony.registerBundle ("monitoring", function(){
 				//console.log( kernel.bundles[bund] );
 				this.infoBundles[bund] = {} ;
 				this.infoBundles[bund]["waitBundleReady"] = kernel.bundles[bund].waitBundleReady
-				this.infoBundles[bund]["version"] = kernel.bundles[bund].settings.version 
+				this.infoBundles[bund]["version"] = kernel.bundles[bund].settings.version;
+				if ( kernel.bundles[bund].settings  ) {
+					this.infoBundles[bund]["version"] = kernel.bundles[bund].settings.version       
+				}else{
+					this.infoBundles[bund]["version"] = "1.0" ;
+				}	
 			}
 			//console.log(this.infoBundles);
 			for(var event in this.kernel.notificationsCenter.event["_events"] ){
@@ -99,7 +104,7 @@ nodefony.registerBundle ("monitoring", function(){
 					for (var bundle in this.kernel.bundles ){
 						obj[bundle] = {
 							name:this.kernel.bundles[bundle].name,
-							version:this.kernel.bundles[bundle].settings.version
+							version:this.infoBundles[bundle]["version"]
 						}	
 					}
 					return obj;
