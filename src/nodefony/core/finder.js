@@ -10,8 +10,6 @@
 
 nodefony.register("finder", function(){
 
-
-	
 	
 	var jsonTree = function(path, parent){
 		this.mother = this.$super;
@@ -116,6 +114,18 @@ nodefony.register("finder", function(){
 		}
 		return new Result(tab)	
 	};
+
+	Result.prototype.getFile = function(name){
+		var tab = [] ;
+		for (var i = 0 ; i < this.files.length ; i++ ){
+			if (this.files[i].type === "File") {
+				if (this.files[i].name === name )
+					return this.files[i]
+			}
+		}
+		return null ;	
+	};
+
 
 	Result.prototype.forEach = function(callback){
 		return this.files.forEach(callback)

@@ -1,0 +1,38 @@
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
+
+{% block title %} {{section}} {% endblock %}
+
+
+{% block body %}
+
+	{{ parent() }}	
+	
+	<div class="container-fluid">
+		<div class="row">
+		</div>	
+		<div class="row">
+			<div class="col-md-2">
+				<strong><div class="text-primary text-center" style="margin:5px 0 10px 0 " > NODEFONY {{version}} </div> </strong>  
+				<ul class="nav nav-pills nav-stacked">
+					
+					{{ render( controller("documentationBundle:default:subSection", version, section  )) }}
+				</ul>
+				{% block section %}
+
+				{% endblock %}	
+			</div>
+			<div class="col-md-10">
+				{% block readme %}
+					<div class="jumbotron">
+						<h1>NODEFONY {{version}} DOCUMENTATION</h1>
+						<p>{{section}}</p>
+						<p><a class="btn btn-primary btn-lg" href="#" role="button"></a></p>
+					</div>	
+				{% endblock %}
+			</div>
+
+		</div>	
+	</div>
+	
+{% endblock %}
+

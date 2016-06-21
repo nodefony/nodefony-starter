@@ -30,7 +30,7 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.loginAction= function(){
 		if ( this.context.session )
-			return this.redirect("demo");
+			return this.redirect("home");
 		return this.redirect(this.generateUrl("login"));	
 	};
 
@@ -54,6 +54,7 @@ nodefony.registerController("demo", function(){
  	 *
  	 */
 	demoController.prototype.navAction = function(login){
+		//console.trace("PASS NAV") ;
 		var webrtcBundle = this.get("kernel").getBundles("webRtc"); 
 		return this.render('demoBundle:layouts:navBar.html.twig',{
 			user: this.context.user,
@@ -61,6 +62,20 @@ nodefony.registerController("demo", function(){
 			login:login
 		});	
 	}
+
+	/**
+ 	 *
+ 	 *	DEMO navbar 
+ 	 *
+ 	 */
+	demoController.prototype.docAction = function(){
+		var docBundle = this.get("kernel").getBundles("documentation"); 
+		if (  docBundle ){
+			return this.forward("documentationBundle:default:navDoc");
+		}
+		return this.render('demoBundle:Default:navDoc.html.twig');	
+	}
+
 
 	/**
  	 *
@@ -650,6 +665,22 @@ nodefony.registerController("demo", function(){
 				throw new Error("REALTIME METHOD NOT ALLOWED")
 		}
 	};
+
+
+	demoController.prototype.readmeAction = function(){
+		var kernel = this.container.get("kernel");
+		var path = kernel.rootDir+'/README.md';
+		var file = new nodefony.fileClass(path);
+		var res = this.htmlMdParser(file.content(),{
+			linkify: true,
+			typographer: true	
+		});
+		return  this.render('demoBundle:Default:documentation.html.twig',{
+			html:res
+		});
+	}
+
+
 	
 	return demoController;
 });

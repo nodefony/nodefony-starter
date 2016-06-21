@@ -44,8 +44,6 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel.listen(this, "onClientError", function(e, socket){
 			this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
 		});
-
-		
 	};
 
 	httpKernel.prototype.boot = function(){
@@ -203,7 +201,11 @@ nodefony.registerService("httpKernel", function(){
 
 			var myController = new resolver.controller( this, resolver.context );
 			if ( data ){
-				resolver.variables.push(data); 
+				Array.prototype.shift.call( arguments );
+				for ( var i = 0 ; i< arguments.length ; i++){
+					resolver.variables.push(arguments[i]);	
+				}
+				//resolver.variables.push(data); 
 			}
 			return resolver.action.apply(myController, resolver.variables);
 		}catch(e){

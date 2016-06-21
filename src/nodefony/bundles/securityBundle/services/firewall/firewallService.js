@@ -287,6 +287,7 @@ nodefony.registerService("firewall", function(){
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
 						user:context.user.username,	
+						userFull:context.user,
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
@@ -489,6 +490,10 @@ nodefony.registerService("firewall", function(){
 											throw err ;
 						 				}
 										this.logger("AUTOSTART SESSION","DEBUG")
+										var meta = session.getMetaBag("security");
+										if (meta){
+											context.user = meta.userFull ;
+										}
 										context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 				}.bind(this));
 								}else{
@@ -532,6 +537,10 @@ nodefony.registerService("firewall", function(){
 										throw err ;
 						 			}
 									this.logger("AUTOSTART SESSION","DEBUG")
+									var meta = session.getMetaBag("security");
+									if (meta){
+										context.user = meta.userFull ;
+									}
 									context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 			}.bind(this));
 							}else{

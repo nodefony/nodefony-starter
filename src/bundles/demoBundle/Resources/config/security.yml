@@ -32,7 +32,7 @@ security:
             form_login:
               check_path:               /demo/secure
               login_path:               /demo/login  
-              default_target_path:      /demo
+              default_target_path:      /
             #FACTORY AUTHENTICATION
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
