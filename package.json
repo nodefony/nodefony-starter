@@ -25,6 +25,7 @@
   "dependencies": {
     "npm":"*",
     "npmi":"*",
+    "nodegit":"*",
     "sqlite3": "*",
     "mysql": "*",
     "node-pre-gyp":"*",
