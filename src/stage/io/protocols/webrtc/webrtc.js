@@ -158,6 +158,10 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 		this.transport.listen(this,"onMessage",this.listen(this,"onMessage",this.onMessage) );
 		this.transport.listen(this,"onError",this.listen(this,"onError"));
 		this.transport.listen(this,"onClose",this.listen(this,"onClose"));
+
+		this.listen(this, "onClose", function(){
+			this.by();
+		})
 	}
 
 	Protocol.prototype.clear = function(){
@@ -202,10 +206,15 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 	};
 
 	Protocol.prototype.by = function(callId){ 
-		if( this.dialogs[callId] ){
-			this.dialogs[callId].by();	
+		if ( ! callId){
+			this.clear();
+			this.notificationsCenter.fire("onQuit",this);
 		}else{
-			throw new Error("Dialog error already close ! ");
+			if( this.dialogs[callId] ){
+				this.dialogs[callId].by();	
+			}else{
+				throw new Error("Dialog error already close ! ");
+			}
 		}
 
 	}
@@ -335,7 +344,8 @@ stage.register.call(stage.io.protocols, "webrtc",function(){
 			break;
 			case "BYE" :
 				this.notificationsCenter.fire( "onBye",  message);	
-				message.dialog.by();
+				if ( message.to )
+					message.dialog.by();
 				this.cleanDialog(message);
 			break;
 			case "CANDIDATE" :

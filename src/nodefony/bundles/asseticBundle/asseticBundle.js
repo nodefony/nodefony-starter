@@ -5,7 +5,6 @@
  */
 
 var Promise = require('promise');
-var sync = require('synchronize');
 
 
 

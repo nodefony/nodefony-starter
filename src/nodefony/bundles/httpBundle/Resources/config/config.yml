@@ -41,6 +41,9 @@ https:
   certificats:
     key:                        "/config/certificates/server.key"
     cert:                       "/config/certificates/server.crt"
+    ca:                         ""
+    options:
+      rejectUnauthorized:       false
 
 #                  
 #       SERVERS WEBSOCKET 
@@ -88,7 +91,7 @@ statics:
 #               only for handler  session.storage.memcached
 
 session:
-  start:                        null            #"autostart"
+  start:                        "autostart"            #"autostart"
   use_strict_mode:              true                    
   name:                         "nodefony"
   handler:                      session.storage.files

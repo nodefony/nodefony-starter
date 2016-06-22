@@ -247,6 +247,7 @@ stage.register("realtime",function(){
 		throw new Error("connection already stoped");
 	};
 
+
 	realtime.prototype.onMessage = function(message){
 		if (message.error){
 			if (message.channel)
@@ -258,7 +259,6 @@ stage.register("realtime",function(){
 				this.notificationCenter.fire("onMessage", message.channel.split("/")[2], message.data);
 			else
 				this.notificationCenter.fire("onMessage",message.id, message.successful);
-	
 		}
 	};
 

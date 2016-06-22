@@ -1,7 +1,26 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --no-warnings --no-deprecation
 
 var cluster = require('cluster');	
-var domain = require('domain');
+
+
+// AUTOLOADER 
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.load("./app/appKernel.js");
+
+/*
+ *
+ * NODEFONY FRAMEWORK START WITH PM2
+ *
+ *	PRODUCTION / DEVELOPEMENT
+ *
+ */
+if ( process.env["MODE_START"] && process.env["MODE_START"] === "PM2"){
+
+	return new nodefony.appKernel("SERVER", "prod", false, autoloader,{
+		node_start:process.env["MODE_START"]
+	});
+}
+
 
 /*
  *
@@ -10,12 +29,7 @@ var domain = require('domain');
  *	PRODUCTION
  *
  */
-
-// AUTOLOADER 
-var autoloader = require("./vendors/nodefony/core/autoloader");
-autoloader.load("./app/appKernel.js");
-
-
+process.env["MODE_START"] = "NODEFONY" ;
 if (cluster.isMaster) {
 	
 	require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
@@ -32,8 +46,24 @@ if (cluster.isMaster) {
 		console.error('disconnect!');
 	});
 
+
+	cluster.on('fork', function(worker) {
+		worker.on('message', function(msg){
+			var wid = worker.id ;
+			Object.keys(cluster.workers).forEach(function(id) {
+				if ( id != wid){
+					//console.log("SEND FROM  "+ wid + " to " + id)
+					cluster.workers[id].send(msg);		
+				}
+			});	
+		});
+	});
+	
+
 }else {
-	var kernel =new nodefony.appKernel("SERVER", "prod", false, autoloader);
+	return new nodefony.appKernel("SERVER", "prod", false, autoloader,{
+		node_start:process.env["MODE_START"]	
+	});
 }
 
 

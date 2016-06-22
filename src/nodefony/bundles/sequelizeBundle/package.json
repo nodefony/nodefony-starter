@@ -3,13 +3,12 @@
 	"version": "1.0",
 	"description": "ORM",
 	"contributors": [],
+	"scripts": {},
 	"keywords": [
 		"nodefony",
 		"javascript"
 	],
 	"dependencies": {
-		"sqlite3": "*",
-		"mysql": "*",
 		"sequelize":"*"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",

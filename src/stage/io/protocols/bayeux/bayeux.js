@@ -218,7 +218,6 @@ stage.register.call(stage.io.protocols, "bayeux",function(){
 	};
 
 	bayeux.prototype.onMessage = function(message){
-		//console.log(message)
 		try {
 			if (typeof message === "string" ){
 				message = JSON.parse(message);

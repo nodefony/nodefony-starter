@@ -18,9 +18,10 @@ nodefony.registerTemplate("twig", function(){
 	var Twig = function(container, options){
 		this.mother = this.$super;
 		this.mother.constructor(container, twig, options);
-		twig.cache(false);
-		this.rootDir = container.get("kernel").rootDir ;
 		this.kernelSettings = this.container.getParameters("kernel");
+		this.cache = ( this.kernelSettings.environment === "dev"  ) ?  false : true ; 
+		twig.cache( this.cache );
+		this.rootDir = container.get("kernel").rootDir ;
 		container.set("Twig" , this);
 	};
 
@@ -33,7 +34,7 @@ nodefony.registerTemplate("twig", function(){
 		option.settings = nodefony.extend(true, {}, twigOptions, {
 			views :this.rootDir,
 			'twig options':{
-				cache: ( env === "dev" ) ? false : true 
+				cache: this.cache 
 			}
 		});
 		try {
@@ -65,7 +66,6 @@ nodefony.registerTemplate("twig", function(){
 			}
 		});*/	
 		//return this.engine.compile( markup, option);
-
 		return this.engine.twig({
 			path: file.path,	
 		        async:false,
@@ -78,7 +78,6 @@ nodefony.registerTemplate("twig", function(){
 		        error:function(error){
 				callback(error, null)
 			}
-			
 		})
 
 

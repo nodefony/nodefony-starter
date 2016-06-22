@@ -4,52 +4,58 @@
 var autoloader = require("../vendors/nodefony/core/autoloader");
 
 var Promise = require('promise');
-var async = require("async");
-var less = require("less");
-var sync = require('synchronize');
-var Fiber = require('fibers');
 
 
 
 
 
 
-var pwd = process.cwd() ;
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
+if (cluster.isMaster) {
+  // Fork workers.
+  	for (var i = 0; i < numCPUs; i++) {
+    		cluster.fork();
+
+  	}
 
 
-var filePath = pwd+"/src/nodefony/bundles/monitoringBundle/Resources/public/less/style.less" ;
+	Object.keys(cluster.workers).forEach(function(id){
 
-var file = new nodefony.fileClass( filePath );
-
-var content = file.content() ;
-
-
-console.log("BEGIN")
+		cluster.workers[id].on("message", function(msg){
+			console.log(msg)
+		})
+	});
 
 
-function processFile(file, done) {
-  sync.fiber(function() {
-	try {
-		var data = sync.await( less.render( content, {
-			paths: ['.', file.dirName, process.cwd() ],	// Specify search paths for @import directives
-			filename: file.name ,		// Specify a filename, for better error messages
-			
-		}, sync.defer() ))
-	} catch(e) {
-		return done(e, null );
-	}
-	return done(null,data);
-  }, done);
+ 	setTimeout(function(){
+  		Object.keys(cluster.workers).forEach((id) => {
+	  		console.log(id)
+    			cluster.workers[id].send('vier');
+  		});
+	}, 2000 );
+
+  
+} else {
+  // Workers can share any TCP connection
+  // In this case it is an HTTP server
+  http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('hello world\n');
+	process.send({
+        type : 'logging', 
+        data : {
+        level : 2,
+        msg : "dd"
+        }
+    });
+
+		
+
+  }).listen(8000);
 }
-
-
-processFile(file, function(error, data){
-
-	console.log(arguments)
-})
-
-
-console.log('back in main');
 
 
 

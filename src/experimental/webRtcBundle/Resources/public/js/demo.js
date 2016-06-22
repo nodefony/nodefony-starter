@@ -79,7 +79,7 @@ var App = new stage.appKernel(null, "dev", {
 					video:true
 				},function(mediaStream){
 					//console.log(mediaStream)
-					var vid = mv.AddUserMedia("video", user.name, mediaStream);
+					var vid = mv.AddUserMedia("video", user.name, mediaStream, webrtc);
 					mediaStream.attachMediaStream(vid);
 				
 					var track2 = mix.createTrack(mediaStream,{
@@ -89,12 +89,22 @@ var App = new stage.appKernel(null, "dev", {
 						onReady		:function(media){
 							// not patch on audio output my microphone 
 							//media.play();
-							var intervalSpectrumId = setInterval(function(){
+							intervalSpectrumIdUser = setInterval(function(){
 								drawSpectrum($('#canvas').get(0) ,media.analyser);
 							}, 30);
 						}	
 					});
 				})
+			},
+			onQuit:function(webrtc){
+				mv.removeUserMedia()
+				delete mv ;
+				clearInterval( intervalSpectrumIdUser );
+				mv = new mediaView({
+					containerUserSpace:$("#myDiv"),
+					containerRemoteSpace:$("#remoteDiv")
+				});
+
 			},
 			onOffer:function(message, user, transac){
 				
@@ -397,7 +407,7 @@ mediaView.prototype.createUserSpace = function(){
 	}
 };		
 
-mediaView.prototype.AddUserMedia = function(type, name, mediaStream){
+mediaView.prototype.AddUserMedia = function(type, name, mediaStream, webrtc){
 	this.name = name;
 	this.nbTrackVideo =  mediaStream.videotracks.length ;
 	this.nbTrackAudio =  mediaStream.audiotracks.length ;
@@ -424,13 +434,18 @@ mediaView.prototype.AddUserMedia = function(type, name, mediaStream){
 		break;
 	};
 	
-	this.buildControls(name, null, this.videoSpace, null, mediaStream);
+	this.buildControls(name, null, this.videoSpace, null, mediaStream, webrtc);
 	
 	if (this.settings.chat){
 		//this.addUserChat(name)	
 	}
 	return this.mediaElement
 };
+
+mediaView.prototype.removeUserMedia = function(){
+	$(this.videoSpace).remove()
+	this.removeAllMedias();
+}
 
 mediaView.prototype.addChatSpace = function(){
 
@@ -459,6 +474,12 @@ mediaView.prototype.addUserChat = function(name){
 mediaView.prototype.createRemoteSpace = function(){
 	this.remoteSpace = this.settings.containerRemoteSpace ; 
 };
+
+mediaView.prototype.removeAllMedias = function(){
+	for (var user in this.users){
+		this.removeRemoteMedia(user);
+	}
+}
 
 mediaView.prototype.removeRemoteMedia = function(user){
 	if (user in this.users){
@@ -527,7 +548,7 @@ mediaView.prototype.AddRemoteMedia = function(remoteStream,  transaction){
 
 };
 
-mediaView.prototype.buildControls = function(name, transaction, container, media , mediaStream ){
+mediaView.prototype.buildControls = function(name, transaction, container, media , mediaStream, webrtc ){
 
 	var vidControls = $(document.createElement('span')).addClass('video-controls');
 	container.append(vidControls);
@@ -553,6 +574,9 @@ mediaView.prototype.buildControls = function(name, transaction, container, media
 	vidControls.append(stack);
 	stack.click(function(){
 		if(transaction) transaction.by(transaction.callId);
+		if ( webrtc ){
+			webrtc.quit();	
+		}
 	});
 
 	vidControls.hide();

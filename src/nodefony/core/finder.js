@@ -10,8 +10,6 @@
 
 nodefony.register("finder", function(){
 
-
-	
 	
 	var jsonTree = function(path, parent){
 		this.mother = this.$super;
@@ -41,6 +39,15 @@ nodefony.register("finder", function(){
 
 	Result.prototype.length = function(){
 		return this.files.length;
+	}
+
+
+	Result.prototype.slice = function(offset, limit){
+		return new Result( Array.prototype.slice.call(this.files, offset, limit) ) ;
+	}
+
+	Result.prototype.sort = function(callback){
+		return new Result( Array.prototype.sort.call(this.files, callback) ) ;
 	}
 
 	Result.prototype.sortByName = function(){
@@ -107,6 +114,18 @@ nodefony.register("finder", function(){
 		}
 		return new Result(tab)	
 	};
+
+	Result.prototype.getFile = function(name){
+		var tab = [] ;
+		for (var i = 0 ; i < this.files.length ; i++ ){
+			if (this.files[i].type === "File") {
+				if (this.files[i].name === name )
+					return this.files[i]
+			}
+		}
+		return null ;	
+	};
+
 
 	Result.prototype.forEach = function(callback){
 		return this.files.forEach(callback)

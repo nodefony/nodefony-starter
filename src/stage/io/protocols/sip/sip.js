@@ -412,7 +412,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		var tagTo = this.transaction.dialog.tagTo ? ";tag="+this.transaction.dialog.tagTo : "" ;
 
 		//this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +this["request-uri"]+":"+this["request-port"]+";rport;"+"branch=z9hG4bK16C8CB9433A5";	
-		this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+this["request-port"]+";"+"branch="+this.transaction.branch;	
+		if ( rport ){
+			this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+rport+";"+"branch="+this.transaction.branch;
+		}else{
+			this.header.via  = "Via: "+this.transaction.dialog.sip.version+"/"+this.transaction.dialog.sip.settings.transport+" " +ip+":"+this["request-port"]+";"+"branch="+this.transaction.branch;	
+		}	
 		this.header.cseq = "CSeq: "+this.transaction.dialog.cseq + " " + this.transaction.method;
 		this.header.from = "From: "+ from+ " " + fromSip + ";tag="+this.transaction.dialog.tagFrom ;
 		//console.log("toSip : "+toSip);
@@ -422,9 +426,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.header.maxForward = "Max-Forwards: " + this.transaction.dialog.maxForward;
 		this.header.userAgent = "User-Agent: " + this.transaction.dialog.sip.settings.userAgent;
 		if ( rport )
-			this.header.contact = "Contact:  <sip:" +from+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
+			this.header.contact = "Contact: <sip:" +from+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
 		else
-			this.header.contact = "Contact:  <sip:" +from+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
+			this.header.contact = "Contact: <sip:" +from+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">";
 	};
 
 	sipRequest.prototype.getHeader = function(){
@@ -493,21 +497,24 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.header.push ( "To: "+ to + " "+ toSip + tagTo);
 
 
-		//this.header.push(  "Call-ID: " + this.transaction.dialog.callIdSip);
-		//FIXME
-		this.header.push(  "Call-ID: " + this.message.callId);
+		this.header.push(  "Call-ID: " + this.transaction.dialog.callIdSip);
+		//this.header.push(  "Call-ID: " + this.message.callId);
 		//this.header.push( "Expires: " + this.transaction.dialog.expires);
 		this.header.push( "Max-Forwards: " + this.transaction.dialog.maxForward);
 		this.header.push( "User-Agent: " + this.transaction.dialog.sip.settings.userAgent);
 		//console.log(this.message.header.Via)
-		for (var i = 0 ; i<this.message.header.Via.length ; i++){
-			this.header.push(this.message.header.Via[i].raw);	
+
+		for (var i = 0, j = 0   ; i<this.message.header.Via.length ; i++){
+			if ( i != 0 ){
+				this.header.push(this.message.header.Via[j++].raw);	
+			}
 		}
 		this.header.push( "CSeq: "+this.transaction.dialog.cseq + " " + this.transaction.method);
-		if ( rport )
-			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
-		else
-			this.header.push( "Contact:  <sip:" +this.transaction.to+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+		if ( rport ){
+			this.header.push( "Contact: <sip:" +this.transaction.to+"@"+ip+":"+rport+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+		}else{
+			this.header.push( "Contact: <sip:" +this.transaction.to+"@"+ip+";transport="+this.transaction.dialog.sip.settings.transport.toLowerCase()+">");
+		}
 	};
 	
 	sipResponse.prototype.getHeader = function(){
@@ -659,6 +666,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	var firstline = function(firstLine){
 		var method = firstLine[0];	
 		var code = firstLine[1];
+		if ( method === "BYE" && ! code){
+			code = 200 ;
+		}
 		var message = "";
 		for (var i = 2 ;i<firstLine.length;i++){
 			message+=firstLine[i]+" ";	
@@ -673,14 +683,17 @@ stage.register.call(stage.io.protocols, "sip",function(){
 
 	var parseMessage = function(message){
 		var splt = message.split(/\r\n\r\n/);
-		if (splt.length === 2){
+		if (splt.length && splt.length <= 2){
 			this.header = new headerSip(this,  splt[0]);
 			this.contentLength = parseInt(this.header["Content-Length"],10);
-			this.body = new bodySip(this, splt[1]);
+			if ( splt[1] )
+				this.body = new bodySip(this, splt[1]);
+			else
+				this.body = new bodySip(this, ""); ;
 			this.statusLine =firstline(this.header.firstLine) 
 			this.code = parseInt( this.statusLine.code, 10);
 		}else{
-			throw new Error("BAD SLIT") 
+			throw splt ;
 		}
 	};
 
@@ -790,6 +803,7 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		//this.cseqType = this.cseq+ " REGISTER";
 		var request = trans.createRequest();
 		trans.sendRequest();
+		this.to = this.from ;
 		return trans;
 				
 	};
@@ -862,7 +876,6 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	};
 
 	var onMessage = function(response){
-		//console.log("SIP :"+ response);
 		try {
 			//console.log(this.fragment)
 			if ( this.fragment ){
@@ -874,12 +887,24 @@ stage.register.call(stage.io.protocols, "sip",function(){
 			var message = new Message(this.lastResponse, this);
 			this.fragment = false ;
 		}catch(e){
-			//console.log("FRAGMENTE")
-			this.fragment = true ;
-			//console.log(e)
+			// bad split 
+			for ( var i = 0 ; i < e.length ; i++){
+				if ( e[i] ){
+					try {
+						onMessage.call(this, e[i]);			
+						continue;
+					}catch(e){
+						//console.log("FRAGMENTE")
+						this.fragment = true ;	
+						return ;		
+					}
+				}
+			}	
 			return ;
-
+				
 		}
+		//console.log("SIP RECEIVE :"+ response);
+		//console.log(message.method)
 		switch (message.method){
 			case "REGISTER" :
 					this.rport = message.header.Via[0].rport;
@@ -902,7 +927,7 @@ stage.register.call(stage.io.protocols, "sip",function(){
 						break;	
 						case 403 :
 							this.registered = message.code ;
-							console.log("Forbidden (bad auth)")
+							//console.log("Forbidden (bad auth)")
 							this.authenticate = false;
 						break;	
 						case 200 :
@@ -972,6 +997,9 @@ stage.register.call(stage.io.protocols, "sip",function(){
 							message.transaction.ack();
 							this.notificationsCenter.fire("onCall",message);
 						break;
+						case 500 :
+							this.notificationsCenter.fire("onError",message);
+						break;
 						default:
 							this.notificationsCenter.fire("on"+message.code,message);
 						break;
@@ -1019,9 +1047,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		this.transport = transport ;
 
 		// GET REMOTE IP
+		//console.log(this.transport)
 		if (this.transport.publicAddress){
 			//this.publicAddress = this.transport.publicAddress ;	
 			this.publicAddress = this.transport.domain.hostname ;	
+			//console.log(this.publicAddress)
 		}else{
 			this.publicAddress = server ;	
 		}
@@ -1039,6 +1069,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 			if (service === "SIP" || service === "OPENSIP")
 				onMessage.call(this, message);
 		} );
+
+		this.transport.listen(this, "onClose", function( message){
+			this.notificationsCenter.fire("onQuit",this);
+		} );
+
 		
 		// URL
 		this.server = server ;
@@ -1082,10 +1117,11 @@ stage.register.call(stage.io.protocols, "sip",function(){
 	};
 
 	SIP.prototype.register = function(){
-		var diagReg = new dialog("REGISTER", this);
-		this.dialogs[diagReg.callId] = diagReg;
-		diagReg.register();
-		return diagReg;
+		this.diagRegister = new dialog("REGISTER", this);
+		this.dialogs[this.diagRegister.callId] = this.diagRegister;
+		this.diagRegister.register();
+		
+		return this.diagRegister;
 	};
 
 	SIP.prototype.invite = function(userTo, description){
@@ -1108,9 +1144,26 @@ stage.register.call(stage.io.protocols, "sip",function(){
 		}	
 	};
 
+	SIP.prototype.clear = function(){
+		if (this.diagRegister){
+			this.diagRegister.by();	
+		}
+		for (var diag in this.dialogs ){
+			this.dialogs[diag].by();	
+		}
+		this.stop();
+		//this.transport.stop();
+		//this.transport = null ;	
+	} 
+
 	SIP.prototype.by = function(callId){
-		if (callId in this.dialogs ){
-			this.dialogs[callId].by();	
+		if( ! callId){
+			this.clear();
+			this.notificationsCenter.fire("onQuit",this);	
+		}else{
+			if (callId in this.dialogs ){
+				this.dialogs[callId].by();	
+			}
 		}
 	};
 

@@ -7,7 +7,7 @@
 var fs = require("fs");
 var util = require('util');
 var path = require("path");
-var npm = require("npm");
+var cluster = require('cluster');
 
 
 nodefony.register("kernel", function(){
@@ -79,6 +79,9 @@ nodefony.register("kernel", function(){
 		process.on('SIGTERM', function() {
 			this.terminate(0);	
 		}.bind(this));
+
+		
+
 	};
 
 	/**
@@ -115,7 +118,6 @@ nodefony.register("kernel", function(){
 		this.reader = new nodefony.Reader(this.container);
 		this.container.set("reader",this.reader);
 		this.container.set("autoLoader",this.autoLoader);
-		this.autoLoader.syslog = this.syslog;
 
 		this.reader.readConfig(this.configPath, function(result){
 			this.settings = result;
@@ -124,10 +126,12 @@ nodefony.register("kernel", function(){
 			this.httpPort = result.system.httpPort || null;
 			this.httpsPort = result.system.httpsPort || null;
 			this.domain = result.system.domain || null;
+			this.domainAlias = result.system.domainAlias ;
 			// manage LOG
 			if (this.environment === "prod")
 				this.environment = result.system.debug ? "dev" : "prod" ;
-			this.syslog = this.initializeLog();
+			this.syslog = this.initializeLog(options);
+			this.autoLoader.syslog = this.syslog;
 			this.container.set("syslog",this.syslog);
 
 		}.bind(this));
@@ -135,6 +139,7 @@ nodefony.register("kernel", function(){
 		//  manage GLOBAL EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 		this.container.set("notificationsCenter", this.notificationsCenter);
+		this.initCluster();
 
 		this.eventReadywait = 0 ;
 
@@ -145,6 +150,9 @@ nodefony.register("kernel", function(){
 		this.injection = new nodefony.injection(this.container);
 		this.container.set("injection", this.injection);
 
+		/*
+ 		 *	BUNDLES
+ 		 */
 		var bundles = [];
 		bundles.push("./vendors/nodefony/bundles/httpBundle");
 		bundles.push("./vendors/nodefony/bundles/frameworkBundle");
@@ -156,7 +164,7 @@ nodefony.register("kernel", function(){
 		}
 
 		// REALTIME
-		if (this.type == "SERVER" && this.settings.system.realtime) {
+		if ( this.settings.system.realtime) {
 			bundles.push("./vendors/nodefony/bundles/realTimeBundle");
 		}
 
@@ -165,18 +173,46 @@ nodefony.register("kernel", function(){
 			bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 		}
 
-		if (this.type === "SERVER"){
+		/*if (this.type === "SERVER"){
 			this.logger("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n", "INFO", "SERVER WELCOME");
-		}
+		}*/
 
 		this.fire("onPreRegister", this );
 		this.registerBundles(bundles, function(){
-			
 			this.preboot = true ;
+			this.logger("\x1B[33m EVENT KERNEL onPreBoot\033[0m", "DEBUG");
 			this.fire("onPreBoot", this );
 		}.bind(this), false);
 
 	};
+
+	kernel.prototype.initCluster = function(){
+		this.process = process.pid ;
+		if (cluster.isMaster) {
+			this.logger("		      \033[34mNODEFONY "+this.type+" MASTER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process+"\n", "INFO", "SERVER WELCOME");
+			this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
+			this.fire("onCluster", "MASTER", this,  process);
+
+		}else if (cluster.isWorker) {
+			//this.logger("		      \033[34m"+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process+"\n", "INFO", "SERVER WELCOME");
+			console.log("		      \033[34mNODEFONY "+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process);
+			this.worker = cluster.worker.id ;
+			this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
+			this.fire("onCluster", "WORKER",  this, process);
+			process.on("message" , this.listen(this, "onMessage" ) ); 
+			/*this.listen(this, "onMessage", function(worker, message){
+				//console.log(this.worker)
+				//console.log(this.process)
+				//console.log(arguments)
+				console.log("PASS")
+			})*/
+		}
+	}
+
+	kernel.prototype.sendMessage = function(message){
+		return process.send(message);
+		
+	}
 
 	/**
 	 *	@method fire
@@ -201,60 +237,100 @@ nodefony.register("kernel", function(){
 	/**
 	 *	@method initializeLog
          */
-	kernel.prototype.initializeLog = function(){
+
+	var logConsole = function(syslog){
 		var red, blue, green, reset;
 		red   = '\033[31m';
 		blue  = '\033[34m';
 		green = '\033[32m';
 		yellow = '\x1B[33m';
 		reset = '\033[0m';
-		var syslog =  new nodefony.syslog(settingsSyslog);
-		if (this.environment === "dev"){
+
 		// CRITIC ERROR
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:"CRITIC,ERROR"
-				}		
-			},function(pdu){
-				var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"CRITIC,ERROR"
+			}		
+		},function(pdu){
+			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+			var date = new Date(pdu.timeStamp) ;
+			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+		});
+		// INFO DEBUG
+		var data ;
+		this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:data
+			}		
+		},function(pdu){
+			if ( pdu.msgid === "SERVER WELCOME"){
+				console.log(   blue + "              "+reset + " "+ pdu.payload);	
+				return ;
+			}
+			//if ( this.preboot ){
 				var date = new Date(pdu.timeStamp) ;
-				console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
-			});
-			// INFO DEBUG
-			var data ;
-			this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:data
-				}		
-			},function(pdu){
-				if ( pdu.msgid === "SERVER WELCOME"){
-					console.log(   blue + "              "+reset + " "+ pdu.payload);	
-					return ;
-				}
-				//if ( this.preboot ){
-					var date = new Date(pdu.timeStamp) ;
-					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
-				//}
-			});
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+			//}
+		});
 
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:"WARNING"
-				}		
-			},function(pdu){
-				//if ( this.preboot ){
-					var date = new Date(pdu.timeStamp) ;
-					console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
-				//}
-			});
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"WARNING"
+			}		
+		},function(pdu){
+			//if ( this.preboot ){
+				var date = new Date(pdu.timeStamp) ;
+				console.log(date.toDateString() + " " +date.toLocaleTimeString()+ " " + yellow + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pdu.payload);	
+			//}
+		});
+	}
+	kernel.prototype.initializeLog = function(options){
 
-
+		
+		var syslog =  new nodefony.syslog(settingsSyslog);
+		if ( this.settings.system.log.console ||  this.environment === "dev"){
+		
+			logConsole.call(this, syslog);
 
 		}else{
 			//FIXME do service with nodefony.log
-			if (this.type === "CONSOLE") return syslog ; 
-			if ( this.settings.system.log.active ){
+			if (this.type === "CONSOLE") return syslog ;
+
+			if ( options.node_start === "PM2" ) return syslog ;
+
+			// PM2
+			/*if ( this.settings.system.log.active && options.node_start !== "PM2" ){
+				syslog.listenWithConditions(this,{
+					severity:{
+						data:"CRITIC,ERROR"
+					}		
+				},function(pdu){
+					var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ;
+					var reg = new RegExp("\\[32m");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " " + pdu.msg+" : "+ pay.replace(reg,"");
+					console.log( new Date(pdu.timeStamp) + " " +line +"\n" );
+				});
+					
+				this.debug ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
+				syslog.listenWithConditions(this,{
+					severity:{
+						data:data
+					}		
+				},function(pdu){
+					if ( pdu.msgid === "SERVER WELCOME"){
+						console.log(  pdu.payload );	
+						return ;
+					}
+					if (! pdu.payload ) return 
+					var reg = new RegExp("\\[32m");
+					var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " : "+ pdu.payload.replace(reg,"");
+					console.error( new Date(pdu.timeStamp) + " " +line +"\n" );
+				});
+				return syslog ;
+			}*/
+
+			if ( this.settings.system.log.file   ){
 				this.logStream = new nodefony.log(this.rootDir+this.settings.system.log.error,{
 					rotate:this.settings.system.log.rotate
 				});
@@ -371,7 +447,7 @@ nodefony.register("kernel", function(){
 	kernel.prototype.regBundle = /^(.*)Bundle.js$/;
 	var waitingBundle = function(){
 		this.eventReadywait -= 1 ;
-		if ( this.eventReadywait === 0 || this.eventReadywait === -1 )
+		if ( this.eventReadywait === 0 || this.eventReadywait === -1 ){
 			process.nextTick(function(){
 				try {
 					this.logger("\x1B[33m EVENT KERNEL READY\033[0m", "DEBUG")
@@ -381,6 +457,7 @@ nodefony.register("kernel", function(){
 					this.logger(e, "ERROR");
 				}
 			}.bind(this))
+		}
 	};
 
 	kernel.prototype.loadBundle =  function(file){
@@ -486,7 +563,12 @@ nodefony.register("kernel", function(){
 	 *	@method initializeBundles 
          */	
 	kernel.prototype.initializeBundles = function(error, result){
+
 		this.app = this.initApplication();
+		
+		this.logger("\x1B[33m EVENT KERNEL onPostRegister\033[0m", "DEBUG");
+		this.fire("onPostRegister", this);
+
 		for (var name in this.bundles ){
 			this.logger("\x1b[36m INITIALIZE Bundle :  "+ name.toUpperCase()+"\033[0m","DEBUG");
 			try {
@@ -497,9 +579,12 @@ nodefony.register("kernel", function(){
 			}
 		}
 		if ( this.eventReadywait  === 0) waitingBundle.call(this) ;
-		this.logger("\x1B[33m EVENT KERNEL BOOT\033[0m", "DEBUG")
-		this.fire("onBoot", this)
+		this.logger("\x1B[33m EVENT KERNEL BOOT\033[0m", "DEBUG");
+		this.fire("onBoot", this);
 		this.booted = true ;
+
+		
+
 		return;
 	};
 	
@@ -598,16 +683,6 @@ nodefony.register("kernel", function(){
 			process.exit(code);
 		}.bind(this));
 		return ;
-	};
-
-	/**
-	 *	 
-	 *	@method generateAscii 
-         */
-	kernel.prototype.generateAscii = function(str, callback){
-		var exec = require('child_process').exec ;
-		var commandLine = './bin/figlet -c -f vendors/asciiArt/figlet222/fonts/standard.flf ' + str ;
-		var ASCII = exec(commandLine, callback);
 	};
 
 	return kernel ;

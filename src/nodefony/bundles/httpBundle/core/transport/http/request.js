@@ -9,8 +9,8 @@
  */
 var url = require("url")
 var qs = require('querystring');
+var QS = require('qs');
 var xml = require('xml2js');
-
 
 nodefony.register("Request",function(){
 
@@ -49,14 +49,13 @@ nodefony.register("Request",function(){
 						nodefony.extend( this.query, this.queryFile);
 					break;
 					case "application/x-www-form-urlencoded":
-						this.queryPost = qs.parse(this.body.toString(this.charset));
+						this.queryPost = QS.parse(this.body.toString(this.charset));
 					break;
 					default:
 						//console.log(bodyParser(request,null,function(){console.log(arguments)}))
 						this.queryPost = this.body.toString(this.charset);
 						this.logger("you must use a parser for "+this.contentType  +" FORM : " + this.body.length, "WARNING");
 						//this.queryPost = qs.parse(this.body);
-
 				}
 			break;
 		}
@@ -65,14 +64,25 @@ nodefony.register("Request",function(){
 	var Request = function(request, container){
 		this.container = container ;
 		this.request = request;
-		this.host = request.headers.host;
-		this.url = this.getUrl(request) ;
+		this.headers = 	request.headers ;
+		this.host = this.getHost() ; //request.headers.host;
+		this.hostname = this.getHostName(this.host) ;
+		//console.log( request.url )
+		//console.log( request )
+		//console.log( request.headers.host )
+		this.sUrl = this.getFullUrl( request );
+		this.url = this.getUrl(this.sUrl) ;
+		if ( this.url.search ){
+			this.url.query = QS.parse( this.url.search.replace(/^\?/,"") ) ;
+		}else{
+			this.url.query = {} ;
+		}
 		this.queryPost = {}; 
 		this.queryFile = {}; 
-		this.queryGet = this.getUrl(request, true).query;
-		this.query = this.getUrl(request, true).query;
-		this.headers = 	request.headers ;
-		this.method = request.method;
+		this.queryGet = this.url.query;
+		this.query = this.url.query;
+		
+		this.method = this.getMethod() ;// request.method;
 		this.rawContentType = {} ;
 		this.contentType = this.getContentType(this.request);
 		this.charset = this.getCharset(this.request);
@@ -110,11 +120,30 @@ nodefony.register("Request",function(){
 				throw new Error ("Request "+this.url.href +" Content-type : " + this.contentType + " data Request :   "+ this.body.length+"   " + e );
 			}
 		}.bind(this));
-
-			
-
 	};
 
+	Request.prototype.getHost = function(){
+		return this.request.headers.host ;
+		//return this.url.host ;
+	}
+
+	Request.prototype.getHostName = function(host){
+		if ( this.url && this.url.hostname )
+			return this.url.hostname ;
+		if ( host ){
+			return host.split(":")[0] ;
+		}
+		return  this.getHost().split(":")[0] ; 
+	}
+
+
+	Request.prototype.getUserAgent = function(){
+		return this.request.headers['user-agent'];	
+	}
+
+	Request.prototype.getMethod = function(){
+		return this.request.method ;
+	}
 
 	Request.prototype.clean = function(){
 		delete 	this.data ;
@@ -164,7 +193,6 @@ nodefony.register("Request",function(){
 			this.extentionContentType = request.headers["content-type"] ;
 			return  tab[0];		
 		}
-		
 		return null;
 	}
 
@@ -180,7 +208,8 @@ nodefony.register("Request",function(){
 	}
 
 	Request.prototype.getDomain = function(){
-		return this.host.split(":")[0];
+		return this.getHostName() ;
+		//return this.host.split(":")[0];
 	};
 
 	Request.prototype.getRemoteAdress = function(){
@@ -200,12 +229,24 @@ nodefony.register("Request",function(){
 		return null ;
 	};
 
-	Request.prototype.getUrl = function(request, query){
-		if ( request.connection.encrypted )
-			var fullURL =  'https://' + this.host + request.url;
-		else
-			var fullURL = 'http://' + this.host + request.url;
-		return url.parse(fullURL, query);
+	Request.prototype.setUrl = function(Url){
+		this.url = this.getUrl(Url);
+	};
+
+	Request.prototype.getUrl = function(sUrl, query){
+		return url.parse( sUrl, query);
+	};
+
+	Request.prototype.getFullUrl = function(request){
+		// proxy mode
+		if ( this.headers && this.headers['x-forwarded-for'] ){
+			return this.headers['x-forwarded-proto'] + "://" + this.host +  request.url ;
+		}
+		if ( request.connection.encrypted ){
+			return 'https://' + this.host + request.url;
+		}else{
+			return 'http://' + this.host + request.url;
+		}
 	};
 
 	Request.prototype.isAjax = function(){
@@ -215,7 +256,6 @@ nodefony.register("Request",function(){
 	}
 
 	return Request;
-
 });
 
 

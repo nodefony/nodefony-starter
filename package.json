@@ -4,14 +4,30 @@
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
-    "start": "node nodefony_dev &"
   },
-  "repository": "./",
   "keywords": [
     "Node.js"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ccamensuli/nodefony.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ccamensuli/nodefony/issues"
+  },
+  "license": "CECILL-B",
+  "licenses": [
+    {
+      "type": "CECILL-B",
+      "url": "http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html"
+    }
+  ],
   "dependencies": {
     "npm":"*",
+    "npmi":"*",
+    "nodegit":"*",
+    "sqlite3": "*",
+    "mysql": "*",
     "node-pre-gyp":"*",
     "asciify":"*",
     "websocket": "*",
@@ -26,11 +42,10 @@
     "mime":"*",
     "markdown-it":"*",
     "promise":"*",
-    "async":"*"
+    "pm2":"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",
-  "license": "CECILL-B",
   "readmeFilename": "README.md",
   "contributors": [
     {

@@ -6,6 +6,7 @@
 
 	<parameters>
 		<parameter key="webrtc">webrtc</parameter>
+		<parameter key="webrtcRedis">webrtcRedis</parameter>
 	</parameters>
 
 	<services>
@@ -14,6 +15,12 @@
 			<argument type="service" id="container" />
 			<argument type="service" id="kernel" />
 		</service>
+
+		<service id="webrtcRedis" class="{{webrtcRedis}}">
+			<argument type="service" id="container" />
+			<argument type="service" id="kernel" />
+		</service>
+
 
 	</services>
 

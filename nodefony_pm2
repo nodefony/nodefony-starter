@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+var pm2 = require('pm2');
+var cluster = require('cluster');	
+
+var instances =  require('os').cpus().length ;
+
+require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
+	console.log('\n');
+	console.log('\033[31m'+res+'\033[0m');
+
+	var config = require("./config/pm2.json");
+	config.instances = instances ;
+	config.cwd = process.cwd(); 
+
+	// LOG
+	config.error_file = process.cwd()+"/tmp/error.log"; 
+	config.out_file = process.cwd()+"/tmp/nodefony.log"; 
+	config.merge_logs= true;
+
+	pm2.connect(true, function() {
+		
+  		pm2.start(config, function(err) {
+    			if (err) return console.error('Error while launching applications', err.stack || err);
+
+    			// Display logs in standard output 
+    			pm2.launchBus(function(err, bus) {
+				bus.on('process:msg',function(packet) {
+					//console.log( packet.process )
+       					//console.log( packet );
+      				});
+      				/*bus.on('log:out', function(packet) {
+       					console.log( packet.data );
+      				});
+
+      				bus.on('log:err', function(packet) {
+        				//console.error('[App:%s][Err] %s', packet.process.name, packet.data);
+      				});*/
+    			});
+  		});
+	});
+
+});
+
+

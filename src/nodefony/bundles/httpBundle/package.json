@@ -3,12 +3,14 @@
 	"version": "1.0",
 	"description": "Manager HTTP ",
 	"contributors": [],
+	"scripts": {},
 	"keywords": [
 		"nodefony",
 		"javascript"
 	],
 	"dependencies": {
-		"memcached": "*"
+		"memcached"	: "*",
+		"qs"		: "*"      		
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

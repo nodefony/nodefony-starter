@@ -1,0 +1,16 @@
+{
+	"name": "MONITORING",
+	"version": "1.0",
+	"description": " ",
+	"contributors": [],
+	"scripts": {},
+	"keywords": [
+		"nodefony",
+		"javascript"
+	],
+	"dependencies": {
+		"request": "*"
+	},
+	"author": "cci <christophe.camensuli@gmail.com>",
+	"license": "CECILL-B"
+}

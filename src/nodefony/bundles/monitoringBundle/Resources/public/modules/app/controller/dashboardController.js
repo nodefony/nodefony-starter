@@ -20,14 +20,17 @@ stage.registerController("dashboardController", function() {
 				this.serverSyslog.unListen("onLog", this.eventRealTime);	
 				this.serverSyslog.unListen("onLog", this.eventSyslog);	
 				this.serverSyslog.unListen("onLog", this.eventHttp);	
-				this.serverSyslog.unListen("onLog", this.eventGraph);	
+				//this.serverSyslog.unListen("onLog", this.eventGraph);	
 				delete this.eventRealTime ;
 				delete this.eventSyslog ;
 				delete this.eventHttp ;
-				delete this.eventGraph ;
+				//delete this.eventGraph ;
 				
 			}
-		}.bind(this))
+		}.bind(this));
+		
+
+	
 
 	};
 	
@@ -142,144 +145,6 @@ stage.registerController("dashboardController", function() {
 	};
 
 
-
-
-	var maximum =  200;
-	var defaultSetting = {
-		data:		null,
-		lines:		{
-					fill: true,
-					lineWidth: 1,
-					fillColor: {colors: [{opacity: 0.5}, {brightness: 0.6, opacity: 0.8}]}
-		},
-		splines:	{ show: true, tension: 0.4, lineWidth: 1, fill: 0.8 }
-	}; 
-
-	/*var series = function(name, optionsPlot){
-		
-		var series = {};
-		if (name){
-			series[name] = 	stage.extend({lablel:name}, defaultSetting, optionsPlot);
-		}
-
-		var func = function( val){
-			ring(val);
-			for (var i = 0 ;i < maximum ; i++ ){
-				coor[i][0] = i ; 	
-				coor[i][1] = y[i] ; 	
-			}
-			series[0].data = coor ;
-			return series ;		
-		}
-		func.prototype.setSerie =function(name, optionsPlot){
-			if ( ! name )
-				throw new Error("No name in set Serie ");
-			series[name] = stage.extend({}, defaultSetting, optionsPlot);
-			serie.push(settings);
-		}
-	}();
-
-
-
-
-	controller.prototype.searchSyslog =function(conditions){
-		return this.module.serverSyslog.getLogs(conditions);
-	
-	};*/ 
-
-
-
-	/*controller.prototype.graph = function(ele, pdu){
-
-		var conditions =  {
-			//msgid :{
-			//	data:/.*SERVER HTTP.*\/,
-			//	operator:"RegExp"
-			//},	
-			//date:{
-   	 		//	operator:">=",
-   	 		//	data:new Date(Date.now()-1000)
-   	 		//}
-		}
-
-		//REALTIME ELE
-		if (ele){
-			//ele.setData()
-   	 		conditions.date.operator = "<=" ;
-			conditions.date.data = new Date(Date.now()+1000) ;
-			var last = this.searchSyslog( conditions) ;
-			
-		}else{
-		
-			var colors = {
-				primary: "#7266ba",
-				success: "#27c24c",
-				info: "#23b7e5",
-				warning: "#fad733",
-				danger: "#f05050",
-				dark: "#3a3f51",
-				black: "#1c2b36",
-				muted: "#e8eff0"
-			};
-
-			var http = [[0,7],[1,6.5],[2,12.5],[3,7],[4,9],[5,6],[6,11],[7,6.5],[8,8],[9,7]];
-			var websocket = [[0,4],[1,4.5],[2,7],[3,4.5],[4,3],[5,3.5],[6,6],[7,3],[8,4],[9,3]];
-			var series = [
-				{
-					data: http,
-					lines: {
-						fill: true
-					},
-					splines: { show: true, tension: 0.4, lineWidth: 1, fill: 0.8 },
-					label: 'HTTP',
-
-				},
-				{
-					data: websocket,
-					lines: {
-						fill: true
-					},
-					splines: { show: true, tension: 0.4, lineWidth: 1, fill: 0.8 }, // traçage des courbe de bezier (PLUGIN spline)
-					label: 'WEBSOCKETS'
-				}
-			];
-
-	 		
-			$('.graphs .bicolor .graph').css({ 'height': '400px' })
-
-			this.plot = $.plot('.graphs .bicolor .graph', series, {
-				colors: [colors['info'], colors['primary']],
-				points: { show: true, radius: 1},
-				series: { shadowSize: 3 }, 
-				grid: {
-					show: true,
-					hoverable: true,
-					borderWidth: 0,
-					color: '#a1a7ac',
-				},
-				yaxis:{
-					tickSize: 5,
-					tickFormatter: function(val){return Math.round(val)},
-					max:20 
-				},
-				tooltip: true,
-				tooltipOpts: {
-					content: 'Visits of %x.1 is %y.1',
-					defaultTheme: false,
-					shifts: {
-						x: 10,
-						y: -25
-					}
-				}
-			});
-		
-			this.eventGraph = this.module.serverSyslog.listenWithConditions(this, conditions, function(pdu){
-				//pdu.timeago = jQuery.timeago(pdu.timeStamp)
-				this.graph(this.plot, pdu);
-			});
-		}
-	};*/
-
 	/**
 	 * 
 	 */
@@ -358,6 +223,85 @@ stage.registerController("dashboardController", function() {
 		});
 
 
+		$.ajax("/nodefony/api/pm2/status",{
+			success:function(data, status, xhr){
+				try {
+					//console.log(data)
+					$("#widget-pm2Status").show();	
+					var pm2_service = this.get("pm2_graph");
+						
+					pm2_service.createTable( $("#pm2-status") );
+					pm2_service.updateTable($("#pm2-status"), data.response.data);
+					
+
+					for (var i= 0 ; i < data.response.data.length ; i++){
+						
+						// GRAPH
+						var row = $(document.createElement('div'));
+						row.addClass("row");
+
+						var id = data.response.data[i].pm_id ;
+						// left
+						var left = $(document.createElement('div'));
+						left.addClass("col-md-2");
+						left.append('<h3 class="text-center"> '+data.response.data[i].name+' </h3>')
+						left.append('<h4 class="text-center"> <a href="#">Cluster <span class="badge">'+id+'</span></a> </h4>')
+						
+						row.append(left);
+
+						// center CANVAS
+						var center = $(document.createElement('div'));
+						center.addClass("col-md-8");
+						var canvas = $(document.createElement('canvas'));
+						canvas.attr("id", data.response.data[i].pm_id) ;
+						canvas.attr("width", 600) ;
+						canvas.attr("height", 100) ;
+						center.append(canvas);
+						row.append(center);
+						
+						// right
+						var memory = parseFloat( data.response.data[i].monit.memory / 1000000 ).toFixed(2) ; 
+						var right = $(document.createElement('div'));
+						right.addClass("col-md-2");
+						right.append('<h3>Memory <span id="pm2Memory_'+id+'" class="badge bg-danger  text-md">'+ memory +'</span></h3>');
+						right.append('<h3>CPU <span id="pm2CPU_'+id+'" class="badge bg-primary  text-md">'+data.response.data[i].monit.cpu+'</span></h3>');
+						row.append(right);
+
+						$('#widget-pm2').append(row);
+						canvas.attr("width",  center.width() ) ;
+						 
+						var smoothie = new SmoothieChart({
+							millisPerPixel:100,
+							minValue:0,
+							maxValue:1024,
+							labels:{
+								fillStyle:'#ff7e10'
+							}
+						});
+						smoothie.streamTo(canvas.get(0), 2000);
+						var lineM = new TimeSeries() ;
+						smoothie.addTimeSeries(lineM, {
+							lineWidth:3,
+							strokeStyle:'#ff0810'
+						});
+						pm2_service.addTimeSerieMemory(data.response.data[i].pm_id,  lineM )
+
+						var lineC = new TimeSeries() ;
+						smoothie.addTimeSeries(lineC, {
+							lineWidth:1.5,
+							strokeStyle:'#945fff',
+							fillStyle:'rgba(33,18,206,0.58)'
+						});
+						pm2_service.addTimeSerieCpu(data.response.data[i].pm_id,  lineC )
+					}
+				}catch(e){
+					this.logger(e, "ERROR");
+				}
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		});
 
 
 		this.syslogWidget();

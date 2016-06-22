@@ -6,9 +6,7 @@
 			<!--span class="block m-t m-b wrap-rl text-xs">{{ "navigation"|trans }}</span-->
 			<span class="block m-t m-b wrap-rl text-xs">NODEFONY MONITORING</span>
 			<div class="aside-nav">
-				
 				<div class="list-group">
-
 					<a 
 						href="{{ path('dashboard') }}" 
 						class="list-group-item font-bold" 
@@ -24,11 +22,32 @@
 						<span>Kernel</span>
 					</a>
 					<a 
+						href="{{ path('bundles') }}?tab=bundlesKernel" 
+						class="list-group-item font-bold" 
+						data-toggle="collapse"
+						data-target="#bundles" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Bundles</span>
+					</a>
+					<div class="collapse" id="bundles">
+						{% for bundle, value in nav %}
+						<a href="{{path('config-bundle', {bundle:value['@name']})}}" class="list-group-item">{{value['@name']}}</a>
+						{% endfor %}
+          				</div>
+					<a 
 						href="{{ path('routing') }}" 
 						class="list-group-item font-bold" 
 						data-parent="{{ navCssId }}">
 						<i class="icon fa glyphicon glyphicon-random text-success"></i>
 						<span>Router</span>
+					</a>
+					<a 
+						href="{{ path('firewall') }}" 
+						class="list-group-item font-bold" 
+						data-parent="{{ navCssId }}">
+						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
+						<span>Security</span>
 					</a>
 					<a 
 						href="{{ path('services') }}" 
@@ -65,22 +84,14 @@
 						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
 						<span>Requests</span>
 					</a>
+
 					<a 
-						href="{{ path('bundles') }}?tab=bundlesKernel" 
+						href="{{ path('tests') }}" 
 						class="list-group-item font-bold" 
-						data-toggle="collapse"
-						data-target="#bundles" 
 						data-parent="{{ navCssId }}">
 						<i class="icon fa  glyphicon glyphicon-random  text-success"></i>
-						<span>Bundles</span>
+						<span>Tests</span>
 					</a>
-					<div class="collapse" id="bundles">
-						{% for bundle, value in nav %}
-						<a href="{{path('config-bundle', {bundle:value['@name']})}}" class="list-group-item">{{value['@name']}}</a>
-						{% endfor %}
-          				</div>
-
-
 
 					{% set length =  nav | length %}			
 					{% if length == 1 %}
@@ -108,7 +119,6 @@
 			<!--span class="block m-t m-b wrap-rl text-xs">Framework</span>
 			<div class="aside-nav">
 				<div class="list-group">
-					
 					<a 
 						href="{{path("help")}}" 
 						class="list-group-item">

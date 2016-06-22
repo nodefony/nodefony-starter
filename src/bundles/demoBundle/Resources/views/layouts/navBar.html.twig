@@ -12,15 +12,14 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand text-primary" href="" style="margin-left:20px" ><strong class="text-primary">NODEFONY</strong></a>
+			<a class="navbar-brand text-primary" href="{{path("home")}}" style="margin-left:20px" ><strong class="text-primary">NODEFONY</strong></a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="custom-collapse">
 
 			<ul class="nav navbar-nav navbar-left">
 				{% if not  login  %}
-				<li><a href="{{path("home")}}">Home</a></li>
-				<li><a href="#services">PRESENTATION</a></li>
+				
 
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO <span class="caret"></span></a>
@@ -50,14 +49,17 @@
 						{% if  webrtc  %}
 							<li><a href="{{path("webrtc")}}">DEMO WEBRTC</a></li>
 							<li role="separator" class="divider"></li>
+							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
 						{% endif %}
 						{% if  user.username  %}
-							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
 						{% endif %}
                                         </ul>
                                 </li>
 				{% endif %}
-				<li><a href="#doc">DOCUMENTATION</a></li>
+				{% block documentation %}
+					{{ render( controller("demoBundle:demo:doc" )) }}
+				{% endblock %}
+				<li><a href="">Reload <span class="glyphicon glyphicon-refresh"></span></a></li>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
@@ -71,7 +73,7 @@
 							<li><a href="{{path('demoLogout')}}">{{ "logout"|trans() }}</a></li>
 						</ul>
 					{% else %}
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">anonymous <span class="caret"></span></a>
+						<a href="{{path('login')}}"  >{{ "Login"|trans() }} </a>
 					{% endif %}
 				</li>
 			</ul>

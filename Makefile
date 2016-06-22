@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: node framework install 
+all: framework npm  install 
 
 install:
 	./console npm:install
@@ -10,23 +10,54 @@ install:
 	./console router:generate:routes
 	./console npm:list
 	
-start:
-	npm start
-
 node:
-	make clean
+	make framework
+	make install
+
+
+#
+# PM2 MANAGEMENT PRODUCTION 
+#
+startup:
+	./node_modules/pm2/bin/pm2 startup
+
+start:
+	make asset
+	./nodefony_pm2 &
+
+stop:
+	./node_modules/pm2/bin/pm2 stop nodefony
+
+kill:
+	./node_modules/pm2/bin/pm2 kill
+
+show:
+	./node_modules/pm2/bin/pm2 show nodefony
+
+monit:
+	./node_modules/pm2/bin/pm2 monit nodefony
+
+status:
+	./node_modules/pm2/bin/pm2 status
+
+reload:
+	./node_modules/pm2/bin/pm2 reload all
+
+restart:
+	./node_modules/pm2/bin/pm2 restart all
+
+
+# NODEFONY BUILD FRAMEWORK 
+npm:
+	#make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
-			npm  install  ;\
+			npm -s install  ;\
 		else \
-			npm -d install  ;\
+			npm -ddd install  ;\
 		fi \
 	fi
-
-	
-doc:
-	./node_modules/.bin/yuidoc -c vendors/yahoo/yuidoc/yuidoc.json -T default
 
 asset:
 	./console assets:dump 

@@ -45,17 +45,25 @@ nodefony.registerService("sessions", function(){
 		this.setMetaBag("context", this.contextSession );
 		this.setMetaBag("request", this.context.type );
 		this.setMetaBag("created", time );
-		this.setMetaBag("remoteAddress", this.context.request.remoteAdress );
-		this.setMetaBag("host", this.context.request.request.headers['host'] );
-		if ( this.context.request.request.headers['user-agent'] )
-			this.setMetaBag("user_agent",this.context.request.request.headers['user-agent'] );	
+		this.setMetaBag("remoteAddress", this.context.getRemoteAdress() );
+		this.setMetaBag("host", this.context.getHost() );
+		var ua = this.context.getUserAgent() ;
+		if ( ua )
+			this.setMetaBag("user_agent",ua );	
+		else
+			this.setMetaBag("user_agent","Not Defined" );	
 	};
 
-	var createSession = function(lifetime, id){
+	var createSession = function(lifetime, id, callback){
 		this.id = id || this.setId();
 		setMetasSession.call(this);	
 		this.manager.logger("NEW SESSION CREATE : "+ this.id)	
 		this.cookieSession = this.setCookieSession(lifetime) ;
+		this.status = "active" ;
+		if ( callback ){
+			callback(null, this);
+			//return this.save(this.context.user ? this.context.user.id : null, callback);
+		}
 		return this ;
 	};
 
@@ -101,7 +109,6 @@ nodefony.registerService("sessions", function(){
 	
 	Session.prototype.start = function(context, contextSession, callback){
 		this.context = context ;
-		
 		
 		if ( contextSession ===  undefined ){
 			contextSession = this.contextSession ;
@@ -160,30 +167,19 @@ nodefony.registerService("sessions", function(){
 								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 								this.destroy();
 								this.contextSession = contextSession;
-								createSession.call(this, this.lifetime);
-								this.status = "active" ;
-								this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-								callback(null, this);
-								return ;
+								return createSession.call(this, this.lifetime, null, callback);
 							}
 							this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 							this.remove();
 							this.contextSession = contextSession ;
-							createSession.call(this, this.lifetime);
-							this.status = "active" ;
-							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
-							callback(null, this);
+							return createSession.call(this, this.lifetime, null, callback);
 						}.bind(this));
 					break;
 					case "invalidate":
 						this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 						this.destroy();
 						this.contextSession = contextSession;
-						createSession.call(this, this.lifetime);
-						this.status = "active" ;
-						this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-						callback(null, this);
-						return ;
+						return createSession.call(this, this.lifetime,  null, callback);
 					break;
 					case "none" :
 						this.storage.start(this.id, this.contextSession,function(error, result){
@@ -195,18 +191,11 @@ nodefony.registerService("sessions", function(){
 							if (  ! this.isValidSession(result, context) ){
 								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 								this.contextSession = contextSession;
-								createSession.call(this, this.lifetime);
-								this.status = "active" ;
-								this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-								callback(null, this);
-								return ;
+								return createSession.call(this, this.lifetime, null, callback);
 							}
 							this.manager.logger("STRATEGY SESSION NONE==> "+this.name + " : "+this.id, "DEBUG");
 							this.contextSession = contextSession;
-							createSession.call(this, this.lifetime, this.id);
-							this.status = "active" ;
-							this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id);
-							callback(null, this);
+							return createSession.call(this, this.lifetime, this.id, callback);
 						}.bind(this));
 					break;
 				}
@@ -223,8 +212,7 @@ nodefony.registerService("sessions", function(){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();
 				}
-				//console.log(result);
-				if (result){
+				if ( result &&  Object.keys(result).length ){
 					this.deSerialize(result);
 					if (  ! this.isValidSession(result, context) ){
 						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + "  session invalid ", "ERROR");
@@ -237,16 +225,12 @@ nodefony.registerService("sessions", function(){
 					}
 				}
 				this.status = "active" ;
-				//this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
 				return callback(null, this);
 			}.bind(this));
 			
 		}else{
 			this.clear();
-			createSession.call(this, this.lifetime);
-			this.status = "active" ;
-			this.manager.logger("START SESSION ==> " + this.name + " : "+ this.id, "DEBUG");
-			callback(null, this)
+			return createSession.call(this, this.lifetime, null, callback);
 		}
 	};
 
@@ -262,13 +246,13 @@ nodefony.registerService("sessions", function(){
 		var lastUsed = new Date( this.getMetaBag("lastUsed")).getTime();
 		var now = new Date().getTime() ;
 		if (this.lifetime === 0 ) {
-			if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
+			/*if ( lastUsed && lastUsed + ( this.settings.gc_maxlifetime * 1000 ) < now ){
 				this.manager.logger("SESSION INVALIDE gc_maxlifetime    ==> " + this.name + " : "+ this.id, "WARNING");
 				return false ;	
-			}
+			}*/
 			return true ;	
 		} 
-		if ( lastUsed + ( this.lifetime * 1000 ) < now ){
+		if ( lastUsed && lastUsed + ( this.lifetime * 1000 ) < now ){
 			this.manager.logger("SESSION INVALIDE lifetime   ==> " + this.name + " : "+ this.id, "WARNING");
 			return false;
 		}
@@ -318,6 +302,12 @@ nodefony.registerService("sessions", function(){
 	Session.prototype.flashBags = function(){
 		return this.flashBag ;
 	}
+
+	Session.prototype.clearFlashBags = function(){
+		delete this.flashBag ;
+		this.flashBag = {} ;
+	}
+
 
 
 	Session.prototype.setCookieSession = function( leftTime){
@@ -382,24 +372,21 @@ nodefony.registerService("sessions", function(){
 		this.parameters = new this.protoParameters();
 	};
 
-	Session.prototype.count = function(){
-	
-	};
 
-	Session.prototype.invalidate = function(lifetime){
+	Session.prototype.invalidate = function(lifetime, id, callback){
 		this.manager.logger("INVALIDATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
 		if (! lifetime) lifetime = this.lifetime ;
 		this.destroy();
-		return createSession.call(this, lifetime);
+		return createSession.call(this, lifetime, id, callback);
 	};
 
-	Session.prototype.migrate = function(destroy, lifetime, id){
+	Session.prototype.migrate = function(destroy, lifetime, id, callback){
 		this.manager.logger("MIGRATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
 		if (! lifetime) lifetime = this.lifetime ;
 		if (destroy){
 			this.remove();
 		}
-		return createSession.call(this, lifetime, id);
+		return createSession.call(this, lifetime, id, callback);
 	};
 
 	Session.prototype.setId = function(){
@@ -427,15 +414,19 @@ nodefony.registerService("sessions", function(){
 		return value ;
 	};
 
-	Session.prototype.save = function(user){
+	Session.prototype.save = function(user, callback){
 		try {
 			return this.storage.write(this.id, this.serialize(user), this.contextSession,function(err, result){
 				if (err){
 					this.logger( err ,"ERROR" )
-					return ; 
+					this.saved = false ; 
+				}else{
+					this.saved = true ;
 				}
 				//this.logger("SAVE SESSION " + this.id, "DEBUG")
-				this.saved = true ;
+				if ( callback ){
+					callback(err, this);	
+				}
 			}.bind(this));	
 		}catch(e){
 			this.manager.logger(" SESSION ERROR : "+e,"ERROR");
@@ -458,8 +449,8 @@ nodefony.registerService("sessions", function(){
 	};
 	
 	Session.prototype.getRemoteAdress = function(){
-		var request = this.context.request ;
-		return request.getRemoteAdress() ; 
+		//var request = this.context.request ;
+		return this.context.getRemoteAdress() ; 
 	};
 
 	/*
@@ -478,31 +469,6 @@ nodefony.registerService("sessions", function(){
 			this.settings = this.container.getParameters("bundles.http").session;
 			this.defaultSessionName = this.settings.name ;
 			this.initializeStorage();
-		}.bind(this));
-
-		this.kernel.listen(this, "onHttpRequest", function(container, context, type){
-			var request = context.request.request ;
-			request.on('end', function(){
-				if ( this.settings.start === "autostart" ){
-					 this.start(context, "default", function(err, session){
-						this.logger("AUTOSTART SESSION","DEBUG")
-					 }.bind(this));
-				}
-			}.bind(this));
-			var response = context.response.response ;
-			response.on("finish",function(){
-				if ( context.session ){
-					context.session.setMetaBag("lastUsed", new Date() );
-					context.session.setMetaBag("url", context.request.url );
-					if ( ! context.session.saved ){
-						//console.log("SAVE")
-						context.session.save(context.user ? context.user.id : null);	
-					}
-					delete context.extendTwig ;
-					context.clean() ; 
-					delete context ; 
-				}
-			});
 		}.bind(this));
 
 		this.kernel.listen(this, "onTerminate",function(){
@@ -548,6 +514,15 @@ nodefony.registerService("sessions", function(){
 		var inst = this.createSession(this.defaultSessionName, this.settings );
 		var ret = inst.start(context, sessionContext, function(err, session){
 			context.session = session ;
+			if ( ! err ){ 
+				context.listen(session, "onFinish",function(){
+					this.setMetaBag("lastUsed", new Date() );
+					this.setMetaBag("url", context.request.url || context.request.resourceURL );
+					if ( ! this.saved ){
+						this.save(context.user ? context.user.id : null);	
+					}
+				});
+			}
 			callback(err, session)
 		}.bind(this)) ;
 		

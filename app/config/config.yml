@@ -40,8 +40,9 @@ App:
 #
 #
 monitoringBundle:
-        debugBar:               true
-
+  debugBar:                     true
+  #storage:                      false
+  
 #
 #       OVERRIDE BUNDLE HTTP 
 #
@@ -72,12 +73,14 @@ httpBundle:
 
   session:
     handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
-    #handler:                      session.storage.file                    
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
       maxAge:                     0   
 
+  http:
+    responseTimeout:              40000
   https:
+    responseTimeout:              40000
     certificats:
       key:                        "/config/certificates/serverKey.pem"
       cert:                       "/config/certificates/serverCert.pem"
@@ -109,13 +112,13 @@ asseticBundle:
 #
 sequelizeBundle: 
   debug:        false
-#  connectors:                    
-#    nodefony:
-#      driver:          mysql
-#      dbname:          'nodefony'
-#      username:        'username'
-#      password:        'password'
-#      options:
-#        dialect:       mysql
-#        host:          nodefony.com
-#        port:          '3306'
+  connectors:                    
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'cci'
+      password:        '91984869'
+      options:
+        dialect:       mysql
+        host:          nodefony.com
+        port:          '3306'

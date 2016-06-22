@@ -14,6 +14,11 @@ nodefony.register("controller", function(){
 		this.container = container;
 		this.notificationsCenter = this.container.get("notificationsCenter");
 		this.sessionService = this.container.get("sessions");
+		this.query = context.request.query ;
+		/*this.queryFile = context.request.queryFile;
+		this.queryGet = context.request.queryGet;
+		this.queryPost = context.request.queryPost;*/
+		this.serviceTemplating = this.container.get('templating') ;
 	};
 	
 	Controller.prototype.logger = function(pci, severity, msgid,  msg){
@@ -30,8 +35,16 @@ nodefony.register("controller", function(){
 		return this.container.get(name);
 	};
 
+	Controller.prototype.set = function(key, value){
+		return this.container.set(key, value);
+	};
+
 	Controller.prototype.getParameters = function(name){
 		return this.container.getParameters(name);
+	};
+	
+	Controller.prototype.setParameters = function(name, str){
+		return this.container.setParameters(name, str);
 	};
 
 	Controller.prototype.has = function(name){
@@ -42,8 +55,18 @@ nodefony.register("controller", function(){
 		return this.context.request;
 	};
 
+	Controller.prototype.getResponse = function(content){
+		if (content)
+			this.context.response.setBody( content );
+		return this.context.response;
+	};
+
 	Controller.prototype.getContext = function(){
 		return this.context ;
+	};
+
+	Controller.prototype.getMethod = function(){
+		return this.context.getMethod() ;
 	};
 
 	Controller.prototype.startSession = function(sessionContext, callback){
@@ -72,28 +95,42 @@ nodefony.register("controller", function(){
 		}
 	};
 
-
 	Controller.prototype.getORM = function(){
 		var defaultOrm = this.container.get("kernel").settings.orm ;
 		return this.container.get(defaultOrm);
 	};
 
-	Controller.prototype.getResponse = function(content){
-		if (content)
-			this.context.response.setBody( content );
-		return this.context.response;
-	};
-
 	Controller.prototype.renderView = function(view, param ){
+
+		var res = null;
+		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+
+		if ( this.serviceTemplating.cache ){
+			try {
+				var templ = this.container.get("httpKernel").getTemplate(view);
+			}catch(e){
+				throw e ;
+			}
+			try {
+				var res = templ.render(extendParam) ;
+				try {
+					this.notificationsCenter.fire("onView", res, this.context, null , param);
+				}catch(e){
+					throw e ;
+				}
+			}catch(e){
+				throw e ;
+			}
+			return res ;
+		}
+
 		try {
 			var View = this.container.get("httpKernel").getView(view);
 		}catch(e){
 			throw e ;
 		}
-		var res = null;
-		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 		try{ 
-			this.container.get('templating').renderFile(View, extendParam, function(error, result){
+			this.serviceTemplating.renderFile(View, extendParam, function(error, result){
 				if (error || result === undefined){
 					if ( ! error ){
 						error = new Error("ERROR PARSING TEMPLATE :" + view)
@@ -226,7 +263,6 @@ nodefony.register("controller", function(){
 			response.end();
 			throw error ;				
 		});
-		
 	};
 		
 	Controller.prototype.renderMediaStream = function(file , options, headers){
@@ -336,7 +372,6 @@ nodefony.register("controller", function(){
 			//throw error ;				
 		})
 	};
-
 
 	Controller.prototype.createNotFoundException = function(message){
 		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");

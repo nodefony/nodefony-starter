@@ -1,3 +1,4 @@
+
 nodefony.registerFixture("users", function(){
 
 	var userPromise = function(resolve, reject){
@@ -55,65 +56,87 @@ nodefony.registerFixture("users", function(){
 				.then(function(){
 					this.logger("Database synchronised  " ,"INFO");
 					
-					for (var i = 0 ; i<tab.length; i++){
-						var username = tab[i].username  ;
-						//var res = user.create(tab[i],{isNewRecord:true});
-						var res = user.findOrCreate({where: {username: username}, defaults:tab[i]});
-
-						res.spread(function(User, created){
-							if (created){
-								this.logger("ADD USER : " +User.username,"INFO");
-							}else{
-								this.logger("ALREADY EXIST USER : " +User.username,"INFO");
-							}
-						}.bind(this))
-						.done(function(count,error, result){
-							if (error){
-								this.logger(error);
-								reject(error);	
-								return ;	
-							}
-							if (count+1 == tab.length ){
-								//resolve(result)
-							}
-						}.bind(this, i))	
+					return Sequelize.Promise.map( tab, function(obj) {
+						return user.findOrCreate({where: {username: obj.username}, defaults:obj});
+					})
+					
+				}.bind(this))
+				.spread(function(ele){
+					for (var i = 0 ; i< arguments.length ;i++){
+						if (arguments[i][1]){
+							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
+						}else{
+							this.logger("ALREADY EXIST USER : " +arguments[i][0].username,"INFO");
+						}
 					}
 				}.bind(this))
 				.then(function(){
-			    		return connection.query('SET FOREIGN_KEY_CHECKS = 1');
+			    		connection.query('SET FOREIGN_KEY_CHECKS = 1');
 				})
 				.catch( function(error){
 					this.logger(error);
 					reject(error)
 				}.bind(this))
 				.done(function(error, result){
-					//resolve(result);
+					resolve("userEntity");
 				});
 			break;
 			case "sqlite":
-				user.sync({force:true}).then(function() {
-					for (var i = 0 ; i<tab.length; i++){
-						var res = user.create(tab[i],{isNewRecord:true})
-						res.then(function(User){
-							this.logger("ADD USER : " +User.username,"INFO")
-						}.bind(this)).done(function(count,error, result){
-							if (error){
-								this.logger(error);
-								reject(error);	
-								return ;	
-							}
-							if (count+1 == tab.length ){
-								resolve(result)
-							}
-						}.bind(this, i))	
-					}
+				/*user.sync({force:false})
+
+				.then(function(){
+					this.logger("Database synchronised  " ,"INFO");
 					
-				}.bind(this)).catch(function(error){
+					return Sequelize.Promise.map( tab, function(obj) {
+						return user.findOrCreate({where: {username: obj.username}, defaults:obj});
+					})
+					
+				}.bind(this))
+				.spread(function(ele){
+					for (var i = 0 ; i< arguments.length ;i++){
+						if (arguments[i][1]){
+							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
+						}else{
+							this.logger("ALREADY EXIST USER : " +arguments[i][0].username,"INFO");
+						}
+					}
+				}.bind(this))
+				.catch(function(error){
 					this.logger(error);
 					reject(error)
-				}.bind(this)).done(function(){
-				
 				}.bind(this))
+				.done(function(){
+					resolve("userEntity");
+				}.bind(this))*/
+
+				//connection.query('SELECT * FROM users  ')
+				connection.query('PRAGMA foreign_keys = 0  ')
+				.then(function(){
+			 		return user.sync({ force: false });
+				})
+				.then(function(User){
+					this.logger("Database synchronised  " ,"INFO");
+					return Sequelize.Promise.map( tab, function(obj) {
+						return User.findOrCreate({where: {username: obj.username}, defaults:obj});
+					})
+				}.bind(this))
+				.spread(function(ele){
+					for (var i = 0 ; i< arguments.length ;i++){
+						if (arguments[i][1]){
+							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
+						}else{
+							this.logger("ALREADY EXIST USER : " +arguments[i][0].username,"INFO");
+						}
+					}
+				}.bind(this))
+				.catch(function(error){
+					this.logger(error);
+					reject(error)
+				}.bind(this))
+				.done(function(){
+					resolve("userEntity");
+				}.bind(this))
+
 			break;
 		
 		

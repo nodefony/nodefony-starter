@@ -6,6 +6,7 @@
 
 	<parameters>
 		<parameter key="monitoring">monitoring</parameter>
+		<parameter key="serverLoad">serverLoad</parameter>
 	</parameters>
 
 	<services>
@@ -15,6 +16,13 @@
 			<argument type="service" id="container" />
 			<argument type="service" id="kernel" />
 		</service>
+
+
+		<service id="serverLoad" class="{{serverLoad}}">
+			<argument type="service" id="container" />
+			<argument type="service" id="kernel" />
+		</service>
+
 
 	</services>
 

@@ -75,7 +75,25 @@ nodefony.registerController("default", function(){
 			};
 		}
 
-
+		/**
+ 		 * 
+ 		 *
+ 		 *
+ 		 *
+ 		 **/
+		defaultController.prototype.testLoadAction= function(message){
+			var context = this.getContext();
+			var serverLoad = this.get("serverLoad");
+			switch( this.getRequest().method ){
+				case "WEBSOCKET" :
+					if (message){
+						serverLoad.handleConnection(JSON.parse( message.utf8Data ), context );
+					}
+				break;
+				default :
+					throw new Error("REALTIME METHOD NOT ALLOWED")
+			};
+		}
 		
 		return defaultController;
 });

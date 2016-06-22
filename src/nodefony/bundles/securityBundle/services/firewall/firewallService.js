@@ -110,7 +110,7 @@ nodefony.registerService("firewall", function(){
 		this.firewall.kernel.listen(this, "onReady",function(){
 			try {
 				if ( this.providerName in this.firewall.providers){
-					this.provider = this.firewall.providers[ this.providerName ] ;	
+					this.provider = this.firewall.providers[ this.providerName ].Class ;	
 				}else{
 					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
 					return ;
@@ -120,7 +120,7 @@ nodefony.registerService("firewall", function(){
 				this.logger(this.name +"  "+e,"ERROR");	
 				throw e;
 			}
-		}.bind(this))
+		})
 	};
 
 	securedArea.prototype.logger = function(pci, severity, msgid,  msg){
@@ -129,7 +129,6 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
-
 		switch ( context.type ){
 			case "HTTP" :
 			case "HTTPS" :
@@ -220,7 +219,7 @@ nodefony.registerService("firewall", function(){
 
 	securedArea.prototype.handleError = function(context, e){
 		if (context.session){
-			context.session.clear();	
+			//context.session.clear();	
 		}
 		switch ( context.type ){
 			case "HTTP" :
@@ -232,7 +231,7 @@ nodefony.registerService("firewall", function(){
 						this.logger(e, "ERROR");
 					}
 					context.response.setStatusCode( 401 ) ;
-					this.overrideURL(context.request, this.formLogin);
+					context.resolver = this.overrideURL(context, this.formLogin);
 					if (! context.isAjax ){
 						if ( e.message !== "Unauthorized" ){
 							context.session.setFlashBag("session", {
@@ -288,12 +287,13 @@ nodefony.registerService("firewall", function(){
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
 						user:context.user.username,	
+						userFull:context.user,
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
 					//context.session.getMetaBag("security") ;
 					if ( this.defaultTarget && context.request.url.pathname === this.checkLogin){
-						this.overrideURL(context.request, this.defaultTarget);
+						context.resolver = this.overrideURL(context, this.defaultTarget);
 						if ( context.isAjax ){
 							var obj = context.setXjson( {
 								message:"OK",
@@ -345,25 +345,29 @@ nodefony.registerService("firewall", function(){
 	};
 
 	
-	securedArea.prototype.setProvider = function(provider){
+	securedArea.prototype.setProvider = function(provider, type){
 		this.providerName = provider;
+		this.providerType = type ;
 	};
 
-	securedArea.prototype.overrideURL = function(request, url ){
-		request.url = Url.parse( Url.resolve(request.url, url) ) ;
-		return request.url ;
+	securedArea.prototype.overrideURL = function(context, url ){
+		context.request.url = Url.parse( Url.resolve(context.request.url, url) ) ;
+		var router = this.kernel.get("router") ; 
+		return router.resolve(context.container, context.request);
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
-		context.session.setFlashBag("redirect" , "HTTPS" );
-		context.request.url.protocol = "https";
+		return context.redirectHttps(301) ;
+		//context.session.setFlashBag("redirect" , "HTTPS" );
+		/*context.request.url.protocol = "https";
+		
 		if ( context.proxy ){
 			return context.redirect(context.request.url, 301); 
 		}
 		context.request.url.port = this.container.get("kernel").httpsPort;
 		context.request.url.href = "";
 		context.request.url.host = "";
-		return context.redirect(context.request.url, 301);
+		return context.redirect(context.request.url, 301);*/
 	};
 
 	securedArea.prototype.redirect = function(context, url){
@@ -425,7 +429,6 @@ nodefony.registerService("firewall", function(){
 	var Firewall = function(container, kernel ){
 		this.container = container;
 		this.kernel = kernel;
-		this.kernelHttp = this.get("httpKernel");
 		this.reader = function(context){
 			var func = context.container.get("reader").loadPlugin("security", pluginReader);
 			return function(result){
@@ -447,12 +450,12 @@ nodefony.registerService("firewall", function(){
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onBoot",function(){
 			this.sessionService = this.get("sessions");
-			this.sessionService.settings.start = "firewall";
+			//this.sessionService.settings.start = "firewall";
 			this.orm = this.get(this.kernel.settings.orm);
 		});
 
 		this.kernel.listen(this, "onSecurity",function(context){
-			
+				
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
@@ -467,7 +470,7 @@ nodefony.registerService("firewall", function(){
 							}
 						}
 						if (  context.security ){	
-							
+							context.sessionAutoStart = "firewall" ;	
 							this.sessionService.start(context, context.security.sessionContext, function(error, session){
 								if (error){
 									return context.security.handleError(context, error);
@@ -481,7 +484,21 @@ nodefony.registerService("firewall", function(){
 							}.bind(this));	
 						}else{
 							try {
-								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								if ( context.sessionAutoStart === "autostart" ){
+					 				this.sessionService.start(context, "default", function(err, session){
+						 				if (err){
+											throw err ;
+						 				}
+										this.logger("AUTOSTART SESSION","DEBUG")
+										var meta = session.getMetaBag("security");
+										if (meta){
+											context.user = meta.userFull ;
+										}
+										context.notificationsCenter.fire("onRequest", context.container, request, response);
+					 				}.bind(this));
+								}else{
+									context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								}
 							}catch(e){
 								context.notificationsCenter.fire("onError", context.container, e );	
 							}
@@ -499,7 +516,8 @@ nodefony.registerService("firewall", function(){
 							//break;
 						}
 					}
-					if (  context.security ){	
+					if (  context.security ){
+						context.sessionAutoStart = "firewall" ;
 						this.sessionService.start(context, context.security.sessionContext, function(error, session){
 							if (error){
 								return context.security.handleError(context, error);
@@ -513,19 +531,25 @@ nodefony.registerService("firewall", function(){
 						}.bind(this));	
 					}else{
 						try {
-							context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							if ( context.sessionAutoStart === "autostart" ){
+					 			this.sessionService.start(context, "default", function(err, session){
+						 			if (err){
+										throw err ;
+						 			}
+									this.logger("AUTOSTART SESSION","DEBUG")
+									var meta = session.getMetaBag("security");
+									if (meta){
+										context.user = meta.userFull ;
+									}
+									context.notificationsCenter.fire("onRequest", context.container, request, response);
+					 			}.bind(this));
+							}else{
+								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							}	
 						}catch(e){
 							context.notificationsCenter.fire("onError", context.container, e );	
 						}
 					}
-
-					// TODO FIREWALL WEBSOCKET
-					/*try {
-						context.notificationsCenter.fire("onRequest", context.container, request, response);	
-					}catch(e){
-						context.notificationsCenter.fire("onError", context.container, e );	
-					}*/
-					
 				break;
 			}
 		});
@@ -533,25 +557,27 @@ nodefony.registerService("firewall", function(){
 
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
-
 			if ( ! context.isAjax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
 				return context.security.redirectHttps(context);
 			}
 			//CROSS DOMAIN //FIXME width callback handle for async response  
-			var next = context.security.handleCrossDomain(context, request, response) ;
-			switch (next){
-				case 204 :
-					return ;
-				case 401 :
-					this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR");
-					context.notificationsCenter.fire("onError",context.container, {
-						status:next,
-						message:"crossDomain Unauthorized "
-					});
-					return ;
-				case 200 :
-					this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
-				break;
+			if (  ! context.validDomain ){
+			
+				var next = context.security.handleCrossDomain(context, request, response) ;
+				switch (next){
+					case 204 :
+						return ;
+					case 401 :
+						this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR");
+						context.notificationsCenter.fire("onError",context.container, {
+							status:next,
+							message:"crossDomain Unauthorized "
+						});
+						return ;
+					case 200 :
+						this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
+					break;
+				}
 			}
 
 			if (meta){
@@ -647,6 +673,8 @@ nodefony.registerService("firewall", function(){
 								default:
 									if ( config in nodefony.security.factory ){
 										area.setFactory(config, param[config]);
+									}else{
+										this.logger("FACTORY : "+config +" not found in nodefony namespace","ERROR");
 									}
 							}
 						}
@@ -662,7 +690,11 @@ nodefony.registerService("firewall", function(){
 				break;
 				case "providers" : 
 					for ( var provider in obj[ele] ){
-						this.providers[provider] = null;
+						this.providers[provider] = {
+							name:null,
+							Class:null,
+							type:null
+						};
 						for (var pro in obj[ele][provider] ){
 							var element = obj[ele][provider] ;
 							switch (pro){
@@ -670,7 +702,11 @@ nodefony.registerService("firewall", function(){
 									for (var api in element[pro]){
 										switch (api){
 											case "users":
-												this.providers[provider] = new nodefony.usersProvider(provider, element[pro][api]);
+												this.providers[provider] = {
+													name:provider,
+													Class:new nodefony.usersProvider(provider, element[pro][api]),
+													type:pro
+												};
 												this.logger(" Register Provider  : "+provider + " API " +this.providers[provider].name, "DEBUG")
 											break;
 											default:
@@ -696,16 +732,33 @@ nodefony.registerService("firewall", function(){
 									}
 									if (Class){
 										if (manager_name && manager_name !== "~"){
-											this.providers[manager_name] =  new Class(property);	
+											this.providers[manager_name] ={
+												name:manager_name,
+												Class:new Class(property),
+												type:pro
+											}
 										}else{
-											this.providers[provider] = new Class(property);
+											this.providers[provider] = {
+												name:manager_name,
+												Class:new Class(property),
+												type:pro
+											}
 										}
 									}
 								break;
 								case "entity" :
 									this.kernel.listen(this, "onBoot",function(){
 										this.orm.listen(this, "onOrmReady", function(){
-											this.providers[provider] = this.orm.getEntity(element[pro].name);
+											var ent = this.orm.getEntity(element[pro].name)
+											if (! ent){
+												this.logger("ENTITY PROVIDER : "+ provider+ "not found","ERROR");
+												return ;
+											}
+											this.providers[provider] = {
+												name:provider,
+												Class:ent,
+												type:pro
+											}
 											this.logger(" Register Provider  : "+provider + " ENTITY " +element[pro].name, "DEBUG");
 										})
 									}.bind(this));

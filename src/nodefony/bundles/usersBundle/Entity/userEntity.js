@@ -55,7 +55,7 @@ nodefony.registerEntity("user", function(){
 		ormService.listen(this, 'onReadyConnection', function(connectionName, db, ormService){
 			if(connectionName == 'nodefony'){
 				var session = ormService.getEntity("session");
-				if ( session){
+				if ( session ){
 					model.hasMany(session, {  foreignKey: 'user_id', onDelete: 'CASCADE' });
 				}else{
 					throw "ENTITY ASSOCIATION session NOT AVAILABLE"

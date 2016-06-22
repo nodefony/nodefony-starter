@@ -31,8 +31,54 @@
                 </div>
 	</div>
 
+	<div class="row">
+		<div class="col-md-2 col-lg-12">
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+                        	<div class="panel-heading"><strong>PM2 STATUS  REALTIME  </strong></div>
+                        	<div id="widget-pm2Status" class="panel-body">
+					<div class="container-fluid">
+						<table id="pm2-status" class="table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%">
+							<thead>
+            							<tr>
+                							<th>Name</th>
+                							<th>Id</th>
+                							<th>Mode</th>
+                							<th>Pid</th>
+                							<th>Status</th>
+                							<th>Resart</th>
+                							<th>Uptime</th>
+                							<th>Memory (Mo)</th>
+                							<th>Cpu (%)</th>
+            							</tr>
+        						</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+                        	</div>
+                	</div>
+		</div>
+	</div>
 
+	<div class="row">
+		<div class="col-md-2 col-lg-12">
 
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+                        	<div class="panel-heading"><strong>PM2 MONITOR REALTIME  </strong></div>
+                        	<div  class="panel-body">
+					<div id="widget-pm2" class="container-fluid">	
+						
+					</div>
+						
+                        	</div>
+                	</div>
+
+		</div>
+		
+	</div>
+	
 	<div class="row">
 		<div id="syslog" class="col-md-3 col-lg-4">
 			
@@ -44,14 +90,6 @@
 			
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-2 col-lg-6">
-			{% block route %} <div class="m-b rounded wrapper-xl bg-light dker"></div> {% endblock %}
-
-		</div>
-		<div class="col-md-2 col-lg-6">
-			{% block services %} <div class="m-b rounded wrapper-xl bg-light dker"></div> {% endblock %}
-		</div>
-	</div>
+	
 </div>
 <!-- /dashboard standard layout -->

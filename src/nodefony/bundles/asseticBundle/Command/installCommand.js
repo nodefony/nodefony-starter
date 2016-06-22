@@ -35,30 +35,25 @@ nodefony.registerCommand("assets",function(){
 							this.parseBundles();
 						}.bind(this));
 						console.log(this.table.render());
+						this.terminate(0);
 					break;
 					case "dump" :
-						this.table = new AsciiTable("DUMP ASSET  IN /web/");	
-						this.table.setHeading(
-							"BUNDLE",
-							"DESTINATION PATH",
-							"SOURCE PATH",
-							"SIZE"
-						);
 						this.bundles = this.kernel.getBundles();
-						for ( var bundle in this.bundles ){
-							var views = this.bundles[bundle].views;
-							var engine = container.get("templating") ;
-							for (var view in views){
-								for (var ele in views[view]){
-									engine.compile(views[view][ele], function(error, template){
+						var serviceTemplate = container.get("templating") ;
+						this.kernel.listen(this, "onReady", function(){
+							for ( var bundle in this.bundles ){
+								var views = this.bundles[bundle].resourcesFiles.findByNode("views") ;
+								views.getFiles().forEach(function(file, index, array){
+									serviceTemplate.compile( file, function(error, template){
 										if (error){
-											this.logger(error , 'ERROR')	
+											this.logger(error, "ERROR");
+											return ;
 										}
-										this.logger("COMPILE TEMPLATE : " + template.path ,"INFO")
-									}.bind(this));
-								}
+									}.bind(this) )	
+								})
 							}
-						}
+							this.terminate(0);
+						});
 					break;
 					default:
 						this.logger(new Error(command[0] + " command error"),"ERROR")
@@ -68,8 +63,9 @@ nodefony.registerCommand("assets",function(){
 			default:
 				this.logger(new Error(command[0] + " command error"),"ERROR")
 				this.showHelp();
+				this.terminate(0);
 		}
-		this.terminate(0);
+		
 	};
 
 	Asset.prototype.parseBundles = function(){

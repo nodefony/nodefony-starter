@@ -26,10 +26,12 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 	};
 
 	dbSessionStorage.prototype.open = function(contextSession){
-		this.gc(this.gc_maxlifetime, contextSession);
-		this.entity.count().then(function(sessionCount) {
-			this.manager.logger("CONTEXT "+( contextSession ? contextSession : "default" )+" SEQUELIZE SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+sessionCount );
-		}.bind(this))	
+		if( this.orm.kernel.type != "CONSOLE" ){
+			this.gc(this.gc_maxlifetime, contextSession);
+			this.entity.count({ where: {"context" : contextSession } }).then(function(sessionCount) {
+				this.manager.logger("CONTEXT "+( contextSession ? contextSession : "default" )+" SEQUELIZE SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+sessionCount );
+			}.bind(this))	
+		}
 	};
 
 	dbSessionStorage.prototype.close = function(){

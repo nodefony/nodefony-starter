@@ -19,19 +19,30 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	var Http = function(container, request, response, type){
 		this.type = type;
 		this.container = container; 
+		
 
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
+		this.resolver = null ;
 		this.request = new nodefony.Request( request, container, type);
 		this.response = new nodefony.Response( response, container, type);
 		this.session = null;
+		this.sessionService = this.get("sessions");
+		this.sessionAutoStart = this.sessionService.settings.start ; 
 		this.cookies = {};
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.kernel = this.container.get("kernel") ;
-		this.domain =  this.container.getParameters("kernel").system.domain;
+		if ( this.kernel.environment === "dev" ){
+			this.autoloadCache = {
+				bundles:{}
+			} ;
+		}
+		this.kernelHttp = this.container.get("httpKernel");
+		this.domain =  this.request.domain ; 
+		this.validDomain = this.isValidDomain() ;
 
 		this.logger("request from : "+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
 			host:request.headers.host ,
@@ -47,9 +58,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.security = null ;
 		this.user = null ;
 
-		
-
-		this.url = this.request.url.href;
+		this.url =url.format(this.request.url);
 		this.remoteAddress = this.request.remoteAdress ; 
 
 		// LISTEN EVENTS KERNEL 
@@ -63,10 +72,35 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 				status:408,
 				message:new Error("Timeout :" + this.url)
 			} );	
+			//context.clean();
 		} );
-
-
 	};
+
+	Http.prototype.isValidDomain = function(){
+		return this.kernelHttp.isDomainAlias(  this.getHostName() );
+	}
+
+	Http.prototype.getRemoteAdress = function(){
+		return this.request.getRemoteAdress() ;
+	};
+
+	Http.prototype.getHost = function(){
+		return this.request.getHost() ;
+	};
+
+	Http.prototype.getHostName = function(){
+		return this.request.getHostName() ;
+	};
+
+
+	Http.prototype.getUserAgent = function(){
+		return this.request.getUserAgent();
+	};
+
+	Http.prototype.getMethod = function(){
+		return this.request.getMethod() ;
+	};
+
 
 	Http.prototype.handle = function(container, request , response, data){
 		var get = this.container.setParameters("query.get", this.request.queryGet );
@@ -85,15 +119,17 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
  		 *	TRY resolve
  		 */
 		try {
-			this.resolver = this.get("router").resolve(this.container, this.request);
+			if (!  this.resolver ){
+				this.resolver = this.get("router").resolve(this.container, this.request);
+			}
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	
 			if (this.resolver.resolve) {
-				var ret = this.resolver.callController(data);
 				// timeout response 
 				this.response.response.setTimeout(this.response.timeout, function(){
 					this.notificationsCenter.fire("onTimeout", this);
 				}.bind(this))
+				var ret = this.resolver.callController(data);
 				return ret ;
 			}
 			/*
@@ -118,7 +154,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		delete 	this.request ;
 		this.response.clean();
 		delete 	this.response ;
-		delete  this.domain ;
 		delete  this.notificationsCenter ;
 		delete  this.session ;
 		delete  this.cookies ;
@@ -208,6 +243,11 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(url.format(Url), status)
 		else	
 			this.response.redirect(Url, status)
+		this.notificationsCenter.fire("onResponse", this.response, this.context);
+	};
+
+	Http.prototype.redirectHttps = function( status ){
+		this.response.redirect( this.url.replace("http" , "https"), status );
 		this.notificationsCenter.fire("onResponse", this.response, this.context);
 	};
 

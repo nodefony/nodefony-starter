@@ -47,6 +47,10 @@ stage.registerController("navController", function() {
 		this.router.createRoute("sessions", "/sessions", {
 			controller:"appModule:nav:sessions"
 		});
+		this.router.createRoute("firewall", "/firewall", {
+			controller:"appModule:nav:firewall"
+		});
+
 
 
 
@@ -278,11 +282,44 @@ stage.registerController("navController", function() {
 	 *
 	 */
 	controller.prototype.requestsAction = function() {
-		$.ajax("/nodefony/api/requests",{
+		
+		this.renderDefaultContent("appModule:request:requests",{
+			requests:[]
+		});
+		$("table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				url:"/nodefony/api/requests",
+				data:function ( d ) {
+					d.type = "dataTable";
+				},
+				"type": "GET",
+				//"dataSrc": "response.data",
+			},
+			"order": [[ 1, "desc" ]],
+			"columns": [
+            			{ "name":"id","data": "uid" },
+            			{ "name":"createdAt", "data": "timeStamp" },
+            			{ "name":"url","data": "url" },
+            			{ "name":"route","data": "route" },
+            			{ "name":"method","data": "method" },
+            			{ "name":"state","data": "state" },
+            			{ "name":"protocole","data": "protocole" },
+            			{ "name":"username", "data": "username" }
+        		],
+			"rowCallback": function( row, data ) {
+				$(row).click(function(){
+					this.redirect( this.generateUrl("request",{uid:data.uid}) ) ;
+				}.bind(this))
+			}.bind(this)
+		});
+
+		// SYSLOG
+		/*$.ajax("/nodefony/api/requests",{
 			success:function(data, status, xhr){
 				var obj = [];
 				for (var res in data.response.data ){
-					//console.log(data.response.data[res])
 					obj.push({
 						date: new Date( data.response.data[res].timeStamp ),
 						url:data.response.data[res].payload["request"].url,
@@ -306,8 +343,7 @@ stage.registerController("navController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		});
-		
+		});*/
 	};
 
 
@@ -367,7 +403,8 @@ stage.registerController("navController", function() {
 						ip:data.response.data.payload["request"].remoteAdress,
 						request:data.response.data.payload["request"],
 						response:data.response.data.payload["response"],
-						security:data.response.data.payload["security"],
+						security:data.response.data.payload["context_secure"],
+						area_security:data.response.data.payload["security"],
 						//payload:data.response.data.payload,
 						routing:data.response.data.payload["routing"],
 						route:data.response.data.payload["route"],
@@ -419,7 +456,6 @@ stage.registerController("navController", function() {
 		$.ajax("/nodefony/api/users",{
 			//dataType:"json",
 			success:function(data, status, xhr){
-				console.log(data.response.data)
 				this.renderDefaultContent("appModule::users",{
 					users:data.response.data
 				});
@@ -437,19 +473,58 @@ stage.registerController("navController", function() {
 	 */
 	controller.prototype.sessionsAction = function() {
 
-		$.ajax("/nodefony/api/sessions",{
+		
+		this.renderDefaultContent("appModule::sessions",{
+			sessions:[]
+		});
+
+		$("table").DataTable({
+			"processing": true,
+			"serverSide": true,
+			"ajax": {
+				url:"/nodefony/api/sessions",
+				data:function ( d ) {
+					d.type = "dataTable";
+				},
+				"type": "GET",
+			},
+			"order": [[ 0, "desc" ]],
+			"columns": [
+            			{ "name":"updatedAt", "data": "updatedAt" },
+            			{ "name":"username", "data": "user.username" },
+            			{ "name":"metaBag","data": "metaBag.request" },
+            			{ "name":"session_id", "data": "session_id" },
+            			{ "name":"context", "data": "context" },
+            			{ "name":"metaBag", "data": "metaBag.remoteAddress" },
+            			{ "name":"Attributes","data": "Attributes.lang" },
+            			{ "name":"ua","data": "metaBag.user_agent" },
+        		],
+			"rowCallback": function( row, data ) {
+				$(row).click(function(){
+					//this.redirect( this.generateUrl("request",{uid:data.uid}) ) ;
+				}.bind(this))
+			}.bind(this)
+		});
+		
+	};
+	
+	/*
+	 *
+	 */
+	controller.prototype.firewallAction = function() {
+
+		$.ajax("/nodefony/api/security",{
 			//dataType:"json",
 			success:function(data, status, xhr){
-				this.renderDefaultContent("appModule::sessions",{
-					sessions:data.response.data
+				this.renderDefaultContent("appModule:security:firewall",{
+					security:data.response.data
 				});
-				$("table").DataTable();
 			}.bind(this),
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
 		})
 	};
-	
+
 	return controller;
 });

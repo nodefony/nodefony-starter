@@ -115,3 +115,22 @@ monitoring-sessions:
   requirements: 
     method: GET
 
+monitoring-pm2:
+  pattern:   /nodefony/api/pm2/{action}   
+  defaults: {controller: "monitoringBundle:api:pm2"}
+  requirements: 
+    method: GET
+
+monitoring-security:
+  pattern:   /nodefony/api/security  
+  defaults: {controller: "monitoringBundle:api:security"}
+  requirements: 
+    method: GET
+
+monitoring-test-load:
+  pattern:   /nodefony/test/load  
+  defaults: {controller: "monitoringBundle:default:testLoad"}
+  requirements: 
+    method: WEBSOCKET
+
+
