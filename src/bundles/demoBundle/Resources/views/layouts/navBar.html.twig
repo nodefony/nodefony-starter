@@ -49,9 +49,9 @@
 						{% if  webrtc  %}
 							<li><a href="{{path("webrtc")}}">DEMO WEBRTC</a></li>
 							<li role="separator" class="divider"></li>
+							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
 						{% endif %}
 						{% if  user.username  %}
-							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
 						{% endif %}
                                         </ul>
                                 </li>

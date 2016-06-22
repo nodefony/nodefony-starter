@@ -139,7 +139,8 @@
 }
 
 #nodefony-container .pull-right {
-	float:			right;
+	position:		absolute;
+	right:			5px;
 }
 
 #nodefony-container .pull-left {
