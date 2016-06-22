@@ -111,7 +111,7 @@ nodefony.registerCommand("minification",function(){
 	return {
 		name:"minification",
 		commands:{
-			compile:["minification:compile [compilateur]" ,"Minificaton javascript compilateur : google / yahoo"],
+			//compile:["minification:compile [compilateur]" ,"Minificaton javascript compilateur : google / yahoo"],
 		},
 		worker:Minification
 	}

@@ -28,8 +28,8 @@ nodefony.registerCommand("less",function(){
 	return {
 		name:"less",
 		commands:{
-			render:["less:render" ,"Less CSS compilateur "],
-			compile:["less:compile" ,"Less CSS compilateur "],
+			//render:["less:render" ,"Less CSS compilateur "],
+			//compile:["less:compile" ,"Less CSS compilateur "],
 		},
 		worker:Less
 	}
