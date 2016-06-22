@@ -25,8 +25,15 @@ nodefony.registerCommand("Monitoring",function(){
 							this.showHelp();
 							this.terminate();
 						}
+						if ( ! url.protocol ){
+							var proto = "http";
+							url.protocol = "http:";
+							url.href = "http://"+url.href;
+						}else{
+							var proto = url.protocol.replace(":", "");	
+						}
 						this.serverLoad.handleConnection({
-							type:url.protocol.replace(":", "") ,
+							type: proto,
 							nbRequest:nb || 1000,
 							concurence:concurence || 40,
 							url:url.href,

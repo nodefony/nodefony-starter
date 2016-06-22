@@ -31,7 +31,6 @@ nodefony.registerBundle ("monitoring", function(){
 		this.infoBundles = {};
 		
 		this.gitInfo = {} ;
-		console.log(this.kernel.rootDir)
 		Git.Repository.open(this.kernel.rootDir).then(function(repo){
 			repo.getCurrentBranch().then(function(reference){
 				this.gitInfo["currentBranch"] = reference.shorthand() ;	
@@ -63,11 +62,6 @@ nodefony.registerBundle ("monitoring", function(){
 						}.bind(this, event ) )	
 				}
 			}
-			
-			/*Git.Repository.getReferenceNames().then(function(arrayString){
-				console.log(arrayString)
-			})*/
-		
 		});
 
 

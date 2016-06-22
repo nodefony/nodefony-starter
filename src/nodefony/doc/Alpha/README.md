@@ -14,9 +14,9 @@ __Table of content__
 - [References / Thanks](#references--thanks)
 - [Authors](#authors)
 - [License](#license)
+- [Demo](#demo)
 
 #### Documentation and Wiki in progress !!
-#### Alpha Release Soon !!
 
 ## <a name="requirements"></a>Requirements
 
@@ -231,7 +231,25 @@ $ ./nodefony_dev
 
 Access to bundle route with URL : http://nodefony.com:5151/hello
 
-More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
+
+#### Start Framework in PRODUCTION CLUSTER MODE:
+```
+# TO START NODEFONY IN CLUSTER NODE
+
+$ make start
+
+# TO STOP 
+$ make kill 
+
+```
+
+#### Monitoring FRAMEWORK in PRODUCTION CLUSTER MODE:
+
+Access to monitoring route with URL : http://nodefony.com:5151/nodefony
+
+[![MONITORING](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/cluster.png)](https://github.com/ccamensuli/nodefony)
+
+Monitoring in progress !!! 
 
 
 ## <a name="references--thanks"></a>References / Thanks
@@ -244,7 +262,6 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 |-----------------------------------------------------------------------------------------------------------------------------------------|
 |     NAME      | VERSION |						   DESCRIPTION                                                    |
 |---------------|---------|---------------------------------------------------------------------------------------------------------------|
-| coffee-script | 1.10.0  | Unfancy JavaScript                                                                                            |
 | less          | 2.6.1   | Leaner CSS                                                                                                    |
 | memcached     | 2.2.1   | A fully featured Memcached API client, supporting both ...						          |
 | mysql         | 2.10.2  | A node.js driver for mysql. It is written in JavaScript, does not require compiling ...			  |
@@ -268,6 +285,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 | shortid       | 2.2.4   | Amazingly short non-sequential url-friendly unique id generator.                                              |
 | twig          | 0.8.8   | JS port of the Twig templating language.                                                                      |
 | websocket     | 1.0.22  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.               |
+| pm2		| 1.1.3   | Production process manager for Node.JS applications with a built-in load balancer.				  |
 | xml2js        | 0.4.16  | Simple XML to JavaScript object converter.                                                                    |
 '-----------------------------------------------------------------------------------------------------------------------------------------'
 
@@ -283,6 +301,8 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 - [Framework Symfony](http://symfony.com/)
 - [Twig.js](https://github.com/justjohn/twig.js/wiki)
 
+More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
+
 ## <a name="authors"></a>Authors
 
 - Christophe CAMENSULI  [github/ccamensuli](https://github.com/ccamensuli)
@@ -290,3 +310,7 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 ##  <a name="license"></a>License
 
 [CeCILL-B](https://github.com/ccamensuli/nodefony/blob/master/LICENSE)
+
+##  <a name="demo"></a>Demo 
+
+[Demo](http://nodefony.fr)
