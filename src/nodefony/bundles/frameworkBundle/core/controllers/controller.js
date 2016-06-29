@@ -163,6 +163,17 @@ nodefony.register("controller", function(){
 		this.notificationsCenter.fire("onResponse", res , this.context);
 	};
 
+	Controller.prototype.renderJson = function( obj , status , headers){
+		try {
+			var data = JSON.stringify( obj ) ;
+		}catch(e){
+			throw e		
+		}
+		return this.renderResponse( data, status || 200 , nodefony.extend( {}, {
+			'Content-Type': "text/json ; charset="+ this.context.response.encoding	
+		}, headers ));
+	}
+
 	Controller.prototype.renderAsync = function(view, param){
 		var response = this.render(view, param);
 		if ( response )
@@ -400,6 +411,11 @@ nodefony.register("controller", function(){
 	Controller.prototype.isAjax = function(){
 		return this.getRequest().isAjax();
 	};
+
+	Controller.prototype.hideDebugBar = function(){
+		this.context.showDebugBar = false;
+	};
+
 		
 	Controller.prototype.generateUrl = function(name, variables, absolute){
 		if (absolute){

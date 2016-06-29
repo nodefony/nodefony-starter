@@ -112,7 +112,7 @@ nodefony.register("Bundle", function(){
 		this.registerControllers();
 
 		// Register Views
-		this.registerViews( this.resourcesFiles );
+		this.registerViews( /*this.resourcesFiles*/ );
 
 		// Register internationalisation 
 		this.registerI18n(this.locale);
@@ -219,8 +219,16 @@ nodefony.register("Bundle", function(){
 
 		var serviceTemplate = this.get("templating") ;
 
-		// find  views files 
-		var views = result.findByNode("views") ;
+		if ( ! result ){
+			var views = new nodefony.finder( {
+				path:this.path+"/Resources/views",
+			}).result;
+	
+		}else{
+			// find  views files 
+			var views = result.findByNode("views") ;
+		}
+		
 		views.getFiles().forEach(function(file, index, array){
 			var basename = path.basename(file.dirName);
 			if (basename !== "views"){

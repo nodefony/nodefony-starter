@@ -438,6 +438,7 @@ nodefony.registerController("demo", function(){
  	 *	HTTP REQUEST FOR PROXY  
  	 */
 	demoController.prototype.httpRequestAction = function(){
+		this.hideDebugBar();
 		//this.getResponse().setTimeout(5000)
 		//return 
 
@@ -606,8 +607,22 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.redirectGoogleAction= function(){
 		// status 301 or 302
-		return this.redirect("http://google.com"/*, status*/);
+		return this.redirect("http://google.com");
+		//return this.redirect("/json", 302);
 	};
+
+
+	/**
+ 	 *
+ 	 *	render JSON 
+ 	 */
+	demoController.prototype.jsonAction= function(){
+		return this.renderJson({
+			foo:"bar",
+			bar:"foo"
+		});
+	};
+
 
 	/**
  	 *

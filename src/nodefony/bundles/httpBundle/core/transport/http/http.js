@@ -34,6 +34,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.cookies = {};
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
+		this.showDebugBar = true ;
 		this.kernel = this.container.get("kernel") ;
 		if ( this.kernel.environment === "dev" ){
 			this.autoloadCache = {

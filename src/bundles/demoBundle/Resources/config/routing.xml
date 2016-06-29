@@ -110,6 +110,19 @@
 		<default key="controller">demoBundle:demo:websoket</default>
 	</route>
 
+
+	<!-- json -->
+	<route id="json"  pattern="/demo/json">
+		<default key="controller">demoBundle:demo:json</default>
+	</route>
+
+		<!-- json -->
+	<route id="redirect"  pattern="/demo/redirect">
+		<default key="controller">demoBundle:demo:redirectGoogle</default>
+	</route>
+
+
+
 	<!-- TODO -->	
 	<!--  <import resource="routing2.xml" prefix="/prefix" />
 	<import resource="routing3.xml" hostname_pattern="hello.example.com" />  -->

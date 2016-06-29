@@ -157,22 +157,20 @@ nodefony.register("Response",function(){
 	};
 
 	Response.prototype.end = function(data, encoding){
-		//console.log('pass response end')
 		if ( this.response ){
 			this.ended = true ;
 			var ret = this.response.end(data, encoding);
-			//this.kernel.container.leaveScope(this.container);
 			return ret ;
 		}
 		return null ;
 	};	
 
 	Response.prototype.redirect = function(url, status){
-		if (status === "301")
+		if (status == "301"){
 			this.setStatusCode( status );
-		else
+		}else{
 			this.setStatusCode( 302 );
-
+		}
 		this.setHeader("Location", url);		
 		return this;
 	};

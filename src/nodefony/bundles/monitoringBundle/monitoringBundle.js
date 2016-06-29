@@ -398,7 +398,7 @@ nodefony.registerBundle ("monitoring", function(){
 							headers:response.response._headers	
 						}
 						
-						if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
+						if( !  context.request.isAjax() && context.showDebugBar /*&& obj.route.name !== "monitoring"*/ ){
 							var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 							if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
 								this.get("templating").renderFile(View, context.profiling,function(error , result){
