@@ -386,7 +386,7 @@ nodefony.registerBundle ("monitoring", function(){
 
 					
 					
-					context.listen(this, "onSend", function(response, Context){
+					context.listen(this, "onSendMonitoring", function(response, Context){
 						context.profiling["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
 						context.profiling["response"] = {
 							statusCode:response.statusCode,
@@ -559,7 +559,7 @@ nodefony.registerBundle ("monitoring", function(){
     							id:context.profiling.id,
   						}
 					}).then(function(result){
-						this.kernel.logger("ORM REQUEST UPDATE","DEBUG");
+						this.kernel.logger("ORM REQUEST UPDATE ID : " + context.profiling.id,"DEBUG");
 						callback(null, result);
 					}.bind(this)).catch(function(error){
 						this.kernel.logger(error);
@@ -600,7 +600,7 @@ nodefony.registerBundle ("monitoring", function(){
 						data		: JSON.stringify(context.profiling) 
 					},{isNewRecord:true})
 					.then(function(request){
-						this.kernel.logger("ORM REQUEST SAVE","DEBUG");
+						this.kernel.logger("ORM REQUEST SAVE ID :" + request.id ,"DEBUG");
 						if ( context && context.profiling)
 							context.profiling.id = request.id ;
 						callback(null ,  request);

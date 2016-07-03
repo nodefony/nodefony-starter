@@ -170,6 +170,8 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 
 
 	Http.prototype.send = function(response, context){
+		if (! context)
+		console.trace(response)
 		if (response.response.headersSent )
 			return this.close();
 		switch (true){
@@ -195,6 +197,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			// END REQUEST
 			return this.close();
 		}
+		this.notificationsCenter.fire("onSendMonitoring", response, context);
 	};
 
 	Http.prototype.flush = function(data, encoding){
@@ -246,12 +249,12 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 			this.response.redirect(url.format(Url), status)
 		else	
 			this.response.redirect(Url, status)
-		this.notificationsCenter.fire("onResponse", this.response, this.context);
+		this.notificationsCenter.fire("onResponse", this.response, this);
 	};
 
 	Http.prototype.redirectHttps = function( status ){
 		this.response.redirect( this.url.replace("http" , "https"), status );
-		this.notificationsCenter.fire("onResponse", this.response, this.context);
+		this.notificationsCenter.fire("onResponse", this.response, this);
 	};
 
 	Http.prototype.setXjson  = function( xjson){
