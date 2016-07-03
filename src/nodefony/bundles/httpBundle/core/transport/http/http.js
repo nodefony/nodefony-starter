@@ -170,8 +170,6 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 
 
 	Http.prototype.send = function(response, context){
-		if (! context)
-		console.trace(response)
 		if (response.response.headersSent )
 			return this.close();
 		switch (true){
