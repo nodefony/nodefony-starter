@@ -187,12 +187,14 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.response.writeHead();
 
 		this.notificationsCenter.fire("onSend", response, context);
-		/*
- 	 	* WRITE RESPONSE
- 	 	*/  
-		this.response.write();
-		// END REQUEST
-		return this.close();
+		if ( ! context.profiling ){
+			/*
+ 	 		* WRITE RESPONSE
+ 	 		*/  
+			this.response.write();
+			// END REQUEST
+			return this.close();
+		}
 	};
 
 	Http.prototype.flush = function(data, encoding){

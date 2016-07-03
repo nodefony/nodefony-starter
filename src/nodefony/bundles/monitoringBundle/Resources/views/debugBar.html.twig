@@ -125,8 +125,8 @@
 
 		<li >	
 			<label class="label" >
-				{% if requestId %}
-					<a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=securityNav'> FIREWALL</a>
+				{% if id %}
+					<a target="blank" href='{{path("monitoring-index")}}#/request/{{id}}?tab=securityNav'> FIREWALL</a>
 				{% else %} 
 					 FIREWALL
 				{% endif %}
@@ -182,8 +182,8 @@
 
 		<li >	
 			<label class="label label-default">
-				{% if requestId %}
-					<a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=request'>{{routeur.pattern}}<a>
+				{% if id %}
+					<a target="blank" href='{{path("monitoring-index")}}#/request/{{id}}?tab=request'>{{routeur.pattern}}<a>
 				{% else %}
 					 {{routeur.pattern}}
 				{% endif %}
@@ -191,8 +191,9 @@
 			<div class="details">
 				<ul>
 					<li><label style="color:#999">ROUTER SERVICE</label></li>
+					<li><label>Bundle</label><span class="label label-success">{{routeur.bundle}}</span></li>
+					<li><label>Pattern</label><span class="label label-success">{{routeur.pattern}}</span></li>
 					<li><label>Controller</label><span class="label label-success">{{routeur.Controller}}</span></li>
-					<li><label>Bundle</label><span class="label label-success">{{bundle}}Bundle</span></li>
 					<li><label>Action</label><span class="label label-success">{{routeur.action}}</span></li>
 					<li class="separator"> </li>
 					<li><label style="color:#999">ROUTE</label></li>
@@ -225,8 +226,8 @@
 				<label class="label label-default" >PROXY</label>
 			{% endif %}	
 			<label class="label label-success" >{{ request.protocol }}</label>
-			{% if requestId %}	
-				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>REQUEST</a></label>
+			{% if id %}	
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{id}}'>REQUEST</a></label>
 			{% else %}
 				<label class="label" >REQUEST</label>
 			{% endif %}
@@ -248,8 +249,8 @@
 							<li class="separator"></li>
 						{% endif %}
 						{% if key == "headers" %}
-							{% if requestId %}
-								<li><label class="label" ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}'>SHOW HEADERS</a></label></li>
+							{% if id %}
+								<li><label class="label" ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/request/{{id}}'>SHOW HEADERS</a></label></li>
 							{% endif %}
 							{% for key, value in request.headers %}
 								<!--li><label>{{ key | capitalize }}</label><span class="label black">{{value}}</span></li-->
@@ -317,8 +318,8 @@
 		<li class="separator"></li>
 
 		<li>
-			{% if requestId %}	
-				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{requestId}}?tab=response'>RESPONSE</a></label>
+			{% if id %}	
+				<label class="label" ><a target="blank" href='{{path("monitoring-index")}}#/request/{{id}}?tab=response'>RESPONSE</a></label>
 			{% else %}
 				<label class="label" >RESPONSE</label>
 			{% endif %}

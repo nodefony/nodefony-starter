@@ -406,7 +406,7 @@ stage.registerController("navController", function() {
 						security:data.response.data.payload["context_secure"],
 						area_security:data.response.data.payload["security"],
 						//payload:data.response.data.payload,
-						routing:data.response.data.payload["routing"],
+						router:data.response.data.payload["routeur"],
 						route:data.response.data.payload["route"],
 						routeParmeters:data.response.data.payload["routeParmeters"],
 						cookies:data.response.data.payload.cookies,

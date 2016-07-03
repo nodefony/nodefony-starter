@@ -202,17 +202,9 @@ nodefony.registerBundle ("monitoring", function(){
 
 			context.profiling = null ;
 
-			var stop = this.storageProfiling && this.settings.debugBar ;
-			if( ! stop){
+			if ( ! this.isMonitoring(context) ){
 				return ;
-			} 
-
-			if ( context.resolver.route.name.match(/^monitoring-/) )
-				return ;
-
-			if ( ! context.resolver.resolve )
-				return ;
-
+			}
 
 			var trans = context.get("translation");
 			context.profiling = {
@@ -248,7 +240,10 @@ nodefony.registerBundle ("monitoring", function(){
 					domain:trans.defaultDomain
 				}
 			};
+
 			nodefony.extend(context.profiling, context.extendTwig);
+
+			
 
 			for(var event in context.notificationsCenter.event["_events"] ){
 				if ( event == "onRequest"){
@@ -343,6 +338,8 @@ nodefony.registerBundle ("monitoring", function(){
 				crossDomain:context.crossDomain
 			}
 
+			
+
 			switch (context.type){
 				case "HTTP":
 				case "HTTPS":
@@ -386,6 +383,8 @@ nodefony.registerBundle ("monitoring", function(){
 						encoding:context.response.encoding,
 						"content-type":context.response.response.getHeader('content-type')
 					};
+
+					
 					
 					context.listen(this, "onSend", function(response, Context){
 						context.profiling["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
@@ -397,35 +396,43 @@ nodefony.registerBundle ("monitoring", function(){
 							"content-type":response.response.getHeader('content-type'),
 							headers:response.response._headers	
 						}
-						
-						if( !  context.request.isAjax() && context.showDebugBar /*&& obj.route.name !== "monitoring"*/ ){
-							var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-							if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-								this.get("templating").renderFile(View, context.profiling,function(error , result){
-									if (error){
-										throw error ;
-									}
-									response.body = response.body.replace("</body>",result+"\n </body>") ;
-								});
-							}else{
-								//context.setXjson(context.profiling);
+
+						this.saveProfile(context, function(error, res){
+							if (error){
+								this.kernel.logger(error);
 							}
-						}else{
-							//context.setXjson(context.profiling);	
-						}
+							if( !  context.request.isAjax() && context.showDebugBar /*&& obj.route.name !== "monitoring"*/ ){
+								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+								if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
+									this.get("templating").renderFile(View, context.profiling,function(error , result){
+										if (error){
+											throw error ;
+										}
+										response.body = response.body.replace("</body>",result+"\n </body>") ;
+									});
+								}else{
+									//context.setXjson(context.profiling);
+								}
+							}else{
+								//context.setXjson(context.profiling);	
+							}
+							/*
+ 	 						 *  WRITE RESPONSE
+ 	 						 */  
+							context.response.write();
+							// END REQUEST
+							return context.close();
+
+							if (context){
+								delete context.profiling ;	
+							}
+						}.bind(this));
 					})
-					context.listen(this, "onFinish",function(Context){
-						if (context.profiling){
-							this.saveProfile(context, function(error, res){
-								if (error){
-									this.kernel.logger(error);
-								}
-								if (context){
-									delete context.profiling ;	
-								}
-							}.bind(this));
-						}
-					}.bind(this));
+					
+					
+					/*context.listen(this, "onFinish",function(Context){
+						console.log("PASS");	
+					}.bind(this));*/
 
 				break;
 				case "WEBSOCKET":
@@ -521,6 +528,21 @@ nodefony.registerBundle ("monitoring", function(){
 		});
 	}		
 	
+
+	monitoring.prototype.isMonitoring = function(context){
+		var stop = this.storageProfiling && this.settings.debugBar ;
+		if( ! stop){
+			return false;
+		} 
+
+		if ( context.resolver.route.name.match(/^monitoring-/) )
+			return false;
+
+		if ( ! context.resolver.resolve )
+			return false;
+		return true ;
+	}
+
 	monitoring.prototype.updateProfile = function( context , callback){
 		if ( context.profiling) {
 			switch( this.storageProfiling ){
@@ -551,44 +573,45 @@ nodefony.registerBundle ("monitoring", function(){
 	}
 
 	monitoring.prototype.saveProfile = function(context , callback){
-
-		switch( this.storageProfiling ){
-			case "syslog" :
-				this.syslogContext.logger(context.profiling);
-				var logProfile = this.syslogContext.getLogStack();
-				context.profiling.id = logProfile.uid ;
-				callback(null, logProfile)
-				return ;
-			break;
-			case "orm":
-				// DATABASE ENTITY
-				if ( context.profiling.context_secure ){
-					var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 
-				}else{
-					var user = "none" ;	
-				}
-				this.requestEntity.create({
-					id		: null,
-					url		: context.profiling.request.url,
-					route		: context.profiling.route.name,
-					method		: context.profiling.request.method,
-					state		: context.profiling.response.statusCode,
-					protocole	: context.profiling.context.type,
-					username	: user,
-					data		: JSON.stringify(context.profiling) 
-				},{isNewRecord:true})
-				.then(function(request){
-					this.kernel.logger("ORM REQUEST SAVE","DEBUG");
-					if ( context && context.profiling)
-						context.profiling.id = request.id ;
-					callback(null ,  request);
-				}.bind(this)).catch(function(error){
-					this.kernel.logger(error);
-					callback(error, null)
-				}.bind(this));
-			break;
-			default:
-				callback(new Error("No PROFILING"), null)
+		if (context.profiling){
+			switch( this.storageProfiling ){
+				case "syslog" :
+					this.syslogContext.logger(context.profiling);
+					var logProfile = this.syslogContext.getLogStack();
+					context.profiling.id = logProfile.uid ;
+					callback(null, logProfile)
+					return ;
+				break;
+				case "orm":
+					// DATABASE ENTITY
+					if ( context.profiling.context_secure ){
+						var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 
+					}else{
+						var user = "none" ;	
+					}
+					this.requestEntity.create({
+						id		: null,
+						url		: context.profiling.request.url,
+						route		: context.profiling.route.name,
+						method		: context.profiling.request.method,
+						state		: context.profiling.response.statusCode,
+						protocole	: context.profiling.context.type,
+						username	: user,
+						data		: JSON.stringify(context.profiling) 
+					},{isNewRecord:true})
+					.then(function(request){
+						this.kernel.logger("ORM REQUEST SAVE","DEBUG");
+						if ( context && context.profiling)
+							context.profiling.id = request.id ;
+						callback(null ,  request);
+					}.bind(this)).catch(function(error){
+						this.kernel.logger(error);
+						callback(error, null)
+					}.bind(this));
+				break;
+				default:
+					callback(new Error("No PROFILING"), null)
+			}
 		}
 	}
 
