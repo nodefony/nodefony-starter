@@ -174,6 +174,12 @@ nodefony.register("controller", function(){
 		}, headers ));
 	}
 
+	Controller.prototype.renderJsonAsync = function(obj , status , headers){
+		var response = this.renderJson(obj , status , headers);
+		if ( response )
+			this.notificationsCenter.fire("onResponse", response,  this.context );
+	};
+
 	Controller.prototype.renderAsync = function(view, param){
 		var response = this.render(view, param);
 		if ( response )

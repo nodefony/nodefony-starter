@@ -78,7 +78,9 @@ nodefony.registerService("httpKernel", function(){
 	}
 
 	httpKernel.prototype.isDomainAlias = function(host){
-		return this.regAlias.test(host);
+		if ( this.regAlias )
+			return this.regAlias.test(host);
+		return false ;
 	}
 
 	

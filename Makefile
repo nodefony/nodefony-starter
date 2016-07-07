@@ -60,8 +60,8 @@ npm:
 	fi
 
 asset:
-	./console assets:dump 
 	./console assets:install 
+	./console assets:dump 
 
 framework:
 	@if [ ! -d tmp ] ; then  \
