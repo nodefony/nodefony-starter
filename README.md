@@ -2,6 +2,10 @@
 
 ###  **Framework Node.js Realtime Symfony Like**
 
+Warning !!! There is not yet a comprehensive documentation of this alpha version .
+You can currently track the source code of the demo bundle (controllers, config ..), 
+with a good foundation of the Symfony framework, 
+it is possible to understand the concepts fundamentals.
 
 __Table of content__
 
