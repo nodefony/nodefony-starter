@@ -34,7 +34,7 @@ __Table of content__
 #### System :
 - LINUX ( Checked )
 
-  Debian : sudo apt-get install nodejs-legacy
+  -  **[Install Node.js via Package](https://nodejs.org/en/download/package-manager)** 
 
 - MACOS ( Checked )
 
