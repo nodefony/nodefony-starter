@@ -1,0 +1,115 @@
+#
+#
+#	CONFIG BUNDLE callContactBundle 
+#
+#===============================================================================
+#
+#  Copyright © /2016         | 
+#
+# ===============================================================================
+#
+#        GENERATE BY Demo BUILDER YAML FILE 
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+
+########## Demo CONFIG BUNDLE  callContactBundle  ############
+name :				callContactBundle
+version:			"1.0"
+locale :			en_en
+
+mongodb:
+  url: 192.168.100.230
+  port: 27017
+  login:
+  pass:
+
+
+defaultApi: TFM  
+
+env: "dev"
+debug: true
+
+api:
+  # add fakeclientdomain.org on 192.168.138.77 to /etc/host
+  # add ccapiwebrtcproxy1 192.168.138.77 to /etc/host
+  CCAPI:
+        disableVideo: 1
+        enableRTCWebBreaker: 0
+        WebSockServerUrl: "wss://ccapiwebrtcproxy1:10443"
+        SIPProxyUrl: "fakeclientdomain.org"
+        ICEServers: ""
+        maxBandwidth: "{ audio:64, video:512 }"
+        VideoSize: "{ minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }"
+        disableIMS3Gpp: 0
+        disableDebugMessage: 0
+        streamMediaCache: 0
+        disableCallOptionButton: 0
+        network: FIBRE
+        DTMF: SIP-INFO
+        mongodbUrl: "mongodb://192.168.10.60:27017/kamailio"
+        userConfig:
+          displayName: christophe.camensuli
+          publicIdentity: christophe.camensuli
+          realm: fakeclientdomain.org
+  TFM:
+        disableVideo: 0
+        enableRTCWebBreaker: 0
+        WebSockServerUrl: "wss://192.168.10.60:10443"
+        SIPProxyUrl: "192.168.10.60"
+        ICEServers: ""
+        maxBandwidth: "{ audio:64, video:512 }"
+        VideoSize: "{ minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }"
+        disableIMS3Gpp: 0
+        disableDebugMessage: 0
+        streamMediaCache: 0
+        disableCallOptionButton: 0
+        network: FIBRE
+        DTMF: RTP-EVENT
+        mongodbUrl: "mongodb://192.168.10.60:27017/kamailio"
+        userConfig:
+          displayName: 2000
+          publicIdentity: 2000
+          realm: tfm-callcontact       
+  NODEFONY:
+        disableVideo: 0
+        enableRTCWebBreaker: 0
+        WebSockServerUrl: "/secure/realtime"
+        SIPProxyUrl: "nodefony.fr"
+        ICEServers: "{ url: stun:stun.l.google.com:19302}, { url:turn:user@numb.viagenie.ca, credential:myPassword}"
+        maxBandwidth: "{ audio:64, video:512 }"
+        VideoSize: "{ minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }"
+        disableIMS3Gpp: 0
+        disableDebugMessage: 0
+        streamMediaCache: 0
+        disableCallOptionButton: 0
+        network: FIBRE
+        DTMF: DTMF-OFF
+        publicAdress: 109.7.203.160
+        mongodbUrl: "mongodb://192.168.10.60:27017/kamailio"
+        userConfig:
+          displayName: 1000
+          publicIdentity: 1000
+          realm: nodefony-callcontact
+
+
+  
+
+
+

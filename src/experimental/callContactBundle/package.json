@@ -1,0 +1,14 @@
+{
+  	"name": "CALLCONTACT",
+  	"version": "1.0",
+  	"description": "",
+  	"author": " ",
+  	"contributors": [],
+  	"keywords": [
+		"nodefony",
+		"javascript"
+  	],
+  	"dependencies": {
+		"mongodb": "*"
+  	}
+}

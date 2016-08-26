@@ -1,0 +1,59 @@
+{% extends "/app/Resources/views/base.html.twig" %}
+
+
+{% block title %} {{ title }} {% endblock %}
+
+
+{% block stylesheets %}
+
+	{% stylesheets  output="/webAudioApiBundle/css/layout.css"
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
+        "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
+	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+        "/webAudioApiBundle/css/clean/style.css"
+        %}
+    	<link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+	{% javascripts output='/webAudioApiBundle/js/layout.js' filter='?uglifyjs2'
+		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+		"/callContactBundle/twig/twig.js"
+		"/webAudioApiBundle/stage/stage.js"
+		"/webAudioApiBundle/stage/function.js"
+		"/webAudioApiBundle/stage/notificationsCenter.js"
+		"/webAudioApiBundle/stage/syslog/syslog.js"
+		"/webAudioApiBundle/stage/xml.js"
+		"/webAudioApiBundle/stage/io/io.js"
+		"/webAudioApiBundle/stage/crypto/base64.js"
+		"/webAudioApiBundle/stage/crypto/md5.js"
+		"/webAudioApiBundle/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"
+		"/webAudioApiBundle/stage/io/authentication/sasl/sasl.js"
+		"/webAudioApiBundle/stage/io/transports/socket.js"
+		"/webAudioApiBundle/stage/io/protocols/bayeux/bayeux.js"
+		"/webAudioApiBundle/stage/io/realtime/realtime.js"
+		"/webAudioApiBundle/stage/kernel/autoload.js"
+		"/webAudioApiBundle/stage/kernel/kernel.js"
+		"/webAudioApiBundle/stage/kernel/appKernel.js"
+		"/webAudioApiBundle/stage/kernel/container.js"
+		"/webAudioApiBundle/stage/kernel/routerService.js"
+		"/webAudioApiBundle/stage/kernel/controller.js"
+		"/webAudioApiBundle/stage/kernel/module.js"
+		"/webAudioApiBundle/stage/kernel/translationService.js"
+		"/webAudioApiBundle/stage/kernel/locationService.js"
+		"/webAudioApiBundle/stage/media/adapter.js"
+		"/vendors/stage/media/media2.js"
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+{% endblock %}

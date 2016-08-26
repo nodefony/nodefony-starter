@@ -1,0 +1,68 @@
+
+
+{% extends "src/bundles/webAudioApiBundle/Resources/views/layouts/layout.html.twig" %}
+
+
+{% block title %} WEB AUDIO API ( MIX ){% endblock %}
+
+{% block stylesheets %}
+
+	{{ parent() }}
+	<link rel="stylesheet" href="/webAudioApiBundle/css/bootstrap-slider.css" />
+    <link rel="stylesheet" href="/webAudioApiBundle/css/wai.css" />
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+	<script type="text/javascript" src="/webAudioApiBundle/js/excanvas.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/jquery.knob.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/bootstrap-slider.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/namespace.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/wai-model.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/wai-controller.js"></script>
+	<script type="text/javascript" src="/webAudioApiBundle/js/wai-ui.js"></script>
+	<script type="text/javascript">
+
+	var App = new stage.appKernel(null, "dev", {
+		debug: true,
+		location:{
+			html5Mode:false
+		},
+		onLoad:function(kernel){
+			
+		},
+		
+		onReady:function(kernel){
+			
+
+			
+		},
+		
+		onBoot:function(kernel){
+			
+		
+		},
+		
+		onDomLoad:function(kernel){		
+			var mix = new wai.controller();
+			var mediaModel = new wai.model();
+			mix.build($('.centered'));
+			
+			
+		}
+	});
+	
+		
+	</script>
+	
+{% endblock %}
+
+{% block navBar %}
+	{{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+	<div class="centered"></div>
+{% endblock %}
