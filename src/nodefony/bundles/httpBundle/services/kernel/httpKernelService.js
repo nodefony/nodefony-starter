@@ -260,7 +260,7 @@ nodefony.registerService("httpKernel", function(){
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
 				}else{
-					var error = new Error("Not Found", 404);	
+					//var error = new Error("Not Found", 404);	
 					return context.notificationsCenter.fire("onError", container, {
 						status:404,
 						error:"URI :" + request.url,
@@ -303,20 +303,15 @@ nodefony.registerService("httpKernel", function(){
 				context.response.response.on("finish",function(){
 					context.fire("onFinish", context);
 					this.container.leaveScope(container);
-					//if ( ! context.session  ){
-						delete context.extendTwig ;
-						if (context.proxy) delete context.proxy ;
-						context.clean();
-						delete context;	
-						delete request ;
-						delete response ;
-					//}
-					
-					//if (context.profiling) delete context.profiling ;
+					delete context.extendTwig ;
+					if (context.proxy) delete context.proxy ;
+					context.clean();
+					delete context;	
+					delete request ;
+					delete response ;
 					delete container ;
 					delete translation ;
 					if (domain) {
-						//domain.return(context);
 						delete domain.container ;
 						delete domain ;
 					}
@@ -353,7 +348,7 @@ nodefony.registerService("httpKernel", function(){
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
 				}else{
-					var error = new Error("Not Found", 404);	
+					//var error = new Error("Not Found", 404);	
 					return context.notificationsCenter.fire("onError", container, {
 						status:404,
 						error:"URI :" + request.url,
@@ -411,5 +406,6 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel.fire("onSecurity", context);
 	};
 
+	
 	return httpKernel ;
 });

@@ -164,8 +164,8 @@ stage.register.call(wai, 'UI', function(){
 		var dom = trackUi.call(this, this.tracksContainer, name, mediaType);
 
 		if ( mediaType === "domElement"){
-				$("#view").append( track.media )
-				dom.mediaTag = track.media ;
+			$("#view").append( track.media )
+			dom.mediaTag = track.media ;
 		}
 		return dom ;
 	};

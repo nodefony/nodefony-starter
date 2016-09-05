@@ -8,7 +8,7 @@
  *
  */
 var crypto = require('crypto');
-
+var cookieLib = require('cookie');
 
 nodefony.register("cookies",function(){
 	
@@ -181,10 +181,11 @@ nodefony.register("cookies",function(){
 	};
 
 	var parse = function(strToParse){
-    		var obj = {};
-		if (! strToParse) return obj;
-    		var tab = strToParse.split(/[;,] */);
-    		tab.forEach(function(pair) {
+		return cookieLib.parse(strToParse) ;
+    		//var obj = {};
+		//if (! strToParse) return obj;
+    		//var tab = strToParse.split(/[;,] */);
+    		/*tab.forEach(function(pair) {
         		var eq_idx = pair.indexOf('=')
         		if (eq_idx < 0) {
 				throw new Error("skip things that don't look like key=value")
@@ -201,7 +202,7 @@ nodefony.register("cookies",function(){
                 		obj[key] = val;
         		}
     		});
-	    	return obj;
+	    	return obj;*/
 	};
 
 	var cookiesParser = function(context){

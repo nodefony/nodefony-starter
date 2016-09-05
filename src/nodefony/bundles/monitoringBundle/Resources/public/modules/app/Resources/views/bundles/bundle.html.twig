@@ -82,30 +82,17 @@
 				<div id="views" class="tab-pane ">
 					<div class="wrapper" >
 						<div class="table-responsive"  >
-							<table id="tableRouting" class="table table-striped table-bordered">
-								<thead>
-									<tr>
-										<th>ROUTE NAME</th>
-										<th>PATH</th>
-										<th>HOST</th>
-										<th>VARIABLES</th>
-										<th>CONTROLLER ACTION</th>
-										<th>REQUIREMENTS METHOD</th>
-									</tr>
-								</thead>
-								<tbody>
-								{% for view in views %}
-								<tr>
-									<td>{{route.name}}</td>
-									<td><a href={{route.path}}>{{route.path}}</a></td>
-									<td>{{route.host}}</td>
-									<td>{{route.variables}}</td>
-									<td>{{route.defaults.controller}}</td>
-									<td>{{route.requirements.method}}</td>
-								</tr>
-								{% endfor %}
-								</tbody>
-							</table>
+							<table id="viewTable" class="table table-striped table-bordered display" cellspacing="0" width="100%">
+        							<thead>
+            								<tr>
+                								<th></th>
+                								<th>Directory</th>
+                								<th>NB view</th>
+                								<th>Size</th>
+            								</tr>
+        							</thead>
+        							
+    							</table>
 						</div>
 					</div>
 

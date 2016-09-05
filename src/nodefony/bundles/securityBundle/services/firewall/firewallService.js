@@ -647,6 +647,9 @@ nodefony.registerService("firewall", function(){
 								case "logout":
 									//TODO
 								break;
+								case "stateless":
+									//TODO
+								break;
 								case "redirectHttps":
 									area.setRedirectHttps(param[config]);
 								break;

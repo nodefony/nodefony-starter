@@ -136,15 +136,15 @@ stage.register.call(wai, 'controller', function(){
 
 			setEventGlobal.call(this);
 
-			this.ring = this.addTrack('marimba', '/webAudioApiBundle/music/marimba.wav');
+			//this.ring = this.addTrack('marimba', '/webAudioApiBundle/music/marimba.wav');
 			this.addTrack('Chico Buarque', '/webAudioApiBundle/music/Chico_Buarque.mp3');
 			this.addTrack('Video', '/webAudioApiBundle/music/oceans-clip.webm');
 
 			//this.LA = this.build440();
-			this.dtmf = this.buildDtmf();
+			//this.dtmf = this.buildDtmf();
 
 			// GET USER MEDIA
- 			this.localMedia = new stage.media.mediaStream(null, {
+ 			/*this.localMedia = new stage.media.mediaStream(null, {
 				audio: true,
 				video: true,
 				onSucces: function(stream, mediaStream){
@@ -154,7 +154,7 @@ stage.register.call(wai, 'controller', function(){
 					console.log("ERROR");
 				}.bind(this)
 			});
-			this.localMedia.getUserMedia();
+			this.localMedia.getUserMedia();*/
 
 
 			// TRY YOUTUBE

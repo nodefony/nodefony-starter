@@ -65,7 +65,7 @@ nodefony.registerBundle ("monitoring", function(){
 		});
 
 
-		this.kernel.listen(this, "onReady", function(kernel){
+		this.kernel.listen(this, "onPostReady", function(kernel){
 
 			if ( this.settings.storage ){
 				this.storageProfiling = this.settings.storage.requests ;
@@ -396,12 +396,11 @@ nodefony.registerBundle ("monitoring", function(){
 							"content-type":response.response.getHeader('content-type'),
 							headers:response.response._headers	
 						}
-
 						this.saveProfile(context, function(error, res){
 							if (error){
 								this.kernel.logger(error);
 							}
-							if( !  context.request.isAjax() && context.showDebugBar /*&& obj.route.name !== "monitoring"*/ ){
+							if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
 								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 								if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
 									this.get("templating").renderFile(View, context.profiling,function(error , result){
@@ -416,16 +415,14 @@ nodefony.registerBundle ("monitoring", function(){
 							}else{
 								//context.setXjson(context.profiling);	
 							}
+							
 							/*
  	 						 *  WRITE RESPONSE
  	 						 */  
 							context.response.write();
 							// END REQUEST
 							return context.close();
-
-							if (context){
-								delete context.profiling ;	
-							}
+							
 						}.bind(this));
 					})
 					

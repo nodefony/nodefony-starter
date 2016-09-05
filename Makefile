@@ -64,6 +64,7 @@ asset:
 	./console assets:dump 
 
 framework:
+	echo "###########  CREATE web directory ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
 	fi
@@ -93,6 +94,12 @@ framework:
 	fi
 	@if [ ! -d web/assets/images ] ; then  \
 		mkdir web/assets/images ;\
+	fi
+	@if [ ! -d web/vendors ] ; then  \
+		mkdir web/vendors ;\
+		cd web/vendors ;\
+		ln -s ../../src/stage stage ;\
+		cd ../.. ;\
 	fi
 
 sequelize:

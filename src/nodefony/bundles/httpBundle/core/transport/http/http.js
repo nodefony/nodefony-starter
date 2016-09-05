@@ -45,13 +45,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		this.domain =  this.request.domain ; 
 		this.validDomain = this.isValidDomain() ;
 
-		this.logger("request from : "+request.headers.host+" METHOD : "+request.method+" URL :"+request.url, "INFO", null, {
-			host:request.headers.host ,
-			domain:this.domain,
-			url:request.url,
-			method:request.method,
-			protocol:this.type
-		});
+		this.logger("REQUEST "+request.method +" FROM : "+ this.request.remoteAdress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
 
 		//parse cookies
 		this.parseCookies();
@@ -162,6 +156,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 		if (this.user)  delete this.user
 		if (this.security ) delete this.security ;
 		delete this.container ;
+		//if (this.profiling) delete context.profiling ;
 	}
 
 	Http.prototype.getUser = function(){
@@ -203,6 +198,7 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	}
 
 	Http.prototype.close = function(){
+		//console.log("CLOSE CONTEXT")
 		this.notificationsCenter.fire("onClose", this);
 		// END REQUEST
 		return this.response.end();

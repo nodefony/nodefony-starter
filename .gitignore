@@ -1,12 +1,14 @@
 #Ignore directory 
-build/*
-docs/*
-tmp/*
-node_modules/*
-web/*
+build/**
+docs/**
+tmp/**
+node_modules/**
+web/**
+**/assets
+
 
 *.[oa]
-app/Resources/databases/*
+app/Resources/databases/**
 
 #Ignore vin backup
 *.swp

@@ -426,10 +426,17 @@ nodefony.registerController("api", function(){
 					routing.push( router.routes[i] );
 				}
 			}
-				//console.log(routing);	
+			var views = {} ;
+			for (var view in bundle.views ){
+				views[view] = {};
+				for ( var view2 in bundle.views[view]){
+					views[view][view2] =  {
+						file:bundle.views[view][view2].file
+					}
+				}
+			}
+					
 			var security  = this.get("security");
-			//console.log(bundle.resourcesFiles.files)
-
 
 			return this.renderRest({
 				code:200,
@@ -440,7 +447,8 @@ nodefony.registerController("api", function(){
 					routing:routing,
 					services:null,
 					security:null,
-					views:bundle.views,
+					bundleName:bundle.name,
+					views:views,
 					entities:bundle.entities,
 					fixtures:bundle.fixtures,
 					controllers:bundle.controllers,
@@ -451,11 +459,6 @@ nodefony.registerController("api", function(){
 				})
 			});
 		}
-
-
-
-
-
 
 		/**
 		 *

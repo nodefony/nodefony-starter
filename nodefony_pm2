@@ -26,10 +26,10 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
     			pm2.launchBus(function(err, bus) {
 				bus.on('process:msg',function(packet) {
 					//console.log( packet.process )
-       					//console.log( packet );
+					//console.log( packet )
       				});
       				/*bus.on('log:out', function(packet) {
-       					console.log( packet.data );
+       					//console.log( packet.data );
       				});
 
       				bus.on('log:err', function(packet) {

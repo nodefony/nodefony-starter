@@ -12,8 +12,6 @@ stage.registerController("navController", function() {
 		this.config = this.module.config;
 		this.router = container.get("router");
 
-
-
 		// ROUTES 
 		this.router.createRoute("services", "/services", {
 			controller:"appModule:nav:services"
@@ -181,6 +179,28 @@ stage.registerController("navController", function() {
 
 	};
 
+	var format = function( d ) {
+    		var str = '<table class="table" style="padding-left:50px;">'+
+		'<thead>'+
+            	'<tr>'+
+                '<th>Name</th>'+
+                '<th>Pattern</th>'+
+                '<th>Size</th>'+
+            	'</tr>'+
+        	'</thead>';
+
+		for (var ele in d.data){
+			var strE = '<tr>'+
+            		'<td>'+d.data[ele].name+'</td>'+
+            		'<td>'+d.data[ele].bundle+"Bundle:"+( d.data[ele].directory === "." ? "" : d.data[ele].directory ) + ":" + d.data[ele].name + '</td>'+
+            		'<td>'+d.data[ele].size+'</td>'+
+        		'</tr>';
+			str+=strE ;
+		}
+		str+='</table>';
+		return str ;
+	}
+
 	controller.prototype.configAction = function(bundleName) {
 		if ( ! bundleName ){
 			$.ajax("/nodefony/api/config",{
@@ -225,6 +245,65 @@ stage.registerController("navController", function() {
 					$("#tableRouting").DataTable();
 					$("#filesData").JSONView(  data.response.data.files );
 					$("#filesData").JSONView('toggle',2);
+
+					//console.log(data.response.data.views)
+					var  datas = [] ;
+					for (var ele in  data.response.data.views ){
+						var ob = {
+							plus:"+",
+							directory:ele,
+							size:0,
+							nbView:0,
+							data:{}
+						};
+						for (var view in data.response.data.views[ele] ){
+							ob.nbView += 1 ;
+							ob.data[view] = {
+								name:data.response.data.views[ele][view].file.name ,
+								size:data.response.data.views[ele][view].file.stats.size,
+								directory:ele,
+								bundle:data.response.data.bundleName
+							}	
+							ob.size += data.response.data.views[ele][view].file.stats.size ;
+						}
+						datas.push(ob)
+					}
+					//console.log(obj)
+					var table = $("#viewTable").DataTable({
+						"data":	datas,
+						"columns": [{
+                					"className":      'details-control',
+							"orderable":      false,
+							"data":           "plus",
+							"defaultContent": ''
+            					},{ 
+							"data": "directory" 
+						},{
+							"data": "nbView" 
+						},{ 
+							"data": "size" 
+        					}],
+        					"order": [[1, 'asc']]
+					});
+
+					// Add event listener for opening and closing details
+    					$('#viewTable tbody').on('click', 'td.details-control', function () {
+        					var tr = $(this).closest('tr');
+        					var row = table.row( tr );
+
+        					if ( row.child.isShown() ) {
+							 $(this).html("+")
+            						// This row is already open - close it
+            						row.child.hide();
+            						tr.removeClass('shown');
+        					}
+        					else {
+            						// Open this row
+							 $(this).html("-")
+            						row.child( format(row.data()) ).show();
+            						tr.addClass('shown');
+        					}
+    					} );
 
 				}.bind(this),
 				error:function(xhr,stats,  error){

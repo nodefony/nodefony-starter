@@ -116,7 +116,7 @@ sequelizeBundle:
     nodefony:
       driver:          mysql
       dbname:          'nodefony'
-      username:        'root'
+      username:        'cci'
       password:        '91984869'
       options:
         dialect:       mysql

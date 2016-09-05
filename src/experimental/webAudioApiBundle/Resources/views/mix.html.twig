@@ -1,6 +1,6 @@
 
 
-{% extends "src/bundles/webAudioApiBundle/Resources/views/layouts/layout.html.twig" %}
+{% extends "/src/experimental/webAudioApiBundle/Resources/views/layouts/layout.html.twig" %}
 
 
 {% block title %} WEB AUDIO API ( MIX ){% endblock %}
@@ -48,8 +48,6 @@
 			var mix = new wai.controller();
 			var mediaModel = new wai.model();
 			mix.build($('.centered'));
-			
-			
 		}
 	});
 	
@@ -58,11 +56,8 @@
 	
 {% endblock %}
 
-{% block navBar %}
-	{{ parent() }}
-{% endblock %}
-
-
 {% block body %}
-	<div class="centered"></div>
+	{{ parent() }}
+
+	<div class="container-fluid centered"></div>
 {% endblock %}

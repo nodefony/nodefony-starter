@@ -24,6 +24,7 @@ nodefony.register("appKernel",function(){
 			"./src/nodefony/bundles/sequelizeBundle",
 			"./src/nodefony/bundles/usersBundle",
 			"./src/experimental/webRtcBundle",
+			"./src/experimental/webAudioApiBundle",
 			"./src/nodefony/bundles/documentationBundle",
 			"./src/bundles/demoBundle",
 		]);
@@ -33,7 +34,7 @@ nodefony.register("appKernel",function(){
  		 *	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
  		 */
 		if (type === "SERVER"){
-			this.listen(this,"onReady", function(){
+			this.listen(this,"onPostReady", function(){
 				// create HTTP server 
 				var http = this.get("httpServer").createServer();
 
