@@ -349,8 +349,9 @@ stage.register("webRtc",function(){
 			//console.log(event.stream.getVideoTracks());
 			this.to.createMediaStream(null, null);
 			this.to.mediaStream.setStream(event.stream);
+			var type = this.RTCPeerConnection.remoteDescription.type ;
 			if (event.type === "video" || event.type === "addstream" ){
-				this.webrtc.notificationsCenter.fire( "onRemoteStream", event, this.to.mediaStream, this);
+				this.webrtc.notificationsCenter.fire( "onRemoteStream", type, event, this.to.mediaStream, this);
 			}
 		}
 		return this.to.createMediaStream ;
@@ -651,7 +652,7 @@ stage.register("webRtc",function(){
 										});
 										transac.to.setDescription( message.rawBody );
 									}catch(e){
-										var res = message.transaction.createResponse(500, e.message);
+										var res = message.transaction.createResponse(500, e.message || e);
 										res.send();
 										return ;
 									}
@@ -664,7 +665,7 @@ stage.register("webRtc",function(){
 										//this.notificationsCenter.fire("onOffer", message, transac.to, transac);
 										//this.fire("onOffer", this, transac);
 									}catch(e){
-										var res = message.transaction.createResponse(500, e.message);
+										var res = message.transaction.createResponse(500, e.message || e);
 										res.send();
 									}
 
@@ -824,7 +825,7 @@ stage.register("webRtc",function(){
 						case ( Class instanceof Transaction ) :
 							//console.log(Class.currentTransaction )
 							if ( Class.currentTransaction ){
-								var response = Class.currentTransaction.createResponse( 500, error.message );
+								var response = Class.currentTransaction.createResponse( 500, error.message || error );
 								response.send();
 							}
 							this.closeTransaction(Class, Class.to.name);

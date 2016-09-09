@@ -39,6 +39,7 @@ stage.register("media", function(){
 		this.in = null ;
 
 		this.name = this.settings.name ;
+		this.id = this.generateId();
 
 		this.sync = 0;
 		this.retry = 0;
@@ -48,11 +49,12 @@ stage.register("media", function(){
 		this.eventsManager = stage.notificationsCenter.create(this.settings, this);
 		this.createNodes();
 
+		if ( this.settings.connect ){
+			this.connect(this.bus.in);
+		}
+
 		this.listen(this, "onReady" , function(){
-				// connect track to master bus
-				if ( this.settings.connect ){
-					this.connect(this.bus.in);
-				}
+			this.bus.mixer.fire('onReadyTrack', this.bus, this);
 		})
 
 		var type = stage.typeOf(media) ;
@@ -93,6 +95,10 @@ stage.register("media", function(){
 				this.fire("onError",  error) ;
 				throw error ;
 		}
+	};
+
+	Track.prototype.generateId = function(){
+		return parseInt(Math.random()*1000000000,10);
 	};
 
 	Track.prototype.setName = function(name){
@@ -140,40 +146,42 @@ stage.register("media", function(){
 		}
 	}
 
-    Track.prototype.setGain =  function(value) {
-      this.audioNodes.gain.gain.value = value ;
-      return this;
+	Track.prototype.setGain =  function(value) {
+		this.audioNodes.gain.gain.value = value ;
+		this.fire("onSetGain", value);
+		return this;
   	} ;
 
 	Track.prototype.getGain =  function() {
-      return this.audioNodes.gain.gain.value  ;
+		return this.audioNodes.gain.gain.value  ;
   	} ;
 
 	Track.prototype.mute =  function() {
-      this.audioNodes.mute.gain.value = 0;
-      this.muted = true;
-	  this.fire("onMute",this)
-      return this;
+		this.audioNodes.mute.gain.value = 0;
+		this.muted = true;
+		this.fire("onMute",this);
+		return this;
   	};
 
-    Track.prototype.unmute =  function(){
-      this.audioNodes.mute.gain.value = 1;
-	  this.muted = false;
-	  this.fire("onUnMute",this)
-      return this;
+	Track.prototype.unmute =  function(){
+		this.audioNodes.mute.gain.value = 1;
+		this.muted = false;
+		this.fire("onUnMute",this);
+		return this;
   	};
 
 	Track.prototype.pause =  function(when) {
-      if ( this.source ) {
-		if (this.source.node && this.source.playbackState == this.source.node.PLAYING_STATE) {
-    		this.source.node.stop( when || 0 );
+		if ( this.source ) {
+			if (this.source.node && this.source.playbackState == this.source.node.PLAYING_STATE) {
+				this.source.node.stop( when || 0 );
+			}
+			this.disconnectSource();
+			this.fire("onPause",this)
 		}
-		this.disconnectSource();
-      }
-      return this;
+		return this;
   	};
 
-    Track.prototype.play = function( time , loop) {
+	Track.prototype.play = function( time , loop) {
 	  	this.pause().connectSource();
 	  	if ( loop )
  			this.source.loop = true;
@@ -181,6 +189,7 @@ stage.register("media", function(){
  		 	this.source.noteOn(this.context.currentTime, time);
  	 	if ( this.source.start )
  		 	this.source.start(this.context.currentTime, time)
+		this.fire("onPlay",this)
 		return this ;
   	};
 
@@ -191,16 +200,19 @@ stage.register("media", function(){
 
 	Track.prototype.disconnectSource = function(){
 		this.source.disconnect( this.in );
-        this.source = null;
+		this.source = null;
+		this.fire("onDisconnectSource",this)
 	};
 
 	Track.prototype.connect = function(audioNode){
 		this.destination = audioNode ;
 		this.out.connect(audioNode);
+		this.fire("onConnect", audioNode, this);
 	};
 	Track.prototype.disconnect = function(){
 		this.out.disconnect( this.destination );
 		this.destination = null ;
+		this.fire("onDisconnect",  this);
 	};
 
 	Track.prototype.createSource = function( buffer ){
@@ -291,7 +303,6 @@ stage.register("media", function(){
 		this.transport.send();
 	};
 
-
 	/*
 	 *
 	 *	CLASS AUDIOBUS
@@ -305,8 +316,11 @@ stage.register("media", function(){
 		this.name = name ;
 		this.mixer = mixer ;
 		this.settings = stage.extend({}, defaultAudioBusSettings, settings);
+
+		this.eventsManager = stage.notificationsCenter.create(this.settings, this);
 		this.audioContext = new audioContext();
 		this.tracks = [];
+		this.nbTracks = 0 ;
 		this.audioNodes = {} ;
 
 		this.in = null ;
@@ -316,6 +330,19 @@ stage.register("media", function(){
 
 		this.createNodes();
 	}
+
+	audioBus.prototype.listen = function(){
+		return this.eventsManager.listen.apply(this.eventsManager, arguments);
+	};
+
+	audioBus.prototype.unListen = function(){
+		return this.eventsManager.unListen.apply(this.eventsManager, arguments);
+	};
+
+	audioBus.prototype.fire = function(){
+		return this.eventsManager.fire.apply(this.eventsManager, arguments);
+	};
+
 
 	audioBus.prototype.createNodes = function(){
 		// mute
@@ -351,34 +378,39 @@ stage.register("media", function(){
 	audioBus.prototype.connect = function(audioNode){
 		this.destination = audioNode ;
 		this.out.connect(audioNode);
+		this.fire("onConnect", audioNode, this)
 	}
 
 	audioBus.prototype.disconnect = function(audioNode){
 		if ( this.destination ){
 			this.out.disconnect(this.destination);
 			this.destination = null;
+			this.fire("onDisconnect",  this);
 		}
 	}
 
 	audioBus.prototype.setGain =  function(value) {
-      this.audioNodes.gain.gain.value = value ;
-      return this;
+		this.audioNodes.gain.gain.value = value ;
+		this.fire("onSetGain", value);
+		return this;
   	} ;
 
 	audioBus.prototype.getGain =  function() {
-      return this.audioNodes.gain.gain.value  ;
+		return this.audioNodes.gain.gain.value  ;
   	} ;
 
 	audioBus.prototype.mute =  function() {
-      this.audioNodes.mute.gain.value = 0;
-      this.muted = true;
-      return this;
+		this.audioNodes.mute.gain.value = 0;
+		this.muted = true;
+		this.fire("onMute",this);
+		return this;
   	};
 
-    audioBus.prototype.unmute =  function(){
-      this.audioNodes.mute.gain.value = 1;
-	  this.muted = false;
-      return this;
+	audioBus.prototype.unmute =  function(){
+		this.audioNodes.mute.gain.value = 1;
+		this.muted = false;
+		this.fire("onUnMute",this);
+		return this;
   	};
 
 	audioBus.prototype.createGain = function(){
@@ -423,8 +455,50 @@ stage.register("media", function(){
 	audioBus.prototype.createTrack = function(media, settings){
 		var track = new Track(media, this, settings );
 		this.tracks.push(track);
+		this.nbTracks++ ;
+		this.fire("onCreateTrack", track , this) ;
 		return track ;
 	};
+	audioBus.prototype.removeTrack = function(track){
+
+		var ele = null ;
+		switch (true){
+			case track instanceof Track :
+				for (var i = 0 ; i < this.tracks.length ; i++){
+					if ( this.tracks[i] === track ){
+						var name = track.name ;
+						track.pause();
+						track.disconnect();
+						// remove from tab
+						ele = this.tracks.splice( i, 1 );
+						this.nbTracks--;
+						this.fire("onRemoveTrack", ele[0] , this) ;
+						delete ele[0] ;
+						break ;
+					}
+				}
+			break ;	
+			case typeof track === "number" :
+			case typeof track === "string" :
+				var name = track ;
+				for (var i = 0 ; i < this.tracks.length ; i++){
+					if ( this.tracks[i].name === name ){
+						this.tracks[i].pause();
+						this.tracks[i].disconnect();
+						// remove from tab
+						ele = this.tracks.splice( i, 1 );
+						this.nbTracks--;
+						this.fire("onRemoveTrack", ele[0] , this) ;
+						delete ele[0] ;
+						break ;
+					}
+				}
+			break;
+		}
+		if ( ! ele )
+			throw new Error ("this track doesn't exist in  bus : " + this.name)
+		return true ;
+	}
 
 	/*
 	 *
@@ -436,20 +510,19 @@ stage.register("media", function(){
 	var mixSettings = {};
 
 	var mediaMix = function(settings){
-		this.tracks = [];
-		//this.audioContext = new audioContext();
+		
 		this.audioBus = {} ;
 		this.nbBus = 0 ;
 		this.settings = stage.extend({}, mixSettings, settings);
 		this.eventsManager = new stage.notificationsCenter.create(this.settings, this);
-
-		//console.log(this)
 
 	 	this.createAudioBus("MASTER", {
 			panner:true,
 			analyser:true
 		});
 		this.masterBus = this.audioBus["MASTER"];
+
+		this.tracks = this.masterBus.tracks;
 		this.audioContext = this.masterBus.audioContext ;
 		this.muted = this.masterBus.muted;
 		this.panner = this.masterBus.audioNodes.panner ;
@@ -480,56 +553,81 @@ stage.register("media", function(){
 		}
 		this.audioBus[name] = bus ;
 		this.nbBus++ ;
+		bus.listen(this, "onCreateTrack", function(track, bus){
+			this.fire("onCreateTrack", track, bus, this)
+		})
+		bus.listen(this, "onRemoveTrack", function(track, bus){
+			this.fire("onRemoveTrack", track, bus, this)
+		})
+
 		return bus ;
+	}
+
+	mediaMix.prototype.removeAudioBus = function(bus){
+		var ele = null ;
+		switch (true){
+			case bus instanceof audioBus :
+				
+			break ;	
+			case typeof track === "number" :
+			case typeof track === "string" :
+				
+			break;
+
+		}
+
+		if ( ! ele )
+			throw new Error ("remove bus : this bus doesn't exist in  mixer  ")
+		return true ;
 	}
 
 	mediaMix.prototype.connect = function(audioNode){
 		this.destination = audioNode ;
-		return this.masterBus.connect(audioNode);
+		var ret = this.masterBus.connect(audioNode);
+		this.fire("onConnect", audioNode, this)
+		return ret;
 	}
 
 	mediaMix.prototype.disconnect = function(){
 		this.masterBus.disconnect();
 		this.destination = null ;
+		this.fire("onDisconnect",  this);
 	}
 
 	mediaMix.prototype.setGain =  function(value) {
-	  this.masterBus.setGain(value);
-      return this;
-  	} ;
+		this.masterBus.setGain(value);
+		return this;
+  	};
 
 	mediaMix.prototype.getGain =  function() {
 		return this.masterBus.getGain();
-  	} ;
+  	};
 
 	mediaMix.prototype.mute =  function() {
 		this.masterBus.mute();
 		this.muted = this.masterBus.muted ;
-      return this;
+		return this;
   	};
 
-    mediaMix.prototype.unmute =  function(){
+	mediaMix.prototype.unmute =  function(){
 		this.masterBus.unmute();
 		this.muted = this.masterBus.muted ;
-      return this;
+		return this;
   	};
 
 	mediaMix.prototype.createTrack = function(media, settings){
-		var mysettings = stage.extend({}, settings, {
-			onReady:function(track){
-				this.fire('onReadyTrack', this, track);
-			}.bind(this)
-		})
-		var track = new Track(media, this.masterBus, mysettings );
-		this.tracks.push(track);
-		return track ;
+		return this.masterBus.createTrack(media, settings);
+	};
+
+	mediaMix.prototype.removeTrack = function(track){
+		return this.masterBus.removeTrack(track)
 	};
 
 	mediaMix.prototype.playTracks = function(time, loop){
 		for (var i = 0 ; i<this.tracks.length ; i++){
 			this.tracks[i].play( time, loop );
 		}
-	}
+	};
 
 	mediaMix.prototype.createGain = function(){
 		return this.audioContext.createGain();
@@ -573,9 +671,6 @@ stage.register("media", function(){
 		try {
 			if (stage.browser.Webkit){
 
-  				//getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
-
-
 				getMediaStream = function(stream){
 					return URL.createObjectURL(stream);
 				};
@@ -594,8 +689,6 @@ stage.register("media", function(){
 				return true;
 			}
 			if (stage.browser.Gecko){
-
-  				//getUserMedia = navigator.getUserMedia ? navigator.getUserMedia.bind(navigator) :   navigator.mozGetUserMedia.bind(navigator);
 
 				getMediaStream = function(stream){
 					return window.URL.createObjectURL(stream);
@@ -767,7 +860,10 @@ stage.register("media", function(){
 	return {
 		mediaStream		: mediaStream,
 		webAudioApi		: webAudioApi,
-		mediaMix		: mediaMix
+		mediaMix		: mediaMix,
+		Track			: Track,
+		audioBus		: audioBus
+
 	}
 
 });
