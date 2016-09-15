@@ -286,8 +286,11 @@ nodefony.register("kernel", function(){
 
 		
 		var syslog =  new nodefony.syslog(settingsSyslog);
-		if (this.type === "CONSOLE") return syslog ;
-
+		if (this.type === "CONSOLE") {
+			if ( this.environment === "dev" )
+				logConsole.call(this, syslog);
+			return syslog ;
+		}
 		if ( this.settings.system.log.console ||  this.environment === "dev"){
 		
 			logConsole.call(this, syslog);

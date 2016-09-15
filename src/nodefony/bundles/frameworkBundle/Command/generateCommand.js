@@ -26,8 +26,8 @@ nodefony.registerCommand("generate",function(){
 			name: realName,
 			module:this.config.App.projectName,
 			projectName:this.config.App.projectName,
-			authorName:this.config.App.name,
-			authorEmail:this.config.App.email,
+			authorName:this.config.App.authorName,
+			authorEmail:this.config.App.authorMail,
 			projectYear:this.config.App.projectYear,
 			projectYearNow:	new Date().getFullYear()
 		}
@@ -202,6 +202,19 @@ nodefony.registerCommand("generate",function(){
 			},{
 				name:"images",
 				type:"directory"
+			},{
+				name:"assets",
+				type:"directory",
+				childs:[{
+					name:"js",
+					type:"directory"
+				},{
+					name:"css",
+					type:"directory"
+				},{
+					name:"images",
+					type:"directory"
+				}]
 			}]
 		}
 	}

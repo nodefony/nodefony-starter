@@ -1,4 +1,4 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Command/skeletons/licence.mit.skeleton" %}
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Command/skeletons/licence.cecill-b.skeleton" %}
 
 {% block body %}
 nodefony.registerBundle ("{{name}}", function(){
