@@ -4,7 +4,7 @@ docs/**
 tmp/**
 node_modules/**
 web/**
-**/assets/
+#**/assets/**
 
 
 *.[oa]
