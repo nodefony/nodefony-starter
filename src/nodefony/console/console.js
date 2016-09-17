@@ -58,9 +58,9 @@ nodefony.register("console", function(){
 		// App Kernel 
 		this.appKernel = this.$super;
 		this.appKernel.constructor("CONSOLE", environment, debug, loader, {
-			onPreRegister:function(){
+			/*onPreRegister:function(){
 				console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
-			},
+			},*/
 			onBoot:function(){
 				if ( process.argv[2] && process.argv[2] === "npm:list" ){
 					this.listPackage(this.rootDir+"/package.json")

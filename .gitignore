@@ -2,10 +2,11 @@
 build/**
 docs/**
 tmp/**
-node_modules/**
 web/**
 **/assets/**
 
+node_modules/**
+npm-debug.log
 
 *.[oa]
 app/Resources/databases/**
