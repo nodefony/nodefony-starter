@@ -32,11 +32,18 @@
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
+
+	<script> 
+		$("#version").change(function(ele){
+			window.location = this.value ;	
+		})
+	</script>
+
 {% endblock %}
 
 
 
-{% block title %} {{section}} {% endblock %}
+{% block title %} {{version}} {% endblock %}
 
 
 {% block body %}
@@ -64,7 +71,20 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
-				
+				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary">VERSION</strong></a>
+				<li  class="navbar-btn pull-right" style="margin-right:40px">
+				   <select id="version" name="hl" class="form-control" >
+					{% for ver in allVersions %}
+						{% if ver == version %}
+							<option value="{{ver}}" selected class="active" >{{ver}}</option>
+						{% else %}
+							
+							<option value="{{path('documentation-version',{version:ver,bundle:bundle})}}" >{{ver}}</option> 
+						{% endif %}
+					{% endfor %}
+					
+				   </select>
+				</li>
 			</ul>
 		</div>
 
@@ -76,7 +96,7 @@
 		
 	<div class="row">
 		<div class="col-md-2">
-			<strong><div class="text-primary text-center " style="margin:5px 0 10px 0 " > {{bundle | upper}} {{version}} </div> </strong>
+			<div class="text-primary text-center " style="margin:5px 0 10px 0 " >  {{bundle | upper}} {{version}} </div> 
 			<ul class="nav nav-pills nav-stacked">
 				
 				{{ render( controller("documentationBundle:default:subSection", bundle, version, section  )) }}
@@ -97,8 +117,6 @@
 	</div>	
 </div>
 	
-
-
 
 {% block footer %}
 	<footer  >

@@ -60,6 +60,18 @@ nodefony.registerController("default", function(){
 				var path = this.get("kernel").bundles[bundle].path
 			}
 
+			// get all version 
+			var finderVersion  = new nodefony.finder( {
+				path:path+"/doc",
+				recurse:false,
+			});
+			var directory  = finderVersion.result.getDirectories();
+			var all = [];
+			directory.forEach(function(ele , index){
+				all.push(ele.name)
+			});
+
+			// manage link 
 			try {
 				if ( version ){
 					if ( section ){
@@ -93,23 +105,23 @@ nodefony.registerController("default", function(){
 				var file = result.getFile("index.html.twig" , true)
 				if ( file ){
 					var res = this.renderRawView(file); 
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section});
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}
 				// MD
 				var file = result.getFile("readme.md" , true )
 				if (  ! file ){
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, version:version, section:section}); 
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, version:version, section:section, allVersions:all}); 
 				}
 				var res = this.htmlMdParser(file.content(file.encoding),{
 					linkify: true,
 					typographer: true	
 				});
-				return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section});
+				return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 			}else{
 				var file = result.getFile("index.html.twig" , true)
 				if ( file ){
 					var res = this.renderRawView(file); 
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section});
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}
 
 				var file = result.getFile("README.md" , true);
@@ -118,9 +130,9 @@ nodefony.registerController("default", function(){
 						linkify: true,
 						typographer: true	
 					});
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section});
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}else{
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section});
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}
 			}
 
