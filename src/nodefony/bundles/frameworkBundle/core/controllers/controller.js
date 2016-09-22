@@ -100,6 +100,32 @@ nodefony.register("controller", function(){
 		return this.container.get(defaultOrm);
 	};
 
+	Controller.prototype.renderRawView = function(path, param ){
+		var res = null;
+		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+
+		try{ 
+			this.serviceTemplating.renderFile(path, extendParam, function(error, result){
+				if (error || result === undefined){
+					if ( ! error ){
+						error = new Error("ERROR PARSING TEMPLATE :" + path.path)
+					}
+					throw error ;
+				}else{
+					try {
+						this.notificationsCenter.fire("onView", result, this.context, path , param);
+						res = result;
+					}catch(e){
+						throw e ;
+					}
+				}
+ 			}.bind(this));
+		}catch(e){
+			throw e ;
+		}
+		return res;
+	};
+
 	Controller.prototype.renderView = function(view, param ){
 
 		var res = null;

@@ -37,11 +37,11 @@ documentation:
 
 
 documentation-version: 
-  pattern:  /documentation/{version}
+  pattern:  /documentation/{bundle}/{version}
   defaults: {controller: "documentationBundle:default:version"}
 
 documentation-section: 
-  pattern:  /documentation/{version}/{section}
+  pattern:  /documentation/{bundle}/{version}/{section}
   defaults: {controller: "documentationBundle:default:version"}
 
 

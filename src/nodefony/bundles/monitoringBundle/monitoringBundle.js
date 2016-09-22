@@ -419,9 +419,13 @@ nodefony.registerBundle ("monitoring", function(){
 							/*
  	 						 *  WRITE RESPONSE
  	 						 */  
-							context.response.write();
-							// END REQUEST
-							return context.close();
+							if ( context && context.response ){
+								context.response.write();
+								// END REQUEST
+								return context.close();
+
+							}
+							throw new Error ("MONITORING CAN SAVE REQUEST") ;
 							
 						}.bind(this));
 					})

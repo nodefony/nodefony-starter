@@ -471,6 +471,11 @@ nodefony.register("Bundle", function(){
 											this.logger("Create File      :" + ele.name)
 										}.bind(this) );
 									break;
+									case "symlink":
+										fs.symlink ( parent.path+"/"+obj.params.source, parent.path+"/"+obj.params.dest , obj.params.type || "file", function(ele){
+											this.logger("Create symbolic link :" + ele.name)
+										}.bind(this) );
+									break;
 								}
 							break;
 							case "childs" :

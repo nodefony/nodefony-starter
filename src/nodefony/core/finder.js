@@ -115,12 +115,19 @@ nodefony.register("finder", function(){
 		return new Result(tab)	
 	};
 
-	Result.prototype.getFile = function(name){
+	Result.prototype.getFile = function(name, casse){
 		var tab = [] ;
 		for (var i = 0 ; i < this.files.length ; i++ ){
 			if (this.files[i].type === "File") {
-				if (this.files[i].name === name )
-					return this.files[i]
+				if ( casse ){
+					var reg = new RegExp("^"+name+"$","i") ;
+					if ( reg.test(this.files[i].name) ){
+						return this.files[i] ;	
+					}
+				}else{
+					if (this.files[i].name === name )
+						return this.files[i] ;
+				}
 			}
 		}
 		return null ;	

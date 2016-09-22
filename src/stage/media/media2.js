@@ -81,9 +81,18 @@ stage.register("media", function(){
 				}
 			break;
 			case "element":
-				// TODO
-				this.mediaType = "domElement" ;
-				this.createSource(media);
+				this.mediaType = "element" ;
+				/*this.media.onloadstart = function(){
+					console.log("loadstart");
+				}.bind(this)
+				this.media.onloadeddata = function(){
+					console.log("onloadeddata");
+				}.bind(this)*/	
+				this.media.oncanplay= function(){
+					this.connectSource( this.media );
+					this.ready = true;
+					this.fire("onReady", this);
+				}.bind(this)
 
 			break;
 			case "string" :
@@ -171,25 +180,39 @@ stage.register("media", function(){
   	};
 
 	Track.prototype.pause =  function(when) {
-		if ( this.source ) {
-			if (this.source.node && this.source.playbackState == this.source.node.PLAYING_STATE) {
-				this.source.node.stop( when || 0 );
-			}
-			this.disconnectSource();
-			this.fire("onPause",this)
+		switch ( this.mediaType ){
+			case "element":
+				this.media.pause();
+				this.fire("onPause",this);
+			break;
+			default:
+				if ( this.source ) {
+					if (this.source.node && this.source.playbackState == this.source.node.PLAYING_STATE) {
+						this.source.node.stop( when || 0 );
+					}
+					this.disconnectSource();
+					this.fire("onPause",this);
+				}
 		}
 		return this;
   	};
 
 	Track.prototype.play = function( time , loop) {
-	  	this.pause().connectSource();
-	  	if ( loop )
- 			this.source.loop = true;
- 	 	if ( this.source.noteOn )
- 		 	this.source.noteOn(this.context.currentTime, time);
- 	 	if ( this.source.start )
- 		 	this.source.start(this.context.currentTime, time)
-		this.fire("onPlay",this)
+		switch ( this.mediaType ){
+			case "element":
+				this.media.play();
+				this.fire("onPlay",this)
+			break;
+			default: 
+				this.pause().connectSource();
+	  			if ( loop )
+ 					this.source.loop = true;
+ 	 			if ( this.source.noteOn )
+ 		 			this.source.noteOn(this.context.currentTime, time);
+ 	 			if ( this.source.start )
+ 		 			this.source.start(this.context.currentTime, time)
+				}
+				this.fire("onPlay",this)
 		return this ;
   	};
 
@@ -226,10 +249,6 @@ stage.register("media", function(){
 				var source = this.context.createBufferSource();
 				source.buffer = buffer || this.buffer;
 			break;
-			case "domElement" :
-				//TODO
-				//console.log("PASSSS ELEMENT");
-			break;
 			case "decode" :
 				this.rawBuffer = buffer ;
 				this.urlStream = URL.createObjectURL ( new Blob([this.rawBuffer]) )
@@ -251,7 +270,7 @@ stage.register("media", function(){
 				var source = this.context.createMediaStreamSource(buffer || this.buffer);
 			break;
 			case "element":
-				var source = this.context.createMediaElementSource(buffer || this.buffer);
+				var source = this.context.createMediaElementSource(this.media);
 			break;
 		}
 		return source;

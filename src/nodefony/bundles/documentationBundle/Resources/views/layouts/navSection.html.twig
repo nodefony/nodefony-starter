@@ -1,15 +1,15 @@
 
 {% if  not section  %}
-	<li role="presentation" class="active"><a href="{{path('documentation-version',{version:version})}}">Home</a></li>
+	<li role="presentation" class="active"><a href="{{path('documentation-version',{version:version, bundle:bundle})}}">Home</a></li>
 {% else %}
-	<li role="presentation" ><a href="{{path('documentation-version',{version:version})}}">Home</a></li>
+	<li role="presentation" ><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">Home</a></li>
 {% endif %}
 
 {% for sec in sections %}
 	{% if section == sec %}
-		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:sec,version:version })}}">{{sec}}</a></li>
+		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:sec,version:version,  bundle:bundle })}}">{{sec}}</a></li>
 	{% else %}
-		<li role="presentation"><a href="{{path('documentation-section',{section:sec,version:version })}}">{{sec}}</a></li>
+		<li role="presentation"><a href="{{path('documentation-section',{section:sec,version:version, bundle:bundle })}}">{{sec}}</a></li>
 	{% endif %}
 {% endfor %}
 
