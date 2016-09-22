@@ -217,7 +217,7 @@ nodefony.registerController("default", function(){
 				   </ul>\
 				   <ul class="nav navbar-nav navbar-right">\
 				   <li  class="navbar-btn pull-right" style="margin-right:40px">\
-				   <select id="langs" name="hl" class="form-control">\
+				   <select id="langs"  class="form-control">\
 				   '+langOptions+'\
 				   </select>\
 				   </li>\
