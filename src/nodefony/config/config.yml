@@ -42,6 +42,7 @@ system:
   locale:                       "en_en"
 
   log:
+    active:                     true
     console:                    false
     file:                       false
     messages:                   "/tmp/nodefony.log"
