@@ -23,6 +23,10 @@ nodefony.registerService("httpKernel", function(){
 		this.engineTemplate = this.container.get("templating");
 		//this.settings =  this.container.getParameters("bundles.http");
 
+		this.domain = this.kernel.domain;
+		this.httpPort = this.kernel.httpPort;
+		this.httpsPort = this.kernel.httpsPort;
+
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
 			try {

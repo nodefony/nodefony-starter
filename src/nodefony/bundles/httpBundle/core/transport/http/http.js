@@ -247,7 +247,14 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	};
 
 	Http.prototype.redirectHttps = function( status ){
-		this.response.redirect( this.url.replace("http" , "https"), status );
+		var urlChange = nodefony.extend({}, this.request.url , {
+			protocol:"https",
+			port:this.kernelHttp.httpsPort || 443 ,
+			href:"",
+			host:""
+		})
+		var newUrl  = url.format(urlChange);
+		this.response.redirect( newUrl, status );
 		this.notificationsCenter.fire("onResponse", this.response, this);
 	};
 
