@@ -558,7 +558,6 @@ nodefony.registerService("firewall", function(){
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
 			if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-				console.log("PASS REDIRCT");
 				return context.security.redirectHttps(context);
 			}
 			//CROSS DOMAIN //FIXME width callback handle for async response  
