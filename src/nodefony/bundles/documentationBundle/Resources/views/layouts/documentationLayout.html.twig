@@ -13,9 +13,6 @@
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
 
-
-	<stylesheet>
-
 {% endblock %}
 
 
@@ -96,8 +93,27 @@
 				}
 			}).fail(function() {
 				console.log( "ERROR" );
+			});
+
+			$.get("https://api.github.com/repos/ccamensuli/nodefony/issues?state=open",function(data){
+				var ele = $("#issues");
+				for (var i = 0 ; i < data.length ; i++){
+					console.log(data[i]);
+					var date = new Date(data[i].created_at).toDateString();
+					var li = "<li class='list-group-item'>";
+					li += "<span style='background-color:blue' class='badge'>#"+data[i].number+"</span>" ;
+					li += "<span style=''>" + data[i].title +"</span>";
+					li += "<div> opened on "+date+" by "+data[i].user.login+" </div>"	
+					li += "</li>";
+					ele.append(li);
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
 			})
 
+
+
+			
 		
 		</script>
 
@@ -188,7 +204,7 @@
 
 				<div class="col-md-4">
 					<div class="panel panel-success">
-						<div class="panel-heading">Git Status branch 
+						<div class="panel-heading">Local Git Status 
 							<span class="branch label label-default pull-right"></span>
 						</div>
 						<div class="panel-body" style="overflow: auto;">
@@ -200,7 +216,7 @@
 
 				<div class="col-md-4">
 					<div class="panel panel-success">
-						<div class="panel-heading">Recent Commits 
+						<div class="panel-heading">Local Recent Commits 
 							<span class="branch label label-default pull-right"></span>
 						</div>
 						<div class="panel-body" style="overflow: auto;">
@@ -212,8 +228,11 @@
 
 				<div class="col-md-4">
 					<div class="panel panel-success">
-						<div class="panel-heading">Issue Queue Activity</div>
+						<div class="panel-heading">GitHub Issue Queue Activity</div>
 						<div class="panel-body" style="overflow: auto;">
+							<ul id="issues" class="list-group">
+								
+							</ul>
 						</div>
 					</div>
 				</div>
