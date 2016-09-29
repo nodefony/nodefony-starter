@@ -45,48 +45,6 @@
 			window.location.href = "?lang="+this.value
 		});
 
-
-		$.get("/documentation/getMostRecentCommit",function(data){
-			var ele = $("#commits");
-			for (var i = 0 ; i < data.length ; i++){
-				var dt = new Date( data[i].date ) ;
-				var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
-				var sha= data[i].sha.substr(0,7);
-				var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
-				var li = "<li>";
-				li += date + " " + "<a href="+shaLink + ">"+sha+"</a> " + data[i].author + " " +data[i].msg;	
-				li += "</li>";
-				ele.append(li);
-			}
-		}).fail(function() {
-			console.log( "ERROR" );
-		})
-
-		$.get("/documentation/getStatus",function(data){
-			var ele = $("#status");
-			for (var i = 0 ; i < data.length ; i++){
-				var type = data[i].type[0].replace("WT_","") ;
-				var li = "<li class='list-group-item'>";
-				switch(type){
-					case "INDEX_NEW":
-						li += "<span style='background-color:blue' class='badge'>"+type+"</span>" ;
-						li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename( data[i].path ) +"</span>" ;
-					break;
-					case "NEW":
-						li += "<span style='background-color:red' class='badge'>"+type+"</span>" ;
-						li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename ( data[i].path ) +"</span>";
-					break;
-					default:
-						li += "<span  class='badge'>"+type+"</span>" ;
-						li += "<span style='cursor:context-menu' title="+ data[i].path +"> " + stage.basename ( data[i].path ) +"</span>";
-				}
-				li += "</li>";
-				ele.append(li);	
-			}
-		}).fail(function() {
-			console.log( "ERROR" );
-		})
-
 		$.get("/documentation/getCurrentBranch",function(data){
 			var ele = $(".branch");
 			ele.text(data.branch)  ;
@@ -96,6 +54,54 @@
 		})
 
 	</script>
+
+	{% if bundle == "nodefony" and  section == null %}
+		<script>
+			$.get("/documentation/getMostRecentCommit",function(data){
+				var ele = $("#commits");
+				for (var i = 0 ; i < data.length ; i++){
+					var dt = new Date( data[i].date ) ;
+					var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
+					var sha= data[i].sha.substr(0,7);
+					var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
+					var li = "<li>";
+					li += date + " " + "<a href="+shaLink + ">"+sha+"</a> " + data[i].author + " " +data[i].msg;	
+					li += "</li>";
+					ele.append(li);
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
+			})
+
+			$.get("/documentation/getStatus",function(data){
+				var ele = $("#status");
+				for (var i = 0 ; i < data.length ; i++){
+					var type = data[i].type[0].replace("WT_","") ;
+					var li = "<li class='list-group-item'>";
+					switch(type){
+						case "INDEX_NEW":
+							li += "<span style='background-color:blue' class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename( data[i].path ) +"</span>" ;
+						break;
+						case "NEW":
+							li += "<span style='background-color:red' class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename ( data[i].path ) +"</span>";
+						break;
+						default:
+							li += "<span  class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+ data[i].path +"> " + stage.basename ( data[i].path ) +"</span>";
+					}
+					li += "</li>";
+					ele.append(li);	
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
+			})
+
+		
+		</script>
+
+	{% endif %}
 
 {% endblock %}
 
@@ -127,8 +133,8 @@
 
 			<ul class="nav navbar-nav navbar-right ">
 				<a  class="navbar-brand  " href="#" ><span class="label label-danger"> DOCUMENTATION IN PROGRESS  !!</span></a>
-				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:0.8em">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
-				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:0.8em">VERSION</strong></a>
+				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
+				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">VERSION</strong></a>
 				<li  class="navbar-btn pull-right" style="margin-right:40px">
 				   <select id="version" name="hl" class="form-control" >
 					{% for ver in allVersions %}
@@ -152,7 +158,12 @@
 		
 	<div class="row">
 		<div class="col-md-2 affix navbar-default">
-			<div class="text-primary text-center " style="margin:5px 0 10px 0 " >  {{bundle | upper}} {{version}} </div> 
+			<div class="text-primary text-center " style="margin:5px 0 10px 0 ; font-size:130%" >  
+				<a href="{{path('documentation-version',{version:version,bundle:bundle})}}">
+					{{bundle | upper}} 
+				</a>
+					<span class="label label-success"> {{version}} </span> 
+			</div> 
 			<ul class="nav nav-pills nav-stacked">
 				
 				{{ render( controller("documentationBundle:default:subSection", bundle, version, section  )) }}
@@ -172,6 +183,7 @@
 
 			<hr style="margin-top:100px">
 
+			{% if bundle == "nodefony" and  section == null %} 
 			<div class="row-fluid m-t-xl">
 
 				<div class="col-md-4">
@@ -206,6 +218,7 @@
 					</div>
 				</div>
 			</div>
+			{% endif %}
 	</div>	
 </div>
 
