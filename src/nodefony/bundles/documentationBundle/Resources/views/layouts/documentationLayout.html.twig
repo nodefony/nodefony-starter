@@ -89,14 +89,12 @@
 
 		$.get("/documentation/getCurrentBranch",function(data){
 			console.log(data)
-			var ele = $("#currentBranch");
+			var ele = $(".branch");
 			ele.text(data.branch)  ;
 
 		}).fail(function() {
 			console.log( "ERROR" );
 		})
-
-
 
 	</script>
 
@@ -128,7 +126,7 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
-				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">GIT BRANCH</strong> <span id="currentBranch" class="label label-default"></span></a>
+				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
 				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">VERSION</strong></a>
 				<li  class="navbar-btn pull-right" style="margin-right:40px">
 				   <select id="version" name="hl" class="form-control" >
@@ -171,35 +169,44 @@
 				</div>
 			{% endblock %}
 
-			<p>
-				<hr style="margin-top:100px">
-			</p>
-			<div class="row">
-				<section  class=" clearfix col-sm-4">
-					<h4 class="block-title">Git Status</h4>
+			<hr style="margin-top:100px">
 
-					<div class="well"  style="height: 330px;overflow:auto">
-						<ul id="status" class="list-group">
-						</ul>
-  					</div>
-				</section>
-				<section  class=" clearfix col-sm-4">
-					<h4 class="block-title">Recent Commits</h4>
+			<div class="row-fluid m-t-xl">
 
-					<div  class="well" data-mh="aggregator" style="height: 330px;overflow:auto">
-						<ul id="commits">
-						</ul>  
+				<div class="col-md-4">
+					<div class="panel panel-danger">
+						<div class="panel-heading">Git Status branch 
+							<span class="branch label label-default pull-right"></span>
+						</div>
+						<div class="panel-body" style="overflow: auto;">
+							<ul id="status" class="list-group">
+							</ul>
+						</div>
 					</div>
-				</section>
-				<section  class="clearfix col-sm-4">
-					<h4 class="block-title">Issue Queue Activity</h4>
+				</div>
 
-					<div class="well" data-mh="aggregator" style="height: 330px;overflow:auto">
-						//TODO
-  					</div>
-				</section>
+				<div class="col-md-4">
+					<div class="panel panel-danger">
+						<div class="panel-heading">Recent Commits 
+							<span class="branch label label-default pull-right"></span>
+						</div>
+						<div class="panel-body" style="overflow: auto;">
+							<ul id="commits">
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-4">
+					<div class="panel panel-danger">
+						<div class="panel-heading">Issue Queue Activity</div>
+						<div class="panel-body" style="overflow: auto;">
+						</div>
+					</div>
+				</div>
+
+
 			</div>
-		</div>
 	</div>	
 </div>
 
