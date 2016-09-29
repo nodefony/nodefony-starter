@@ -33,6 +33,24 @@ nodefony.registerController("git", function(){
 		});
 
 	}
+
+	gitController.prototype.getCurrentBranchAction = function(){
+		Git.Repository.open(this.get("kernel").rootDir).then(function(repo) {
+			return repo.getCurrentBranch().then(function(ref) {
+    				/* Get the commit that the branch points at. */
+				return this.renderJsonAsync({
+					branch:ref.shorthand()
+				});
+			}.bind(this))
+		}.bind(this))
+  		.catch(function (err) {
+			this.renderJsonAsync({error:err.getMessage()});
+		}.bind(this)).done(function () {
+  			//console.log('Finished');
+		});
+	
+
+	}
 	
 	gitController.prototype.getMostRecentCommitAction = function(){
 

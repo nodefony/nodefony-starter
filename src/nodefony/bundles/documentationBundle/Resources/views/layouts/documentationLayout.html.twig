@@ -87,6 +87,17 @@
 			console.log( "ERROR" );
 		})
 
+		$.get("/documentation/getCurrentBranch",function(data){
+			console.log(data)
+			var ele = $("#currentBranch");
+			ele.text(data.branch)  ;
+
+		}).fail(function() {
+			console.log( "ERROR" );
+		})
+
+
+
 	</script>
 
 {% endblock %}
@@ -117,7 +128,8 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
-				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary">VERSION</strong></a>
+				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">GIT BRANCH</strong> <span id="currentBranch" class="label label-default"></span></a>
+				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">VERSION</strong></a>
 				<li  class="navbar-btn pull-right" style="margin-right:40px">
 				   <select id="version" name="hl" class="form-control" >
 					{% for ver in allVersions %}
@@ -159,7 +171,9 @@
 				</div>
 			{% endblock %}
 
-			<hr>
+			<p>
+				<hr style="margin-top:100px">
+			</p>
 			<div class="row">
 				<section  class=" clearfix col-sm-4">
 					<h4 class="block-title">Git Status</h4>

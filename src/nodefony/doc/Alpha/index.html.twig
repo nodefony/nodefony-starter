@@ -1,103 +1,43 @@
 {{trans_default_domain("doc")}}
 
 
-<a href="https://github.com/ccamensuli/nodefony"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+<a href="https://github.com/ccamensuli/nodefony"><img style="position: fixed; top: 51px; right: 0; border: 0;z-index:8000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-<h1>INSTALLATION </h1>
+<h1> Nodefony Documentation </h1> {{version}}
+
+<hr>
 
 
-<h3 name="requirements">Requirements :</h3>
+<div class="row-fluid m-t-xl">
 
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">Getting Started with nodefony</div>
+			<div class="panel-body" style="overflow: auto;">
+			</div>
+		</div>
+	</div>
 
-<ul>
-	<li><a href="https://nodejs.org/">Node.js</a> is a Platform built on Chrome's JavaScript runtime<p>Install Node.js <a href="https://nodejs.org/en/download/package-manager"> via Package</a></p></li>
-	<li><a href="https://www.npmjs.com/">NPM</a> is the Package Manager for javascript application</li>
-	<li><a href="http://git-scm.com/">GIT</a> is Distributed version control system</li>
-	<li><a href="https://www.gnu.org/software/make/">GNU Make</a> is a Tool which controls the generation of executables</li>
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">Nodefony Installation</div>
+			<div class="panel-body" style="overflow: auto;">
+			</div>
+		</div>
+	</div>
 
-
-
-</ul>
-
-
-<h3 name="system">OS compatibility :</h3>
-
-<ul>
-	<li> LINUX ( Checked )</li>
-	<li> MACOS ( Checked )</li>
-	<li> WINDOWS ( Unchecked )</li>
-	<li> EMBEDDED SYSTEM ( Unchecked )</li>
-
-</ul>
-
-<h3 name="system">Download sources from github  :
-	<a class="github-button" href="https://github.com/ccamensuli/nodefony/archive/master.zip" data-style="mega" aria-label="Download ntkme/github-buttons on GitHub">Download Zip</a>
-</h3> 
-
-
-<h3 name="system">Clone sources from github :</h3> 
-<pre>
-
-$ git clone https://github.com/ccamensuli/nodefony.git
-
-$ cd nodefony
-
-</pre>
-
-
-<h3 name="system">Build Nodefony Sources :</h3>
-
-<p>
-	This part consist to call differents targets of Makefile <a href="{{ path('documentation-section',{section:'Makefile', version:version, bundle:bundle })}}">(see Makefile documentation) </a><br> 
-
-	This tagets do multiple tasks as : <br>
-	<ul>	
-		<li> Create some framework directories </li>
-		<li> Install Framework dependences  of NPM package manager ( see package.json )</li>
-		<li> Install Bundles dependence  of NPM package manager ( see package.json in bundle directory )</li>
-		<li> Create Assets link in public directory </li>
-		<li> Create Nodefony Database </li>
-	</ul>	
-
-</p>	 
-
-<pre>
-
-$ make
-
-
-</pre>
-
-<p>
-	Example after Build The repository
-</p>
-
-<pre>
-
-$ ls -l
-
--rw-r--r--    1 cci  staff  22696 19 nov  2015 LICENSE
--rw-r--r--    1 cci  staff   2027  5 sep 11:14 Makefile
--rw-r--r--    1 cci  staff  12964 22 sep 11:42 README.md
-drwxr-xr-x    9 cci  staff    306 22 sep 14:28 app
-drwxr-xr-x    4 cci  staff    136 22 jui 13:57 bin
-drwxr-xr-x    5 cci  staff    170 22 jui 13:57 config
--rwxr-xr-x    1 cci  staff    513 22 jui 13:57 console
-lrwxr-xr-x    1 cci  staff     16 22 sep 11:37 doc -> src/nodefony/doc
-drwxr-xr-x  291 cci  staff   9894 22 sep 11:08 node_modules
--rwxr-xr-x    1 cci  staff   1360 22 jui 13:57 nodefony
--rwxr-xr-x    1 cci  staff    552 22 jui 13:57 nodefony_dev
--rwxr-xr-x    1 cci  staff   1178  5 sep 11:14 nodefony_pm2
--rw-r--r--    1 cci  staff   1102  5 sep 11:14 package.json
-drwxr-xr-x    7 cci  staff    238 22 jui 12:09 src
-drwxr-xr-x    6 cci  staff    204 16 jui 17:22 tmp
-drwxr-xr-x    7 cci  staff    238 22 jui 13:57 vendors
-drwxr-xr-x   17 cci  staff    578 22 sep 11:08 web
-</pre>
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">Advance Usage</div>
+			<div class="panel-body" style="overflow: auto;">
+			</div>
+		</div>
+	</div>
 
 
 
-<a href="{{ path('documentation-section',{section:'Started', version:version, bundle:bundle })}}"> <button type="button" class="btn btn-primary">Next</button></a>
+</div>
+

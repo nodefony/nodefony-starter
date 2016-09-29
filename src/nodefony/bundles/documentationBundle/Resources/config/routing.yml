@@ -52,3 +52,8 @@ documentation-git-getStatus:
   pattern:  /documentation/getStatus
   defaults: {controller: "documentationBundle:git:getStatus"}
 
+
+documentation-git-getBranch: 
+  pattern:  /documentation/getCurrentBranch
+  defaults: {controller: "documentationBundle:git:getCurrentBranch"}
+
