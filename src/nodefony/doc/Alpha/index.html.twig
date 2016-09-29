@@ -6,25 +6,47 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-<h1> Nodefony Documentation </h1> {{version}}
+<h1> Nodefony Documentation <span class="label label-success" style="font-size: 50%;"> {{version}} </span></h1>
 
 <hr>
 
 
-<div class="row-fluid m-t-xl">
+<div class="row m-t-xl">
 
 	<div class="col-md-4">
 		<div class="panel panel-info">
-			<div class="panel-heading">Getting Started with nodefony</div>
+			<div class="panel-heading">{{ "started" | trans() }}</div>
 			<div class="panel-body" style="overflow: auto;">
+				<ul>
+					<li> <a href="{{ path('documentation-section',{section:'Installation', version:version, bundle:bundle })}}"> Installation </a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}"> Configurations</a></li>
+					<li> Hello Word</li>
+					<li> Routing</li>
+					<li> Controller</li>
+					<li> Views </li>
+					<li> Models </li>
+					<li> Console </li>
+					<li> Websocket </li>
+				</ul>
 			</div>
 		</div>
 	</div>
 
 	<div class="col-md-4">
 		<div class="panel panel-info">
-			<div class="panel-heading">Nodefony Installation</div>
+			<div class="panel-heading">Nodefony Core</div>
 			<div class="panel-body" style="overflow: auto;">
+				<ul>
+					<li> Kernel</li>
+					<li> Bundles</li>
+					<li> Services Container</li>
+					<li> Notion of Context</li>
+					<li> Autoloader</li>
+					<li> Finder</li>
+					<li> fileClass </li>
+					<li> notificationsCenter </li>
+					<li> Syslog </li>
+				</ul>
 			</div>
 		</div>
 	</div>
@@ -33,6 +55,17 @@
 		<div class="panel panel-info">
 			<div class="panel-heading">Advance Usage</div>
 			<div class="panel-body" style="overflow: auto;">
+				<ul>
+					<li> Servers (http(s), Websocket(s))</li>
+					<li> Statics Files</li>
+					<li> Front Proxy  NGINX </li>
+					<li> Production Mode PM2 </li>
+					<li> Sessions</li>
+					<li> Firewall</li>
+					<li> Authentication</li>
+					<li> Orm</li>
+					<li> Realtime</li>
+				</ul>
 			</div>
 		</div>
 	</div>

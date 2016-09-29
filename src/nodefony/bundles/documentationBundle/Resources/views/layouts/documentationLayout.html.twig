@@ -88,7 +88,6 @@
 		})
 
 		$.get("/documentation/getCurrentBranch",function(data){
-			console.log(data)
 			var ele = $(".branch");
 			ele.text(data.branch)  ;
 
@@ -123,9 +122,11 @@
 			<ul class="nav navbar-nav navbar-left">
 				{{ render( controller("documentationBundle:default:navDoc" )) }}
 				{{ render( controller("documentationBundle:default:navDocBundle" )) }}
+				
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
+				<a  class="navbar-brand  " href="#" style="margin-left:20px"><span class="label label-danger"> DOCUMENTATION IN PROGRESS  !!</span></a>
 				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
 				<a class="navbar-brand text-primary" href="#" style="margin-left:20px"><strong class="text-primary" style="font-size:0.8em">VERSION</strong></a>
 				<li  class="navbar-btn pull-right" style="margin-right:40px">
@@ -164,7 +165,7 @@
 			{% block readme %}
 				<div class="container">
 					<div class="row" >
-						<div class="alert alert-warning" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} IN PROGRESS</div>
+						<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} IN PROGRESS</div>
 					</div>
 				</div>
 			{% endblock %}
@@ -174,7 +175,7 @@
 			<div class="row-fluid m-t-xl">
 
 				<div class="col-md-4">
-					<div class="panel panel-danger">
+					<div class="panel panel-success">
 						<div class="panel-heading">Git Status branch 
 							<span class="branch label label-default pull-right"></span>
 						</div>
@@ -186,7 +187,7 @@
 				</div>
 
 				<div class="col-md-4">
-					<div class="panel panel-danger">
+					<div class="panel panel-success">
 						<div class="panel-heading">Recent Commits 
 							<span class="branch label label-default pull-right"></span>
 						</div>
@@ -198,14 +199,12 @@
 				</div>
 
 				<div class="col-md-4">
-					<div class="panel panel-danger">
+					<div class="panel panel-success">
 						<div class="panel-heading">Issue Queue Activity</div>
 						<div class="panel-body" style="overflow: auto;">
 						</div>
 					</div>
 				</div>
-
-
 			</div>
 	</div>	
 </div>
