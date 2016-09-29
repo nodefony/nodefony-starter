@@ -247,11 +247,16 @@ nodefony.register.call(nodefony.io.transports, "http", function(){
 	};
 
 	Http.prototype.redirectHttps = function( status ){
+		if( this.proxy ){
+			var port = ""  ;
+		}else{
+			var port = this.kernelHttp.httpsPort || 443 ;
+		}
 		var urlChange = nodefony.extend({}, this.request.url , {
-			protocol:"https",
-			port:this.kernelHttp.httpsPort || 443 ,
-			href:"",
-			host:""
+			protocol:	"https",
+			port:		port ,
+			href:		"",
+			host:		""
 		})
 		var newUrl  = url.format(urlChange);
 		this.response.redirect( newUrl, status );

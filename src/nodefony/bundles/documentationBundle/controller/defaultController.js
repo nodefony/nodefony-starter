@@ -1,4 +1,7 @@
 
+
+
+
 nodefony.registerController("default", function(){
 
 		/**
@@ -16,7 +19,6 @@ nodefony.registerController("default", function(){
 			this.mother.constructor(container, context);
 		};
 
-
 		/**
 		 *
 		 *	@method indexAction
@@ -26,7 +28,6 @@ nodefony.registerController("default", function(){
 			
 			return this.forward("documentationBundle:default:version");
 		};
-
 
 		defaultController.prototype.subSectionAction = function(bundle, version , section){
 			if ( ! bundle ) bundle = "nodefony" ;
@@ -104,7 +105,7 @@ nodefony.registerController("default", function(){
 				//twig
 				var file = result.getFile("index.html.twig" , true)
 				if ( file ){
-					var res = this.renderRawView(file); 
+					var res = this.renderRawView(file,{bundle:bundle, readme:res, version:version, section:section, allVersions:all} ); 
 					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}
 				// MD
@@ -120,7 +121,7 @@ nodefony.registerController("default", function(){
 			}else{
 				var file = result.getFile("index.html.twig" , true)
 				if ( file ){
-					var res = this.renderRawView(file); 
+					var res = this.renderRawView(file, {bundle:bundle, readme:res, version:version, section:section, allVersions:all}); 
 					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all});
 				}
 
@@ -174,8 +175,6 @@ nodefony.registerController("default", function(){
 			})
 		}
 
-
-
 		/**
  	 	 *
  	 	 *	 footer
@@ -227,7 +226,6 @@ nodefony.registerController("default", function(){
 				   </div>'
 			 return this.getResponse(html);	
 		}
-
 
 
 		return defaultController;

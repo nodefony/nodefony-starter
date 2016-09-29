@@ -44,4 +44,11 @@ documentation-section:
   pattern:  /documentation/{bundle}/{version}/{section}
   defaults: {controller: "documentationBundle:default:version"}
 
+documentation-git-getMostRecentCommit: 
+  pattern:  /documentation/getMostRecentCommit
+  defaults: {controller: "documentationBundle:git:getMostRecentCommit"}
+
+documentation-git-getStatus: 
+  pattern:  /documentation/getStatus
+  defaults: {controller: "documentationBundle:git:getStatus"}
 

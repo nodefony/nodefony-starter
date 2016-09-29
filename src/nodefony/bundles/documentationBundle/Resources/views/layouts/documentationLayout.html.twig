@@ -8,9 +8,13 @@
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
             "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
 	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+	    "/documentationBundle/css/doc.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
+
+
+	<stylesheet>
 
 {% endblock %}
 
@@ -39,8 +43,50 @@
 		});
 		$("#langs").change(function(ele){
 			window.location.href = "?lang="+this.value
+		});
+
+
+		$.get("/documentation/getMostRecentCommit",function(data){
+			var ele = $("#commits");
+			for (var i = 0 ; i < data.length ; i++){
+				var dt = new Date( data[i].date ) ;
+				var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
+				var sha= data[i].sha.substr(0,7);
+				var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
+				var li = "<li>";
+				li += date + " " + "<a href="+shaLink + ">"+sha+"</a> " + data[i].author + " " +data[i].msg;	
+				li += "</li>";
+				ele.append(li);
+			}
+		}).fail(function() {
+			console.log( "ERROR" );
 		})
-		
+
+		$.get("/documentation/getStatus",function(data){
+			var ele = $("#status");
+			for (var i = 0 ; i < data.length ; i++){
+				var type = data[i].type[0].replace("WT_","") ;
+				var li = "<li class='list-group-item'>";
+				switch(type){
+					case "INDEX_NEW":
+						li += "<span style='background-color:blue' class='badge'>"+type+"</span>" ;
+						li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename( data[i].path ) +"</span>" ;
+					break;
+					case "NEW":
+						li += "<span style='background-color:red' class='badge'>"+type+"</span>" ;
+						li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename ( data[i].path ) +"</span>";
+					break;
+					default:
+						li += "<span  class='badge'>"+type+"</span>" ;
+						li += "<span style='cursor:context-menu' title="+ data[i].path +"> " + stage.basename ( data[i].path ) +"</span>";
+				}
+				li += "</li>";
+				ele.append(li);	
+			}
+		}).fail(function() {
+			console.log( "ERROR" );
+		})
+
 	</script>
 
 {% endblock %}
@@ -82,7 +128,6 @@
 							<option value="{{path('documentation-version',{version:ver,bundle:bundle})}}" >{{ver}}</option> 
 						{% endif %}
 					{% endfor %}
-					
 				   </select>
 				</li>
 			</ul>
@@ -113,13 +158,38 @@
 					</div>
 				</div>
 			{% endblock %}
+
+			<hr>
+			<div class="row">
+				<section  class=" clearfix col-sm-4">
+					<h4 class="block-title">Git Status</h4>
+
+					<div class="well"  style="height: 330px;overflow:auto">
+						<ul id="status" class="list-group">
+						</ul>
+  					</div>
+				</section>
+				<section  class=" clearfix col-sm-4">
+					<h4 class="block-title">Recent Commits</h4>
+
+					<div  class="well" data-mh="aggregator" style="height: 330px;overflow:auto">
+						<ul id="commits">
+						</ul>  
+					</div>
+				</section>
+				<section  class="clearfix col-sm-4">
+					<h4 class="block-title">Issue Queue Activity</h4>
+
+					<div class="well" data-mh="aggregator" style="height: 330px;overflow:auto">
+						//TODO
+  					</div>
+				</section>
+			</div>
 		</div>
 	</div>	
 </div>
-	
 
 {% endblock %}
-
 
 {% block footer %}
 	<footer>
