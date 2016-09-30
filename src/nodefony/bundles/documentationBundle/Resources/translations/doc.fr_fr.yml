@@ -24,9 +24,14 @@
 ########### TRANSLATION nodefony LIBRARY  ############
 
 
+progress:               "documentation en cours"               
+        
+begin:                  "Commencer avec Nodefony"
 
-started:                Commencer avec Nodefony
+usage:                  "Utilisation Avancée"
 
-usage:                  Utilisation Avancée
+core:                   "Nodefony l'Essentiel"
 
-core:                   Nodefony l'Essentiel
+started:                "Démarrer"
+
+Routing:                "Routeur"

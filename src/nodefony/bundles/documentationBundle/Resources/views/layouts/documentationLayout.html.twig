@@ -1,5 +1,6 @@
 {% extends "/app/Resources/views/base.html.twig" %}
 
+{{trans_default_domain("doc")}}
 
 {% block stylesheets %}
 	
@@ -106,7 +107,7 @@
 					var date = new Date(data[i].created_at).toDateString();
 					var li = "<li class='list-group-item'>";
 					li += "<span style='background-color:blue' class='badge'>#"+data[i].number+"</span>" ;
-					li += "<span style=''>" + data[i].title +"</span>";
+					li += "<a href='https://github.com/ccamensuli/nodefony/issues/"+data[i].number+"'><span style=''>" + data[i].title +"</span></a>";
 					li += "<div> opened on "+date+" by "+data[i].user.login+" </div>"	
 					li += "</li>";
 					ele.append(li);
@@ -150,7 +151,7 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">
-				<a  class="navbar-brand  " href="#" ><span class="label label-danger"> DOCUMENTATION IN PROGRESS  !!</span></a>
+				<a  class="navbar-brand  " href="#" ><span class="label label-danger"> {{ "progress" | trans() | upper()}} !! </span></a>
 				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
 				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">VERSION</strong></a>
 				<li  class="navbar-btn pull-right" style="margin-right:40px">
@@ -181,7 +182,9 @@
 				{% block readme %}
 					<div class="container">
 						<div class="row" >
-							<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} {{subsection}} IN PROGRESS</div>
+							<div class="alert alert-danger" role="alert">
+								{{version}} / {{bundle | trans()}}  / {{section | trans()}}  {% if subsection %}  / subsection | trans() {% endif %} {{ "progress" | trans() | upper()}}
+							</div>
 						</div>
 					</div>
 				{% endblock %}
@@ -231,9 +234,9 @@
 			<div class="col-md-2 affix navbar-default">
 				<div class="text-primary text-center " style="margin:5px 0 10px 0 ; font-size:130%" >  
 					<a href="{{path('documentation-version',{version:version,bundle:bundle})}}">
-						{{bundle | upper}} 
+						{{bundle | trans() | upper}} 
 					</a>
-						<span class="label label-success"> {{version}} </span> 
+						<span class="label label-success"> {{version }} </span> 
 				</div> 
 				<ul class="nav nav-pills nav-stacked">
 					
@@ -246,23 +249,25 @@
 			<div class="col-md-10 col-lg-offset-2">
 				<ol class="breadcrumb">
 					{% if version %}
-						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{version}}</a></li>
+						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{version }}</a></li>
 					{% endif %}
 					{% if bundle %}
-						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{bundle}}</a></li>
+						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{bundle | trans()}}</a></li>
 					{% endif %}
 					{% if section %}
-						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section}}</a></li>
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
 					{% endif %}
 					{% if subsection %}
 						{% set qs = {'subsection' : subsection} %}
-						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle, queryString:qs})}}">{{subsection}}</a></li>
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle, queryString:qs})}}">{{subsection | trans()}}</a></li>
 					{% endif %}
 				</ol>
 				{% block readme %}
 					<div class="container">
 						<div class="row" >
-							<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} {{subsection}} IN PROGRESS</div>
+							<div class="alert alert-danger" role="alert">
+							{{version | trans()}} /	{{bundle | trans()}} / {{section | trans()}}  {% if subsection %} / subsection | trans() {% endif %} {{ "progress" | trans() | upper()}}
+							</div>
 						</div>
 					</div>
 				{% endblock %}

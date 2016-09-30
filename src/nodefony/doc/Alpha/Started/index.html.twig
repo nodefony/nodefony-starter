@@ -1,0 +1,304 @@
+{{trans_default_domain("doc")}}
+
+
+
+<h1> {{ "Configuration Nodefony" | trans() }}</h1>
+<hr>
+
+
+<h3>NODEFONY INSTALLATION : See more<span> <a href="{{ path('documentation-section',{section:'', version:version, bundle:bundle })}}">( Nodefony installation  documentation ) </a> </span> </h3>
+
+<pre>
+
+$ git clone https://github.com/ccamensuli/nodefony.git
+
+$ cd nodefony
+
+$ make
+
+
+###########  CREATE web directory ###########
+
+###########  NODE JS  MODULES  INSTALLATION  ###########
+./console npm:install
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 17679
+
+INSTALL BUNDLE http dependence : memcached
+INSTALL BUNDLE http dependence : qs
+INSTALL BUNDLE assetic dependence : less
+INSTALL BUNDLE assetic dependence : uglify-js
+INSTALL BUNDLE assetic dependence : uglifycss
+INSTALL BUNDLE monitoring dependence : request
+INSTALL BUNDLE sequelize dependence : sequelize
+INSTALL BUNDLE webRtc dependence : webrtc-adapter
+INSTALL BUNDLE webRtc dependence : redis
+⸨░░░░░░░░░░░░░░░░░░⸩ ⠧ normalizeTree: sill install loadCurrentTree
+
+...
+
+</pre>
+
+
+
+<h3>Configuration system : </h3>
+
+Add host name "nodefony.com" in your /etc/hosts  :
+<pre>
+$ sudo vim /etc/hosts
+
+
+##
+# Host Database
+#
+##
+127.0.0.1       localhost nodefony.com
+</pre>
+
+
+<h3>Configuration Framework : <span>See more  <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></span> </h3>
+
+
+<p>
+	You can find the front configuration file for framework in repository at <strong>./config/config.yml</strong> <br>
+
+	This config file  do multiple tasks as : <br>
+	<ul>	
+		<li> parametrer http(s) servers listen domain and port </li>
+		<li> Regexp domain Alias </li>
+		<li> AutoLoad differents framework bundles as security monitoring ...</li>
+		<li> Autoload services for render statics  files (css, js , images ..)</li>
+		<li> locale (Lang) by default for all framework </li>
+		<li> Create Assets link in public directory </li>
+		<li> Create Nodefony Database </li>
+	</ul>	
+
+
+<p>
+
+<pre>
+
+#
+#  NODEFONY FRAMEWORK
+#
+#       KERNEL CONFIG
+#
+#
+
+name:                           "NODEFONY"
+system:
+  version:                      "Alpha"
+  domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
+  domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
+  httpPort:                     5151
+  httpsPort:                    5152
+  statics:                      true
+  security:                     true
+  realtime:                     true
+  monitoring:                   true
+
+
+  locale:                       "en_en"
+
+  log:
+    active:                     true
+    console:                    false
+    file:                       false
+    messages:                   "/tmp/nodefony.log"
+    error:                      "/tmp/errorNodefony.log"
+    services:                   "/tmp/servicesNodefony.log"
+    #TODO
+    rotate:                     false
+
+
+
+</pre>
+
+
+
+<h3>Running NODEFONY: <span>See more  <a href="{{ path('documentation-section',{section:'Running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></span> </h3>
+
+<p>
+	There are 3 methods to run NODEFONY framework 
+
+	<ul>	
+		<li>  Run Appliation in DEV  mode</li>
+		<li>  Run Appliation in PROD mode with (clusters) </li>
+		<li>  Run Appliation in PM2  mode see  <a href="http://pm2.keymetrics.io/">PM2</a> </li>
+	</ul>
+	To check the good binding http(s) you can run nodefony in dev mode 
+</p>
+
+
+<pre>
+
+# Run Appliation in DEV mode
+
+$ ./nodefony_dev
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY SERVER CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 17656
+
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/httpBundle.js
+Wed Sep 28 2016 16:04:34 DEBUG KERNEL  :  REGISTER BUNDLE : http   
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/kernel/httpKernelService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpsService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/webSocketSecureService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/websocketService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/sessions/sessionsService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js
+Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/upload/uploadService.js
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/config.yml
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
+Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
+
+....
+
+</pre>
+
+<p>
+	Access to App with URL : <strong>http://nodefony.com:5151</strong><br>
+
+	By default the nodefony clone come with a demonstration bundle named "demoBundle" 
+
+</p>
+
+
+
+
+
+<h3>Configuration Application :</h3>
+<p>
+	You can find the front configuration file for Application in repository at <strong>./app/config/config.yml</strong> <br>
+
+</p>
+<pre>
+
+#
+#  FRAMEWORK NODEFONY
+#
+#     APP CONFIG  
+name :				AppBundle
+locale :			en_en
+version :                       "1.0"
+App:
+  projectName:                  "Demo" 
+  projectYear:                  2015 
+  locale:                       "en_en"
+  authorName:                   "admin"
+  authorMail:                   "admin@nodefony.com"
+
+
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  #storage:                      false
+  
+#
+#       OVERRIDE BUNDLE HTTP 
+#
+#       see HTTP BUNDLE config for more options
+#       
+#       // SERVICES
+#       statics files
+#       session
+#       http server
+#       https server
+#       upload 
+#       websocket server 
+#       websocket secure server 
+#
+#
+httpBundle:
+  statics:
+    settings:
+      cache :                     true	
+      maxAge:                     0 
+    web:
+      path:                       "/web/"
+      maxage:                     30*24*60*60*1000
+
+  upload:
+    tmp_dir:                      "tmp/upload"
+    #max_filesize:                 100000               #en Bytes
+
+  session:
+    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
+    #save_path:                    "./tmp/sessions"              # for session.storage.files only
+    cookie:
+      maxAge:                     0   
+
+  http:
+    responseTimeout:              40000
+  https:
+    responseTimeout:              40000
+    certificats:
+      key:                        "/config/certificates/serverKey.pem"
+      cert:                       "/config/certificates/serverCert.pem"
+
+
+#
+#       OVERRIDE BUNDLE ASSETIC
+#
+#       LESS SERVICE CONFIGURATION
+#
+asseticBundle:
+  less:
+    compress:                     true
+    cache:                        true 
+
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors
+#
+#
+sequelizeBundle: 
+  debug:        false
+  connectors:                    
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'root'
+      password:        'password'
+      options:
+        dialect:       mysql
+        host:          nodefony.com
+        port:          '3306'
+
+</pre>
+
+
+

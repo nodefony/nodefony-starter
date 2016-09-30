@@ -15,19 +15,19 @@
 
 	<div class="col-md-4">
 		<div class="panel panel-info">
-			<div class="panel-heading">{{ "started" | trans() }}</div>
+			<div class="panel-heading">{{ "begin" | trans() }}</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
-					<li> <a href="{{ path('documentation-section',{section:'Installation', version:version, bundle:bundle })}}"> Installation </a></li>
-					<li> <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}"> Configurations</a></li>
-					<li> <a href="{{ path('documentation-section',{section:'Started', version:version, bundle:bundle })}}"> Started </a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Installation', version:version, bundle:bundle })}}"> {{"installation" | trans() | capitalize() }} </a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Started', version:version, bundle:bundle })}}"> {{"started" | trans() | capitalize() }} </a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}"> {{"configurations" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'HelloWord', version:version, bundle:bundle })}}"> Hello Word </a></li>
-					<li> Routing</li>
-					<li> Controller</li>
-					<li> Views </li>
-					<li> Models </li>
-					<li> Console </li>
-					<li> Websocket </li>
+					<li> <a href="{{ path('documentation-section',{section:'Routing', version:version, bundle:bundle })}}"> {{"Routing" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Controller', version:version, bundle:bundle })}}"> {{"controller" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Views', version:version, bundle:bundle })}}"> {{"views" | trans() | capitalize() }}</a></li> 
+					<li> <a href="{{ path('documentation-section',{section:'Models', version:version, bundle:bundle })}}"> {{"models" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Console', version:version, bundle:bundle })}}"> {{"console" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'Websocket', version:version, bundle:bundle })}}"> {{"websocket" | trans() | capitalize() }}</a></li>  </li>
 				</ul>
 			</div>
 		</div>
@@ -38,11 +38,11 @@
 			<div class="panel-heading">{{ "core" | trans() }}</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
+					<li> Autoloader</li>
 					<li> Kernel</li>
 					<li> Bundles</li>
 					<li> Services Container</li>
 					<li> Notion of Context</li>
-					<li> Autoloader</li>
 					<li> Finder</li>
 					<li> fileClass </li>
 					<li> notificationsCenter </li>
