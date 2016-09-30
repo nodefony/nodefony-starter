@@ -5,21 +5,21 @@
 	
 	{% if section %}
 		{% if subsection == section %}	
-			<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
+			<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans() | capitalize()}}</a></li>
 		{% else %}
-			<li role="presentation" ><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
+			<li role="presentation" ><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans() | capitalize()}}</a></li>
 		{% endif %}
 	{% else %}
-		<li role="presentation" ><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{section | trans()}}</a></li>
+		<li role="presentation" ><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{section | trans() | capitalize()}}</a></li>
 	{% endif %}
 {% endif %}
 
 {% for sec in sections %}
 	{% set qs = {'subsection' : sec} %}
 	{% if subsection == sec %}
-		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle,queryString:qs })}}">{{sec | trans()}}</a></li>
+		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle,queryString:qs })}}">{{sec | trans() | capitalize()}}</a></li>
 	{% else %}
-		<li role="presentation"><a href="{{path('documentation-section',{section:section,version:version, bundle:bundle,queryString:qs })}}">{{sec | trans()}}</a></li>
+		<li role="presentation"><a href="{{path('documentation-section',{section:section,version:version, bundle:bundle,queryString:qs })}}">{{sec | trans() | capitalize()}}</a></li>
 	{% endif %}
 {% endfor %}
 
