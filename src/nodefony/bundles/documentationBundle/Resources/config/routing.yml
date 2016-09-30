@@ -35,6 +35,9 @@ documentation:
   pattern:  /documentation
   defaults: {controller: "documentationBundle:default:index"}
 
+documentation-default: 
+  pattern:  /documentation/{version}
+  defaults: {controller: "documentationBundle:default:index"}
 
 documentation-version: 
   pattern:  /documentation/{bundle}/{version}
@@ -45,15 +48,15 @@ documentation-section:
   defaults: {controller: "documentationBundle:default:version"}
 
 documentation-git-getMostRecentCommit: 
-  pattern:  /documentation/getMostRecentCommit
+  pattern:  /api/git/getMostRecentCommit
   defaults: {controller: "documentationBundle:git:getMostRecentCommit"}
 
 documentation-git-getStatus: 
-  pattern:  /documentation/getStatus
+  pattern:  /api/git/getStatus
   defaults: {controller: "documentationBundle:git:getStatus"}
 
 
 documentation-git-getBranch: 
-  pattern:  /documentation/getCurrentBranch
+  pattern:  /api/git/getCurrentBranch
   defaults: {controller: "documentationBundle:git:getCurrentBranch"}
 

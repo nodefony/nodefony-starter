@@ -24,9 +24,17 @@ nodefony.registerController("default", function(){
 		 *	@method indexAction
 		 *
 		 */
-		defaultController.prototype.indexAction = function(){
-			
-			return this.forward("documentationBundle:default:version");
+		defaultController.prototype.indexAction = function(version){
+			if( ! version ){
+				var defaultVersion = this.get("kernel").settings.system.version;
+			}else{
+				var defaultVersion = version ;
+			}
+			var url = this.generateUrl("documentation-version",{
+				bundle:"nodefony",
+				version:defaultVersion
+			})
+			return this.redirect(url);
 		};
 
 		defaultController.prototype.subSectionAction = function(bundle, version , section){

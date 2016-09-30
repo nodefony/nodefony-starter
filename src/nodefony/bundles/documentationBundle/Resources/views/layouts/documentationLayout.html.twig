@@ -48,7 +48,7 @@
 			window.location.href = "?lang="+this.value
 		});
 
-		$.get("/documentation/getCurrentBranch",function(data){
+		$.get("/api/git/getCurrentBranch",function(data){
 			var ele = $(".branch");
 			ele.text(data.branch)  ;
 
@@ -60,7 +60,7 @@
 
 	{% if bundle == "nodefony" and  section == null %}
 		<script>
-			$.get("/documentation/getMostRecentCommit",function(data){
+			$.get("/api/git/getMostRecentCommit",function(data){
 				var ele = $("#commits");
 				for (var i = 0 ; i < data.length ; i++){
 					var dt = new Date( data[i].date ) ;
@@ -76,7 +76,7 @@
 				console.log( "ERROR" );
 			})
 
-			$.get("/documentation/getStatus",function(data){
+			$.get("/api/git/getStatus",function(data){
 				var ele = $("#status");
 				for (var i = 0 ; i < data.length ; i++){
 					var type = data[i].type[0].replace("WT_","") ;
