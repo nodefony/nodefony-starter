@@ -19,9 +19,8 @@ var nodefony = function(){
 	 *	
 	 */
 	var Nodefony = function(){
-		this.io = {
-			transports:{}
-		};
+		this.io = {};
+		this.context = {};
 		this.session = {
 			storage:{}
 		};

@@ -7,7 +7,7 @@
  */
 
 
-nodefony.register.call(nodefony.io.transports, "websocket", function(){
+nodefony.register.call(nodefony.context, "websocket", function(){
 
 
 	var websocket = function(container, request, response ,type){

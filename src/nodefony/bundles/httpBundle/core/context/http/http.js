@@ -8,7 +8,7 @@
 var fs = require("fs");
 var url = require("url");
 
-nodefony.register.call(nodefony.io.transports, "http", function(){
+nodefony.register.call(nodefony.context, "http", function(){
 
 	/*
  	 *

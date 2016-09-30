@@ -3,6 +3,9 @@
 
 {% block stylesheets %}
 	
+	{{ parent() }}
+
+
 	{% stylesheets  output="/documentationBundle/assets/css/layout.css" filter="?uglifycss" 
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
@@ -17,6 +20,8 @@
 
 
 {% block javascripts %}
+
+	{{ parent() }}
 
 	{% javascripts output='/documentationBundle/assets/js/layout.js' filter='?uglifyjs2'
 		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
@@ -98,7 +103,6 @@
 			$.get("https://api.github.com/repos/ccamensuli/nodefony/issues?state=open",function(data){
 				var ele = $("#issues");
 				for (var i = 0 ; i < data.length ; i++){
-					console.log(data[i]);
 					var date = new Date(data[i].created_at).toDateString();
 					var li = "<li class='list-group-item'>";
 					li += "<span style='background-color:blue' class='badge'>#"+data[i].number+"</span>" ;
@@ -111,13 +115,11 @@
 				console.log( "ERROR" );
 			})
 
-
-
-			
-		
 		</script>
 
 	{% endif %}
+
+	
 
 {% endblock %}
 
@@ -173,71 +175,105 @@
 <div class="container-fluid" style="padding-top: 70px;padding-bottom: 70px">
 		
 	<div class="row">
-		<div class="col-md-2 affix navbar-default">
-			<div class="text-primary text-center " style="margin:5px 0 10px 0 ; font-size:130%" >  
-				<a href="{{path('documentation-version',{version:version,bundle:bundle})}}">
-					{{bundle | upper}} 
-				</a>
-					<span class="label label-success"> {{version}} </span> 
-			</div> 
-			<ul class="nav nav-pills nav-stacked">
+		{% if bundle == "nodefony" and  section == null %}
+			
+			<div class="col-md-12 ">
+				{% block readme %}
+					<div class="container">
+						<div class="row" >
+							<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} {{subsection}} IN PROGRESS</div>
+						</div>
+					</div>
+				{% endblock %}
+
+				<hr style="margin-top:100px">
 				
-				{{ render( controller("documentationBundle:default:subSection", bundle, version, section  )) }}
-			</ul>
-			{% block section %}
+				<div class="row-fluid m-t-xl">
 
-			{% endblock %}
-		</div>
-		<div class="col-md-10 col-lg-offset-2">
-			{% block readme %}
-				<div class="container">
-					<div class="row" >
-						<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} IN PROGRESS</div>
-					</div>
-				</div>
-			{% endblock %}
-
-			<hr style="margin-top:100px">
-
-			{% if bundle == "nodefony" and  section == null %} 
-			<div class="row-fluid m-t-xl">
-
-				<div class="col-md-4">
-					<div class="panel panel-success">
-						<div class="panel-heading">Local Git Status 
-							<span class="branch label label-default pull-right"></span>
-						</div>
-						<div class="panel-body" style="overflow: auto;">
-							<ul id="status" class="list-group">
-							</ul>
+					<div class="col-md-4">
+						<div class="panel panel-success">
+							<div class="panel-heading">Local Git Status 
+								<span class="branch label label-default pull-right"></span>
+							</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="status" class="list-group">
+								</ul>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="col-md-4">
-					<div class="panel panel-success">
-						<div class="panel-heading">Local Recent Commits 
-							<span class="branch label label-default pull-right"></span>
-						</div>
-						<div class="panel-body" style="overflow: auto;">
-							<ul id="commits">
-							</ul>
+					<div class="col-md-4">
+						<div class="panel panel-success">
+							<div class="panel-heading">Local Recent Commits 
+								<span class="branch label label-default pull-right"></span>
+							</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="commits">
+								</ul>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="col-md-4">
-					<div class="panel panel-success">
-						<div class="panel-heading">GitHub Issue Queue Activity</div>
-						<div class="panel-body" style="overflow: auto;">
-							<ul id="issues" class="list-group">
-								
-							</ul>
+					<div class="col-md-4">
+						<div class="panel panel-success">
+							<div class="panel-heading">GitHub Issue Queue Activity</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="issues" class="list-group">
+									
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			{% endif %}
+
+		{% else %}
+			<div class="col-md-2 affix navbar-default">
+				<div class="text-primary text-center " style="margin:5px 0 10px 0 ; font-size:130%" >  
+					<a href="{{path('documentation-version',{version:version,bundle:bundle})}}">
+						{{bundle | upper}} 
+					</a>
+						<span class="label label-success"> {{version}} </span> 
+				</div> 
+				<ul class="nav nav-pills nav-stacked">
+					
+					{{ render( controller("documentationBundle:default:subSection", bundle, version, section  )) }}
+				</ul>
+				{% block section %}
+
+				{% endblock %}
+			</div>
+			<div class="col-md-10 col-lg-offset-2">
+				<ol class="breadcrumb">
+					{% if version %}
+						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{version}}</a></li>
+					{% endif %}
+					{% if bundle %}
+						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{bundle}}</a></li>
+					{% endif %}
+					{% if section %}
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section}}</a></li>
+					{% endif %}
+					{% if subsection %}
+						{% set qs = {'subsection' : subsection} %}
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle, queryString:qs})}}">{{subsection}}</a></li>
+					{% endif %}
+				</ol>
+				{% block readme %}
+					<div class="container">
+						<div class="row" >
+							<div class="alert alert-danger" role="alert">{{bundle}} {{version}} DOCUMENTATION  {{section}} {{subsection}} IN PROGRESS</div>
+						</div>
+					</div>
+				{% endblock %}
+
+				<hr style="margin-top:100px">
+				
+			</div>		
+	
+		{% endif %}
+
+
 	</div>	
 </div>
 

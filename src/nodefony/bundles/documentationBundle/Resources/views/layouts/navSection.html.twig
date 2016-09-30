@@ -2,14 +2,24 @@
 {% if  not section  %}
 	<li role="presentation" class="active"><a href="{{path('documentation-version',{version:version, bundle:bundle})}}">Home</a></li>
 {% else %}
-	<li role="presentation" ><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">Home</a></li>
+	
+	{% if section %}
+		{% if subsection == section %}	
+			<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
+		{% else %}
+			<li role="presentation" ><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
+		{% endif %}
+	{% else %}
+		<li role="presentation" ><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{section | trans()}}</a></li>
+	{% endif %}
 {% endif %}
 
 {% for sec in sections %}
-	{% if section == sec %}
-		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:sec, version:version, bundle:bundle })}}">{{sec}}</a></li>
+	{% set qs = {'subsection' : sec} %}
+	{% if subsection == sec %}
+		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle,queryString:qs })}}">{{sec | trans()}}</a></li>
 	{% else %}
-		<li role="presentation"><a href="{{path('documentation-section',{section:sec,version:version, bundle:bundle })}}">{{sec}}</a></li>
+		<li role="presentation"><a href="{{path('documentation-section',{section:section,version:version, bundle:bundle,queryString:qs })}}">{{sec | trans()}}</a></li>
 	{% endif %}
 {% endfor %}
 

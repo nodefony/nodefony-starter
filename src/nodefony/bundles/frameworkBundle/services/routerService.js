@@ -6,6 +6,8 @@
  *
  */
 
+var Querystring = require('querystring');
+
 nodefony.registerService("router", function(){
 
 	/*
@@ -272,8 +274,27 @@ nodefony.registerService("router", function(){
 		this.syslog = this.container.get("syslog"); 
 	};
 
+
+	var generateQueryString = function(obj, name){
+		var size = ( Object.keys(obj).length ) - 1;
+		if ( ! size ) return "" ; 
+		var str = "?";
+		if ( nodefony.typeOf(obj) !== "object" || obj === null){
+			this.logger("BAD arguments queryString in route varaibles :" + name ,"WARNING");
+			return "";
+		}
+		var iter = 1 ;
+		for (var ele in obj){
+			if (ele === "_keys") continue ;
+			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( iter == size ? "" : "&" )  ;
+			iter+=1 ;
+		}
+		return   str ; 
+	}
+
 	Router.prototype.generatePath = function(name, variables, host){
 		var route =  this.getRoute(name) ;
+		var queryString = null ;
 		if (! route )
 			throw {error:"no route to host  "+ name};
 		var path = route.path;
@@ -287,6 +308,10 @@ nodefony.registerService("router", function(){
 			}
 			for (var ele in variables ){
 				if (ele === "_keys") continue ;
+				if (ele === "queryString" ){
+ 				       	queryString = variables[ele] ;
+					continue ;
+				}
 				var index = route.variables.indexOf(ele);
 				if ( index >= 0 ){
 					path = path.replace("{"+ele+"}",  variables[ele]);
@@ -295,8 +320,12 @@ nodefony.registerService("router", function(){
 				}	
 			}	
 		}
-		if (host)
+		if ( queryString ){
+			path += generateQueryString.call(this, queryString, name);
+		}
+		if (host){
 			return host+path ;
+		}
 		return path ;
 
 	};

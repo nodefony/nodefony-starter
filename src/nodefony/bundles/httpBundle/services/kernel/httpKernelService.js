@@ -254,7 +254,7 @@ nodefony.registerService("httpKernel", function(){
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
-				var context = new nodefony.io.transports.http(container, request, response, type);
+				var context = new nodefony.context.http(container, request, response, type);
 				container.set("context", context);
 				
 				//request events	
@@ -344,7 +344,7 @@ nodefony.registerService("httpKernel", function(){
 			break;
 			case "WEBSOCKET" :
 			case "WEBSOCKET SECURE" :
-				var context = new nodefony.io.transports.websocket(container, request, response, type);
+				var context = new nodefony.context.websocket(container, request, response, type);
 				container.set("context", context);
 				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
