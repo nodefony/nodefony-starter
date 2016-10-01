@@ -6,11 +6,11 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-<h1> Nodefony Documentation <span class="label label-success" style="font-size: 50%;"> {{version}} </span></h1>
+<center><h1> Nodefony Documentation <span class="label label-success" style="font-size: 50%;"> {{version}} </span></h1></center>
 
 <hr>
-
-
+ 
+<div class="container">
 <div class="row m-t-xl">
 
 	<div class="col-md-4">
@@ -21,6 +21,7 @@
 					<li> <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle })}}"> {{"installation" | trans() | capitalize() }} </a></li>
 					<li> <a href="{{ path('documentation-section',{section:'started', version:version, bundle:bundle })}}"> {{"started" | trans() | capitalize() }} </a></li>
 					<li> <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}"> {{"configurations" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}"> {{"running" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'helloWord', version:version, bundle:bundle })}}"> Hello Word </a></li>
 					<li> <a href="{{ path('documentation-section',{section:'routing', version:version, bundle:bundle })}}"> {{"Routing" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'controller', version:version, bundle:bundle })}}"> {{"controller" | trans() | capitalize() }}</a></li>
@@ -70,14 +71,96 @@
 			</div>
 		</div>
 	</div>
+</div>
 
-	<hr>
+<hr>
+
+<div class="row m-t-xl">	
+<h1> {{ "begin" | trans() }}</h1>
 
 
-	<p>
-		
+
+<h2>NODEFONY INSTALLATION : <small>See more <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle })}}">( Nodefony installation  documentation ) </a> </small> </h2>
+<p class="doc2">
+Get sources from gitHub
+</p>
+<pre class="doc2">
+
+$ git clone https://github.com/ccamensuli/nodefony.git
+
+$ cd nodefony
+
+$ make
+
+</pre>
+
+
+<h2>Configurations : <small>See more  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></small></h2>
+
+<h3> System :</h3>
+<p class="doc3">
+	
+	To bind server http(s) on network interface  
+	Add host name "nodefony.com" in your /etc/hosts  :
+	<pre class="doc3" >
+$ sudo vim /etc/hosts
+
+
+##
+# Host Database
+#
+##
+127.0.0.1       localhost nodefony.com
+	</pre>
+	
+</p>
+
+
+	<h3>Configuration Framework :  </h3>
+	<p class="doc3">
+		By default NODEFONY SERVERS listen on ports
+	</p>
+		<ul class="doc3">
+			<li>
+			http : 5151
+			</li>
+			<li>
+			https: 5152
+			</li>
+		</ul>
+	<p class="doc3">
+		If you want change listen port http(s) by defaut  
+		<small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></small>
 	</p>
 
+<h2>Running NODEFONY: <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
 
+	<p class="doc2">
+		To check the good binding http(s) you can run nodefony in dev mode 
+	</p>
+
+	<pre class="doc2">
+
+# Run Appliation in DEV mode
+
+$ ./nodefony_dev
+             
+	</pre>
+
+<p class="doc2">
+	Access to App with URL : <strong>http://nodefony.com:5151</strong><br>
+
+	By default the nodefony clone come with a demonstration bundle named "demoBundle" 
+
+
+
+</p>
+
+<center>
+	<img width="800" height="463" src="/documentationBundle/images/nodefony.png"/>
+</center>
+
+
+</div>
 </div>
 

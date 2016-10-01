@@ -1,0 +1,81 @@
+<h1>Hello Word<h1>
+
+	
+	
+<h2>Generate hello Bundle :</h2>
+CLI Generate new bundle :    generate:bundle nameBundle path
+
+<pre>
+$ ./console generate:bundle helloBundle src/bundles
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+
+
+		      CONSOLE Version : 1.0 PLATFORM : darwin  PROCESS PID : 1069
+
+GENERATE bundle : helloBundle LOCATION : src/bundles
+Create Directory :helloBundle
+Create Directory :Command
+Create Directory :controller
+Create File      :defaultController.js
+Create Directory :manager
+Create Directory :tests
+Create Directory :Resources
+Create Directory :config
+Create File      :config.yml
+Create File      :routing.yml
+Create Directory :public
+Create Directory :js
+Create Directory :css
+Create Directory :images
+Create Directory :translations
+Create Directory :views
+Create File      :index.html.twig
+Create Directory :core
+Create Directory :Entity
+Create File      :helloBundle.js
+</pre>
+<h2> Add hello bundle in Framework :</h2>
+<p>
+Open Bundle App "appKernel.js" to add new hello Bundle in **registerBundles** array :
+</p>
+<pre>
+/*
+ *	ENTRY POINT FRAMEWORK APP KERNEL
+ */
+
+nodefony.register("appKernel",function(){
+
+	var appKernel = function(type, environment, debug, loader){
+
+		// kernel constructor
+		var kernel = this.$super;
+		kernel.constructor(environment, debug, loader, type)
+
+		/*
+	 	*	Bundles to register in Application
+	 	*/
+		this.registerBundles([
+			...
+			"./src/bundles/helloBundle"
+		]);
+
+		...
+
+	}.herite(nodefony.kernel);
+
+	return appKernel;
+})
+</pre>
+<h2> Start Nodefony to check new Bundle hello:</h2>
+<pre>
+$ make install
+$ ./nodefony_dev
+</pre>
+
+Access to bundle route with URL : http://nodefony.com:5151/hello
+
+

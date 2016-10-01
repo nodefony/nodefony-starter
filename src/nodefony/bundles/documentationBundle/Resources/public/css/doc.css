@@ -1,19 +1,55 @@
+html {
+  font-size: 14px;
+}
+
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 20px;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 28px;
+  }
+}
+
+
 h1{
 	color:#337ab7;
+	margin-left:0px;
 }
 
 
 h3{
 	font-size: 17px;
 	color: #167b87;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
+	margin-left:40px;
 }
 
 h2{
 	font-size: 20px;
 	color: #167b87;
 	text-transform: uppercase;
+	margin-left:20px;
 }
+
+.doc2  {
+	margin-left:20px;
+}
+.doc3  {
+	margin-left:40px;
+
+}
+
+
 
 hr{
 
