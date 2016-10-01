@@ -85,7 +85,11 @@ nodefony.registerController("default", function(){
 			if ( bundle === "nodefony" ){
 				var path = this.get("kernel").nodefonyPath ;
 			}else{
-				var path = this.get("kernel").bundles[bundle].path
+				if ( this.get("kernel").bundles[bundle] ){
+					var path = this.get("kernel").bundles[bundle].path
+				}else{
+					var path = this.get("kernel").nodefonyPath ;
+				}
 			}
 
 			// get all version 
