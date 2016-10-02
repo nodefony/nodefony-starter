@@ -29,6 +29,15 @@ nodefony.registerBundle ("assetic", function(){
 		this.environment = this.kernel.environment ;
 		this.debug = this.kernel.debug ;
 		this.kernelType  =  kernel.type ;
+		
+		if ( this.settings.CDN ){
+			this.cdn = this.settings.CDN
+		}else{
+			this.cdn = {
+				stylesheets:false,
+				javascripts:false	
+			}
+		}
 	};
 	
 
@@ -285,6 +294,11 @@ nodefony.registerBundle ("assetic", function(){
 		this.engineTwig.extendFunction("javascripts", function(value, times) {
 			console.log(arguments)
 		});
+		if ( this.cdn.javascripts ){
+			var cdn = this.cdn.javascripts ;
+		}else{
+			var cdn = null ;
+		}
 
 		this.engineTwig.extend(function(Twig) {
 			
@@ -319,7 +333,11 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
-					context["asset_url"] = token.assetic.output ;
+					if (cdn){
+						context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+					}else{
+						context["asset_url"] = token.assetic.output ;
+					}
                 			output = Twig.parse.apply(this, [token.output, context]);
             				return {
                 				chain: chain,
@@ -343,6 +361,11 @@ nodefony.registerBundle ("assetic", function(){
 		this.engineTwig.extendFunction("stylesheets", function(value, times) {
 			console.log(arguments)
 		});
+		if ( this.cdn.stylesheets ){
+			var cdn = this.cdn.stylesheets ;
+		}else{
+			var cdn = null ;
+		}
 
 		this.engineTwig.extend(function(Twig) {
 			
@@ -379,7 +402,11 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
-					context["asset_url"] = token.assetic.output ;
+					if (cdn){
+						context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+					}else{
+						context["asset_url"] = token.assetic.output ;
+					}
                 			output = Twig.parse.apply(this, [token.output, context]);
 					//console.log("PARSE : " + token.assetic.output)
             				return {

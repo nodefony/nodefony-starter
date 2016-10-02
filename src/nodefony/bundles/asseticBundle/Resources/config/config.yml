@@ -37,3 +37,8 @@ less:
  
 #TODO
 coffescript:
+
+# DOMAIN CDN    WARNING  change all assets url with CDN domain  
+CDN:
+  stylesheets:                  null           # example  : cdn.nodefony.com
+  javascripts:                  null           # example  : cdn.nodefony.com

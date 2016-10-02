@@ -293,6 +293,9 @@ nodefony.registerService("httpKernel", function(){
 				this.kernel.fire("onHttpRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
+					nodefony:{
+						url:context.request.url
+					},
 					render:render,
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
@@ -363,6 +366,9 @@ nodefony.registerService("httpKernel", function(){
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
+					nodefony:{
+						url:context.originUrl
+					},
 					render:render.bind(container),
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
