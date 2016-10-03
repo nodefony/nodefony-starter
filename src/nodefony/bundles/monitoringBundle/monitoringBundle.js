@@ -206,11 +206,14 @@ nodefony.registerBundle ("monitoring", function(){
 				return ;
 			}
 
+			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
+
 			var trans = context.get("translation");
 			context.profiling = {
 				id:null,
 				bundle:context.resolver.bundle.name,
 				bundles:this.bundles,
+				cdn:settingsAssetic.CDN || null ,
 				pwd:process.env["PWD"],
 				node:this.node,
 				services:this.service,

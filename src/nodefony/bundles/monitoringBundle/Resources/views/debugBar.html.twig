@@ -25,6 +25,7 @@
 					{% endfor %}
 					<li><label>Debug</label><span class="label label-success">{{debug}}</span></li>	
 					<li><label>Git Branch</label><span class="label label-success">{{git.currentBranch}}</span></li>	
+					
 				</ul>
 			</div>
 
@@ -71,6 +72,10 @@
 					<li class="separator"> </li>
 					<li><label style="color:#999">ENVIRONMENT</label></li>
 					<li><label>PWD</label><span class="label label-success">{{pwd}}</span></li>
+					<li class="separator"> </li>
+					<li><label title="content delivery network" style="color:#999">DOMAIN ASSETICS CDN </label></li>
+					<li><label>Javascripts Domain</label><span class="label label-success">{% if cdn.javascripts %} {{cdn.javascripts}} {% else %} Inactive {% endif %} </span></li>
+					<li><label>Stylesheets Domain</label><span class="label label-success">{% if cdn.stylesheets %} {{cdn.stylesheets}} {% else %} Inactive {% endif %}</span></li>
 						
 				</ul>
 			</div>
