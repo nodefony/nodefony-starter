@@ -1,0 +1,142 @@
+
+
+
+<h1> Views  and  Templates  <span class="label label-success" style="font-size: 50%;"> {{version}} </span></h1>
+
+<hr>
+
+<div class="container-fluid">
+
+	<h2>Nodefony views </h2>
+	<h3>Location Views in File System  </h3>
+	<div class="doc3">
+		<p>
+			In Resources directory bundles you can find a 'views' directory  <br>
+			
+		<p>
+		<pre>
+src/nodefony/bundles/documentationBundle/Resources/
+│   
+└── views
+    ├── index.html.twig
+    ├── layouts
+    │   ├── documentationLayout.html.twig
+    │   └── navSection.html.twig
+    ├── navDocBundle.html.twig
+    └── navDoc.html.twig
+
+
+LOG WHEN NODEFONY START : 
+
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : Register View : 'documentationBundle::index.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : COMPILE View : 'documentationBundle::index.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : Register View : 'documentationBundle:layouts:documentationLayout.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : COMPILE View : 'documentationBundle:layouts:documentationLayout.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : Register View : 'documentationBundle:layouts:navSection.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : COMPILE View : 'documentationBundle:layouts:navSection.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : Register View : 'documentationBundle::navDoc.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : COMPILE View : 'documentationBundle::navDoc.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : Register View : 'documentationBundle::navDocBundle.html'
+Mon Oct 03 2016 14:32:49 DEBUG BUNDLE DOCUMENTATION  : COMPILE View : 'documentationBundle::navDocBundle.html'
+		</pre>		
+		When nodefony start :  All templates in views directory in bundle will be Registred and compiled by Template Engine
+
+		<div class="alert  alert-info" role="alert">
+			<ul>
+				<li>In Developement mode :  Nodefony kernel reload files, recompile and parse Templates who are use in request 
+					<p>
+					Mon Oct 03 2016 17:11:03 WARNING AUTOLOADER RELOAD FORCE  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller/gitController.js
+					</p>	
+				</li> 
+				<li>In Production mode :    Nodefony kernel cache all Templates compilations and just parse the compiled template with dynamics variables  </li>
+			</ul>
+			
+		</div>
+	</div>
+
+	<h3>Template Naming  </h3>
+	<div class="doc3">
+		<p>
+			Framework Registred Template as pattern 'bundle:directory:filename' <br>
+			 'documentationBundle::index.html' or 'documentationBundle::index.html.twig'
+
+
+				</p>
+	
+		
+	</div>
+
+	<h3>Override Templates from Third-Party Bundles </h3>
+	<div class="doc3">
+		<p>
+
+
+		</p>
+	
+		
+	</div>
+ 
+
+	
+
+	<h2>Nodefony template </h2>
+	<div class="doc2">
+		<p>
+		Nodefony use <a href="https://github.com/twigjs/twig.js" >twig.js</a>  : JS port of the Twig templating language of symfony framework See more <a href="http://twig.sensiolabs.org/">( twig.sensiolabs.org )</a>. 
+		<p>
+	</div>
+	
+
+	<h3> Base Template bundle app </h3>
+	<div class="doc3">
+		<p>
+			Nodefony has a Base Template in Bundle Application  <code>./app/Resources/views/base.html.twig</code>
+		
+		</p>
+		<pre>
+			<code> 
+&lt;!DOCTYPE html>
+&lt;html&gt;
+    &lt;head&gt;
+	&#123;% block meta %&#125; 
+		&lt;meta charset="utf-8"&gt;
+		&lt;meta http-equiv="content-type" content="text/html; charset=UTF-8"&gt;
+		&lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+		&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+		&lt;meta name="description" content="web Framework realtime node.js symfony like"&gt;
+		&lt;meta name="keywords" content="web,Framework,realtime,node.js,symfony,javascript,npm,linux"&gt;
+		&lt;link rel="manifest" href="/app/manifest.json"&gt;
+	&#123;% endblock %&#125;
+        &lt;title&gt;&#123;% block title %&#125;NODEFONY&#123;% endblock %&#125;&lt;/title&gt;
+        &#123;% block stylesheets %&#125;&#123;% endblock %&#125;
+    &lt;/head&gt;
+    &lt;body&gt;
+	&#123;% block body %&#125;&#123;% endblock %&#125;
+	&#123;% block footer %&#125;&#123;% endblock %&#125;
+        &#123;% block javascripts %&#125;&#123;% endblock %&#125;
+&lt;/body&gt;
+&lt;/html&gt;
+			</code>
+		</pre>
+
+	<p>
+	You can see  differents Twig block    <code>meta</code> <code>title</code>  <code>stylesheets</code>  <code>body</code> <code>footer</code>  <code>javascripts</code>
+		
+	</p>
+	
+	</div>
+
+	<h3> Example Template Inheritance and Layouts </h3>
+	<div class="doc3">
+
+		<pre>
+			<code> 
+
+			</code>
+		</pre>
+
+
+
+	</div>
+
+</div>

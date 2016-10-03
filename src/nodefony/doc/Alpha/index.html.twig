@@ -25,10 +25,11 @@
 					<li> <a href="{{ path('documentation-section',{section:'helloWord', version:version, bundle:bundle })}}"> Hello Word </a></li>
 					<li> <a href="{{ path('documentation-section',{section:'routing', version:version, bundle:bundle })}}"> {{"Routing" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'controller', version:version, bundle:bundle })}}"> {{"controller" | trans() | capitalize() }}</a></li>
-					<li> <a href="{{ path('documentation-section',{section:'views', version:version, bundle:bundle })}}"> {{"views" | trans() | capitalize() }}</a></li> 
+					<li> <a href="{{ path('documentation-section',{section:'view', version:version, bundle:bundle })}}"> {{"view" | trans() | capitalize() }} </a></li> 
 					<li> <a href="{{ path('documentation-section',{section:'models', version:version, bundle:bundle })}}"> {{"models" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'console', version:version, bundle:bundle })}}"> {{"console" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'websocket', version:version, bundle:bundle })}}"> {{"websocket" | trans() | capitalize() }}</a></li>  </li>
+					<li> <a href="{{ path('documentation-section',{section:'monitoring', version:version, bundle:bundle })}}"> {{"monitoring" | trans() | capitalize() }}</a></li>  </li>
 				</ul>
 			</div>
 		</div>
@@ -59,9 +60,10 @@
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
 					<li> Servers (http(s), Websocket(s))</li>
-					<li> Statics Files</li>
 					<li> Front Proxy  NGINX </li>
 					<li> Production Mode PM2 </li>
+					<li> Statics Files</li>
+					<li> CDN </li>
 					<li> Sessions</li>
 					<li> Firewall</li>
 					<li> Authentication</li>

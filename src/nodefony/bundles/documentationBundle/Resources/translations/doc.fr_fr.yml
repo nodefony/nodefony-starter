@@ -35,3 +35,9 @@ core:                   "Nodefony l'Essentiel"
 started:                "Démarrer"
 
 Routing:                "Routeur"
+
+view:                   "Vues et Modeles"
+
+twig:                   "Moteur Twig.js"
+
+extendTwig:             "Nodefony Extend Twig.js"

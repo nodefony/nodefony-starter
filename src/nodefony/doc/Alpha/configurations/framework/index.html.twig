@@ -1,0 +1,57 @@
+<h2>Configuration Framework :  </h2>
+
+<div class="doc2">
+	<p>
+		You can find the front configuration file for framework in repository at <strong>./config/config.yml</strong> <br>
+
+		This config file  do multiple tasks as : <br>
+		<ul>	
+			<li> parametrer http(s) servers listen domain and port </li>
+			<li> Regexp domain Alias </li>
+			<li> AutoLoad differents framework bundles as security monitoring ...</li>
+			<li> Autoload services for render statics  files (css, js , images ..)</li>
+			<li> locale (Lang) by default for all framework </li>
+			<li> Create Assets link in public directory </li>
+			<li> Create Nodefony Database </li>
+		</ul>	
+
+
+	<p>
+
+	<pre>
+#
+#  NODEFONY FRAMEWORK
+#
+#       KERNEL CONFIG
+#
+#
+
+name:                           "NODEFONY"
+system:
+version:                      "Alpha"
+domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
+domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
+httpPort:                     5151
+httpsPort:                    5152
+statics:                      true
+security:                     true
+realtime:                     true
+monitoring:                   true
+
+
+locale:                       "en_en"
+
+log:
+active:                     true
+console:                    false
+file:                       false
+messages:                   "/tmp/nodefony.log"
+error:                      "/tmp/errorNodefony.log"
+services:                   "/tmp/servicesNodefony.log"
+#TODO
+rotate:                     false
+	</pre>
+
+</div>
+
+
