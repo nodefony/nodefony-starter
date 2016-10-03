@@ -256,6 +256,21 @@ nodefony.registerService("httpKernel", function(){
 			case "HTTPS" :
 				var context = new nodefony.context.http(container, request, response, type);
 				container.set("context", context);
+
+				//twig extend context
+				context.extendTwig = {
+					nodefony:{
+						url:context.request.url
+					},
+					render:render,
+					controller:controller.bind(container),
+					trans:translation.trans.bind(translation),
+					getLocale:translation.getLocale.bind(translation),
+					trans_default_domain:function(){
+						translation.trans_default_domain.apply(translation, arguments) ;
+					},
+					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
+				}
 				
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
@@ -291,20 +306,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 
 				this.kernel.fire("onHttpRequest", container, context, type);
-				//twig extend context
-				context.extendTwig = {
-					nodefony:{
-						url:context.request.url
-					},
-					render:render,
-					controller:controller.bind(container),
-					trans:translation.trans.bind(translation),
-					getLocale:translation.getLocale.bind(translation),
-					trans_default_domain:function(){
-						translation.trans_default_domain.apply(translation, arguments) ;
-					},
-					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
-				}
+				
 
 				//response events	
 				context.response.response.on("finish",function(){
@@ -349,6 +351,22 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.context.websocket(container, request, response, type);
 				container.set("context", context);
+
+				//twig extend context
+				context.extendTwig = {
+					nodefony:{
+						url:context.originUrl
+					},
+					render:render.bind(container),
+					controller:controller.bind(container),
+					trans:translation.trans.bind(translation),
+					getLocale:translation.getLocale.bind(translation),
+					trans_default_domain:function(){
+						translation.trans_default_domain.apply(translation, arguments) ;
+					},
+					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
+				}
+
 				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
 				var resolver  = this.get("router").resolve(container, request);
@@ -364,20 +382,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 
 				this.kernel.fire("onWebsocketRequest", container, context, type);
-				//twig extend context
-				context.extendTwig = {
-					nodefony:{
-						url:context.originUrl
-					},
-					render:render.bind(container),
-					controller:controller.bind(container),
-					trans:translation.trans.bind(translation),
-					getLocale:translation.getLocale.bind(translation),
-					trans_default_domain:function(){
-						translation.trans_default_domain.apply(translation, arguments) ;
-					},
-					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
-				}
+				
 				context.listen(this,"onClose" , function(reasonCode, description){
 					context.fire("onFinish", context, reasonCode, description);
 					delete 	context.extendTwig ;
