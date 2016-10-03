@@ -8,7 +8,7 @@
 
 	<h2>Location configurations in File System  </h2>
 
-		<h3> CONFIGURATION FRAMEWORK </h3>
+	<h3> CONFIGURATION FRAMEWORK :<small>See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Framework configuration ) </a> </small></h3>
 		<div class="doc3">
 			<p>
 				 In Root directory you can find a 'config' directory  <br>
@@ -28,7 +28,7 @@
 
 		</div>
 
-		<h3> CONFIGURATION BUNDLE APPLICATION </h3>
+		<h3> CONFIGURATION BUNDLE APPLICATION :<small>See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}">( Application configuration ) </a> </small> </h3>
 		<div class="doc3">
 
 			<p>
@@ -45,7 +45,7 @@
 			</pre>
 		</div>
 
-		<h3> CONFIGURATION BUNDLES </h3>
+		<h3> CONFIGURATION BUNDLES :</h3>
 		<div class="doc3">
 			<p>
 				 In Resources directory you can find a 'config' directory  <br>
@@ -71,19 +71,54 @@
 
 		
 
-		<h3>Override Config from Third-Party Bundles </h3>
+		<h3>Override Config from Third-Party Bundles :</h3>
 		<div class="doc3">
 			<p>
-
+				To override config from Third-Party Bundles you can write config.yml  in root yaml node with the name of bundle	
 			</p>
-		
+			Example <code>./app/config/config.yml </code>	
 			<pre>
+#./app/config/config.yml
+
+....
+
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  #storage:                      false
+
+
+#
+#       OVERRIDE BUNDLE ASSETIC
+#
+#       
+#
+asseticBundle:
+  less:
+    compress:                     true
+    cache:                        true
+  CDN:
+    javascripts:		  cdn.nodefony.com
+    stylesheets:		  cdn.nodefony.com
+
+....
+
+
+// STARTED NODEFONY SYSLOG :   
 Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
-Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : http
 Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
-Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : sequelize
 			</pre>	
 			
+			<div class="alert  alert-info" role="alert">
+				WARNING to the order Registration bundles <br>
+				If you want override a config of Third-Party bundle this one must be register before the bundle config file  who make the override
+			</div>
+
 		</div>
 
 
