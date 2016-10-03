@@ -248,16 +248,20 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 	Http.prototype.redirectHttps = function( status ){
 		if( this.proxy ){
-			var port = ""  ;
+			var urlExtend = {
+				protocol:	"https",
+				href:		"",
+				host:		""
+			}  ;
 		}else{
-			var port = this.kernelHttp.httpsPort || 443 ;
+			var urlExtend = {
+				protocol:	"https",
+				port:		this.kernelHttp.httpsPort || 443 ,	
+				href:		"",
+				host:		""
+			}  ;
 		}
-		var urlChange = nodefony.extend({}, this.request.url , {
-			protocol:	"https",
-			port:		port ,
-			href:		"",
-			host:		""
-		})
+		var urlChange = nodefony.extend({}, this.request.url , urlExtend )
 		var newUrl  = url.format(urlChange);
 		this.response.redirect( newUrl, status );
 		this.notificationsCenter.fire("onResponse", this.response, this);

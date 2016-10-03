@@ -16,6 +16,10 @@
 
 {% for sec in sections %}
 	{% set qs = {'subsection' : sec} %}
+	{% if  not section  %}
+		{% set section = sec %}
+		{% set qs = null %}
+	{% endif %}
 	{% if subsection == sec %}
 		<li role="presentation" class="active"><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle,queryString:qs })}}">{{sec | trans() | capitalize()}}</a></li>
 	{% else %}
