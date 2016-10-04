@@ -40,6 +40,7 @@
 			<div class="panel-heading">{{ "core" | trans() }}</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
+					<li> Architecture</li>
 					<li> Autoloader</li>
 					<li> Kernel</li>
 					<li> Bundles</li>
@@ -132,7 +133,7 @@ $ sudo vim /etc/hosts
 		</ul>
 	<p class="doc3">
 		If you want change listen port http(s) by defaut  
-		<small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></small>
+		<small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small>
 	</p>
 
 <h2>Running NODEFONY: <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>

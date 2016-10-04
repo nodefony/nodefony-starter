@@ -3,54 +3,52 @@
 
 <a href="https://github.com/ccamensuli/nodefony"><img style="position: fixed; top: 51px; right: 0; border: 0;z-index:8000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
-<!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
 
-<h1>INSTALLATION </h1>
-<hr>
-
-
-<h3 name="requirements">Requirements :</h3>
+<div class="page-header">
+  <h1>INSTALLATION </h1>
+</div>
 
 
-<ul>
-	<li><a href="https://nodejs.org/">Node.js</a> is a Platform built on Chrome's JavaScript runtime<p>Install Node.js <a href="https://nodejs.org/en/download/package-manager"> via Package</a></p></li>
-	<li><a href="https://www.npmjs.com/">NPM</a> is the Package Manager for javascript application</li>
-	<li><a href="http://git-scm.com/">GIT</a> is Distributed version control system</li>
-	<li><a href="https://www.gnu.org/software/make/">GNU Make</a> is a Tool which controls the generation of executables</li>
+<h2 name="requirements">Requirements :</h2>
+
+<div class="doc2">
+	<ul>
+		<li><a href="https://nodejs.org/">Node.js</a> is a Platform built on Chrome's JavaScript runtime<p>Install Node.js <a href="https://nodejs.org/en/download/package-manager"> via Package</a></p></li>
+		<li><a href="https://www.npmjs.com/">NPM</a> is the Package Manager for javascript application</li>
+		<li><a href="http://git-scm.com/">GIT</a> is Distributed version control system</li>
+		<li><a href="https://www.gnu.org/software/make/">GNU Make</a> is a Tool which controls the generation of executables</li>
 
 
 
-</ul>
+	</ul>
+</div>
+
+<h2 name="system">OS compatibility :</h2>
+<div class="doc2">
+	<ul>
+		<li> LINUX ( Checked )</li>
+		<li> MACOS ( Checked )</li>
+		<li> <s> WINDOWS </s>( Unchecked )</li>
+		<li> <s> EMBEDDED SYSTEM</s> ( Unchecked )</li>
+
+	</ul>
+</div>
 
 
-<h3 name="system">OS compatibility :</h3>
 
-<ul>
-	<li> LINUX ( Checked )</li>
-	<li> MACOS ( Checked )</li>
-	<li> <s> WINDOWS </s>( Unchecked )</li>
-	<li> <s> EMBEDDED SYSTEM</s> ( Unchecked )</li>
+<h2 name="system">Clone sources from github :</h2> 
+<div class="doc2">
+	<pre>
 
-</ul>
+	$ git clone https://github.com/ccamensuli/nodefony.git
 
-<h3 name="system">Download sources from github  :
-	<a class="github-button" href="https://github.com/ccamensuli/nodefony/archive/master.zip" data-style="mega" aria-label="Download ntkme/github-buttons on GitHub">Download Zip</a>
-</h3> 
+	$ cd nodefony
 
+	</pre>
+</div>
 
-<h3 name="system">Clone sources from github :</h3> 
-<pre>
-
-$ git clone https://github.com/ccamensuli/nodefony.git
-
-$ cd nodefony
-
-</pre>
-
-
-<h3 name="system">Build Nodefony Sources :</h3>
-
+<h2 name="system">Build Nodefony Sources :</h2>
+<div class="doc2">
 <p>
 	This part consist to call differents targets of Makefile <a href="{{ path('documentation-section',{section:'Installation', version:version, bundle:bundle,queryString:{'subsection':'makefile'} })}}">(see Makefile documentation) </a><br> 
 
@@ -98,12 +96,15 @@ drwxr-xr-x    6 cci  staff    204 16 jui 17:22 tmp
 drwxr-xr-x    7 cci  staff    238 22 jui 13:57 vendors
 drwxr-xr-x   17 cci  staff    578 22 sep 11:08 web
 </pre>
+</div>
 
 
+<h2 >References  :</h2>
+<div class="doc2">
 
-<h3 >References  :</h3>
+
 <p>
-	Will be automatically installed by Makefile
+	Dependencies will be automatically installed by Makefile
 </p>
 
 
@@ -145,6 +146,6 @@ drwxr-xr-x   17 cci  staff    578 22 sep 11:08 web
 '------------------------------------------------------------------------------------------------------------------------------------------------'
 
 </pre>
-
+</div>
 
 <a href="{{ path('documentation-section',{section:'started', version:version, bundle:bundle })}}"> <button type="button" class="btn btn-primary">{{"begin" | trans()}}</button></a>

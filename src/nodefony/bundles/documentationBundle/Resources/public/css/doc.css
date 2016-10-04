@@ -9,6 +9,13 @@ h1{
 	margin-left:0px;
 }
 
+h2{
+	font-size: 20px;
+	color: #167b87;
+	text-transform: uppercase;
+	margin-left:20px;
+}
+
 
 h3{
 	font-size: 17px;
@@ -17,12 +24,12 @@ h3{
 	margin-left:40px;
 }
 
-h2{
-	font-size: 20px;
-	color: #167b87;
-	text-transform: uppercase;
-	margin-left:20px;
+h4{
+	font-size: 14px;
+	margin-left:50px;
 }
+
+
 
 .doc2  {
 	margin-left:20px;
@@ -31,7 +38,16 @@ h2{
 	margin-left:40px;
 
 }
+.doc4  {
+	margin-left:50px;
 
+}
+
+
+.config-parameters{
+	font-size: 15px;
+	color:#167b87;	
+}
 
 
 hr{

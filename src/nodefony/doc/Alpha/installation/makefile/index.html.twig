@@ -1,7 +1,179 @@
 {{trans_default_domain("doc")}}
 
+<a href="https://github.com/ccamensuli/nodefony"><img style="position: fixed; top: 51px; right: 0; border: 0;z-index:8000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
 
-<h1> {{ "Makefile Nodefony" | trans() }}</h1>
-<hr>
+<div class="page-header">
+  <h1>{{ "Makefile Nodefony" | trans() }} </h1>
+</div>
+
+
+<h2>BUILD NODEFONY FRAMEWORK </h2>
+
+<h3>Build All</h3>
+
+<div class="doc3">
+<pre>
+$ make 
+</pre>
+</div>
+
+
+
+<h3>Makefile build differents part of framework :</h3>
+
+<div class="doc3">
+<pre>
+$ make << target >>
+</pre>
+</div>
+
+<h2>Targets NODEFONY FRAMEWORK </h2>
+
+<h3> All </h3>
+<div class="doc3">
+	<p>
+		Must be call the first time   ( generally after clone repo )
+		<ul>
+			<li>Build all sources of NODEFONY framework</li>
+		</ul>
+	</p>
+	<p>
+	   
+	</p>
+	<pre>
+all: framework npm  install
+	</pre>
+</div>
+
+
+<h3> framework </h3>
+<div class="doc3">
+	<p>
+		Must be call the first time   ( generally call by 'all' taget )
+	  
+		<ul>
+			<li>Build directories framework</li>
+		</ul>
+	</p>
+	<pre>
+framework:
+	echo "###########  CREATE web directory ###########" ;
+	@if [ ! -d tmp ] ; then  \
+		mkdir tmp ;\
+	fi
+	@if [ ! -d bin ] ; then  \
+		mkdir bin ;\
+	fi
+	@if [ ! -d web ] ; then  \
+		mkdir web ;\
+	fi
+	@if [ ! -d web/js ] ; then  \
+		mkdir web/js ;\
+	fi
+	@if [ ! -d web/css ] ; then  \
+		mkdir web/css ;\
+	fi
+	@if [ ! -d web/images ] ; then  \
+		mkdir web/images ;\
+	fi
+	@if [ ! -d web/assets ] ; then  \
+		mkdir  web/assets ;\
+	fi
+	@if [ ! -d web/assets/js ] ; then  \
+		mkdir web/assets/js ;\
+	fi
+	@if [ ! -d web/assets/css ] ; then  \
+		mkdir web/assets/css ;\
+	fi
+	@if [ ! -d web/assets/images ] ; then  \
+		mkdir web/assets/images ;\
+	fi
+	@if [ ! -d web/vendors ] ; then  \
+		mkdir web/vendors ;\
+		cd web/vendors ;\
+		ln -s ../../src/stage stage ;\
+		cd ../.. ;\
+	fi
+
+	</pre>
+</div>
+
+
+
+<h3>  npm   </h3>
+<div class="doc3">
+	<p>
+		Must be call when you add dependency in package.json FRAMEWORK
+		<ul>
+			<li>Manage node.js dependencies  FRAMEWORK package.json</li>
+		</ul>
+		 
+	</p>
+
+	<pre>
+npm:
+	@if [  -f package.json  ] ; then  \
+		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
+		if [ $(VERBOSE) = 0 ] ; then \
+			npm -s install  ;\
+		else \
+			npm -ddd install  ;\
+		fi \
+	fi
+
+	</pre>
+</div>
+
+
+<h3>  install </h3>
+<div class="doc3">
+	<p>
+		Must be call when you add bundle in appKernel.js <br>
+		Must be call when you add dependency in package.json bundle
+		<ul>
+			<li>Manage node.js dependencies BUNDLE package.json of all bundles registred in appKernel.js</li>
+			<li>Manage assetics </li>
+			<li>Manage databases </li>
+		</ul>
+		     
+	</p>
+	<pre>
+install:
+	./console npm:install
+	make asset
+	make sequelize
+	./console router:generate:routes
+	./console npm:list
+
+	</pre>
+</div>
+
+
+<h3> asset </h3>
+
+<h3> clean </h3>
+
+<h3> sequelize </h3>
+
+
+
+
+<h2>Targets PM2 MANAGEMENT PRODUCTION </h2>
+
+<h3> startup </h3>
+
+
+<h3>  start </h3>
+
+<h3> stop </h3>
+
+
+
+<h3>  kill   </h3>
+
+
+<h3> show </h3>
+
+<h3> monit </h3>
 

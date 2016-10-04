@@ -1,24 +1,51 @@
-<h2>Configuration Framework :  </h2>
 
+<div class="page-header">
+  <h1>Configuration Framework </h1>
+</div>
+
+<h2>Location </h2>
 <div class="doc2">
-	<p>
-		You can find the front configuration file for framework in repository at <strong>./config/config.yml</strong> <br>
+<pre>
+./config/
 
-		This config file  do multiple tasks as : <br>
-		<ul>	
-			<li> parametrer http(s) servers listen domain and port </li>
-			<li> Regexp domain Alias </li>
-			<li> AutoLoad differents framework bundles as security monitoring ...</li>
-			<li> Autoload services for render statics  files (css, js , images ..)</li>
-			<li> locale (Lang) by default for all framework </li>
-			<li> Create Assets link in public directory </li>
-			<li> Create Nodefony Database </li>
-		</ul>	
+├── certificates
+│   ├── letsCert.pem
+│   ├── letsChain.pem 
+│   ├── letsFullChain.pem 
+│   ├── letsKey.pem 
+├── config.yml 
+└── pm2.json
+</pre>
+</div>
 
 
-	<p>
 
-	<pre>
+	
+<h2>Goblal Configuration <span class="badge">File</span></h2>	
+<div class="doc2">
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"> KERNEL Configuration </div>
+  <div class="panel-body">
+
+	  <p>
+	  You can find the nodefony KERNEL configuration file  <br>
+
+	  This config file  do multiple tasks as : <br>
+	  <ul>	
+		  <li> parametrers http(s) servers listen domain and port </li>
+		  <li> Domain Alias </li>
+		  <li> AutoLoad differents framework bundles as security monitoring ...</li>
+		  <li> Autoload services for render statics  files (css, js , images ..)</li>
+		  <li> locale (Lang) by default for all framework </li>
+		  <li> Log management </li>
+	  </ul>	
+
+
+	  Location : <code>./config/config.yml</code>
+	  <p>
+    	  <pre>
 #
 #  NODEFONY FRAMEWORK
 #
@@ -28,30 +55,203 @@
 
 name:                           "NODEFONY"
 system:
-version:                      "Alpha"
-domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
-domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
-httpPort:                     5151
-httpsPort:                    5152
-statics:                      true
-security:                     true
-realtime:                     true
-monitoring:                   true
+ version:                      "Alpha"
+ domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
+ domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
+ httpPort:                     5151
+ httpsPort:                    5152
+ statics:                      true
+ security:                     true
+ realtime:                     true
+ monitoring:                   true
 
 
 locale:                       "en_en"
 
 log:
-active:                     true
-console:                    false
-file:                       false
-messages:                   "/tmp/nodefony.log"
-error:                      "/tmp/errorNodefony.log"
-services:                   "/tmp/servicesNodefony.log"
-#TODO
-rotate:                     false
-	</pre>
+ active:                     true
+ console:                    false
+ file:                       false
+ messages:                   "/tmp/nodefony.log"
+ error:                      "/tmp/errorNodefony.log"
+ services:                   "/tmp/servicesNodefony.log"
+ #TODO
+ rotate:                     false
+	  </pre>
+  </div>
+
+  <table class="table">
+	<thead>
+		<th class="config-parameters">Parameters</th>
+		<th>Description</th>
+		<th>Data Type</th>
+		<th>Example / <span class="badge">Default</span> </th>
+	</thead>
+	  <tbody>	
+	  <tr> 
+		  <td class="config-parameters">name</td>
+		  <td>Name Framework</td>
+		  <td>String</td>
+		  <td>NODEFONY</td>
+	  </tr>	
+	  <tr> 
+		  <td class="config-parameters">system.version</td>
+		  <td>Version Framework</td>
+		  <td>String</td>
+		  <td>Alpha</td>
+	  </tr>
+	  <tr>
+		  <td class="config-parameters">system.domain</td> 
+		  <td>
+			  <p>Domain or IP to listen servers HTTP / HTTPS / WEBSOCKET / WEBSOCKET SECURE  nodefony can listen only one domain </p>
+		  </td>
+		  <td>String</td>
+		  <td>localhost or 192.168.0.230 or 127.0.0.1 <span class="badge">nodefony.com</span></td> 
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.domainAlias</td>
+		  <td>Alias of domain  </td>
+		  <td>String  the separator is space  regexp only</td>
+		  <td>".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"</td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.httpPort</td>
+		  <td>Port to listen servers HTTP  / WEBSOCKET </td>
+		  <td>String</td>
+		  <td><span class="badge">5151</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.httpsPort</td>
+		  <td>Port to listen servers HTTPS  / WEBSOCKET SECURE</td>
+		  <td>String</td>
+		  <td><span class="badge">5152</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.statics</td>
+		  <td>
+			If active nodefony can Serve  statics files  : configurations of service in Application config file 
+			For developement use in production use varnish or similar reverse proxy caches in front to serve statics files
+		  </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.security</td>
+		  <td>Auto registre Firewall Bundle </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.realtime</td>
+		  <td>Auto registre realtime Bundle</td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.monitoring</td>
+		  <td>Auto registre monitoring Bundle (debugBar ... )</td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">locale</td>
+		  <td>I18n lang Framework  </td>
+		  <td>String</td>
+		  <td><span class="badge">en_en</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.avtive</td>
+		  <td>Active syslog in kernel (show log in terminal ) </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.console</td>
+		  <td>Active syslog in kernel console (CLI) </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">false</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.file</td>
+		  <td>Active syslog  (show log in file system )  </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">false</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.message</td>
+		  <td>File Path for debug messages  in filesystem (log.file) </td>
+		  <td>String</td>
+		  <td><span class="badge">"/tmp/nodefony.log"</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.error</td>
+		  <td>File Path for error messages  in filesystem (log.file) </td>
+		  <td>String</td>
+		  <td><span class="badge">/tmp/errorNodefony.log</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">log.service</td>
+		  <td>File Path for services messages  in filesystem (log.file)</td>
+		  <td>String</td>
+		  <td><span class="badge">/tmp/servicesNodefony.log</span></td>
+	  </tr>
+
+
+	  </tbody>  
+  </table>
+  </div>
 
 </div>
 
+
+<h2>Certificates SSL HTTPS <span class="badge">Directory</span> <small><code>./config/certificates</code></small></h2>
+
+<div class="doc2">
+<pre>
+./config/certificates
+
+├── certificates
+   ├── letsCert.pem
+   ├── letsChain.pem 
+   ├── letsFullChain.pem 
+   ├── letsKey.pem 
+</pre>
+
+	<p>
+		You can manage your https certificates in this directory <br>
+		The configurations of HTTPS and WEBSOCKET SECURE servers are in Application Bundle  see ( <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}"> Application configuration  </a> )		
+		
+	</p>
+
+
+
+</div>
+
+
+<h2>Configuration PM2   <span class="badge">File</span> <small><code>./config/pm2.json</code></small></h2>
+
+<div class="doc2">
+	<p>
+		Configuration nodefony running mode : <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}" >PM2</a> (Production process manager for Node.js )  <br>
+		This Configuration file for PM2 use by executable  <code>./nodefony_pm2</code>			
+		
+	</p>
+
+	<pre>
+{
+	"script"		: "nodefony",
+	"name"			: "nodefony",
+	"exec_mode"		: "cluster",
+	"max_memory_restart"	: "1024M",
+	"autorestart"		: true,
+	"max_restarts"		: 10,
+	"watch"			: false,
+	"env"			: {
+		"NODE_ENV": "production",
+		"MODE_START": "PM2"
+	}
+}
+	</pre>
+	<a href="http://pm2.keymetrics.io/docs/usage/cluster-mode/"> Documentation pm2.keymetrics.io </a>
+</div>
 

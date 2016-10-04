@@ -244,7 +244,7 @@ nodefony.register("Bundle", function(){
 						file:file,
 						template:null
 					};
-					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+					this.logger("Register Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE" ){
 						serviceTemplate.compile( file, function(error, template){
 							if (error){
@@ -252,7 +252,7 @@ nodefony.register("Bundle", function(){
 								return ;
 							}
 							this.views[basename][name]["template"] = template ;
-							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+							this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 						}.bind(this) )
 					}else{
 						/*if ( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
@@ -262,7 +262,7 @@ nodefony.register("Bundle", function(){
 									return ;
 								}
 								this.views[basename][name]["template"] = template ;
-								this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+								this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 							}.bind(this) )	
 						}*/
 					}
@@ -277,7 +277,7 @@ nodefony.register("Bundle", function(){
 						file:file,
 						template:null
 					};
-					this.logger("Register View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+					this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE"){
 						serviceTemplate.compile( file, function(error, template){
 							if (error){
@@ -285,7 +285,7 @@ nodefony.register("Bundle", function(){
 								return ;
 							}
 							this.views[basename][name]["template"] = template ;
-							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+							this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 						}.bind(this) )
 					}else{
 						/*if( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
@@ -295,7 +295,7 @@ nodefony.register("Bundle", function(){
 									return ;
 								}
 								this.views[basename][name]["template"] = template ;
-								this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+								this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 							}.bind(this) )
 						}*/
 					}
