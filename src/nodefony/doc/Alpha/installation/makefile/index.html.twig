@@ -33,7 +33,8 @@ $ make << target >>
 <h3> All </h3>
 <div class="doc3">
 	<p>
-		Must be call the first time   ( generally after clone repo )
+		Must be call the first time   ( generally after clone repo )</br>
+		If you want Makefile be verbose on dependencies npm install  open Makefile and set VERBOSE = 1 
 		<ul>
 			<li>Build all sources of NODEFONY framework</li>
 		</ul>
@@ -58,9 +59,12 @@ all: framework npm  install
 	</p>
 	<pre>
 framework:
-	echo "###########  CREATE web directory ###########" ;
+	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
+	fi
+	@if [ ! -d tmp/upload ] ; then  \
+		mkdir tmp/upload ;\
 	fi
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
@@ -95,7 +99,6 @@ framework:
 		ln -s ../../src/stage stage ;\
 		cd ../.. ;\
 	fi
-
 	</pre>
 </div>
 
@@ -121,7 +124,6 @@ npm:
 			npm -ddd install  ;\
 		fi \
 	fi
-
 	</pre>
 </div>
 
@@ -145,35 +147,144 @@ install:
 	make sequelize
 	./console router:generate:routes
 	./console npm:list
-
 	</pre>
 </div>
 
 
 <h3> asset </h3>
+<div class="doc3">
+	<p>
+		Must be call before run nodefony in production mode 
+		<ul>
+			<li>Intall symlink in web directory ( directory Ressources/public of each  bundles registred )   </li>
+			<li>Complile all templates registred by kernel and dump result in assets directory in each bundle </li>
+		</ul>
+	</p>
+	<pre>
+asset:
+	./console assets:install 
+	./console assets:dump 
+	</pre>
+</div>
+
+
 
 <h3> clean </h3>
+<div class="doc3">
+	<p>
+		Must be call  when you want update nodefony
+		<ul>
+			<li>Clean  node.js all dependencies  FRAMEWORK package.json (empty node_modules directoty)</li>
+			<li>Clean web public </li>
+			<li>Clean temporary files  </li>
+			<li>Rebuild  FRAMEWORK </li>
+		</ul>
+	</p>
+	<pre>
+clean:
+	@if [ -e  node_modules ] ; then \
+		echo "###########  CLEAN  NODE MODULES ###########" ;\
+		rm -rf node_modules/* ; \
+	fi
+	@if [ -e  tmp ] ; then \
+		echo "###########  CLEAN  TEMPORARY  ###########" ;\
+		rm -rf tmp/* ; \
+	fi
+	@if [ -e  web ] ; then \
+		echo "###########  CLEAN  WEB PUBLIC DIRECTOY  ###########" ;\
+		rm -rf web/* ; \
+	fi
+	make framework
+
+	</pre>
+</div>
+
 
 <h3> sequelize </h3>
+<div class="doc3">
+	<p>
+		Must be call before run nodefony (developpement or prodution)  </br>
+		Generally call by 'all' taget 
+		<ul>
+			<li>Generate ORM databases and entities of all bundles registred </li>
+			<li>Generate fixtures of all bundles registred </li>
+		</ul>
+	</p>
+	<pre>
+sequelize:
+	./console Sequelize:generate:entities
+	./console Sequelize:fixtures:load 
+	</pre>
+</div>
+
 
 
 
 
 <h2>Targets PM2 MANAGEMENT PRODUCTION </h2>
 
-<h3> startup </h3>
-
-
 <h3>  start </h3>
+<div class="doc3">
+	<p>
+		RUN NODEFONY IN PRODUTION MODE  </br>
+		<ul>
+			<li>Build all Assets and compile templates views </li>
+			<li>RUN nodefony in prodution mode see <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}#pm2">Configuration PM2</a>  </li>
+		</ul>
+	</p>
 
-<h3> stop </h3>
+	<pre>
+start:
+	make asset
+	./nodefony_pm2 &
+	</pre>
+</div>
 
 
+<h3>  stop   </h3>
+<div class="doc3">
+<p>
+		STOP NODEFONY IN PRODUTION MODE  </br>
+		<ul>
+			<li>STOP All clusters </li>
+		</ul>
+	</p>
 
-<h3>  kill   </h3>
+	<pre>
+stop:
+	./node_modules/pm2/bin/pm2 stop nodefony
+
+	</pre>
+</div>
 
 
-<h3> show </h3>
+<h3> Targets : kill startup show monit</h3>
+<div class="doc3">
+	<p>
+		PM2 MANAGEMENT see <a href="http://pm2.keymetrics.io/docs/usage/quick-start/#cheatsheet/">documentation</a>   </br>
+	</p>	
+	<pre>
+startup:
+	./node_modules/pm2/bin/pm2 startup
 
-<h3> monit </h3>
+kill:
+	./node_modules/pm2/bin/pm2 kill
+
+show:
+	./node_modules/pm2/bin/pm2 show nodefony
+
+monit:
+	./node_modules/pm2/bin/pm2 monit nodefony
+
+status:
+	./node_modules/pm2/bin/pm2 status
+
+reload:
+	./node_modules/pm2/bin/pm2 reload all
+
+restart:
+	./node_modules/pm2/bin/pm2 restart all
+
+	</pre>
+</div>
 

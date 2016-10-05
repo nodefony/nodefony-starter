@@ -62,11 +62,20 @@ npm:
 asset:
 	./console assets:install 
 	./console assets:dump 
+	@if [ ! -e web/favicon.ico ] ; then  \
+		cp app/Resources/public/favicon.ico web/ ;\
+	fi
+	@if [ ! -e web/robots.txt ] ; then  \
+		cp app/Resources/public/robots.txt web/ ;\
+	fi
 
 framework:
-	echo "###########  CREATE web directory ###########" ;
+	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
+	fi
+	@if [ ! -d tmp/upload ] ; then  \
+		mkdir tmp/upload ;\
 	fi
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
@@ -109,8 +118,18 @@ sequelize:
 clean:
 	@if [ -e  node_modules ] ; then \
 		echo "###########  CLEAN  NODE MODULES ###########" ;\
+		rm -rf node_modules/.bin ; \
 		rm -rf node_modules/* ; \
 	fi
+	@if [ -e  tmp ] ; then \
+		echo "###########  CLEAN  TEMPORARY  ###########" ;\
+		rm -rf tmp/* ; \
+	fi
+	@if [ -e  web ] ; then \
+		echo "###########  CLEAN  WEB PUBLIC DIRECTOY  ###########" ;\
+		rm -rf web/* ; \
+	fi
+	make framework
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc
