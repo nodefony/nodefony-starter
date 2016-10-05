@@ -13,20 +13,24 @@
 	<ul>	
 		<li>  Syslog in terminal to follow debug  </li>
 		<li>  No clusters </li>
-		<li>  No cache in templates twig (reload files) </li>
-		<li>  No cache in controllers (reload files) </li>
+		<li>  No cache in templates twig (autoload templates files) </li>
+		<li>  No cache in controllers (autoload controllers files) </li>
 	</ul>
 </p>
 
 
+	<div class="alert alert-danger" role="alert">
+		!! In this mode You must restart nodefony when : 
+
+		<ul>	
+			<li>  You edit configuration files (routing.yml , security.yml , config.yml, service.xml ) </li>
+			<li>  You edit bundle files ( nameBundle.js)  </li>
+			<li>  You edit service files ( nameService.js ) </li>
+		</ul>	       		
+	</div>
+
+
 </div>
-
-
-
-
-
-
-
 
 
 <h2>Location :</h2>
