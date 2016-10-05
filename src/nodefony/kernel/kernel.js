@@ -642,7 +642,7 @@ nodefony.register("kernel", function(){
 			console.log(e)
 			code = 1;
 			process.nextTick(function(){
-				this.logger("Cycle Of Live terminate WEF KERNEL CODE : "+code,"INFO");
+				this.logger("Cycle Of Live terminate KERNEL CODE : "+code,"INFO");
 				//process.exit(code);
 			}.bind(this));
 			this.logger(e,"ERROR");
@@ -654,7 +654,7 @@ nodefony.register("kernel", function(){
 			this.logStreamD.close("Close debug stream\n");	
 		}
 		process.nextTick(function(){
-			this.logger("Cycle Of Live terminate WEF KERNEL CODE : "+code,"INFO");
+			this.logger("Cycle Of Live terminate KERNEL CODE : "+code,"INFO");
 			process.exit(code);
 		}.bind(this));
 		return ;
