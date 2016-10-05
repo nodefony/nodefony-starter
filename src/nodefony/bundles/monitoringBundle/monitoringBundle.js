@@ -526,7 +526,7 @@ nodefony.registerBundle ("monitoring", function(){
 				}
 				context.profiling["twig"].push({
 					file:view,
-					param:viewParam
+					//param:viewParam
 				});
 			});
 		});

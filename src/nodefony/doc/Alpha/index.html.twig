@@ -79,7 +79,7 @@
 <hr>
 
 <div class="row m-t-xl">	
-<h1> {{ "begin" | trans() }}</h1>
+<h1> {{ "begin" | trans() }} <small>More details <a href="{{ path('documentation-section',{section:'started', version:version, bundle:bundle })}}">here</a></small></h1> 
 
 
 
@@ -119,10 +119,12 @@ $ sudo vim /etc/hosts
 </p>
 
 
-	<h3>Configuration Framework :  </h3>
-	<p class="doc3">
-		By default NODEFONY SERVERS listen on ports
-	</p>
+	
+	
+<h2>Running NODEFONY : <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
+<div class="doc2">
+	<p >
+		By default NODEFONY SERVERS listen on ports :
 		<ul class="doc3">
 			<li>
 			http : 5151
@@ -131,26 +133,22 @@ $ sudo vim /etc/hosts
 			https: 5152
 			</li>
 		</ul>
-	<p class="doc3">
-		If you want change listen port http(s) by defaut  
-		<small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small>
+		If you want change listen port http(s) by defaut <small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small><br>
+		To check  you can run nodefony in dev mode  
 	</p>
 
-<h2>Running NODEFONY: <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
-
-	<p class="doc2">
-		To check the good binding http(s) you can run nodefony in dev mode 
-	</p>
-
-	<pre class="doc2">
+	<pre >
 
 # Run Appliation in DEV mode
 
 $ ./nodefony_dev
              
 	</pre>
+</div>
 
-<p class="doc2">
+<h2>ACCEES NODEFONY APPLICATION :  </h2>
+<div class="doc2">
+<p >
 	Access to App with URL : <strong>http://nodefony.com:5151</strong><br>
 
 	By default the nodefony clone come with a demonstration bundle named "demoBundle" 
@@ -158,6 +156,7 @@ $ ./nodefony_dev
 
 
 </p>
+</div>
 
 <center>
 	<img width="800" height="463" src="/documentationBundle/images/nodefony.png"/>

@@ -6,20 +6,942 @@
 <hr>
 
 
-<h3>NODEFONY INSTALLATION : See more<span> <a href="{{ path('documentation-section',{section:'', version:version, bundle:bundle })}}">( Nodefony installation  documentation ) </a> </span> </h3>
-
-<pre>
-
+<h2>NODEFONY INSTALLATION : See more<span> <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle })}}">( Nodefony installation  documentation ) </a> </span> </h2>
+<div class="doc2">
+	<pre>
 $ git clone https://github.com/ccamensuli/nodefony.git
 
 $ cd nodefony
 
 $ make
+</pre>
 
+<strong>Console when you build nodefony framework :  </strong>	
+<pre style="height:500px">
+make
 
-###########  CREATE web directory ###########
+###########  CREATE FRAMEWORK REPOSITORY ###########
 
 ###########  NODE JS  MODULES  INSTALLATION  ###########
+⸨░░░░░░░░░░░░░░░░░░⸩ ...
+sqlite3@3.1.5 /Users/cci/repository/nodefony/node_modules/.staging/sqlite3-09839c51
+└─┬ node-pre-gyp@0.6.30 
+  ├─┬ mkdirp@0.5.1 
+  │ └── minimist@0.0.8 
+  ├─┬ nopt@3.0.6 
+  │ └── abbrev@1.0.9 
+  ├─┬ npmlog@4.0.0 
+  │ ├─┬ are-we-there-yet@1.1.2 
+  │ │ └── delegates@1.0.0 
+  │ ├── console-control-strings@1.1.0 
+  │ ├─┬ gauge@2.6.0 
+  │ │ ├── aproba@1.0.4 
+  │ │ ├── has-color@0.1.7 
+  │ │ ├── has-unicode@2.0.1 
+  │ │ ├── object-assign@4.1.0 
+  │ │ ├── signal-exit@3.0.1 
+  │ │ ├─┬ string-width@1.0.2 
+  │ │ │ ├─┬ code-point-at@1.0.1 
+  │ │ │ │ └── number-is-nan@1.0.1 
+  │ │ │ └── is-fullwidth-code-point@1.0.0 
+  │ │ ├─┬ strip-ansi@3.0.1 
+  │ │ │ └── ansi-regex@2.0.0 
+  │ │ └── wide-align@1.1.0 
+  │ └── set-blocking@2.0.0 
+  ├─┬ rc@1.1.6 
+  │ ├── deep-extend@0.4.1 
+  │ ├── ini@1.3.4 
+  │ ├── minimist@1.2.0 
+  │ └── strip-json-comments@1.0.4 
+  ├─┬ request@2.75.0 
+  │ ├── aws-sign2@0.6.0 
+  │ ├── aws4@1.4.1 
+  │ ├─┬ bl@1.1.2 
+  │ │ └── readable-stream@2.0.6 
+  │ ├── caseless@0.11.0 
+  │ ├─┬ combined-stream@1.0.5 
+  │ │ └── delayed-stream@1.0.0 
+  │ ├── extend@3.0.0 
+  │ ├── forever-agent@0.6.1 
+  │ ├─┬ form-data@2.0.0 
+  │ │ └── asynckit@0.4.0 
+  │ ├─┬ har-validator@2.0.6 
+  │ │ ├─┬ chalk@1.1.3 
+  │ │ │ ├── ansi-styles@2.2.1 
+  │ │ │ ├── escape-string-regexp@1.0.5 
+  │ │ │ ├── has-ansi@2.0.0 
+  │ │ │ └── supports-color@2.0.0 
+  │ │ ├─┬ commander@2.9.0 
+  │ │ │ └── graceful-readlink@1.0.1 
+  │ │ ├─┬ is-my-json-valid@2.15.0 
+  │ │ │ ├── generate-function@2.0.0 
+  │ │ │ ├─┬ generate-object-property@1.2.0 
+  │ │ │ │ └── is-property@1.0.2 
+  │ │ │ ├── jsonpointer@4.0.0 
+  │ │ │ └── xtend@4.0.1 
+  │ │ └─┬ pinkie-promise@2.0.1 
+  │ │   └── pinkie@2.0.4 
+  │ ├─┬ hawk@3.1.3 
+  │ │ ├── boom@2.10.1 
+  │ │ ├── cryptiles@2.0.5 
+  │ │ ├── hoek@2.16.3 
+  │ │ └── sntp@1.0.9 
+  │ ├─┬ http-signature@1.1.1 
+  │ │ ├── assert-plus@0.2.0 
+  │ │ ├─┬ jsprim@1.3.1 
+  │ │ │ ├── extsprintf@1.0.2 
+  │ │ │ ├── json-schema@0.2.3 
+  │ │ │ └── verror@1.3.6 
+  │ │ └─┬ sshpk@1.10.1 
+  │ │   ├── asn1@0.2.3 
+  │ │   ├── assert-plus@1.0.0 
+  │ │   ├── bcrypt-pbkdf@1.0.0 
+  │ │   ├─┬ dashdash@1.14.0 
+  │ │   │ └── assert-plus@1.0.0 
+  │ │   ├── ecc-jsbn@0.1.1 
+  │ │   ├─┬ getpass@0.1.6 
+  │ │   │ └── assert-plus@1.0.0 
+  │ │   ├── jodid25519@1.0.2 
+  │ │   ├── jsbn@0.1.0 
+  │ │   └── tweetnacl@0.14.3 
+  │ ├── is-typedarray@1.0.0 
+  │ ├── isstream@0.1.2 
+  │ ├── json-stringify-safe@5.0.1 
+  │ ├─┬ mime-types@2.1.12 
+  │ │ └── mime-db@1.24.0 
+  │ ├── node-uuid@1.4.7 
+  │ ├── oauth-sign@0.8.2 
+  │ ├── qs@6.2.1 
+  │ ├── stringstream@0.0.5 
+  │ ├── tough-cookie@2.3.1 
+  │ └── tunnel-agent@0.4.3 
+  ├─┬ rimraf@2.5.4 
+  │ └─┬ glob@7.1.0 
+  │   ├── fs.realpath@1.0.0 
+  │   ├── inflight@1.0.5 
+  │   ├─┬ minimatch@3.0.3 
+  │   │ └─┬ brace-expansion@1.1.6 
+  │   │   ├── balanced-match@0.4.2 
+  │   │   └── concat-map@0.0.1 
+  │   ├── once@1.4.0 
+  │   └── path-is-absolute@1.0.1 
+  ├── semver@5.3.0 
+  ├─┬ tar@2.2.1 
+  │ ├── block-stream@0.0.9 
+  │ ├─┬ fstream@1.0.10 
+  │ │ └── graceful-fs@4.1.9 
+  │ └── inherits@2.0.3 
+  └─┬ tar-pack@3.1.4 
+    ├─┬ debug@2.2.0 
+    │ └── ms@0.7.1 
+    ├── fstream-ignore@1.0.5 
+    ├─┬ once@1.3.3 
+    │ └── wrappy@1.0.2 
+    ├─┬ readable-stream@2.1.5 
+    │ ├── buffer-shims@1.0.0 
+    │ ├── core-util-is@1.0.2 
+    │ ├── isarray@1.0.0 
+    │ ├── process-nextick-args@1.0.7 
+    │ ├── string_decoder@0.10.31 
+    │ └── util-deprecate@1.0.2 
+    └── uid-number@0.0.6 
+
+[fsevents] Success: "/Users/cci/repository/nodefony/node_modules/fsevents/lib/binding/Release/node-v48-darwin-x64/fse.node" is installed via remote
+[nodegit] Running pre-install script
+[nodegit] Configuring libssh2.
+[nodegit] Running install script
+[nodegit] Success: "/Users/cci/repository/nodefony/node_modules/nodegit/build/Release/nodegit.node" is installed via remote
+[nodegit] Completed installation successfully.
+[sqlite3] Success: "/Users/cci/repository/nodefony/node_modules/sqlite3/lib/binding/node-v48-darwin-x64/node_sqlite3.node" is installed via remote
+  CXX(target) Release/obj.target/bufferutil/src/bufferutil.o
+  SOLINK_MODULE(target) Release/bufferutil.node
+  CXX(target) Release/obj.target/validation/src/validation.o
+  SOLINK_MODULE(target) Release/validation.node
+nodefony@0.1.0 /Users/cci/repository/nodefony
+├── ascii-table@0.0.9 
+├─┬ asciify@1.3.5 
+│ ├─┬ chalk@0.3.0 
+│ │ ├── ansi-styles@0.2.0 
+│ │ └── has-color@0.1.7 
+│ ├─┬ optimist@0.6.1 
+│ │ ├── minimist@0.0.10 
+│ │ └── wordwrap@0.0.3 
+│ └── pad@0.0.4 
+├─┬ connect@2.30.2 
+│ ├── basic-auth-connect@1.0.0 
+│ ├─┬ body-parser@1.13.3 
+│ │ ├── iconv-lite@0.4.11 
+│ │ ├─┬ on-finished@2.3.0 
+│ │ │ └── ee-first@1.1.1 
+│ │ └─┬ raw-body@2.1.7 
+│ │   ├── bytes@2.4.0 
+│ │   └── iconv-lite@0.4.13 
+│ ├── bytes@2.1.0 
+│ ├─┬ compression@1.5.2 
+│ │ ├─┬ accepts@1.2.13 
+│ │ │ └── negotiator@0.5.3 
+│ │ ├─┬ compressible@2.0.8 
+│ │ │ └── mime-db@1.24.0 
+│ │ └── vary@1.0.1 
+│ ├─┬ connect-timeout@1.6.2 
+│ │ └── ms@0.7.1 
+│ ├── content-type@1.0.2 
+│ ├── cookie@0.1.3 
+│ ├─┬ cookie-parser@1.3.5 
+│ │ └── cookie@0.1.3 
+│ ├── cookie-signature@1.0.6 
+│ ├─┬ csurf@1.8.3 
+│ │ ├── cookie@0.1.3 
+│ │ └─┬ csrf@3.0.3 
+│ │   ├── base64-url@1.2.2 
+│ │   ├── rndm@1.2.0 
+│ │   ├── tsscmp@1.0.5 
+│ │   └─┬ uid-safe@2.1.1 
+│ │     └── random-bytes@1.0.0 
+│ ├── debug@2.2.0 
+│ ├── depd@1.0.1 
+│ ├─┬ errorhandler@1.4.3 
+│ │ ├─┬ accepts@1.3.3 
+│ │ │ └── negotiator@0.6.1 
+│ │ └── escape-html@1.0.3 
+│ ├─┬ express-session@1.11.3 
+│ │ ├── cookie@0.1.3 
+│ │ ├── crc@3.3.0 
+│ │ └─┬ uid-safe@2.0.0 
+│ │   └── base64-url@1.2.1 
+│ ├─┬ finalhandler@0.4.0 
+│ │ ├── escape-html@1.0.2 
+│ │ └── unpipe@1.0.0 
+│ ├── fresh@0.3.0 
+│ ├─┬ http-errors@1.3.1 
+│ │ ├── inherits@2.0.3 
+│ │ └── statuses@1.3.0 
+│ ├─┬ method-override@2.3.6 
+│ │ ├── methods@1.1.2 
+│ │ └── vary@1.1.0 
+│ ├─┬ morgan@1.6.1 
+│ │ └── basic-auth@1.0.4 
+│ ├─┬ multiparty@3.3.2 
+│ │ └── stream-counter@0.2.0 
+│ ├── on-headers@1.0.1 
+│ ├── parseurl@1.3.1 
+│ ├── pause@0.1.0 
+│ ├── qs@4.0.0 
+│ ├── response-time@2.3.1 
+│ ├─┬ serve-favicon@2.3.0 
+│ │ └── etag@1.7.0 
+│ ├─┬ serve-index@1.7.3 
+│ │ ├── batch@0.5.3 
+│ │ └── mime-types@2.1.12 
+│ ├─┬ serve-static@1.10.3 
+│ │ └─┬ send@0.13.2 
+│ │   ├── depd@1.1.0 
+│ │   ├── destroy@1.0.4 
+│ │   ├── range-parser@1.0.3 
+│ │   └── statuses@1.2.1 
+│ ├─┬ type-is@1.6.13 
+│ │ └── media-typer@0.3.0 
+│ ├── utils-merge@1.0.0 
+│ └── vhost@3.0.2 
+├── cookie@0.3.1 
+├─┬ js-yaml@3.6.1 
+│ ├─┬ argparse@1.0.9 
+│ │ └── sprintf-js@1.0.3 
+│ └── esprima@2.7.3 
+├─┬ markdown-it@8.0.0 
+│ ├── entities@1.1.1 
+│ ├── linkify-it@2.0.1 
+│ ├── mdurl@1.0.1 
+│ └── uc.micro@1.0.3 
+├── mime@1.3.4 
+├─┬ mkdirp@0.5.1 
+│ └── minimist@0.0.8 
+├─┬ mysql@2.11.1 
+│ ├── bignumber.js@2.3.0 
+│ ├─┬ readable-stream@1.1.14 
+│ │ ├── core-util-is@1.0.2 
+│ │ ├── isarray@0.0.1 
+│ │ └── string_decoder@0.10.31 
+│ └── sqlstring@2.0.1 
+├── node-getopt@0.2.3 
+├─┬ node-pre-gyp@0.6.30 
+│ ├─┬ nopt@3.0.6 
+│ │ └── abbrev@1.0.9 
+│ ├─┬ npmlog@4.0.0 
+│ │ ├─┬ are-we-there-yet@1.1.2 
+│ │ │ └── delegates@1.0.0 
+│ │ ├── console-control-strings@1.1.0 
+│ │ ├─┬ gauge@2.6.0 
+│ │ │ ├── aproba@1.0.4 
+│ │ │ ├── has-unicode@2.0.1 
+│ │ │ ├── object-assign@4.1.0 
+│ │ │ ├── signal-exit@3.0.1 
+│ │ │ ├─┬ string-width@1.0.2 
+│ │ │ │ ├─┬ code-point-at@1.0.1 
+│ │ │ │ │ └── number-is-nan@1.0.1 
+│ │ │ │ └── is-fullwidth-code-point@1.0.0 
+│ │ │ ├─┬ strip-ansi@3.0.1 
+│ │ │ │ └── ansi-regex@2.0.0 
+│ │ │ └── wide-align@1.1.0 
+│ │ └── set-blocking@2.0.0 
+│ ├─┬ rc@1.1.6 
+│ │ ├── deep-extend@0.4.1 
+│ │ ├── ini@1.3.4 
+│ │ ├── minimist@1.2.0 
+│ │ └── strip-json-comments@1.0.4 
+│ ├─┬ request@2.75.0 
+│ │ ├── aws-sign2@0.6.0 
+│ │ ├── aws4@1.4.1 
+│ │ ├─┬ bl@1.1.2 
+│ │ │ └─┬ readable-stream@2.0.6 
+│ │ │   └── isarray@1.0.0 
+│ │ ├── caseless@0.11.0 
+│ │ ├─┬ combined-stream@1.0.5 
+│ │ │ └── delayed-stream@1.0.0 
+│ │ ├── extend@3.0.0 
+│ │ ├── forever-agent@0.6.1 
+│ │ ├─┬ form-data@2.0.0 
+│ │ │ └── asynckit@0.4.0 
+│ │ ├─┬ har-validator@2.0.6 
+│ │ │ ├─┬ chalk@1.1.3 
+│ │ │ │ ├── ansi-styles@2.2.1 
+│ │ │ │ ├── escape-string-regexp@1.0.5 
+│ │ │ │ ├── has-ansi@2.0.0 
+│ │ │ │ └── supports-color@2.0.0 
+│ │ │ ├─┬ commander@2.9.0 
+│ │ │ │ └── graceful-readlink@1.0.1 
+│ │ │ ├─┬ is-my-json-valid@2.15.0 
+│ │ │ │ ├── generate-function@2.0.0 
+│ │ │ │ ├─┬ generate-object-property@1.2.0 
+│ │ │ │ │ └── is-property@1.0.2 
+│ │ │ │ ├── jsonpointer@4.0.0 
+│ │ │ │ └── xtend@4.0.1 
+│ │ │ └─┬ pinkie-promise@2.0.1 
+│ │ │   └── pinkie@2.0.4 
+│ │ ├─┬ hawk@3.1.3 
+│ │ │ ├── boom@2.10.1 
+│ │ │ ├── cryptiles@2.0.5 
+│ │ │ ├── hoek@2.16.3 
+│ │ │ └── sntp@1.0.9 
+│ │ ├─┬ http-signature@1.1.1 
+│ │ │ ├── assert-plus@0.2.0 
+│ │ │ ├─┬ jsprim@1.3.1 
+│ │ │ │ ├── extsprintf@1.0.2 
+│ │ │ │ ├── json-schema@0.2.3 
+│ │ │ │ └── verror@1.3.6 
+│ │ │ └─┬ sshpk@1.10.1 
+│ │ │   ├── asn1@0.2.3 
+│ │ │   ├── assert-plus@1.0.0 
+│ │ │   ├── bcrypt-pbkdf@1.0.0 
+│ │ │   ├─┬ dashdash@1.14.0 
+│ │ │   │ └── assert-plus@1.0.0 
+│ │ │   ├── ecc-jsbn@0.1.1 
+│ │ │   ├─┬ getpass@0.1.6 
+│ │ │   │ └── assert-plus@1.0.0 
+│ │ │   ├── jodid25519@1.0.2 
+│ │ │   ├── jsbn@0.1.0 
+│ │ │   └── tweetnacl@0.14.3 
+│ │ ├── is-typedarray@1.0.0 
+│ │ ├── isstream@0.1.2 
+│ │ ├── json-stringify-safe@5.0.1 
+│ │ ├── node-uuid@1.4.7 
+│ │ ├── oauth-sign@0.8.2 
+│ │ ├── qs@6.2.1 
+│ │ ├── stringstream@0.0.5 
+│ │ ├── tough-cookie@2.3.1 
+│ │ └── tunnel-agent@0.4.3 
+│ ├─┬ rimraf@2.5.4 
+│ │ └─┬ glob@7.1.0 
+│ │   ├── fs.realpath@1.0.0 
+│ │   ├── inflight@1.0.5 
+│ │   └── once@1.4.0 
+│ ├── semver@5.3.0 
+│ ├─┬ tar@2.2.1 
+│ │ ├── block-stream@0.0.9 
+│ │ └── fstream@1.0.10 
+│ └─┬ tar-pack@3.1.4 
+│   ├── fstream-ignore@1.0.5 
+│   ├─┬ once@1.3.3 
+│   │ └── wrappy@1.0.2 
+│   ├─┬ readable-stream@2.1.5 
+│   │ ├── buffer-shims@1.0.0 
+│   │ ├── isarray@1.0.0 
+│   │ ├── process-nextick-args@1.0.7 
+│   │ └── util-deprecate@1.0.2 
+│   └── uid-number@0.0.6 
+├─┬ nodegit@0.16.0 
+│ ├─┬ fs-extra@0.26.7 
+│ │ ├── graceful-fs@4.1.9 
+│ │ ├── jsonfile@2.4.0 
+│ │ ├── klaw@1.3.0 
+│ │ └── path-is-absolute@1.0.1 
+│ ├── lodash@4.16.3 
+│ ├── nan@2.4.0 
+│ ├─┬ node-gyp@3.4.0 
+│ │ ├── npmlog@3.1.2 
+│ │ ├─┬ osenv@0.1.3 
+│ │ │ ├── os-homedir@1.0.2 
+│ │ │ └── os-tmpdir@1.0.2 
+│ │ ├─┬ path-array@1.0.1 
+│ │ │ └─┬ array-index@1.0.0 
+│ │ │   └─┬ es6-symbol@3.1.0 
+│ │ │     ├── d@0.1.1 
+│ │ │     └─┬ es5-ext@0.10.12 
+│ │ │       └── es6-iterator@2.0.0 
+│ │ └─┬ which@1.2.11 
+│ │   └── isexe@1.1.2 
+│ └─┬ promisify-node@0.3.0 
+│   └── nodegit-promise@4.0.0 
+├─┬ npm@3.10.8 
+│ ├── abbrev@1.0.9 
+│ ├── ansi-regex@2.0.0 
+│ ├── ansicolors@0.3.2 
+│ ├── ansistyles@0.1.3 
+│ ├── aproba@1.0.4 
+│ ├── archy@1.0.0 
+│ ├── asap@2.0.4 
+│ ├── chownr@1.0.1 
+│ ├── cmd-shim@2.0.2 
+│ ├─┬ columnify@1.5.4 
+│ │ └─┬ wcwidth@1.0.0 
+│ │   └─┬ defaults@1.0.3 
+│ │     └── clone@1.0.2 
+│ ├─┬ config-chain@1.1.10 
+│ │ └── proto-list@1.2.4 
+│ ├── debuglog@1.0.1 
+│ ├── dezalgo@1.0.3 
+│ ├── editor@1.0.0 
+│ ├── fs-vacuum@1.2.9 
+│ ├── fs-write-stream-atomic@1.0.8 
+│ ├── fstream@1.0.10 
+│ ├─┬ fstream-npm@1.2.0 
+│ │ └─┬ fstream-ignore@1.0.5 
+│ │   └─┬ minimatch@3.0.3 
+│ │     └─┬ brace-expansion@1.1.6 
+│ │       ├── balanced-match@0.4.2 
+│ │       └── concat-map@0.0.1 
+│ ├─┬ glob@7.0.6 
+│ │ ├── fs.realpath@1.0.0 
+│ │ ├─┬ minimatch@3.0.3 
+│ │ │ └─┬ brace-expansion@1.1.6 
+│ │ │   ├── balanced-match@0.4.2 
+│ │ │   └── concat-map@0.0.1 
+│ │ └── path-is-absolute@1.0.0 
+│ ├── graceful-fs@4.1.6 
+│ ├── has-unicode@2.0.1 
+│ ├── hosted-git-info@2.1.5 
+│ ├── iferr@0.1.5 
+│ ├── imurmurhash@0.1.4 
+│ ├── inflight@1.0.5 
+│ ├── inherits@2.0.3 
+│ ├── ini@1.3.4 
+│ ├─┬ init-package-json@1.9.4 
+│ │ ├─┬ glob@6.0.4 
+│ │ │ ├─┬ minimatch@3.0.3 
+│ │ │ │ └─┬ brace-expansion@1.1.6 
+│ │ │ │   ├── balanced-match@0.4.2 
+│ │ │ │   └── concat-map@0.0.1 
+│ │ │ └── path-is-absolute@1.0.0 
+│ │ └── promzard@0.3.0 
+│ ├── lockfile@1.0.1 
+│ ├── lodash._baseindexof@3.1.0 
+│ ├─┬ lodash._baseuniq@4.6.0 
+│ │ ├── lodash._createset@4.0.3 
+│ │ └── lodash._root@3.0.1 
+│ ├── lodash._bindcallback@3.0.1 
+│ ├── lodash._cacheindexof@3.0.2 
+│ ├── lodash._createcache@3.1.2 
+│ ├── lodash._getnative@3.9.1 
+│ ├── lodash.clonedeep@4.5.0 
+│ ├── lodash.restparam@3.6.1 
+│ ├── lodash.union@4.6.0 
+│ ├── lodash.uniq@4.5.0 
+│ ├── lodash.without@4.4.0 
+│ ├─┬ mkdirp@0.5.1 
+│ │ └── minimist@0.0.8 
+│ ├─┬ node-gyp@3.4.0 
+│ │ ├─┬ minimatch@3.0.3 
+│ │ │ └─┬ brace-expansion@1.1.6 
+│ │ │   ├── balanced-match@0.4.2 
+│ │ │   └── concat-map@0.0.1 
+│ │ ├─┬ npmlog@3.1.2 
+│ │ │ ├─┬ are-we-there-yet@1.1.2 
+│ │ │ │ └── delegates@1.0.0 
+│ │ │ ├── console-control-strings@1.1.0 
+│ │ │ ├─┬ gauge@2.6.0 
+│ │ │ │ ├── has-color@0.1.7 
+│ │ │ │ ├── object-assign@4.1.0 
+│ │ │ │ ├── signal-exit@3.0.0 
+│ │ │ │ ├─┬ string-width@1.0.2 
+│ │ │ │ │ ├─┬ code-point-at@1.0.0 
+│ │ │ │ │ │ └── number-is-nan@1.0.0 
+│ │ │ │ │ └─┬ is-fullwidth-code-point@1.0.0 
+│ │ │ │ │   └── number-is-nan@1.0.0 
+│ │ │ │ └── wide-align@1.1.0 
+│ │ │ └── set-blocking@2.0.0 
+│ │ └─┬ path-array@1.0.1 
+│ │   └─┬ array-index@1.0.0 
+│ │     ├─┬ debug@2.2.0 
+│ │     │ └── ms@0.7.1 
+│ │     └─┬ es6-symbol@3.1.0 
+│ │       ├── d@0.1.1 
+│ │       └─┬ es5-ext@0.10.12 
+│ │         └── es6-iterator@2.0.0 
+│ ├── nopt@3.0.6 
+│ ├── normalize-git-url@3.0.2 
+│ ├─┬ normalize-package-data@2.3.5 
+│ │ └─┬ is-builtin-module@1.0.0 
+│ │   └── builtin-modules@1.1.1 
+│ ├── npm-cache-filename@1.0.2 
+│ ├── npm-install-checks@3.0.0 
+│ ├── npm-package-arg@4.2.0 
+│ ├─┬ npm-registry-client@7.2.1 
+│ │ ├─┬ concat-stream@1.5.2 
+│ │ │ ├─┬ readable-stream@2.0.6 
+│ │ │ │ ├── core-util-is@1.0.2 
+│ │ │ │ ├── isarray@1.0.0 
+│ │ │ │ ├── process-nextick-args@1.0.7 
+│ │ │ │ ├── string_decoder@0.10.31 
+│ │ │ │ └── util-deprecate@1.0.2 
+│ │ │ └── typedarray@0.0.6 
+│ │ ├─┬ npmlog@3.1.2 
+│ │ │ ├─┬ are-we-there-yet@1.1.2 
+│ │ │ │ └── delegates@1.0.0 
+│ │ │ ├── console-control-strings@1.1.0 
+│ │ │ ├─┬ gauge@2.6.0 
+│ │ │ │ ├── has-color@0.1.7 
+│ │ │ │ ├── object-assign@4.1.0 
+│ │ │ │ ├── signal-exit@3.0.0 
+│ │ │ │ ├─┬ string-width@1.0.2 
+│ │ │ │ │ ├─┬ code-point-at@1.0.0 
+│ │ │ │ │ │ └── number-is-nan@1.0.0 
+│ │ │ │ │ └─┬ is-fullwidth-code-point@1.0.0 
+│ │ │ │ │   └── number-is-nan@1.0.0 
+│ │ │ │ └── wide-align@1.1.0 
+│ │ │ └── set-blocking@2.0.0 
+│ │ └── retry@0.10.0 
+│ ├── npm-user-validate@0.1.5 
+│ ├─┬ npmlog@4.0.0 
+│ │ ├─┬ are-we-there-yet@1.1.2 
+│ │ │ └── delegates@1.0.0 
+│ │ ├── console-control-strings@1.1.0 
+│ │ ├─┬ gauge@2.6.0 
+│ │ │ ├── has-color@0.1.7 
+│ │ │ ├── object-assign@4.1.0 
+│ │ │ ├── signal-exit@3.0.0 
+│ │ │ ├─┬ string-width@1.0.2 
+│ │ │ │ ├─┬ code-point-at@1.0.0 
+│ │ │ │ │ └── number-is-nan@1.0.0 
+│ │ │ │ └─┬ is-fullwidth-code-point@1.0.0 
+│ │ │ │   └── number-is-nan@1.0.0 
+│ │ │ └── wide-align@1.1.0 
+│ │ └── set-blocking@2.0.0 
+│ ├── once@1.4.0 
+│ ├── opener@1.4.1 
+│ ├─┬ osenv@0.1.3 
+│ │ ├── os-homedir@1.0.1 
+│ │ └── os-tmpdir@1.0.1 
+│ ├── path-is-inside@1.0.1 
+│ ├─┬ read@1.0.7 
+│ │ └── mute-stream@0.0.5 
+│ ├── read-cmd-shim@1.0.1 
+│ ├─┬ read-installed@4.0.3 
+│ │ └── util-extend@1.0.3 
+│ ├─┬ read-package-json@2.0.4 
+│ │ ├─┬ glob@6.0.4 
+│ │ │ ├─┬ minimatch@3.0.3 
+│ │ │ │ └─┬ brace-expansion@1.1.6 
+│ │ │ │   ├── balanced-match@0.4.2 
+│ │ │ │   └── concat-map@0.0.1 
+│ │ │ └── path-is-absolute@1.0.0 
+│ │ └─┬ json-parse-helpfulerror@1.0.3 
+│ │   └── jju@1.3.0 
+│ ├── read-package-tree@5.1.5 
+│ ├─┬ readable-stream@2.1.5 
+│ │ ├── buffer-shims@1.0.0 
+│ │ ├── core-util-is@1.0.2 
+│ │ ├── isarray@1.0.0 
+│ │ ├── process-nextick-args@1.0.7 
+│ │ ├── string_decoder@0.10.31 
+│ │ └── util-deprecate@1.0.2 
+│ ├── readdir-scoped-modules@1.0.2 
+│ ├── realize-package-specifier@3.0.3 
+│ ├─┬ request@2.74.0 
+│ │ ├── aws-sign2@0.6.0 
+│ │ ├── aws4@1.4.1 
+│ │ ├─┬ bl@1.1.2 
+│ │ │ └─┬ readable-stream@2.0.6 
+│ │ │   ├── core-util-is@1.0.2 
+│ │ │   ├── isarray@1.0.0 
+│ │ │   ├── process-nextick-args@1.0.7 
+│ │ │   ├── string_decoder@0.10.31 
+│ │ │   └── util-deprecate@1.0.2 
+│ │ ├── caseless@0.11.0 
+│ │ ├─┬ combined-stream@1.0.5 
+│ │ │ └── delayed-stream@1.0.0 
+│ │ ├── extend@3.0.0 
+│ │ ├── forever-agent@0.6.1 
+│ │ ├─┬ form-data@1.0.0-rc4 
+│ │ │ └── async@1.5.2 
+│ │ ├─┬ har-validator@2.0.6 
+│ │ │ ├─┬ chalk@1.1.3 
+│ │ │ │ ├── ansi-styles@2.2.1 
+│ │ │ │ ├── escape-string-regexp@1.0.5 
+│ │ │ │ ├── has-ansi@2.0.0 
+│ │ │ │ └── supports-color@2.0.0 
+│ │ │ ├─┬ commander@2.9.0 
+│ │ │ │ └── graceful-readlink@1.0.1 
+│ │ │ ├─┬ is-my-json-valid@2.13.1 
+│ │ │ │ ├── generate-function@2.0.0 
+│ │ │ │ ├─┬ generate-object-property@1.2.0 
+│ │ │ │ │ └── is-property@1.0.2 
+│ │ │ │ ├── jsonpointer@2.0.0 
+│ │ │ │ └── xtend@4.0.1 
+│ │ │ └─┬ pinkie-promise@2.0.1 
+│ │ │   └── pinkie@2.0.4 
+│ │ ├─┬ hawk@3.1.3 
+│ │ │ ├── boom@2.10.1 
+│ │ │ ├── cryptiles@2.0.5 
+│ │ │ ├── hoek@2.16.3 
+│ │ │ └── sntp@1.0.9 
+│ │ ├─┬ http-signature@1.1.1 
+│ │ │ ├── assert-plus@0.2.0 
+│ │ │ ├─┬ jsprim@1.3.0 
+│ │ │ │ ├── extsprintf@1.0.2 
+│ │ │ │ ├── json-schema@0.2.2 
+│ │ │ │ └── verror@1.3.6 
+│ │ │ └─┬ sshpk@1.9.2 
+│ │ │   ├── asn1@0.2.3 
+│ │ │   ├── assert-plus@1.0.0 
+│ │ │   ├── dashdash@1.14.0 
+│ │ │   ├── ecc-jsbn@0.1.1 
+│ │ │   ├── getpass@0.1.6 
+│ │ │   ├── jodid25519@1.0.2 
+│ │ │   ├── jsbn@0.1.0 
+│ │ │   └── tweetnacl@0.13.3 
+│ │ ├── is-typedarray@1.0.0 
+│ │ ├── isstream@0.1.2 
+│ │ ├── json-stringify-safe@5.0.1 
+│ │ ├─┬ mime-types@2.1.11 
+│ │ │ └── mime-db@1.23.0 
+│ │ ├── node-uuid@1.4.7 
+│ │ ├── oauth-sign@0.8.2 
+│ │ ├── qs@6.2.1 
+│ │ ├── stringstream@0.0.5 
+│ │ ├── tough-cookie@2.3.1 
+│ │ └── tunnel-agent@0.4.3 
+│ ├── retry@0.10.0 
+│ ├── rimraf@2.5.4 
+│ ├── semver@5.3.0 
+│ ├── sha@2.0.1 
+│ ├── slide@1.1.6 
+│ ├── sorted-object@2.0.0 
+│ ├── strip-ansi@3.0.1 
+│ ├─┬ tar@2.2.1 
+│ │ └── block-stream@0.0.8 
+│ ├── text-table@0.2.0 
+│ ├── uid-number@0.0.6 
+│ ├── umask@1.1.0 
+│ ├─┬ unique-filename@1.1.0 
+│ │ └── unique-slug@2.0.0 
+│ ├── unpipe@1.0.0 
+│ ├─┬ validate-npm-package-license@3.0.1 
+│ │ ├─┬ spdx-correct@1.0.2 
+│ │ │ └── spdx-license-ids@1.2.0 
+│ │ └─┬ spdx-expression-parse@1.0.2 
+│ │   ├── spdx-exceptions@1.0.4 
+│ │   └── spdx-license-ids@1.2.0 
+│ ├─┬ validate-npm-package-name@2.2.2 
+│ │ └── builtins@0.0.7 
+│ ├─┬ which@1.2.11 
+│ │ └── isexe@1.1.2 
+│ ├── wrappy@1.0.2 
+│ └── write-file-atomic@1.2.0 
+├─┬ npmi@2.0.1 
+│ └── semver@4.3.6 
+├─┬ pm2@2.0.18 
+│ ├── amp@0.3.1 
+│ ├── amp-message@0.1.2 
+│ ├── ansi-regex@2.0.0 
+│ ├── ansi-styles@2.2.1 
+│ ├── anymatch@1.3.0 
+│ ├── argparse@1.0.7 
+│ ├── arr-diff@2.0.0 
+│ ├── arr-flatten@1.0.1 
+│ ├── array-unique@0.2.1 
+│ ├── arrify@1.0.1 
+│ ├── async@1.5.2 
+│ ├── async-each@1.0.1 
+│ ├── balanced-match@0.4.2 
+│ ├── binary-extensions@1.6.0 
+│ ├── brace-expansion@1.1.6 
+│ ├── braces@1.8.5 
+│ ├── buffer-shims@1.0.0 
+│ ├── chalk@1.1.3 
+│ ├── charm@0.1.2 
+│ ├─┬ chokidar@1.6.0 
+│ │ └─┬ fsevents@1.0.14 
+│ │   └─┬ node-pre-gyp@0.6.29 
+│ │     ├─┬ mkdirp@0.5.1 
+│ │     │ └── minimist@0.0.8 
+│ │     ├─┬ nopt@3.0.6 
+│ │     │ └── abbrev@1.0.9 
+│ │     ├─┬ npmlog@3.1.2 
+│ │     │ ├─┬ are-we-there-yet@1.1.2 
+│ │     │ │ └── delegates@1.0.0 
+│ │     │ ├── console-control-strings@1.1.0 
+│ │     │ ├─┬ gauge@2.6.0 
+│ │     │ │ ├── aproba@1.0.4 
+│ │     │ │ ├── has-color@0.1.7 
+│ │     │ │ ├── has-unicode@2.0.1 
+│ │     │ │ ├── object-assign@4.1.0 
+│ │     │ │ ├── signal-exit@3.0.0 
+│ │     │ │ ├─┬ string-width@1.0.1 
+│ │     │ │ │ ├─┬ code-point-at@1.0.0 
+│ │     │ │ │ │ └── number-is-nan@1.0.0 
+│ │     │ │ │ └── is-fullwidth-code-point@1.0.0 
+│ │     │ │ ├─┬ strip-ansi@3.0.1 
+│ │     │ │ │ └── ansi-regex@2.0.0 
+│ │     │ │ └── wide-align@1.1.0 
+│ │     │ └── set-blocking@2.0.0 
+│ │     ├─┬ rc@1.1.6 
+│ │     │ ├── deep-extend@0.4.1 
+│ │     │ ├── ini@1.3.4 
+│ │     │ ├── minimist@1.2.0 
+│ │     │ └── strip-json-comments@1.0.4 
+│ │     ├─┬ request@2.73.0 
+│ │     │ ├── aws-sign2@0.6.0 
+│ │     │ ├── aws4@1.4.1 
+│ │     │ ├─┬ bl@1.1.2 
+│ │     │ │ └── readable-stream@2.0.6 
+│ │     │ ├── caseless@0.11.0 
+│ │     │ ├─┬ combined-stream@1.0.5 
+│ │     │ │ └── delayed-stream@1.0.0 
+│ │     │ ├── extend@3.0.0 
+│ │     │ ├── forever-agent@0.6.1 
+│ │     │ ├─┬ form-data@1.0.0-rc4 
+│ │     │ │ └── async@1.5.2 
+│ │     │ ├─┬ har-validator@2.0.6 
+│ │     │ │ ├─┬ chalk@1.1.3 
+│ │     │ │ │ ├── ansi-styles@2.2.1 
+│ │     │ │ │ ├── escape-string-regexp@1.0.5 
+│ │     │ │ │ ├── has-ansi@2.0.0 
+│ │     │ │ │ └── supports-color@2.0.0 
+│ │     │ │ ├─┬ commander@2.9.0 
+│ │     │ │ │ └── graceful-readlink@1.0.1 
+│ │     │ │ ├─┬ is-my-json-valid@2.13.1 
+│ │     │ │ │ ├── generate-function@2.0.0 
+│ │     │ │ │ ├─┬ generate-object-property@1.2.0 
+│ │     │ │ │ │ └── is-property@1.0.2 
+│ │     │ │ │ ├── jsonpointer@2.0.0 
+│ │     │ │ │ └── xtend@4.0.1 
+│ │     │ │ └─┬ pinkie-promise@2.0.1 
+│ │     │ │   └── pinkie@2.0.4 
+│ │     │ ├─┬ hawk@3.1.3 
+│ │     │ │ ├── boom@2.10.1 
+│ │     │ │ ├── cryptiles@2.0.5 
+│ │     │ │ ├── hoek@2.16.3 
+│ │     │ │ └── sntp@1.0.9 
+│ │     │ ├─┬ http-signature@1.1.1 
+│ │     │ │ ├── assert-plus@0.2.0 
+│ │     │ │ ├─┬ jsprim@1.3.0 
+│ │     │ │ │ ├── extsprintf@1.0.2 
+│ │     │ │ │ ├── json-schema@0.2.2 
+│ │     │ │ │ └── verror@1.3.6 
+│ │     │ │ └─┬ sshpk@1.8.3 
+│ │     │ │   ├── asn1@0.2.3 
+│ │     │ │   ├── assert-plus@1.0.0 
+│ │     │ │   ├─┬ dashdash@1.14.0 
+│ │     │ │   │ └── assert-plus@1.0.0 
+│ │     │ │   ├── ecc-jsbn@0.1.1 
+│ │     │ │   ├─┬ getpass@0.1.6 
+│ │     │ │   │ └── assert-plus@1.0.0 
+│ │     │ │   ├── jodid25519@1.0.2 
+│ │     │ │   ├── jsbn@0.1.0 
+│ │     │ │   └── tweetnacl@0.13.3 
+│ │     │ ├── is-typedarray@1.0.0 
+│ │     │ ├── isstream@0.1.2 
+│ │     │ ├── json-stringify-safe@5.0.1 
+│ │     │ ├─┬ mime-types@2.1.11 
+│ │     │ │ └── mime-db@1.23.0 
+│ │     │ ├── node-uuid@1.4.7 
+│ │     │ ├── oauth-sign@0.8.2 
+│ │     │ ├── qs@6.2.0 
+│ │     │ ├── stringstream@0.0.5 
+│ │     │ ├── tough-cookie@2.2.2 
+│ │     │ └── tunnel-agent@0.4.3 
+│ │     ├─┬ rimraf@2.5.3 
+│ │     │ └─┬ glob@7.0.5 
+│ │     │   ├── fs.realpath@1.0.0 
+│ │     │   ├── inflight@1.0.5 
+│ │     │   ├─┬ minimatch@3.0.2 
+│ │     │   │ └─┬ brace-expansion@1.1.5 
+│ │     │   │   ├── balanced-match@0.4.2 
+│ │     │   │   └── concat-map@0.0.1 
+│ │     │   └── path-is-absolute@1.0.0 
+│ │     ├── semver@5.2.0 
+│ │     ├─┬ tar@2.2.1 
+│ │     │ ├── block-stream@0.0.9 
+│ │     │ ├─┬ fstream@1.0.10 
+│ │     │ │ └── graceful-fs@4.1.4 
+│ │     │ └── inherits@2.0.1 
+│ │     └─┬ tar-pack@3.1.4 
+│ │       ├─┬ debug@2.2.0 
+│ │       │ └── ms@0.7.1 
+│ │       ├── fstream-ignore@1.0.5 
+│ │       ├─┬ once@1.3.3 
+│ │       │ └── wrappy@1.0.2 
+│ │       ├─┬ readable-stream@2.1.4 
+│ │       │ ├── buffer-shims@1.0.0 
+│ │       │ ├── core-util-is@1.0.2 
+│ │       │ ├── isarray@1.0.0 
+│ │       │ ├── process-nextick-args@1.0.7 
+│ │       │ ├── string_decoder@0.10.31 
+│ │       │ └── util-deprecate@1.0.2 
+│ │       └── uid-number@0.0.6 
+│ ├── cli-table2@0.2.0 
+│ ├── code-point-at@1.0.0 
+│ ├── colors@1.1.2 
+│ ├── commander@2.9.0 
+│ ├── concat-map@0.0.1 
+│ ├── core-util-is@1.0.2 
+│ ├── cron@1.1.0 
+│ ├── debug@2.2.0 
+│ ├── escape-regexp@0.0.1 
+│ ├── escape-string-regexp@1.0.5 
+│ ├── eventemitter2@1.0.5 
+│ ├── expand-brackets@0.1.5 
+│ ├── expand-range@1.8.2 
+│ ├── extglob@0.3.2 
+│ ├── fclone@1.0.9 
+│ ├── filename-regex@2.0.0 
+│ ├── fill-range@2.2.3 
+│ ├── for-in@0.1.6 
+│ ├── for-own@0.1.4 
+│ ├── fs.realpath@1.0.0 
+│ ├── gkt@1.0.0 
+│ ├── glob@7.1.0 
+│ ├── glob-base@0.3.0 
+│ ├── glob-parent@2.0.0 
+│ ├── graceful-fs@4.1.9 
+│ ├── graceful-readlink@1.0.1 
+│ ├── has-ansi@2.0.0 
+│ ├── inflight@1.0.5 
+│ ├── inherits@2.0.3 
+│ ├── interpret@1.0.1 
+│ ├── is-binary-path@1.0.1 
+│ ├── is-buffer@1.1.4 
+│ ├── is-dotfile@1.0.2 
+│ ├── is-equal-shallow@0.1.3 
+│ ├── is-extendable@0.1.1 
+│ ├── is-extglob@1.0.0 
+│ ├── is-fullwidth-code-point@1.0.0 
+│ ├── is-glob@2.0.1 
+│ ├── is-number@2.1.0 
+│ ├── is-posix-bracket@0.1.1 
+│ ├── is-primitive@2.0.0 
+│ ├── isarray@1.0.0 
+│ ├── isobject@2.1.0 
+│ ├── json-stringify-safe@5.0.1 
+│ ├── kind-of@3.0.4 
+│ ├── lazy@1.0.11 
+│ ├── lodash@3.10.1 
+│ ├── micromatch@2.3.11 
+│ ├── minimatch@3.0.3 
+│ ├── minimist@0.0.8 
+│ ├── mkdirp@0.5.1 
+│ ├── moment@2.15.1 
+│ ├── moment-timezone@0.3.1 
+│ ├── ms@0.7.1 
+│ ├── normalize-path@2.0.1 
+│ ├─┬ nssocket@0.6.0 
+│ │ └── eventemitter2@0.4.14 
+│ ├── number-is-nan@1.0.0 
+│ ├── object.omit@2.0.0 
+│ ├── once@1.4.0 
+│ ├── parse-glob@3.0.4 
+│ ├── path-is-absolute@1.0.0 
+│ ├── pidusage@1.0.8 
+│ ├── pm2-axon@3.0.2 
+│ ├─┬ pm2-axon-rpc@0.4.5 
+│ │ └── fclone@1.0.8 
+│ ├── pm2-deploy@0.3.1 
+│ ├── pm2-multimeter@0.1.2 
+│ ├── pmx@0.6.8 
+│ ├── preserve@0.2.0 
+│ ├── process-nextick-args@1.0.7 
+│ ├── randomatic@1.1.5 
+│ ├── readable-stream@2.1.5 
+│ ├── readdirp@2.1.0 
+│ ├── rechoir@0.6.2 
+│ ├── regex-cache@0.4.3 
+│ ├── repeat-element@1.1.2 
+│ ├── repeat-string@1.5.4 
+│ ├── resolve@1.1.7 
+│ ├── semver@5.3.0 
+│ ├── set-immediate-shim@1.0.1 
+│ ├── shelljs@0.7.3 
+│ ├── source-map@0.5.6 
+│ ├── source-map-support@0.4.3 
+│ ├── sprintf-js@1.0.3 
+│ ├── string-width@1.0.2 
+│ ├── string_decoder@0.10.31 
+│ ├── strip-ansi@3.0.1 
+│ ├── supports-color@2.0.0 
+│ ├── tv4@1.2.7 
+│ ├── util-deprecate@1.0.2 
+│ ├── vizion@0.2.13 
+│ ├── wrappy@1.0.2 
+│ └── yamljs@0.2.8 
+├─┬ promise@7.1.1 
+│ └── asap@2.0.5 
+├── shortid@2.2.6 
+├─┬ sqlite3@3.1.5 
+│ └── nan@2.3.5 
+├─┬ twig@0.9.5 
+│ ├─┬ minimatch@3.0.3 
+│ │ └─┬ brace-expansion@1.1.6 
+│ │   ├── balanced-match@0.4.2 
+│ │   └── concat-map@0.0.1 
+│ ├─┬ phpjs@1.3.2 
+│ │ ├── cli@0.4.4-2 
+│ │ ├── deep-equal@0.1.2 
+│ │ ├─┬ glob@3.2.1 
+│ │ │ ├── graceful-fs@1.2.3 
+│ │ │ ├── inherits@1.0.2 
+│ │ │ └─┬ minimatch@0.2.14 
+│ │ │   ├── lru-cache@2.7.3 
+│ │ │   └── sigmund@1.0.1 
+│ │ ├─┬ js-beautify@1.4.2 
+│ │ │ ├─┬ config-chain@1.1.11 
+│ │ │ │ └── proto-list@1.2.4 
+│ │ │ ├── mkdirp@0.3.5 
+│ │ │ └── nopt@2.1.2 
+│ │ ├─┬ mocha@1.17.0 
+│ │ │ ├── commander@2.0.0 
+│ │ │ ├── diff@1.0.7 
+│ │ │ ├─┬ glob@3.2.3 
+│ │ │ │ ├── graceful-fs@2.0.3 
+│ │ │ │ └── minimatch@0.2.14 
+│ │ │ ├── growl@1.7.0 
+│ │ │ ├─┬ jade@0.26.3 
+│ │ │ │ ├── commander@0.6.1 
+│ │ │ │ └── mkdirp@0.3.0 
+│ │ │ └── mkdirp@0.3.5 
+│ │ ├─┬ send@0.1.0 
+│ │ │ ├── fresh@0.1.0 
+│ │ │ ├── mime@1.2.6 
+│ │ │ └── range-parser@0.0.4 
+│ │ └── underscore@1.5.2 
+│ └─┬ walk@2.3.9 
+│   └── foreachasync@3.0.0 
+├─┬ websocket@1.0.23 
+│ ├── typedarray-to-buffer@3.1.2 
+│ └── yaeti@0.0.4 
+└─┬ xml2js@0.4.17 
+  ├── sax@1.2.1 
+  └── xmlbuilder@4.2.1 
+
 ./console npm:install
               _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
@@ -28,7 +950,7 @@ $ make
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
                                                                             
 
-		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 17679
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78332
 
 INSTALL BUNDLE http dependence : memcached
 INSTALL BUNDLE http dependence : qs
@@ -39,18 +961,517 @@ INSTALL BUNDLE monitoring dependence : request
 INSTALL BUNDLE sequelize dependence : sequelize
 INSTALL BUNDLE webRtc dependence : webrtc-adapter
 INSTALL BUNDLE webRtc dependence : redis
-⸨░░░░░░░░░░░░░░░░░░⸩ ⠧ normalizeTree: sill install loadCurrentTree
+nodefony@0.1.0 .
+├─┬ connect@2.30.2
+│ ├─┬ body-parser@1.13.3
+│ │ └── qs@4.0.0 
+│ └── qs@4.0.0 
+└── qs@6.2.1 
 
-...
+qs@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ webrtc-adapter@2.0.4 
+  └── sdp@1.0.1 
 
-</pre>
+redis@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ uglify-js@2.7.3 
+  ├── async@0.2.10 
+  ├── source-map@0.5.6 
+  ├── uglify-to-browserify@1.0.2 
+  └─┬ yargs@3.10.0 
+    ├── camelcase@1.2.1 
+    ├─┬ cliui@2.1.0 
+    │ ├─┬ center-align@0.1.3 
+    │ │ ├─┬ align-text@0.1.4 
+    │ │ │ ├─┬ kind-of@3.0.4 
+    │ │ │ │ └── is-buffer@1.1.4 
+    │ │ │ ├── longest@1.0.1 
+    │ │ │ └── repeat-string@1.5.4 
+    │ │ └── lazy-cache@1.0.4 
+    │ ├── right-align@0.1.3 
+    │ └── wordwrap@0.0.2 
+    ├── decamelize@1.2.0 
+    └── window-size@0.1.0 
 
+uglifycss@* installed successfully in nodefony
+nodefony@0.1.0 .
+└── uglifycss@0.0.21 
 
+uglifycss@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ sequelize@3.24.3 
+  ├── bluebird@3.4.6 
+  ├── depd@1.1.0 
+  ├── dottie@1.1.1 
+  ├── generic-pool@2.4.2 
+  ├── inflection@1.10.0 
+  ├── lodash@4.12.0 
+  ├── moment@2.15.1 
+  ├── moment-timezone@0.5.5 
+  ├── retry-as-promised@2.0.1 
+  ├── shimmer@1.1.0 
+  ├─┬ terraformer-wkt-parser@1.1.2 
+  │ └── terraformer@1.0.6 
+  ├── toposort-class@1.0.1 
+  ├── validator@5.7.0 
+  └── wkx@0.2.0 
 
-<h3>Configuration system : </h3>
+sequelize@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ node-pre-gyp@0.6.30
+  └── request@2.75.0 
+
+request@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ less@2.7.1 
+  ├─┬ errno@0.1.4 
+  │ └── prr@0.0.0 
+  ├── image-size@0.5.0 
+  └── source-map@0.5.6 
+
+uglifycss@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ redis@2.6.2 
+  ├── double-ended-queue@2.1.0-0 
+  ├── redis-commands@1.2.0 
+  └── redis-parser@2.0.4 
+
+redis@* installed successfully in nodefony
+nodefony@0.1.0 .
+└─┬ memcached@2.2.2 
+  ├─┬ hashring@3.2.0 
+  │ ├── connection-parse@0.0.7 
+  │ └── simple-lru-cache@0.0.2 
+  └─┬ jackpot@0.0.6 
+    └── retry@0.6.0 
+
+qs@* installed successfully in nodefony
+make asset
+./console assets:install 
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78348
+
+.-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------.
+|                                                               INSTALL LINK IN /web TOTAL SIZE : 50569.413 ko                                                                |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|    BUNDLE     |                                     DESTINATION PATH                                     |                    SOURCE PATH                    |     SIZE     |
+|---------------|------------------------------------------------------------------------------------------|---------------------------------------------------|--------------|
+| framework     | /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public     | /Users/cci/repository/nodefony/web//framework     | 10236.255 ko |
+| monitoring    | /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public    | /Users/cci/repository/nodefony/web//monitoring    | 2043.949 ko  |
+| users         | /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/public         | /Users/cci/repository/nodefony/web//users         | 4.104 ko     |
+| webRtc        | /Users/cci/repository/nodefony/src/experimental/webRtcBundle/Resources/public            | /Users/cci/repository/nodefony/web//webRtc        | 133.191 ko   |
+| webAudioApi   | /Users/cci/repository/nodefony/src/experimental/webAudioApiBundle/Resources/public       | /Users/cci/repository/nodefony/web//webAudioApi   | 27868.08 ko  |
+| documentation | /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/public | /Users/cci/repository/nodefony/web//documentation | 1938.566 ko  |
+| demo          | /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public                   | /Users/cci/repository/nodefony/web//demo          | 7817.444 ko  |
+| App           | /Users/cci/repository/nodefony/app//Resources/public                                     | /Users/cci/repository/nodefony/web//App           | 3.718 ko     |
+'-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+./console assets:dump 
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78349
+
+GENERATE FILE : /frameworkBundle/assets/js/nodefony.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/jquery/jquery-1.12.0.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/js/bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/stage.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/function.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/notificationsCenter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/syslog/syslog.js FILTER : uglifyjs2
+GENERATE FILE : /monitoringBundle/assets/debugbar.css
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/css/debugBar.css FILTER : uglifycss
+GENERATE FILE : /monitoringBundle/assets/js/debugBar.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/debugBar.js FILTER : uglifyjs2
+GENERATE FILE : /monitoringBundle/assets/css/style.css
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/less/style.less FILTER : LESS
+GENERATE FILE : /monitoringBundle/assets/css/vendor.css
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/css/json-view/jquery.jsonview.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/css/dataTables.bootstrap.min.css FILTER : uglifycss
+GENERATE FILE : /monitoringBundle/assets/js/app.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/jquery/jquery-2.1.4.min.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/js/bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+GENERATE FILE : /monitoringBundle/assets/js/stage.js
+FILE : /Users/cci/repository/nodefony/src/stage/stage.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/function.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/notificationsCenter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/syslog/syslog.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/xml.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/io.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/base64.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/md5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/mechanisms/digest-md5/digestMd5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/sasl/sasl.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/transports/socket.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/bayeux/bayeux.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/realtime/realtime.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+GENERATE FILE : /monitoringBundle/assets/js/vendors.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/jquery.dataTables.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/dataTables.bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/vendors/jquery.timeago/jquery.timeago.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/json-view/jquery.jsonview.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/smoothie/smoothie.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/flot/jquery.flot.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/flot/jquery.flot.categories.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/flot/jquery.flot.pie.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/flot/jquery.flot.resize.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/js/flot/jquery.flot.crosshair.js FILTER : uglifyjs2
+GENERATE FILE : /assets/css/clean.css
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/simple-line-icons.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/animate.css FILTER : uglifycss
+GENERATE FILE : /assets/js/vendor.js
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.parallax-1.1.3.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.sticky.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/smoothscroll.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/wow.min.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stageLib.js
+FILE : /Users/cci/repository/nodefony/src/stage/io/transports/websockets/websocket.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/base64.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/md5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/mechanisms/digest-md5/digestMd5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/sasl/sasl.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/bayeux/bayeux.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/realtime/realtime.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/sip/sip.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/webrtc/webrtc.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/adapter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/media.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/webrtc/webrtc.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stage.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+GENERATE FILE : /assets/css/clean.css
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/simple-line-icons.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/animate.css FILTER : uglifycss
+GENERATE FILE : /assets/js/vendor.js
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.parallax-1.1.3.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.sticky.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/smoothscroll.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/wow.min.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stageLib.js
+FILE : /Users/cci/repository/nodefony/src/stage/io/transports/websockets/websocket.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/base64.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/md5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/mechanisms/digest-md5/digestMd5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/sasl/sasl.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/bayeux/bayeux.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/realtime/realtime.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/sip/sip.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/webrtc/webrtc.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/adapter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/media.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/webrtc/webrtc.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stage.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+GENERATE FILE : /webAudioApiBundle/css/layout.css
+GENERATE FILE : /webAudioApiBundle/js/layout.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/jquery/jquery-2.1.4.min.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/js/bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/jquery.dataTables.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/dataTables.bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/stage.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/function.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/notificationsCenter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/syslog/syslog.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/xml.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/io.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/base64.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/md5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/mechanisms/digest-md5/digestMd5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/sasl/sasl.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/transports/socket.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/protocols/bayeux/bayeux.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/realtime/realtime.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/adapter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/media/media2.js FILTER : uglifyjs2
+GENERATE FILE : /documentationBundle/assets/css/layout.css
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/css/bootstrap.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/css/bootstrap-theme.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/font-awesome/css/font-awesome.min.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/css/dataTables.bootstrap.min.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/public/css/doc.css FILTER : uglifycss
+GENERATE FILE : /documentationBundle/assets/js/layout.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/jquery/jquery-2.1.4.min.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/js/bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/jquery.dataTables.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/dataTables.bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/stage.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/function.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/notificationsCenter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/syslog/syslog.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/io.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/xml.js FILTER : uglifyjs2
+GENERATE FILE : /assets/css/clean.css
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/simple-line-icons.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/animate.css FILTER : uglifycss
+GENERATE FILE : /assets/js/vendor.js
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.parallax-1.1.3.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.sticky.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/smoothscroll.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/wow.min.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stage.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+GENERATE FILE : /demoBundle/assets/css/layout.css
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/css/bootstrap.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/css/bootstrap-theme.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/font-awesome/css/font-awesome.min.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/css/dataTables.bootstrap.min.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/style.css FILTER : uglifycss
+GENERATE FILE : /demoBundle/assets/js/layout.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/jquery/jquery-2.1.4.min.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/bootstrap/js/bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/jquery.dataTables.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/dataTable/js/dataTables.bootstrap.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/stage.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/function.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/notificationsCenter.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/syslog/syslog.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/io.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/xml.js FILTER : uglifyjs2
+GENERATE FILE : /assets/css/clean.css
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/simple-line-icons.css FILTER : uglifycss
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/css/animate.css FILTER : uglifycss
+GENERATE FILE : /assets/js/login.js
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/base64.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/crypto/md5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/mechanisms/digest-md5/digestMd5.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/io/authentication/sasl/sasl.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/public/js/login.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/vendor.js
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.parallax-1.1.3.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/jquery.sticky.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/smoothscroll.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public/clean/assets/js/wow.min.js FILTER : uglifyjs2
+GENERATE FILE : /assets/js/stage.js
+FILE : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/vendors/twig/twig.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/autoload.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/kernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/appKernel.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/container.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/routerService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/controller.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/module.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/translationService.js FILTER : uglifyjs2
+FILE : /Users/cci/repository/nodefony/src/stage/kernel/locationService.js FILTER : uglifyjs2
+make sequelize
+./console Sequelize:generate:entities
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78369
+
+DATABASE SYNC : nodefony
+Executing (default): CREATE TABLE IF NOT EXISTS `requests` (`id` INTEGER auto_increment , `url` TEXT, `route` VARCHAR(255), `method` VARCHAR(255), `state` VARCHAR(255), `protocole` VARCHAR(255), `username` VARCHAR(255), `data` TEXT, `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `requests`
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER auto_increment , `username` VARCHAR(255) NOT NULL UNIQUE, `password` VARCHAR(255), `enabled` TINYINT(1) DEFAULT true, `credentialsNonExpired` TINYINT(1) DEFAULT true, `accountNonLocked` TINYINT(1) DEFAULT true, `email` VARCHAR(255) UNIQUE, `name` VARCHAR(255), `surname` VARCHAR(255), `lang` VARCHAR(255) DEFAULT 'en_en', `roles` VARCHAR(255) DEFAULT 'ADMIN', `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, UNIQUE `users_username_unique` (`username`), UNIQUE `users_email_unique` (`email`), PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): CREATE TABLE IF NOT EXISTS `sessions` (`session_id` VARCHAR(255) , `context` VARCHAR(255) DEFAULT 'default', `Attributes` TEXT, `flashBag` TEXT, `metaBag` TEXT, `createdAt` DATETIME, `updatedAt` DATETIME NOT NULL, `user_id` INTEGER, PRIMARY KEY (`session_id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `sessions`
+DATABASE :nodefony CONNECTION : nodefony CREATE ALL TABLES
+./console Sequelize:fixtures:load
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78372
+
+LOAD FIXTURES BUNDLE : users
+LOAD FIXTURE ENTITY : user CONNECTIONS : nodefony
+Wed Oct 05 2016 12:43:07 INFO SERVICE sequelize  : Database synchronised  
+Wed Oct 05 2016 12:43:08 INFO SERVICE sequelize  : ALREADY EXIST USER : admin
+Wed Oct 05 2016 12:43:08 INFO SERVICE sequelize  : ALREADY EXIST USER : cci
+Wed Oct 05 2016 12:43:08 INFO SERVICE sequelize  : ALREADY EXIST USER : 1000
+Wed Oct 05 2016 12:43:08 INFO SERVICE sequelize  : ALREADY EXIST USER : 2000
+Wed Oct 05 2016 12:43:08 INFO SERVICE sequelize  : ALREADY EXIST USER : 3000
+LOAD FIXTURE ENTITY : user SUCCESS
+./console router:generate:routes
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78374
+
+.---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------.
+|                                                                                                                                     ROUTES                                                                                                                                      |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NB |                 ROUTE                 |                    PATH                     |       VARIABLES        | HOST |       BUNDLE        | CONTROLLER |       ACTION        | OPTIONS |                               PATTERN                               | FIRST MATCH |
+|----|---------------------------------------|---------------------------------------------|------------------------|------|---------------------|------------|---------------------|---------|---------------------------------------------------------------------|-------------|
+|  1 | realSecure                            | /secure/realtime                            |                        |      | realTimeBundle      | default    | index               | {}      | /^\/secure\/realtime[\/]?$/i                                        |             |
+|  2 | real                                  | /realtime                                   |                        |      | realTimeBundle      | default    | index               | {}      | /^\/realtime[\/]?$/i                                                |             |
+|  3 | monitoring-index                      | /nodefony                                   |                        |      | monitoringBundle    | default    | index               | {}      | /^\/nodefony[\/]?$/i                                                |             |
+|  4 | monitoring-module                     | /nodefony/{module}                          |         module         |      | monitoringBundle    | default    | index               | {}      | /^\/nodefony(?:\/([^\/]+))[\/]?$/i                                  |             |
+|  5 | monitoring-realtime                   | /nodefony/monitoring/realtime               |                        |      | monitoringBundle    | default    | realTime            | {}      | /^\/nodefony\/monitoring\/realtime[\/]?$/i                          |             |
+|  6 | monitoring-routes                     | /nodefony/api/routes                        |                        |      | monitoringBundle    | api        | routes              | {}      | /^\/nodefony\/api\/routes[\/]?$/i                                   |             |
+|  7 | monitoring-route                      | /nodefony/api/route/{name}                  |          name          |      | monitoringBundle    | api        | routes              | {}      | /^\/nodefony\/api\/route(?:\/([^\/]+))[\/]?$/i                      |             |
+|  8 | monitoring-services                   | /nodefony/api/services                      |                        |      | monitoringBundle    | api        | services            | {}      | /^\/nodefony\/api\/services[\/]?$/i                                 |             |
+|  9 | monitoring-service                    | /nodefony/api/service/{name}                |          name          |      | monitoringBundle    | api        | services            | {}      | /^\/nodefony\/api\/service(?:\/([^\/]+))[\/]?$/i                    |             |
+| 10 | monitoring-syslog                     | /nodefony/api/syslog                        |                        |      | monitoringBundle    | api        | syslog              | {}      | /^\/nodefony\/api\/syslog[\/]?$/i                                   |             |
+| 11 | monitoring-requests                   | /nodefony/api/requests                      |                        |      | monitoringBundle    | api        | requests            | {}      | /^\/nodefony\/api\/requests[\/]?$/i                                 |             |
+| 12 | monitoring-request                    | /nodefony/api/request/{uid}                 |          uid           |      | monitoringBundle    | api        | request             | {}      | /^\/nodefony\/api\/request(?:\/([^\/]+))[\/]?$/i                    |             |
+| 13 | monitoring-config                     | /nodefony/api/config                        |                        |      | monitoringBundle    | api        | config              | {}      | /^\/nodefony\/api\/config[\/]?$/i                                   |             |
+| 14 | monitoring-bundle                     | /nodefony/api/config/{bundleName}           |       bundleName       |      | monitoringBundle    | api        | bundle              | {}      | /^\/nodefony\/api\/config(?:\/([^\/]+))[\/]?$/i                     |             |
+| 15 | monitoring-real                       | /nodefony/api/realtime/{name}               |          name          |      | monitoringBundle    | api        | realtime            | {}      | /^\/nodefony\/api\/realtime(?:\/([^\/]+))[\/]?$/i                   |             |
+| 16 | monitoring-users                      | /nodefony/api/users                         |                        |      | monitoringBundle    | api        | users               | {}      | /^\/nodefony\/api\/users[\/]?$/i                                    |             |
+| 17 | monitoring-sessions                   | /nodefony/api/sessions                      |                        |      | monitoringBundle    | api        | sessions            | {}      | /^\/nodefony\/api\/sessions[\/]?$/i                                 |             |
+| 18 | monitoring-pm2                        | /nodefony/api/pm2/{action}                  |         action         |      | monitoringBundle    | api        | pm2                 | {}      | /^\/nodefony\/api\/pm2(?:\/([^\/]+))[\/]?$/i                        |             |
+| 19 | monitoring-security                   | /nodefony/api/security                      |                        |      | monitoringBundle    | api        | security            | {}      | /^\/nodefony\/api\/security[\/]?$/i                                 |             |
+| 20 | monitoring-test-load                  | /nodefony/test/load                         |                        |      | monitoringBundle    | default    | testLoad            | {}      | /^\/nodefony\/test\/load[\/]?$/i                                    |             |
+| 21 | logout                                | /logout                                     |                        |      | usersBundle         | default    | logout              | {}      | /^\/logout[\/]?$/i                                                  |             |
+| 22 | webrtc                                | /webrtc                                     |                        |      | webRtcBundle        | default    | webrtc              | {}      | /^\/webrtc[\/]?$/i                                                  |             |
+| 23 | webrtcsip                             | /webrtc/sip/{userName}                      |        userName        |      | webRtcBundle        | default    | demo                | {}      | /^\/webrtc\/sip(?:\/([^\/]+))[\/]?$/i                               |             |
+| 24 | webAudioApi                           | /webAudioApi                                |                        |      | webAudioApiBundle   | default    | index               | {}      | /^\/webAudioApi[\/]?$/i                                             |             |
+| 25 | documentation                         | /documentation                              |                        |      | documentationBundle | default    | index               | {}      | /^\/documentation[\/]?$/i                                           |             |
+| 26 | documentation-default                 | /documentation/{version}                    |        version         |      | documentationBundle | default    | index               | {}      | /^\/documentation(?:\/([^\/]+))[\/]?$/i                             |             |
+| 27 | documentation-version                 | /documentation/{bundle}/{version}           |     bundle,version     |      | documentationBundle | default    | version             | {}      | /^\/documentation(?:\/([^\/]+))(?:\/([^\/]+))[\/]?$/i               |             |
+| 28 | documentation-section                 | /documentation/{bundle}/{version}/{section} | bundle,version,section |      | documentationBundle | default    | version             | {}      | /^\/documentation(?:\/([^\/]+))(?:\/([^\/]+))(?:\/([^\/]+))[\/]?$/i |             |
+| 29 | documentation-git-getMostRecentCommit | /api/git/getMostRecentCommit                |                        |      | documentationBundle | git        | getMostRecentCommit | {}      | /^\/api\/git\/getMostRecentCommit[\/]?$/i                           |             |
+| 30 | documentation-git-getStatus           | /api/git/getStatus                          |                        |      | documentationBundle | git        | getStatus           | {}      | /^\/api\/git\/getStatus[\/]?$/i                                     |             |
+| 31 | documentation-git-getBranch           | /api/git/getCurrentBranch                   |                        |      | documentationBundle | git        | getCurrentBranch    | {}      | /^\/api\/git\/getCurrentBranch[\/]?$/i                              |             |
+| 32 | documentation                         | /documentation                              |                        |      | demoBundle          | demo       | readme              | {}      | /^\/documentation[\/]?$/i                                           |             |
+| 33 | login                                 | /demo/login                                 |                        |      | usersBundle         | default    | login               | {}      | /^\/demo\/login[\/]?$/i                                             |             |
+| 34 | demoSecure                            | /demo/secure                                |                        |      | frameworkBundle     | default    | 401                 | {}      | /^\/demo\/secure[\/]?$/i                                            |             |
+| 35 | adduser                               | /adduser                                    |                        |      | demoBundle          | demo       | addUser             | {}      | /^\/adduser[\/]?$/i                                                 |             |
+| 36 | demoLogout                            | /demo/logout                                |                        |      | usersBundle         | default    | logout              | {}      | /^\/demo\/logout[\/]?$/i                                            |             |
+| 37 | home                                  | /                                           |                        |      | demoBundle          | demo       | index               | {}      | /^\/[\/]?$/i                                                        |             |
+| 38 | upload                                | /demo/upload                                |                        |      | demoBundle          | demo       | indexUpload         | {}      | /^\/demo\/upload[\/]?$/i                                            |             |
+| 39 | uploadFile                            | /demo/fileupload                            |                        |      | demoBundle          | demo       | upload              | {}      | /^\/demo\/fileupload[\/]?$/i                                        |             |
+| 40 | orm                                   | /demo/sequelize                             |                        |      | demoBundle          | demo       | sequelize           | {}      | /^\/demo\/sequelize[\/]?$/i                                         |             |
+| 41 | sql                                   | /demo/query/sql                             |                        |      | demoBundle          | demo       | querySql            | {}      | /^\/demo\/query\/sql[\/]?$/i                                        |             |
+| 42 | sqlJoin                               | /demo/query/join                            |                        |      | demoBundle          | demo       | querySqlJoin        | {}      | /^\/demo\/query\/join[\/]?$/i                                       |             |
+| 43 | syscall                               | /demo/syscall                               |                        |      | demoBundle          | demo       | syscall             | {}      | /^\/demo\/syscall[\/]?$/i                                           |             |
+| 44 | httpRequest                           | /demo/httpRequest                           |                        |      | demoBundle          | demo       | httpRequest         | {}      | /^\/demo\/httpRequest[\/]?$/i                                       |             |
+| 45 | xmlResponse                           | /demo/xmlResponse                           |                        |      | demoBundle          | demo       | rawResponseSync     | {}      | /^\/demo\/xmlResponse[\/]?$/i                                       |             |
+| 46 | xmlAsyncResponse                      | /demo/xmlAsyncResponse                      |                        |      | demoBundle          | demo       | rawResponseAsync    | {}      | /^\/demo\/xmlAsyncResponse[\/]?$/i                                  |             |
+| 47 | indexReal                             | /demo/realtime                              |                        |      | demoBundle          | demo       | indexRealTime       | {}      | /^\/demo\/realtime[\/]?$/i                                          |             |
+| 48 | finder                                | /demo/finder                                |                        |      | demoBundle          | finder     | index               | {}      | /^\/demo\/finder[\/]?$/i                                            |             |
+| 49 | download                              | /demo/download                              |                        |      | demoBundle          | finder     | download            | {}      | /^\/demo\/download[\/]?$/i                                          |             |
+| 50 | websoket                              | /demo/websoket                              |                        |      | demoBundle          | demo       | websoket            | {}      | /^\/demo\/websoket[\/]?$/i                                          |             |
+| 51 | json                                  | /demo/json                                  |                        |      | demoBundle          | demo       | json                | {}      | /^\/demo\/json[\/]?$/i                                              |             |
+| 52 | redirect                              | /demo/redirect                              |                        |      | demoBundle          | demo       | redirectGoogle      | {}      | /^\/demo\/redirect[\/]?$/i                                          |             |
+| 53 | Default                               | /                                           |                        |      | demoBundle          | demo       | login               | {}      | /^\/[\/]?$/i                                                        |             |
+| 54 | readme                                | /readme                                     |                        |      | frameworkBundle     | default    | readme              | {}      | /^\/readme[\/]?$/i                                                  |             |
+'---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+./console npm:list
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78375
+
+.------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------.
+|                                                                                                                   NPM NODEFONY PACKAGES                                                                                                                    |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|      NAME      | VERSION |                                                                                                           DESCRIPTION                                                                                                           |
+|----------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| less           | 2.7.1   | Leaner CSS                                                                                                                                                                                                                      |
+| memcached      | 2.2.2   | A fully featured Memcached API client, supporting both single and clustered Memcached servers through consistent hashing and failover/failure. Memcached is rewrite of nMemcached, which will be deprecated in the near future. |
+| qs             | 6.2.1   | A querystring parser that supports nesting and arrays, with a depth limit                                                                                                                                                       |
+| redis          | 2.6.2   | Redis client library                                                                                                                                                                                                            |
+| sequelize      | 3.24.3  | Multi dialect ORM for Node.JS/io.js                                                                                                                                                                                             |
+| uglify-js      | 2.7.3   | JavaScript parser, mangler/compressor and beautifier toolkit                                                                                                                                                                    |
+| uglifycss      | 0.0.21  | Port of YUI CSS Compressor to NodeJS                                                                                                                                                                                            |
+| webrtc-adapter | 2.0.4   | A shim to insulate apps from WebRTC spec changes and browser prefix differences                                                                                                                                                 |
+| ascii-table    | 0.0.9   | Easy tables for your console data                                                                                                                                                                                               |
+| asciify        | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                                                                                                                                       |
+| connect        | 2.30.2  | High performance middleware framework                                                                                                                                                                                           |
+| cookie         | 0.3.1   | HTTP server cookie parsing and serialization                                                                                                                                                                                    |
+| js-yaml        | 3.6.1   | YAML 1.2 parser and serializer                                                                                                                                                                                                  |
+| markdown-it    | 8.0.0   | Markdown-it - modern pluggable markdown parser.                                                                                                                                                                                 |
+| mime           | 1.3.4   | A comprehensive library for mime-type mapping                                                                                                                                                                                   |
+| mkdirp         | 0.5.1   | Recursively mkdir, like `mkdir -p`                                                                                                                                                                                              |
+| mysql          | 2.11.1  | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed.                                                                                                                  |
+| node-getopt    | 0.2.3   | featured command line args parser                                                                                                                                                                                               |
+| node-pre-gyp   | 0.6.30  | Node.js native addon binary install tool                                                                                                                                                                                        |
+| nodegit        | 0.16.0  | Node.js libgit2 asynchronous native bindings                                                                                                                                                                                    |
+| npm            | 3.10.8  | a package manager for JavaScript                                                                                                                                                                                                |
+| npmi           | 2.0.1   | Gives a simplier API to npm install (programatically installs stuffs)                                                                                                                                                           |
+| pm2            | 2.0.18  | Production process manager for Node.JS applications with a built-in load balancer.                                                                                                                                              |
+| promise        | 7.1.1   | Bare bones Promises/A+ implementation                                                                                                                                                                                           |
+| shortid        | 2.2.6   | Amazingly short non-sequential url-friendly unique id generator.                                                                                                                                                                |
+| sqlite3        | 3.1.5   | Asynchronous, non-blocking SQLite3 bindings                                                                                                                                                                                     |
+| twig           | 0.9.5   | JS port of the Twig templating language.                                                                                                                                                                                        |
+| websocket      | 1.0.23  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                                                                                                                                 |
+| xml2js         | 0.4.17  | Simple XML to JavaScript object converter.                                                                                                                                                                                      |
+'------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+
+	</pre>
+
+</div>
+
+<h2>Configuration system : </h2>
+<div class="doc2">
 
 Add host name "nodefony.com" in your /etc/hosts  :
-<pre>
+	<pre>
 $ sudo vim /etc/hosts
 
 
@@ -59,24 +1480,27 @@ $ sudo vim /etc/hosts
 #
 ##
 127.0.0.1       localhost nodefony.com
-</pre>
+	</pre>
+<h3>Configuration Framework : <span>See more  <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></span> </h3>
+</div>
 
-
-<h3>Running NODEFONY: <span>See more  <a href="{{ path('documentation-section',{section:'Running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></span> </h3>
+<h2>Running NODEFONY: <span>See more  <a href="{{ path('documentation-section',{section:'Running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></span> </h2>
+<div class="doc2">
 
 <p>
 	There are 3 methods to run NODEFONY framework 
 
 	<ul>	
-		<li>  Run Appliation in DEV  mode</li>
-		<li>  Run Appliation in PROD mode with (clusters) </li>
-		<li>  Run Appliation in PM2  mode see  <a href="http://pm2.keymetrics.io/">PM2</a> </li>
+		<li>  Run Appliation in DEVELOPEMENT  mode <code>./nodefony_dev</code></li>
+		<li>  Run Appliation in PRODUCTION mode with clusters <code>./nodefony</code></li>
+		<li>  Run Appliation in PM2 MANAGEMENT mode  <code>make start</code> see  <a href="http://pm2.keymetrics.io/">PM2</a> </li>
 	</ul>
-	To check the good binding http(s) you can run nodefony in dev mode 
+	To check the good binding http(s) you can run nodefony in dev mode <br>
+	<strong>Syslog when you start nodefony in developement mode :  </strong>
 </p>
 
 
-<pre>
+<pre style="height:500px">
 
 # Run Appliation in DEV mode
 
@@ -88,42 +1512,391 @@ $ ./nodefony_dev
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
                                                                             
 
-		      NODEFONY SERVER CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 17656
+		      NODEFONY SERVER CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 75550
 
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/httpBundle.js
-Wed Sep 28 2016 16:04:34 DEBUG KERNEL  :  REGISTER BUNDLE : http   
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/kernel/httpKernelService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpsService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/webSocketSecureService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/websocketService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/sessions/sessionsService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js
-Wed Sep 28 2016 16:04:34 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/upload/uploadService.js
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/config.yml
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
-Wed Sep 28 2016 16:04:34 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
-
-....
+Wed Oct 05 2016 12:15:42 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/httpBundle.js
+Wed Oct 05 2016 12:15:42 DEBUG KERNEL  :  REGISTER BUNDLE : http   
+Wed Oct 05 2016 12:15:42 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/kernel/httpKernelService.js
+Wed Oct 05 2016 12:15:42 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpsService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/webSocketSecureService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/websocketService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/sessions/sessionsService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/upload/uploadService.js
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/frameworkBundle.js
+Wed Oct 05 2016 12:15:43 DEBUG KERNEL  :  REGISTER BUNDLE : framework   
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/services/routerService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/services/translationService.js
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE router( container )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE translation( container,type )
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/asseticBundle.js
+Wed Oct 05 2016 12:15:43 DEBUG KERNEL  :  REGISTER BUNDLE : assetic   
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/cssrewriteService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/lessService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/uglifycssService.js
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/uglifyjs2Service.js
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE less( kernel,container )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE uglifyjs2( kernel,container )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE uglifycss( kernel,container )
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE cssrewrite( kernel,container )
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/securityBundle.js
+Wed Oct 05 2016 12:15:43 DEBUG KERNEL  :  REGISTER BUNDLE : security   
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/services/firewall/firewallService.js
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE security( container,kernel )
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/realTimeBundle.js
+Wed Oct 05 2016 12:15:43 DEBUG KERNEL  :  REGISTER BUNDLE : realTime   
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/services/realTimeService.js
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:43 WARNING BUNDLE REALTIME  :  OVERRIDING  CONFIG bundle  : http
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE ROUTER  : ADD Route : /secure/realtime   ===> realTimeBundle:default:index
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE ROUTER  : ADD Route : /realtime   ===> realTimeBundle:default:index
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:43 DEBUG SERVICE INJECTION  : START SERVICE realTime()
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/monitoringBundle.js
+Wed Oct 05 2016 12:15:43 DEBUG KERNEL  :  REGISTER BUNDLE : monitoring   
+Wed Oct 05 2016 12:15:43 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/services/monitoringService.js
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/services/serverLoadService.js
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE MONITORING  :  OVERRIDING  CONFIG bundle  : realTime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony   ===> monitoringBundle:default:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/{module}   ===> monitoringBundle:default:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/monitoring/realtime   ===> monitoringBundle:default:realTime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/routes   ===> monitoringBundle:api:routes
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/route/{name}   ===> monitoringBundle:api:routes
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/services   ===> monitoringBundle:api:services
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/service/{name}   ===> monitoringBundle:api:services
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/syslog   ===> monitoringBundle:api:syslog
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/requests   ===> monitoringBundle:api:requests
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/request/{uid}   ===> monitoringBundle:api:request
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/config   ===> monitoringBundle:api:config
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/config/{bundleName}   ===> monitoringBundle:api:bundle
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/realtime/{name}   ===> monitoringBundle:api:realtime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/users   ===> monitoringBundle:api:users
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/sessions   ===> monitoringBundle:api:sessions
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/pm2/{action}   ===> monitoringBundle:api:pm2
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/security   ===> monitoringBundle:api:security
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/test/load   ===> monitoringBundle:default:testLoad
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE monitoring( realTime,container,kernel )
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE serverLoad( container,kernel )
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  EVENT KERNEL onPreBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/sequelizeBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : sequelize   
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/services/sequelizeService.js
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE sequelize()
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/usersBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : users   
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /logout   ===> usersBundle:default:logout
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webRtcBundle/webRtcBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : webRtc   
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webRtcBundle/services/webRtcRedisService.js
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webRtcBundle/services/webRtcService.js
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webRtcBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE WEBRTC  :  OVERRIDING  CONFIG bundle  : realTime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webRtcBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /webrtc   ===> webRtcBundle:default:webrtc
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /webrtc/sip/{userName}   ===> webRtcBundle:default:demo
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webRtcBundle/Resources/config/security.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE FIREWALL  : ADD security context : secured_webrtc
+Wed Oct 05 2016 12:15:44 DEBUG CONTEXT SECURITY secured_webrtc   : FACTORY sasl registered 
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webRtcBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE webrtc()
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE webrtcRedis()
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webAudioApiBundle/webAudioApiBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : webAudioApi   
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webAudioApiBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/experimental/webAudioApiBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /webAudioApi   ===> webAudioApiBundle:default:index
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/documentationBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : documentation   
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> documentationBundle:default:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}   ===> documentationBundle:default:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{bundle}/{version}   ===> documentationBundle:default:version
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{bundle}/{version}/{section}   ===> documentationBundle:default:version
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getMostRecentCommit   ===> documentationBundle:git:getMostRecentCommit
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getStatus   ===> documentationBundle:git:getStatus
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getCurrentBranch   ===> documentationBundle:git:getCurrentBranch
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/demoBundle.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : demo   
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/services/dmsgService.js
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/services/randomService.js
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/config.yml
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE DEMO  :  OVERRIDING  CONFIG bundle  : realTime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.xml
+Wed Oct 05 2016 12:15:44 WARNING SERVICE ROUTER  : WARNING ROUTES HAS SAME NAME : /documentation   ===> demoBundle:demo:readme
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> demoBundle:demo:readme
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/login   ===> usersBundle:default:login
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/secure   ===> frameworkBundle:default:401
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /adduser   ===> demoBundle:demo:addUser
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/logout   ===> usersBundle:default:logout
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /   ===> demoBundle:demo:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/upload   ===> demoBundle:demo:indexUpload
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/fileupload   ===> demoBundle:demo:upload
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/sequelize   ===> demoBundle:demo:sequelize
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/query/sql   ===> demoBundle:demo:querySql
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/query/join   ===> demoBundle:demo:querySqlJoin
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/syscall   ===> demoBundle:demo:syscall
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/httpRequest   ===> demoBundle:demo:httpRequest
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/xmlResponse   ===> demoBundle:demo:rawResponseSync
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/xmlAsyncResponse   ===> demoBundle:demo:rawResponseAsync
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/realtime   ===> demoBundle:demo:indexRealTime
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/finder   ===> demoBundle:finder:index
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/download   ===> demoBundle:finder:download
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/websoket   ===> demoBundle:demo:websoket
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/json   ===> demoBundle:demo:json
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /demo/redirect   ===> demoBundle:demo:redirectGoogle
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/security.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE FIREWALL  : ADD security context : demo_area
+Wed Oct 05 2016 12:15:44 DEBUG CONTEXT SECURITY demo_area   : FACTORY sasl registered 
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE FIREWALL  :  Register Provider  : in_memory API in_memory
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/services.xml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE dmsg( realTime,container,kernel )
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE INJECTION  : START SERVICE random( realTime,container,kernel )
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL  :  REGISTER BUNDLE : App   
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/app/config/config.yml
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : http
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
+Wed Oct 05 2016 12:15:44 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : sequelize
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/app/config/routing.yml
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /   ===> demoBundle:demo:login
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE ROUTER  : ADD Route : /readme   ===> frameworkBundle:default:readme
+Wed Oct 05 2016 12:15:44 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/app/config/security.yml
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  EVENT KERNEL onPostRegister
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  HTTP
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE http  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE http  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  FRAMEWORK
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE framework  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::401.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::401.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::403.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::403.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::404.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::404.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::exception.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::exception.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::layout.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::layout.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::md.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::md.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::system.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::system.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::timeout.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::timeout.html'
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE framework  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  ASSETIC
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE assetic  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE assetic  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  SECURITY
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE security  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE security  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  REALTIME
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE realTime  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE REALTIME  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE realTime  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  MONITORING
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE monitoring  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/controller/api/apiController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Controller : api
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle:api:api.json'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle:api:api.json'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle:api:api.xml'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle:api:api.xml'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::app.xml'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::app.xml'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::debugBar.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::debugBar.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Entity/requestsEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE MONITORING  : LOAD ENTITY : requestsEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE monitoring  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  SEQUELIZE
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE sequelize  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Entity/sessionEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE SEQUELIZE  : LOAD ENTITY : sessionEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  USERS
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE users  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::connect.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::connect.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::layout.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::layout.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::login.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::login.html'
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Entity/userEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : LOAD ENTITY : userEntity.js
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Fixtures/usersFixtures.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE USERS  : LOAD FIXTURE : usersFixtures.js
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE users  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  WEBRTC
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE webRtc  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webRtcBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : Register Template : 'webRtcBundle::demo.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : COMPILE Template : 'webRtcBundle::demo.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : Register Template : 'webRtcBundle::partialWebRtc.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : COMPILE Template : 'webRtcBundle::partialWebRtc.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : Register Template : 'webRtcBundle::webrtc.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : COMPILE Template : 'webRtcBundle::webrtc.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : Register Template : 'webRtcBundle::webrtcSip.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBRTC  : COMPILE Template : 'webRtcBundle::webrtcSip.html'
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE webRtc  : onReady
+Wed Oct 05 2016 12:15:44 DEBUG KERNEL   :  INITIALIZE Bundle :  WEBAUDIOAPI
+Wed Oct 05 2016 12:15:44 DEBUG EVENT BUNDLE webAudioApi  : onBoot
+Wed Oct 05 2016 12:15:44 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/experimental/webAudioApiBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBAUDIOAPI  : Register Controller : default
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBAUDIOAPI  : Register Template : 'webAudioApiBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBAUDIOAPI  : COMPILE Template : 'webAudioApiBundle::index.html'
+Wed Oct 05 2016 12:15:44 DEBUG BUNDLE WEBAUDIOAPI  : Register Template : 'webAudioApiBundle:layouts:layout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE WEBAUDIOAPI  : COMPILE Template : 'webAudioApiBundle:layouts:layout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE WEBAUDIOAPI  : Register Template : 'webAudioApiBundle::mix.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE WEBAUDIOAPI  : COMPILE Template : 'webAudioApiBundle::mix.html'
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE webAudioApi  : onReady
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  INITIALIZE Bundle :  DOCUMENTATION
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE documentation  : onBoot
+Wed Oct 05 2016 12:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller/defaultController.js
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Controller : default
+Wed Oct 05 2016 12:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller/gitController.js
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Controller : git
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle:layouts:documentationLayout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle:layouts:documentationLayout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle:layouts:navSection.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle:layouts:navSection.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::navDoc.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::navDoc.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::navDocBundle.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::navDocBundle.html'
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE documentation  : onReady
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  INITIALIZE Bundle :  DEMO
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE demo  : onBoot
+Wed Oct 05 2016 12:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/controller/demoController.js
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Controller : demo
+Wed Oct 05 2016 12:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/controller/finderController.js
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Controller : finder
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:documentation.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:documentation.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:exec.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:exec.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:httpRequest.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:httpRequest.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:navDoc.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:navDoc.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:websocket.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:websocket.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:demo:upload.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:demo:upload.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:demo:upload2.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:demo:upload2.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:finder:files.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:finder:files.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:finder:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:finder:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:layouts:layout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:layouts:layout.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:layouts:navBar.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:layouts:navBar.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:orm:orm.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:orm:orm.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:realTime:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:realTime:index.html'
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE demo  : onReady
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  INITIALIZE Bundle :  APP
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE App  : onBoot
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE APP  : Register Template : 'AppBundle::base.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE APP  : COMPILE Template : 'AppBundle::base.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE APP  : Register Template : 'AppBundle::login.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE APP  : COMPILE Template : 'AppBundle::login.html'
+Wed Oct 05 2016 12:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/app/Fixtures/usersFixtures.js
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE APP  : LOAD FIXTURE : usersFixtures.js
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE App  : onReady
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  EVENT KERNEL BOOT
+connect deprecated staticCache: use varnish or similar reverse proxy caches src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js:34:34
+Wed Oct 05 2016 12:15:45 DEBUG SERVER STATIC FILE   : Add static route ===> /Users/cci/repository/nodefony/web/
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   : default Local APPLICATION ==> en_en
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE sequelize CONNECTION  : nodefony :  CONNECT to database mysql : nodefony
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE FIREWALL  : Set Session Strategy  : migrate
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  APP OVERRIDING views for bundle : users
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::login.html'
+Wed Oct 05 2016 12:15:45 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::login.html'
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE sequelize  : sequelize REGISTER ENTITY : requests PROVIDE BUNDLE : monitoring
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE sequelize  : sequelize REGISTER ENTITY : session PROVIDE BUNDLE : sequelize
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE sequelize  : sequelize REGISTER ENTITY : user PROVIDE BUNDLE : users
+Wed Oct 05 2016 12:15:45 DEBUG EVENT SEQUELIZE  : onReadyConnection
+Wed Oct 05 2016 12:15:45 DEBUG EVENT SEQUELIZE  : onOrmReady
+Wed Oct 05 2016 12:15:45 DEBUG EVENT BUNDLE sequelize  : onReady
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE FIREWALL  :  Register Provider  : nodefony ENTITY user
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  EVENT KERNEL READY
+Wed Oct 05 2016 12:15:45 DEBUG CONTEXT SECURITY secured_webrtc   :  FACTORY : sasl PROVIDER : user PATTERN : /^\/webrtc/
+Wed Oct 05 2016 12:15:45 DEBUG CONTEXT SECURITY demo_area   :  FACTORY : sasl PROVIDER : user PATTERN : /^\/demo/
+Wed Oct 05 2016 12:15:45 WARNING BUNDLE MONITORING  : ADD DEBUG BAR MONITORING
+Wed Oct 05 2016 12:15:45 INFO SERVER WEBSOCKET  :  Server is listening on DOMAIN : nodefony.com    PORT : 5151
+Wed Oct 05 2016 12:15:45 INFO SERVER WEBSOCKET SECURE  :  Server  is listening on DOMAIN : nodefony.com    PORT : 5152
+Wed Oct 05 2016 12:15:45 DEBUG KERNEL   :  EVENT KERNEL POST READY
+Wed Oct 05 2016 12:15:45 INFO SERVICE MONITORING   : Create server MONITORING listen on Domain : nodefony.com Port : 1318
+Wed Oct 05 2016 12:15:45 INFO SERVICE REALTIME  : Create server DMSG listen on Domain : nodefony.com Port : 1316
+Wed Oct 05 2016 12:15:45 INFO SERVICE REALTIME  : Create server RANDOM listen on Domain : nodefony.com Port : 1315
+Wed Oct 05 2016 12:15:45 INFO SERVER HTTP  : HTTP  Server is listening on DOMAIN : nodefony.com    PORT : 5151
+Wed Oct 05 2016 12:15:45 INFO SERVER HTTPS  : HTTPS  Server is listening on DOMAIN : nodefony.com    PORT : 5152
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE SESSIONS  : CONTEXT default SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 1
+Wed Oct 05 2016 12:15:45 DEBUG SERVICE SESSIONS  : CONTEXT webrtc SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 0
+Wed Oct 05 2016 12:15:46 DEBUG SERVICE LESS  : CREATE LESS FILE: /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/css/style.css
+Wed Oct 05 2016 12:15:48 DEBUG SERVICE LESS  : CREATE LESS FILE: /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/css/style.css
 
 </pre>
+</div>
 
-<p>
+<h2>ACCEES NODEFONY APPLICATION :  </h2>
+<div class="doc2">
+<p >
 	Access to App with URL : <strong>http://nodefony.com:5151</strong><br>
 
 	By default the nodefony clone come with a demonstration bundle named "demoBundle" 
 
+
+
 </p>
 
 
+</div>
 
 
-<h3>Configuration Framework : <span>See more  <a href="{{ path('documentation-section',{section:'Configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></span> </h3>
 
