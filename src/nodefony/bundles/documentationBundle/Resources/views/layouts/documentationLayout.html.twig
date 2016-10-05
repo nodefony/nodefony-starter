@@ -63,20 +63,25 @@
 			$.get("/api/git/getMostRecentCommit",function(data){
 				var ele = $("#commits");
 				for (var i = 0 ; i < data.length ; i++){
-					var dt = new Date( data[i].date ) ;
-					var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
+					//var dt = new Date( data[i].date ) ;
+					//var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
 					var sha= data[i].sha.substr(0,7);
 					var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
-					var li = "<li>";
-					li += date + " " + "<a href="+shaLink + ">"+sha+"</a> " + data[i].author + " " +data[i].msg;	
+
+					var date = new Date(data[i].date).toDateString();
+					var li = "<li class='list-group-item'>";
+					li += "<span style='background-color:blue' class='badge'>"+data[i].author+"</span>" ;
+					li += "<a href='"+shaLink+"'><span style=''>" + data[i].msg +"</span></a>";
+					li += "<div> commit on "+date+" by "+data[i].author+" </div>"	
 					li += "</li>";
 					ele.append(li);
+
 				}
 			}).fail(function() {
 				console.log( "ERROR" );
 			})
 
-			$.get("/api/git/getStatus",function(data){
+			/*$.get("/api/git/getStatus",function(data){
 				var ele = $("#status");
 				for (var i = 0 ; i < data.length ; i++){
 					var type = data[i].type[0].replace("WT_","") ;
@@ -99,7 +104,7 @@
 				}
 			}).fail(function() {
 				console.log( "ERROR" );
-			});
+			});*/
 
 			$.get("https://api.github.com/repos/ccamensuli/nodefony/issues?state=open",function(data){
 				var ele = $("#issues");
@@ -193,7 +198,7 @@
 				
 				<div class="row-fluid m-t-xl">
 
-					<div class="col-md-4">
+					<!--div class="col-md-4">
 						<div class="panel panel-success">
 							<div class="panel-heading">Local Git Status 
 								<span class="branch label label-default pull-right"></span>
@@ -203,9 +208,9 @@
 								</ul>
 							</div>
 						</div>
-					</div>
+					</div-->
 
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<div class="panel panel-success">
 							<div class="panel-heading">Local Recent Commits 
 								<span class="branch label label-default pull-right"></span>
@@ -217,7 +222,7 @@
 						</div>
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-md-6">
 						<div class="panel panel-success">
 							<div class="panel-heading">GitHub Issue Queue Activity</div>
 							<div class="panel-body" style="overflow: auto;">
