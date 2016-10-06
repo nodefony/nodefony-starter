@@ -54,15 +54,18 @@ nodefony.registerController("default", function(){
 				if ( section ){
 					var finder  = new nodefony.finder( {
 						path:path+"/doc/"+version+"/"+section,
+						depth:1
 					});
 				}else{
 					var finder  = new nodefony.finder( {
 						path:path+"/doc/"+version,
+						depth:1
 					});
 				}
 			}else{
 				var finder  = new nodefony.finder( {
 					path:path+"/doc/Default",
+					depth:1
 				});	
 			}
 			var directory  = finder.result.getDirectories();
@@ -84,6 +87,14 @@ nodefony.registerController("default", function(){
 			if ( ! bundle ) bundle = "nodefony" ; 
 			if ( bundle === "nodefony" ){
 				var path = this.get("kernel").nodefonyPath ;
+				var bundles = this.get("kernel").bundles ;
+				if (! section ){
+					var directoryBundles = [] ;
+					for ( var myBundle in bundles ) {
+						directoryBundles.push(bundles[myBundle]);
+					}
+				}
+
 			}else{
 				if ( this.get("kernel").bundles[bundle] ){
 					var path = this.get("kernel").bundles[bundle].path
@@ -157,8 +168,8 @@ nodefony.registerController("default", function(){
 			}else{
 				var file = result.getFile("index.html.twig" , true)
 				if ( file ){
-					var res = this.renderRawView(file, {bundle:bundle, readme:res, version:version, section:section, allVersions:all,subsection:subsection}); 
-					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all,subsection:subsection});
+					var res = this.renderRawView(file, {bundle:bundle, readme:res, version:version, section:section, allVersions:all,subsection:subsection, bundles:directoryBundles }); 
+					return this.render("documentationBundle::index.html.twig",{bundle:bundle, readme:res, version:version, section:section, allVersions:all,subsection:subsection,bundles:directoryBundles});
 				}
 
 				var file = result.getFile("README.md" , true);
@@ -195,7 +206,6 @@ nodefony.registerController("default", function(){
 				versions : versions	
 			})
 		}
-
 
 		defaultController.prototype.navDocBundleAction = function(){
 			
@@ -262,7 +272,6 @@ nodefony.registerController("default", function(){
 				   </div>'
 			 return this.getResponse(html);	
 		}
-
 
 		return defaultController;
 });

@@ -6,16 +6,22 @@
 <!-- Place this tag in your head or just before your close body tag. -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-<center><h1> Nodefony Documentation <span class="label label-success" style="font-size: 50%;"> {{version}} </span></h1></center>
+<center>
+	<h1> Nodefony Documentation </h1>
+	<h2><span class="label label-success " > {{version}} </span><h2>
+</center>
+
 
 <hr>
  
 <div class="container">
 <div class="row m-t-xl">
 
-	<div class="col-md-4">
+	<div class="col-md-6">
 		<div class="panel panel-info">
-			<div class="panel-heading">{{ "begin" | trans() }}</div>
+			<div class="panel-heading">{{ "begin" | trans() }}
+				<span class="label label-success pull-right" > {{version}} </span>
+			</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
 					<li> <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle })}}"> {{"installation" | trans() | capitalize() }} </a></li>
@@ -23,9 +29,9 @@
 					<li> <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}"> {{"configurations" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}"> {{"running" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'helloWord', version:version, bundle:bundle })}}"> Hello Word </a></li>
-					<li> <a href="{{ path('documentation-section',{section:'routing', version:version, bundle:bundle })}}"> {{"Routing" | trans() | capitalize() }}</a></li>
-					<li> <a href="{{ path('documentation-section',{section:'controller', version:version, bundle:bundle })}}"> {{"controller" | trans() | capitalize() }}</a></li>
-					<li> <a href="{{ path('documentation-section',{section:'view', version:version, bundle:bundle })}}"> {{"view" | trans() | capitalize() }} </a></li> 
+					<li> <a href="{{ path('documentation-section',{section:'routing', version:'Default', bundle:'framework' })}}"> {{"Routing" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'controller', version:'Default', bundle:'framework' })}}"> {{"controller" | trans() | capitalize() }}</a></li>
+					<li> <a href="{{ path('documentation-section',{section:'view', version:'Default', bundle:'framework' })}}"> {{"view" | trans() | capitalize() }} </a></li> 
 					<li> <a href="{{ path('documentation-section',{section:'models', version:version, bundle:bundle })}}"> {{"models" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'console', version:version, bundle:bundle })}}"> {{"console" | trans() | capitalize() }}</a></li>
 					<li> <a href="{{ path('documentation-section',{section:'websocket', version:version, bundle:bundle })}}"> {{"websocket" | trans() | capitalize() }}</a></li>  </li>
@@ -35,12 +41,14 @@
 		</div>
 	</div>
 
-	<div class="col-md-4">
+	<div class="col-md-6">
 		<div class="panel panel-info">
-			<div class="panel-heading">{{ "core" | trans() }}</div>
+			<div class="panel-heading">{{ "core" | trans() }}
+				<span class="label label-success pull-right" > {{version}} </span>
+			</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
-					<li> Architecture</li>
+					<li> <a href="{{ path('documentation-section',{section:'architectures', version:version, bundle:bundle })}}"> {{"Architecture" | trans() | capitalize() }} </a></li>
 					<li> Autoloader</li>
 					<li> Kernel</li>
 					<li> Bundles</li>
@@ -55,9 +63,34 @@
 		</div>
 	</div>
 
-	<div class="col-md-4">
+	
+</div>
+
+
+<div class="row m-t-xl">
+
+	<div class="col-md-6">
 		<div class="panel panel-info">
-			<div class="panel-heading">{{ "usage" | trans() }}</div>
+			<div class="panel-heading">{{ "Bundles" | trans() }}
+				<span class="label label-success pull-right" > {{version}} </span>
+			</div>
+			<div class="panel-body" style="overflow: auto;">
+				<ul>
+					{% for myBundle in bundles %}
+						<li><a href="{{path('documentation-version', {version:myBundle.settings.version, bundle:myBundle.name})}}">{{myBundle.name}} {{myBundle.settings.version}}</a></li>
+					{% endfor %}
+
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<div class="panel-heading">{{ "usage" | trans() }}
+				<span class="label label-success pull-right" > {{version}} </span>
+			</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
 					<li> Servers (http(s), Websocket(s))</li>
@@ -74,13 +107,18 @@
 			</div>
 		</div>
 	</div>
+
 </div>
+
 
 <hr>
 
 <div class="row m-t-xl">	
-<h1> {{ "begin" | trans() }} <small>More details <a href="{{ path('documentation-section',{section:'started', version:version, bundle:bundle })}}">here</a></small></h1> 
-
+<center>
+<h1> {{ "begin" | trans() }} </h1> 
+<small> <a href="{{ path('documentation-section',{section:'started', version:version, bundle:bundle })}}">More details</a></small>
+</br>
+</center>
 
 
 <h2>NODEFONY INSTALLATION : <small>See more <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle })}}">( Nodefony installation  documentation ) </a> </small> </h2>
