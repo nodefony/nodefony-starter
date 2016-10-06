@@ -320,17 +320,17 @@ nodefony.registerController("demo", function(){
 
 		var nodefonyDb = orm.getConnection("nodefony") ;
 
-		var joins = null ;
 		nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
 		.then(function(result){
-			joins = result[0];
+			var joins = result[0];
 			for (var i = 0 ; i < joins.length ; i++){
 				joins[i].metaBag = JSON.parse( joins[i].metaBag )
 			}
+			return joins ;
 		}.bind(this))
-		.done(function(){
+		.done(function(data){
 			this.renderAsync('demoBundle:orm:orm.html.twig', {
-				joins:joins,
+				joins:data,
 			});
 		}.bind(this))
 	}

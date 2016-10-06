@@ -1,0 +1,709 @@
+<div class="page-header">
+  <h1><strong>CONTROLLERS</strong> </h1>
+</div>
+
+
+
+
+<h2>Controllers Location  :</h2>
+
+<div class="doc2">
+	<p>
+		You can find or add controllers in bundle repository under <code>controller</code> directory
+
+	</p>
+
+	<pre>
+$ ls -l src/bundles/nameBundle/
+
+total 24
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 Command
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 Entity
+drwxr-xr-x  6 cci  staff   204 22 jui 13:57 Resources
+drwxr-xr-x  4 cci  staff   136  6 oct 11:17 <strong>controller</strong>
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 core
+drwxr-xr-x  5 cci  staff   170 22 sep 14:23 doc
+-rwxr-xr-x  1 cci  staff  1751 22 sep 10:56 nameBundle.js
+-rwxr-xr-x  1 cci  staff   195 22 sep 10:56 package.json
+-rwxr-xr-x  1 cci  staff   706 22 sep 10:56 readme.md
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 services
+
+	</pre>
+</div>
+
+
+<h2>Structure Controller :<h2>
+<h3>File Controller  :</h3>
+<div class="doc3 ">
+
+<p>
+	The name of file must finish by <strong>'...Controller.js'</strong>  example : <code> name<strong>Controller.js</strong></code>
+</p>
+
+	<pre>
+$ ls -l src/bundles/nameBundle/controller
+
+total 32
+-rwxr-xr-x  1 cci  staff  8210  6 oct 10:58 defaultController.js
+-rw-r--r--  1 cci  staff  2521 29 sep 14:44 gitController.js
+	</pre>
+
+
+</div>
+
+<h3>Autoloader  :</h3>
+<div class="doc3 ">
+
+<p>
+	The core autoloader nodefony load all files in this directory which match with <strong>'...Controller.js'</strong> <br>
+</p>
+
+
+</div>
+
+<h3>Interpreter  :</h3>
+<div class="doc3 ">
+
+<p>
+	The core autoloader nodefony interpret the javascript code in an extended global context<br>
+	You can find namespace nodefony in the global context  	
+</p>
+
+
+</div>
+
+
+<h3>Class Controller  :</h3>
+<div class="doc3 ">
+
+<p>
+	Nodefony core have a method <strong>registerController</strong> which must return class as  Closure <br>
+	The returned class is auto extending by nodefony core 	
+</p>
+
+
+	<pre>
+nodefony.<strong>registerController</strong>("name", function(){
+
+		/*
+		 *	closure private space 
+		 */
+		var tab = [1,2,3,4];
+		var myFuntion = function(){
+			return tab ;
+		}
+		
+		/*
+		 *	Class controller name
+		 *	constructor 
+		 */ 
+		var <strong>myController</strong> = function(container, context){
+			this.mother = this.$super;
+			this.mother.constructor(container, context);
+		};
+		
+		/*
+		 *	Action controller
+		 *	( action render public with object prototype ) 
+		 *
+		 */
+		<strong>myController</strong>.prototype.indexAction = function(){
+			var kernel = this.get("kernel") ;
+			var settings = kernel.settings ;
+			var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
+			return this.renderResponse(html);
+		};
+
+		// RETURN  class
+		return <strong>myController;</strong>
+});
+	</pre>
+
+</div>
+
+<h2>Controller Actions  :</h2>
+
+<div class="doc2 ">
+	<p>
+		The nodefony core router find routes with pattern <code>'nameBundle:controller:<strong>action</strong>'</code> Example : demoBundle:default:index <br> 
+		For the router find the controller's action functions  <br>    
+		The name of function must finish  by '...Action' <code>'indexAction'</code>
+	</p>	
+	<pre>
+/*
+ *	Action index in controller default  
+ *
+ */
+defaultController.prototype.index<strong>Action</strong> = function(){
+};
+	
+	</pre>
+	<p> 
+		 There are 2 different ways to render data (template) in HTTP context    
+	<p>
+</div>
+
+<h3>render data Synchrone in Actions controller :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+
+	<pre>
+	</pre>
+
+
+</div>
+
+<h3>render data Asynchrone Actions controller :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+	<pre>
+	</pre>
+</div>
+
+<h2>Request Context  :</h2>
+<div class="doc2 ">
+
+</div>
+
+<h3>HTTP / HTTPS  :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+
+	<pre>
+	</pre>
+
+
+</div>
+
+<h3>WEBSOCKET / WEBSOCKET SECURE :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+	<pre>
+	</pre>
+</div>
+
+<h2>Service Container  :</h2>
+<div class="doc2 ">
+	<pre>
+	</pre>
+</div>
+
+<h2>Controller Logger  :</h2>
+<div class="doc2 ">
+	<pre>
+myController.prototype.indexAction = function(){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+	<strong>this.logger( "Nodefony version : Alpha" , "INFO");</strong>
+	var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
+	return this.renderResponse(html);
+};
+
+demoController.prototype.indexAction= function(){
+	
+	...	
+};
+
+
+
+Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony version : Alpha
+
+	</pre>
+</div>
+
+
+
+
+<h2>The Core Controller Class  :</h2>
+<div class="doc2 ">
+
+<p>
+	Example of controller actions to different use cases : 
+	<ul>
+		<li><a href="#simpleTemplate">Simple Render Template</a></li>
+		<li><a href="#rawRender">Simple Render html</a></li>
+		<li><a href="#asyncTemplate">Asynchrone Render Template</a></li>
+		<li><a href="#websocket">Websocket</a></li>
+		<li><a href="#renderJson">Rendering JSON</a></li>
+		<li><a href="#download"> Rendering File Download</a></li>
+		<li><a href="#upload"> File Upload</a></li>
+		<li><a href="#mediaStream">Rendering Media Stream</a></li>
+		<li><a href="#redirect">Redirecting</a></li>
+		<li><a href="#forward">Forwarding</a></li>
+		<li><a href="#generateUrl">Generating URL</a></li>
+		<li><a href="#request">Request</a></li>
+		<li><a href="#response">Response</a></li>
+	</ul>	
+</p>
+
+</div>
+
+
+<h3 name="rawRender" id="rawRender" >Rendering html  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+demoController.prototype.htmlAction= function(name){
+	var name = "nodefony";
+	return this.renderResponse('&lt;html&gt;&lt;script&gt;console.log("'+name+'")&lt;/script&gt;&lt;/html&gt;');
+};
+
+	</pre>
+
+</div>
+
+
+<h3 name="simpleTemplate" id="simpleTemplate" >Rendering Templates :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+demoController.prototype.indexAction= function(){
+	var kernel = this.get("kernel") ;
+	return <strong>this.render</strong>("demoBundle:Default:index.html.twig",{
+		title:"nodefony",
+		user: this.context.user,
+		nodefony:kernel.settings.name + " " + kernel.settings.system.version
+	});
+};
+	</pre>
+
+</div>
+
+
+
+
+<h3 name="asyncTemplate" id="asyncTemplate">Asynchrone Rendering Templates :</h3>
+<div class="doc3 ">
+
+<p>
+	Example Asynchrone Rendering database query with Promise 
+	<div class="alert alert-warning" role="alert">
+		For Asynchrone data rendering ,  The controller's Action  function must not return a value 
+	</div>
+</p>
+
+	<pre>
+demoController.prototype.querySqlJoinAction = function(){
+
+	var orm = this.getORM() ;
+
+	var nodefonyDb = orm.getConnection("nodefony") ;
+
+	nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+	.then(function(result){
+		var joins = result[0];
+		for (var i = 0 ; i < joins.length ; i++){
+			joins[i].metaBag = JSON.parse( joins[i].metaBag )
+		}
+		return joins ;
+	}.bind(this))
+	.done(function(data){
+		<strong>this.renderAsync</strong>('demoBundle:orm:orm.html.twig', {
+			joins:data,
+		});
+	}.bind(this))
+}
+	</pre>
+
+</div>
+
+<h3 name="websocket" id="websocket" >Rendering Websocket  :</h3>
+<div class="doc3 ">
+
+<p>
+	Controller Action can manage WEBSOCKET Request 
+
+
+	<div class="alert alert-warning" role="alert">
+		To use websocket you must understand Nodefony Request Context  
+	</div>
+</p>
+
+	<pre>
+demoController.prototype.websoketAction= function(message){
+	<strong>var context = this.getContext();</strong>
+	switch( this.getMethod() ){
+		case "GET" :
+			return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+		break;
+		<strong>case "WEBSOCKET" :</strong>
+			if (message){
+				// LOG  MESSAGE CLIENT IN TERMINAL
+				this.logger( message.utf8Data , "INFO");
+			}else{
+				// PREPARE  PUSH MESSAGES SERVER 
+				// SEND MESSAGES TO CLIENTS
+				var i = 0 ;
+				var id = setInterval(function(){
+					var mess = "I am a  message "+ i +"\n" ;
+					<strong>context.send(mess);</strong>
+					// LOG  MESSAGE SENDING IN TERMINAL
+					this.logger( "SEND TO CLIENT :" + mess , "INFO");
+					i++
+				}.bind(this), 1000);
+
+				setTimeout(function(){
+					clearInterval(id);
+					// close reason , descripton
+					<strong>context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");</strong>
+					id = null ;
+				}, 10000);
+				// Event websocket close by client
+				<strong>this.context.listen</strong>(this, "onClose" , function(){
+					if (id){
+						clearInterval(id);	
+					}
+				})
+			}
+		break;
+		default :
+			throw new Error(" METHOD NOT ALLOWED")
+	}
+};
+
+<strong>/* YOU CAN SHOW LOG IN TERMINAL */</strong>
+
+Thu Oct 06 2016 15:49:09 INFO REQUEST WEBSOCKET SECURE  :  Connection Websocket Connection from : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152
+Thu Oct 06 2016 15:49:09 INFO CONTROLER demo   :  HELLO SERVER I AM A CLIENT : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2879.0 Safari/537.36
+
+Thu Oct 06 2016 15:49:10 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 0
+Thu Oct 06 2016 15:49:11 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 1
+Thu Oct 06 2016 15:49:12 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 2
+Thu Oct 06 2016 15:49:13 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 3
+Thu Oct 06 2016 15:49:14 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 4
+Thu Oct 06 2016 15:49:15 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 5
+Thu Oct 06 2016 15:49:16 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 6
+Thu Oct 06 2016 15:49:17 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 7
+Thu Oct 06 2016 15:49:18 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 8
+
+Thu Oct 06 2016 15:49:19 INFO REQUEST WEBSOCKET SECURE  : Thu Oct 06 2016 15:49:19 GMT+0200 (CEST) Connection Websocket CLOSE : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152 1000 NODEFONY CONTROLLER CLOSE SOCKET
+	</pre>
+
+</div>
+
+
+
+<h3 name="renderJson" id="renderJson">Rendering JSON  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+demoController.prototype.jsonAction= function(){
+	return <strong>this.renderJson</strong>({
+		foo:"bar",
+		bar:"foo"
+	});
+};
+	</pre>
+
+</div>
+
+
+<h3 name="download" id="download">Rendering File Download  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+demoController.prototype.downloadAction = function(){
+
+	var kernel = this.get('kernel') ;
+
+	var filePath = kernel.rootDir + '/README.md';
+	return <strong>this.renderFileDownload</strong>(filePath); 
+};
+
+	</pre>
+
+</div>
+
+
+
+<h3 name="mediaStream" id="mediaStream">Rendering Media Stream  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+demoController.prototype.mediaStreamAction = function(){
+
+	var kernel = this.get('kernel') ;
+
+	var filePath = kernel.rootDir + '/app/Resources/medias/myAudio.mp3';
+	var file = new nodefony.fileClass(filePath);
+	
+	return <strong>this.renderMediaStream</strong>(file); 
+};
+
+	</pre>
+
+</div>
+
+
+
+
+
+
+<h3 name="upload" id="upload">File Upload  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+
+	</pre>
+
+</div>
+
+
+
+
+
+
+<h3>Redirecting and Forwarding :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+</div>
+
+
+<h4 name="redirect" id="redirect"> Redirecting </h4>
+<div class="doc4">
+	<pre>
+demoController.prototype.redirectGoogleAction= function(){
+	// status 301 or 302
+	return <strong>this.redirect</strong>("http://google.com");
+};
+	</pre>
+
+</div>
+
+
+<h4 name="forward" id="forward"> Forwarding </h4>
+<div class="doc4">
+	<pre>
+
+demoController.prototype.docAction = function(){
+	var docBundle = this.get("kernel").getBundles("documentation"); 
+	if (  docBundle ){
+		return <strong>this.forward</strong>("documentationBundle:default:navDoc");
+	}
+	return this.render('demoBundle:Default:navDoc.html.twig');	
+}
+
+
+	</pre>
+
+</div>
+
+
+
+
+<h3 name="generateUrl" id="generateUrl">Generating URL  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+
+demoController.prototype.generateUrlAction = function(){
+	// absolute
+	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"},true) );	
+
+	// relative
+	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"} );
+};
+
+
+	</pre>
+
+</div>
+
+
+<h3>Accessing container Services  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+
+	</pre>
+
+</div>
+
+
+
+
+<h3>Request and Response  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+</div>
+
+
+<h4> Request </h4>
+<div class="doc4">
+	
+
+	<pre>
+
+demoController.prototype.httpRequestAction = function(){
+	this.hideDebugBar();
+	//this.getResponse().setTimeout(5000)
+	//return 
+
+	var path = this.generateUrl("xmlAsyncResponse");
+	var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
+	var type = this.context.type ;
+	// cookie session 
+	var headers = {}
+	headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+	var options = {
+  		hostname: this.context.request.url.hostname,
+  		port: this.context.request.url.port,
+		path:path,
+  		method: 'GET',
+		headers:headers
+	}	
+	var wrapper = http.request ;
+
+	// https 
+	if (this.context.request.url.protocol === "https:"){
+		// keepalive if multiple request in same socket
+		var keepAliveAgent = new https.Agent({ keepAlive: true });
+		// certificat
+		var kernel = this.get("kernel");
+		var settings =  this.get("httpsServer").settings ;
+
+		nodefony.extend(options,{
+			key: fs.readFileSync(kernel.rootDir+settings.certificats.key),
+			cert:fs.readFileSync(kernel.rootDir+settings.certificats.cert),
+			rejectUnauthorized: false,
+			requestCert: true,
+			agent: keepAliveAgent
+		});
+		var wrapper = https.request ;
+	}else{
+		// keepalive
+		var keepAliveAgent = new http.Agent({ keepAlive: true });
+		options.agent = keepAliveAgent;	
+	}
+	
+	var req = wrapper(options, function(res) {
+		var bodyRaw = "";
+		res.setEncoding('utf8');
+		res.on('data', function (chunk) {
+			this.logger( chunk, "DEBUG");
+			bodyRaw += chunk ;
+		}.bind(this));
+
+		res.on('end', function(){
+			this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+				host: host,
+				type: type,
+				bodyRaw:bodyRaw,
+			});
+		}.bind(this))
+
+	}.bind(this));
+
+	req.on('error', function(e) {
+		this.logger('Problem with request: ' + e.message, "ERROR");
+		this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
+			host: host,
+			type: type,
+			bodyRaw:e,
+		});
+	}.bind(this));
+
+	req.end();
+}
+
+
+	</pre>
+
+
+</div>
+
+
+
+<h4> Render raw Response </h4>
+<div class="doc4">
+	
+
+	<pre>
+
+demoController.prototype.rawResponseAsyncAction= function(){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+
+	// SYSCALL async 
+	var childHost =  exec('hostname', function(error, stdout, stderr){
+		var hostname = stdout ;	
+
+		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
+			'&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
+			'&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;'&lt;/server&gt;\
+			'&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;'&lt;/server&gt;\
+			'&lt;hostname&gt;'+hostname+'</hostname>\
+			'&lt;/kernel&gt;\
+			'&lt;/nodefony&gt;'&lt;/xml&gt;';
+
+		return this.renderResponse(content, 200 , {
+			"content-type" :"Application/xml"
+		})
+	}.bind(this));
+};
+
+
+	</pre>
+
+
+</div>
+
+<h4> Response Timeout </h4>
+<div class="doc4">
+	
+	<p>
+	</p>
+	<pre>
+
+demoController.prototype.timeoutRequestAction = function(){
+	this.getResponse().setTimeout(5000)
+}
+
+	</pre>
+
+
+</div>
+
+

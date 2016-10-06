@@ -11,27 +11,36 @@
 	This mode is useful in development or debug   <br> 
 
 	<ul>	
-		<li>  Syslog in terminal to follow debug  </li>
 		<li>  No clusters </li>
 		<li>  No cache in templates twig (autoload templates files) </li>
 		<li>  No cache in controllers (autoload controllers files) </li>
+		<li>  Syslog in terminal to follow debug  </li>
 	</ul>
 </p>
 
 
 	<div class="alert alert-danger" role="alert">
-		!! In this mode You must restart nodefony when : 
+		!! In this mode You must restart nodefony when you <strong>add new</strong> : 
 
 		<ul>	
-			<li>  You add new bundle  ( you  edit <code>./app/appKernel.js</code> ) Don't forget ( make install for manage bundle dependencies )</li>
-			<li>  You add new controller in  a bundle  </li>
-			<li>  You add new view template  in a bundle  </li>
-			<li>  You add new service in a bundle  </li>
-			<li>  You edit configuration files (routing.yml , security.yml , config.yml, service.xml ) </li>
-			<li>  You edit bundle class file ( nameBundle.js)  </li>
-			<li>  You edit service class file ( nameService.js ) </li>
+			<li>   <strong>bundle</strong>  ( when you  edit <code>./app/appKernel.js</code> ) </li>
+			<li>   <strong>controller</strong> in  a bundle  </li>
+			<li>   <strong>view template</strong>  in a bundle  </li>
+			<li>   <strong>service</strong> in a bundle  </li>
+		</ul>
+		!! In this mode You must restart nodefony when you <strong>edit</strong> :
+		<ul>
+			<li>   <strong>configuration files</strong> (routing.yml , security.yml , config.yml, service.xml ) </li>
+			<li>   <strong>bundle class file</strong> ( nameBundle.js)  </li>
+			<li>   <strong>service class file</strong> ( nameService.js ) </li>
 		</ul>	       		
 	</div>
+
+	<div class="alert alert-warning" role="alert">
+		 Before run  this mode Use <code> make install</code> if you add new bundle in appKernel.js (npm dependencies)<br>
+		 See <a href="{{ path('documentation-section',{section:'Installation', version:version, bundle:bundle,queryString:{'subsection':'makefile'} })}}#install">Makefile documentaion</a> 
+	</div>
+
 
 
 </div>
