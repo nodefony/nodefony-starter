@@ -5,11 +5,11 @@
 
 
 
-<h2>Controllers Location  :</h2>
+<h2>Location controllers  :</h2>
 
 <div class="doc2">
 	<p>
-		You can find or add controllers in bundle repository under <code>controller</code> directory
+		You can find or add controllers in bundle repository under <code>controller</code> directory.
 
 	</p>
 
@@ -32,7 +32,7 @@ drwxr-xr-x  2 cci  staff    68 20 jui 11:07 services
 </div>
 
 
-<h2>Structure Controller :<h2>
+<h2> File Controller   :<h2>
 <h3>File Controller  :</h3>
 <div class="doc3 ">
 
@@ -65,8 +65,8 @@ total 32
 <div class="doc3 ">
 
 <p>
-	The core autoloader nodefony interpret the javascript code in an extended global context<br>
-	You can find namespace nodefony in the global context  	
+	The core autoloader nodefony interpret the javascript code in an extended global context.<br>
+	You can find namespace nodefony in the global context .
 </p>
 
 
@@ -77,8 +77,8 @@ total 32
 <div class="doc3 ">
 
 <p>
-	Nodefony core have a method <strong>registerController</strong> which must return class as  Closure <br>
-	The returned class is auto extending by nodefony core 	
+	Nodefony core has a method <strong>registerController</strong> which must return class as a  Closure. <br>
+	The returned class is auto extending by nodefony core. 	
 </p>
 
 
@@ -126,7 +126,7 @@ nodefony.<strong>registerController</strong>("name", function(){
 <div class="doc2 ">
 	<p>
 		The nodefony core router find routes with pattern <code>'nameBundle:controller:<strong>action</strong>'</code> Example : demoBundle:default:index <br> 
-		For the router find the controller's action functions  <br>    
+		For the router find the controller's action functions.  <br>    
 		The name of function must finish  by '...Action' <code>'indexAction'</code>
 	</p>	
 	<pre>
@@ -135,43 +135,76 @@ nodefony.<strong>registerController</strong>("name", function(){
  *
  */
 defaultController.prototype.index<strong>Action</strong> = function(){
+	...
 };
 	
 	</pre>
-	<p> 
-		 There are 2 different ways to render data (template) in HTTP context    
-	<p>
+	
 </div>
 
-<h3>render data Synchrone in Actions controller :</h3>
-<div class="doc3 ">
-
-	<p>
- 	
-	</p>
-
-	<pre>
-	</pre>
-
-
-</div>
-
-<h3>render data Asynchrone Actions controller :</h3>
-<div class="doc3 ">
-
-	<p>
- 	
-	</p>
-	<pre>
-	</pre>
-</div>
 
 <h2>Request Context  :</h2>
 <div class="doc2 ">
 
+<p>
+	In controller the actions can have  two execution contexts. <br>
+	When a request comes,  the nodefony core instantiates a request context ( http or websocket )
+	 
+</p>
+<pre>
+/*
+ *	 Detect  request context
+ *
+ */
+defaultController.prototype.indexAction = function(){
+
+	// two methods to detect the request context
+
+	// FIRST with getContext
+	<strong>var context = this.getContext();</strong>
+	switch( context.type ){
+		<strong>case "HTTP" :</strong>
+			// HTTP CONTEXT
+		break;
+		<strong>case "HTTPS" :</strong>
+			// HTTP CONTEXT
+		break;
+		<strong>case "WEBSOCKET" :</strong>
+			// WEBSOCKET CONTEXT
+		break;
+		<strong>case "WEBSOCKET SECURE" :</strong>
+			// WEBSOCKET CONTEXT
+		break;
+		default :
+			throw new Error(" METHOD NOT ALLOWED")
+	}
+
+	// SECOND with getMethod 
+	<strong>var method = this.getMethod();</strong>
+	switch( method ){
+		<strong>case "GET" :</strong>
+			// HTTP CONTEXT
+		break;
+		<strong>case "POST" :</strong>
+			// HTTP CONTEXT
+		break;
+		<strong>case "DELETE" :</strong>
+			// HTTP CONTEXT
+		break;
+		<strong>case "WEBSOCKET" :</strong>
+			// WEBSOCKET CONTEXT
+		break;
+		default :
+			throw new Error(" METHOD NOT ALLOWED")
+	}
+};
+
+</pre>
 </div>
 
-<h3>HTTP / HTTPS  :</h3>
+
+
+<h3>  CONTEXT  <a>HTTP / HTTPS   :</a></h3>
 <div class="doc3 ">
 
 	<p>
@@ -179,26 +212,446 @@ defaultController.prototype.index<strong>Action</strong> = function(){
 	</p>
 
 	<pre>
+//  DUMP HTTPS CONTEXT
+
+var context = this.getContext();
+console.log(context);
+
+<strong>Http {</strong>
+  type: 'HTTPS',
+  container: [Object],
+  notificationsCenter: [Object],
+  resolver: [Object],
+  request: [Object],
+  response: [Object],
+  session: [Object],
+  sessionService: [Object],
+  sessionAutoStart: 'firewall',
+  cookies: [Object],
+  isAjax: false,
+  secureArea: null,
+  showDebugBar: true,
+  kernel: [Object],
+  autoloadCache: [Object],
+  kernelHttp: [Object],
+  domain: 'nodefony.com',
+  validDomain: true,
+  security: [Object],
+  user: [Object],
+  url: 'https://nodefony.com:5152/demo/json',
+  remoteAddress: '192.168.100.71',
+  extendTwig: [Object],
+  profiling: [Object] 
+<strong>}</strong>
 	</pre>
 
 
 </div>
 
-<h3>WEBSOCKET / WEBSOCKET SECURE :</h3>
+<h3> CONTEXT  <a>WEBSOCKET / WEBSOCKET SECURE </a> :</h3>
 <div class="doc3 ">
 
 	<p>
  	
 	</p>
 	<pre>
+// DUMP WEBSOCKET SECURE CONTEXT
+
+var context = this.getContext();
+console.log(context);
+
+<strong>websocket {</strong>
+  type: 'WEBSOCKET SECURE',
+  container: [Object],
+  kernel: [Object],
+  autoloadCache: [Object],
+  kernelHttp: [Object],
+  request: [Object],
+  origin: 'https://nodefony.com:5152',
+  connection: [Object],
+  response: [Object],
+  originUrl: [Object],
+  secureArea: null,
+  cookies: [Object],
+  domain: 'nodefony.com',
+  validDomain: true,
+  session: [Object],
+  sessionService: [Object],
+  sessionAutoStart: 'firewall',
+  security: [Object],
+  user: [Object],
+  url: '/demo/websoket',
+  remoteAdress: '192.168.100.71',
+  resolver: [Object],
+  notificationsCenter: [Object],
+  extendTwig: [Object],
+  profiling: [Object] 
+<strong>}</strong>
 	</pre>
 </div>
 
-<h2>Service Container  :</h2>
+
+<h2>Services Container  : </h2>
 <div class="doc2 ">
+	<p>
+		<div class="alert alert-warning" role="alert">
+		Nodefony Context Request clone the Kernel Service Container ( scope ) </br>
+		</div>
+		You can find all services in controller container  </br>
+		The Base controller give this.get() & this.set() to manage services container  </br>
+	</p>
+</div>
+
+
+<h3  >Get Services  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
 	<pre>
+	// GET SETTINGS services HTTPS SERVER
+	var settingsHttps =  <strong>this.get</strong>("httpsServer").settings ;
+
+	// GET I18n services 
+	var translateService = <strong>this.get</strong>("translation");
+
+	// GET sessions services 
+	var sessionsService = <strong>this.get</strong>("sessions");
+	</pre>
+
+</div>
+
+<h3  >Get Parameters  :</h3>
+<div class="doc3 ">
+
+<p>
+</p>
+
+	<pre>
+	// get  asseticBundle globals settings
+	this.getParameters("bundles.assetic")
+
+	// LOG  
+	{ 
+		name: 'asseticBundle',
+		locale: 'en_en',
+		version: '1.0',
+		less: { optimization: 0, compress: true, cache: true, async: false },
+		coffescript: null,
+		CDN: { stylesheets: null, javascripts: null } 
+	}
+	
+	</pre>
+
+</div>
+
+
+<h2>Request and Response :</h2>
+<div class="doc2 ">
+
+<p>
+</p>
+
+</div>
+
+<h3> Request :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+
+	<pre>
+//  DUMP Request 
+
+var resquest = this.getRequest();
+console.log(resquest);
+
+<strong>Request {</strong>
+  container: [Object],
+  request: [Object],
+  headers: [Object],
+  host: 'nodefony.com:5152',
+  hostname: 'nodefony.com',
+  sUrl: 'https://nodefony.com:5152/demo/json',
+  url: [Object],
+  queryPost: {},
+  queryFile: {},
+  queryGet: {},
+  query: {},
+  method: 'GET',
+  rawContentType: {},
+  contentType: null,
+  charset: 'utf8',
+  domain: 'nodefony.com',
+  remoteAdress: '192.168.100.71',
+  data: [],
+  dataSize: 0,
+  body: &lt;Buffer&gt;
+<strong>}</strong>
+	</pre>
+
+
+</div>
+
+
+<h3> Get Request Parameters </h3>
+
+<div class="doc4">
+	
+	<p>
+	</p>
+<h4>Query String :</h4>
+	<pre>
+	// Get query string from container service : 
+	var queryString  = this.getParameters("query.get");
+
+	// Get query string from Class request 
+	var request = this.getRequest();
+	var queryString = request.queryGet ;
+	</pre>
+<h4>Post Data :</h4>
+	<pre>
+	// Get Post data from container service :
+	var post = this.getParameters("query.post");
+
+	// Get Post Data from Class request
+	var request = this.getRequest();
+	var postData = request.queryPost ;
+	</pre>
+<h4>Files Data : ( upload )</h4> 
+	<pre>
+	// Get Files data from container service :
+	var queryFile = this.getParameters("query.files");
+
+	// Get Files data  from Class request
+	var request = this.getRequest();
+	var queryFile = request.queryFile ;
+	</pre>
+<h4>Query Data :</h4>
+	<pre>
+	// Get query  from container service :
+	// query is extend object with all request datas (get, post, files)
+	var query = this.getParameters("query.request");
+
+	// Get query  from Class request
+	var request = this.getRequest();
+	var query = request.query ;
+	</pre>
+<h4>Request Body  :</h4>
+	<pre>
+	// Get body from Class Request 
+	var request = this.getRequest();
+	var body = request.body ;
+	</pre>
+
+<h4>Request Cookies  :</h4>
+	<div class="alert alert-warning" role="alert">
+		You can find Cookies in context !!!  
+	</div>
+	<pre>
+	var context = this.getContext();
+	var cookies = context.cookies ;
+	</pre>
+
+</div>
+
+
+<h3>  Response :</h3>
+<div class="doc3 ">
+
+	<p>
+ 	
+	</p>
+	<pre>
+// DUMP Response 
+
+var response = this.getResponse();
+console.log(response);
+
+<strong>Response {</strong>
+  container: [Object],
+  kernel: [Object],
+  response: [Object],
+  body: '',
+  encoding: 'utf8',
+  cookies: {},
+  headers: {},
+  ended: false,
+  statusCode: 200,
+  timeout: 40000 
+<strong>}</strong>
 	</pre>
 </div>
+
+<h3>Set Response Parameters</h3>
+
+<div class="doc4">
+	
+	<p>
+	</p>
+<h4>Response Set Timeout :</h4>
+	<pre>
+	// response Timeout  when the time is up the framework makes the 408 response  
+	this.getResponse().<strong>setTimeout</strong>(5000)
+	</pre>
+<h4>Response Set Headers :</h4>
+	<pre>
+
+	// with setHeader	
+	this.getResponse().<strong>setHeader</strong>("Content-Type", "text/html; charset=utf-8");
+
+	//or with setHeaders
+	this.getResponse().<strong>setHeaders</strong>({
+		"Content-Type" :"text/html; charset=utf-8"	
+	})
+	</pre>
+<h4>Response Set StatusCode :</h4>
+	<pre>
+
+	//
+	this.getResponse().<strong>setStatusCode</strong>(200, "OK") ;
+	</pre>
+
+
+<h4>Response Add cookies :</h4>
+	<pre>
+
+	var cookieDefaultSettings = {
+		maxAge:24*60*60,
+		path:"/",
+		domain:null,
+		secure:false,
+		httpOnly:true,
+	};
+
+	var cookie = new nodefony.cookies.cookie("COOKIE NAME", "cookie value" , cookieDefaultSettings);
+	this.getResponse().<strong>addCookie</strong>(cookie);
+
+	</pre>
+
+
+</div>
+
+
+
+<h2>Rendering Datas :</h2>
+<div class="doc2 ">
+<p> 
+		 There are 2 different ways to render datas (templates)  in the actions of the controllers in HTTP context    
+</p>
+</div>
+<h3>Synchronous rendering  :</h3>
+<div class="doc3 ">
+
+	<p>
+		The actions functions must return a Response Class or an object <br>
+
+		The controller give somme tools to render data : 
+		<ul>
+			<li> renderResponse </li>
+			<li> render </li>
+			<li> renderJson </li>
+		</ul>
+	
+	</p>
+
+	<pre>
+/*
+ *	RENDER RAW DATA
+ */
+defaultController.prototype.indexAction = function(){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+	var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
+	<strong>return this.renderResponse(html);</strong>
+};
+	</pre>
+
+
+	<pre>
+/*
+ *	RENDER TEMPLATE 
+ */
+defaultController.prototype.indexAction = function(){
+	var kernel = this.get("kernel") ;
+	<strong>return this.render("demoBundle:Default:index.html.twig",{
+		settings:kernel.settings	
+	});</strong>
+	
+};
+	</pre>
+
+	<pre>
+/*
+ *	RENDER TEMPLATE AUTO
+ */
+defaultController.prototype.indexAction = function(){
+	var kernel = this.get("kernel") ;
+	<strong>return {
+		settings:kernel.settings	
+	}</strong>
+};
+	</pre>
+
+
+</div>
+
+<h3> Asynchronous rendering  :</h3>
+<div class="doc3 ">
+
+	<p>
+
+	For Asynchronous rendering the action must not return value <br>	
+	The controller give somme tools to render data : 
+		<ul>
+			<li> renderResponse </li>
+			<li> renderAsync </li>
+			<li> renderJsonAsync </li>
+		</ul>
+	The  framework  wait an event of other entity of framework ( orm database , syscall )
+	<div class="alert alert-warning" role="alert">
+		For Asynchrone data rendering ,  The controller's Action  function must not return a value 
+	</div>
+
+	</p>
+	<pre>
+/*
+ *	RENDER RAW DATA
+ */
+defaultController.prototype.rawResponseAsyncAction= function(){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+
+	// SYSCALL async 
+	var childHost =  <strong>exec</strong>('hostname', function(error, stdout, stderr){
+		var hostname = stdout ;	
+
+		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
+			'&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
+			'&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;'&lt;/server&gt;\
+			'&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;'&lt;/server&gt;\
+			'&lt;hostname&gt;'+hostname+'</hostname>\
+			'&lt;/kernel&gt;\
+			'&lt;/nodefony&gt;'&lt;/xml&gt;';
+
+		return <strong>this.renderResponse</strong>(content, 200 , {
+			"content-type" :"Application/xml"
+		})
+	}.bind(this));
+
+	<strong>return null;</strong>
+};
+
+	</pre>
+</div>
+
+
+
+
+
+
 
 <h2>Controller Logger  :</h2>
 <div class="doc2 ">
@@ -211,12 +664,7 @@ myController.prototype.indexAction = function(){
 	return this.renderResponse(html);
 };
 
-demoController.prototype.indexAction= function(){
-	
-	...	
-};
-
-
+// IN TERMINAL 
 
 Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony version : Alpha
 
@@ -243,8 +691,6 @@ Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony versi
 		<li><a href="#redirect">Redirecting</a></li>
 		<li><a href="#forward">Forwarding</a></li>
 		<li><a href="#generateUrl">Generating URL</a></li>
-		<li><a href="#request">Request</a></li>
-		<li><a href="#response">Response</a></li>
 	</ul>	
 </p>
 
@@ -284,7 +730,6 @@ demoController.prototype.indexAction= function(){
 	});
 };
 	</pre>
-
 </div>
 
 
@@ -419,7 +864,7 @@ demoController.prototype.jsonAction= function(){
 </div>
 
 
-<h3 name="download" id="download">Rendering File Download  :</h3>
+<h3 name="download" id="download">Download File   :</h3>
 <div class="doc3 ">
 
 <p>
@@ -440,7 +885,7 @@ demoController.prototype.downloadAction = function(){
 
 
 
-<h3 name="mediaStream" id="mediaStream">Rendering Media Stream  :</h3>
+<h3 name="mediaStream" id="mediaStream">Media Stream Rendering   :</h3>
 <div class="doc3 ">
 
 <p>
@@ -466,14 +911,57 @@ demoController.prototype.mediaStreamAction = function(){
 
 
 
-<h3 name="upload" id="upload">File Upload  :</h3>
+<h3 name="upload" id="upload">Upload File   :</h3>
 <div class="doc3 ">
 
 <p>
 </p>
 
 	<pre>
+demoController.prototype.uploadAction = function(){
+	
+	var files = this.<strong>getParameters</strong>("query.files");
+	var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
+	for (var file in files){
+		if( files[file].error ){
+			throw files[file].error ;
+		}
+		files[file].<strong>move</strong>(path);
+		//console.log( files[file].getExtention() )
+		//console.log( files[file].getMimeType() )
+		//console.log( files[file].realName() )
+	}
+	if ( ! this.isAjax() ){
+		//return this.forward("demoBundle:finder:index");
+		return this.redirect ( this.generateUrl("finder") );
+	}else{
+		var res = {
+			"files": [],
+			"metas": []
+		}
+		for (var file in files){
+			var name = files[file].realName();
+			res.files.push(path+"/"+name);
+			var meta = {
+				date : new Date(),
+				extention:files[file].getExtention(),
+				file:path+"/"+name,
+				name:name,
+				old_name:files[file].name,
+				size:files[file].stats.size,
+				size2:files[file].stats.size,
+				type:files[file].getMimeType().split("/")
+			}
+			res.metas.push(meta);
+		}
 
+		return this.renderResponse(
+			JSON.stringify(res), 
+			200, 
+			{'Content-Type': 'application/json; charset=utf-8'}
+		);
+	}
+};
 	</pre>
 
 </div>
@@ -546,164 +1034,6 @@ demoController.prototype.generateUrlAction = function(){
 </div>
 
 
-<h3>Accessing container Services  :</h3>
-<div class="doc3 ">
 
-<p>
-</p>
-
-	<pre>
-
-	</pre>
-
-</div>
-
-
-
-
-<h3>Request and Response  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-</div>
-
-
-<h4> Request </h4>
-<div class="doc4">
-	
-
-	<pre>
-
-demoController.prototype.httpRequestAction = function(){
-	this.hideDebugBar();
-	//this.getResponse().setTimeout(5000)
-	//return 
-
-	var path = this.generateUrl("xmlAsyncResponse");
-	var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
-	var type = this.context.type ;
-	// cookie session 
-	var headers = {}
-	headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
-	var options = {
-  		hostname: this.context.request.url.hostname,
-  		port: this.context.request.url.port,
-		path:path,
-  		method: 'GET',
-		headers:headers
-	}	
-	var wrapper = http.request ;
-
-	// https 
-	if (this.context.request.url.protocol === "https:"){
-		// keepalive if multiple request in same socket
-		var keepAliveAgent = new https.Agent({ keepAlive: true });
-		// certificat
-		var kernel = this.get("kernel");
-		var settings =  this.get("httpsServer").settings ;
-
-		nodefony.extend(options,{
-			key: fs.readFileSync(kernel.rootDir+settings.certificats.key),
-			cert:fs.readFileSync(kernel.rootDir+settings.certificats.cert),
-			rejectUnauthorized: false,
-			requestCert: true,
-			agent: keepAliveAgent
-		});
-		var wrapper = https.request ;
-	}else{
-		// keepalive
-		var keepAliveAgent = new http.Agent({ keepAlive: true });
-		options.agent = keepAliveAgent;	
-	}
-	
-	var req = wrapper(options, function(res) {
-		var bodyRaw = "";
-		res.setEncoding('utf8');
-		res.on('data', function (chunk) {
-			this.logger( chunk, "DEBUG");
-			bodyRaw += chunk ;
-		}.bind(this));
-
-		res.on('end', function(){
-			this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
-				host: host,
-				type: type,
-				bodyRaw:bodyRaw,
-			});
-		}.bind(this))
-
-	}.bind(this));
-
-	req.on('error', function(e) {
-		this.logger('Problem with request: ' + e.message, "ERROR");
-		this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
-			host: host,
-			type: type,
-			bodyRaw:e,
-		});
-	}.bind(this));
-
-	req.end();
-}
-
-
-	</pre>
-
-
-</div>
-
-
-
-<h4> Render raw Response </h4>
-<div class="doc4">
-	
-
-	<pre>
-
-demoController.prototype.rawResponseAsyncAction= function(){
-	var kernel = this.get("kernel") ;
-	var settings = kernel.settings ;
-
-	// SYSCALL async 
-	var childHost =  exec('hostname', function(error, stdout, stderr){
-		var hostname = stdout ;	
-
-		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
-			'&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
-			'&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;'&lt;/server&gt;\
-			'&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;'&lt;/server&gt;\
-			'&lt;hostname&gt;'+hostname+'</hostname>\
-			'&lt;/kernel&gt;\
-			'&lt;/nodefony&gt;'&lt;/xml&gt;';
-
-		return this.renderResponse(content, 200 , {
-			"content-type" :"Application/xml"
-		})
-	}.bind(this));
-};
-
-
-	</pre>
-
-
-</div>
-
-<h4> Response Timeout </h4>
-<div class="doc4">
-	
-	<p>
-	</p>
-	<pre>
-
-demoController.prototype.timeoutRequestAction = function(){
-	this.getResponse().setTimeout(5000)
-}
-
-	</pre>
-
-
-</div>
 
 

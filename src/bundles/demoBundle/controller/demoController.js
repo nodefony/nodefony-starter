@@ -15,6 +15,8 @@ var exec = require('child_process').exec;
 
 var https = require('https');
 
+var util = require('util');
+
 
 nodefony.registerController("demo", function(){
 
@@ -645,6 +647,7 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.websoketAction= function(message){
 		var context = this.getContext();
+			
 		switch( this.getMethod() ){
 			case "GET" :
 				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});

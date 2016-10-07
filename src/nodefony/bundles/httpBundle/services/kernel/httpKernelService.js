@@ -275,7 +275,11 @@ nodefony.registerService("httpKernel", function(){
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				
-				var resolver  = this.get("router").resolve(container, request);
+				try {
+					var resolver  = this.get("router").resolve(container, request);
+				}catch(e){
+					return context.notificationsCenter.fire("onError", container, e );	
+				}
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
 				}else{

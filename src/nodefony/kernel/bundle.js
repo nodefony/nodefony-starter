@@ -24,7 +24,7 @@ nodefony.register("Bundle", function(){
 		}
 		this.finder = new nodefony.finder( {
 			path:this.path,
-			exclude:/^docs$|^test$|^public$/
+			exclude:/^docs$|^test$|^public$|^doc$/,
 		});
 		this.controllers = {};
 		this.views = {};
@@ -173,9 +173,9 @@ nodefony.register("Bundle", function(){
 					var func = Class.herite(nodefony.controller);
 					//this.controllers[name] = new func(this.container);
 					this.controllers[name] = func ;
-					this.logger("Register Controller : "+name , "DEBUG");
+					this.logger("Bundle "+this.name+" Register Controller : "+name , "DEBUG");
 				}else{
-					this.logger("Register Controller : "+name +"  error Controller closure bad format");
+					this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
 				}
 			}
 		}.bind(this));
