@@ -22,7 +22,7 @@
 
 ########## NODEFONY CONFIG BUNDLE  monitoringBundle  ############
 name :				monitoringBundle
-version:			"1.0"
+version:			"Beta"
 locale :			en_en
 debugBar:                       true
 

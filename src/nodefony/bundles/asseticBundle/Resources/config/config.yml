@@ -24,7 +24,7 @@
 ########## NODEFONY CONFIG BUNDLE  asseticBundle  ############
 name :				asseticBundle
 locale :			en_en
-version :                       "1.0"
+version :                       "Beta"
 
 #  Documentaion : http://lesscss.org/   https://github.com/less/less-docs
 less:

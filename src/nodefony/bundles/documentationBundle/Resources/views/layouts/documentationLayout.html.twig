@@ -243,7 +243,7 @@
 				</div> 
 				<ul class="nav nav-pills nav-stacked">
 					
-					{{ render( controller("documentationBundle:default:subSection", bundle, version, section  )) }}
+					{{ render( controller("documentationBundle:default:subSection", version, bundle, section  )) }}
 				</ul>
 				{% block section %}
 
@@ -252,9 +252,9 @@
 			<div class="col-md-10 col-lg-offset-2">
 				<ol class="breadcrumb">
 					{% if version %}
-						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{version }}</a></li>
+						<li><a href="{{path('documentation-default',{version:version})}}">Nodefony {{version }}</a></li>
 					{% endif %}
-					{% if bundle %}
+					{% if bundle and bundle != "nodefony"  %}
 						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{bundle | trans()}}</a></li>
 					{% endif %}
 					{% if section %}

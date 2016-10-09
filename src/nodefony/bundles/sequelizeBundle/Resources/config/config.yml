@@ -31,7 +31,7 @@
 
 ########## App CONFIG BUNDLE  sequelizeBundle  ############
 name :				sequelizeBundle
-version:			"1.0"
+version:			"beta"
 locale :			en_en
 
 debug:  true

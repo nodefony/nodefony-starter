@@ -40,11 +40,11 @@ documentation-default:
   defaults: {controller: "documentationBundle:default:index"}
 
 documentation-version: 
-  pattern:  /documentation/{bundle}/{version}
+  pattern:  /documentation/{version}/{bundle}
   defaults: {controller: "documentationBundle:default:version"}
 
 documentation-section: 
-  pattern:  /documentation/{bundle}/{version}/{section}
+  pattern:  /documentation/{version}/{bundle}/{section}
   defaults: {controller: "documentationBundle:default:version"}
 
 documentation-git-getMostRecentCommit: 

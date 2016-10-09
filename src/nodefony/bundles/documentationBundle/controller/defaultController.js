@@ -30,6 +30,7 @@ nodefony.registerController("default", function(){
 			}else{
 				var defaultVersion = version ;
 			}
+			console.log(defaultVersion)
 			var url = this.generateUrl("documentation-version",{
 				bundle:"nodefony",
 				version:defaultVersion
@@ -37,7 +38,7 @@ nodefony.registerController("default", function(){
 			return this.redirect(url);
 		};
 
-		defaultController.prototype.subSectionAction = function(bundle, version , section){
+		defaultController.prototype.subSectionAction = function(version, bundle, section){
 			if (this.query.subsection){
 				var subsection = this.query.subsection ;	
 			}else{
@@ -76,7 +77,7 @@ nodefony.registerController("default", function(){
 			return this.render("documentationBundle:layouts:navSection.html.twig", {bundle:bundle, version:version, section:section,sections:sections,subsection:subsection});
 		};
 
-		defaultController.prototype.versionAction = function(bundle, version , section){
+		defaultController.prototype.versionAction = function(version, bundle, section){
 
 			if (this.query.subsection){
 				var subsection = this.query.subsection ;	

@@ -72,12 +72,11 @@
 	<div class="col-md-6">
 		<div class="panel panel-info">
 			<div class="panel-heading">{{ "Bundles" | trans() }}
-				<span class="label label-success pull-right" > {{version}} </span>
 			</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
 					{% for myBundle in bundles %}
-						<li><a href="{{path('documentation-version', {version:myBundle.settings.version, bundle:myBundle.name})}}">{{myBundle.name}} {{myBundle.settings.version}}</a></li>
+					<li><a href="{{path('documentation-version', {version:myBundle.settings.version, bundle:myBundle.name})}}"><strong>{{myBundle.name}}</strong> <span class="label label-default pull-right">{{myBundle.settings.version}}</span></a></li>
 					{% endfor %}
 
 				</ul>
@@ -102,7 +101,7 @@
 					<li> Firewall</li>
 					<li> Authentication</li>
 					<li> Orm</li>
-					<li> Realtime</li>
+					<li> <a href="{{ path('documentation-version',{ version:version, bundle:'realTime' })}}"> {{"realtime" | trans() | capitalize() }}</a></li>
 				</ul>
 			</div>
 		</div>
