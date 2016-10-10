@@ -9,6 +9,6 @@
 		"javascript"
   	],
   	"dependencies": {
-
+		"cheerio" : "*"
   	}
 }

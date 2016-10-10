@@ -121,6 +121,14 @@
 				console.log( "ERROR" );
 			})
 
+			$.get("/documentation/search",function(data){
+				console.log("PASS");
+			}).fail(function() {
+				console.log( "ERROR" );
+			});
+
+
+
 		</script>
 
 	{% endif %}

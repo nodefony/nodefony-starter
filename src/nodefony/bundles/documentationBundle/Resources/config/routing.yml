@@ -35,6 +35,10 @@ documentation:
   pattern:  /documentation
   defaults: {controller: "documentationBundle:default:index"}
 
+documentation-search: 
+  pattern:  /documentation/search
+  defaults: {controller: "documentationBundle:default:search"}
+
 documentation-default: 
   pattern:  /documentation/{version}
   defaults: {controller: "documentationBundle:default:index"}

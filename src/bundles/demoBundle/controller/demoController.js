@@ -44,11 +44,16 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.indexAction= function(){
 		var kernel = this.get("kernel") ;
-		return this.render("demoBundle:Default:index.html.twig",{
+		return {
 			title:"nodefony",
 			user: this.context.user,
 			nodefony:kernel.settings.name + " " + kernel.settings.system.version
-		});
+		}
+		/*return this.render("demoBundle:Default:index.html.twig",{
+			title:"nodefony",
+			user: this.context.user,
+			nodefony:kernel.settings.name + " " + kernel.settings.system.version
+		});*/
 	};
 	
 	/**

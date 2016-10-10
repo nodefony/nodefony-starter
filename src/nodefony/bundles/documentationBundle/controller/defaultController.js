@@ -30,7 +30,6 @@ nodefony.registerController("default", function(){
 			}else{
 				var defaultVersion = version ;
 			}
-			console.log(defaultVersion)
 			var url = this.generateUrl("documentation-version",{
 				bundle:"nodefony",
 				version:defaultVersion
@@ -272,6 +271,18 @@ nodefony.registerController("default", function(){
 				   </div>\
 				   </div>'
 			 return this.getResponse(html);	
+		}
+
+		
+		defaultController.prototype.searchAction = function(){
+			var webCrawler = this.get("webCrawler");
+			console.log(webCrawler);
+
+			webCrawler.siteAll("nodefony.fr", function(){
+				console.log("pass")
+			});
+			return this.renderJson({});
+		
 		}
 
 		return defaultController;
