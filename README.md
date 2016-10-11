@@ -2,8 +2,8 @@
 
 ##  **Framework Node.js  Symfony Like**
 
-###  **[Nodefony Demo](http://nodefony.net)**  
-###  **[Nodefony Documentation](http://nodefony.net/documentation)**  
+###  **[Nodefony Demo](https://nodefony.net)**  
+###  **[Nodefony Documentation](https://nodefony.net/documentation)**  
 
 #### Documentation in progress !!
 
@@ -68,7 +68,6 @@ $ sudo vim /etc/hosts
 # Host Database
 #
 # localhost is used to configure the loopback interface
-# when the system is booting.  Do not change this entry.
 ##
 127.0.0.1       localhost nodefony.com
 
@@ -297,13 +296,14 @@ Monitoring in progress !!!
 
 **Big thanks:**
 
+
 **Related Links:**
 - [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 - [Framework Symfony](http://symfony.com/)
 - [Twig.js](https://github.com/justjohn/twig.js/wiki)
 
-More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
+More informations [Documentation](https://nodefony.net/documentation)
 
 ## <a name="authors"></a>Authors
 
@@ -315,4 +315,4 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 
 ##  <a name="demo"></a>Demo 
 
-[Demo](http://nodefony.fr)
+[Demo](http://nodefony.net)
