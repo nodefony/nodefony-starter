@@ -1,11 +1,9 @@
-# **NODEFONY Alpha FRAMEWORK**
+# **NODEFONY  FRAMEWORK**
 
-###  **Framework Node.js Realtime Symfony Like**
+###  **Framework Node.js  Symfony Like**
 
-Warning !!! There is not yet a comprehensive documentation of this alpha version .
-You can currently track the source code of the demo bundle (controllers, config ..), 
-with a good foundation of the Symfony framework, 
-it is possible to understand the concepts fundamentals.
+- ###### **[Nodefony Demo](http://nodefony.net)**  
+- ###### **[Nodefony Documentation](http://nodefony.net/documentation)**  
 
 __Table of content__
 
