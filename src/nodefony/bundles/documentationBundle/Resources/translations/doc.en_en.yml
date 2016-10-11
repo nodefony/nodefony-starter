@@ -42,3 +42,5 @@ view:                   "Views And Templates"
 twig:                   "Engine Twig.js"
 
 extendTwig:             "Nodefony Extend Twig.js"
+
+flashMessage:           "Flash Messages"

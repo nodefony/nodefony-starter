@@ -1,0 +1,289 @@
+<div class="page-header">
+  <h1><strong>ROUTING</strong> </h1>
+</div>
+
+
+<h2>Location routing  :</h2>
+<div class="doc2">
+	<p>
+		You can find routing configuration  in bundle repository under <code>Resources/config/routing.yml</code> directory.
+
+		<div class="alert alert-warning" role="alert">
+			In Developement mode You must restart nodefony when you <strong>edit</strong> routing.yml   </br>
+			Nodefony <strong>Route Annotations</strong> in files controller is not implemented ! </br>
+		</div>
+		
+	</p>
+
+	<pre>
+$ ll src/nodefony/bundles/documentationBundle/Resources/config/
+
+total 24
+-rwxr-xr-x  1 cci  staff  1060 10 oct 09:37 config.yml
+-rwxr-xr-x  1 cci  staff  2036 10 oct 09:37 <strong>routing.yml</strong>
+-rw-r--r--  1 cci  staff   536 10 oct 09:37 services.xml
+
+	</pre>
+</div>
+
+
+<h2>Autoloader  :</h2>
+<h3>File  routing.yml  :</h3>
+<div class="doc3 ">
+
+<p>
+	The nodefony Autoloader  load  configuration file in <code>Resources/config</code> directory which match with <strong>'routing.yml'</strong> <br>
+   
+</p>
+
+	<pre>
+##########  ROUTING  documentationBundle  ############
+
+documentation: 
+  pattern:  /documentation
+  defaults: {controller: "documentationBundle:default:index"}
+  requirements:
+    method: GET
+
+documentation-search: 
+  pattern:  /documentation/search
+  defaults: {controller: "documentationBundle:default:search"}
+
+documentation-default: 
+  pattern:  /documentation/{version}
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-version: 
+  pattern:  /documentation/{version}/{bundle}
+  defaults: {controller: "documentationBundle:default:version"}
+
+documentation-section: 
+  pattern:  /documentation/{version}/{bundle}/{section}
+  defaults: {controller: "documentationBundle:default:version"}
+
+documentation-git-getMostRecentCommit: 
+  pattern:  /api/git/getMostRecentCommit
+  defaults: {controller: "documentationBundle:git:getMostRecentCommit"}
+
+documentation-git-getStatus: 
+  pattern:  /api/git/getStatus
+  defaults: {controller: "documentationBundle:git:getStatus"}
+
+
+documentation-git-getBranch: 
+  pattern:  /api/git/getCurrentBranch
+  defaults: {controller: "documentationBundle:git:getCurrentBranch"} 
+	</pre>
+
+</div>
+
+<h3>Starting Log   :</h3>
+<div class="doc3 ">
+
+<p>
+	When starting all routes are registred in router service : 
+</p>
+	
+	<pre>
+Tue Oct 11 2016 13:12:04 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/documentationBundle.js
+Tue Oct 11 2016 13:12:04 DEBUG KERNEL  :  REGISTER BUNDLE : documentation   
+Tue Oct 11 2016 13:12:04 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/services/webCrawlerService.js
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/config.yml
+Tue Oct 11 2016 13:12:05 <strong> DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/routing.yml</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> documentationBundle:default:index</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/search   ===> documentationBundle:default:search</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}   ===> documentationBundle:default:index</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}   ===> documentationBundle:default:version</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}/{section}   ===> documentationBundle:default:version</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getMostRecentCommit   ===> documentationBundle:git:getMostRecentCommit</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getStatus   ===> documentationBundle:git:getStatus</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getCurrentBranch   ===> documentationBundle:git:getCurrentBranch</strong>
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/services.xml
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE INJECTION  : START SERVICE webCrawler( container,kernel ) 
+	</pre>
+</div>
+
+<h2>Route   :</h2>
+<div class="doc2">
+
+	<div class="panel panel-default">
+  		<!-- Default panel contents -->
+  		<div class="panel-heading"> Route Configuration </div>
+  		<div class="panel-body">
+
+			<p>
+		
+			</p>
+  	  		<div class="doc3">
+  		  		<div class="alert alert-warning" role="alert">
+  			  		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					In Developement mode You must restart nodefony when you <strong>edit</strong> routing.yml   </br>
+
+  		  		</div>
+  	  		</div>
+
+			<p>
+	  		Location : <code>Resources/config/routing.yml</code>
+			</p>
+			<pre>
+routeName: 
+  pattern:   pattern
+  defaults:  {controller: "nameBundle:controller:action"} 
+  requirements:
+    method:  GET,DELETE,POST,PUT,WEBSOCKET
+    domain:  domain.com
+
+			</pre>
+	
+		</div>
+
+  		<table class="table">
+			<thead>
+				<th class="config-parameters">Parameters</th>
+				<th>Description</th>
+				<th>Data Type</th>
+				<th>Example / <span class="badge">Default</span> </th>
+			</thead>
+	  		<tbody>	
+			<tr> 
+		  		<td class="config-parameters">routeName</td>
+		  		<td>Route Name (must be unique ) </td>
+		  		<td>String</td>
+		  		<td>documentation-git-getBranch</td>
+	  		</tr>	
+	  		<tr> 
+		  		<td class="config-parameters">routeName.pattern</td>
+		  		<td>
+					URL who match Route </br>
+					Dynamics varaible can be use with <strong>{</strong>variable<strong>}</strong>  
+				</td>
+		  		<td>String</td>
+		  		<td> 
+					/api/git/getCurrentBranch<br>
+					/documentation/{version}/{bundle}/{section}
+				</td>
+	  		</tr>
+	  		<tr> 
+		  		<td class="config-parameters">routeName.defaults</td>
+		  		<td>Default config route</td>
+		  		<td>Object</td>
+		  		<td></td>
+	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.defaults.controller</td>
+		  		<td>Pattern 'nameBundle:controller:action' </td>
+		  		<td>String</td>
+		  		<td>"documentationBundle:git:getCurrentBranch"</td>
+	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement</td>
+		  		<td></td>
+		  		<td>Object</td>
+		  		<td></td>
+	  		</tr>
+
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement.method</td>
+		  		<td>
+					separator : "," <br>
+					Must be  :
+					<ul>
+						<li>GET</li>
+						<li>POST</li>
+						<li>PUT</li>
+						<li>DELETE</li>
+						<li>WEBSOCKET</li>
+					</ul>
+				</td>
+		  		<td>String</td>
+		  		<td><span class="badge">All</span></td>
+	  		</tr>
+
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement.domain</td>
+		  		<td>Domain who must match </td>
+		  		<td>String</td>
+		  		<td>
+					nodefony.com
+					<span class="badge">All</span>
+				</td>
+	  		</tr>
+
+
+	  		</tbody>  
+  		</table>
+
+  	</div>
+
+</div>
+
+
+<h2>Variables Route  in controller :</h2>
+<div class="doc2">
+
+	<p>
+		A route is a map from a URL path to a controller. <br>
+		You can find Variables Route in arguments of action in controller .<br> 
+		Example : you want to match  URL like /documentation or /documentation/1.0 or 	/documentation/1.0/nodefony
+	</p>
+
+	<p>
+		<code>Resources/config/routing.yml</code> :
+	</p>
+	<pre>
+
+
+documentation: 
+  pattern:  /documentation
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-default: 
+  pattern:  /documentation/<strong>{version}</strong>
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-version: 
+  pattern:  /documentation/<strong>{version}</strong>/<strong>{bundle}</strong>
+  defaults: {controller: "documentationBundle:default:version"}
+
+	</pre>
+
+	<p>
+		<code>controller/defaultController.js</code> :
+	</p>
+	<pre>
+
+
+nodefony.registerController("default", function(){
+
+
+	var defaultController = function(container, context){
+		this.mother = this.$super;
+		this.mother.constructor(container, context);
+		this.kernel = this.get("kernel") ;
+	};
+
+
+	defaultController.prototype.indexAction = function(<strong>version</strong>){
+
+		if( ! version ){
+			var defaultVersion = this.kernel.settings.system.version;
+		}else{
+			var defaultVersion = version ;
+		}
+		var url = this.<strong>generateUrl</strong>("documentation-version",{
+			<strong>bundle:"nodefony",
+			version:defaultVersion</strong>
+		})
+		return this.redirect(url);
+
+	}
+
+	defaultController.prototype.versionAction = function(<strong>version, bundle</strong>){
+		...
+	}
+
+	return defaultController;
+});
+	</pre>
+
+</div>
