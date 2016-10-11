@@ -1,11 +1,13 @@
 # **NODEFONY  FRAMEWORK**
 
-###  **Framework Node.js  Symfony Like**
+##  **Framework Node.js  Symfony Like**
 
-- ###### **[Nodefony Demo](http://nodefony.net)**  
-- ###### **[Nodefony Documentation](http://nodefony.net/documentation)**  
+###  **[Nodefony Demo](http://nodefony.net)**  
+###  **[Nodefony Documentation](http://nodefony.net/documentation)**  
 
-__Table of content__
+#### Documentation in progress !!
+
+## __Table of content__
 
 - [Requirements](#requirements)
 - [Install](#install)
@@ -18,7 +20,6 @@ __Table of content__
 - [License](#license)
 - [Demo](#demo)
 
-#### Documentation and Wiki in progress !!
 
 ## <a name="requirements"></a>Requirements
 
@@ -43,7 +44,6 @@ __Table of content__
 - ~~WINDOWS ( Unchecked )~~
 
 - EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
-  If someone is interested in this project !
 
 ## <a name="install"></a>Install Framework
 
@@ -81,7 +81,7 @@ $ ./nodefony_dev
 
 Access to App with URL : http://nodefony.com:5151
 
-[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/dev/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
 Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)**  if you want change httpPort, domain server, locale ...
