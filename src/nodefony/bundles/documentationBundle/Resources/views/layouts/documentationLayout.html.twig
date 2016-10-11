@@ -99,7 +99,13 @@
 				},function(data){
 
 				for ( var link in data){
-					var text = data[link].text.replace(mysearch, "<span style='background-color:yellow' >"+mysearch+"</span>" );
+					var reg = new RegExp(mysearch, 'gi');
+					var res  = reg.exec( data[link].text ) ;
+					if ( res ){
+						var text = data[link].text.replace(res[0], "<span style='background-color:yellow' >"+res[0]+"</span>" );
+					}else{
+						continue ;	
+					}
 					var li = "<li class='list-group-item'>";
 					li += "<a href='"+link+"'><span style=''>" + data[link].title +"</span></a>";
 					li += "<div>  "+text+" </div>"	

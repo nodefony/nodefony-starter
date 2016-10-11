@@ -44,7 +44,9 @@ nodefony.registerService("webCrawler", function(){
 			var obj = {} ;
 			for ( var page in crawled){
 				var text = crawled[page].page.selector("body").text() ;
-				var index = text.indexOf(search) ;
+				//var index = text.indexOf(search) ;
+				var reg = new RegExp(search, 'gi')
+				var index = text.search(reg);
 				if ( index !== -1 ){
 					obj[ crawled[page].page.url ] = {
 						text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,

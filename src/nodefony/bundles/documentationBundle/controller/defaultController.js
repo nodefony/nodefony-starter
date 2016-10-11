@@ -49,7 +49,11 @@ nodefony.registerController("default", function(){
 			if (  bundle === "nodefony"){
 				var path = this.kernel.nodefonyPath ;
 			}else{
-				var path = this.kernel.bundles[bundle].path
+				if ( this.kernel.bundles[bundle] ){
+					var path = this.kernel.bundles[bundle].path ;
+				}else{
+					var path = this.kernel.nodefonyPath ;
+				}
 			}
 			if ( version ){
 				if ( section ){
