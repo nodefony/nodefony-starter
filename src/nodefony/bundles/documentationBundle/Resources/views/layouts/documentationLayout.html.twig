@@ -5,16 +5,16 @@
 {% block title %}
 
 	{% if subsection %}
-		{{ subsection }}
+		{{ subsection | trans() | upper() }}
 	{% else %}
 		{% if section %}
-			{{ section }}
+			{{ section | trans() | upper() }}
 		{% else %}
 			{% if bundle %}
-				{{ bundle }}
+				{{ bundle | trans() | upper() }}
 			{% else %}
 				{% if version %}
-					{{ version }}
+					{{ version | trans() | upper() }}
 				{% else %}
 					NODEFONY
 				{% endif %}
@@ -232,7 +232,7 @@
 
 			<ul class="nav navbar-nav navbar-left">
 				{{ render( controller("documentationBundle:default:navDoc" )) }}
-				{{ render( controller("documentationBundle:default:navDocBundle" )) }}
+				<!--{{ //render( controller("documentationBundle:default:navDocBundle" )) }}-->
 				
 			</ul>
 			<form class="navbar-form navbar-left" role="search">
@@ -240,7 +240,7 @@
 					<input id="inputSearh" type="text" class="form-control" placeholder="Search">
 				</div>
 				<button id="buttonSearh" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-					Submit
+					{{ "Search" | trans() }}
 				</button>
 
 			</form>
