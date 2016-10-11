@@ -282,12 +282,13 @@ nodefony.registerController("default", function(){
 			}, true)
 			
 			var request = this.getRequest();
+			var context = this.getContext();
 			//console.log(request.url.host)
 			var query = request.query ;
 			if (query.search ){
 				var webCrawler = this.get("webCrawler");
 
-				webCrawler.siteAll(url, query.search, function(data){
+				webCrawler.siteAll(url, query.search, context, function(data){
 					this.renderJsonAsync(data);
 				}.bind(this));
 			}else{
