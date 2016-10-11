@@ -59,6 +59,9 @@ npm:
 		fi \
 	fi
 
+deps:
+	./console npm:install
+
 asset:
 	./console assets:install 
 	./console assets:dump 

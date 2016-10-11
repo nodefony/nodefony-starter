@@ -2,6 +2,29 @@
 
 {{trans_default_domain("doc")}}
 
+{% block title %}
+
+	{% if subsection %}
+		{{ subsection }}
+	{% else %}
+		{% if section %}
+			{{ section }}
+		{% else %}
+			{% if bundle %}
+				{{ bundle }}
+			{% else %}
+				{% if version %}
+					{{ version }}
+				{% else %}
+					NODEFONY
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	{% endif %}
+	
+{% endblock %}
+
+
 {% block stylesheets %}
 	
 	{{ parent() }}
@@ -55,6 +78,45 @@
 		}).fail(function() {
 			console.log( "ERROR" );
 		})
+
+
+		var search = $("#inputSearh") ;
+		search.bind( "keypress", function( event ) {
+				if ( event.keyCode == 13 ){
+					event.stopPropagation()
+					event.preventDefault()
+					$("#buttonSearh").trigger( "click" );
+					return false ;
+				}
+		});
+		$("#buttonSearh").click(function(){
+			var ele = $("#search");
+			ele.empty();
+			var mysearch = search.val() ;
+			if ( mysearch ){
+				$.get("/documentation/search",{
+					search:mysearch	
+				},function(data){
+
+				for ( var link in data){
+					var text = data[link].text.replace(mysearch, "<span style='background-color:yellow' >"+mysearch+"</span>" );
+					var li = "<li class='list-group-item'>";
+					li += "<a href='"+link+"'><span style=''>" + data[link].title +"</span></a>";
+					li += "<div>  "+text+" </div>"	
+					li += "</li>";
+					ele.append(li);
+
+				}
+
+				}).fail(function() {
+					console.log( "ERROR" );
+				});
+			}else{
+				event.stopPropagation()
+				event.preventDefault()
+				return false ;
+			}
+		});	
 
 	</script>
 
@@ -120,15 +182,7 @@
 			}).fail(function() {
 				console.log( "ERROR" );
 			})
-
-			$.get("/documentation/search",function(data){
-				console.log("PASS");
-			}).fail(function() {
-				console.log( "ERROR" );
-			});
-
-
-
+			
 		</script>
 
 	{% endif %}
@@ -139,7 +193,28 @@
 {% block body %}
 
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog " role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Search</h4>
+      </div>
+      <div class="modal-body scroll-wrap">
+	<ul id="search" class="list-group">
+									
+	</ul> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
 
 	<div class="container-fluid">
 
@@ -160,6 +235,16 @@
 				{{ render( controller("documentationBundle:default:navDocBundle" )) }}
 				
 			</ul>
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input id="inputSearh" type="text" class="form-control" placeholder="Search">
+				</div>
+				<button id="buttonSearh" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+					Submit
+				</button>
+
+			</form>
+
 
 			<ul class="nav navbar-nav navbar-right ">
 				<a  class="navbar-brand  " href="#" ><span class="label label-danger"> {{ "progress" | trans() | upper()}} !! </span></a>
@@ -186,6 +271,7 @@
 
 <div class="container-fluid" style="padding-top: 70px;padding-bottom: 70px">
 		
+
 	<div class="row">
 		{% if bundle == "nodefony" and  section == null %}
 			
@@ -288,8 +374,6 @@
 			</div>		
 	
 		{% endif %}
-
-
 	</div>	
 </div>
 

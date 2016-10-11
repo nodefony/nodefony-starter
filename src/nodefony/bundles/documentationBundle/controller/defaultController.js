@@ -17,6 +17,7 @@ nodefony.registerController("default", function(){
 		var defaultController = function(container, context){
 			this.mother = this.$super;
 			this.mother.constructor(container, context);
+			this.kernel = this.get("kernel") ;
 		};
 
 		/**
@@ -26,7 +27,7 @@ nodefony.registerController("default", function(){
 		 */
 		defaultController.prototype.indexAction = function(version){
 			if( ! version ){
-				var defaultVersion = this.get("kernel").settings.system.version;
+				var defaultVersion = this.kernel.settings.system.version;
 			}else{
 				var defaultVersion = version ;
 			}
@@ -46,9 +47,9 @@ nodefony.registerController("default", function(){
 
 			if ( ! bundle ) bundle = "nodefony" ;
 			if (  bundle === "nodefony"){
-				var path = this.get("kernel").nodefonyPath ;
+				var path = this.kernel.nodefonyPath ;
 			}else{
-				var path = this.get("kernel").bundles[bundle].path
+				var path = this.kernel.bundles[bundle].path
 			}
 			if ( version ){
 				if ( section ){
@@ -86,8 +87,8 @@ nodefony.registerController("default", function(){
 
 			if ( ! bundle ) bundle = "nodefony" ; 
 			if ( bundle === "nodefony" ){
-				var path = this.get("kernel").nodefonyPath ;
-				var bundles = this.get("kernel").bundles ;
+				var path = this.kernel.nodefonyPath ;
+				var bundles = this.kernel.bundles ;
 				if (! section ){
 					var directoryBundles = [] ;
 					for ( var myBundle in bundles ) {
@@ -96,10 +97,10 @@ nodefony.registerController("default", function(){
 				}
 
 			}else{
-				if ( this.get("kernel").bundles[bundle] ){
-					var path = this.get("kernel").bundles[bundle].path
+				if ( this.kernel.bundles[bundle] ){
+					var path = this.kernel.bundles[bundle].path
 				}else{
-					var path = this.get("kernel").nodefonyPath ;
+					var path = this.kernel.nodefonyPath ;
 				}
 			}
 
@@ -190,7 +191,7 @@ nodefony.registerController("default", function(){
 		defaultController.prototype.navDocAction = function(){
 			
 			var finder  = new nodefony.finder( {
-				path:this.get("kernel").nodefonyPath+"/doc/",
+				path:this.kernel.nodefonyPath+"/doc/",
 				recurse:false,
 			});
 
@@ -209,7 +210,7 @@ nodefony.registerController("default", function(){
 
 		defaultController.prototype.navDocBundleAction = function(){
 			
-			var bundles = this.get("kernel").bundles ;
+			var bundles = this.kernel.bundles ;
 
 			var directory = [] ;
 			for ( var bundle in bundles ) {
@@ -228,9 +229,8 @@ nodefony.registerController("default", function(){
  	 	 *
  	 	 */
 		defaultController.prototype.footerAction = function(){
-			var kernel = this.get("kernel");
 			var translateService = this.get("translation");
-			var version =  kernel.settings.system.version ;
+			var version =  this.kernel.settings.system.version ;
 			var path = this.generateUrl("home");
 			var year = new Date().getFullYear();
 			var langs = translateService.getLangs();
@@ -275,13 +275,24 @@ nodefony.registerController("default", function(){
 
 		
 		defaultController.prototype.searchAction = function(){
-			var webCrawler = this.get("webCrawler");
-			console.log(webCrawler);
 
-			webCrawler.siteAll("nodefony.fr", function(){
-				console.log("pass")
-			});
-			return this.renderJson({});
+			var url = this.generateUrl("documentation-version",{
+				bundle:"nodefony",
+				version:this.kernel.settings.system.version
+			}, true)
+			
+			var request = this.getRequest();
+			//console.log(request.url.host)
+			var query = request.query ;
+			if (query.search ){
+				var webCrawler = this.get("webCrawler");
+
+				webCrawler.siteAll(url, query.search, function(data){
+					this.renderJsonAsync(data);
+				}.bind(this));
+			}else{
+				this.renderJsonAsync({});	
+			}
 		
 		}
 

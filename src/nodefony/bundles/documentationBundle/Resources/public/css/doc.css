@@ -53,3 +53,8 @@ h4{
 hr{
 
 }
+
+.scroll-wrap {
+    max-height: 50vh;
+    overflow-y: auto;
+}
