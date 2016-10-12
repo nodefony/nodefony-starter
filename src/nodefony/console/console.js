@@ -233,6 +233,9 @@ nodefony.register("console", function(){
         				loglevel: 'silent'  // [default: {loglevel: 'silent'}]
     				}
 			};
+			if ( this.debug && this.environment ==="dev"){
+				options.npmLoad.loglevel = "verbose" ;	
+			}
 
 			var dependencies = createNpmiDependenciesArray(conf.path, options) ;
 

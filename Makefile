@@ -4,11 +4,23 @@ VERBOSE = 0
 all: framework npm  install 
 
 install:
-	./console npm:install
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console npm:install ;\
+	else \
+		./.console_dev npm:install ;\
+	fi \
+
 	make asset
 	make sequelize
-	./console router:generate:routes
-	./console npm:list
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console router:generate:routes ;\
+		./console npm:list ;\
+	else \
+		./.console_dev router:generate:routes ;\
+		./.console_dev npm:list ;\
+	fi \
+
 	
 node:
 	make framework
@@ -63,14 +75,22 @@ deps:
 	./console npm:install
 
 asset:
-	./console assets:install 
-	./console assets:dump 
-	@if [ ! -e web/favicon.ico ] ; then  \
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console assets:install ;\
+		./console assets:dump ;\
+	else \
+		./.console_dev assets:install ;\
+		./.console_dev assets:dump ;\
+	fi \
+	 
+	@if [ ! -e web/favicon.ico ] ; then \
 		cp app/Resources/public/favicon.ico web/ ;\
-	fi
+	fi \
+
 	@if [ ! -e web/robots.txt ] ; then  \
 		cp app/Resources/public/robots.txt web/ ;\
-	fi
+	fi \
 
 framework:
 	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;

@@ -1,11 +1,47 @@
 <div class="page-header">
   <h1><strong>CONTROLLERS</strong> </h1>
+	<div class="alert alert-info" role="alert">
+		<strong>
+		CONTROLLERS Nodefony  </br> 
+		</strong>
+	</div>
+
 </div>
 
+<h2 > You can see here :</h2>
+
+<p>
+	<ul>
+		<li><a href="#location">Location controllers</a></li>
+		<li><a href="#file">File Controller</a></li>
+		<li><a href="#action">Controller Actions</a></li>
+		<li><a href="#context">Request Context</a></li>
+		<li><a href="#service">Services Container</a></li>
+		<li><a href="#requestResponse">Request and Response</a></li>
+		<li><a href="#data">Rendering Datas</a></li>
+		<li><a href="#logger">Controller Logger</a></li>
+		<li>
+			<a href="#examples">Examples</a>
+			<ul>
+				<li><a href="#rawRender">Simple Render html</a></li>
+				<li><a href="#simpleTemplate">Simple Render Template</a></li>
+				<li><a href="#asyncTemplate">Asynchrone Render Template</a></li>
+				<li><a href="#websocket">Websocket</a></li>
+				<li><a href="#renderJson">Rendering JSON</a></li>
+				<li><a href="#download"> Rendering File Download</a></li>
+				<li><a href="#upload"> File Upload</a></li>
+				<li><a href="#mediaStream">Rendering Media Stream</a></li>
+				<li><a href="#redirect">Redirecting</a></li>
+				<li><a href="#forward">Forwarding</a></li>
+				<li><a href="#generateUrl">Generating URL</a></li>
+			</ul>
+		</li>
+	</ul>
+<p>
 
 
 
-<h2>Location controllers  :</h2>
+<h2 name="location" id="location">Location controllers  :</h2>
 
 <div class="doc2">
 	<p>
@@ -32,7 +68,7 @@ drwxr-xr-x  2 cci  staff    68 20 jui 11:07 services
 </div>
 
 
-<h2> File Controller   :<h2>
+<h2 name="file" id="file"> File Controller   :<h2>
 <h3>File Controller  :</h3>
 <div class="doc3 ">
 
@@ -121,7 +157,7 @@ nodefony.<strong>registerController</strong>("name", function(){
 
 </div>
 
-<h2>Controller Actions  :</h2>
+<h2 name="action" id="action">Controller Actions  :</h2>
 
 <div class="doc2 ">
 	<p>
@@ -143,7 +179,7 @@ defaultController.prototype.index<strong>Action</strong> = function(){
 </div>
 
 
-<h2>Request Context  :</h2>
+<h2 name="context" id="context">Request Context  :</h2>
 <div class="doc2 ">
 
 <p>
@@ -291,7 +327,7 @@ console.log(context);
 </div>
 
 
-<h2>Services Container  : </h2>
+<h2 name="service" id="service">Services Container  : </h2>
 <div class="doc2 ">
 	<p>
 		<div class="alert alert-warning" role="alert">
@@ -347,7 +383,7 @@ console.log(context);
 </div>
 
 
-<h2>Request and Response :</h2>
+<h2 name="requestResponse" id="requestResponse">Request and Response :</h2>
 <div class="doc2 ">
 
 <p>
@@ -536,7 +572,7 @@ console.log(response);
 
 
 
-<h2>Rendering Datas :</h2>
+<h2 name="data" id="data">Rendering Datas :</h2>
 <div class="doc2 ">
 <p> 
 		 There are 2 different ways to render datas (templates)  in the actions of the controllers in HTTP context    
@@ -653,7 +689,7 @@ defaultController.prototype.rawResponseAsyncAction= function(){
 
 
 
-<h2>Controller Logger  :</h2>
+<h2 name="logger" id="logger">Controller Logger  :</h2>
 <div class="doc2 ">
 	<pre>
 myController.prototype.indexAction = function(){
@@ -674,14 +710,14 @@ Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony versi
 
 
 
-<h2>The Core Controller Class  :</h2>
+<h2 name="examples" id="examples">Examples  :</h2>
 <div class="doc2 ">
 
 <p>
 	Example of controller actions to different use cases : 
 	<ul>
-		<li><a href="#simpleTemplate">Simple Render Template</a></li>
 		<li><a href="#rawRender">Simple Render html</a></li>
+		<li><a href="#simpleTemplate">Simple Render Template</a></li>
 		<li><a href="#asyncTemplate">Asynchrone Render Template</a></li>
 		<li><a href="#websocket">Websocket</a></li>
 		<li><a href="#renderJson">Rendering JSON</a></li>

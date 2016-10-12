@@ -35,7 +35,11 @@ core:                   "Nodefony Core"
 
 started:                "start"
 
+running:                "start"
+
 Routing:                "Routing"
+
+controller:             "Controller"
 
 view:                   "Views And Templates"
 

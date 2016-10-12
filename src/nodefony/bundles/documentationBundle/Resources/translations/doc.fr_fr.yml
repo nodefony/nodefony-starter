@@ -34,7 +34,11 @@ core:                   "Nodefony l'Essentiel"
 
 started:                "Démarrer"
 
+running:                "Démarrer"
+
 Routing:                "Routeur"
+
+controller:             "Controlleur"
 
 view:                   "Vues et Modeles"
 
@@ -43,3 +47,4 @@ twig:                   "Moteur Twig.js"
 extendTwig:             "Nodefony Extend Twig.js"
 
 flashMessage:           "Messages Flash"
+
