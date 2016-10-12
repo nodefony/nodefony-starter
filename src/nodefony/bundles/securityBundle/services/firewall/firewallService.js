@@ -489,7 +489,7 @@ nodefony.registerService("firewall", function(){
 						 				if (err){
 											throw err ;
 						 				}
-										this.logger("AUTOSTART SESSION","DEBUG")
+										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG")
 										var meta = session.getMetaBag("security");
 										if (meta){
 											context.user = meta.userFull ;
@@ -536,7 +536,7 @@ nodefony.registerService("firewall", function(){
 						 			if (err){
 										throw err ;
 						 			}
-									this.logger("AUTOSTART SESSION","DEBUG")
+									this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG")
 									var meta = session.getMetaBag("security");
 									if (meta){
 										context.user = meta.userFull ;

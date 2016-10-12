@@ -211,6 +211,7 @@ nodefony.registerService("sessions", function(){
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 					this.invalidate();
+					return ;
 				}
 				if ( result &&  Object.keys(result).length ){
 					this.deSerialize(result);

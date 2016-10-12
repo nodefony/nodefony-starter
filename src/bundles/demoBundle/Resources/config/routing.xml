@@ -37,18 +37,18 @@
 	</route>
 
 	<!-- UPLOAD -->
-	<route id="upload" pattern="/demo/upload">
+	<route id="upload" pattern="/upload">
 		<default key="controller">demoBundle:demo:indexUpload</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="uploadFile" pattern="/demo/fileupload">
+	<route id="uploadFile" pattern="/fileupload">
 		<default key="controller">demoBundle:demo:upload</default>
 		<requirement key="method">POST</requirement>
 	</route>
 
 	<!-- ORM -->
-	<route id="orm" pattern="/demo/sequelize">
+	<route id="orm" pattern="/sequelize">
 		<default key="controller">demoBundle:demo:sequelize</default>
 		<requirement key="method">GET</requirement>
 	</route>
@@ -56,33 +56,33 @@
 	
 
 
-	<route id="sql" pattern="/demo/query/sql">
+	<route id="sql" pattern="/query/sql">
 		<default key="controller">demoBundle:demo:querySql</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="sqlJoin" pattern="/demo/query/join">
+	<route id="sqlJoin" pattern="/query/join">
 		<default key="controller">demoBundle:demo:querySqlJoin</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
 	<!-- SYSTEM -->
-	<route id="syscall" pattern="/demo/syscall">
+	<route id="syscall" pattern="/syscall">
 		<default key="controller">demoBundle:demo:syscall</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="httpRequest" pattern="/demo/httpRequest">
+	<route id="httpRequest" pattern="/httpRequest">
 		<default key="controller">demoBundle:demo:httpRequest</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="xmlResponse" pattern="/demo/xmlResponse">
+	<route id="xmlResponse" pattern="/xmlResponse">
 		<default key="controller">demoBundle:demo:rawResponseSync</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
-	<route id="xmlAsyncResponse" pattern="/demo/xmlAsyncResponse">
+	<route id="xmlAsyncResponse" pattern="/xmlAsyncResponse">
 		<default key="controller">demoBundle:demo:rawResponseAsync</default>
 		<requirement key="method">GET</requirement>
 	</route>
@@ -95,29 +95,29 @@
 	</route>
 
 	<!-- FINDER -->
-	<route id="finder"  pattern="/demo/finder">
+	<route id="finder"  pattern="/finder">
 		<default key="controller">demoBundle:finder:index</default>
 	</route>
 
-	<route id="download"   pattern="/demo/download">
+	<route id="download"   pattern="/download">
 		<default key="controller">demoBundle:finder:download</default>
 		<requirement key="method">GET</requirement>
 	</route>
 
 
 	<!-- websoket -->
-	<route id="websoket"  pattern="/demo/websoket">
+	<route id="websoket"  pattern="/websoket">
 		<default key="controller">demoBundle:demo:websoket</default>
 	</route>
 
 
 	<!-- json -->
-	<route id="json"  pattern="/demo/json">
+	<route id="json"  pattern="/json">
 		<default key="controller">demoBundle:demo:json</default>
 	</route>
 
 		<!-- json -->
-	<route id="redirect"  pattern="/demo/redirect">
+	<route id="redirect"  pattern="/redirect">
 		<default key="controller">demoBundle:demo:redirectGoogle</default>
 	</route>
 

@@ -455,7 +455,9 @@ nodefony.registerController("demo", function(){
 		var type = this.context.type ;
 		// cookie session 
 		var headers = {}
-		headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+		if ( this.context.session ){
+			headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+		}
 		var options = {
   			hostname: this.context.request.url.hostname,
   			port: this.context.request.url.port,

@@ -73,7 +73,8 @@ httpBundle:
     #max_filesize:                 100000               #en Bytes
 
   session:
-    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
+    start:                        autostart                      # false 
+    handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
       maxAge:                     0   

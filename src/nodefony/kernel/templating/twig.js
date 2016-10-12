@@ -30,7 +30,6 @@ nodefony.registerTemplate("twig", function(){
 
 	Twig.prototype.renderFile = function(file, option, callback){
 		if (! option) var option = {};
-		var env = this.kernelSettings.environment ;
 		option.settings = nodefony.extend(true, {}, twigOptions, {
 			views :this.rootDir,
 			'twig options':{
