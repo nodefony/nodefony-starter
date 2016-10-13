@@ -113,6 +113,7 @@ nodefony.registerService("http", function(){
 
 		this.server.on("clientError",function(e, socket){
 			this.kernel.fire("onClientError", e, socket);
+			socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
 		}.bind(this));
 
 

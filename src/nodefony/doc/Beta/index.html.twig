@@ -92,7 +92,7 @@
 			</div>
 			<div class="panel-body" style="overflow: auto;">
 				<ul>
-					<li> <a href="{{ path('documentation-version',{ version:version, bundle:'http' })}}"> {{"servers" | trans() | capitalize() }} </a> </li>
+					<li> <a href="{{ path('documentation-section',{section:'servers', version:version, bundle:'http' })}}"> {{"servers" | trans() | capitalize() }} </a> </li>
 					<li> Front Proxy  NGINX </li>
 					<li> Production Mode PM2 </li>
 					<li> Statics Files</li>

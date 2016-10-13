@@ -62,7 +62,7 @@ monitoringBundle:
 httpBundle:
   statics:
     settings:
-      cache :                     true	
+      cache :                     false	
       maxAge:                     0 
     web:
       path:                       "/web/"
@@ -93,10 +93,16 @@ httpBundle:
 #
 #       LESS SERVICE CONFIGURATION
 #
+#       # TO ADD DOMAIN CDN     
+#         CDN:
+#           stylesheets:                  cdn.nodefony.com       
+#           javascripts:                  cdn.nodefony.com
+#           images:                       // not implemted
+#
 asseticBundle:
   less:
-    compress:                     true
-    cache:                        true 
+    compress:                     false
+    cache:                        false 
 
 #
 #       OVERRIDE  BUNDLE SEQUELIZE  

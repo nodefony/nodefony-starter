@@ -178,6 +178,7 @@ stage.registerController("dashboardController", function() {
 			kernel:this.kernel
 		});
 
+
 		$.ajax("/nodefony/api/syslog",{
 			success:function(data, status, xhr){
 				try {
@@ -220,6 +221,125 @@ stage.registerController("dashboardController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
+		});
+
+		var manageWidgetServer = function(ele, conf){
+			ele.find(".panel-body").removeClass("hide")
+			ele.find(".domain").text(conf.domain)
+			ele.find(".port").text(conf.port)
+			if ( conf.ready){
+				ele.find(".ready").text("ACTIVE")
+				ele.find(".ready").removeClass("label-danger")
+				ele.find(".ready").addClass("label-success")
+			}
+			var configEle = ele.find(".config");
+			for (var name in conf.config ){
+				configEle.append('<li class="list-group-item">'+name+'<span class="badge">'+conf.config[name]+'</span></li>');
+			}	
+		}
+
+		$.ajax("/nodefony/api/config",{
+			success:function(data, status, xhr){
+				// Manage servers
+				for (var server in data.response.data.servers ){
+					var conf = data.response.data.servers[server]
+					switch(server){
+						case "http":
+							if ( conf ){
+								var ele = $("#HTTP");
+							}
+						break;
+						case "https":
+							if ( conf ){
+								var ele = $("#HTTPS");
+							}
+						break;
+						case "websocket":
+							if ( conf ){
+								var ele = $("#WEBSOCKET");
+							}
+						break;
+						case "websoketSecure":
+							if ( conf ){
+								var ele = $("#WEBSOCKET_SECURE");
+							}
+						break;
+					} 
+					manageWidgetServer(ele, conf )	
+				}
+				// Manage kernel config
+				var ele = $("#KERNEL").find(".config");
+				for (var sys in data.response.data.kernel.system ){
+					switch ( typeof data.response.data.kernel.system[sys] ){
+						case "string":
+						case "number":
+						case "boolean":
+							ele.append('<li class="list-group-item">'+sys+'<span class="badge">'+data.response.data.kernel.system[sys]+'</span></li>');
+						break;
+					}
+					
+				}
+
+				// Manage app config
+				var ele = $("#APP").find(".config");
+				for (var sys in data.response.data.App ){
+					switch ( typeof data.response.data.App[sys] ){
+						case "string":
+						case "number":
+						case "boolean":
+							ele.append('<li class="list-group-item">'+sys+'<span class="badge">'+data.response.data.App[sys]+'</span></li>');
+						break;
+					}
+
+				}
+				// Manage statics config
+				if ( data.response.data.kernel.system.statics ) {
+					var ele = $("#STATICS");
+					ele.find(".panel-body").removeClass("hide")
+					ele.find(".ready").text("ACTIVE")
+					var eleSetting = ele.find(".settings");
+					var eleDirectories = ele.find(".directories");
+					var statics = data.response.data.App.httpBundle.statics ;
+					for (var ele in  statics){
+						if ( ele === "settings" ){
+							for (var conf in  statics[ele] ){
+								eleSetting.prepend('<li class="list-group-item">'+conf+'<span class="badge">'+statics[ele][conf]+'</span></li>');
+							}
+						}else{
+							var html = ' <a href="" class="list-group-item "> ' ;
+							html += '<h4 class="list-group-item-heading">'+ele+'</h4>';
+							for (var conf in  statics[ele] ){
+								html += ' <p class="list-group-item-text">'+conf+'<span class="badge pull-right">'+statics[ele][conf]+'</span></p>';
+							}	
+							html +='</a>' ;
+							eleDirectories.prepend(html);
+						}		
+					}
+				}
+				// Manage CDN config
+				//console.log(data.response.data.App.asseticBundle.CDN  )
+				if ( data.response.data.App.asseticBundle && data.response.data.App.asseticBundle.CDN ) {
+					var ele = $("#CDN");
+					ele.find(".panel-body").removeClass("hide");
+					ele.find(".ready").text("ACTIVE")
+					if ( data.response.data.App.asseticBundle.CDN.javascripts ){
+						var javascript = ele.find(".javascripts");
+						javascript.text(data.response.data.App.asseticBundle.CDN.javascripts)	
+					}
+					if ( data.response.data.App.asseticBundle.CDN.stylesheets ){
+						var stylesheets = ele.find(".stylesheets");
+						stylesheets.text(data.response.data.App.asseticBundle.CDN.stylesheets)	
+					}
+				}
+
+
+
+
+			}.bind(this),
+			error:function(xhr,stats,  error){
+				this.logger(error, "ERROR");
+			}.bind(this)
+		
 		});
 
 

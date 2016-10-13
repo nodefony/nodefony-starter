@@ -389,6 +389,66 @@ nodefony.registerController("api", function(){
 		 */
 		apiController.prototype.configAction = function(){
 			var kernel = this.get("kernel");
+			var http = this.get("httpServer");
+			if ( http && http.ready){
+				var httpConfig = {	
+					port:http.port,
+					ready:http.ready,
+					domain:http.domain,
+					config:http.settings	
+				}
+			}else{
+				var httpConfig = null ;	
+			}
+				
+			var https = this.get("httpsServer");
+			if ( https && https.ready ){
+				var httpsConfig = {	
+					port:https.port,
+					ready:https.ready,
+					domain:https.domain,
+					config:https.settings	
+				}
+			}else{
+				var httpsConfig = null ;	
+			}
+
+			
+			var websocket = this.get("websocketServer");
+			if ( websocket && websocket.ready ){
+				var config = nodefony.extend({}, websocket.websocketServer.config ) ;
+				delete config.httpServer  ;
+				var websocketConfig = {
+					port:websocket.port,
+					domain:websocket.domain,
+					ready:websocket.ready,
+					config:config
+				};
+			}else{
+				var websocketConfig = null ;	
+			}
+
+
+			var websockets = this.get("websocketServerSecure");
+			if ( websockets && websockets.ready ){
+				var configs = nodefony.extend({}, websockets.websocketServer.config ) ;
+				delete configs.httpServer  ;
+				var websocketSecureConfig = {
+					port:websockets.port,
+					ready:websockets.ready,
+					domain:websockets.domain,
+					config:configs
+					
+				}
+			}else{
+				var websocketSecureConfig = null ;	
+			}
+
+
+			//console.log(util.inspect(websocket.websocketServer, {depth:1}) )
+			//console.log(util.inspect( this.bundle, {depth:1}) )
+			var bundleApp = this.get("kernel").getBundles("App") ;
+
 
 			return this.renderRest({
 				code:200,
@@ -396,10 +456,17 @@ nodefony.registerController("api", function(){
 			        message:"OK",
 				data:JSON.stringify({
 					kernel:kernel.settings,
+					App:bundleApp.settings,
 					debug:kernel.debug,
 					nodejs:process.versions,
 					events:this.bundle.infoKernel.events,
-					bundles:this.bundle.infoBundles
+					bundles:this.bundle.infoBundles,
+					servers:{
+						http:httpConfig,
+						https:httpsConfig,
+						websocket:websocketConfig,
+						websoketSecure:websocketSecureConfig
+					}
 				})
 			});
 		}

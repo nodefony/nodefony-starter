@@ -1,39 +1,222 @@
 <!-- dashboard standard layout -->
-{% include '../../blocks/title.html.twig' with { 'title': 'Dashboard Real Time', 'subtitle': 'Monitoring Nodefony framework ' } %}
+{% include '../../blocks/title.html.twig' with { 'title': 'Dashboard ', 'subtitle': 'Monitoring Nodefony framework ' } %}
 <div class="wrapper">
 
-	
-	<div class="row">
-		<div class="col-md-4 col-lg-3" >
-			<a  class="block panel bg-info text-center wrapper">
-				<div id="requests" class="h1 text-white font-thin no-m">0</div>
-                                <span  class="text-muted text-xs text-white">Requettes</span>
-                        </a>
 
-                </div>
+	<!--div class="row">
 		<div class="col-md-4 col-lg-3" >
-			<a  class="block panel bg-info text-center wrapper">
-				<div id="websocket" class="h1 text-white font-thin no-m">0</div>
-                                <span class="text-muted text-xs text-white">Websockets</span>
+			<a  class="block panel bg-primary text-center ">
+				<div id="environement" class="h1 text-white font-thin no-m">0</div>
+                                <span  class="text-muted text-xs text-white">Mode</span>
                         </a>
                 </div>
 		<div class="col-md-4 col-lg-3" >
-			<a  class="block panel bg-info text-center wrapper">
+			<a  class="block panel bg-info text-center ">
+				<div id="websocket" class="h1 text-white font-thin no-m">0</div>
+                                <span class="text-muted text-xs text-white"></span>
+                        </a>
+                </div>
+		<div class="col-md-4 col-lg-3" >
+			<a  class="block panel bg-info text-center ">
 				<div id="nbServices" class="h1 text-white font-thin no-m">0</div>
                                 <span class="text-muted text-xs text-white">Services</span>
                         </a>
                 </div>
 		<div class="col-md-4 col-lg-3" >
-			<a  class="block panel bg-info text-center wrapper">
+			<a  class="block panel bg-info text-center ">
 				<div id="nbRoutes" class="h1 text-white font-thin no-m">0</div>
                                 <span class="text-muted text-xs text-white">Routes</span>
                         </a>
                 </div>
+	</div-->
+
+	
+	
+
+	<div class="row">
+		<div class="col-md-3 col-lg-3">
+			<div id="HTTP" class="panel panel-info">
+				<div class="panel-heading"><strong>HTTP SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group">
+  						<li class="list-group-item">
+							Domain <strong>http://</strong>
+							<span class="badge domain"></span>
+  						</li>
+						<li class="list-group-item">
+							Listen Port  	
+							<span class="badge port"></span>
+  						</li>
+						<li class="list-group-item active" role="button" data-toggle="collapse" href="#httpConfig" aria-expanded="false" aria-controls="httpConfig">
+							Configurations 	
+  						</li>
+					</ul>
+					
+					<div class="collapse" id="httpConfig">
+    						<ul class="list-group config">
+						</ul>
+					</div>
+					
+				</div>
+                        </div>
+                </div>
+		<div class="col-md-3 col-lg-3">
+			<div id="HTTPS" class="panel panel-info">
+				<div  class="panel-heading"><strong>HTTPS SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group">
+  						<li class="list-group-item">
+							Domain <strong>https:// </strong>	
+							<span class="badge domain"></span>
+  						</li>
+						<li class="list-group-item">
+							Listen Port  	
+							<span class="badge port"></span>
+  						</li>
+						<li class="list-group-item active" role="button" data-toggle="collapse" href="#httpsConfig" aria-expanded="false" aria-controls="httpsConfig">
+							Configurations 	
+  						</li>
+					</ul>
+					<div class="collapse" id="httpsConfig">
+    						<ul class="list-group config">
+						</ul>
+					</div>
+
+				</div>
+                        </div>
+                </div>
+		<div class="col-md-3 col-lg-3">
+			<div id="STATICS" class="panel panel-info">
+				<div  class="panel-heading"><strong>STATICS SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group settings">
+  						
+						<li class="list-group-item active" role="button" data-toggle="collapse" href="#staticConfig" aria-expanded="false" aria-controls="staticConfig">
+							Directories 	
+  						</li>
+					</ul>
+					<div class="collapse" id="staticConfig">
+    						<ul class="list-group directories">
+						</ul>
+					</div>
+
+				</div>
+                        </div>
+                </div>
+		<div class="col-md-3 col-lg-3">
+			<div id="CDN" class="panel panel-info">
+				<div  class="panel-heading"><strong>CDN SERVERS </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group">
+  						<li class="list-group-item">
+							CDN Assets <strong>javascript  </strong>	
+							<span class="badge javascripts"></span>
+  						</li>
+						<li class="list-group-item">
+							CDN Assets <strong>stylesheets </strong> 	
+							<span class="badge stylesheets"></span>
+  						</li>
+				</div>
+                        </div>
+                </div>
+	</div>
+	<div class="row">
+
+		<div class="col-md-6 col-lg-6">
+			<div id="WEBSOCKET" class="panel panel-info">
+				<div class="panel-heading"><strong>WEBSOCKET SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group">
+  						<li class="list-group-item">
+							Domain <strong>ws:// </strong>	
+							<span class="badge domain"></span>
+  						</li>
+						<li class="list-group-item">
+							Switch Protocol Port  	
+							<span class="badge port"></span>
+  						</li>
+						<li class="list-group-item active" role="button" data-toggle="collapse" href="#websocketConfig" aria-expanded="false" aria-controls="websocketConfig">
+							Configurations 	
+  						</li>
+						
+					</ul>
+					<div class="collapse" id="websocketConfig">
+    						<ul class="list-group config">
+						</ul>
+					</div>
+	
+					
+				</div>
+                        </div>
+                </div>
+
+
+		<div class="col-md-6 col-lg-6">
+			<div id="WEBSOCKET_SECURE" class="panel panel-info">
+				<div class="panel-heading"><strong>WEBSOCKET SECURE SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
+				<div  class="panel-body hide">
+					<ul class="list-group">
+  						<li class="list-group-item">
+							Domain <strong>wss:// </strong>	
+							<span class="badge domain"></span>
+  						</li>
+						<li class="list-group-item">
+							Switch Protocol Port  	
+							<span class="badge port"></span>
+  						</li>
+						<li class="list-group-item active" role="button" data-toggle="collapse" href="#websocketsConfig" aria-expanded="false" aria-controls="websocketsConfig">
+							Configurations 	
+  						</li>
+						
+					</ul>
+					
+					<div class="collapse" id="websocketsConfig">
+    						<ul class="list-group config">
+						</ul>
+					</div>
+
+					
+				</div>
+                        </div>
+                </div>
+		
+
 	</div>
 
 	<div class="row">
+		<div class="col-md-6 col-lg-6">
+			<div id="KERNEL" class="panel panel-info">
+				<div class="panel-heading"><strong>KERNEL CONFIGURATION </strong></div>
+				<div  class="panel-body ">
+					<p></p>
+					<ul class="list-group config">
+  						
+					</ul>
+
+										
+				</div>
+                        </div>
+		</div>
+
+		<div class="col-md-6 col-lg-6">
+			<div id="APP" class="panel panel-info">
+				<div class="panel-heading"><strong>APPLICATION CONFIGURATION </strong></div>
+				<div  class="panel-body ">
+					<p></p>
+					<ul class="list-group config">
+  						
+					</ul>
+										
+				</div>
+                        </div>
+		</div>
+
+	</div>
+
+	
+	<div class="row">
 		<div class="col-md-2 col-lg-12">
-			<div class="panel panel-default">
+			<div class="panel panel-info">
 				<!-- Default panel contents -->
                         	<div class="panel-heading"><strong>PM2 STATUS  REALTIME  </strong></div>
                         	<div id="widget-pm2Status" class="panel-body">
@@ -64,7 +247,7 @@
 	<div class="row">
 		<div class="col-md-2 col-lg-12">
 
-			<div class="panel panel-default">
+			<div class="panel panel-primary">
 				<!-- Default panel contents -->
                         	<div class="panel-heading"><strong>PM2 MONITOR REALTIME  </strong></div>
                         	<div  class="panel-body">
@@ -90,6 +273,7 @@
 			
 		</div>
 	</div>
+
 	
 </div>
 <!-- /dashboard standard layout -->
