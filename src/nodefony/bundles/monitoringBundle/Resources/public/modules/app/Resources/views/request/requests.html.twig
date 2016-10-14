@@ -5,6 +5,7 @@
 			<thead>
 				<tr>
 					<th>UID</th>
+					<th>REMOTE ADRESS</th>
 					<th>DATE</th>
 					<th>URL</th>
 					<th>ROUTE NAME</th>
@@ -12,14 +13,13 @@
 					<th>STATE</th>
 					<th>CONTEXT</th>
 					<th>USER</th>
-					
-					
 				</tr>
 			</thead>
 			<tbody>
 			{% for request in requests %}
 				<tr>
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.uid}}</a></td>
+					<td><a href="">{{request.remoteAdress}}</a></td>
 					<td>{{request.date}}</td>
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.url}}</a></td>
 					<td>{{request.routing}}</td>

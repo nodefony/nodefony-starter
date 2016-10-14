@@ -379,6 +379,7 @@ stage.registerController("navController", function() {
 			"order": [[ 1, "desc" ]],
 			"columns": [
             			{ "name":"id","data": "uid" },
+            			{ "name":"remoteAdress","data": "remoteAdress" },
             			{ "name":"createdAt", "data": "timeStamp" },
             			{ "name":"url","data": "url" },
             			{ "name":"route","data": "route" },

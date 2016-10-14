@@ -1,4 +1,4 @@
-
+var dns = require('dns');
 
 nodefony.registerController("api", function(){
 
@@ -83,9 +83,10 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.servicesAction = function(name){
+			var serviceParam = this.container.getParameters("services") ;
 			var services = {}
-			for (var service in nodefony.services){
-				var ele = this.container.getParameters("services."+service);
+			for (var service in serviceParam){
+				var ele = serviceParam[service] ; 
 				services[service] = {};
 				services[service]["name"] = service;
 				if (ele){
@@ -138,9 +139,9 @@ nodefony.registerController("api", function(){
 				recordsFiltered: ( query.search.value !== "" ? results.rows.length : results.count ) ,
 				data:[]
 			}; 
-
 			for (var i = 0 ; i < results.rows.length  ; i++){
 				var payload= {};
+				var data = JSON.parse(results.rows[i].data) ;
 				payload["uid"] = results.rows[i].id ;
 				payload["payload"] = JSON.parse( results.rows[i].data ) ;
 				payload["timeStamp"] = results.rows[i].createdAt ;
@@ -150,6 +151,7 @@ nodefony.registerController("api", function(){
 				payload["method"] =  results.rows[i].method ;
 				payload["state"] =  results.rows[i].state ;
 				payload["protocole"] =  results.rows[i].protocole ;
+				payload["remoteAdress"] =  data.context.remoteAddress ;
 				dataTable.data.push(payload);	
 			}
 			return dataTable ;

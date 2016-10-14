@@ -14,6 +14,7 @@ nodefony.registerEntity("requests", function(){
 	var requests = function(db, ormService){
 		var model = db.define("requests", {
 				id		:	{type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+				remoteAdress	:	{type:Sequelize.STRING },
 				url		:	{type: Sequelize.TEXT },
 				route		:	{type:Sequelize.STRING },
 				method		:	{type:Sequelize.STRING },
