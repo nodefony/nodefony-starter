@@ -270,13 +270,14 @@ stage.registerController("dashboardController", function() {
 
 				// Manage app config
 				var ele = $("#APP").find(".config");
-				for (var sys in data.response.data.App ){
-					switch ( typeof data.response.data.App[sys] ){
+				for (var sys in data.response.data.App.App ){
+					switch ( typeof data.response.data.App.App[sys] ){
 						case "string":
 						case "number":
 						case "boolean":
-							ele.append('<li class="list-group-item">'+sys+'<span class="badge">'+data.response.data.App[sys]+'</span></li>');
+							ele.append('<li class="list-group-item">'+sys+'<span class="badge">'+data.response.data.App.App[sys]+'</span></li>');
 						break;
+						default:
 					}
 				}
 				// Manage statics config

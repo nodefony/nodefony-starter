@@ -51,17 +51,19 @@
 				</div>
                         </div>
                 </div-->
-		<div class="col-md-3 col-lg-3">
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="NODEFOY" class="panel panel-info">
 				<div  class="panel-heading"><strong>NODEFONY STATE</strong>  </div>
 				<div  class="panel-body ">
 
 					<ul class="nav nav-tabs">
   						<li role="presentation" class="active"><a data-target="#STATE" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#KERNEL" data-toggle="tab"  >KERNEL</a></li>
+  						<li role="presentation"><a data-target="#APP" data-toggle="tab"  >App</a></li>
   						<li role="presentation"><a data-target="#CDN" data-toggle="tab"  >CDN</a></li>
 					</ul>	
 
-					<div class="tab-content">
+					<div class="tab-content wrapper">
 						<div id="STATE" class="tab-pane active">
 							<div class="wrapper" >
 								<div  class=""><strong>Mode Start : </strong><span class="label label-success pull-right running">UNDEFINED</span></div>
@@ -88,6 +90,19 @@
 							</div>
 						</div>
 						
+						<div id="KERNEL" class="tab-pane">
+							<ul class="list-group config">
+  							
+							</ul>
+						</div>
+
+						<div id="APP" class="tab-pane">
+							<ul class="list-group config">
+  							
+							</ul>
+						</div>
+
+
 					</div>
 
 
@@ -95,133 +110,158 @@
                         </div>
                 </div>
 		
-		<div class="col-md-3 col-lg-3">
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="HTTP" class="panel panel-info">
 				<div class="panel-heading"><strong>HTTP SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
 				<div  class="panel-body hide">
-					<ul class="list-group">
-  						<li class="list-group-item">
-							Domain <strong>http://</strong>
-							<span class="badge domain"></span>
-  						</li>
-						<li class="list-group-item">
-							Listen Port  	
-							<span class="badge port"></span>
-  						</li>
-						<li class="list-group-item active" role="button" data-toggle="collapse" href="#httpConfig" aria-expanded="false" aria-controls="httpConfig">
-							Configurations 	
-  						</li>
+
+					<ul class="nav nav-tabs">
+  						<li role="presentation" class="active"><a data-target="#httpGeneral" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#httpConfig" data-toggle="tab"  >Configuration</a></li>
 					</ul>
-					
-					<div class="collapse" id="httpConfig">
-    						<ul class="list-group config">
-						</ul>
-					</div>
-					
+					<div class="tab-content wrapper">
+						<div id="httpGeneral" class="tab-pane active">
+							<ul class="list-group">
+  								<li class="list-group-item">
+									Domain <strong>http:// </strong>	
+									<span class="badge domain"></span>
+  								</li>
+								<li class="list-group-item">
+									Listen Port  	
+									<span class="badge port"></span>
+  								</li>
+								
+							</ul>
+
+						</div>
+						<div id="httpConfig" class="tab-pane">
+							<ul class="list-group config">
+							</ul>	
+						</div>
+                        		</div>
 				</div>
                         </div>
                 </div>
-		<div class="col-md-3 col-lg-3">
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="HTTPS" class="panel panel-info">
 				<div  class="panel-heading"><strong>HTTPS SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
 				<div  class="panel-body hide">
-					<ul class="list-group">
-  						<li class="list-group-item">
-							Domain <strong>https:// </strong>	
-							<span class="badge domain"></span>
-  						</li>
-						<li class="list-group-item">
-							Listen Port  	
-							<span class="badge port"></span>
-  						</li>
-						<li class="list-group-item active" role="button" data-toggle="collapse" href="#httpsConfig" aria-expanded="false" aria-controls="httpsConfig">
-							Configurations 	
-  						</li>
+					<ul class="nav nav-tabs">
+  						<li role="presentation" class="active"><a data-target="#httpsGeneral" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#httpsConfig" data-toggle="tab"  >Configuration</a></li>
 					</ul>
-					<div class="collapse" id="httpsConfig">
-    						<ul class="list-group config">
-						</ul>
-					</div>
+					<div class="tab-content wrapper">
+						<div id="httpsGeneral" class="tab-pane active">
+							<ul class="list-group">
+  								<li class="list-group-item">
+									Domain <strong>https:// </strong>	
+									<span class="badge domain"></span>
+  								</li>
+								<li class="list-group-item">
+									Listen Port  	
+									<span class="badge port"></span>
+  								</li>
+								
+							</ul>
 
+						</div>
+						<div id="httpsConfig" class="tab-pane">
+							<ul class="list-group config">
+							</ul>	
+						</div>
+                        		</div>
 				</div>
                         </div>
                 </div>
-		<div class="col-md-3 col-lg-3">
+		
+		
+	</div>
+	<div class="row">
+
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="STATICS" class="panel panel-info">
 				<div  class="panel-heading"><strong>STATICS SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
 				<div  class="panel-body hide">
-					<ul class="list-group settings">
-  						
-						<li class="list-group-item active" role="button" data-toggle="collapse" href="#staticConfig" aria-expanded="false" aria-controls="staticConfig">
-							Directories 	
-  						</li>
+					<ul class="nav nav-tabs">
+  						<li role="presentation" class="active"><a data-target="#static" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#staticConfig" data-toggle="tab"  >Configuration</a></li>
 					</ul>
-					<div class="collapse" id="staticConfig">
-    						<ul class="list-group directories">
-						</ul>
-					</div>
+
+
+					<div class="tab-content wrapper">
+						<div id="static" class="tab-pane active">
+							<ul class="list-group settings">
+  							
+							</ul>
+						</div>
+						<div id="staticConfig" class="tab-pane">
+							<ul class="list-group directories">
+							</ul>	
+						</div>
+                        		</div>
 
 				</div>
                         </div>
                 </div>
-		
-	</div>
-	<div class="row">
 
-		<div class="col-md-6 col-lg-6">
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="WEBSOCKET" class="panel panel-info">
 				<div class="panel-heading"><strong>WEBSOCKET SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
 				<div  class="panel-body hide">
-					<ul class="list-group">
-  						<li class="list-group-item">
-							Domain <strong>ws:// </strong>	
-							<span class="badge domain"></span>
-  						</li>
-						<li class="list-group-item">
-							Switch Protocol Port  	
-							<span class="badge port"></span>
-  						</li>
-						<li class="list-group-item active" role="button" data-toggle="collapse" href="#websocketConfig" aria-expanded="false" aria-controls="websocketConfig">
-							Configurations 	
-  						</li>
-						
+					<ul class="nav nav-tabs">
+  						<li role="presentation" class="active"><a data-target="#websocket" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#configWebsocket" data-toggle="tab"  >Configuration</a></li>
 					</ul>
-					<div class="collapse" id="websocketConfig">
-    						<ul class="list-group config">
-						</ul>
-					</div>
-	
-					
-				</div>
-                        </div>
+					<div class="tab-content wrapper">
+						<div id="websocket" class="tab-pane active">
+							<ul class="list-group">
+  								<li class="list-group-item">
+								Domain <strong>ws:// </strong>	
+								<span class="badge domain"></span>
+  								</li>
+								<li class="list-group-item">
+								Switch Protocol Port  	
+								<span class="badge port"></span>
+  								</li>
+							</ul>
+						</div>
+						<div id="configWebsocket" class="tab-pane">
+							<ul class="list-group config">
+							</ul>
+						</div>
+                        		</div>
+                		</div>
+                	</div>
                 </div>
 
 
-		<div class="col-md-6 col-lg-6">
+		<div class="col-md-6 col-lg-4 col-sm-6">
 			<div id="WEBSOCKET_SECURE" class="panel panel-info">
 				<div class="panel-heading"><strong>WEBSOCKET SECURE SERVER </strong><span class="label label-danger pull-right ready">INACTIVE</span></div>
 				<div  class="panel-body hide">
-					<ul class="list-group">
-  						<li class="list-group-item">
-							Domain <strong>wss:// </strong>	
-							<span class="badge domain"></span>
-  						</li>
-						<li class="list-group-item">
-							Switch Protocol Port  	
-							<span class="badge port"></span>
-  						</li>
-						<li class="list-group-item active" role="button" data-toggle="collapse" href="#websocketsConfig" aria-expanded="false" aria-controls="websocketsConfig">
-							Configurations 	
-  						</li>
-						
-					</ul>
-					
-					<div class="collapse" id="websocketsConfig">
-    						<ul class="list-group config">
-						</ul>
-					</div>
 
-					
+					<ul class="nav nav-tabs">
+  						<li role="presentation" class="active"><a data-target="#websockets" data-toggle="tab"  >General</a></li>
+  						<li role="presentation"><a data-target="#configWebsockets" data-toggle="tab"  >Configuration</a></li>
+					</ul>
+					<div class="tab-content wrapper">
+						<div id="websockets" class="tab-pane active">
+							<ul class="list-group">
+  								<li class="list-group-item">
+								Domain <strong>wss:// </strong>	
+								<span class="badge domain"></span>
+  								</li>
+								<li class="list-group-item">
+								Switch Protocol Port  	
+								<span class="badge port"></span>
+  								</li>
+							</ul>
+						</div>
+						<div id="configWebsockets" class="tab-pane">
+							<ul class="list-group config">
+							</ul>
+						</div>
+                        		</div>
 				</div>
                         </div>
                 </div>
@@ -229,36 +269,7 @@
 
 	</div>
 
-	<div class="row">
-		<div class="col-md-6 col-lg-6">
-			<div id="KERNEL" class="panel panel-info">
-				<div class="panel-heading"><strong>KERNEL CONFIGURATION </strong></div>
-				<div  class="panel-body ">
-					<p></p>
-					<ul class="list-group config">
-  						
-					</ul>
-
-										
-				</div>
-                        </div>
-		</div>
-
-		<div class="col-md-6 col-lg-6">
-			<div id="APP" class="panel panel-info">
-				<div class="panel-heading"><strong>APPLICATION CONFIGURATION </strong></div>
-				<div  class="panel-body ">
-					<p></p>
-					<ul class="list-group config">
-  						
-					</ul>
-										
-				</div>
-                        </div>
-		</div>
-
-	</div>
-
+	
 	
 	<div class="row">
 		<div class="col-md-2 col-lg-12">
