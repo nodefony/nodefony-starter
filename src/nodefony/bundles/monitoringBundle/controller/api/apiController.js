@@ -141,7 +141,7 @@ nodefony.registerController("api", function(){
 			}; 
 			for (var i = 0 ; i < results.rows.length  ; i++){
 				var payload= {};
-				var data = JSON.parse(results.rows[i].data) ;
+				//var data = JSON.parse(results.rows[i].data) ;
 				payload["uid"] = results.rows[i].id ;
 				payload["payload"] = JSON.parse( results.rows[i].data ) ;
 				payload["timeStamp"] = results.rows[i].createdAt ;
@@ -151,7 +151,7 @@ nodefony.registerController("api", function(){
 				payload["method"] =  results.rows[i].method ;
 				payload["state"] =  results.rows[i].state ;
 				payload["protocole"] =  results.rows[i].protocole ;
-				payload["remoteAdress"] =  data.context.remoteAddress ;
+				payload["remoteAdress"] =  results.rows[i].remoteAdress ;
 				dataTable.data.push(payload);	
 			}
 			return dataTable ;
