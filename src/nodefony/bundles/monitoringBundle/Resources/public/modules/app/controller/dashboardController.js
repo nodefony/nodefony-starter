@@ -34,19 +34,7 @@ stage.registerController("dashboardController", function() {
 
 	};
 	
-	/**
-	 * 
-	 */
-	controller.prototype.routeWidget = function() {	
-	};
-
-	/**
-	 * 
-	 */
-	controller.prototype.serviceWidget = function() {	
-		
-	};
-
+	
 	/**
 	 * 
 	 */
@@ -196,7 +184,7 @@ stage.registerController("dashboardController", function() {
 		});
 
 
-		$.ajax("/nodefony/api/routes",{
+		/*$.ajax("/nodefony/api/routes",{
 			success:function(data, status, xhr){
 				try {
 					$("#nbRoutes").html(data.response.data.length);
@@ -207,9 +195,9 @@ stage.registerController("dashboardController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		});
+		});*/
 
-		$.ajax("/nodefony/api/services",{
+		/*$.ajax("/nodefony/api/services",{
 			success:function(data, status, xhr){
 				try {
 					
@@ -221,7 +209,7 @@ stage.registerController("dashboardController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		});
+		});*/
 
 		var manageWidgetServer = function(ele, conf){
 			ele.find(".panel-body").removeClass("hide")
@@ -424,9 +412,9 @@ stage.registerController("dashboardController", function() {
 		});
 
 
-		this.syslogWidget();
-		this.realtimeWidget();
-		this.httpWidget();
+		//this.syslogWidget();
+		//this.realtimeWidget();
+		//this.httpWidget();
 
 		//this.graph();
 		//this.routeWidget();

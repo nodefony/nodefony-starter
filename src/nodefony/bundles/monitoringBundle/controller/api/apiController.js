@@ -46,12 +46,9 @@ nodefony.registerController("api", function(){
 						return this.render('monitoringBundle:api:api.json.twig',data);
 					}
 			}
-
-			
 		};
 
 		apiController.prototype.renderDatatable = function(data, async){
-		
 			var context = this.getContext() ;
 
 			var response = this.getResponse() ;
@@ -72,7 +69,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.routesAction = function(name){
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -87,7 +83,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.servicesAction = function(name){
-
 			var services = {}
 			for (var service in nodefony.services){
 				var ele = this.container.getParameters("services."+service);
@@ -110,10 +105,8 @@ nodefony.registerController("api", function(){
 				}else{
 					services[service]["run"] = "KERNEL"	
 					services[service]["scope"] = "KERNEL container"	
-				
 				}		
 			}
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -129,7 +122,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.syslogAction = function(){
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -171,7 +163,6 @@ nodefony.registerController("api", function(){
 		apiController.prototype.requestsAction = function(){
 			var bundle = this.get("kernel").getBundles("monitoring") ;
 			var storageProfiling = bundle.settings.storage.requests ;
-			
 			switch( storageProfiling ){
 				case "syslog":
 					var syslog = bundle.syslogContext ;
@@ -232,16 +223,13 @@ nodefony.registerController("api", function(){
 						.then( function(results){
 							try{
 								var dataTable = dataTableParsing.call(this, this.query, results);
-								var res = JSON.stringify(dataTable); 
+								return dataTable ;
 							}catch(e){
-								return this.renderRest({
-									code:500,
-									type:"ERROR",
-									message:"internal error",
-									data:e
-								},true);	
+								throw e ;
 							}
-							return this.renderDatatable(dataTable);
+						}.bind(this))
+						.then(function(result){
+							return this.renderDatatable(result);	
 						}.bind(this))
 						.catch(function(error){
 							if (error){
@@ -265,21 +253,15 @@ nodefony.registerController("api", function(){
 									ret["timeStamp"] = results[i].createdAt ;
 									ele.push(ret);	
 								}
-								var res = JSON.stringify(ele); 
-							}catch(e){
 								return this.renderRest({
-									code:500,
-									type:"ERROR",
-									message:"internal error",
-									data:e
-								},true);	
+									code:200,
+									type:"SUCCESS",
+									message:"OK",
+									data:JSON.stringify(ele)
+								},true);
+							}catch(e){
+								throw e;
 							}
-							return this.renderRest({
-								code:200,
-								type:"SUCCESS",
-								message:"OK",
-								data:res
-							},true);
 						}.bind(this))
 						.catch(function(error){
 							if (error){
@@ -412,7 +394,6 @@ nodefony.registerController("api", function(){
 			}else{
 				var httpsConfig = null ;	
 			}
-
 			
 			var websocket = this.get("websocketServer");
 			if ( websocket && websocket.ready ){
@@ -428,7 +409,6 @@ nodefony.registerController("api", function(){
 				var websocketConfig = null ;	
 			}
 
-
 			var websockets = this.get("websocketServerSecure");
 			if ( websockets && websockets.ready ){
 				var configs = nodefony.extend({}, websockets.websocketServer.config ) ;
@@ -443,7 +423,6 @@ nodefony.registerController("api", function(){
 			}else{
 				var websocketSecureConfig = null ;	
 			}
-
 
 			//console.log(util.inspect(websocket.websocketServer, {depth:1}) )
 			//console.log(util.inspect( this.bundle, {depth:1}) )
@@ -577,8 +556,6 @@ nodefony.registerController("api", function(){
 			
 		};
 
-
-
 		/**
 		 *
 		 *	@method 
@@ -604,9 +581,6 @@ nodefony.registerController("api", function(){
 				}, true);
 			}.bind(this))
 		}
-
-
-
 
 		var dataTableSessionParsing = function(query, results){
 			var dataTable = {
@@ -838,7 +812,6 @@ nodefony.registerController("api", function(){
 			}
 		}
 
-
 		apiController.prototype.pm2Action = function(action){
 			var pm2 = require("pm2");
 			pm2.connect(true, function() {
@@ -904,7 +877,5 @@ nodefony.registerController("api", function(){
 			});
 		}
 
-
-		
 		return apiController;
 });
