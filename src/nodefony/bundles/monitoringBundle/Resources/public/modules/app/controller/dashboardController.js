@@ -295,7 +295,7 @@ stage.registerController("dashboardController", function() {
 							}
 						}else{
 							var html = ' <a href="" class="list-group-item "> ' ;
-							html += '<h4 class="list-group-item-heading">'+ele+'</h4>';
+							html += '<h4 class="list-group-item-heading" style="color:blue"> Static route: '+ele+'</h4>';
 							for (var conf in  statics[ele] ){
 								html += ' <p class="list-group-item-text">'+conf+'<span class="badge pull-right">'+statics[ele][conf]+'</span></p>';
 							}	
@@ -320,7 +320,7 @@ stage.registerController("dashboardController", function() {
 				//console.log(data.response.data.App.asseticBundle.CDN  )
 				if ( data.response.data.App.asseticBundle && data.response.data.App.asseticBundle.CDN ) {
 					var ele = $("#CDN");
-					//ele.find(".panel-body").removeClass("hide");
+					ele.find(".list-group").removeClass("hide");
 					ele.find(".ready").text("ACTIVE")
 					if ( data.response.data.App.asseticBundle.CDN.javascripts ){
 						var javascript = ele.find(".javascripts");
