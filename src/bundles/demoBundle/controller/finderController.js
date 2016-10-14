@@ -120,7 +120,6 @@ nodefony.registerController("finder", function(){
 		this.mother.constructor(container, context);
 	};
 
-
 	
 	finderController.prototype.indexAction = function(){
 		var query = this.getParameters("query");
