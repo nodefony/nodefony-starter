@@ -593,7 +593,6 @@ nodefony.registerBundle ("monitoring", function(){
 					}else{
 						var user = "none" ;	
 					}
-					console.log(context.profiling.remoteAddress)
 					this.requestEntity.create({
 						id		: null,
 						remoteAdress	: context.profiling.context.remoteAddress,
