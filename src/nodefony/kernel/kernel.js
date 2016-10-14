@@ -67,6 +67,9 @@ nodefony.register("kernel", function(){
 		this.autoLoader = autoLoader;
 		this.settings = null;
 
+		this.options = options ;
+		this.node_start = options.node_start ;
+
 		
 		this.boot(options);
 		
@@ -79,8 +82,6 @@ nodefony.register("kernel", function(){
 		process.on('SIGTERM', function() {
 			this.terminate(0);	
 		}.bind(this));
-
-		
 
 	};
 

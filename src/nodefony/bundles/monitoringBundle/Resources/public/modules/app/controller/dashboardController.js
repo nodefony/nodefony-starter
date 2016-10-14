@@ -278,7 +278,6 @@ stage.registerController("dashboardController", function() {
 							ele.append('<li class="list-group-item">'+sys+'<span class="badge">'+data.response.data.App[sys]+'</span></li>');
 						break;
 					}
-
 				}
 				// Manage statics config
 				if ( data.response.data.kernel.system.statics ) {
@@ -304,11 +303,23 @@ stage.registerController("dashboardController", function() {
 						}		
 					}
 				}
-				// Manage CDN config
+
+				// MANAGE NODEFONY STATE GENERAL
+				var ele = $("#STATE");
+				if ( data.response.data.node_start ){
+					ele.find(".running").text(data.response.data.node_start)
+				}	
+				if ( data.response.data.kernel.environment ){
+					ele.find(".environment").text(data.response.data.kernel.environment)	
+				}
+				
+				ele.find(".debug").text(data.response.data.debug)	
+
+				// MANAGE NODEFONY STATE CDN 
 				//console.log(data.response.data.App.asseticBundle.CDN  )
 				if ( data.response.data.App.asseticBundle && data.response.data.App.asseticBundle.CDN ) {
 					var ele = $("#CDN");
-					ele.find(".panel-body").removeClass("hide");
+					//ele.find(".panel-body").removeClass("hide");
 					ele.find(".ready").text("ACTIVE")
 					if ( data.response.data.App.asseticBundle.CDN.javascripts ){
 						var javascript = ele.find(".javascripts");
@@ -320,7 +331,7 @@ stage.registerController("dashboardController", function() {
 					}
 				}
 
-
+				
 
 
 			}.bind(this),

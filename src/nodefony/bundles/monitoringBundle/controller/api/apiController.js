@@ -15,6 +15,7 @@ nodefony.registerController("api", function(){
 		var apiController = function(container, context){
 			this.mother = this.$super;
 			this.mother.constructor(container, context);
+			this.kernel = this.get("kernel") ;
 		};
 
 
@@ -372,7 +373,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.configAction = function(){
-			var kernel = this.get("kernel");
 			var http = this.get("httpServer");
 			if ( http && http.ready){
 				var httpConfig = {	
@@ -428,7 +428,7 @@ nodefony.registerController("api", function(){
 
 			//console.log(util.inspect(websocket.websocketServer, {depth:1}) )
 			//console.log(util.inspect( this.bundle, {depth:1}) )
-			var bundleApp = this.get("kernel").getBundles("App") ;
+			var bundleApp = this.kernel.getBundles("App") ;
 
 
 			return this.renderRest({
@@ -436,9 +436,11 @@ nodefony.registerController("api", function(){
 			        type:"SUCCESS",
 			        message:"OK",
 				data:JSON.stringify({
-					kernel:kernel.settings,
+					kernel:this.kernel.settings,
+					debug:this.kernel.debug,
+					node_start:this.kernel.options.node_start,
 					App:bundleApp.settings,
-					debug:kernel.debug,
+					debug:this.kernel.debug,
 					nodejs:process.versions,
 					events:this.bundle.infoKernel.events,
 					bundles:this.bundle.infoBundles,
