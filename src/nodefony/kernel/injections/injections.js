@@ -294,10 +294,10 @@ nodefony.register("injection", function(){
 		if (! msgid) msgid = "SERVICE INJECTION";
 		return syslog.logger(pci, severity, msgid,  msg);
 	};
-	
-	Injection.prototype.set = function(name, service){		
-		var Class = nodefony.services[service.class];
-		if (! Class) throw new Error("Service Name "+ name +" class not found")
+
+	Injection.prototype.set = function(name, service){
+		var Class = nodefony.services[service.class[0]];
+		if (! Class) throw new Error("Service Name "+ name +" class not found");
 		var order = prepareExec.getArguments.call(Class);
 		if(order[0] == "") order = false;
 		if(Class){

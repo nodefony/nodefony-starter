@@ -112,7 +112,7 @@ nodefony.register("Bundle", function(){
 		this.registerControllers();
 
 		// Register Views
-		this.registerViews( /*this.resourcesFiles*/ );
+		this.registerViews();
 
 		// Register internationalisation 
 		this.registerI18n(this.locale);
@@ -146,11 +146,12 @@ nodefony.register("Bundle", function(){
 			if ( res ){
 				var name = res[1] ;
 				var Class = this.loadFile( ele.path );
-				if (typeof Class !== "function" ){
+				if (typeof Class === "function" ){
+					Class.prototype.bundle = this ;
+					this.logger("Bundle "+this.name+" Register Service : "+res[0] , "DEBUG");
+				}else{
 					this.logger("Register Service : "+name +"  error Service bad format")
-				}/*else{
-					this.logger("Register Service : "+name , "INFO");
-				}*/
+				}
 			}
 		}.bind(this));
 	};

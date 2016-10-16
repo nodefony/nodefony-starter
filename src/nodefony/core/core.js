@@ -24,17 +24,24 @@ var nodefony = function(){
 		this.session = {
 			storage:{}
 		};
-		this.version="1.0";
-		this.crypto={};
+		//this.crypto={};
 		this.bundles={};
-		this.controllers={};
+		//this.controllers={};
 		this.templatings={};
 		this.services= {};
-		this.entities={};
-		this.fixtures={};
-		this.commands={};
-		this.enginesOrm={};
+		//this.entities={};
+		//this.fixtures={};
+		//this.commands={};
+		//this.enginesOrm={};
 	};
+
+	Nodefony.prototype.isFunction =  function (it) {
+		return Object.prototype.toString.call(it) === '[object Function]';
+	}
+
+	Nodefony.prototype.isArray =  function (it) {
+		return Object.prototype.toString.call(it) === '[object Array]';
+	}
 
 	/**
 	 *	@method require
@@ -54,34 +61,22 @@ var nodefony = function(){
 	Nodefony.prototype.typeOf  = function(value){
 		var t = typeof value;
 		if (t === 'object'){
+
 			if (value === null ) return "object";
-			if (value instanceof Array ||
-				(!(value instanceof Object) &&
-           				(Object.prototype.toString.call((value)) === '[object Array]') ||
-           				typeof value.length === 'number' &&
-           				typeof value.splice !== 'undefined' &&
-           				typeof value.propertyIsEnumerable !== 'undefined' &&
-           				!value.propertyIsEnumerable('splice')
-          			))
-			{
+
+			if ( this.isArray( value ) ){
 				return "array";
 			}
-			if (!(value instanceof Object) &&
-          			(Object.prototype.toString.call((value)) === '[object Function]' ||
-          				typeof value.call !== 'undefined' &&
-          				typeof value.propertyIsEnumerable !== 'undefined' &&
-          				!value.propertyIsEnumerable('call'))
-			) {
+			if ( this.isFunction( value ) ) {
         			return 'function';
       			}
-			
-			if (value instanceof Date)
+			if (value instanceof Date )
 				return "date";
-			if (value.callee)
+			if ( value.callee )
 				return "arguments";
-			if (value instanceof SyntaxError)
+			if (value instanceof SyntaxError )
 				return "SyntaxError";
-			if (value instanceof Error)
+			if (value instanceof Error )
 				return "Error";
 		} else {
 			if (t === 'function' && typeof value.call === 'undefined') {
@@ -91,73 +86,77 @@ var nodefony = function(){
   		return t;
 	};
 
-
 	/**
  	 * extend jquery for nodejs only 
 	 * @method extend
 	 *
  	 */
 	Nodefony.prototype.extend = function(){
-		// copy reference to target object
-		var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy;
-	
+
+		var options, name, src, copy, copyIsArray, clone,
+			target = arguments[ 0 ] || {},
+			i = 1,
+			length = arguments.length,
+			deep = false;
+
 		// Handle a deep copy situation
 		if ( typeof target === "boolean" ) {
 			deep = target;
-			target = arguments[1] || {};
-			// skip the boolean and the target
-			i = 2;
+			// Skip the boolean and the target
+			target = arguments[ i ] || {};
+			i++;
 		}
 		// Handle case when target is a string or something (possible in deep copy)
-		if ( typeof target !== "object" &&  typeof(target) !== "function" ) {
+		if ( typeof target !== "object" &&  this.isFunction ( target ) ) {
 			target = {};
 		}
-		// extend jQuery itself if only one argument is passed
-		if ( length === i ) {
+		// Extend jQuery itself if only one argument is passed
+		if ( i === length ) {
 			target = this;
-			--i;
+			i--;
 		}
 		for ( ; i < length; i++ ) {
+
 			// Only deal with non-null/undefined values
-			if ( (options = arguments[ i ]) != null ) {
+			if ( ( options = arguments[ i ] ) != null ) {
+
 				// Extend the base object
 				for ( name in options ) {
 					src = target[ name ];
 					copy = options[ name ];
-	
+
 					// Prevent never-ending loop
 					if ( target === copy ) {
 						continue;
 					}
-	
-					// Recurse if we're merging object values
-					if ( deep && copy && typeof copy === "object" && !copy.nodeType) {
-						var clone;
-						if ( src ) {
-							clone = src;
-						} else if ( this.typeOf(copy) === "array" ) {
-							clone = [];
-						} else if ( this.typeOf(copy) === "object" ) {
-							clone = {};
+
+					// Recurse if we're merging plain objects or arrays
+					var bool = this.typeOf( copy ) 
+					if ( deep && copy && ( bool === "object" ||
+						( copyIsArray = (bool === "array") ) ) ) {
+
+						if ( copyIsArray ) {
+							copyIsArray = false;
+							clone = src && bool === "array" ? src : [];
+
 						} else {
-							clone = copy;
+							clone = src && bool === "object" ? src : {};
 						}
-	
+
 						// Never move original objects, clone them
-						target[ name ] = nodefony.extend( deep, clone, copy );
-	
+						target[ name ] = this.extend( deep, clone, copy );
+
 					// Don't bring in undefined values
 					} else if ( copy !== undefined ) {
-							target[ name ] = copy;
+						target[ name ] = copy;
 					}
 				}
 			}
 		}
 		// Return the modified object
 		return target;
-	};
+	}
 
-	
 	/**
  	 *  Register Nodefony Library element
 	 *  @method register
@@ -183,7 +182,10 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerBundle=function(name, closure){
-		return this.bundles[name] = closure();
+		if (typeof closure === "function" ){
+			return this.bundles[name] = closure();	
+		}
+		throw new Error( "Register bundle : "+ name +"  error bundle bad format" );
 	};
 
 	/**
@@ -194,9 +196,11 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerController=function(name, closure){
-		var controller = this.controllers[name] = closure();
-		controller.prototype.name = name ;
-		return controller;
+		if (typeof closure === "function" ){
+			//controller.prototype.name = name ;
+			return  closure();
+		}
+		throw new Error( "Register Controller : "+ name +"  error Controller bad format" );
 	};
 
 	/**
@@ -218,7 +222,13 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerService=function(name, closure){
-		return this.services[name] = closure();
+		if ( name in this.services ){
+			throw new Error( "Service name : "+ name +" already exit in application !!! ");
+		}
+		if (typeof closure === "function" ){
+			return this.services[name] = closure();
+		}
+		throw new Error( "Register Service : "+ name +"  error Service bad format" );
 	};
 
 	/**
@@ -229,7 +239,12 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerEntity=function(name, closure){
-		return this.entities[name] = closure();
+		if (typeof closure === "function" ){
+			return  closure();
+			//return this.entities[name] = closure();
+		}
+		throw new Error( "Register Entity : "+ name +"  error Entity bad format" );
+		
 	};
 	
 	/**
@@ -240,7 +255,11 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerFixture=function(name, closure){
-		return this.fixtures[name] = closure();
+		if (typeof closure === "function" ){
+			return  closure();
+			//return this.fixtures[name] = closure();
+		}
+		throw new Error( "Register fixtures : "+ name +"  error fixtures bad format" );
 	};
 
 	/**
@@ -251,7 +270,11 @@ var nodefony = function(){
 	 *
  	 */
 	Nodefony.prototype.registerCommand=function(name, closure){
-		return this.commands[name] = closure();	
+		if (typeof closure === "function" ){
+			return  closure();
+			//return this.commands[name] = closure();	
+		}
+		throw new Error( "Register commands : "+ name +"  error commands bad format" );
 	}	
 
 	return new Nodefony();
