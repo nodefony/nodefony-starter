@@ -207,24 +207,39 @@ nodefony.registerBundle ("monitoring", function(){
 				return ;
 			}
 
-			var agent = useragent.parse(context.request.headers['user-agent']);
+			try {
+				if ( context.request.headers ){
+					var agent = useragent.parse(context.request.headers['user-agent']);
+					var tmp = useragent.is(context.request.headers['user-agent'])
+				}else{
+					var agent = useragent.parse(context.request.httpRequest.headers['user-agent']);
+					var tmp = useragent.is(context.request.httpRequest.headers['user-agent'])
+				}
 
-			var client = {};
-			var tmp = useragent.is(context.request.headers['user-agent']) 	
-			for (ele in tmp ){
-				if ( tmp[ele] === true ){
-					client[ele] = 	tmp[ele];
+				var client = {};
+				for (ele in tmp ){
+					if ( tmp[ele] === true ){
+						client[ele] = 	tmp[ele];
+					}
+					if (ele === "version"){
+						client[ele] = tmp[ele];	
+					}
 				}
-				if (ele === "version"){
-					client[ele] = tmp[ele];	
+				var userAgent  ={
+					agent: agent.toAgent(),
+					toString:agent.toString(),
+					version:agent.toVersion(),
+					os:agent.os.toJSON(),
+					is:client
 				}
-			}
-			var userAgent  ={
-				agent: agent.toAgent(),
-				toString:agent.toString(),
-				version:agent.toVersion(),
-				os:agent.os.toJSON(),
-				is:client
+			}catch(e){
+				var userAgent  ={
+					agent: null,
+					toString:null,
+					version:null,
+					os:null,
+					is:null
+				}	
 			}
 
 			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
