@@ -374,9 +374,10 @@ nodefony.registerBundle ("monitoring", function(){
 				secureArea:context.secureArea,
 				domain:context.domain,
 				url:context.url,
-				remoteAddress:context.remoteAddress,
+				remoteAddress:context.remoteAddress  ,
 				crossDomain:context.crossDomain
 			}
+			console.log(context.remoteAddress)
 
 			
 
@@ -407,7 +408,7 @@ nodefony.registerBundle ("monitoring", function(){
 						url:context.request.url.href,
 						method:context.request.method,
 						protocol:context.type,
-						remoteAdress:context.request.remoteAdress,
+						remoteAddress:context.request.remoteAddress,
 						queryPost:context.request.queryPost,
 						queryGet:context.request.queryGet,
 						headers:context.request.headers,
@@ -487,12 +488,15 @@ nodefony.registerBundle ("monitoring", function(){
 						configServer[conf] = context.request.serverConfig[conf];	
 					}
 
+					//console.log(context.request.remoteAddress)
+					//console.log(context.profiling["context"].remoteAddress)
+
 					context.profiling["request"] = {
 						url:context.request.httpRequest.url,
 						headers:context.request.httpRequest.headers,
 						method:context.request.httpRequest.method,
 						protocol:context.type,
-						remoteAdress:context.request.remoteAddress,
+						remoteAddress:context.request.remoteAddress,
 						serverConfig:configServer,
 					};
 					var config = {};
@@ -632,7 +636,7 @@ nodefony.registerBundle ("monitoring", function(){
 					}
 					this.requestEntity.create({
 						id		: null,
-						remoteAdress	: context.profiling.context.remoteAddress,
+						remoteAddress	: context.profiling.context.remoteAddress,
 						userAgent	: context.profiling.userAgent.toString,
 						url		: context.profiling.request.url,
 						route		: context.profiling.route.name,

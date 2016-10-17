@@ -21,6 +21,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}	
 		this.kernelHttp = this.container.get("httpKernel");
 		this.request = request ; 
+		this.remoteAddress = this.request.remoteAddress ;
 		this.origin = request.origin;
 		//TODO acceptProtocol header sec-websocket-protocol   
 		this.connection = request.accept(null, this.origin);
@@ -48,7 +49,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		this.user = null ;
 
 		this.url = this.request.resourceURL.href;
-		this.remoteAdress = this.request.remoteAddress ;
+		
 
 		this.resolver = null ;
 		//  manage EVENTS
@@ -79,8 +80,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		return this.kernelHttp.isDomainAlias(  this.getHostName() );
 	}
 
-	websocket.prototype.getRemoteAdress = function(){
-		return this.remoteAdress ;
+	websocket.prototype.getRemoteAddress = function(){
+		return this.remoteAddress ;
 	};
 
 	websocket.prototype.getHost = function(){

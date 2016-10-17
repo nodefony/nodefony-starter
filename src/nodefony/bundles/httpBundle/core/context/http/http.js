@@ -45,7 +45,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.domain =  this.request.domain ; 
 		this.validDomain = this.isValidDomain() ;
 
-		this.logger("REQUEST "+request.method +" FROM : "+ this.request.remoteAdress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
+		this.logger("REQUEST "+request.method +" FROM : "+ this.request.remoteAddress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
 
 		//parse cookies
 		this.parseCookies();
@@ -54,7 +54,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.user = null ;
 
 		this.url =url.format(this.request.url);
-		this.remoteAddress = this.request.remoteAdress ; 
+		this.remoteAddress = this.request.remoteAddress ; 
 
 		// LISTEN EVENTS KERNEL 
 		this.notificationsCenter.listen(this, "onView", function(result, context, view, param){
@@ -75,8 +75,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 		return this.kernelHttp.isDomainAlias(  this.getHostName() );
 	}
 
-	Http.prototype.getRemoteAdress = function(){
-		return this.request.getRemoteAdress() ;
+	Http.prototype.getRemoteAddress = function(){
+		return this.request.getRemoteAddress() ;
 	};
 
 	Http.prototype.getHost = function(){

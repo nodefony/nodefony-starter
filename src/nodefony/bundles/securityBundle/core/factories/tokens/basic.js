@@ -38,7 +38,7 @@ nodefony.register.call(nodefony.security.tokens, "Basic",function(){
 		this.auth = false ;
 		this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
 		this.host = request.headers["host"];
-		this.secret = this.host+":"+request.headers["user-agent"]+":"+ ( request.headers["referer"] || request.remoteAdress )
+		this.secret = this.host+":"+request.headers["user-agent"]+":"+ ( request.headers["referer"] || request.remoteAddress )
 		this.request = request ;
 		this.response = response;
 		this.method = request.method;

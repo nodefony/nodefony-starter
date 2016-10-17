@@ -152,7 +152,7 @@ nodefony.registerController("api", function(){
 				payload["method"] =  results.rows[i].method ;
 				payload["state"] =  results.rows[i].state ;
 				payload["protocole"] =  results.rows[i].protocole ;
-				payload["remoteAdress"] =  results.rows[i].remoteAdress ;
+				payload["remoteAddress"] =  results.rows[i].remoteAddress ;
 				payload["userAgent"] =  results.rows[i].userAgent ;
 				dataTable.data.push(payload);
 			}

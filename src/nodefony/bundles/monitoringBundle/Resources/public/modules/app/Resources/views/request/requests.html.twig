@@ -20,7 +20,7 @@
 			{% for request in requests %}
 				<tr>
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.uid}}</a></td>
-					<td><a href="">{{request.remoteAdress}}</a></td>
+					<td><a href="">{{request.remoteAddress}}</a></td>
 					<td><a href="">{{request.userAgent}}</a></td>
 					<td>{{request.date}}</td>
 					<td><a href="{{ path('request', {uid:request.uid}) }}">{{request.url}}</a></td>

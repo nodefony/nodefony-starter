@@ -45,7 +45,7 @@ nodefony.registerService("sessions", function(){
 		this.setMetaBag("context", this.contextSession );
 		this.setMetaBag("request", this.context.type );
 		this.setMetaBag("created", time );
-		this.setMetaBag("remoteAddress", this.context.getRemoteAdress() );
+		this.setMetaBag("remoteAddress", this.context.getRemoteAddress() );
 		this.setMetaBag("host", this.context.getHost() );
 		var ua = this.context.getUserAgent() ;
 		if ( ua )
@@ -391,7 +391,7 @@ nodefony.registerService("sessions", function(){
 	};
 
 	Session.prototype.setId = function(){
-		var ip = this.context.remoteAddress || this.getRemoteAdress(this.context) ;
+		var ip = this.context.remoteAddress || this.getRemoteAddress(this.context) ;
 		var date = new Date().getTime();
 		var concat = ip + date + this.randomValueHex(16) + Math.random() * 10 ;
 		switch(this.settings.hash_function){
@@ -449,9 +449,9 @@ nodefony.registerService("sessions", function(){
 			.slice(0,len);   // return required number of characters
 	};
 	
-	Session.prototype.getRemoteAdress = function(){
+	Session.prototype.getRemoteAddress = function(){
 		//var request = this.context.request ;
-		return this.context.getRemoteAdress() ; 
+		return this.context.getRemoteAddress() ; 
 	};
 
 	/*

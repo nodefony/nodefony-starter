@@ -375,7 +375,7 @@ stage.registerController("navController", function() {
 			"order": [[ 3, "desc" ]],
 			"columns": [
             			{ "name":"id","data": "uid" },
-            			{ "name":"remoteAdress","data": "remoteAdress" },
+            			{ "name":"remoteAddress","data": "remoteAddress" },
             			{ "name":"userAgent","data": "userAgent" },
             			{ "name":"createdAt", "data": "timeStamp" },
             			{ "name":"url","data": "url" },
@@ -477,7 +477,7 @@ stage.registerController("navController", function() {
 						url:data.response.data.payload["request"].url,
 						method:data.response.data.payload["request"].method,
 						status:data.response.data.payload["response"].statusCode,
-						ip:data.response.data.payload["request"].remoteAdress,
+						ip:data.response.data.payload["request"].remoteAddress,
 						request:data.response.data.payload["request"],
 						response:data.response.data.payload["response"],
 						security:data.response.data.payload["context_secure"],

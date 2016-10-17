@@ -87,7 +87,7 @@ nodefony.register("Request",function(){
 		this.contentType = this.getContentType(this.request);
 		this.charset = this.getCharset(this.request);
 		this.domain = this.getDomain();
-		this.remoteAdress = this.getRemoteAdress();
+		this.remoteAddress = this.getRemoteAddress();
 		this.data = new Array();
 		this.dataSize = 0;
 
@@ -212,7 +212,7 @@ nodefony.register("Request",function(){
 		//return this.host.split(":")[0];
 	};
 
-	Request.prototype.getRemoteAdress = function(){
+	Request.prototype.getRemoteAddress = function(){
 		// proxy mode
 		if ( this.headers && this.headers['x-forwarded-for'] ){
 			return this.headers['x-forwarded-for'] ;
