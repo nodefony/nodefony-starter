@@ -15,6 +15,7 @@ nodefony.registerEntity("requests", function(){
 		var model = db.define("requests", {
 				id		:	{type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
 				remoteAdress	:	{type:Sequelize.STRING },
+				userAgent	:	{type:Sequelize.STRING },
 				url		:	{type: Sequelize.TEXT },
 				route		:	{type:Sequelize.STRING },
 				method		:	{type:Sequelize.STRING },

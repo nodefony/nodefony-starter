@@ -153,7 +153,8 @@ nodefony.registerController("api", function(){
 				payload["state"] =  results.rows[i].state ;
 				payload["protocole"] =  results.rows[i].protocole ;
 				payload["remoteAdress"] =  results.rows[i].remoteAdress ;
-				dataTable.data.push(payload);	
+				payload["userAgent"] =  results.rows[i].userAgent ;
+				dataTable.data.push(payload);
 			}
 			return dataTable ;
 		}
@@ -232,7 +233,11 @@ nodefony.registerController("api", function(){
 							}
 						}.bind(this))
 						.then(function(result){
-							return this.renderDatatable(result);	
+							try{
+								return this.renderDatatable(result);
+							}catch(e){
+								throw e ;
+							}	
 						}.bind(this))
 						.catch(function(error){
 							if (error){

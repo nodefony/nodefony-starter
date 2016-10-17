@@ -311,11 +311,8 @@ stage.registerController("navController", function() {
 				}.bind(this)
 			
 			})
-		
 		}
 	};
-
-
 
 	/*
 	 *
@@ -333,7 +330,6 @@ stage.registerController("navController", function() {
 			error:function(xhr,stats,  error){
 				this.logger(error, "ERROR");
 			}.bind(this)
-		
 		})
 	};
 
@@ -376,10 +372,11 @@ stage.registerController("navController", function() {
 				"type": "GET",
 				//"dataSrc": "response.data",
 			},
-			"order": [[ 1, "desc" ]],
+			"order": [[ 3, "desc" ]],
 			"columns": [
             			{ "name":"id","data": "uid" },
             			{ "name":"remoteAdress","data": "remoteAdress" },
+            			{ "name":"userAgent","data": "userAgent" },
             			{ "name":"createdAt", "data": "timeStamp" },
             			{ "name":"url","data": "url" },
             			{ "name":"route","data": "route" },

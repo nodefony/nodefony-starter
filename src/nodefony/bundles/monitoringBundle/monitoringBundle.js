@@ -1,5 +1,6 @@
 var util = require('util');
 var Git = require("nodegit");
+var useragent = require('useragent');
 
 nodefony.registerBundle ("monitoring", function(){
 
@@ -206,6 +207,26 @@ nodefony.registerBundle ("monitoring", function(){
 				return ;
 			}
 
+			var agent = useragent.parse(context.request.headers['user-agent']);
+
+			var client = {};
+			var tmp = useragent.is(context.request.headers['user-agent']) 	
+			for (ele in tmp ){
+				if ( tmp[ele] === true ){
+					client[ele] = 	tmp[ele];
+				}
+				if (ele === "version"){
+					client[ele] = tmp[ele];	
+				}
+			}
+			var userAgent  ={
+				agent: agent.toAgent(),
+				toString:agent.toString(),
+				version:agent.toVersion(),
+				os:agent.os.toJSON(),
+				is:client
+			}
+
 			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
 
 			var trans = context.get("translation");
@@ -241,7 +262,8 @@ nodefony.registerBundle ("monitoring", function(){
 				locale:{
 					default:trans.defaultLocale,
 					domain:trans.defaultDomain
-				}
+				},
+				userAgent:userAgent
 			};
 
 			nodefony.extend(context.profiling, context.extendTwig);
@@ -596,6 +618,7 @@ nodefony.registerBundle ("monitoring", function(){
 					this.requestEntity.create({
 						id		: null,
 						remoteAdress	: context.profiling.context.remoteAddress,
+						userAgent	: context.profiling.userAgent.toString,
 						url		: context.profiling.request.url,
 						route		: context.profiling.route.name,
 						method		: context.profiling.request.method,
