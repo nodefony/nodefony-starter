@@ -12,6 +12,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 	var websocket = function(container, request, response ,type){
 		this.type = type ;
+		this.protocol = ( type === "WEBSOCKET SECURE" ) ? "wss" : "ws" ;
+		
 		this.container = container;
 		this.kernel = this.container.get("kernel") ;
 		if ( this.kernel.environment === "dev" ){
@@ -26,12 +28,29 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		//TODO acceptProtocol header sec-websocket-protocol   
 		this.connection = request.accept(null, this.origin);
 		this.response = new nodefony.wsResponse( this.connection ,container , type);
-		this.originUrl = url.parse( request.origin );
-		//this.remoteAddress = this.originUrl.hostname || request.httpRequest.headers['x-forwarded-for'] || request.httpRequest.connection.remoteAddress || request.remoteAddress ;
+
+		var myUrl = url.parse( this.protocol+"://" + this.request.host ) ;
+		myUrl.hash = this.request.resourceURL.hash
+		myUrl.search = this.request.resourceURL.search
+		myUrl.query = this.request.resourceURL.query
+		myUrl.pathname = this.request.resourceURL.pathname
+		myUrl.path = this.request.resourceURL.path
+
+		this.url =  url.format( myUrl ) ; 
+		this.port = myUrl.port ; 
+		this.domain = myUrl.hostname ; 
+		
+		try{
+			this.originUrl = url.parse( request.origin ); 
+		}catch(e){
+			this.originUrl = url.parse( this.url );	
+		}
+
 		this.secureArea = null ;
 		this.cookies = {};
 		this.domain =  this.getHostName();
 		this.validDomain = this.isValidDomain() ;
+		this.crossDomain = null ;  
 
 		this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 			remoteAddress:this.remoteAddress,
@@ -47,9 +66,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 		this.security = null ;
 		this.user = null ;
-
-		this.url = this.request.resourceURL.href;
-		
 
 		this.resolver = null ;
 		//  manage EVENTS
@@ -77,7 +93,11 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 	};
 
 	websocket.prototype.isValidDomain = function(){
-		return this.kernelHttp.isDomainAlias(  this.getHostName() );
+		return  this.kernelHttp.isValidDomain(   this );
+	}
+
+	websocket.prototype.isCrossDomain = function(){
+		return  this.kernelHttp.isCrossDomain( this );
 	}
 
 	websocket.prototype.getRemoteAddress = function(){
@@ -89,7 +109,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 	};
 
 	websocket.prototype.getHostName = function(){
-		return this.originUrl.hostname ;
+		return this.domain ; 
+		//return this.originUrl.hostname ;
 	};
 
 	websocket.prototype.getUserAgent = function(){

@@ -19,7 +19,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 	var Http = function(container, request, response, type){
 		this.type = type;
 		this.container = container; 
-		
+	
+		this.protocol = ( type === "HTTPS" ) ? "https" : "http" ;
 
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
@@ -42,8 +43,23 @@ nodefony.register.call(nodefony.context, "http", function(){
 			} ;
 		}
 		this.kernelHttp = this.container.get("httpKernel");
-		this.domain =  this.request.domain ; 
+		this.domain =  this.getHostName();  
+		  
+		this.url =url.format(this.request.url);
+		if ( this.request.url.port ){
+			this.port =  this.request.url.port;
+		}else{
+			this.port = this.protocol === "https" ?  443 : 80 ;    
+		}
+
+		try {
+			this.originUrl = url.parse( this.request.headers.origin || this.request.headers.referer ) ;
+		}catch(e){
+			this.originUrl = url.parse( this.url ) 	
+		}
+		
 		this.validDomain = this.isValidDomain() ;
+		this.crossDomain = null; 
 
 		this.logger("REQUEST "+request.method +" FROM : "+ this.request.remoteAddress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
 
@@ -53,7 +69,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.security = null ;
 		this.user = null ;
 
-		this.url =url.format(this.request.url);
+		
 		this.remoteAddress = this.request.remoteAddress ; 
 
 		// LISTEN EVENTS KERNEL 
@@ -72,8 +88,13 @@ nodefony.register.call(nodefony.context, "http", function(){
 	};
 
 	Http.prototype.isValidDomain = function(){
-		return this.kernelHttp.isDomainAlias(  this.getHostName() );
+		return   this.kernelHttp.isValidDomain( this );
+	};
+
+	Http.prototype.isCrossDomain = function(){
+		return  this.kernelHttp.isCrossDomain( this );
 	}
+
 
 	Http.prototype.getRemoteAddress = function(){
 		return this.request.getRemoteAddress() ;

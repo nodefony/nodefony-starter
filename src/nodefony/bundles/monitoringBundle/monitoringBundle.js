@@ -377,7 +377,6 @@ nodefony.registerBundle ("monitoring", function(){
 				remoteAddress:context.remoteAddress  ,
 				crossDomain:context.crossDomain
 			}
-			console.log(context.remoteAddress)
 
 			
 
@@ -405,7 +404,7 @@ nodefony.registerBundle ("monitoring", function(){
 					}
 					
 					context.profiling["request"] = {
-						url:context.request.url.href,
+						url:context.url,
 						method:context.request.method,
 						protocol:context.type,
 						remoteAddress:context.request.remoteAddress,
@@ -424,8 +423,6 @@ nodefony.registerBundle ("monitoring", function(){
 						encoding:context.response.encoding,
 						"content-type":context.response.response.getHeader('content-type')
 					};
-
-					
 					
 					context.listen(this, "onSendMonitoring", function(response, Context){
 						context.profiling["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
@@ -492,7 +489,7 @@ nodefony.registerBundle ("monitoring", function(){
 					//console.log(context.profiling["context"].remoteAddress)
 
 					context.profiling["request"] = {
-						url:context.request.httpRequest.url,
+						url:context.url,
 						headers:context.request.httpRequest.headers,
 						method:context.request.httpRequest.method,
 						protocol:context.type,
