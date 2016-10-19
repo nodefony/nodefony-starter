@@ -154,6 +154,8 @@ var foo = globalContainer.getParameters("config.foo");
 <strong>console.log(foo);</strong>
 bar
 
+
+
 		</pre>
 	</div>
 	
@@ -166,22 +168,30 @@ bar
 		Also the scope inherits all the changes of the parent   
 	</p>
 
-<pre>
+	<h3> Create Scope </h3>
+	<div class="doc3">
+		<p>
+		</p>
+
+		<pre>
+#!/usr/local/bin/node  
+
+// AUTOLOADER NODEFONY 
+var autoloader = require("../vendors/nodefony/core/autoloader");
 
 // CREATE INSTANCE OF CONTAINER 
 var globalContainer  = new nodefony.Container() ;
 	  	
 // CREATE SCOPE WITH NAME
-globalContainer.addScope("request");
+globalContainer.<strong>addScope</strong>("request");
 
-// CLONE  ;
+// enterScope CLONE  ;
 var scope = globalContainer.enterScope("request");	
 
 // now varaible scope is a clone of globalContainer 
 
-
 <strong>console.log( scope ) ;</strong>
-klass {
+Scope {
   name: 'request',
   parent: 
    Container {
@@ -216,10 +226,100 @@ Container {
   services: {},
   parameters: {} 
 }
+		</pre>
+
+	</div>
+
+	<h3> Leave Scope </h3>
+	<div class="doc3">
+		<p>
+		</p>
+
+		<pre>
+// CREATE INSTANCE OF CONTAINER 
+var globalContainer  = new nodefony.Container() ;
+	  	
+// CREATE SCOPE WITH NAME
+globalContainer.addScope("request");
+
+// enterScope CLONE1  ;
+var scope1 = globalContainer.enterScope("request");	
+
+// enterScope CLONE2
+var scope2 = globalContainer.enterScope("request");
+
+<strong>console.log( globalContainer )</strong>
+Container {
+  scope: { request: { HyxyhuGrke: [Object], ryZ1nOMryg: [Object] } },
+  services: {},
+  parameters: {} 
+}
+
+// to  detach scope1 to  container 
+globalContainer.<strong>leaveScope</strong>(scope1) ;
+
+<strong>console.log( globalContainer )</strong>
+Container {
+  scope: { request: { ryZ1nOMryg: [Object] } },
+  services: {},
+  parameters: {} 
+}
+
+// to  detach scope2 to  container 
+globalContainer.<strong>leaveScope</strong>(scope2) ;
+
+<strong>console.log( globalContainer )</strong>
+Container {
+  scope: { request: {} },
+  services: {},
+  parameters: {} 
+}
+// Now you can enterScope (clone) without call  addScope method
+		</pre>
+
+	</div>
 
 
+	<h3> Remove Scope </h3>
+	<div class="doc3">
+		<p>
+		</p>
 
-</pre>
+		<pre>
+// CREATE INSTANCE OF CONTAINER 
+var globalContainer  = new nodefony.Container() ;
+	  	
+// CREATE SCOPE WITH NAME
+globalContainer.addScope("request");
+
+// enterScope CLONE1  ;
+var scope1 = globalContainer.enterScope("request");	
+
+// enterScope CLONE2
+var scope2 = globalContainer.enterScope("request");
+
+<strong>console.log( globalContainer )</strong>
+Container {
+  scope: { request: { rJlSnYzHkl: [Object], SJbS2YMBJg: [Object] } },
+  services: {},
+  parameters: {} 
+}
+
+// to  remove all scopes  to  container and delete  
+globalContainer.<strong>removeScope</strong>("request") ;
+
+<strong>console.log( globalContainer )</strong>
+Container {
+  scope: {},
+  services: {},
+  parameters: {} 
+}
+// now who must call addScope method to enterScope 
+		</pre>
+
+	</div>
+
+
 </div>
 
 

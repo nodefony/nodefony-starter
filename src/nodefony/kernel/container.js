@@ -129,6 +129,16 @@ nodefony.register("Container", function(){
 		}
 	};
 
+	Container.prototype.removeScope = function(name){
+		if ( this.scope[name] ){
+			for( var scope in this.scope[name] ){
+				this.leaveScope(this.scope[name][scope]) ;
+			}
+			delete this.scope[name] ;
+		}
+	}
+
+
 
 	Container.prototype.setParameters = function(name, str){
 		if (typeof name !== "string"){
