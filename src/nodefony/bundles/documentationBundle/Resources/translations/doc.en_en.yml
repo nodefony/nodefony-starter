@@ -48,3 +48,5 @@ twig:                   "Engine Twig.js"
 extendTwig:             "Nodefony Extend Twig.js"
 
 flashMessage:           "Flash Messages"
+
+containerServices:      "Services Container"       

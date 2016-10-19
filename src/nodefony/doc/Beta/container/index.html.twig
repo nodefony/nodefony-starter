@@ -1,33 +1,8 @@
 <div class="page-header">
-  <h1><strong>Services And Container</strong> </h1>
-	<div class="alert alert-info" role="alert">
-		<h2><strong>
-			Services Container Nodefony  </br> 
-		</strong></h2>
-		<p>
-			Nodefony Kernel create an instance of class container. </br>
-			This container allows us to retrieve services to any level of code </br>	  
-			This one allows us to use the design pattern dependency injections 
-		</p>
-		
-	</div>
-		
-	<div class="alert alert-info" role="alert">
-
-		<h2>
-			<strong> Services Nodefony</strong>
-		</h2>
-		<p>
-			A service is an entity that can perform a work . </br>
-			A service provides good Maintenance and factorization of code </br>	  
-		</p>
-	</div>
-	<center>
-		<img src="/documentationBundle/images/container.png" />
-	</center>
+  <h1><strong>Services and Container</strong> </h1>
 
 </div>
-
+	
 <h2 > You can see here :</h2>
 
 <p>
@@ -35,66 +10,70 @@
 		
 	</ul>
 <p>
-
-
-<h2 name="" id="">Location  :</h2>
-
+	
 <div class="doc2">
-	<p>
+
+
+	<div class="well" >
+
+		<h2>
+			<strong> 
+				<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'services'} })}}">Services Nodefony</a>
+			</strong>
+		</h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				A service is an entity that can perform a work .  </br>
+				It's a sort of global task. he must be used globally in application.  </br>
+				
+				A service provides good Maintenance and factorization of code </br>	  
+			</p>
+			<p>
+					<img src="/documentationBundle/images/services.png" />
+			</p>
+		</div>
+	</div>
+
+	<div class="well" >
+		<h2><strong>
+			<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'containerServices'} })}}">Services Container Nodefony  </a>
+		</strong></h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				This container manage two differents entities the services and thes parameters. </br>
+				This container allows us to retrieve services and parameters to any level of code. </br>	  
+				This one allows us to use the design pattern dependency injections. 
+			</p>
+			<p>
+					<img src="/documentationBundle/images/container.png" />
+			</p>
+		</div>	
+		<div class="alert alert-info" >	
+			Nodefony Kernel create an instance of  container who registre all services existing in  config (Global container). </br>
+			Nodefony HttpKernel create a scope of  kernel container  on each request  (scope named : request )   . </br>
+
+		</div>	
 		
+	</div>
 
-	</p>
-
-	<pre>
-
-	</pre>
+	<div class="well" >
+		<h2>
+			<strong> 
+				<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'injection'} })}}">Dependency Injections  </a>
+			</strong>
+		</h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				Nodefony can manage all services by injection .</br>
+				During startup , autoloader load services and read config file services.xml in bunldle.<br>
+				This Part look in container global to find services to inject  and registre new service in container.<br>
+				The injection service is completely linked with the kernel service container     
+			</p>
+			<p>
+				<img src="/documentationBundle/images/injector.png" />
+			</p>
+		</div>	
+	</div>
 </div>
-
-
-
-
-<h2 name="" id="">Class Container :</h2>
-
-<div class="doc2">
-	<p>
-
-	</p>
-
-	<pre>
-
-	</pre>
-</div>
-
-
-<h2 name="" id="">Scope :</h2>
-
-<div class="doc2">
-	<p>
-		The scope of the container is a clever clone that allows you to add services without changing its parent container.</br>
-		But the scope inherits all the changes of the parent   
-	</p>
-
-	<pre>
-
-	</pre>
-</div>
-
-
-
-
-
-<h2 name="" id="">Class Service :</h2>
-
-<div class="doc2">
-	<p>
-		
-	</p>
-
-	<pre>
-
-	</pre>
-</div>
-
-
 
 
