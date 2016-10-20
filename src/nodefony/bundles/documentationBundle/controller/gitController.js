@@ -1,4 +1,8 @@
-var Git = require( 'nodegit' );
+try {
+	var Git = require("nodegit");
+}catch(e){
+	console.log(e);
+}
 var Promise = require('promise');
 
 nodefony.registerController("git", function(){

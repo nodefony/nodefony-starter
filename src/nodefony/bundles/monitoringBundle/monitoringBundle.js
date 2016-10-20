@@ -1,5 +1,9 @@
 var util = require('util');
-var Git = require("nodegit");
+try {
+	var Git = require("nodegit");
+}catch(e){
+	console.log(e);
+}
 var useragent = require('useragent');
 
 nodefony.registerBundle ("monitoring", function(){
@@ -32,11 +36,15 @@ nodefony.registerBundle ("monitoring", function(){
 		this.infoBundles = {};
 		
 		this.gitInfo = {} ;
-		Git.Repository.open(this.kernel.rootDir).then(function(repo){
-			repo.getCurrentBranch().then(function(reference){
-				this.gitInfo["currentBranch"] = reference.shorthand() ;	
-			}.bind(this));	
-		}.bind(this))
+		try {
+			Git.Repository.open(this.kernel.rootDir).then(function(repo){
+				repo.getCurrentBranch().then(function(reference){
+					this.gitInfo["currentBranch"] = reference.shorthand() ;	
+				}.bind(this));	
+			}.bind(this))
+		}catch(e){
+			this.gitInfo["currentBranch"] = null ;	
+		}
 
 
 		this.kernel.listen(this, "onPreBoot", function(kernel){

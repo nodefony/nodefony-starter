@@ -112,8 +112,10 @@ nodefony.registerService("firewall", function(){
 				if ( this.providerName in this.firewall.providers){
 					this.provider = this.firewall.providers[ this.providerName ].Class ;	
 				}else{
-					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
-					return ;
+					throw new Error ("PROVIDER : "+this.providerName +" NOT registered " );
+				}
+				if ( ! this.provider ){
+					throw new Error ( "PROVIDER CLASS: "+this.providerName +" CLASS NOT registered  check config file  "  )
 				}
 				this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 			}catch(e){
