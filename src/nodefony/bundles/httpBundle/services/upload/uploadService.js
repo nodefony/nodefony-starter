@@ -86,7 +86,6 @@ nodefony.registerService("upload", function(){
 	};
 
 	upload.prototype.createUploadFile = function(request, dataFile){
-
 		if ( dataFile.data.length > this.config.max_filesize ){ 
 			var uploadfile = new uploadedFile(null , null, dataFile, this);
 			uploadfile.error = "File Upload size exceeded ,File "+ uploadfile.filename +" : "+ uploadfile.lenght+ " size must be less than " +this.config.max_filesize + " Bytes " ;

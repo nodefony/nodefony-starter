@@ -46,7 +46,7 @@ nodefony.register("Request",function(){
 							}
 						}
 						this.logger("FORM  multipart/form-data   BUFFER SIZE : "+ this.body.length, "DEBUG");
-						nodefony.extend( this.query, this.queryFile);
+						//nodefony.extend( this.query, this.queryFile);
 					break;
 					case "application/x-www-form-urlencoded":
 						this.queryPost = QS.parse(this.body.toString(this.charset));
