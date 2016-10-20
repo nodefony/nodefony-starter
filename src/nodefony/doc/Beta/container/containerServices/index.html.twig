@@ -4,16 +4,25 @@
   <h1><strong>{{ "containerServices" | trans() }} </strong> </h1>
 	<p>
 		A services container is an entity that can regitrer services and parameters .<br>
-		His main interest is to have access to these resources from all over the code.<br>
-		It also manages scopes , a scope is a clone of container itself  that you can change witout alter this one     
+		its main interest is to have access to these resources from all over the code.<br>
+		     
 	</p>
+
 	<p>
 		<center>
 			<img src="/documentationBundle/images/container.png" />
 		</center>
 	</p>
+	<p>
+		Services Container also manages scopes .</br>
+		The notion of scope is a word recuperated from symfony2 . (deprecated in symfony3)</br>
+		It can not be the right word (scope) in nodefony ! </br>
+		In Nodefony a scope is a clone of container itself that you can change without alter this one</br>
+	</p>
 
-
+	<div class="alert alert-warning">
+		Nodefony don't manage container like symfony2 framework but is inspired  <br> 	
+	</div>
 		
 </div>
 	
@@ -87,6 +96,9 @@ Container {
 // AUTOLOADER NODEFONY 
 var autoloader = require("../vendors/nodefony/core/autoloader");
 
+// CREATE INSTANCE OF CONTAINER 
+var globalContainer  = new nodefony.Container() ;
+
 // CREATE CLASSS TO ADD 
 var myClass = function(){
 	this.settings = {
@@ -111,10 +123,12 @@ console.log( config )
 { foo: 'bar' }
 		</pre>
 
+			
 		<div class="alert alert-info">
 			
 			<p>  
 			IN NODEFONY FRAMEWORK  : <br>
+			Nodefony Kernel create an instance of container who registre all services existing in config (Global container). </br>
 			The injection service read config file <code>service.xml</code> to add services in container 	 
 			</p>  
 		</div>	
@@ -153,9 +167,6 @@ var config = globalContainer.getParameters("config");
 var foo = globalContainer.getParameters("config.foo");
 <strong>console.log(foo);</strong>
 bar
-
-
-
 		</pre>
 	</div>
 	
@@ -165,7 +176,8 @@ bar
 <div class="doc2">
 	<p>
 		The scope of the container is a clever clone that allows you to add services without changing its parent container.</br>
-		Also the scope inherits all the changes of the parent   
+		Also the scope inherits all the changes of the parent .  </br> 
+		You can use scope like container (set , get ...) a scope is a container .
 	</p>
 
 	<h3> Create Scope </h3>
@@ -227,8 +239,14 @@ Container {
   parameters: {} 
 }
 		</pre>
+		<div class="alert alert-info" >	
+			IN NODEFONY FRAMEWORK  : <br>
+			HttpKernel create a scope of  kernel container  (scope named : request )  and clone container on each request . </br>
+		</div>
 
 	</div>
+
+
 
 	<h3> Leave Scope </h3>
 	<div class="doc3">
