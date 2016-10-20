@@ -625,6 +625,7 @@ nodefony.registerBundle ("monitoring", function(){
 					return ;
 				break;
 				case "orm":
+					//console.log(context.profiling)
 					// DATABASE ENTITY
 					if ( context.profiling.context_secure ){
 						var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 

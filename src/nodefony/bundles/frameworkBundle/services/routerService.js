@@ -278,7 +278,7 @@ nodefony.registerService("router", function(){
 
 
 	var generateQueryString = function(obj, name){
-		var size = ( Object.keys(obj).length ) - 1;
+		var size = ( Object.keys(obj).length ) ;
 		if ( ! size ) return "" ; 
 		var str = "?";
 		if ( nodefony.typeOf(obj) !== "object" || obj === null){
@@ -288,7 +288,7 @@ nodefony.registerService("router", function(){
 		var iter = 1 ;
 		for (var ele in obj){
 			if (ele === "_keys") continue ;
-			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( iter == size ? "" : "&" )  ;
+			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter+1) >= size     ? "" : "&" )  ;
 			iter+=1 ;
 		}
 		return   str ; 
@@ -296,11 +296,11 @@ nodefony.registerService("router", function(){
 
 	Router.prototype.generatePath = function(name, variables, host){
 		var route =  this.getRoute(name) ;
-		var queryString = null ;
+		var queryString = variables ? variables["queryString"]: null ;
 		if (! route )
 			throw {error:"no route to host  "+ name};
 		var path = route.path;
-		if ( route.variables.length ){
+		if ( route.variables.length  || queryString  ){
 			if (! variables ){
 				var txt = "";
 				for (var i= 0 ; i < route.variables.length ;i++ ){

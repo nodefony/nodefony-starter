@@ -129,7 +129,6 @@ nodefony.registerController("finder", function(){
 			var path = query.get.path ;
 
 		// secure path
-		console.log( )
 		//var securePath = this.get("kernel").rootDir ;
 		var securePath = this.get("kernel").getBundles("demo").path ;
 		var reg = new RegExp( "^"+securePath )

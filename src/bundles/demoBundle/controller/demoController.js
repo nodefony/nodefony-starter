@@ -541,7 +541,7 @@ nodefony.registerController("demo", function(){
 	demoController.prototype.uploadAction = function(){
 	
 		var files = this.getParameters("query.files");
-		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
+		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;	
 		for (var file in files){
 			if( files[file].error ){
 				throw files[file].error ;
@@ -554,7 +554,7 @@ nodefony.registerController("demo", function(){
 		}
 		if ( ! this.isAjax() ){
 			//return this.forward("demoBundle:finder:index");
-			return this.redirect ( this.generateUrl("finder") );
+			return this.redirect ( this.generateUrl( "finder",{queryString:{"path":"/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/upload"}} ) );
 		}else{
 			var res = {
 				"files": [],
