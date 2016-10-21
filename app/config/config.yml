@@ -25,7 +25,7 @@
 #     APP CONFIG  
 name :				AppBundle
 locale :			en_en
-version :                       "1.0.0-beta"
+version :                       "Beta"
 App:
   projectName:                  "Demo" 
   projectYear:                  2015 
