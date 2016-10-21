@@ -250,7 +250,7 @@ $ make kill
 
 Access to monitoring route with URL : http://nodefony.com:5151/nodefony
 
-[![MONITORING](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/cluster.png)](https://github.com/ccamensuli/nodefony)
+[![MONITORING](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/Beta/cluster.png)](https://github.com/ccamensuli/nodefony)
 
 Monitoring in progress !!! 
 
