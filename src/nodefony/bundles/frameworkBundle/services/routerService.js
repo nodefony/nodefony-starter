@@ -6,6 +6,8 @@
  *
  */
 
+var Querystring = require('querystring');
+
 nodefony.registerService("router", function(){
 
 	/*
@@ -28,18 +30,20 @@ nodefony.registerService("router", function(){
 	};
 
 	Resolver.prototype.match = function(route, request){
-		var match = route.match(request); 
-		if ( match ){
-			this.variables = match;
-			this.request = request;
-			this.route = route;
-			this.parsePathernController(route.defaults.controller);
-			
-		}		
-		return match;
+		try {
+			var match = route.match(request); 
+			if ( match ){
+				this.variables = match;
+				this.request = request;
+				this.route = route;
+				this.parsePathernController(route.defaults.controller);
+				
+			}		
+			return match;
+		}catch(e){
+			throw e ;
+		}
 	};
-
-
 
 	var regAction =/^(.+)Action$/; 
 	Resolver.prototype.getAction= function(name){
@@ -72,15 +76,15 @@ nodefony.registerService("router", function(){
 			if ( this.controller ){
 				this.action = this.getAction(tab[2]);
 				if (! this.action ){
-					throw new Error("Resolver :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
+					throw new Error("Resolver "+ name +" :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
 				}
 			}else{
-				throw new Error("Resolver :controller not exist :"+tab[1] );
+				throw new Error("Resolver "+ name +" : controller not exist :"+tab[1] );
 			}
 			this.defaultView = this.getDefaultView(tab[1], tab[2] );
 			this.resolve = true;
 		}else{
-			throw new Error("Resolver :bundle not exist :"+tab[0] );
+			throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
 		}
 	};
 	
@@ -272,12 +276,31 @@ nodefony.registerService("router", function(){
 		this.syslog = this.container.get("syslog"); 
 	};
 
+
+	var generateQueryString = function(obj, name){
+		var size = ( Object.keys(obj).length ) ;
+		if ( ! size ) return "" ; 
+		var str = "?";
+		if ( nodefony.typeOf(obj) !== "object" || obj === null){
+			this.logger("BAD arguments queryString in route varaibles :" + name ,"WARNING");
+			return "";
+		}
+		var iter = 1 ;
+		for (var ele in obj){
+			if (ele === "_keys") continue ;
+			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter+1) >= size     ? "" : "&" )  ;
+			iter+=1 ;
+		}
+		return   str ; 
+	}
+
 	Router.prototype.generatePath = function(name, variables, host){
 		var route =  this.getRoute(name) ;
+		var queryString = variables ? variables["queryString"]: null ;
 		if (! route )
 			throw {error:"no route to host  "+ name};
 		var path = route.path;
-		if ( route.variables.length ){
+		if ( route.variables.length  || queryString  ){
 			if (! variables ){
 				var txt = "";
 				for (var i= 0 ; i < route.variables.length ;i++ ){
@@ -287,6 +310,10 @@ nodefony.registerService("router", function(){
 			}
 			for (var ele in variables ){
 				if (ele === "_keys") continue ;
+				if (ele === "queryString" ){
+ 				       	queryString = variables[ele] ;
+					continue ;
+				}
 				var index = route.variables.indexOf(ele);
 				if ( index >= 0 ){
 					path = path.replace("{"+ele+"}",  variables[ele]);
@@ -295,8 +322,12 @@ nodefony.registerService("router", function(){
 				}	
 			}	
 		}
-		if (host)
+		if ( queryString ){
+			path += generateQueryString.call(this, queryString, name);
+		}
+		if (host){
 			return host+path ;
+		}
 		return path ;
 
 	};
@@ -351,9 +382,13 @@ nodefony.registerService("router", function(){
 	};
 
 	Router.prototype.resolveName = function(container, name){
-		var resolver = new Resolver(container, this);	
-		var route = resolver.parsePathernController(name);
-		return resolver;
+		try {
+			var resolver = new Resolver(container, this);	
+			var route = resolver.parsePathernController(name);
+			return resolver;
+		}catch(e){
+			throw e ;
+		}
 	};
 
 	Router.prototype.createRoute = function(obj){

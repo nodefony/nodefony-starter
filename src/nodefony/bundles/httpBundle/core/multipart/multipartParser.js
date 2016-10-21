@@ -38,16 +38,16 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 		s = '\r\n' + s;
 
 		var parts = s.split(new RegExp(boundary));
-		//console.log(parts)
 		var partsByName = {post: {}, file: {}};
 
 		// loop boundaries  
 		for (var i = 1; i < parts.length - 1; i++) {
 			var obj = this.parseBoundary( parts[i], isRaw ) ;
-			if(obj.headers.filename){
-				this.file[obj.headers.name] = obj ;
+			var name = obj.headers.filename ;
+			if( obj.headers.filename ){
+				this.file[name] = obj ;
 	        	} else {
-				this.post[obj.headers.name] = obj ;
+				this.post[name] = obj ;
 	        	}
 		}
 	};

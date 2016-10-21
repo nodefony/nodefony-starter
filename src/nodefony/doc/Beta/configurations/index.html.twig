@@ -1,0 +1,223 @@
+{{trans_default_domain("doc")}}
+
+<div class="page-header">
+  <h1>{{ "configurations" | trans() | capitalize() }} </h1>
+</div>
+
+
+
+	<h2>Location configurations in File System  </h2>
+
+	<h3> CONFIGURATION FRAMEWORK : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Framework configuration ) </a> </h3>
+		<div class="doc3">
+			<p>
+				 In Root directory you can find a 'config' directory  <br>
+				
+			<p>
+			<pre>
+./config/
+
+├── certificates
+│   ├── letsCert.pem
+│   ├── letsChain.pem 
+│   ├── letsFullChain.pem 
+│   ├── letsKey.pem 
+├── config.yml 
+└── pm2.json
+			</pre>
+
+		</div>
+
+		<h3> CONFIGURATION BUNDLE APPLICATION : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}">( Application configuration ) </a>  </h3>
+		<div class="doc3">
+
+			<p>
+				 Bundle Application is a special bundle in  app directory you can find a 'config' directory  <br>
+				
+			<p>
+			<pre>
+app/config/
+
+├── config.yml
+├── routing.yml
+└── security.yml
+			</pre>
+		</div>
+
+		<h3> CONFIGURATION OF OTHER BUNDLES : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'bundle'} })}}">( Bundle configuration ) </a> </h3>
+		<div class="doc3">
+			<p>
+				 In Resources directory you can find a 'config' directory  <br>
+				
+			<p>
+			<pre>
+./src/nodefony/bundles/nameBundle/Resources/config/
+
+├── config.yml
+└── routing.yml
+			</pre>		
+
+		</div>	
+
+		<div class="doc3">
+			
+			<div class="alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only">Error:</span>
+				In Developement mode :  Nodefony kernel Don't reload config files,You must restart nodefony  !!!
+			</div>
+		</div>
+
+
+	<h2>Differents Nodefony configurations Files </h2>
+	<div class="doc2" >
+		Nodefony manage differents config files that you can find throughout your development. 
+	</div>
+
+	<h3> Global Configuration  : <code>config.yml</code> </h3>
+	<h3> Routing Configuration  : <code>routing.yml</code> </h3>
+	<h3> Services Configuration  : <code>services.xml</code> </h3>
+	<h3> Firewall Configuration  : <code>security.yml</code> </h3>
+	
+	<h2> Global Configuration  : <code>config.yml</code> </h2>
+
+	<div class="doc2">
+		<p>
+			This file manage the global paramaters of an entity :  <br> 
+
+			<ul> 
+				<li>config.yml in root path manage framework configuration <code>./config/config.yml</code></li>
+				<li>config.yml in app bundle manage Application configuration <code>./app/config/config.yml</code> </li>
+				<li>config.yml in bundles manage bundle configuration <code>./src/bundles/demoBundle/Ressources/config/config.yml</code></li>
+			</ul>
+		</p>
+		<h4>How to use this parameters : </h4>
+		<div class="doc4">
+			There are different ways to access these configuration variables 
+			<ul> 
+				</li>
+				<li>In controller By Kernel Service Container <code> this.getParameters("bundles.App") </code>
+				<pre>
+nodefony.registerController("default", function(){
+		
+	var defaultController = function(container, context){
+		this.mother = this.$super;
+		this.mother.constructor(container, context);
+	};
+	
+	defaultController.prototype.indexAction = function(version){
+		// GET config bundle App
+		<strong> var bundleAppSettings = this.getParameters("bundles.App") ;</strong>
+		//// GET config bundle http
+		<strong> var bundleHttpSettings = this.getParameters("bundles.http") ;</strong>
+		
+		return this.renderJson(bundleAppSettings);		
+	};
+
+	return defaultController;
+});
+				</pre>
+				</li>
+				<li>In Kernel you can find  <code> this.settings </code> with framework configuration 
+				<pre>
+defaultController.prototype.indexAction = function(version){
+	// GET kernel service and get config
+	var kernelGlobalSettings = this.get("kernel").settings ;
+	
+	return this.renderJson(kernelGlobalSettings);		
+};
+				</pre>
+				</li>
+				<li>In Bundle you can find <code> this.settings </code> with bundle configuration  
+				<pre>
+defaultController.prototype.indexAction = function(version){
+	// GET kernel service , get demo bundle  config
+	var demoBundleGlobalSettings = this.get("kernel").getBundle("demo").settings ;
+	
+	return this.renderJson(demoBundleGlobalSettings);		
+};
+
+				</pre>
+				<li>Everywhere you can find global variables by Kernel Service Container  
+					<pre>
+nodefony.registerService("myService", function(){
+
+	var myService = function(kernel, container){
+		this.kernel = kernel ;
+		this.container = container ;
+		this.name = "myService";
+	
+	}
+
+	myService.prototype.myFunction = function(file  ,done){
+		<strong>var kernelGlobalSettings = this.container.getParameters("kernel") ;</strong>
+	}
+
+	return myService ;
+});
+					</pre>
+				</li>
+
+			</ul>
+	
+		</div>
+
+	</div>
+	
+	<h2>Override GLOBAL CONFIGURATION from Third-Party Bundles :</h2>
+	<div class="doc2">
+		<p>
+			To override global configuration from Third-Party Bundles you can write in config.yml (root yaml node) the full name of bundle	
+		</p>
+		<div class="alert  alert-info" role="alert">
+			WARNING to the order Registration bundles <br>
+			If you want override a config of Third-Party bundle, this one must be register before the bundle config file  who make the override
+		</div>
+		Example <code>./app/config/config.yml </code>	
+		<pre>
+#./app/config/config.yml
+
+....
+
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+<strong>monitoringBundle:</strong>
+debugBar:                     true
+#storage:                      false
+
+
+#
+#       OVERRIDE BUNDLE ASSETIC
+#
+#       
+#
+<strong>asseticBundle:</strong>
+less:
+ compress:                     true
+ cache:                        true
+CDN:
+ javascripts:		  cdn.nodefony.com
+ stylesheets:		  cdn.nodefony.com
+
+....
+
+
+// STARTED NODEFONY SYSLOG :   
+Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
+Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
+		</pre>	
+		
+	</div>
+
+
+
+
+
+
+
+
+

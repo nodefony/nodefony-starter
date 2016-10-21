@@ -16,7 +16,7 @@ stage.register.call(stage.io.transports, "websocket",function(){
 
 	var websocket = function(url, settings){
 		if (url){
-			this.$super.constructor(url, settings, this)		
+			this.$super.constructor(url, settings, this)
 			this.connect(url, settings);
 		}else{
 			this.$super.constructor();
@@ -26,7 +26,7 @@ stage.register.call(stage.io.transports, "websocket",function(){
 
 
 	websocket.prototype.connect = function(url, settings){
-		this.socket = new WebSocket(url);
+		this.socket = new WebSocket(url,settings.protocol );
 		this.socket.onmessage = this.listen(this, "onMessage");
 		this.socket.onerror = this.listen(this, "onError");
 		this.socket.onopen = this.listen(this, "onConnect");

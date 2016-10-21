@@ -23,6 +23,10 @@ nodefony.registerService("httpKernel", function(){
 		this.engineTemplate = this.container.get("templating");
 		//this.settings =  this.container.getParameters("bundles.http");
 
+		this.domain = this.kernel.domain;
+		this.httpPort = this.kernel.httpPort;
+		this.httpsPort = this.kernel.httpsPort;
+
 		this.container.addScope("request");
 		this.kernel.listen(this, "onServerRequest" , function(request, response, type, domain){
 			try {
@@ -53,9 +57,14 @@ nodefony.registerService("httpKernel", function(){
 
 	httpKernel.prototype.compileAlias = function(){
 
+		if ( ! this.kernel.domainAlias ){
+			var str = "^"+this.kernel.domain+"$" ;
+			this.regAlias = new RegExp(str);
+			return ;	
+		}
 		try {
 			var alias = [] ;
-			if ( this.kernel.domainAlias && typeof this.kernel.domainAlias === "string" ){
+			if (  typeof this.kernel.domainAlias === "string" ){
 				var alias = this.kernel.domainAlias.split(" ");
 				Array.prototype.unshift.call(alias,  "^"+this.kernel.domain+"$" );
 				var str = "";
@@ -70,16 +79,97 @@ nodefony.registerService("httpKernel", function(){
 				}
 
 			}else{
-				this.logger("Config file bad format for domain alias ", "ERROR", "HTTP KERNEL DOMAIN");	
+				throw new Error ("Config file bad format for domain alias must be a string ")
 			}
 		}catch(e){
 			throw e ;
 		}
 	}
 
-	httpKernel.prototype.isDomainAlias = function(host){
-		return this.regAlias.test(host);
+	httpKernel.prototype.isValidDomain = function(context){
+		return this.regAlias.test(context.domain);
 	}
+
+
+	httpKernel.prototype.isCrossDomain = function(context){
+
+		// request origin 
+		var URL = context.originUrl ;
+		var hostnameOrigin = URL.hostname ;
+		var portOrigin = URL.port ;
+
+		// request server
+		var requestProto = context.protocol ; 
+		var requestPort = context.port ;
+
+		if ( context.session ){
+			var redirect = 	context.session.getFlashBag("redirect" ) 
+			if ( redirect )
+				return false  ;
+		}
+		
+		//console.log( "prototcol ::::" + URL.protocol )
+		if ( ! portOrigin ){
+			if (URL.protocol === "http:" ){
+				URL.port = 80 ;
+				portOrigin = 80 ;
+			}
+			if ( URL.protocol === "https:" ){
+				URL.port = 443 ;
+				portOrigin = 443 ;	
+			}	
+		}
+		//console.log( "portOrigin ::::" + portOrigin )
+
+
+	
+		//console.log( context.proxy )
+		if (  context.proxy  ){
+			requestProto = context.proxy.proxyProto ;	
+			requestPort =	context.proxy.proxyPort	
+		}
+		
+		//console.log( "requestProto : " + requestProto)
+		switch  ( requestProto ){
+			case "http" :
+			case "https" :
+				if ( context.proxy ){
+				}else{
+				}
+				var protocolOrigin = URL.protocol ;
+			break;
+			case "ws" :
+			case "wss" :
+
+				if ( URL.protocol === "http:" )
+					var protocolOrigin = "ws:" ;
+				if ( URL.protocol === "https:" )
+					var protocolOrigin = "wss:" ;
+			break;
+		}
+
+		//console.log( "check domain Request:" + this.regAlias.test( hostnameOrigin ) +" Origin : "+hostnameOrigin)		
+		//check domain
+		if (  ! this.regAlias.test( hostnameOrigin )  ){
+			return true ; 
+		}
+
+		//console.log( "check protocol Request:" + requestProto +" Origin : "+protocolOrigin)		
+		// check protocol  	
+		if (requestProto+":" !== protocolOrigin  ){
+			return true 
+		}
+
+		//console.log( "check port Request:" + requestPort +" Origin : "+portOrigin)		
+		// check port
+		if (requestPort != portOrigin  ){
+			return true 
+		}
+		
+		return false ;
+	}
+
+
 
 	
 	httpKernel.prototype.getEngineTemplate = function(name){
@@ -233,6 +323,38 @@ nodefony.registerService("httpKernel", function(){
 		}
 	}
 
+
+	httpKernel.prototype.checkValidDomain = function(context){
+		if ( context.validDomain ){
+			var next =  200 ;
+		}else{
+			var next = 401 ;
+		}
+		switch (next){
+			case 200 :
+				return next ;
+			break;
+			default:
+				switch ( context.type ){
+					case "HTTP":
+					case "HTTPS":
+						this.logger("\033[31m  DOMAIN Unauthorized \033[0mREQUEST DOMAIN : " + context.domain ,"ERROR");
+						context.notificationsCenter.fire("onError",context.container, {
+							status:next,
+							message:"Domain : "+context.domain+" Unauthorized "
+						});
+					break;
+					case "WEBSOCKET":
+					case "WEBSOCKET SECURE":
+						context.close(3001,  "DOMAIN Unauthorized "+ context.domain );
+					break;
+				}
+				
+			break;
+		}
+		return next  ;	
+	}
+
 	//  build response
 	httpKernel.prototype.handle = function(request, response, type, domain){
 
@@ -248,24 +370,10 @@ nodefony.registerService("httpKernel", function(){
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
-				var context = new nodefony.io.transports.http(container, request, response, type);
+				var context = new nodefony.context.http(container, request, response, type);
 				container.set("context", context);
 				
-				//request events	
-				context.notificationsCenter.listen(this, "onError", this.onError);
-				
-				var resolver  = this.get("router").resolve(container, request);
-				if (resolver.resolve) {
-					context.resolver = resolver ;	
-				}else{
-					var error = new Error("Not Found", 404);	
-					return context.notificationsCenter.fire("onError", container, {
-						status:404,
-						error:"URI :" + request.url,
-						message:"not Found"
-					});
-				}
-
+				// PROXY
 				if ( request.headers["x-forwarded-for"] ){
 					//console.log(request.headers)
 					if ( request.headers["x-forwarded-proto"] ){
@@ -284,9 +392,15 @@ nodefony.registerService("httpKernel", function(){
 					//var destURL = protocole+context.proxy.proxyHost+":"+port ;
 				}
 
-				this.kernel.fire("onHttpRequest", container, context, type);
+				context.crossDomain = context.isCrossDomain() ;
+				//console.log( context.crossDomain  )
+
+
 				//twig extend context
 				context.extendTwig = {
+					nodefony:{
+						url:context.request.url
+					},
 					render:render,
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
@@ -296,25 +410,41 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
+				
+				//request events	
+				context.notificationsCenter.listen(this, "onError", this.onError);
+				
+				try {
+					var resolver  = this.get("router").resolve(container, request);
+				}catch(e){
+					return context.notificationsCenter.fire("onError", container, e );	
+				}
+				if (resolver.resolve) {
+					context.resolver = resolver ;	
+				}else{
+					//var error = new Error("Not Found", 404);	
+					return context.notificationsCenter.fire("onError", container, {
+						status:404,
+						error:"URI :" + request.url,
+						message:"not Found"
+					});
+				}
+
+				this.kernel.fire("onHttpRequest", container, context, type);
 
 				//response events	
 				context.response.response.on("finish",function(){
 					context.fire("onFinish", context);
 					this.container.leaveScope(container);
-					//if ( ! context.session  ){
-						delete context.extendTwig ;
-						if (context.proxy) delete context.proxy ;
-						context.clean();
-						delete context;	
-						delete request ;
-						delete response ;
-					//}
-					
-					//if (context.profiling) delete context.profiling ;
+					delete context.extendTwig ;
+					if (context.proxy) delete context.proxy ;
+					context.clean();
+					delete context;	
+					delete request ;
+					delete response ;
 					delete container ;
 					delete translation ;
 					if (domain) {
-						//domain.return(context);
 						delete domain.container ;
 						delete domain ;
 					}
@@ -343,25 +473,16 @@ nodefony.registerService("httpKernel", function(){
 			break;
 			case "WEBSOCKET" :
 			case "WEBSOCKET SECURE" :
-				var context = new nodefony.io.transports.websocket(container, request, response, type);
+				var context = new nodefony.context.websocket(container, request, response, type);
 				container.set("context", context);
-				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
-				var resolver  = this.get("router").resolve(container, request);
-				if (resolver.resolve) {
-					context.resolver = resolver ;	
-				}else{
-					var error = new Error("Not Found", 404);	
-					return context.notificationsCenter.fire("onError", container, {
-						status:404,
-						error:"URI :" + request.url,
-						message:"not Found"
-					});
-				}
+				context.crossDomain = context.isCrossDomain() ;
 
-				this.kernel.fire("onWebsocketRequest", container, context, type);
 				//twig extend context
 				context.extendTwig = {
+					nodefony:{
+						url:context.originUrl
+					},
 					render:render.bind(container),
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
@@ -371,6 +492,23 @@ nodefony.registerService("httpKernel", function(){
 					},
 					getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
 				}
+
+				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
+
+				var resolver  = this.get("router").resolve(container, request);
+				if (resolver.resolve) {
+					context.resolver = resolver ;	
+				}else{
+					//var error = new Error("Not Found", 404);	
+					return context.notificationsCenter.fire("onError", container, {
+						status:404,
+						error:"URI :" + request.url,
+						message:"not Found"
+					});
+				}
+
+				this.kernel.fire("onWebsocketRequest", container, context, type);
+				
 				context.listen(this,"onClose" , function(reasonCode, description){
 					context.fire("onFinish", context, reasonCode, description);
 					delete 	context.extendTwig ;
@@ -409,5 +547,6 @@ nodefony.registerService("httpKernel", function(){
 		this.kernel.fire("onSecurity", context);
 	};
 
+	
 	return httpKernel ;
 });

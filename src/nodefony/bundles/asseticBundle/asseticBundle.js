@@ -282,9 +282,11 @@ nodefony.registerBundle ("assetic", function(){
 
 	assetic.prototype.createExtendJavascript = function(){
 		//TODO
-		this.engineTwig.extendFunction("javascripts", function(value, times) {
+		/*this.engineTwig.extendFunction("javascripts", function(value, times) {
 			console.log(arguments)
-		});
+		});*/
+
+		var that = this ;
 
 		this.engineTwig.extend(function(Twig) {
 			
@@ -319,7 +321,12 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
-					context["asset_url"] = token.assetic.output ;
+					var cdn = that.settings.CDN.javascripts;
+					if (cdn){
+						context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+					}else{
+						context["asset_url"] = token.assetic.output ;
+					}
                 			output = Twig.parse.apply(this, [token.output, context]);
             				return {
                 				chain: chain,
@@ -340,10 +347,11 @@ nodefony.registerBundle ("assetic", function(){
 
 	assetic.prototype.createExtendStylesheets = function(){
 		//TODO
-		this.engineTwig.extendFunction("stylesheets", function(value, times) {
+		/*this.engineTwig.extendFunction("stylesheets", function(value, times) {
 			console.log(arguments)
-		});
-
+		});*/
+		
+		var that = this ;
 		this.engineTwig.extend(function(Twig) {
 			
     			Twig.exports.extendTag({
@@ -379,7 +387,12 @@ nodefony.registerBundle ("assetic", function(){
             				return token;
         			}.bind(this),
         			parse: function (token, context, chain) {
-					context["asset_url"] = token.assetic.output ;
+					var cdn = that.settings.CDN.stylesheets ;
+					if (cdn){
+						context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+					}else{
+						context["asset_url"] = token.assetic.output ;
+					}
                 			output = Twig.parse.apply(this, [token.output, context]);
 					//console.log("PARSE : " + token.assetic.output)
             				return {

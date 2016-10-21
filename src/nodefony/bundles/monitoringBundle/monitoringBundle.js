@@ -1,5 +1,10 @@
 var util = require('util');
-var Git = require("nodegit");
+try {
+	var Git = require("nodegit");
+}catch(e){
+	console.log(e);
+}
+var useragent = require('useragent');
 
 nodefony.registerBundle ("monitoring", function(){
 
@@ -31,11 +36,15 @@ nodefony.registerBundle ("monitoring", function(){
 		this.infoBundles = {};
 		
 		this.gitInfo = {} ;
-		Git.Repository.open(this.kernel.rootDir).then(function(repo){
-			repo.getCurrentBranch().then(function(reference){
-				this.gitInfo["currentBranch"] = reference.shorthand() ;	
-			}.bind(this));	
-		}.bind(this))
+		try {
+			Git.Repository.open(this.kernel.rootDir).then(function(repo){
+				repo.getCurrentBranch().then(function(reference){
+					this.gitInfo["currentBranch"] = reference.shorthand() ;	
+				}.bind(this));	
+			}.bind(this))
+		}catch(e){
+			this.gitInfo["currentBranch"] = null ;	
+		}
 
 
 		this.kernel.listen(this, "onPreBoot", function(kernel){
@@ -65,7 +74,7 @@ nodefony.registerBundle ("monitoring", function(){
 		});
 
 
-		this.kernel.listen(this, "onReady", function(kernel){
+		this.kernel.listen(this, "onPostReady", function(kernel){
 
 			if ( this.settings.storage ){
 				this.storageProfiling = this.settings.storage.requests ;
@@ -202,23 +211,53 @@ nodefony.registerBundle ("monitoring", function(){
 
 			context.profiling = null ;
 
-			var stop = this.storageProfiling && this.settings.debugBar ;
-			if( ! stop){
+			if ( ! this.isMonitoring(context) ){
 				return ;
-			} 
+			}
 
-			if ( context.resolver.route.name.match(/^monitoring-/) )
-				return ;
+			try {
+				if ( context.request.headers ){
+					var agent = useragent.parse(context.request.headers['user-agent']);
+					var tmp = useragent.is(context.request.headers['user-agent'])
+				}else{
+					var agent = useragent.parse(context.request.httpRequest.headers['user-agent']);
+					var tmp = useragent.is(context.request.httpRequest.headers['user-agent'])
+				}
 
-			if ( ! context.resolver.resolve )
-				return ;
+				var client = {};
+				for (ele in tmp ){
+					if ( tmp[ele] === true ){
+						client[ele] = 	tmp[ele];
+					}
+					if (ele === "version"){
+						client[ele] = tmp[ele];	
+					}
+				}
+				var userAgent  ={
+					agent: agent.toAgent(),
+					toString:agent.toString(),
+					version:agent.toVersion(),
+					os:agent.os.toJSON(),
+					is:client
+				}
+			}catch(e){
+				var userAgent  ={
+					agent: null,
+					toString:null,
+					version:null,
+					os:null,
+					is:null
+				}	
+			}
 
+			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
 
 			var trans = context.get("translation");
 			context.profiling = {
 				id:null,
 				bundle:context.resolver.bundle.name,
 				bundles:this.bundles,
+				cdn:settingsAssetic.CDN || null ,
 				pwd:process.env["PWD"],
 				node:this.node,
 				services:this.service,
@@ -246,9 +285,13 @@ nodefony.registerBundle ("monitoring", function(){
 				locale:{
 					default:trans.defaultLocale,
 					domain:trans.defaultDomain
-				}
+				},
+				userAgent:userAgent
 			};
+
 			nodefony.extend(context.profiling, context.extendTwig);
+
+			
 
 			for(var event in context.notificationsCenter.event["_events"] ){
 				if ( event == "onRequest"){
@@ -339,9 +382,11 @@ nodefony.registerBundle ("monitoring", function(){
 				secureArea:context.secureArea,
 				domain:context.domain,
 				url:context.url,
-				remoteAddress:context.remoteAddress,
+				remoteAddress:context.remoteAddress  ,
 				crossDomain:context.crossDomain
 			}
+
+			
 
 			switch (context.type){
 				case "HTTP":
@@ -367,10 +412,10 @@ nodefony.registerBundle ("monitoring", function(){
 					}
 					
 					context.profiling["request"] = {
-						url:context.request.url.href,
+						url:context.url,
 						method:context.request.method,
 						protocol:context.type,
-						remoteAdress:context.request.remoteAdress,
+						remoteAddress:context.request.remoteAddress,
 						queryPost:context.request.queryPost,
 						queryGet:context.request.queryGet,
 						headers:context.request.headers,
@@ -387,7 +432,7 @@ nodefony.registerBundle ("monitoring", function(){
 						"content-type":context.response.response.getHeader('content-type')
 					};
 					
-					context.listen(this, "onSend", function(response, Context){
+					context.listen(this, "onSendMonitoring", function(response, Context){
 						context.profiling["timeRequest"] = (new Date().getTime() ) - (context.request.request.nodefony_time )+" ms";
 						context.profiling["response"] = {
 							statusCode:response.statusCode,
@@ -397,35 +442,44 @@ nodefony.registerBundle ("monitoring", function(){
 							"content-type":response.response.getHeader('content-type'),
 							headers:response.response._headers	
 						}
-						
-						if( !  context.request.isAjax() /*&& obj.route.name !== "monitoring"*/ ){
-							var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-							if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-								this.get("templating").renderFile(View, context.profiling,function(error , result){
-									if (error){
-										throw error ;
-									}
-									response.body = response.body.replace("</body>",result+"\n </body>") ;
-								});
-							}else{
-								//context.setXjson(context.profiling);
+						this.saveProfile(context, function(error, res){
+							if (error){
+								this.kernel.logger(error);
 							}
-						}else{
-							//context.setXjson(context.profiling);	
-						}
+							if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
+								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+								if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
+									this.get("templating").renderFile(View, context.profiling,function(error , result){
+										if (error){
+											throw error ;
+										}
+										response.body = response.body.replace("</body>",result+"\n </body>") ;
+									});
+								}else{
+									//context.setXjson(context.profiling);
+								}
+							}else{
+								//context.setXjson(context.profiling);	
+							}
+							
+							/*
+ 	 						 *  WRITE RESPONSE
+ 	 						 */  
+							if ( context && context.response ){
+								context.response.write();
+								// END REQUEST
+								return context.close();
+
+							}
+							throw new Error ("MONITORING CAN SAVE REQUEST") ;
+							
+						}.bind(this));
 					})
-					context.listen(this, "onFinish",function(Context){
-						if (context.profiling){
-							this.saveProfile(context, function(error, res){
-								if (error){
-									this.kernel.logger(error);
-								}
-								if (context){
-									delete context.profiling ;	
-								}
-							}.bind(this));
-						}
-					}.bind(this));
+					
+					
+					/*context.listen(this, "onFinish",function(Context){
+						console.log("PASS");	
+					}.bind(this));*/
 
 				break;
 				case "WEBSOCKET":
@@ -439,12 +493,15 @@ nodefony.registerBundle ("monitoring", function(){
 						configServer[conf] = context.request.serverConfig[conf];	
 					}
 
+					//console.log(context.request.remoteAddress)
+					//console.log(context.profiling["context"].remoteAddress)
+
 					context.profiling["request"] = {
-						url:context.request.httpRequest.url,
+						url:context.url,
 						headers:context.request.httpRequest.headers,
 						method:context.request.httpRequest.method,
 						protocol:context.type,
-						remoteAdress:context.request.remoteAddress,
+						remoteAddress:context.request.remoteAddress,
 						serverConfig:configServer,
 					};
 					var config = {};
@@ -515,12 +572,27 @@ nodefony.registerBundle ("monitoring", function(){
 				}
 				context.profiling["twig"].push({
 					file:view,
-					param:viewParam
+					//param:viewParam
 				});
 			});
 		});
 	}		
 	
+
+	monitoring.prototype.isMonitoring = function(context){
+		var stop = this.storageProfiling && this.settings.debugBar ;
+		if( ! stop){
+			return false;
+		} 
+
+		if ( context.resolver.route.name.match(/^monitoring-/) )
+			return false;
+
+		if ( ! context.resolver.resolve )
+			return false;
+		return true ;
+	}
+
 	monitoring.prototype.updateProfile = function( context , callback){
 		if ( context.profiling) {
 			switch( this.storageProfiling ){
@@ -537,7 +609,7 @@ nodefony.registerBundle ("monitoring", function(){
     							id:context.profiling.id,
   						}
 					}).then(function(result){
-						this.kernel.logger("ORM REQUEST UPDATE","DEBUG");
+						this.kernel.logger("ORM REQUEST UPDATE ID : " + context.profiling.id,"DEBUG");
 						callback(null, result);
 					}.bind(this)).catch(function(error){
 						this.kernel.logger(error);
@@ -551,44 +623,48 @@ nodefony.registerBundle ("monitoring", function(){
 	}
 
 	monitoring.prototype.saveProfile = function(context , callback){
-
-		switch( this.storageProfiling ){
-			case "syslog" :
-				this.syslogContext.logger(context.profiling);
-				var logProfile = this.syslogContext.getLogStack();
-				context.profiling.id = logProfile.uid ;
-				callback(null, logProfile)
-				return ;
-			break;
-			case "orm":
-				// DATABASE ENTITY
-				if ( context.profiling.context_secure ){
-					var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 
-				}else{
-					var user = "none" ;	
-				}
-				this.requestEntity.create({
-					id		: null,
-					url		: context.profiling.request.url,
-					route		: context.profiling.route.name,
-					method		: context.profiling.request.method,
-					state		: context.profiling.response.statusCode,
-					protocole	: context.profiling.context.type,
-					username	: user,
-					data		: JSON.stringify(context.profiling) 
-				},{isNewRecord:true})
-				.then(function(request){
-					this.kernel.logger("ORM REQUEST SAVE","DEBUG");
-					if ( context && context.profiling)
-						context.profiling.id = request.id ;
-					callback(null ,  request);
-				}.bind(this)).catch(function(error){
-					this.kernel.logger(error);
-					callback(error, null)
-				}.bind(this));
-			break;
-			default:
-				callback(new Error("No PROFILING"), null)
+		if (context.profiling){
+			switch( this.storageProfiling ){
+				case "syslog" :
+					this.syslogContext.logger(context.profiling);
+					var logProfile = this.syslogContext.getLogStack();
+					context.profiling.id = logProfile.uid ;
+					callback(null, logProfile)
+					return ;
+				break;
+				case "orm":
+					//console.log(context.profiling)
+					// DATABASE ENTITY
+					if ( context.profiling.context_secure ){
+						var user = context.profiling.context_secure.user ? context.profiling.context_secure.user.username : "anonymous" ; 
+					}else{
+						var user = "none" ;	
+					}
+					this.requestEntity.create({
+						id		: null,
+						remoteAddress	: context.profiling.context.remoteAddress,
+						userAgent	: context.profiling.userAgent.toString,
+						url		: context.profiling.request.url,
+						route		: context.profiling.route.name,
+						method		: context.profiling.request.method,
+						state		: context.profiling.response.statusCode,
+						protocole	: context.profiling.context.type,
+						username	: user,
+						data		: JSON.stringify(context.profiling) 
+					},{isNewRecord:true})
+					.then(function(request){
+						this.kernel.logger("ORM REQUEST SAVE ID :" + request.id ,"DEBUG");
+						if ( context && context.profiling)
+							context.profiling.id = request.id ;
+						callback(null ,  request);
+					}.bind(this)).catch(function(error){
+						this.kernel.logger(error);
+						callback(error, null)
+					}.bind(this));
+				break;
+				default:
+					callback(new Error("No PROFILING"), null)
+			}
 		}
 	}
 

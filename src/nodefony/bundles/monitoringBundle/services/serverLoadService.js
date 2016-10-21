@@ -229,8 +229,7 @@ nodefony.registerService("serverLoad", function(){
 
 	testLoad.prototype.HttpRequest = function(){
 
-		
-
+	
 		var options = {
 			url: this.options.url,
 			method:this.options.method || "GET" ,
@@ -238,7 +237,8 @@ nodefony.registerService("serverLoad", function(){
 			followRedirect:true,
 			agentOptions:this.agentOptions,
 			headers: {
-				'User-Agent': 'NODEFONY'
+				//'User-Agent': 'NODEFONY'
+				'User-Agent': this.manager.userAgent
 			},
 			jar:null
 		};
@@ -303,7 +303,7 @@ nodefony.registerService("serverLoad", function(){
 		this.kernel = kernel ;
 		this.name ="serverLoad" ;
 		this.connections = {} ;
-
+		this.userAgent = "nodefony/"+ this.kernel.settings.system.version +" ("+process.platform+";"+process.arch+") V8/" +process.versions.v8 +" node/"+process.versions.node;
 	};
 
 	service.prototype.logger = function(pci, severity, msgid,  msg){

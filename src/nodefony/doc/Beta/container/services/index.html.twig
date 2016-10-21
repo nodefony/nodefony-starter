@@ -1,0 +1,286 @@
+{{trans_default_domain("doc")}}
+
+
+<div class="page-header">
+  <h1><strong>Services</strong> </h1>
+
+	<p>
+		Examples Services in nodefony core :
+		<center>
+			<img src="/documentationBundle/images/services.png" />
+		</center>
+	</p>
+
+</div>
+	
+<h2 > You can see here :</h2>
+
+<p>
+	<ul>
+		<li> <a href="#location">Location Services</a></li>	
+		<li> <a href="#file">File Services</a></li>	
+		<li> <a href="#service"> Services Usage</a></li>
+	</ul>
+<p>
+
+
+
+
+
+
+		
+
+<h2  id="location">Location  Services:</h2>
+
+
+<div class="doc2">
+	<p>
+		You can find or add controllers in bundle repository under <code>services</code> directory .		
+
+	</p>
+
+	<pre>
+$ ll src/nodefony/bundles/documentationBundle/
+total 24
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 Command
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 Entity
+drwxr-xr-x  6 cci  staff   204 22 jui 13:57 Resources
+drwxr-xr-x  4 cci  staff   136 18 oct 16:18 controller
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 core
+drwxr-xr-x  5 cci  staff   170 10 oct 09:37 doc
+-rwxr-xr-x  1 cci  staff  1751 22 sep 10:56 documentationBundle.js
+-rwxr-xr-x  1 cci  staff   212 10 oct 09:37 package.json
+-rwxr-xr-x  1 cci  staff   706 22 sep 10:56 readme.md
+drwxr-xr-x  3 cci  staff   102 12 oct 14:42 <strong>services</strong>
+drwxr-xr-x  2 cci  staff    68 20 jui 11:07 tests
+
+
+	</pre>
+</div>
+
+
+<h2 name="file" id="file"> File Services   :<h2>
+<h3>File Services  :</h3>
+<div class="doc3 ">
+
+<p>
+	The name of file must finish by <strong>'...Service.js'</strong>  example : <code> name<strong>Service.js</strong></code><br>
+	Exemple httpBundle : 
+</p>
+
+	<pre>
+$ ll src/nodefony/bundles/httpBundle/services
+├── kernel
+│   └── httpKernelService.js
+├── servers
+│   ├── httpService.js
+│   ├── httpsService.js
+│   ├── webSocketSecureService.js
+│   └── websocketService.js
+├── sessions
+│   └── sessionsService.js
+├── staticFiles
+│   ├── staticService.js
+│   └── staticsService.js.old
+└── upload
+    └── uploadService.js
+	</pre>
+
+
+</div>
+
+<h3>Autoloader  :</h3>
+<div class="doc3 ">
+
+<p>
+	The core autoloader nodefony load all files in this directory which match with <strong>'...Service.js'</strong> <br>
+</p>
+
+
+</div>
+
+<h3>Interpreter  :</h3>
+<div class="doc3 ">
+
+<p>
+	The core autoloader nodefony interpret the javascript code in an extended global context.<br>
+	You can find namespace nodefony in the global context .
+</p>
+
+
+</div>
+
+
+
+<h3>Class Service  :</h3>
+<div class="doc3 ">
+
+<p>
+	Nodefony core has a method <strong>registerService</strong> which must return class as a  Closure. <br>
+</p>
+
+
+	<pre>
+nodefony.<strong>registerService</strong>("name", function(){
+
+		/*
+		 *	closure private space 
+		 */
+		var tab = [1,2,3,4];
+		var myFuntion = function(){
+			return tab ;
+		}
+		
+		/*
+		 *	Class service name
+		 *	constructor 
+		 */ 
+		var <strong>nameService</strong> = function(injection1, injection2){
+		};
+		
+		/*
+		 *	Method  service
+		 *	 
+		 *
+		 */
+		<strong>nameService</strong>.prototype.runTask = function(){
+			var kernel = this.get("kernel") ;
+			var settings = kernel.settings ;
+		};
+
+		// RETURN  class
+		return <strong>nameService;</strong>
+});
+	</pre>
+
+</div>
+
+
+<h3>Configuration Service  :</h3>
+<div class="doc3 ">
+
+	<p>
+		Now the injection service can manage this service to instanciate   , inject dependancies ( injection1, injection2 ...).<br>	
+		Exemple httpBundle  : <code>services.xml</code>
+	</p> 
+
+	<pre>
+&lt;?xml version="1.0" ?&gt;
+
+&lt;container xmlns="http://nodefony.com/schema/dic/services"
+    	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    	xsi:schemaLocation="http://nodefony.com/schema/dic/services http://nodefony.com/schema/dic/services/services-1.0.xsd"&gt;
+
+    	
+    	&lt;services&gt;
+		&lt;service id="serverStatic" class="statics"&gt;
+            		&lt;argument type="service" id="container" /&gt;
+            		&lt;argument type="paramaters" id="options" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="httpKernel" class="httpKernel"&gt;
+            		&lt;argument type="service" id="container" /&gt;
+            		&lt;argument type="service" id="serverStatic" /&gt;
+			&lt;call method="boot"&gt;&lt;/call&gt;
+        	&lt;/service&gt;
+
+        	&lt;service id="httpServer" class="http"&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+            		&lt;argument type="service" id="security" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="httpsServer" class="https"&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+            		&lt;argument type="service" id="security" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="websocketServer" class="websocket"&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+            		&lt;argument type="service" id="security" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="websocketServerSecure" class="websocketSecure"&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+            		&lt;argument type="service" id="security" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="sessions" class="sessions"&gt;
+            		&lt;argument type="service" id="security" /&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+        	&lt;/service&gt;
+
+		&lt;service id="upload" class="upload"&gt;
+            		&lt;argument type="service" id="httpKernel" /&gt;
+        	&lt;/service&gt;
+
+	&lt;/services&gt;
+&lt;/container&gt;
+	</pre>
+
+</div>
+
+<h3>Starting Log   :</h3>
+<div class="doc3 ">
+
+<p>
+	When starting all service are registred in Global Container : 
+</p>
+	
+	<pre>
+Wed Oct 19 2016 14:57:08 DEBUG KERNEL  :  REGISTER BUNDLE : http   
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/kernel/httpKernelService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpsService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/webSocketSecureService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/websocketService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/sessions/sessionsService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js
+Wed Oct 19 2016 14:57:08 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/upload/uploadService.js
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
+Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
+	</pre>
+</div>
+
+
+
+
+<h2  id="service">Services Usage  :</h2>
+
+<div class="doc2">
+	<p>
+	</p>
+
+	<h3 name="" id="">Get service in  controller:</h3>
+
+	<div class="doc3">
+		<p>
+			To use service you must pass by Services Container  :<br>
+			Example to use service in action controller : <br>
+			The controller core have <strong>get</strong> method to find a service  
+		</p>
+
+		<pre>
+demoController.prototype.footerAction = function(){
+	// get kernel service
+	<strong>var kernel = this.get("kernel");</strong>
+	var version =  kernel.settings.system.version ;
+
+	// get translation  service
+	<strong>var translateService = this.get("translation");</strong>
+	var langs = translateService.getLangs();
+	var locale = translateService.getLocale();
+
+	...
+}
+		</pre>
+	</div>
+</div>
+
+

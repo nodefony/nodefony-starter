@@ -4,11 +4,23 @@ VERBOSE = 0
 all: framework npm  install 
 
 install:
-	./console npm:install
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console npm:install ;\
+	else \
+		./.console_dev npm:install ;\
+	fi \
+
 	make asset
 	make sequelize
-	./console router:generate:routes
-	./console npm:list
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console router:generate:routes ;\
+		./console npm:list ;\
+	else \
+		./.console_dev router:generate:routes ;\
+		./.console_dev npm:list ;\
+	fi \
+
 	
 node:
 	make framework
@@ -59,13 +71,34 @@ npm:
 		fi \
 	fi
 
+deps:
+	./console npm:install
+
 asset:
-	./console assets:dump 
-	./console assets:install 
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		./console assets:install ;\
+		./console assets:dump ;\
+	else \
+		./.console_dev assets:install ;\
+		./.console_dev assets:dump ;\
+	fi \
+	 
+	@if [ ! -e web/favicon.ico ] ; then \
+		cp app/Resources/public/favicon.ico web/ ;\
+	fi \
+
+	@if [ ! -e web/robots.txt ] ; then  \
+		cp app/Resources/public/robots.txt web/ ;\
+	fi \
 
 framework:
+	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
+	fi
+	@if [ ! -d tmp/upload ] ; then  \
+		mkdir tmp/upload ;\
 	fi
 	@if [ ! -d bin ] ; then  \
 		mkdir bin ;\
@@ -94,6 +127,12 @@ framework:
 	@if [ ! -d web/assets/images ] ; then  \
 		mkdir web/assets/images ;\
 	fi
+	@if [ ! -d web/vendors ] ; then  \
+		mkdir web/vendors ;\
+		cd web/vendors ;\
+		ln -s ../../src/stage stage ;\
+		cd ../.. ;\
+	fi
 
 sequelize:
 	./console Sequelize:generate:entities
@@ -102,8 +141,18 @@ sequelize:
 clean:
 	@if [ -e  node_modules ] ; then \
 		echo "###########  CLEAN  NODE MODULES ###########" ;\
+		rm -rf node_modules/.bin ; \
 		rm -rf node_modules/* ; \
 	fi
+	@if [ -e  tmp ] ; then \
+		echo "###########  CLEAN  TEMPORARY  ###########" ;\
+		rm -rf tmp/* ; \
+	fi
+	@if [ -e  web ] ; then \
+		echo "###########  CLEAN  WEB PUBLIC DIRECTOY  ###########" ;\
+		rm -rf web/* ; \
+	fi
+	make framework
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc

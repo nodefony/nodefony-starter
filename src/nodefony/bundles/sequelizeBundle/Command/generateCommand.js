@@ -13,6 +13,7 @@ nodefony.registerCommand("Sequelize",function(){
 	var sequelize = function(container, command, options){
 		var arg = command[0].split(":");
 		this.ormService = this.container.get("sequelize");
+		this.kernel = this.container.get("kernel");
 		switch ( arg[1] ){
 			case "generate" : 
 				switch( arg[2 ]){
@@ -53,7 +54,7 @@ nodefony.registerCommand("Sequelize",function(){
 					case 'load':
 						this.ormService.listen(this, "onOrmReady",function(service){	
 							var bundles = this.ormService.kernel.bundles;
-							var tabPromise = [];
+							this.tabPromise = [];
 							for(var bundle in bundles){
 								var fixtures = bundles[bundle].getFixtures();
 								if (Object.keys(fixtures).length ){
@@ -66,27 +67,30 @@ nodefony.registerCommand("Sequelize",function(){
 											var connectionName = fixtures[fixture].connection ;
 											this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
 											var toPush = fixtures[fixture].fixture.bind(this.ormService) ;
-												
-											tabPromise.push( toPush );
+											this.tabPromise.push( toPush );
 										}
 									}
 								}
 
 							}
-							var actions = tabPromise.map(function(ele){
+						}.bind(this));
+						this.kernel.listen(this, "onPostReady",function(service){
+
+							var actions = this.tabPromise.map(function(ele){
 								return new Promise(ele);
 							})
+
 							Promise.all(actions)
-								.catch(function(e){
-									this.logger(e, "ERROR");	
-									}.bind(this))
-								.then(function(){
-									this.logger("LOAD FIXTURE ENTITY : "+ entityName +" SUCCESS")		
-									this.terminate();
-								}.bind(this))
-								.done(function(){
-									this.terminate();
-								}.bind(this))
+							.catch(function(e){
+								this.logger(e, "ERROR");	
+							}.bind(this))
+							.then(function(){
+								this.logger("LOAD FIXTURE ENTITY :  SUCCESS")		
+								this.terminate();
+							}.bind(this))
+							.done(function(){
+								this.terminate();
+							}.bind(this))
 						}.bind(this));
 						break;
 					default:

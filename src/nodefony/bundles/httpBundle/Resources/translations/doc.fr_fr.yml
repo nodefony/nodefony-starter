@@ -1,0 +1,11 @@
+
+
+
+
+
+
+
+httpServer:                     "Serveur HTTP"                  
+httpsServer:                    "Serveur HTTPS" 
+websocketServer:                "Serveur Websocket"
+websocketSecureServer:          "Serveur Websocket Secure"

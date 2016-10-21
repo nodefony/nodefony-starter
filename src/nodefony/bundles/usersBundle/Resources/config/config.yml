@@ -31,7 +31,7 @@
 
 ########## App CONFIG BUNDLE  usersBundle  ############
 name :				usersBundle
-version:			"1.0"
+version:			"beta"
 locale :			en_en
 
 

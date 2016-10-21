@@ -1,0 +1,66 @@
+
+
+{{trans_default_domain("doc")}}
+
+
+
+<h1> {{ "COMMAND-LINE INTERFACE (CLI)" | trans() }}</h1>
+
+
+<p>
+	NODEFONY provides a command-line interface with an executable named console <br>
+	You can find this executable in root path of nodefony 
+</p>
+
+
+
+<pre>
+
+$ ./console -h
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY CONSOLE CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 17974
+
+Usage: node console
+
+  -h, --help     
+  -v, --version  show version
+
+Commands : [arguments]
+nodefony
+	npm:list							 List all installed packages 
+	npm:install							 Install all framework packages
+framework
+	generate:bundle nameBundle path                                  Generate a Bundle directory in path directory
+	generate:controller  nameController path                         Generate a controller js file in bundle path
+	generate:command nameCommand path                                Generate a command js file in bundle path
+	generate:service nameService path                                Generate a service js file in bundle path
+	router:generate:routes                                           Generate all routes
+	router:generate:route routeName                                  Generate one route Example : ./console router:generate:route home 
+	router:match:url url                                             Get route who match url Example : ./console router:match:url /nodefony
+assetic
+	assets:install                                                   Installs bundles web assets link under a public web directory 
+	assets:dump                                                      Dump  all bundles web assets under a public web directory 
+security
+	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5 Example : ./console encoders:Digest secured_area login password
+monitoring
+	Monitoring:test:load URL [nbRequests] [concurence]               load test example ./console Monitoring:test:load http://nodefony.com:5151/demo 10000 100 
+sequelize
+	Sequelize:fixtures:load                                          Load data fixtures to your database
+	Sequelize:generate:entities [force]                              Generate All Entities force to delete table if exist  example : ./console Sequelize:generate:entities force 
+	Sequelize:query:sql connectionName SQL                           query sql in database connection  example : ./console  Sequelize:query:sql nodefony  'select * from users'
+	Sequelize:entity:findAll entity                                  query findAll ENTITY
+App
+	server:run                                                       Run Application
+
+</pre>
+
+
+
+
+

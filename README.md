@@ -1,19 +1,15 @@
-# **NODEFONY Alpha FRAMEWORK**
+# **NODEFONY  FRAMEWORK**
 
-###  **Framework Node.js Realtime Symfony Like**
+##  **Framework Node.js  Symfony Like**
 
-Warning !!! There is not yet a comprehensive documentation of this alpha version .
-You can currently track the source code of the demo bundle (controllers, config ..), 
-with a good foundation of the Symfony framework, 
-it is possible to understand the concepts fundamentals.
+####-  **[Nodefony Demo](https://nodefony.net)**  
+####-  **[Nodefony Documentation](https://nodefony.net/documentation)**  
+####-  **[Nodefony Monitoring](https://nodefony.net/nodefony)**
 
-####You can find the first  pages of documentation  in **[Developement branch ](https://github.com/ccamensuli/nodefony/tree/dev)** (Beta):
 
-####-  **[Nodefony Demo](https://nodefony.net)**  (developement)
-####-  **[Nodefony Documentation](https://nodefony.net/documentation)**  (developement)
-####-  **[Nodefony Monitoring](https://nodefony.net/nodefony)**  (developement)
+#### Documentation in progress !!
 
-__Table of content__
+## __Table of content__
 
 - [Requirements](#requirements)
 - [Install](#install)
@@ -26,7 +22,6 @@ __Table of content__
 - [License](#license)
 - [Demo](#demo)
 
-#### Documentation and Wiki in progress !!
 
 ## <a name="requirements"></a>Requirements
 
@@ -51,7 +46,6 @@ __Table of content__
 - ~~WINDOWS ( Unchecked )~~
 
 - EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
-  If someone is interested in this project !
 
 ## <a name="install"></a>Install Framework
 
@@ -76,7 +70,6 @@ $ sudo vim /etc/hosts
 # Host Database
 #
 # localhost is used to configure the loopback interface
-# when the system is booting.  Do not change this entry.
 ##
 127.0.0.1       localhost nodefony.com
 
@@ -89,7 +82,7 @@ $ ./nodefony_dev
 
 Access to App with URL : http://nodefony.com:5151
 
-[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/login.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/dev/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/ccamensuli/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
 Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/src/nodefony/config/config.yml)**  if you want change httpPort, domain server, locale ...
@@ -305,13 +298,14 @@ Monitoring in progress !!!
 
 **Big thanks:**
 
+
 **Related Links:**
 - [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 - [Framework Symfony](http://symfony.com/)
 - [Twig.js](https://github.com/justjohn/twig.js/wiki)
 
-More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
+More informations [Documentation](https://nodefony.net/documentation)
 
 ## <a name="authors"></a>Authors
 
@@ -323,4 +317,4 @@ More informations [wiki](https://github.com/ccamensuli/nodefony/wiki#bundles)
 
 ##  <a name="demo"></a>Demo 
 
-[Demo](http://nodefony.fr)
+[Demo](http://nodefony.net)

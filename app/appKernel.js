@@ -33,7 +33,7 @@ nodefony.register("appKernel",function(){
  		 *	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
  		 */
 		if (type === "SERVER"){
-			this.listen(this,"onReady", function(){
+			this.listen(this,"onPostReady", function(){
 				// create HTTP server 
 				var http = this.get("httpServer").createServer();
 

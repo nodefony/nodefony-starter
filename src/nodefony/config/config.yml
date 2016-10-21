@@ -1,5 +1,5 @@
-#        
-#        NODEFONY FRAMEWORK CONFIG YAML FILE 
+#
+#        NODEFONY FRAMEWORK CONFIG YAML FILE
 #
 #
 # This file is YAML  FILE
@@ -21,16 +21,16 @@
 
 
 #
-#  NODEFONY FRAMEWORK 
+#  NODEFONY FRAMEWORK
 #
 #       KERNEL CONFIG
 #
 #
 name:                           "NODEFONY"
-system:                         
-  version:                      "Alpha"
-  domain:                       nodefony.com                   # nodefony can listen only one domain ( no vhost )  
-  domainAlias:                  "^www\\.nodefony\\.com$"       # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
+system:
+  version:                      "Beta"
+  domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
+  domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
   httpPort:                     5151
   httpsPort:                    5152
   statics:                      true
@@ -38,10 +38,11 @@ system:
   realtime:                     true
   monitoring:                   true
 
- 
-  locale:                       "en_en"   
+
+  locale:                       "en_en"
 
   log:
+    active:                     true
     console:                    false
     file:                       false
     messages:                   "/tmp/nodefony.log"
@@ -51,8 +52,8 @@ system:
     rotate:                     false
 
 #
-# ENGINE TEMPLATE 
-#      
+# ENGINE TEMPLATE
+#
 #       TWIG
 #       https://github.com/justjohn/twig.js
 #
@@ -60,9 +61,8 @@ templating:                     twig
 
 #
 # ENGINE ORM
-#      
+#
 #       SEQUELIZE
-#       
+#
 #
 orm:                            sequelize
-

@@ -1,0 +1,270 @@
+
+<div class="page-header">
+	<h1>Configuration Application </h1>
+</div>
+
+<h2>Location </h2>
+<div class="doc2">
+<pre>
+app/config/
+
+├── config.yml
+├── routing.yml
+└── security.yml
+
+</pre>
+</div>
+
+
+
+<h2 name="config_application" >Goblal Configuration <span class="badge">File</span> </h2>
+	
+<div class="doc2">
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"> Application Global Configuration </div>
+  <div class="panel-body">
+
+	<p>
+		
+	</p>
+  	  <div class="doc3">
+  		  <div class="alert alert-info" role="alert">
+  			  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  			  Application  is a Bundle with special comportement <br>
+			  This file override configuration of multiple Third-Party Bundles   
+  		  </div>
+  	  </div>
+
+
+	  Location : <code>./app/config/config.yml</code>
+    	  <pre>
+#
+#  FRAMEWORK NODEFONY
+#
+#     APP CONFIG  
+name :				AppBundle
+locale :			en_en
+version :                       "1.0"
+App:
+  projectName:                  "Demo" 
+  projectYear:                  2015 
+  locale:                       "en_en"
+  authorName:                   "admin"
+  authorMail:                   "admin@nodefony.com"
+
+
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  #storage:                      false
+  
+#
+#       OVERRIDE BUNDLE HTTP 
+#
+#       see HTTP BUNDLE config for more options
+#       
+#       // SERVICES
+#       statics files
+#       session
+#       http server
+#       https server
+#       upload 
+#       websocket server 
+#       websocket secure server 
+#
+#
+httpBundle:
+  statics:
+    settings:
+      cache :                     true	
+      maxAge:                     0 
+    web:
+      path:                       "/web/"
+      maxage:                     30*24*60*60*1000
+
+  upload:
+    tmp_dir:                      "tmp/upload"
+    #max_filesize:                 100000               #en Bytes
+
+  session:
+    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
+    #save_path:                    "./tmp/sessions"              # for session.storage.files only
+    cookie:
+      maxAge:                     0   
+
+  http:
+    responseTimeout:              40000
+  https:
+    responseTimeout:              40000
+    certificats:
+      key:                        "/config/certificates/serverKey.pem"
+      cert:                       "/config/certificates/serverCert.pem"
+
+
+#
+#       OVERRIDE BUNDLE ASSETIC
+#
+#       LESS SERVICE CONFIGURATION
+#
+asseticBundle:
+  less:
+    compress:                     true
+    cache:                        true 
+
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors
+#
+#
+sequelizeBundle: 
+  debug:        false
+  connectors:                    
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'root'
+      password:        'password'
+      options:
+        dialect:       mysql
+        host:          nodefony.com
+        port:          '3306'
+	  </pre>
+  </div>
+
+  <table class="table">
+	<thead>
+		<th class="config-parameters">Parameters</th>
+		<th>Description</th>
+		<th>Data Type</th>
+		<th>Example / <span class="badge">Default</span> </th>
+	</thead>
+	  <tbody>	
+	  <tr> 
+		  <td class="config-parameters">name</td>
+		  <td>Bundle Name</td>
+		  <td>String</td>
+		  <td>AppBundle</td>
+	  </tr>	
+	  <tr> 
+		  <td class="config-parameters">version</td>
+		  <td>Bundle Version </td>
+		  <td>String</td>
+		  <td>1.0</td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">locale</td>
+		  <td>I18n Bundle locale</td>
+		  <td>String</td>
+		  <td>en_en</td>
+	  </tr>
+
+	  <tr>
+		  <td class="config-parameters">App.projectName</td> 
+		  <td>
+			  Name of Application (project) 
+		  </td>
+		  <td>String</td>
+		  <td></span></td> 
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">App.projectYear</td>
+		  <td>
+			Year Application 
+		  </td>
+		  <td>String</td>
+		  <td></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">App.locale</td>
+		  <td>
+			Application locale i18n  
+		  </td>
+		  <td>String</td>
+		  <td><span class="badge">en_en</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">App.authorName</td>
+		  <td>Author </td>
+		  <td>String</td>
+		  <td></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">App.authorMail</td>
+		  <td>
+			  Author email 
+		  </td>
+		  <td>String</td>
+		  <td></td>
+	  </tr>
+
+	  </tbody>  
+  </table>
+
+  </div>
+
+</div>
+
+
+<h2 name="config_application" >Application Routing Configuration <span class="badge">File</span> </h2>
+<div class="doc2">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"> Application Routing Configuration </div>
+  <div class="panel-body">
+	  <p>Location : <code>./app/config/routing.yml</code></p>
+	  <pre>
+Default:
+  pattern:  /
+  defaults: 
+    controller: demoBundle:demo:login
+  
+
+readme:
+    pattern:   /readme 
+    defaults:  
+      controller: frameworkBundle:default:readme    
+
+
+	  </pre>
+  </div>
+</div>
+
+
+
+</div>
+
+<h2 name="config_application" >Application Firewall Configuration <span class="badge">File</span> </h2>
+
+<div class="doc2">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"> Application Firewall Configuration </div>
+  <div class="panel-body">
+	  <p>Location : <code>./app/config/security.yml</code></p>
+	  <pre>
+# Security
+security:
+
+    # change security context (multi secure areas) 
+    session_fixation_strategy:  migrate  # the strategy can be: none, migrate, invalidate
+
+	  </pre>
+  </div>
+</div>
+

@@ -108,19 +108,63 @@ nodefony.register("finder", function(){
 	Result.prototype.getFiles = function(){
 		var tab = [] ;
 		for (var i = 0 ; i < this.files.length ; i++ ){
-			if (this.files[i].type === "File") {
-				tab.push(this.files[i])
+			switch( this.files[i].type ){
+				case "File":
+					tab.push(this.files[i]) ;
+				break;
+				case "symbolicLink":
+					var path = fs.readlinkSync( this.files[i].path );	
+					var file = this.files[i].dirName+"/"+path ;
+					if (fs.lstatSync(file).isFile() ){
+						tab.push(this.files[i]) ;
+					}
+				break;
 			}
 		}
 		return new Result(tab)	
 	};
 
-	Result.prototype.getFile = function(name){
+	Result.prototype.getFile = function(name, casse){
 		var tab = [] ;
 		for (var i = 0 ; i < this.files.length ; i++ ){
+			switch( this.files[i].type ){
+				case "File":
+					if ( casse ){
+						var reg = new RegExp("^"+name+"$","i") ;
+						if ( reg.test(this.files[i].name) ){
+							return this.files[i] ;	
+						}
+					}else{
+						if (this.files[i].name === name )
+							return this.files[i] ;
+					}
+				break;
+				case "symbolicLink":
+					var path = fs.readlinkSync( this.files[i].path );	
+					var file = this.files[i].dirName+"/"+path ;
+					if (fs.lstatSync(file).isFile() ){
+						if ( casse ){
+							var reg = new RegExp("^"+name+"$","i") ;
+							if ( reg.test(this.files[i].name) ){
+								return this.files[i] ;	
+							}
+						}else{
+							if (this.files[i].name === name )
+								return this.files[i] ;
+						}
+					}
+				break;
+			}
 			if (this.files[i].type === "File") {
-				if (this.files[i].name === name )
-					return this.files[i]
+				if ( casse ){
+					var reg = new RegExp("^"+name+"$","i") ;
+					if ( reg.test(this.files[i].name) ){
+						return this.files[i] ;	
+					}
+				}else{
+					if (this.files[i].name === name )
+						return this.files[i] ;
+				}
 			}
 		}
 		return null ;	

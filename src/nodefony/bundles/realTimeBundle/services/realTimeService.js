@@ -569,10 +569,10 @@ nodefony.registerService("realTime", function(){
 				try {
 					switch(message.channel){
 						case "/meta/handshake":
-							//var remoteAddress = context.request.remoteAdress
+							//var remoteAddress = context.request.remoteAddress
 							//var remoteAddress = context.request.domain
 							var obj = {
-								remoteAddress : context.remoteAdress || context.request.remoteAdress,
+								remoteAddress : context.remoteAddress || context.request.remoteAddress,
 								host:url.parse(context.request.headers.host)	
 							};
 							//console.log(remoteAddress + " : " + context.request.domain)
@@ -584,7 +584,7 @@ nodefony.registerService("realTime", function(){
 						break;
 						case "/meta/connect":
 							var obj = {
-								remoteAddress : context.remoteAdress,
+								remoteAddress : context.remoteAddress,
 								host:url.parse(context.request.origin)	
 							};
 							var connectionId = this.connections.setConnection(context, obj) ;

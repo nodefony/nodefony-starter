@@ -15,6 +15,8 @@ var exec = require('child_process').exec;
 
 var https = require('https');
 
+var util = require('util');
+
 
 nodefony.registerController("demo", function(){
 
@@ -42,10 +44,16 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.indexAction= function(){
 		var kernel = this.get("kernel") ;
-		return this.render("demoBundle:Default:index.html.twig",{
+		return {
+			title:"nodefony",
 			user: this.context.user,
 			nodefony:kernel.settings.name + " " + kernel.settings.system.version
-		});
+		}
+		/*return this.render("demoBundle:Default:index.html.twig",{
+			title:"nodefony",
+			user: this.context.user,
+			nodefony:kernel.settings.name + " " + kernel.settings.system.version
+		});*/
 	};
 	
 	/**
@@ -319,17 +327,17 @@ nodefony.registerController("demo", function(){
 
 		var nodefonyDb = orm.getConnection("nodefony") ;
 
-		var joins = null ;
 		nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
 		.then(function(result){
-			joins = result[0];
+			var joins = result[0];
 			for (var i = 0 ; i < joins.length ; i++){
 				joins[i].metaBag = JSON.parse( joins[i].metaBag )
 			}
+			return joins ;
 		}.bind(this))
-		.done(function(){
+		.done(function(data){
 			this.renderAsync('demoBundle:orm:orm.html.twig', {
-				joins:joins,
+				joins:data,
 			});
 		}.bind(this))
 	}
@@ -438,6 +446,7 @@ nodefony.registerController("demo", function(){
  	 *	HTTP REQUEST FOR PROXY  
  	 */
 	demoController.prototype.httpRequestAction = function(){
+		this.hideDebugBar();
 		//this.getResponse().setTimeout(5000)
 		//return 
 
@@ -446,7 +455,9 @@ nodefony.registerController("demo", function(){
 		var type = this.context.type ;
 		// cookie session 
 		var headers = {}
-		headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+		if ( this.context.session ){
+			headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+		}
 		var options = {
   			hostname: this.context.request.url.hostname,
   			port: this.context.request.url.port,
@@ -530,7 +541,7 @@ nodefony.registerController("demo", function(){
 	demoController.prototype.uploadAction = function(){
 	
 		var files = this.getParameters("query.files");
-		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
+		var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;	
 		for (var file in files){
 			if( files[file].error ){
 				throw files[file].error ;
@@ -543,7 +554,7 @@ nodefony.registerController("demo", function(){
 		}
 		if ( ! this.isAjax() ){
 			//return this.forward("demoBundle:finder:index");
-			return this.redirect ( this.generateUrl("finder") );
+			return this.redirect ( this.generateUrl( "finder",{queryString:{"path":"/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/upload"}} ) );
 		}else{
 			var res = {
 				"files": [],
@@ -606,8 +617,22 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.redirectGoogleAction= function(){
 		// status 301 or 302
-		return this.redirect("http://google.com"/*, status*/);
+		return this.redirect("http://google.com");
+		//return this.redirect("/json", 302);
 	};
+
+
+	/**
+ 	 *
+ 	 *	render JSON 
+ 	 */
+	demoController.prototype.jsonAction= function(){
+		return this.renderJson({
+			foo:"bar",
+			bar:"foo"
+		});
+	};
+
 
 	/**
  	 *
@@ -629,6 +654,7 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.websoketAction= function(message){
 		var context = this.getContext();
+			
 		switch( this.getMethod() ){
 			case "GET" :
 				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});

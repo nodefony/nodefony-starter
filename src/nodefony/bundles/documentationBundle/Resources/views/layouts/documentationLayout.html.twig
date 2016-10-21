@@ -1,36 +1,394 @@
-{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
+{% extends "/app/Resources/views/base.html.twig" %}
 
-{% block title %} {{section}} {% endblock %}
+{{trans_default_domain("doc")}}
+
+{% block title %}
+
+	{% if subsection %}
+		{{ subsection | trans() | upper() }}
+	{% else %}
+		{% if section %}
+			{{ section | trans() | upper() }}
+		{% else %}
+			{% if bundle %}
+				{{ bundle | trans() | upper() }}
+			{% else %}
+				{% if version %}
+					{{ version | trans() | upper() }}
+				{% else %}
+					NODEFONY
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	{% endif %}
+	
+{% endblock %}
+
+
+{% block stylesheets %}
+	
+	{{ parent() }}
+
+
+	{% stylesheets  output="/documentationBundle/assets/css/layout.css" filter="?uglifycss" 
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
+            "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
+	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+	    "/documentationBundle/css/doc.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	{% javascripts output='/documentationBundle/assets/js/layout.js' filter='?uglifyjs2'
+		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
+		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
+		"/vendors/stage/stage.js" 
+		"/vendors/stage/function.js" 
+		"/vendors/stage/notificationsCenter.js" 
+		"/vendors/stage/syslog/syslog.js" 
+		"/vendors/stage/io/io.js" 
+		"/vendors/stage/xml.js" 
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+
+	<script> 
+		$("#version").change(function(ele){
+			window.location = this.value ;	
+		});
+		$("#langs").change(function(ele){
+			window.location.href = "?lang="+this.value
+		});
+
+		$.get("/api/git/getCurrentBranch",function(data){
+			var ele = $(".branch");
+			ele.text(data.branch)  ;
+
+		}).fail(function() {
+			console.log( "ERROR" );
+		})
+
+
+		var search = $("#inputSearh") ;
+		search.bind( "keypress", function( event ) {
+				if ( event.keyCode == 13 ){
+					event.stopPropagation()
+					event.preventDefault()
+					$("#buttonSearh").trigger( "click" );
+					return false ;
+				}
+		});
+		$("#buttonSearh").click(function(){
+			var ele = $("#search");
+			ele.empty();
+			var mysearch = search.val() ;
+			if ( mysearch ){
+				$.get("/documentation/search",{
+					search:mysearch	
+				},function(data){
+
+				for ( var link in data){
+					var reg = new RegExp(mysearch, 'gi');
+					var res  = reg.exec( data[link].text ) ;
+					if ( res ){
+						var text = data[link].text.replace(res[0], "<span style='background-color:yellow' >"+res[0]+"</span>" );
+					}else{
+						continue ;	
+					}
+					var li = "<li class='list-group-item'>";
+					li += "<a href='"+link+"'><span style=''>" + data[link].title +"</span></a>";
+					li += "<div>  "+text+" </div>"	
+					li += "</li>";
+					ele.append(li);
+
+				}
+
+				}).fail(function() {
+					console.log( "ERROR" );
+				});
+			}else{
+				event.stopPropagation()
+				event.preventDefault()
+				return false ;
+			}
+		});	
+
+	</script>
+
+	{% if bundle == "nodefony" and  section == null %}
+		<script>
+			$.get("/api/git/getMostRecentCommit",function(data){
+				var ele = $("#commits");
+				for (var i = 0 ; i < data.length ; i++){
+					//var dt = new Date( data[i].date ) ;
+					//var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
+					var sha= data[i].sha.substr(0,7);
+					var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
+
+					var date = new Date(data[i].date).toDateString();
+					var li = "<li class='list-group-item'>";
+					li += "<span style='background-color:blue' class='badge'>"+data[i].author+"</span>" ;
+					li += "<a href='"+shaLink+"'><span style=''>" + data[i].msg +"</span></a>";
+					li += "<div> commit on "+date+" by "+data[i].author+" </div>"	
+					li += "</li>";
+					ele.append(li);
+
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
+			})
+
+			/*$.get("/api/git/getStatus",function(data){
+				var ele = $("#status");
+				for (var i = 0 ; i < data.length ; i++){
+					var type = data[i].type[0].replace("WT_","") ;
+					var li = "<li class='list-group-item'>";
+					switch(type){
+						case "INDEX_NEW":
+							li += "<span style='background-color:blue' class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename( data[i].path ) +"</span>" ;
+						break;
+						case "NEW":
+							li += "<span style='background-color:red' class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+data[i].path+"> " + stage.basename ( data[i].path ) +"</span>";
+						break;
+						default:
+							li += "<span  class='badge'>"+type+"</span>" ;
+							li += "<span style='cursor:context-menu' title="+ data[i].path +"> " + stage.basename ( data[i].path ) +"</span>";
+					}
+					li += "</li>";
+					ele.append(li);	
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
+			});*/
+
+			$.get("https://api.github.com/repos/ccamensuli/nodefony/issues?state=open",function(data){
+				var ele = $("#issues");
+				for (var i = 0 ; i < data.length ; i++){
+					var date = new Date(data[i].created_at).toDateString();
+					var li = "<li class='list-group-item'>";
+					li += "<span style='background-color:blue' class='badge'>#"+data[i].number+"</span>" ;
+					li += "<a href='https://github.com/ccamensuli/nodefony/issues/"+data[i].number+"'><span style=''>" + data[i].title +"</span></a>";
+					li += "<div> opened on "+date+" by "+data[i].user.login+" </div>"	
+					li += "</li>";
+					ele.append(li);
+				}
+			}).fail(function() {
+				console.log( "ERROR" );
+			})
+			
+		</script>
+
+	{% endif %}
+
+{% endblock %}
 
 
 {% block body %}
 
-	{{ parent() }}
-	
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog " role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Search</h4>
+      </div>
+      <div class="modal-body scroll-wrap">
+	<ul id="search" class="list-group">
+									
+	</ul> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+
 	<div class="container-fluid">
+
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#custom-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand text-primary" href="{{path("home")}}" style="margin-left:20px" ><strong class="text-primary">NODEFONY</strong></a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="custom-collapse">
+
+			<ul class="nav navbar-nav navbar-left">
+				{{ render( controller("documentationBundle:default:navDoc" )) }}
+				<!--{{ //render( controller("documentationBundle:default:navDocBundle" )) }}-->
+				
+			</ul>
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input id="inputSearh" type="text" class="form-control" placeholder="Search">
+				</div>
+				<button id="buttonSearh" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+					{{ "Search" | trans() }}
+				</button>
+
+			</form>
+
+
+			<ul class="nav navbar-nav navbar-right ">
+				<a  class="navbar-brand  " href="#" ><span class="label label-danger"> {{ "progress" | trans() | upper()}} !! </span></a>
+				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">GIT BRANCH</strong> <span  class="label label-default branch"></span></a>
+				<a class="navbar-brand text-primary" href="#" ><strong class="text-primary" style="font-size:75%">VERSION</strong></a>
+				<li  class="navbar-btn pull-right" style="margin-right:40px">
+				   <select id="version" name="hl" class="form-control" >
+					{% for ver in allVersions %}
+						{% if ver == version %}
+							<option value="{{ver}}" selected class="active" >{{ver}}</option>
+						{% else %}
+							
+							<option value="{{path('documentation-version',{version:ver,bundle:bundle})}}" >{{ver}}</option> 
+						{% endif %}
+					{% endfor %}
+				   </select>
+				</li>
+			</ul>
+		</div>
+
+	</div><!-- .container -->
+
+</nav>
+
+<div class="container-fluid" style="padding-top: 70px;padding-bottom: 70px">
+		
+
+	<div class="row">
+		{% if bundle == "nodefony" and  section == null %}
 			
-		<div class="row">
-			<div class="col-md-2">
-				<strong><div class="text-primary text-center" style="margin:5px 0 10px 0 " > NODEFONY {{version}} </div> </strong>
+			<div class="col-md-12 ">
+				{% block readme %}
+					<div class="container">
+						<div class="row" >
+							<div class="alert alert-danger" role="alert">
+								{{version}} / {{bundle | trans()}}  / {{section | trans()}}  {% if subsection %}  / {{subsection | trans() }} {% endif %} {{ "progress" | trans() | upper()}}
+							</div>
+						</div>
+					</div>
+				{% endblock %}
+
+				<hr style="margin-top:100px">
+				
+				<div class="row-fluid m-t-xl">
+
+					<!--div class="col-md-4">
+						<div class="panel panel-success">
+							<div class="panel-heading">Local Git Status 
+								<span class="branch label label-default pull-right"></span>
+							</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="status" class="list-group">
+								</ul>
+							</div>
+						</div>
+					</div-->
+
+					<div class="col-md-6">
+						<div class="panel panel-success">
+							<div class="panel-heading">Local Recent Commits 
+								<span class="branch label label-default pull-right"></span>
+							</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="commits">
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="panel panel-success">
+							<div class="panel-heading">GitHub Issue Queue Activity</div>
+							<div class="panel-body" style="overflow: auto;">
+								<ul id="issues" class="list-group">
+									
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		{% else %}
+			<div class="col-md-2 affix navbar-default">
+				<div class="text-primary text-center " style="margin:5px 0 10px 0 ; font-size:130%" >  
+					<a href="{{path('documentation-version',{version:version,bundle:bundle})}}">
+						{{bundle | trans() | upper}} 
+					</a>
+						<span class="label label-success"> {{version }} </span> 
+				</div> 
 				<ul class="nav nav-pills nav-stacked">
 					
-					{{ render( controller("documentationBundle:default:subSection", version, section  )) }}
+					{{ render( controller("documentationBundle:default:subSection", version, bundle, section  )) }}
 				</ul>
 				{% block section %}
 
 				{% endblock %}
 			</div>
-			<div class="col-md-10">
+			<div class="col-md-10 col-lg-offset-2">
+				<ol class="breadcrumb">
+					{% if version %}
+						<li><a href="{{path('documentation-default',{version:version})}}">Nodefony {{version }}</a></li>
+					{% endif %}
+					{% if bundle and bundle != "nodefony"  %}
+						<li><a href="{{path('documentation-version',{version:version,bundle:bundle})}}">{{bundle | trans()}}</a></li>
+					{% endif %}
+					{% if section %}
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle })}}">{{section | trans()}}</a></li>
+					{% endif %}
+					{% if subsection %}
+						{% set qs = {'subsection' : subsection} %}
+						<li><a href="{{path('documentation-section',{section:section, version:version, bundle:bundle, queryString:qs})}}">{{subsection | trans()}}</a></li>
+					{% endif %}
+				</ol>
 				{% block readme %}
 					<div class="container">
 						<div class="row" >
-							<div class="alert alert-warning" role="alert">NODEFONY {{version}} DOCUMENTATION  {{section}} IN PROGRESS</div>
+							<div class="alert alert-danger" role="alert">
+								{{version | trans()}} /	{{bundle | trans()}} / {{section | trans()}}  {% if subsection %} / {{subsection | trans() }} {% endif %} {{ "progress" | trans() | upper()}}
+							</div>
 						</div>
 					</div>
 				{% endblock %}
-			</div>
-		</div>	
-	</div>
+
+				<hr style="margin-top:100px">
+				
+			</div>		
 	
+		{% endif %}
+	</div>	
+</div>
+
 {% endblock %}
+
+{% block footer %}
+	<footer>
+		{{ render( controller("documentationBundle:default:footer" )) }}
+	</footer>
+{% endblock %}
+
 

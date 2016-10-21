@@ -1,0 +1,69 @@
+<div class="page-header">
+  <h1><strong>Services and Container</strong> </h1>
+
+</div>
+	
+<h2 > You can see here :</h2>
+
+	
+<div class="doc2">
+
+	<div class="well" >
+
+		<h2>
+			<strong> 
+				<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'services'} })}}">Services Nodefony</a>
+			</strong>
+		</h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				A service is an entity that can perform a work .  </br>
+				It's a kind of global task. A service is global to your application.  </br>
+				
+				A service provides good Maintenance and factorization of code </br>	  
+			</p>
+			<p>
+					<img src="/documentationBundle/images/services.png" />
+			</p>
+		</div>
+	</div>
+
+	<div class="well" >
+		<h2><strong>
+			<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'containerServices'} })}}">Services Container Nodefony  </a>
+		</strong></h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				This container manage two differents entities the services and the parameters. </br>
+				This container allows us to retrieve services and parameters to any level of codes. </br>	  
+				This one allows us to use the design pattern of dependency injections. 
+			</p>
+			<p>
+					<img src="/documentationBundle/images/container.png" />
+			</p>
+		</div>	
+		
+		
+	</div>
+
+	<div class="well" >
+		<h2>
+			<strong> 
+				<a href="{{ path('documentation-section',{section:'container', version:version, bundle:'nodefony',queryString:{'subsection':'injection'} })}}">Dependency Injections  </a>
+			</strong>
+		</h2>
+		<div class="doc4">
+			<p style="font-weight: bold;">
+				Nodefony can manage all services by injection .</br>
+				During startup , autoloader load services and read config file services.xml in bundle.<br>
+				This Part look in container global to find services to inject  and register new service in the container.<br>
+				The injection service is completely linked with the kernel service container     
+			</p>
+			<p>
+				<img src="/documentationBundle/images/injector.png" />
+			</p>
+		</div>	
+	</div>
+</div>
+
+

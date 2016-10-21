@@ -24,7 +24,7 @@ nodefony.register("Bundle", function(){
 		}
 		this.finder = new nodefony.finder( {
 			path:this.path,
-			exclude:/^docs$|^test$|^public$/
+			exclude:/^docs$|^test$|^public$|^doc$/,
 		});
 		this.controllers = {};
 		this.views = {};
@@ -112,7 +112,7 @@ nodefony.register("Bundle", function(){
 		this.registerControllers();
 
 		// Register Views
-		this.registerViews( this.resourcesFiles );
+		this.registerViews();
 
 		// Register internationalisation 
 		this.registerI18n(this.locale);
@@ -146,11 +146,12 @@ nodefony.register("Bundle", function(){
 			if ( res ){
 				var name = res[1] ;
 				var Class = this.loadFile( ele.path );
-				if (typeof Class !== "function" ){
+				if (typeof Class === "function" ){
+					Class.prototype.bundle = this ;
+					this.logger("Bundle "+this.name+" Register Service : "+res[0] , "DEBUG");
+				}else{
 					this.logger("Register Service : "+name +"  error Service bad format")
-				}/*else{
-					this.logger("Register Service : "+name , "INFO");
-				}*/
+				}
 			}
 		}.bind(this));
 	};
@@ -173,9 +174,9 @@ nodefony.register("Bundle", function(){
 					var func = Class.herite(nodefony.controller);
 					//this.controllers[name] = new func(this.container);
 					this.controllers[name] = func ;
-					this.logger("Register Controller : "+name , "DEBUG");
+					this.logger("Bundle "+this.name+" Register Controller : "+name , "DEBUG");
 				}else{
-					this.logger("Register Controller : "+name +"  error Controller closure bad format");
+					this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
 				}
 			}
 		}.bind(this));
@@ -219,8 +220,16 @@ nodefony.register("Bundle", function(){
 
 		var serviceTemplate = this.get("templating") ;
 
-		// find  views files 
-		var views = result.findByNode("views") ;
+		if ( ! result ){
+			var views = new nodefony.finder( {
+				path:this.path+"/Resources/views",
+			}).result;
+	
+		}else{
+			// find  views files 
+			var views = result.findByNode("views") ;
+		}
+		
 		views.getFiles().forEach(function(file, index, array){
 			var basename = path.basename(file.dirName);
 			if (basename !== "views"){
@@ -236,7 +245,7 @@ nodefony.register("Bundle", function(){
 						file:file,
 						template:null
 					};
-					this.logger("Register View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+					this.logger("Register Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE" ){
 						serviceTemplate.compile( file, function(error, template){
 							if (error){
@@ -244,7 +253,7 @@ nodefony.register("Bundle", function(){
 								return ;
 							}
 							this.views[basename][name]["template"] = template ;
-							this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+							this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 						}.bind(this) )
 					}else{
 						/*if ( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
@@ -254,7 +263,7 @@ nodefony.register("Bundle", function(){
 									return ;
 								}
 								this.views[basename][name]["template"] = template ;
-								this.logger("COMPILE View : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
+								this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 							}.bind(this) )	
 						}*/
 					}
@@ -269,7 +278,7 @@ nodefony.register("Bundle", function(){
 						file:file,
 						template:null
 					};
-					this.logger("Register View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+					this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 					if (this.kernel.type !== "CONSOLE"){
 						serviceTemplate.compile( file, function(error, template){
 							if (error){
@@ -277,7 +286,7 @@ nodefony.register("Bundle", function(){
 								return ;
 							}
 							this.views[basename][name]["template"] = template ;
-							this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+							this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 						}.bind(this) )
 					}else{
 						/*if( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
@@ -287,7 +296,7 @@ nodefony.register("Bundle", function(){
 									return ;
 								}
 								this.views[basename][name]["template"] = template ;
-								this.logger("COMPILE View : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
+								this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 							}.bind(this) )
 						}*/
 					}
@@ -461,6 +470,11 @@ nodefony.register("Bundle", function(){
 									case "file":
 										this.createFile(parent.path+"/"+name, obj.skeleton, obj.parse, obj.params, function(ele){
 											this.logger("Create File      :" + ele.name)
+										}.bind(this) );
+									break;
+									case "symlink":
+										fs.symlink ( parent.path+"/"+obj.params.source, parent.path+"/"+obj.params.dest , obj.params.type || "file", function(ele){
+											this.logger("Create symbolic link :" + ele.name)
 										}.bind(this) );
 									break;
 								}

@@ -24,7 +24,7 @@
 ########## NODEFONY CONFIG BUNDLE  asseticBundle  ############
 name :				asseticBundle
 locale :			en_en
-version :                       "1.0"
+version :                       "Beta"
 
 #  Documentaion : http://lesscss.org/   https://github.com/less/less-docs
 less:
@@ -37,3 +37,8 @@ less:
  
 #TODO
 coffescript:
+
+# DOMAIN CDN    WARNING  change all assets url with CDN domain  
+CDN:
+  stylesheets:                  null           # example  : cdn.nodefony.com
+  javascripts:                  null           # example  : cdn.nodefony.com

@@ -120,7 +120,6 @@ nodefony.registerController("finder", function(){
 		this.mother.constructor(container, context);
 	};
 
-
 	
 	finderController.prototype.indexAction = function(){
 		var query = this.getParameters("query");
@@ -130,7 +129,9 @@ nodefony.registerController("finder", function(){
 			var path = query.get.path ;
 
 		// secure path
-		var reg = new RegExp( "^"+this.get("kernel").rootDir )
+		//var securePath = this.get("kernel").rootDir ;
+		var securePath = this.get("kernel").getBundles("demo").path ;
+		var reg = new RegExp( "^"+securePath )
 		if ( ! reg.test(path)){
 			throw {
 				status:401

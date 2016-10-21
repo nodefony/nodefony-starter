@@ -26,8 +26,8 @@ nodefony.registerCommand("generate",function(){
 			name: realName,
 			module:this.config.App.projectName,
 			projectName:this.config.App.projectName,
-			authorName:this.config.App.name,
-			authorEmail:this.config.App.email,
+			authorName:this.config.App.authorName,
+			authorEmail:this.config.App.authorMail,
 			projectYear:this.config.App.projectYear,
 			projectYearNow:	new Date().getFullYear()
 		}
@@ -41,6 +41,7 @@ nodefony.registerCommand("generate",function(){
 					manager,
 					tests,
 					Resources.call(this, name, type, location),
+					documentation.call(this, param, location),
 					core,
 					entity,
 					{
@@ -50,11 +51,11 @@ nodefony.registerCommand("generate",function(){
 						params:param
 					},{
 						name:"readme.md",
-						type:"file",
-						skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/readme.skeleton",
-						params:nodefony.extend(param, {
-							path:location 
-						})
+						type:"symlink",
+						params: {
+							source:"doc/1.0/readme.md",
+							dest:"readme.md"
+						}
 					},{
 						name:"package.json",
 						type:"file",
@@ -64,6 +65,38 @@ nodefony.registerCommand("generate",function(){
 				]
 			}, path );
 	};
+
+
+	var documentation = function(param, location){
+		
+		return {
+			name:"doc",
+			type:"directory",
+			childs:[
+				{
+					name:"1.0",
+					type:"directory",
+					childs:[{
+						name:"readme.md",
+						type:"file",
+						skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/readme.skeleton",
+						params:nodefony.extend(param, {
+							path:location 
+						})
+					}]	
+				},
+				{
+					name:"Default",
+					type:"symlink",
+					params:{
+						source:"1.0",
+						dest:"Default"
+					}
+				}
+			]
+		}
+	};
+
 	
 	var Resources = function(name, type, location){
 		var Name = /(.*)Bundle/.exec(name)[1]
@@ -188,7 +221,6 @@ nodefony.registerCommand("generate",function(){
 		type:"directory"
 	};
 
-
 	var public = function(){
 		return {
 			name:"public",
@@ -202,6 +234,19 @@ nodefony.registerCommand("generate",function(){
 			},{
 				name:"images",
 				type:"directory"
+			},{
+				name:"assets",
+				type:"directory",
+				childs:[{
+					name:"js",
+					type:"directory"
+				},{
+					name:"css",
+					type:"directory"
+				},{
+					name:"images",
+					type:"directory"
+				}]
 			}]
 		}
 	}

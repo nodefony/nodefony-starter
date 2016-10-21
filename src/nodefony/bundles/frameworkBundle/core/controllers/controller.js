@@ -100,6 +100,32 @@ nodefony.register("controller", function(){
 		return this.container.get(defaultOrm);
 	};
 
+	Controller.prototype.renderRawView = function(path, param ){
+		var res = null;
+		var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+
+		try{ 
+			this.serviceTemplating.renderFile(path, extendParam, function(error, result){
+				if (error || result === undefined){
+					if ( ! error ){
+						error = new Error("ERROR PARSING TEMPLATE :" + path.path)
+					}
+					throw error ;
+				}else{
+					try {
+						this.notificationsCenter.fire("onView", result, this.context, path , param);
+						res = result;
+					}catch(e){
+						throw e ;
+					}
+				}
+ 			}.bind(this));
+		}catch(e){
+			throw e ;
+		}
+		return res;
+	};
+
 	Controller.prototype.renderView = function(view, param ){
 
 		var res = null;
@@ -161,6 +187,23 @@ nodefony.register("controller", function(){
 		if (headers && typeof headers === "object" ) res.setHeaders(headers);
 		if (status) res.setStatusCode(status);
 		this.notificationsCenter.fire("onResponse", res , this.context);
+	};
+
+	Controller.prototype.renderJson = function( obj , status , headers){
+		try {
+			var data = JSON.stringify( obj ) ;
+		}catch(e){
+			throw e		
+		}
+		return this.renderResponse( data, status || 200 , nodefony.extend( {}, {
+			'Content-Type': "text/json ; charset="+ this.context.response.encoding	
+		}, headers ));
+	}
+
+	Controller.prototype.renderJsonAsync = function(obj , status , headers){
+		var response = this.renderJson(obj , status , headers);
+		if ( response )
+			this.notificationsCenter.fire("onResponse", response,  this.context );
 	};
 
 	Controller.prototype.renderAsync = function(view, param){
@@ -400,6 +443,11 @@ nodefony.register("controller", function(){
 	Controller.prototype.isAjax = function(){
 		return this.getRequest().isAjax();
 	};
+
+	Controller.prototype.hideDebugBar = function(){
+		this.context.showDebugBar = false;
+	};
+
 		
 	Controller.prototype.generateUrl = function(name, variables, absolute){
 		if (absolute){

@@ -87,7 +87,6 @@ nodefony.registerService("statics", function(){
 			}
 		}
 		this.server.handle(request, response, function(){
-			response.setHeader("Content-Type", "text/html");
 			callback.apply(this, arguments);	
 		}.bind(this));
 	};

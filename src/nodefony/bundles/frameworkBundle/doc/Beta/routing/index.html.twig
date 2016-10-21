@@ -1,0 +1,463 @@
+{{trans_default_domain("doc")}}
+
+<div class="page-header">
+	<h1><strong>ROUTING</strong> </h1>
+	<div class="alert alert-info" role="alert">
+		<strong>
+		Routing Nodefony manage URL of Application </br> 
+		</strong>
+	</div>
+	<p>
+		<center>
+			<img src="/documentationBundle/images/routing.png" />
+		</center>
+	</p>
+
+</div>
+
+<h2 > You can see here :</h2>
+
+<p>
+	<ul>
+		<li><a href="#location">Location routing</a></li>
+		<li><a href="#autoload">Autoloader</a></li>
+		<li><a href="#route">Route</a></li>
+		<li>
+			<a href="#variables">How the routes are mapped to controller</a>
+			<ul>
+			<li><a href="#http">http context</a>
+			<li><a href="#websocket">websocket context</a>
+			</ul>
+		</li>
+	</ul>
+<p>
+
+
+<h2 name="location" id="location">Location routing  :</h2>
+<div class="doc2">
+	<p>
+		You can find routing configuration in bundle repository under <code>Resources/config/routing.yml</code> directory.
+
+		<div class="alert alert-warning" role="alert">
+			In  Developement mode When you <strong>edit routing.yml </strong> you must restart nodefony  </br>
+			Nodefony <strong>Route Annotations</strong> in files controller is not implemented ! </br>
+		</div>
+		
+	</p>
+
+	<pre>
+$ ll src/nodefony/bundles/documentationBundle/Resources/config/
+
+total 24
+-rwxr-xr-x  1 cci  staff  1060 10 oct 09:37 config.yml
+-rwxr-xr-x  1 cci  staff  2036 10 oct 09:37 <strong>routing.yml</strong>
+-rw-r--r--  1 cci  staff   536 10 oct 09:37 services.xml
+
+	</pre>
+</div>
+
+
+<h2 name="autoload" id="autoload">Autoloader  :</h2>
+<h3>File  routing.yml  :</h3>
+<div class="doc3 ">
+
+<p>
+	The nodefony Autoloader  load  configuration file in <code>Resources/config</code> directory which match with <strong>'routing.yml'</strong> <br>
+   
+</p>
+
+	<pre>
+##########  ROUTING  documentationBundle  ############
+
+documentation: 
+  pattern:  /documentation
+  defaults: {controller: "documentationBundle:default:index"}
+  requirements:
+    method: GET
+
+documentation-search: 
+  pattern:  /documentation/search
+  defaults: {controller: "documentationBundle:default:search"}
+
+documentation-default: 
+  pattern:  /documentation/{version}
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-version: 
+  pattern:  /documentation/{version}/{bundle}
+  defaults: {controller: "documentationBundle:default:version"}
+
+documentation-section: 
+  pattern:  /documentation/{version}/{bundle}/{section}
+  defaults: {controller: "documentationBundle:default:version"}
+
+documentation-git-getMostRecentCommit: 
+  pattern:  /api/git/getMostRecentCommit
+  defaults: {controller: "documentationBundle:git:getMostRecentCommit"}
+
+documentation-git-getStatus: 
+  pattern:  /api/git/getStatus
+  defaults: {controller: "documentationBundle:git:getStatus"}
+
+
+documentation-git-getBranch: 
+  pattern:  /api/git/getCurrentBranch
+  defaults: {controller: "documentationBundle:git:getCurrentBranch"} 
+	</pre>
+
+</div>
+
+<h3>Starting Log   :</h3>
+<div class="doc3 ">
+
+<p>
+	When starting all routes are registred in router service : 
+</p>
+	
+	<pre>
+Tue Oct 11 2016 13:12:04 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/documentationBundle.js
+Tue Oct 11 2016 13:12:04 DEBUG KERNEL  :  REGISTER BUNDLE : documentation   
+Tue Oct 11 2016 13:12:04 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/services/webCrawlerService.js
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/config.yml
+Tue Oct 11 2016 13:12:05 <strong> DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/routing.yml</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> documentationBundle:default:index</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/search   ===> documentationBundle:default:search</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}   ===> documentationBundle:default:index</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}   ===> documentationBundle:default:version</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}/{section}   ===> documentationBundle:default:version</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getMostRecentCommit   ===> documentationBundle:git:getMostRecentCommit</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getStatus   ===> documentationBundle:git:getStatus</strong>
+Tue Oct 11 2016 13:12:05 <strong>DEBUG SERVICE ROUTER  : ADD Route : /api/git/getCurrentBranch   ===> documentationBundle:git:getCurrentBranch</strong>
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/services.xml
+Tue Oct 11 2016 13:12:05 DEBUG SERVICE INJECTION  : START SERVICE webCrawler( container,kernel ) 
+	</pre>
+</div>
+
+<h2 name="route" id="route">Route   :</h2>
+<div class="doc2">
+
+	<div class="panel panel-default">
+  		<!-- Default panel contents -->
+  		<div class="panel-heading"> Route Configuration </div>
+  		<div class="panel-body">
+
+			<p>
+		
+			</p>
+  	  		<div class="doc3">
+  		  		<div class="alert alert-warning" role="alert">
+  			  		<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					In  Developement mode When you <strong>edit routing.yml </strong> you must restart nodefony  </br>
+
+  		  		</div>
+  	  		</div>
+
+			<p>
+	  		Location : <code>Resources/config/routing.yml</code>
+			</p>
+			<pre>
+routeName: 
+  pattern:   pattern
+  defaults:  {controller: "nameBundle:controller:action"} 
+  requirements:
+    method:  GET,DELETE,POST,PUT,WEBSOCKET
+    domain:  domain.com
+
+			</pre>
+	
+		</div>
+
+  		<table class="table">
+			<thead>
+				<th class="config-parameters">Parameters</th>
+				<th>Description</th>
+				<th>Data Type</th>
+				<th>Example / <span class="badge">Default</span> </th>
+			</thead>
+	  		<tbody>	
+			<tr> 
+		  		<td class="config-parameters">routeName</td>
+		  		<td>Route Name (must be unique ) </td>
+		  		<td>String</td>
+		  		<td>documentation-git-getBranch</td>
+	  		</tr>	
+	  		<tr> 
+		  		<td class="config-parameters">routeName.pattern</td>
+		  		<td>
+					URL who match Route </br>
+					Dynamics varaible can be use with <strong>{</strong>variable<strong>}</strong>  
+				</td>
+		  		<td>String</td>
+		  		<td> 
+					/api/git/getCurrentBranch<br>
+					/documentation/{version}/{bundle}/{section}
+				</td>
+	  		</tr>
+	  		<tr> 
+		  		<td class="config-parameters">routeName.defaults</td>
+		  		<td>Default config route</td>
+		  		<td>Object</td>
+		  		<td></td>
+	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.defaults.controller</td>
+		  		<td>Pattern 'nameBundle:controller:action' </td>
+		  		<td>String</td>
+		  		<td>"documentationBundle:git:getCurrentBranch"</td>
+	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement</td>
+		  		<td></td>
+		  		<td>Object</td>
+		  		<td></td>
+	  		</tr>
+
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement.method</td>
+		  		<td>
+					separator : "," <br>
+					Must be  :
+					<ul>
+						<li>GET</li>
+						<li>POST</li>
+						<li>PUT</li>
+						<li>DELETE</li>
+						<li>WEBSOCKET</li>
+					</ul>
+				</td>
+		  		<td>String</td>
+		  		<td><span class="badge">All</span></td>
+	  		</tr>
+
+			<tr> 
+		  		<td class="config-parameters">routeName.requirement.domain</td>
+		  		<td>Domain who must match </td>
+		  		<td>String</td>
+		  		<td>
+					nodefony.com
+					<span class="badge">All</span>
+				</td>
+	  		</tr>
+
+
+	  		</tbody>  
+  		</table>
+
+  	</div>
+
+</div>
+
+
+<h2 name="variables" id="variables">How the routes are mapped to controller  :</h2>
+<h3 name="http" id="http">HTTP context  :</h3>
+<div class="doc3">
+
+	<p>
+		A route is a map from a URL path to a controller : <br>
+		<pre>
+documentation-default: 
+  pattern:  /documentation/{version}
+  defaults: {controller: "documentationBundle:default:index"}
+		</pre>
+		Pattern controller format  : <strong>documentationBundle:default:index</strong> 
+		<table border="1" class="table">
+			<colgroup>
+				<col width="25%">
+				<col width="25%">
+				<col width="25%">
+				<col width="25%">
+			</colgroup>
+			<thead valign="bottom">
+				<tr class="">
+					<th class="">Bundle</th>
+					<th class="head">Controller Class</th>
+					<th class="head">Method Name</th>
+					<th class="head">Method Arguments</th>
+				</tr>
+			</thead>
+			<tbody valign="top">
+			<tr class=""><td><code class="">documentationBundle</code></td>
+				<td><code class="">defaultController</code></td>
+				<td><code class="">indexAction</code></td>
+				<td><code class="">indexAction( version )</code></td>
+			</tr>
+			</tbody>
+		</table>
+		You can find Variables Route in arguments of action in controller .<br> 
+		Example : you want to match  URL like /documentation or /documentation/1.0 or 	/documentation/1.0/nodefony
+	</p>
+	<p>
+		<code>documentationBundle/Resources/config/routing.yml</code> :
+	</p>
+	<pre>
+
+
+documentation: 
+  pattern:  /documentation
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-default: 
+  pattern:  /documentation/<strong>{version}</strong>
+  defaults: {controller: "documentationBundle:default:index"}
+
+documentation-version: 
+  pattern:  /documentation/<strong>{version}</strong>/<strong>{bundle}</strong>
+  defaults: {controller: "documentationBundle:default:version"}
+
+	</pre>
+
+	<p>
+		<code>documentationBundle/controller/defaultController.js</code> :
+	</p>
+	<pre>
+
+
+nodefony.registerController("default", function(){
+
+
+	var defaultController = function(container, context){
+		this.mother = this.$super;
+		this.mother.constructor(container, context);
+		this.kernel = this.get("kernel") ;
+	};
+
+
+	defaultController.prototype.indexAction = function(<strong>version</strong>){
+
+		if( ! version ){
+			var defaultVersion = this.kernel.settings.system.version;
+		}else{
+			var defaultVersion = version ;
+		}
+		var url = this.<strong>generateUrl</strong>("documentation-version",{
+			<strong>bundle:"nodefony",
+			version:defaultVersion</strong>
+		})
+		return this.redirect(url);
+
+	}
+
+	defaultController.prototype.versionAction = function(<strong>version, bundle</strong>){
+		...
+	}
+
+	return defaultController;
+});
+	</pre>
+
+</div>
+
+<h3 name="websocket" id="websocket">WEBSOCKET context</h3>
+<div class="doc3">
+
+	<p>
+		A route is a map from a URL path to a controller : <br>
+		<code>demoBundle/Resources/config/routing.yml</code> :
+		<pre>
+demo-websoket: 
+  pattern:  /demo/websoket
+  defaults: {controller: "demoBundle:websocket:index"}
+  requirements:
+    method: GET,WEBSOCKET
+		</pre>
+		Pattern controller format  : <strong>demoBundle:websocket:index</strong> 
+		<table border="1" class="table">
+			<colgroup>
+				<col width="25%">
+				<col width="25%">
+				<col width="25%">
+				<col width="25%">
+			</colgroup>
+			<thead valign="bottom">
+				<tr class="">
+					<th class="">Bundle</th>
+					<th class="head">Controller Class</th>
+					<th class="head">Method Name</th>
+					<th class="head">Method Arguments</th>
+				</tr>
+			</thead>
+			<tbody valign="top">
+			<tr class=""><td><code class="">demoBundle</code></td>
+				<td><code class="">websocketController</code></td>
+				<td><code class="">indexAction</code></td>
+				<td><code class="">indexAction( <strong>message</strong> )</code></td>
+			</tr>
+			</tbody>
+		</table>
+		You can find websocket message data (client) in arguments of action in controller .<br> 
+	</p>
+	<p>
+		Example : you want to match 2 cases for pattern /demo/websoket <br> 
+
+			<ul>
+				<li> URL context websocket : <strong>ws(s)://nodefony.com:5151(5152)/demo/websoket </strong> </li>
+				<li> URL  context http : <strong>http(s)://nodefony.com:5151(5152)/demo/websoket </strong> </li>
+			</ul>
+
+		<code>demoBundle/controller/websocketController.js</code> :
+	</p>
+
+
+	<pre>
+
+
+nodefony.registerController("websocket", function(){
+
+
+	var websocketController = function(container, context){
+		this.mother = this.$super;
+		this.mother.constructor(container, context);
+		this.kernel = this.get("kernel") ;
+	};
+
+
+	websocketController.prototype.indexAction = function(<strong>message</strong>){
+		
+		var context = this.getContext();
+			
+		switch( <strong>this.getMethod()</strong> ){
+			case "GET" :
+				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+			break;
+			case "WEBSOCKET" :
+				if (<strong>message</strong>){
+					// MESSAGES CLIENT
+					this.logger( message.utf8Data , "INFO");
+				}else{
+					// PREPARE  PUSH MESSAGES SERVER 
+					// SEND MESSAGES TO CLIENTS
+					var i = 0 ;
+					var id = setInterval(function(){
+						var mess = "I am a  message "+ i +"\n" ;
+						context.send(mess);
+						this.logger( "SEND TO CLIENT :" + mess , "INFO");
+						i++
+					}.bind(this), 1000);
+
+					setTimeout(function(){
+						clearInterval(id);
+						// close reason , descripton
+						context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
+						id = null ;
+					}, 10000);
+					this.context.listen(this, "onClose" , function(){
+						if (id){
+							clearInterval(id);	
+						}
+					})
+				}
+			break;
+			default :
+				throw new Error(" METHOD NOT ALLOWED")
+		}
+	
+	}
+
+	
+	return websocketController;
+});
+	</pre>
+
+
+</div>
+

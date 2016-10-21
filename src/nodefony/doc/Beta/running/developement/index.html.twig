@@ -1,0 +1,169 @@
+<div class="page-header">
+  <h1>Nodefony start in <strong>development</strong> mode</h1>
+</div>
+
+
+<div class="doc2 jumbotron">
+
+<p>
+	<strong><h2>MODE  development </h2></strong>
+
+	This mode is useful in development or debug   <br> 
+
+	<ul>	
+		<li>  No clusters </li>
+		<li>  No cache in templates twig (autoload templates files) </li>
+		<li>  No cache in controllers (autoload controllers files) </li>
+		<li>  Syslog in terminal to follow debug  </li>
+	</ul>
+</p>
+
+
+	<div class="alert alert-danger" role="alert">
+		!! In this mode You must restart nodefony when you <strong>add new</strong> : 
+
+		<ul>	
+			<li>   <strong>bundle</strong>  ( when you  edit <code>./app/appKernel.js</code> ) </li>
+			<li>   <strong>controller</strong> in  a bundle  </li>
+			<li>   <strong>view template</strong>  in a bundle  </li>
+			<li>   <strong>service</strong> in a bundle  </li>
+		</ul>
+		!! In this mode You must restart nodefony when you <strong>edit</strong> :
+		<ul>
+			<li>   <strong>configuration files</strong> (routing.yml , security.yml , config.yml, service.xml ) </li>
+			<li>   <strong>bundle class file</strong> ( nameBundle.js)  </li>
+			<li>   <strong>service class file</strong> ( nameService.js ) </li>
+		</ul>	       		
+	</div>
+
+	<div class="alert alert-warning" role="alert">
+		 Before run  this mode Use <code> make install</code> if you add new bundle in appKernel.js (npm dependencies)<br>
+		 See <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle,queryString:{'subsection':'makefile'} })}}#install">Makefile documentaion</a> 
+	</div>
+
+
+
+</div>
+
+
+<h2>Location :</h2>
+<div class="doc2">
+	<p>
+		In nodefony Root directory you can find executable file <code>nodefony_dev</code>
+	</p>
+
+	<pre>
+$ ls -l
+
+total 136
+-rw-r--r--    1 cci  staff  22696 19 nov  2015 LICENSE
+-rw-r--r--    1 cci  staff   2538  5 oct 11:19 Makefile
+-rw-r--r--    1 cci  staff  12964 22 sep 11:42 README.md
+drwxr-xr-x    9 cci  staff    306 22 sep 14:28 app
+drwxr-xr-x    4 cci  staff    136 22 jui 13:57 bin
+drwxr-xr-x    5 cci  staff    170  4 oct 10:16 config
+-rwxr-xr-x    1 cci  staff    513 22 jui 13:57 console
+lrwxr-xr-x    1 cci  staff     16 22 sep 11:37 doc 
+drwxr-xr-x  291 cci  staff   9894  5 oct 12:42 node_modules
+-rwxr-xr-x    1 cci  staff   1360 22 jui 13:57 nodefony
+-rwxr-xr-x    1 cci  staff    552 22 jui 13:57 <strong>nodefony_dev</strong>
+-rwxr-xr-x    1 cci  staff   1178  5 sep 11:14 nodefony_pm2
+-rw-r--r--    1 cci  staff   1102  5 sep 11:14 package.json
+drwxr-xr-x    7 cci  staff    238 22 jui 12:09 src
+drwxr-xr-x    3 cci  staff    102  5 oct 12:40 tmp
+drwxr-xr-x    7 cci  staff    238 22 jui 13:57 vendors
+drwxr-xr-x   17 cci  staff    578  5 oct 12:42 web
+
+	</pre>
+</div>
+
+<h2>Run :</h2>
+<div class="doc2 ">
+
+<p>
+	To launch nodefony in development mode :
+</p>
+	<pre>
+$ ./nodefony_dev
+
+
+
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
+             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
+             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
+
+		      NODEFONY SERVER CLUSTER MASTER Version : Alpha PLATFORM : darwin  PROCESS PID : 78806
+
+
+Wed Oct 05 2016 15:15:45 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/httpBundle.js
+Wed Oct 05 2016 15:15:45 DEBUG KERNEL  :  REGISTER BUNDLE : http   
+
+.....
+	</pre>
+</div>
+
+
+<h2>Stop :</h2>
+<div class="doc2 ">
+
+<p>
+	To stop nodefony in development mode :
+</p>
+	<pre>
+$ &lt;ctrl-c&gt; 
+
+Wed Oct 05 2016 15:31:12 INFO SERVER WEBSOCKET  :  SHUTDOWN WEBSOCKET Server is listening on DOMAIN : nodefony.com    PORT : 5151
+Wed Oct 05 2016 15:31:12 INFO SERVER WEBSOCKET SECURE  :  SHUTDOWN WEBSOCKET SECURE Server is listening on DOMAIN : nodefony.com    PORT : 5152
+Wed Oct 05 2016 15:31:12 INFO SERVICE MONITORING   : SHUTDOWN server MONITORING listen on Domain : nodefony.com Port : 1318
+Wed Oct 05 2016 15:31:12 INFO SERVICE REALTIME  : SHUTDOWN server DMSG listen on Domain : nodefony.com Port : 1316
+Wed Oct 05 2016 15:31:12 INFO SERVICE REALTIME  : SHUTDOWN server RANDOM listen on Domain : nodefony.com Port : 1315
+Wed Oct 05 2016 15:31:12 INFO HTTP KERNEL   :  SHUTDOWN HTTPS  Server is listening on DOMAIN : nodefony.com    PORT : 5152
+Wed Oct 05 2016 15:31:12 INFO KERNEL   : Cycle Of Live terminate KERNEL CODE : 0
+
+ 
+	</pre>
+</div>
+
+
+
+<h2 name="script" id="script">Script in detail : </h2>
+<div class="doc2 ">
+
+<p>
+	<code>./nodefony_dev</code>
+</p>
+	<pre>
+#!/usr/bin/env node
+//--debug
+
+//var profiler = require('v8-profiler');
+//var heapdump = require('heapdump');
+//heapdump.writeSnapshot();
+
+
+/*
+ *
+ * NODEFONY FRAMEWORK START 
+ *
+ *	DEVELOPPEMENT
+ *
+ */
+// AUTOLOADER
+var autoloader = require("./vendors/nodefony/core/autoloader");
+autoloader.setEnv("dev");
+autoloader.load("./app/appKernel.js");
+
+require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
+	console.log('\033[31m'+res+'\033[0m'); 
+	// KERNEL 
+	<strong>var kernel =new nodefony.appKernel("SERVER", "dev", true, autoloader);</strong>
+});
+
+
+	</pre>
+
+</div>
+

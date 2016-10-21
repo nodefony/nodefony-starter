@@ -112,8 +112,10 @@ nodefony.registerService("firewall", function(){
 				if ( this.providerName in this.firewall.providers){
 					this.provider = this.firewall.providers[ this.providerName ].Class ;	
 				}else{
-					this.firewall.logger("PROVIDER : "+this.providerName +" NOT registered ","ERROR");	
-					return ;
+					throw new Error ("PROVIDER : "+this.providerName +" NOT registered " );
+				}
+				if ( ! this.provider ){
+					throw new Error ( "PROVIDER CLASS: "+this.providerName +" CLASS NOT registered  check config file  "  )
 				}
 				this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 			}catch(e){
@@ -129,91 +131,12 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleCrossDomain = function(context, request, response){
-		switch ( context.type ){
-			case "HTTP" :
-			case "HTTPS" :
-				var redirect = 	context.session.getFlashBag("redirect" ) ;
-				//console.log(redirect);
-				switch ( redirect ){
-					case "HTTP" :
-						if ( context.proxy ){
-							var type = "HTTPS" ;
-						}else{
-							var type = "HTTP" ;
-						}
-					break;
-					case "HTTPS" :
-						if ( context .proxy ){
-							var type = "HTTPS" ;
-						
-						}else{
-							var type = "HTTP" ;
-						}
-					break;
-					default :
-						var type = context.type ;
-				}
-				switch (type){
-					case "HTTP" :
-						var port = this.kernel.httpPort ;
-						var protocole = type.toLowerCase()+"://" ; 
-						var serverHost = this.kernel.domain + ":" +port ; 
-						var localUrl = protocole+serverHost ;
-					break;
-					case "HTTPS" :
-						var port = this.kernel.httpsPort ;
-						var protocole = type.toLowerCase()+"://" ; 
-						var serverHost = this.kernel.domain + ":" +port ; 
-						var localUrl = protocole+serverHost ;
-					break;
-				
-				}
-				
-				var URL = Url.parse(request.headers.referer || request.headers.origin || protocole+request.headers.host ) ;
-				switch( URL.protocol ){
-					case "http:":
-						var urlProtocol = URL.protocol+"//";
-						if( ! URL.port ){
-							var destURL = urlProtocol+URL.host+":80" ;	
-						}else{
-							var destURL = urlProtocol+URL.host ;	
-						}
-					break;
-					case "https:":
-						var urlProtocol = URL.protocol+"//";
-						if( ! URL.port ){
-							var destURL = urlProtocol+URL.host+":443" ;	
-						}else{
-							var destURL = urlProtocol+URL.host ;	
-						}
-					break;
-				}
-				if ( context.proxy ){
-					var destURL = context.proxy.proxyProto+"://"+context.proxy.proxyHost+":"+port ;
-				}
-
-				context.crossDomain = ! ( destURL  === localUrl ) ;
-				context.crossURL = URL ;
-
-				if ( context.crossDomain ){
-					if ( this.crossDomain ){
-						return  this.crossDomain.match( context.request, context.response )	
-					}else{
-						return  401;
-					}
-				}
-
-			break ;	
-			case "WEBSOCKET":
-			case "WEBSOCKET SECURE":
-				if ( context.crossDomain ){
-					if ( this.crossDomain ){
-						return  this.crossDomain.match( context.request, context.response )	
-					}else{
-						return  401;
-					}
-				}
-			break;
+		if ( context.crossDomain ){
+			if ( this.crossDomain ){
+				return  this.crossDomain.match( context.request, context.response )	
+			}else{
+				return  401;
+			}
 		}
 	};
 
@@ -357,17 +280,9 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
+		//console.log( context.session )
+		context.session.setFlashBag("redirect" , "HTTPS" );
 		return context.redirectHttps(301) ;
-		//context.session.setFlashBag("redirect" , "HTTPS" );
-		/*context.request.url.protocol = "https";
-		
-		if ( context.proxy ){
-			return context.redirect(context.request.url, 301); 
-		}
-		context.request.url.port = this.container.get("kernel").httpsPort;
-		context.request.url.href = "";
-		context.request.url.host = "";
-		return context.redirect(context.request.url, 301);*/
 	};
 
 	securedArea.prototype.redirect = function(context, url){
@@ -475,6 +390,7 @@ nodefony.registerService("firewall", function(){
 								if (error){
 									return context.security.handleError(context, error);
 								}
+								context.crossDomain = context.isCrossDomain() ;
 								var meta = session.getMetaBag("security");
 								try {
 									this.handlerHttp(context, request, response, meta);
@@ -489,14 +405,23 @@ nodefony.registerService("firewall", function(){
 						 				if (err){
 											throw err ;
 						 				}
-										this.logger("AUTOSTART SESSION","DEBUG")
+										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG")
+										//context.crossDomain = context.isCrossDomain() ;
 										var meta = session.getMetaBag("security");
 										if (meta){
 											context.user = meta.userFull ;
 										}
+										var next = context.kernelHttp.checkValidDomain( context ) ;
+										if ( next !== 200){
+											return ;
+										}
 										context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 				}.bind(this));
 								}else{
+									var next = context.kernelHttp.checkValidDomain( context ) ;
+									if ( next !== 200){
+										return ;
+									}
 									context.notificationsCenter.fire("onRequest", context.container, request, response);	
 								}
 							}catch(e){
@@ -523,6 +448,7 @@ nodefony.registerService("firewall", function(){
 								return context.security.handleError(context, error);
 							}
 							var meta = session.getMetaBag("security");
+							context.crossDomain = context.isCrossDomain() ;
 							try {
 								this.handlerHttp(context, request, response, meta);
 							}catch(error){
@@ -536,14 +462,24 @@ nodefony.registerService("firewall", function(){
 						 			if (err){
 										throw err ;
 						 			}
-									this.logger("AUTOSTART SESSION","DEBUG")
+									this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+									//context.crossDomain = context.isCrossDomain() ;
+
 									var meta = session.getMetaBag("security");
 									if (meta){
 										context.user = meta.userFull ;
 									}
+									var next = context.kernelHttp.checkValidDomain( context ) ;
+									if ( next !== 200){
+										return ;
+									}
 									context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 			}.bind(this));
 							}else{
+								var next = context.kernelHttp.checkValidDomain( context ) ;
+								if ( next !== 200){
+									return ;
+								}
 								context.notificationsCenter.fire("onRequest", context.container, request, response);	
 							}	
 						}catch(e){
@@ -555,27 +491,48 @@ nodefony.registerService("firewall", function(){
 		});
 	};
 
+	var checkValidDomain = function(context){
+		if ( context.validDomain ){
+			var next =  200 ;
+		}else{
+			var next = 401 ;
+		}
+		switch (next){
+			case 200 :
+				this.logger("\033[34m VALID DOMAIN  \033[0mREQUEST REFERER : " + context.originUrl.href ,"DEBUG");
+			break;
+			default:
+				this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.originUrl.href ,"ERROR");
+				context.notificationsCenter.fire("onError",context.container, {
+					status:next,
+					message:"crossDomain Unauthorized "
+				});
+			break;
+		}
+		return next  ;
+	}
+
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
-			if ( ! context.isAjax && context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+			if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
 				return context.security.redirectHttps(context);
 			}
-			//CROSS DOMAIN //FIXME width callback handle for async response  
-			if (  ! context.validDomain ){
 			
+			//CROSS DOMAIN //FIXME width callback handle for async response  
+			if (  context.crossDomain ){
 				var next = context.security.handleCrossDomain(context, request, response) ;
 				switch (next){
 					case 204 :
-						return ;
+						return 204;
 					case 401 :
-						this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.crossURL.href ,"ERROR");
+						this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.originUrl.href ,"ERROR");
 						context.notificationsCenter.fire("onError",context.container, {
 							status:next,
 							message:"crossDomain Unauthorized "
 						});
-						return ;
+						return 401;
 					case 200 :
-						this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.crossURL.href ,"DEBUG")
+						this.logger("\033[34m CROSS DOMAIN  \033[0mREQUEST REFERER : " + context.originUrl.href ,"DEBUG");
 					break;
 				}
 			}
@@ -645,6 +602,9 @@ nodefony.registerService("firewall", function(){
 									//TODO
 								break;
 								case "logout":
+									//TODO
+								break;
+								case "stateless":
 									//TODO
 								break;
 								case "redirectHttps":

@@ -1,4 +1,4 @@
-
+var dns = require('dns');
 
 nodefony.registerController("api", function(){
 
@@ -15,6 +15,7 @@ nodefony.registerController("api", function(){
 		var apiController = function(container, context){
 			this.mother = this.$super;
 			this.mother.constructor(container, context);
+			this.kernel = this.get("kernel") ;
 		};
 
 
@@ -46,12 +47,9 @@ nodefony.registerController("api", function(){
 						return this.render('monitoringBundle:api:api.json.twig',data);
 					}
 			}
-
-			
 		};
 
 		apiController.prototype.renderDatatable = function(data, async){
-		
 			var context = this.getContext() ;
 
 			var response = this.getResponse() ;
@@ -72,7 +70,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.routesAction = function(name){
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -87,10 +84,10 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.servicesAction = function(name){
-
+			var serviceParam = this.container.getParameters("services") ;
 			var services = {}
-			for (var service in nodefony.services){
-				var ele = this.container.getParameters("services."+service);
+			for (var service in serviceParam){
+				var ele = serviceParam[service] ; 
 				services[service] = {};
 				services[service]["name"] = service;
 				if (ele){
@@ -110,10 +107,8 @@ nodefony.registerController("api", function(){
 				}else{
 					services[service]["run"] = "KERNEL"	
 					services[service]["scope"] = "KERNEL container"	
-				
 				}		
 			}
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -129,7 +124,6 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.syslogAction = function(){
-
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -146,9 +140,9 @@ nodefony.registerController("api", function(){
 				recordsFiltered: ( query.search.value !== "" ? results.rows.length : results.count ) ,
 				data:[]
 			}; 
-
 			for (var i = 0 ; i < results.rows.length  ; i++){
 				var payload= {};
+				//var data = JSON.parse(results.rows[i].data) ;
 				payload["uid"] = results.rows[i].id ;
 				payload["payload"] = JSON.parse( results.rows[i].data ) ;
 				payload["timeStamp"] = results.rows[i].createdAt ;
@@ -158,7 +152,9 @@ nodefony.registerController("api", function(){
 				payload["method"] =  results.rows[i].method ;
 				payload["state"] =  results.rows[i].state ;
 				payload["protocole"] =  results.rows[i].protocole ;
-				dataTable.data.push(payload);	
+				payload["remoteAddress"] =  results.rows[i].remoteAddress ;
+				payload["userAgent"] =  results.rows[i].userAgent ;
+				dataTable.data.push(payload);
 			}
 			return dataTable ;
 		}
@@ -171,7 +167,6 @@ nodefony.registerController("api", function(){
 		apiController.prototype.requestsAction = function(){
 			var bundle = this.get("kernel").getBundles("monitoring") ;
 			var storageProfiling = bundle.settings.storage.requests ;
-			
 			switch( storageProfiling ){
 				case "syslog":
 					var syslog = bundle.syslogContext ;
@@ -232,16 +227,17 @@ nodefony.registerController("api", function(){
 						.then( function(results){
 							try{
 								var dataTable = dataTableParsing.call(this, this.query, results);
-								var res = JSON.stringify(dataTable); 
+								return dataTable ;
 							}catch(e){
-								return this.renderRest({
-									code:500,
-									type:"ERROR",
-									message:"internal error",
-									data:e
-								},true);	
+								throw e ;
 							}
-							return this.renderDatatable(dataTable);
+						}.bind(this))
+						.then(function(result){
+							try{
+								return this.renderDatatable(result);
+							}catch(e){
+								throw e ;
+							}	
 						}.bind(this))
 						.catch(function(error){
 							if (error){
@@ -265,21 +261,15 @@ nodefony.registerController("api", function(){
 									ret["timeStamp"] = results[i].createdAt ;
 									ele.push(ret);	
 								}
-								var res = JSON.stringify(ele); 
-							}catch(e){
 								return this.renderRest({
-									code:500,
-									type:"ERROR",
-									message:"internal error",
-									data:e
-								},true);	
+									code:200,
+									type:"SUCCESS",
+									message:"OK",
+									data:JSON.stringify(ele)
+								},true);
+							}catch(e){
+								throw e;
 							}
-							return this.renderRest({
-								code:200,
-								type:"SUCCESS",
-								message:"OK",
-								data:res
-							},true);
 						}.bind(this))
 						.catch(function(error){
 							if (error){
@@ -388,18 +378,83 @@ nodefony.registerController("api", function(){
 		 *
 		 */
 		apiController.prototype.configAction = function(){
-			var kernel = this.get("kernel");
+			var http = this.get("httpServer");
+			if ( http && http.ready){
+				var httpConfig = {	
+					port:http.port,
+					ready:http.ready,
+					domain:http.domain,
+					config:http.settings	
+				}
+			}else{
+				var httpConfig = null ;	
+			}
+				
+			var https = this.get("httpsServer");
+			if ( https && https.ready ){
+				var httpsConfig = {	
+					port:https.port,
+					ready:https.ready,
+					domain:https.domain,
+					config:https.settings	
+				}
+			}else{
+				var httpsConfig = null ;	
+			}
+			
+			var websocket = this.get("websocketServer");
+			if ( websocket && websocket.ready ){
+				var config = nodefony.extend({}, websocket.websocketServer.config ) ;
+				delete config.httpServer  ;
+				var websocketConfig = {
+					port:websocket.port,
+					domain:websocket.domain,
+					ready:websocket.ready,
+					config:config
+				};
+			}else{
+				var websocketConfig = null ;	
+			}
+
+			var websockets = this.get("websocketServerSecure");
+			if ( websockets && websockets.ready ){
+				var configs = nodefony.extend({}, websockets.websocketServer.config ) ;
+				delete configs.httpServer  ;
+				var websocketSecureConfig = {
+					port:websockets.port,
+					ready:websockets.ready,
+					domain:websockets.domain,
+					config:configs
+					
+				}
+			}else{
+				var websocketSecureConfig = null ;	
+			}
+
+			//console.log(util.inspect(websocket.websocketServer, {depth:1}) )
+			//console.log(util.inspect( this.bundle, {depth:1}) )
+			var bundleApp = this.kernel.getBundles("App") ;
+
 
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
 			        message:"OK",
 				data:JSON.stringify({
-					kernel:kernel.settings,
-					debug:kernel.debug,
+					kernel:this.kernel.settings,
+					debug:this.kernel.debug,
+					node_start:this.kernel.options.node_start,
+					App:bundleApp.settings,
+					debug:this.kernel.debug,
 					nodejs:process.versions,
 					events:this.bundle.infoKernel.events,
-					bundles:this.bundle.infoBundles
+					bundles:this.bundle.infoBundles,
+					servers:{
+						http:httpConfig,
+						https:httpsConfig,
+						websocket:websocketConfig,
+						websoketSecure:websocketSecureConfig
+					}
 				})
 			});
 		}
@@ -426,10 +481,17 @@ nodefony.registerController("api", function(){
 					routing.push( router.routes[i] );
 				}
 			}
-				//console.log(routing);	
+			var views = {} ;
+			for (var view in bundle.views ){
+				views[view] = {};
+				for ( var view2 in bundle.views[view]){
+					views[view][view2] =  {
+						file:bundle.views[view][view2].file
+					}
+				}
+			}
+					
 			var security  = this.get("security");
-			//console.log(bundle.resourcesFiles.files)
-
 
 			return this.renderRest({
 				code:200,
@@ -440,7 +502,8 @@ nodefony.registerController("api", function(){
 					routing:routing,
 					services:null,
 					security:null,
-					views:bundle.views,
+					bundleName:bundle.name,
+					views:views,
 					entities:bundle.entities,
 					fixtures:bundle.fixtures,
 					controllers:bundle.controllers,
@@ -451,11 +514,6 @@ nodefony.registerController("api", function(){
 				})
 			});
 		}
-
-
-
-
-
 
 		/**
 		 *
@@ -507,8 +565,6 @@ nodefony.registerController("api", function(){
 			
 		};
 
-
-
 		/**
 		 *
 		 *	@method 
@@ -534,9 +590,6 @@ nodefony.registerController("api", function(){
 				}, true);
 			}.bind(this))
 		}
-
-
-
 
 		var dataTableSessionParsing = function(query, results){
 			var dataTable = {
@@ -768,7 +821,6 @@ nodefony.registerController("api", function(){
 			}
 		}
 
-
 		apiController.prototype.pm2Action = function(action){
 			var pm2 = require("pm2");
 			pm2.connect(true, function() {
@@ -834,7 +886,5 @@ nodefony.registerController("api", function(){
 			});
 		}
 
-
-		
 		return apiController;
 });
