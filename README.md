@@ -95,7 +95,7 @@ Open **[./config/config.yml](https://github.com/ccamensuli/nodefony/blob/master/
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "1.0"
+  		version:                      "1.0.0-beta"
   		domain:                       nodefony.com
   		httpPort:                     5151
   		httpsPort:                    5152
