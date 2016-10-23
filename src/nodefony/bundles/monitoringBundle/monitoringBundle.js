@@ -585,6 +585,9 @@ nodefony.registerBundle ("monitoring", function(){
 			return false;
 		} 
 
+		if ( ! context.resolver.route ){
+			return false ;
+		}
 		if ( context.resolver.route.name.match(/^monitoring-/) )
 			return false;
 

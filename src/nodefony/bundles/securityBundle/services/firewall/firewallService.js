@@ -117,9 +117,12 @@ nodefony.registerService("firewall", function(){
 				if ( ! this.provider ){
 					throw new Error ( "PROVIDER CLASS: "+this.providerName +" CLASS NOT registered  check config file  "  )
 				}
+				if (! this.factory ){
+					throw new Error( "FACTORY : " + this.factoryName + " CLASS NOT registered check config file " )	
+				}
 				this.logger(" FACTORY : "+ this.factory.name + " PROVIDER : " + this.provider.name + " PATTERN : " + this.pattern, "DEBUG");
 			}catch(e){
-				this.logger(this.name +"  "+e,"ERROR");	
+				this.logger(this.name +"  "+e, "ERROR");	
 				throw e;
 			}
 		})
@@ -155,6 +158,12 @@ nodefony.registerService("firewall", function(){
 					}
 					context.response.setStatusCode( 401 ) ;
 					context.resolver = this.overrideURL(context, this.formLogin);
+					if ( !  context.resolver.resolve ){
+						return context.notificationsCenter.fire("onError",context.container, {
+							status:401,
+							message:"Form Login route : " + this.formLogin + " this route not exist. Check Security config file"
+						});
+					}
 					if (! context.isAjax ){
 						if ( e.message !== "Unauthorized" ){
 							context.session.setFlashBag("session", {
@@ -252,6 +261,7 @@ nodefony.registerService("firewall", function(){
 
 	// Factory
 	securedArea.prototype.setFactory = function(auth, options){
+		this.factoryName = auth ;
 		if ( auth ){
 			if (auth in nodefony.security.factory ){
 				this.factory = new nodefony.security.factory[auth](this, options)
@@ -631,9 +641,11 @@ nodefony.registerService("firewall", function(){
 									}
 								break;
 								default:
+									
 									if ( config in nodefony.security.factory ){
 										area.setFactory(config, param[config]);
 									}else{
+										area.factoryName = config ;
 										this.logger("FACTORY : "+config +" not found in nodefony namespace","ERROR");
 									}
 							}
