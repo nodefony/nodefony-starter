@@ -39,8 +39,8 @@ https:
   timeout:                      null            # For keep alive spec
   responseTimeout:              30000           # In MS  | 30 seconds by default
   certificats:
-    key:                        "/config/certificates/server.key"
-    cert:                       "/config/certificates/server.crt"
+    key:                        "config/certificates/server.key"
+    cert:                       "config/certificates/server.crt"
     ca:                         ""
     options:
       rejectUnauthorized:       false

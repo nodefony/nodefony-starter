@@ -4,9 +4,23 @@
 
 var https = require('https');
 var nodedomain = require('domain');
+var Path = require("path");
 
 nodefony.registerService("https", function(){
 	
+
+	var checkPath = function(myPath, rootDir){
+		if ( ! myPath ){
+			return null ;
+		}
+		var abs = Path.isAbsolute( myPath ) ;
+		if ( abs ){
+			return myPath ;
+		}else{
+			return rootDir+"/"+myPath ;
+		}
+	}
+
 	var Https = function(httpKernel , security, options){
 		this.httpKernel = httpKernel;
 		this.port = this.httpKernel.kernel.httpsPort ;
@@ -17,20 +31,22 @@ nodefony.registerService("https", function(){
 		
 	};
 	
+	
 	Https.prototype.createServer = function(port, domain){
 		this.settings = this.get("container").getParameters("bundles.http").https || null ;
 		
+		var key = checkPath(this.settings.certificats.key, this.kernel.rootDir );
+		var cert = checkPath(this.settings.certificats.cert, this.kernel.rootDir);
+		var ca = checkPath(this.settings.certificats.ca, this.kernel.rootDir);
 		var opt = {
-			key: fs.readFileSync(this.kernel.rootDir+this.settings.certificats.key),
-			cert:fs.readFileSync(this.kernel.rootDir+this.settings.certificats.cert)
+			key: fs.readFileSync(key),
+			cert:fs.readFileSync(cert)
 		};
-		if ( this.settings.certificats.ca ){
-			opt["ca"] = fs.readFileSync(this.kernel.rootDir+this.settings.certificats.ca);
+		if ( ca ){
+			opt["ca"] = fs.readFileSync(ca);
 		}
 
 		this.options = nodefony.extend(opt, this.settings.certificats.options);
-
-	
 
 		var logString ="HTTPS";
 		this.server = https.createServer(this.options, function(request, response){

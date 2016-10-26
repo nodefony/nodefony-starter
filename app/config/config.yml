@@ -84,8 +84,8 @@ httpBundle:
   https:
     responseTimeout:              40000
     certificats:
-      key:                        "/config/certificates/serverKey.pem"
-      cert:                       "/config/certificates/serverCert.pem"
+      key:                        "config/certificates/serverKey.pem"
+      cert:                       "config/certificates/serverCert.pem"
 
 
 #
