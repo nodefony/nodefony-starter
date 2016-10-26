@@ -87,8 +87,8 @@ nodefony.registerService("webCrawler", function(){
 
 			// certificat
 			nodefony.extend(options,{
-				key: fs.readFileSync( this.kernel.rootDir + this.settingsHttps.certificats.key ),
-				cert:fs.readFileSync( this.kernel.rootDir + this.settingsHttps.certificats.cert ),
+				key: fs.readFileSync( this.kernel.rootDir + "/" +this.settingsHttps.certificats.key ),
+				cert:fs.readFileSync( this.kernel.rootDir + "/" +this.settingsHttps.certificats.cert ),
 				rejectUnauthorized: false,
 				requestCert: true,
 				agent: keepAliveAgent

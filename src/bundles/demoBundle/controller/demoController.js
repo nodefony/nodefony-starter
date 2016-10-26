@@ -476,8 +476,8 @@ nodefony.registerController("demo", function(){
 			var settings =  this.get("httpsServer").settings ;
 
 			nodefony.extend(options,{
-				key: fs.readFileSync(kernel.rootDir+settings.certificats.key),
-				cert:fs.readFileSync(kernel.rootDir+settings.certificats.cert),
+				key: fs.readFileSync(kernel.rootDir+"/"+settings.certificats.key),
+				cert:fs.readFileSync(kernel.rootDir+"/"+settings.certificats.cert),
 				rejectUnauthorized: false,
 				requestCert: true,
 				agent: keepAliveAgent
