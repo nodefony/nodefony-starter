@@ -166,6 +166,7 @@ stage.registerController("appController", function() {
 		//console.log(message)
 		try {
 			var json = JSON.parse(message) ; 
+
 			if ( json.pdu ){
 				//return fragment.call(this, JSON.stringify( message.pdu) );
 			}
@@ -202,6 +203,25 @@ stage.registerController("appController", function() {
 	}
 
 
+	var onConnect = function(message, realtime){
+		if  ( message.data.random ){
+			switch (this.kernel.router.location.url()){
+				case "/developer/graph":
+				case "/developer/realTime":
+					realtime.subscribe("random");
+				break;
+			}
+		}
+		if  ( message.data.monitoring ){
+			switch (this.kernel.router.location.url()){
+				case "/dashboard":
+					realtime.subscribe("monitoring");
+				break
+			}
+		}
+	
+	}
+
 	/**
 	 * 
 	 */
@@ -213,23 +233,7 @@ stage.registerController("appController", function() {
 		this.kernel.listen(this, "onReady", function(){
 			this.realtime = this.get("realtime") ;
 			this.serverSyslog = this.get("serverSyslog");	
-			this.realtime.listen(this, "onConnect", function(message, realtime){
-				if  ( message.data.random ){
-					switch (this.kernel.router.location.url()){
-						case "/developer/graph":
-						case "/developer/realTime":
-							realtime.subscribe("random");
-						break;
-					}
-				}
-				if  ( message.data.monitoring ){
-					switch (this.kernel.router.location.url()){
-						case "/dashboard":
-							realtime.subscribe("monitoring");
-						break
-					}
-				}
-			});
+			this.realtime.listen(this, "onConnect", onConnect );
 			this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
 				if (service === "monitoring"){
 					this.realtime.listen(this, "onMessage", serverMessages );
@@ -237,6 +241,7 @@ stage.registerController("appController", function() {
 			})
 
 			this.realtime.listen(this, "onUnSubscribe", function(service, message, realtime){
+				this.realtime.unListen("onMessage" , serverMessages) ;
 				console.log("onUnSubscribe service : " + service)
 			})
 		});
