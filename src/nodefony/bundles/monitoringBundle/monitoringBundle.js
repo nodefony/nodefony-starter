@@ -446,22 +446,26 @@ nodefony.registerBundle ("monitoring", function(){
 							if (error){
 								this.kernel.logger(error);
 							}
-							if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
-								var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
-								if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-									this.get("templating").renderFile(View, context.profiling,function(error , result){
-										if (error){
-											throw error ;
-										}
-										response.body = response.body.replace("</body>",result+"\n </body>") ;
-									});
+
+							if ( ! context.timeoutExpired  ){
+
+								if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
+									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+									if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
+										this.get("templating").renderFile(View, context.profiling,function(error , result){
+											if (error){
+												throw error ;
+											}
+											response.body = response.body.replace("</body>",result+"\n </body>") ;
+										});
+									}else{
+										//context.setXjson(context.profiling);
+									}
 								}else{
-									//context.setXjson(context.profiling);
+									//context.setXjson(context.profiling);	
 								}
-							}else{
-								//context.setXjson(context.profiling);	
 							}
-							
+
 							/*
  	 						 *  WRITE RESPONSE
  	 						 */  
@@ -471,7 +475,12 @@ nodefony.registerBundle ("monitoring", function(){
 								return context.close();
 
 							}
-							throw new Error ("MONITORING CAN SAVE REQUEST") ;
+							if ( error ){
+								throw new Error ("MONITORING CAN SAVE REQUEST") ;
+							}
+							if ( ( ! context ) ||  ( ! context.response ) )
+								throw new Error ("MONITORING REQUEST ALREADY SENDED !!! ") ;	
+
 							
 						}.bind(this));
 					})
