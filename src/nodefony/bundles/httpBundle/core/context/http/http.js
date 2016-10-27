@@ -36,6 +36,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.showDebugBar = true ;
+		this.timeoutExpired = false ;
 		this.kernel = this.container.get("kernel") ;
 		if ( this.kernel.environment === "dev" ){
 			this.autoloadCache = {
@@ -141,11 +142,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	
 			if (this.resolver.resolve) {
-				// timeout response 
+				var ret = this.resolver.callController(data);
+				// timeout response after  callController (to change timeout in action )
 				this.response.response.setTimeout(this.response.timeout, function(){
+					this.timeoutExpired = true ;
 					this.notificationsCenter.fire("onTimeout", this);
 				}.bind(this))
-				var ret = this.resolver.callController(data);
 				return ret ;
 			}
 			/*

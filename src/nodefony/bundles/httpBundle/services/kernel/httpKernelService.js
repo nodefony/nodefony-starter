@@ -224,6 +224,7 @@ nodefony.registerService("httpKernel", function(){
  		       	error = {status:500,
 				message:"nodefony undefined error "
 			}
+			console.trace(error);
 		}else{
 			if ( error.stack ){
 				var myError =  error.stack;
@@ -236,6 +237,9 @@ nodefony.registerService("httpKernel", function(){
 			}
 		}
 		var context = container.get('context');
+		if ( (! context ) ||  ( ! context.response ) ){
+ 			return 	;
+		}
 		switch (error.status){
 			case 404:
 				var resolver = container.get("router").resolveName(container, "frameworkBundle:default:404");
