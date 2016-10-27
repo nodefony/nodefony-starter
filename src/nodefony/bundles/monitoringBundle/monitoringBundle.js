@@ -643,6 +643,13 @@ nodefony.registerBundle ("monitoring", function(){
 					}else{
 						var user = "none" ;	
 					}
+					try {
+						var data = JSON.stringify(context.profiling) 
+					}catch(e){
+						this.kernel.logger("JSON.stringify  :"  ,"ERROR");
+						console.log(e);
+						var data = null ;	
+					}
 					this.requestEntity.create({
 						id		: null,
 						remoteAddress	: context.profiling.context.remoteAddress,
@@ -653,7 +660,7 @@ nodefony.registerBundle ("monitoring", function(){
 						state		: context.profiling.response.statusCode,
 						protocole	: context.profiling.context.type,
 						username	: user,
-						data		: JSON.stringify(context.profiling) 
+						data		: data 
 					},{isNewRecord:true})
 					.then(function(request){
 						this.kernel.logger("ORM REQUEST SAVE ID :" + request.id ,"DEBUG");
@@ -661,6 +668,7 @@ nodefony.registerBundle ("monitoring", function(){
 							context.profiling.id = request.id ;
 						callback(null ,  request);
 					}.bind(this)).catch(function(error){
+						console.log(error)
 						this.kernel.logger(error);
 						callback(error, null)
 					}.bind(this));

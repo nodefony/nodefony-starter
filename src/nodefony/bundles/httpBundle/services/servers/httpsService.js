@@ -38,12 +38,17 @@ nodefony.registerService("https", function(){
 		var key = checkPath(this.settings.certificats.key, this.kernel.rootDir );
 		var cert = checkPath(this.settings.certificats.cert, this.kernel.rootDir);
 		var ca = checkPath(this.settings.certificats.ca, this.kernel.rootDir);
-		var opt = {
-			key: fs.readFileSync(key),
-			cert:fs.readFileSync(cert)
-		};
-		if ( ca ){
-			opt["ca"] = fs.readFileSync(ca);
+		try {
+			var opt = {
+				key: fs.readFileSync(key),
+				cert:fs.readFileSync(cert)
+			};
+			if ( ca ){
+				opt["ca"] = fs.readFileSync(ca);
+			}
+		}catch(e){
+			this.httpKernel.logger(e);
+			throw e ;
 		}
 
 		this.options = nodefony.extend(opt, this.settings.certificats.options);
