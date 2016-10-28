@@ -152,9 +152,9 @@ nodefony.registerService("firewall", function(){
 			case "HTTPS" :
 				if (this.formLogin) {
 					if (e.message){
-						this.logger(e.message, "ERROR");
+						this.logger(e.message, "DEBUG");
 					}else{
-						this.logger(e, "ERROR");
+						this.logger(e, "DEBUG");
 					}
 					context.response.setStatusCode( 401 ) ;
 					context.resolver = this.overrideURL(context, this.formLogin);
@@ -215,6 +215,7 @@ nodefony.registerService("firewall", function(){
 						return this.handleError(context, error) ;
 					}
 					this.token = token ;
+					
 					context.session.migrate(true);
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
@@ -546,22 +547,26 @@ nodefony.registerService("firewall", function(){
 					break;
 				}
 			}
-
+			//console.log(meta)
 			if (meta){
-				context.user = context.security.provider.loadUserByUsername( meta.user ,function(error, user){
-					if (error){
-						return context.notificationsCenter.fire("onError", context.container, error );
-					}
-					context.user = user ;
-					try {
-						context.notificationsCenter.fire("onRequest", context.container, request, response );
-					}catch(e){
-						context.notificationsCenter.fire("onError", context.container, e );	
-					}
-				}.bind(this)) ;
+				//if ( meta.user ){
+					context.security.provider.loadUserByUsername( meta.user ,function(error, user){
+						if (error){
+							return context.notificationsCenter.fire("onError", context.container, error );
+						}
+						context.user = user ;
+						try {
+							context.notificationsCenter.fire("onRequest", context.container, request, response );
+						}catch(e){
+							context.notificationsCenter.fire("onError", context.container, e );	
+						}
+					}.bind(this)) ;
+				//	return ;	
+				//}
 			}else{
 				context.security.handle( context, request, response);
 			}
+
 			
 		}catch(e){
 			context.security.handleError(context, e);

@@ -1,20 +1,19 @@
 /*
  *
  *
- *	PASSPORT DIGEST  FACTORY
+ *	PASSPORT BASIC  FACTORY
  *
  *
  */
 
-var passport = require('passport')
-  , DigestStrategy = require('passport-http').DigestStrategy;
+var passport = require('passport');
+var BasicStrategy = require('passport-http').BasicStrategy;
 
 
 var nodefonyPassport = require("passport-nodefony");
 
 
-
-nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
+nodefony.register.call(nodefony.security.factory, "passport-basic",function(){
 
 	var Factory = function(contextSecurity,  settings){
 		this.name = this.getKey();
@@ -22,7 +21,7 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 		this.settings = settings ;
 
 		this.passport = passport ;
-	
+		
 		this.passport.framework( nodefonyPassport(this) );
 		
 		this.strategy = this.getStrategy(this.settings) ;
@@ -33,7 +32,7 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 
 	Factory.prototype.getStrategy = function(options){
 	
-		return  new DigestStrategy(options, function(username, done){
+		return  new BasicStrategy(options, function(username, password, done){
 				this.contextSecurity.logger("TRY AUTHORISATION "+ this.name+" : "+username ,"DEBUG");
 				// get passwd 
 				this.contextSecurity.provider.getUserPassword(username, 
@@ -41,11 +40,14 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 						if ( error ){
 							return done(error, null)
 						}
+						if ( passwd !== password ){
+							return done(new Error("Password not valid"), null);
+						}
 						this.contextSecurity.provider.loadUserByUsername(username, function(error, result){
 							if ( error ){
 								return done(error, null)
 							}
-							return done( null, result , passwd )
+							return done( null, result  )
 							
 						}.bind(this));
 				}.bind(this));
@@ -53,7 +55,7 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 	}
 
 	Factory.prototype.getKey = function(){
-		return "passport-digest";
+		return "passport-basic";
 	};
 
 	Factory.prototype.getPosition = function(){
@@ -61,19 +63,17 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 	};
 
 	Factory.prototype.handle = function( context, callback){
-		this.contextSecurity.logger("HANDLE AUTHORISATION passport-digest " ,"DEBUG");
 		
-		this.passport.authenticate('digest', { 
+		this.passport.authenticate('basic', { 
 			session: false, 
 		})(context, function(error, res){
-			if ( res  ){
+			if ( res ){
 				context.user = res ;	
 			}
 			var token = {
 				name:this.getKey(),
 				user:res
 			}
-
 			return callback(error, token)
 		}.bind(this));
 	};
@@ -83,3 +83,4 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 
 	return Factory ;
 });
+

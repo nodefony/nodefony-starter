@@ -9,7 +9,8 @@ module.exports = function(){
 	var self = this;
 	// copy require not present see load runInThisContext
 	self.require = require;
-
+	self.module = module ;
+	self.exports = exports ;
 
 	/**
 	 *  Nodefony autoloader

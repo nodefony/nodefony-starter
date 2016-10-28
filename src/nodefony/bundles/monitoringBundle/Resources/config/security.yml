@@ -1,25 +1,21 @@
 security:
-    firewalls:
-
+    firewalls:{}
+#
 #       monitoring_area:
-#            pattern:                    ^/nodefony
+#           pattern:                    ^/nodefony
 #           provider:                   nodefony
 #           form_login:
 #             check_path:               /secure
 #             login_path:               /demo/login  
 #             default_target_path:      /
-#           #FACTORY (strategy) AUTHENTICATION
+           #FACTORY (strategy) AUTHENTICATION
 #           passport-digest:
 #             private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
 #             realm:                    "nodefony"
 #           remember_me:                false           #TODO
 #           logout:                     /logout
-#          anonymous:                  ~
-#          context:                    ~
+#           anonymous:                  ~
+#           context:                    ~
 #           stateless:                  false           #TODO
-            #redirectHttps:              true
           
-#    providers:
-#        nodefony:
-#             entity:
-#                name:   "user"
+
