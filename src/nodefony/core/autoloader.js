@@ -97,6 +97,7 @@ module.exports = function(){
 					displayErrors:true
 				});
 			}catch(e){
+				console.trace(e);
 				throw e;
 			}	
 		}else{

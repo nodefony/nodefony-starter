@@ -191,7 +191,7 @@ stage.register("kernel",function(){
 		if (this.environment === "dev"){
 			window.Twig.cache = false ;	
 		}
-		this.templateEngine = twig ; 
+		this.templateEngine = window.Twig.twig  ; 
 		//extended log error traf
 		window.Twig.extend(function(Twig){
 			Twig.log.error = function(message){

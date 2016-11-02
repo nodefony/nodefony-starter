@@ -23,6 +23,8 @@ nodefony.registerTemplate("twig", function(){
 		twig.cache( this.cache );
 		this.rootDir = container.get("kernel").rootDir ;
 		container.set("Twig" , this);
+		this.version = twig.VERSION ;
+		this.name = "Twig" ;
 	};
 
 	

@@ -1,0 +1,241 @@
+{% extends "/src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
+
+{{trans_default_domain("login")}}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	{% stylesheets  output="/demoBundle/assets/css/login.css" filter="?uglifycss" 
+            "/demoBundle/css/login/style.css"
+            "/demoBundle/plugins/gritter/css/jquery.gritter.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+
+{% endblock %}
+
+{% block body %}
+	{{ parent() }}
+	{% if error %}
+		<div id="error">{{error}}</div>
+	{% endif %}
+
+	<!-- begin #page-loader -->
+	<div id="page-loader" class="fade in"><span class="spinner"></span></div>
+	<!-- end #page-loader -->
+
+	<div class="login-cover">
+	    	<div class="login-cover-image"><img src="/demoBundle/images/login-bg/stjean.jpg" data-id="login-cover-image" alt="" /></div>
+	    	<div class="login-cover-bg"></div>
+	</div>
+	<!-- begin #page-container -->
+	<div id="page-container" class="fade">
+	    	<!-- begin login -->
+        	<div class="login login-v2" data-pageload-addclass="animated fadeIn" style="top:-40px">
+            		<!-- begin brand -->
+            		<div class="login-header" >
+                		<div class="brand">
+                    			<span class="logo"></span>  NODEFONY  
+                    			<small>Authentication  {{ type }}</small>
+                		</div>
+                		<div class="icon">
+                    			<i class="fa fa-sign-in"></i>
+                		</div>
+            		</div>
+            		<!-- end brand -->
+            		<div class="login-content">
+                		<form id="login" action="/demo/secure" method="POST" class="margin-bottom-0">
+                    			<div class="form-group m-b-20">
+                        			<input id="email"   type="text" class="form-control input-lg" placeholder="Login" />
+                    			</div>
+                    			<div class="form-group m-b-20">
+                        			<input id="password" type="password" class="form-control input-lg" placeholder="Password" />
+                    			</div>
+                    			<div class="checkbox m-b-20">
+                        			<label>
+                        			</label>
+                    			</div>
+                    			<div class="login-buttons">
+                        			<button id="valid"  class="btn btn-success btn-block btn-lg">Sign me in</button>
+                    			</div>
+
+                		</form>
+            		</div>
+        	</div>
+        	<!-- end login -->
+
+        	<ul class="login-bg-list" style="bottom:60px">
+            		<li ><a href="#" data-click="change-bg"><img src="/demoBundle/images/login-bg/mucem-marseille-musee-ricciotti1.jpg" alt="" /></a></li>
+            		<li class="active"><a href="#" data-click="change-bg"><img src="/stageboxBundle/images/login-bg/stjean.jpg" alt="" /></a></li>
+            		<li><a href="#" data-click="change-bg"><img src="/demoBundle/images/login-bg/Lisa-Ricciotti-photographe-Château-dIf.jpg" alt="" /></a></li>
+            		<li><a href="#" data-click="change-bg"><img src="/demoBundle/images/login-bg/Notre_Dame_de_la_Garde.jpg" alt="" /></a></li>
+            		<li><a href="#" data-click="change-bg"><img src="/demoBundle/images/login-bg/farillon.jpeg" alt="" /></a></li>
+        	</ul>
+
+	</div>
+	<!-- end page container -->
+
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<!-- ================== BEGIN BASE JS ================== -->
+	{% javascripts output='/demoBundle/assets/js/login.js' filter='?uglifyjs2'
+		"/demoBundle/plugins/gritter/js/jquery.gritter.js"
+		"/vendors/stage/crypto/base64.js"
+		"/vendors/stage/crypto/md5.js" 
+		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js" 
+		"/vendors/stage/io/authentication/sasl/sasl.js" 
+		"/vendors/stage/kernel/kernel.js" 
+		"/vendors/stage/kernel/twig/twig.js" 
+		"/vendors/stage/kernel/autoload.js" 
+		"/vendors/stage/kernel/locationService.js" 
+		"/vendors/stage/kernel/routerService.js" 
+		"/vendors/stage/kernel/container.js" 
+		"/vendors/stage/kernel/translationService.js" 
+		"/vendors/stage/kernel/controller.js" 
+		"/vendors/stage/kernel/module.js"
+		"/vendors/stage/kernel/appKernel.js" 
+		"/securityBundle/js/login.js"
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+	<script>
+		var handleLoginPageChangeBackground = function() {
+			$('[data-click="change-bg"]').on('click', function() {
+        			var targetImage = '[data-id="login-cover-image"]';
+        			var targetImageSrc = $(this).find('img').attr('src');
+        			var targetImageHtml = '<img src="'+ targetImageSrc +'" data-id="login-cover-image" />';
+
+        			$('.login-cover-image').prepend(targetImageHtml);
+        			$(targetImage).not('[src="'+ targetImageSrc +'"]').fadeOut('slow', function() {
+            				$(this).remove();
+        				});
+        			$('[data-click="change-bg"]').closest('li').removeClass('active');
+        			$(this).closest('li').addClass('active');	
+    			});
+		};
+
+		/* 05. Handle Page Load - Fade in
+   		------------------------------------------------ */
+		var handlePageContentView = function() {
+    			"use strict";
+    			$.when($('#page-loader').addClass('hide')).done(function() {
+        			$('#page-container').addClass('in');
+    			});
+		};
+		
+		stage.appKernel.prototype.initializeLog = function(settings){
+			var syslog =  new stage.syslog(settings);
+			
+			syslog.listenWithConditions(this,{
+				severity:{
+					data:"ERROR,INFO"
+				}		
+			},function(pdu){
+				if (pdu.payload.stack ){
+						console.error( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+  pdu.payload.stack);
+				}else{
+					$.gritter.add({
+						title: "NODEFONY " + pdu.severityName ,
+						text: pdu.payload
+					});	
+				}
+			});
+
+			syslog.listenWithConditions(this,{
+				severity:{
+					data:"CRITIC,WARNING,DEBUG "
+				}		
+			},function(pdu){
+				switch( pdu.severityName){
+					case "CRITIC" :
+						console.error( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+					break;
+					case "WARNING" :
+						console.warn ("SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+					break;
+					case "DEBUG" :
+						console.log( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+					break;
+				}
+			});
+
+			return syslog ;
+		}
+		var kernel = new stage.appKernel("dev", {
+			debug: true,
+			
+			onBoot:function(kernel) {
+				this.login = new stage.login(this, $("#login"));	
+			},
+			onDomLoad: function() {
+				try {
+					handleLoginPageChangeBackground();
+				}catch(e){
+					console.log(e)
+				}
+			},
+			onDomReady: function() {
+			
+				var error = $("#error");
+				if (error.length) {
+					var message = error.html();
+					$("#error").remove();
+					this.logger(message, "ERROR" ) ;
+				}
+				var add = $("#adduser");
+				if (add.length) {
+					var message = add.html();
+					$("#adduser").remove();
+					this.logger(message, "ERROR" ) ;
+				}
+
+				switch("{{type}}"){
+					case "passport-local":
+						console.log("PASS")
+					break;
+					case "nodefony-sasl":
+						var path = $("#login").attr("action");
+						$("#password").bind("focus", function(){
+							this.login.request( path) ;
+						}.bind(this));
+						this.login.request( path) ;
+
+						$("#login").bind("submit",function(e){
+							
+							var username = $("#email").val();
+							var password = $("#password").val();
+							if (! username || ! password) 
+								return false;
+							if (this.login.authenticate){
+								this.login.authenticate.register(username, password);
+							}
+							//e.preventDefault();
+							//return false;
+						}.bind(this))
+					break;
+					default:
+						this.logger("FACTOY AUTHENTICATION : {{ type }} NOT EXIST");
+
+				}
+
+				
+				$("#langs").bind("change",function(){
+					window.location.href = "?lang="+$(this).val();
+				})
+
+				handlePageContentView()
+			}
+		});
+		
+	</script>
+
+{% endblock %}
+
+
+

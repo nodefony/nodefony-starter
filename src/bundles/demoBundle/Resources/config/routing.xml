@@ -16,6 +16,11 @@
 		<default key="controller">usersBundle:default:login</default>
 	</route>
 
+	<!-- MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  -->
+	<route id="loginAll" pattern="/login/{type}">
+		<default key="controller">demoBundle:login:login</default>
+	</route>
+
 	<!-- MANAGE SECURE FOR AJAX CHALENGE AND FORM VALID -->
 	<route id="demoSecure" pattern="/demo/secure">
 		<default key="controller">frameworkBundle:default:401</default>

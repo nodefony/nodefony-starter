@@ -53,7 +53,47 @@ security:
             context:                    ~
             stateless:                  false           #TODO
             #redirectHttps:              true
-        
+
+        # passport-basic  DEMO SECURITY AREA 
+        basic_area:
+            pattern:                    ^/login/passport-http-basic
+            provider:                   in_memory
+            form_login:
+              default_target_path:      /
+            passport-basic:
+              realm:                    "nodefony"
+            logout:                     /logout
+            anonymous:                  ~
+            context:                    ~
+
+        # passport-digest  DEMO SECURITY AREA 
+        digest_area:
+            pattern:                    ^/login/passport-http-digest
+            provider:                   in_memory
+            form_login:
+              default_target_path:      /
+            passport-digest:
+              realm:                    "nodefony"
+              private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
+            logout:                     /logout
+            anonymous:                  ~
+            context:                    ~
+
+        # passport-local  DEMO SECURITY AREA 
+        local_area:
+            pattern:                    ^/login/passport-local
+            provider:                   in_memory
+            form_login:
+              login_path:               /login/passport-local
+              default_target_path:      /
+            passport-local:
+              realm:                    "nodefony"
+            logout:                     /logout
+            anonymous:                  ~
+            context:                    ~
+            redirectHttps:              true
+
+
     #TODO authorisation               
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }          #TODO
@@ -62,7 +102,8 @@ security:
         in_memory:
              memory:
                 users:
-                    admin: { password: f3084b5754aa27d3a9b86af28a569bc4, roles: 'ROLE_ADMIN' }
+                    admin: { password: 'admin', roles: 'ROLE_ADMIN' }
+                    1000: { password: '1000', roles: 'ROLE_ADMIN' }
         nodefony:
              entity:
                 name:   "user"

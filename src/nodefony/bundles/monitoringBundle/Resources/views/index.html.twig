@@ -30,7 +30,6 @@
 	{% javascripts output='/monitoringBundle/assets/js/app.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js"
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
-		"/frameworkBundle/vendors/twig/twig.js"	
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
@@ -51,6 +50,7 @@
 		"/vendors/stage/io/realtime/realtime.js"
 		"/vendors/stage/kernel/autoload.js"
 		"/vendors/stage/kernel/kernel.js"
+		"/vendors/stage/kernel/twig/twig.js"
 		"/vendors/stage/kernel/appKernel.js"
 		"/vendors/stage/kernel/container.js"
 		"/vendors/stage/kernel/routerService.js"

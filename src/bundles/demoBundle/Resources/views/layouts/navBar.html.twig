@@ -77,7 +77,13 @@
 							<li><a href="{{path('demoLogout')}}">{{ "logout"|trans() }}</a></li>
 						</ul>
 					{% else %}
-						<a href="{{path('login')}}"  >{{ "Login"|trans() }} </a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  >{{ "Login"|trans() }}  <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{{path('login')}}">{{ "nodefony-sasl"|trans() }}</a></li>
+							<li><a href="{{path('loginAll',{type:'passport-http-basic'})}}">{{ "passport-basic"|trans() }}</a></li>
+							<li><a href="{{path('loginAll',{type:'passport-http-digest'})}}">{{ "passport-digest"|trans() }}</a></li>
+							<li><a href="{{path('loginAll',{type:'passport-local'})}}">{{ "passport-local"|trans() }}</a></li>
+						</ul>
 					{% endif %}
 				</li>
 			</ul>

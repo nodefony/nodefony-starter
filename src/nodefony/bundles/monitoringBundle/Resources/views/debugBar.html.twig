@@ -104,6 +104,11 @@
 					{% else %}
 						<li><label>Storage</label><span >{{services.session.storage}}</span></li>
 					{% endif %}
+					{% if services.templating %}
+						<li class="separator"> </li>
+						<li><label style="color:#999">TEMPLATING</label><span >{{services.templating.name}}</span></li>
+						<li><label>Version</label><span >{{services.templating.version}}</span></li>
+					{% endif %}
 					{% if services.ORM %}
 						<li class="separator"> </li>
 						<li><label style="color:#999">ORM</label><span >{{services.ORM.name}}</span></li>

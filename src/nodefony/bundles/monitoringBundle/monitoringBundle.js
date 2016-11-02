@@ -48,6 +48,9 @@ nodefony.registerBundle ("monitoring", function(){
 
 
 		this.kernel.listen(this, "onPreBoot", function(kernel){
+
+			this.templating = this.get("templating");
+
 			this.infoKernel["events"] = {} ;
 			for(var event in kernel.notificationsCenter.event["_events"] ){
 				switch (event){
@@ -85,6 +88,11 @@ nodefony.registerBundle ("monitoring", function(){
 			var ormName = this.kernel.settings.orm ;
 			this.orm = this.get(ormName);
 			this.requestEntity = this.orm.getEntity("requests"); 
+
+			this.kernelSetting = nodefony.extend(true, {},this.kernel.settings, {
+				templating: this.kernel.settings.templating + " " + this.templating.version,
+				orm:this.orm ? this.kernel.settings.orm +" "+this.orm.engine.version : ""
+			})
 			
 			for(var bund in kernel.bundles ){
 				//console.log( kernel.bundles[bund] );
@@ -150,6 +158,15 @@ nodefony.registerBundle ("monitoring", function(){
 						connections:{}
 					}
 				}
+				//ORM
+				var templating = {} ;
+				if ( this.templating ){
+					templating = {
+						name:this.templating.name,
+						version:this.templating.version
+					}
+				}
+
 				for (var connection in this.orm.connections){
 					ORM.connections[connection] = {
 						state:this.orm.connections[connection].state,
@@ -182,7 +199,8 @@ nodefony.registerBundle ("monitoring", function(){
 						storage:this.sessionService.settings.handler,
 						path:this.sessionService.settings.save_path
 					},
-					ORM:ORM
+					ORM:ORM,
+					templating:templating
 				}; 
 				this.security = function(){
 					var obj = {};
@@ -253,6 +271,7 @@ nodefony.registerBundle ("monitoring", function(){
 			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
 
 			var trans = context.get("translation");
+			 
 			context.profiling = {
 				id:null,
 				bundle:context.resolver.bundle.name,
@@ -272,7 +291,7 @@ nodefony.registerBundle ("monitoring", function(){
 					defaultView:context.resolver.defaultView
 				},
 				varialblesName:context.resolver.route.variables,
-				kernelSettings:this.kernel.settings,
+				kernelSettings:this.kernelSetting,
 				environment:this.env,
 				debug:this.kernel.debug,
 				appSettings:this.app,
@@ -452,7 +471,7 @@ nodefony.registerBundle ("monitoring", function(){
 								if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
 									var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 									if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-										this.get("templating").renderFile(View, context.profiling,function(error , result){
+										this.templating.renderFile(View, context.profiling,function(error , result){
 											if (error){
 												throw error ;
 											}
