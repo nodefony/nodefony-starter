@@ -476,7 +476,11 @@ nodefony.register("controller", function(){
 			absolute = host;
 		}
 		var router = this.container.get("router");	
-		return router.generatePath.apply(router, arguments);
+		try {
+			return router.generatePath.apply(router, arguments);
+		}catch(e){
+			throw e ;
+		}
 	};
 
 	Controller.prototype.htmlMdParser = function(content, options){

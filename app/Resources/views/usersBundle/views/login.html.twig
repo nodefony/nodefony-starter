@@ -175,7 +175,7 @@
 
 					<div class="account-wall">
 						<div id="my-tab-content" class="tab-content">
-							<div class="tab-pane active" id="homelogin">
+							<!--div class="tab-pane active" id="homelogin">
 								<img class="profile-img" src="/demoBundle/images/user.png" alt=""/>
                							<form  id="login" class="form-signin" action="{{path("demoSecure")}}" method="POST">
                								<input id="email" type="text" class="form-control"  placeholder="{{"user"|trans}}" required autofocus>
@@ -185,18 +185,14 @@
 								<div class="checkbox text-center">
 									<p> <strong>{{"user"|trans}} :</strong> admin  <strong> {{"pwd"|trans}} </strong>: admin </p>
 									<p> <strong>{{"user"|trans}} :</strong> 1000  <strong> {{"pwd"|trans}} </strong>: 1234 </p>
-	        							<!--label>
-										<input type="checkbox" value="remember-me" /> <strong>{{"remember"|trans}}</strong>
-	        							</label-->
         							</div>
 
                							<div id="tabs" data-tabs="tabs">
                								<p class="text-center"><a href="#register" data-toggle="tab">{{"need"|trans}}</a></p>
-               								<!--p class="text-center"><a href="#select" data-toggle="tab">{{"select"|trans}} </a></p-->
               							</div>
-              						</div>
+              						</div-->
 							<!-- register -->
-							<div class="tab-pane" id="register">
+							<div class="tab-pane active" id="register">
 								<form  id="create" class="form-signin" action="{{ path("adduser") }}" method="POST">
 									<input name="usernameCreate" type="text" class="form-control" placeholder="{{"user"|trans}}" required >
 									<input name="nameCreate" type="text" class="form-control" placeholder="{{"name"|trans}}" required >
@@ -206,65 +202,10 @@
 									<input id="submitCreate" type="submit" class="btn btn-lg btn-default btn-block" value="{{"validation"|trans}}" />
 								</form>
 								<div id="tabs" data-tabs="tabs">
-									<p class="text-center"><a href="#homelogin" data-toggle="tab">{{"have"|trans}}</a></p>
+									<p class="text-center"><a href="{{path('saslArea')}}" >{{"have"|trans}}</a></p>
 								</div>
 							</div>
 							<!-- end register -->
-
-
-							<!-- select -->
-							<!--div class="tab-pane" id="select">
-								<div id="tabs" data-tabs="tabs">
-									<div class="media account-select">
-										<a href="#user1" data-toggle="tab">
-											<div class="pull-left">		
-												<img class="select-img" src="/demoBundle/images/user.png" alt="">
-											</div>	 
-											<div class="media-body">
-												<h4 class="select-name">User Name 1</h4>
-											</div>
-										</a>
-									</div>
-                                					<hr />
-									<div class="media account-select">
-										<a href="#user2" data-toggle="tab">
-											<div class="pull-left">		
-												<img class="select-img" src="/demoBundle/images/user.png" alt="">
-											</div>	 
-											<div class="media-body">
-												<h4 class="select-name">User Name 2</h4>
-											</div>
-										</a>
-									</div>
-                                					<hr />
-               								<p class="text-center"><a href="#homelogin" data-toggle="tab">Back to Login</a></p>
-              							</div>
-							</div>
-							<div class="tab-pane" id="user1">
-								<img class="profile-img" src="/demoBundle/images/user.png" alt="">
-								<h3 class="text-center">User Name 1</h3>
-								<form class="form-signin" action="" method="">
-									<input type="hidden" class="form-control" value="User Name">
-									<input type="password" class="form-control" placeholder="Password" autofocus required>
-									<input type="submit" class="btn btn-lg btn-default btn-block" value="Sign In" />
-								</form>
-								<p class="text-center"><a href="#homelogin" data-toggle="tab">Back to Login</a></p>
-               							<p class="text-center"><a href="#select" data-toggle="tab">Select another Account</a></p>
-							</div>
-							<div class="tab-pane" id="user2">
-								<img class="profile-img" src="/demoBundle/images/user.png" alt="">
-								<h3 class="text-center">User Name 2</h3>
-								<form class="form-signin" action="" method="">
-									<input type="hidden" class="form-control" value="User Name">
-									<input type="password" class="form-control" placeholder="Password" autofocus required>
-									<input type="submit" class="btn btn-lg btn-default btn-block" value="Sign In" />
-								</form>
-								<p class="text-center"><a href="#homelogin" data-toggle="tab">Back to Login</a></p>
-               							<p class="text-center"><a href="#select" data-toggle="tab">Select another Account</a></p>
-							</div>
-						</div-->	
-						<!-- end select -->
-
               					</div>
 					</div>
 				</div>

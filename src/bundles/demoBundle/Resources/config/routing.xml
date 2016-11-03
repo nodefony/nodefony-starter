@@ -12,7 +12,7 @@
 	</route>
 
 	<!-- MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  -->
-	<route id="login" pattern="/adduser">
+	<route id="subscribe" pattern="/subscribe">
 		<default key="controller">usersBundle:default:login</default>
 	</route>
 
@@ -31,7 +31,6 @@
 		<default key="controller">demoBundle:demo:addUser</default>
 		<requirement key="method">POST</requirement>
 	</route>
-
 
 	<route id="demoLogout" pattern="/logout">
 		<default key="controller">usersBundle:default:logout</default>

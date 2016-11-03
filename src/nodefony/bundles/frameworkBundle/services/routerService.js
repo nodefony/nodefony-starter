@@ -346,6 +346,7 @@ nodefony.registerService("router", function(){
 		if (this.routes[name])
 			return this.routes[name];
 		this.logger("Route name: "+name +" not exist");
+		return null ;
 	};
 
 	Router.prototype.setRoute = function(name, route){

@@ -25,17 +25,7 @@ nodefony.registerController("demo", function(){
 		this.mother.constructor(container, context);
 	};
 
-	/**
- 	 *
- 	 *	DEMO login 
- 	 *
- 	 */
-	demoController.prototype.loginAction= function(){
-		if ( this.context.session )
-			return this.redirect("home");
-		return this.redirect(this.generateUrl("login"));	
-	};
-
+	
 
 	/**
  	 *
@@ -241,13 +231,52 @@ nodefony.registerController("demo", function(){
  	 */
 	demoController.prototype.addUserAction = function(){
 
+		
 		// here start session for flashbag because action is not on secure area and not autostart session 
-		this.startSession("default", function(error, session){
-			if (error){
-				this.setFlashBag("error",error );
-				return this.redirect(this.generateUrl("login"));
-			}
+		if ( ! this.context.session ){
+			this.startSession("default", function(error, session){
+				console.log(error)
+				if (error){
+					this.setFlashBag("error",error );
+					return this.redirect(this.generateUrl("subscribe"));
+				}
 
+				var orm = this.getORM() ;
+				this.userEntity = orm.getEntity("user");
+
+				// FORM DATA
+				var query = this.getParameters("query");
+
+				// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
+				//var firewall = this.get("security");
+				//var area = firewall.getSecuredArea("demo_area") ; 
+				//var factory = area.getFactory();
+				//var realm = factory.settings.realm ;
+				//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
+					
+				var users = null ; 
+				var error = null ;
+				this.userEntity.create({ 
+					username:	query.post.usernameCreate, 
+					email:		query.post.emailCreate, 
+					password:	query.post.passwordCreate,
+					name:		query.post.nameCreate  ,
+					surname:	query.post.surnameCreate,  
+				})
+				.then( function(results){
+					users = results
+					this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
+					return this.redirect(this.generateUrl("saslArea"));
+				}.bind(this))
+				.catch(function(error){
+					this.logger(util.inspect(error.errors) );
+					this.setFlashBag("error",error.errors[0].message );
+					return this.redirect(this.generateUrl("subscribe"));
+				}.bind(this))
+				
+			}.bind(this));
+		}else{
+		
 			var orm = this.getORM() ;
 			this.userEntity = orm.getEntity("user");
 
@@ -255,38 +284,33 @@ nodefony.registerController("demo", function(){
 			var query = this.getParameters("query");
 
 			// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
-			var firewall = this.get("security");
-			var area = firewall.getSecuredArea("demo_area") ; 
-			var factory = area.getFactory();
-			var realm = factory.settings.realm ;
-			var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
+			//var firewall = this.get("security");
+			//var area = firewall.getSecuredArea("demo_area") ; 
+			//var factory = area.getFactory();
+			//var realm = factory.settings.realm ;
+			//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
 				
 			var users = null ; 
 			var error = null ;
 			this.userEntity.create({ 
 				username:	query.post.usernameCreate, 
 				email:		query.post.emailCreate, 
-				password:	cryptpwd,
+				password:	query.post.passwordCreate,
 				name:		query.post.nameCreate  ,
 				surname:	query.post.surnameCreate,  
 			})
 			.then( function(results){
 				users = results
-			})
-			.catch(function(error){
-				this.logger(error.errors);
-				this.setFlashBag("error",error.message );
-				this.redirect(this.generateUrl("login"));
-			}.bind(this))
-			.done(function(){
-				if (error ){
-					return ; 
-				}
 				this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
-				return this.redirect(this.generateUrl("login"));
+				return this.redirect(this.generateUrl("saslArea"));
 			}.bind(this))
-			
-		}.bind(this));
+			.catch(function(error){
+				this.logger(util.inspect(error.errors) );
+				this.setFlashBag("error",error.errors[0].message );
+				return this.redirect(this.generateUrl("subscribe"));
+			}.bind(this))
+		
+		}
 
 	}
 

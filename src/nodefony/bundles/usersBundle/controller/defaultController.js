@@ -84,11 +84,11 @@ nodefony.registerController("default", function(){
 					this.context.session.invalidate() ;
 					return this.redirect( "/" );	
 				}
-				switch ( security.tokenName){
-					case "basic" :
-					case "Basic" :
-					case "digest":
-					case "Digest":
+				switch ( security.factory){
+					case "passport-basic" :
+					case "passport-digest":
+					case "http_basic":
+					case "http_Digest":
 						this.getRequest().request.headers["authorization"] = "";
 						this.get("security").getSecuredArea(security.firewall).factory.handle(this.context, function(error, token){
 							var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
@@ -104,7 +104,6 @@ nodefony.registerController("default", function(){
 						return ;
 					break;
 				}
-
 				try {
 					var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
 					this.context.session.invalidate() ;
