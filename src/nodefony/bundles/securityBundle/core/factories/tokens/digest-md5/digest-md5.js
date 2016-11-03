@@ -126,13 +126,22 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 	};
 
 
-	Digest.prototype.recalculateResponse = function(A1){
+	/*Digest.prototype.recalculateResponse = function(A1){
 		var uri = this["digest-uri"] || this.uri ;
 		var A2 = generateA2(this.method, uri ,null,this.qop ); 
 		//var res = responseDigest(A1, this.nonce, this.nc, new Buffer(this.cnonce, 'base64').toString('ascii'), this.qop, A2) ;
 		var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
 		return res;
+	};*/
+
+	Digest.prototype.recalculateResponse = function(passwd){
+		var A1 = generateA1(this.username, this.settings.realm, passwd);
+		var uri = this["digest-uri"] || this.uri ;
+		var A2 = generateA2(this.method, uri ,null,this.qop );
+		var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
+		return res;
 	};
+
 		
 	Digest.prototype.generateResponse = function(){
 		this.nonce = this.generateNonce();
@@ -161,7 +170,7 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 			if (! res){
 				callback( {
 					status:401,
-					message:"BAD Digest Response "	
+					message:"Incorrect password. "	
 				},null);
 			}
 			getUserPassword(this.username, function (error, userHashToCompare){
@@ -169,14 +178,17 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 					callback (error, null);;
 					return; 
 				}
+				//console.log(userHashToCompare)
+				//console.log(this.response)
 				res = this.recalculateResponse(userHashToCompare);
+				//console.log(this.recalculateResponseA1(userHashToCompare) )
 				if (res === this.response){
 					this.auth = true ;
 					return callback(null, true);
 				}else{
 					callback( {
 						status:401,
-						message:"BAD Digest Response "	
+						message:"Incorrect password. "	
 					},null); 
 				}
 			}.bind(this));

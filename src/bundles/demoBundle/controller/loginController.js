@@ -9,9 +9,6 @@
  *
  */
 
-
-
-
 nodefony.registerController("login", function(){
 
 
@@ -26,56 +23,34 @@ nodefony.registerController("login", function(){
  	 *
  	 */
 	loginController.prototype.loginAction= function(type){
+		var log = this.context.session.getFlashBag("session") ;
+		if ( log ){
+			log["login"] = true ;
+		}else{
+			log = {login :true};
+		}
+		var error  = this.context.session.getFlashBag("error") ;
+		if (error){
+			log["error"]=  error ;
+		}
+
+		if ( ! log ){
+			log = {} ; 
+		}
+
 		switch(type){
+			case "nodefony-sasl":
+				log.type= type ;
+				return this.render("demoBundle:login:login.html.twig", log );
+			break;
 			case "passport-local":
-				return this.render("demoBundle:login:login.html.twig",{type:type});
+				log.type= type ;
+				return this.render("demoBundle:login:login.html.twig", log );
 			break;
 			default:
-				return this.render("frameworkBundle::401.html.twig")
+				return this.render("frameworkBundle::401.html.twig", log)
 		}
 	};
-
-
-
-	/**
- 	 *
- 	 *	DEMO login sasl basic 
- 	 *
- 	 */
-	loginController.prototype.loginSaslBasicAction= function(){
-		return this.render("demoBundle:login:login");
-	};
-
-
-	/**
- 	 *
- 	 *	DEMO login SASL digest 
- 	 *
- 	 */
-	loginController.prototype.loginSaslDigestAction= function(){
-		return this.render("demoBundle:login:login");
-	};
-
-
-	/**
- 	 *
- 	 *	DEMO login passport basic 
- 	 *
- 	 */
-	loginController.prototype.loginSaslBasicAction= function(){
-		return this.render("demoBundle:login:login");
-	};
-
-
-	/**
- 	 *
- 	 *	DEMO login passport digest 
- 	 *
- 	 */
-	loginController.prototype.loginSaslDigestAction= function(){
-		return this.render("demoBundle:login:login");
-	};
-
 	
 	return loginController;
 });

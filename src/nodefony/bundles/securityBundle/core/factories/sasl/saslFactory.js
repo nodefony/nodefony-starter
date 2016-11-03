@@ -10,8 +10,7 @@
 nodefony.register.call(nodefony.security.factory, "sasl",function(){
 
 	var parseSASLAuth = function(request){
-
-		var str = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
+		var str = request.headers["authorization"] || ( request.query ? ( request.query.authorization || request.query.Authorization )  : null ) ;
 		if ( str ){
 			try {
 				var tab = str.split(" ") ;
@@ -85,7 +84,7 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 		}
 
 		var token = new typeMech( request, response, this.settings);
-		this.contextSecurity.logger("TRY AUTHORISATION "+token.name ,"DEBUG")
+		this.contextSecurity.logger("TRY AUTHORISATION "+ this.name +" "+token.name ,"DEBUG")
 		try {
 			if (! token.authorization){ 
 				response.headers["WWW-Authenticate"] = this.generateResponse(token);
@@ -94,7 +93,6 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 					message:"Unauthorized"
 				};
 			}
-
 			token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider), function(error, result){
 				if (error){
 					response.headers["WWW-Authenticate"] = this.generateResponse(token);

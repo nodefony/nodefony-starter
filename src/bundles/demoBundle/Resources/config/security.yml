@@ -30,8 +30,7 @@ security:
             pattern:                    ^/demo
             provider:                   nodefony
             form_login:
-              check_path:               /demo/secure
-              login_path:               /demo/login  
+              login_path:               /login/nodefony-sasl  
               default_target_path:      /
             #FACTORY AUTHENTICATION
             sasl:
@@ -56,9 +55,10 @@ security:
 
         # passport-basic  DEMO SECURITY AREA 
         basic_area:
-            pattern:                    ^/login/passport-http-basic
-            provider:                   in_memory
+            pattern:                    ^/basic
+            provider:                   nodefony
             form_login:
+              login_path:               /login/passport-http-basic
               default_target_path:      /
             passport-basic:
               realm:                    "nodefony"
@@ -68,26 +68,27 @@ security:
 
         # passport-digest  DEMO SECURITY AREA 
         digest_area:
-            pattern:                    ^/login/passport-http-digest
-            provider:                   in_memory
+            pattern:                    ^/digest
+            provider:                   nodefony
             form_login:
+              login_path:               /login/passport-http-digest
               default_target_path:      /
             passport-digest:
               realm:                    "nodefony"
-              private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
             logout:                     /logout
             anonymous:                  ~
             context:                    ~
 
         # passport-local  DEMO SECURITY AREA 
         local_area:
-            pattern:                    ^/login/passport-local
-            provider:                   in_memory
+            pattern:                    ^/local
+            provider:                   nodefony
             form_login:
               login_path:               /login/passport-local
               default_target_path:      /
             passport-local:
-              realm:                    "nodefony"
+              usernameField: 'email'
+              passwordField: 'passwd'
             logout:                     /logout
             anonymous:                  ~
             context:                    ~

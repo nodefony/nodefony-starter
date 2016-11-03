@@ -705,8 +705,6 @@ nodefony.registerController("demo", function(){
 			html:res
 		});
 	}
-
-
 	
 	return demoController;
 });

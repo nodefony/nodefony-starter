@@ -6,8 +6,8 @@
  *
  */
 
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 
 var nodefonyPassport = require("passport-nodefony");
@@ -31,7 +31,6 @@ nodefony.register.call(nodefony.security.factory, "passport-local",function(){
 	};
 
 	Factory.prototype.getStrategy = function(options){
-	
 		return  new LocalStrategy(options, function(username, password, done){
 				this.contextSecurity.logger("TRY AUTHORISATION "+ this.name+" : "+username ,"DEBUG");
 				// get passwd 
@@ -70,6 +69,7 @@ nodefony.register.call(nodefony.security.factory, "passport-local",function(){
 		})(context, function(error, res){
 			if ( res  ){
 				context.user = res ;	
+				this.contextSecurity.logger("AUTHORISATION "+this.getKey()+" SUCCESSFULLY : " + res.username ,"INFO");
 			}
 			var token = {
 				name:this.getKey(),

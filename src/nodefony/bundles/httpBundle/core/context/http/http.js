@@ -270,6 +270,10 @@ nodefony.register.call(nodefony.context, "http", function(){
 	};
 
 	Http.prototype.redirectHttps = function( status ){
+		this.response.setHeader("Cache-Control" ,"no-cache")
+		if ( this.session ){
+			this.session.setFlashBag("redirect" , "HTTPS" );
+		}
 		if( this.proxy ){
 			var urlExtend = {
 				protocol:	"https",

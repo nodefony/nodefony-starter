@@ -92,7 +92,6 @@ nodefony.registerService("httpKernel", function(){
 
 
 	httpKernel.prototype.isCrossDomain = function(context){
-
 		// request origin 
 		var URL = context.originUrl ;
 		var hostnameOrigin = URL.hostname ;

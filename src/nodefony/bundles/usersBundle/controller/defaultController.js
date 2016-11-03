@@ -77,9 +77,47 @@ nodefony.registerController("default", function(){
 		};
 
 		defaultController.prototype.logoutAction = function(){
-			if (this.context.session)
-				this.context.session.invalidate() ;
-			return this.redirect( this.generateUrl("login") );
+			
+			if ( this.context.session ){
+				var security = this.context.session.getMetaBag("security") ;
+				if ( ! security ){
+					this.context.session.invalidate() ;
+					return this.redirect( "/" );	
+				}
+				switch ( security.tokenName){
+					case "basic" :
+					case "Basic" :
+					case "digest":
+					case "Digest":
+						this.getRequest().request.headers["authorization"] = "";
+						this.get("security").getSecuredArea(security.firewall).factory.handle(this.context, function(error, token){
+							var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
+							this.context.session.invalidate() ;
+							if ( formlogin ){
+								this.getRequest().setUrl(formlogin);
+								this.getResponse().statusCode = 401 ;
+								this.notificationsCenter.fire("onResponse", this.getResponse() , this.context);
+								return ;
+							}	
+							return this.redirect( "/" );
+						}.bind(this));
+						return ;
+					break;
+				}
+
+				try {
+					var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
+					this.context.session.invalidate() ;
+					if ( formlogin ){
+						return this.redirect( formlogin );
+					}	
+				}catch(e){
+					this.context.session.invalidate() ;
+					return this.redirect( "/" );	
+				}
+			}
+
+			return this.redirect( "/" );
 		};
 
 		return defaultController;

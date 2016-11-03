@@ -2,11 +2,15 @@
 nodefony.registerFixture("users", function(){
 
 	var userPromise = function(resolve, reject){
-
 		 
 		var user = this.getEntity("user");
-		var tab = [
-			{
+		/*var tab = [{
+				username:"anonymous",
+				name: "anonymous",
+				surname: "anonymous",
+				password: "",
+				roles:"ANONYMOUS"
+			},{
 				username:"admin",
 				name: "administrator",
 				surname: "nodefony",
@@ -41,9 +45,43 @@ nodefony.registerFixture("users", function(){
 				password: "a82afd4773f6d2f6b17666d54e78dbd4",
 				lang:"fr_fr",
 				roles:"USER"
+			}];*/
+
+		var tab = [{
+				username:"anonymous",
+				name: "anonymous",
+				surname: "anonymous",
+				password: "",
+				lang:"en_en",
+				roles:"ANONYMOUS"
+			},{
+				username:"admin",
+				name: "administrator",
+				surname: "nodefony",
+				password: "admin",
+				roles:"ADMIN"
+			},{
+				username:"1000",
+				name: "User",
+				surname: "1000",
+				password: "1234",
+				lang:"fr_fr",
+				roles:"USER"
+			},{
+				username:"2000",
+				name: "User",
+				surname: "2000",
+				password: "1234",
+				lang:"fr_fr",
+				roles:"USER"
+			},{
+				username:"3000",
+				name: "User",
+				surname: "3000",
+				password: "1234",
+				lang:"fr_fr",
+				roles:"USER"
 			}];
-
-
 
 		var connection = this.getConnection("nodefony");
 		switch ( connection.options.dialect ){
@@ -53,11 +91,11 @@ nodefony.registerFixture("users", function(){
 				.then(function(){
 			 		return user.sync({ force: false });
 				})
-				.then(function(){
+				.then(function(User){
 					this.logger("Database synchronised  " ,"INFO");
 					
 					return Sequelize.Promise.map( tab, function(obj) {
-						return user.findOrCreate({where: {username: obj.username}, defaults:obj});
+						return User.findOrCreate({where: {username: obj.username}, defaults:obj});
 					})
 					
 				}.bind(this))
@@ -136,12 +174,8 @@ nodefony.registerFixture("users", function(){
 				.done(function(){
 					resolve("userEntity");
 				}.bind(this))
-
 			break;
-		
-		
 		}
-			
 	}
 
 	return {
@@ -150,5 +184,4 @@ nodefony.registerFixture("users", function(){
 		entity: "user",
 		fixture: userPromise
 	}
-
-})
+});

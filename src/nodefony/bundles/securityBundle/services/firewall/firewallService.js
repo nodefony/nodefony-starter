@@ -156,7 +156,11 @@ nodefony.registerService("firewall", function(){
 					}else{
 						this.logger(e, "DEBUG");
 					}
-					context.response.setStatusCode( 401 ) ;
+					if ( e && e.status ){
+						context.response.setStatusCode( e.status, e.message ) ;
+					}else{
+						context.response.setStatusCode( 401 ) ;
+					}
 					context.resolver = this.overrideURL(context, this.formLogin);
 					if ( !  context.resolver.resolve ){
 						return context.notificationsCenter.fire("onError",context.container, {
@@ -217,15 +221,33 @@ nodefony.registerService("firewall", function(){
 					this.token = token ;
 					
 					context.session.migrate(true);
+					var userFull = {
+						createdAt:context.user.createdAt,
+						updatedAt:context.user.updatedAt,
+						roles:context.user.roles,
+						lang:context.user.lang,
+						surname:context.user.surname,
+						name:context.user.name,
+						email:context.user.email,
+						accountNonLocked:context.user.accountNonLocked,
+						credentialsNonExpired:context.user.credentialsNonExpired,
+						enabled:context.user.enabled,
+						username:context.user.username,
+						id:context.user.id
+					}
+					
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
 						user:context.user.username,	
-						userFull:context.user,
+						userFull:userFull,
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
 					//context.session.getMetaBag("security") ;
-					if ( this.defaultTarget && context.request.url.pathname === this.checkLogin){
+					//console.log( context.request.url.pathname )
+					//console.log( this.checkLogin )
+					if ( this.defaultTarget ){
+						
 						context.resolver = this.overrideURL(context, this.defaultTarget);
 						if ( context.isAjax ){
 							var obj = context.setXjson( {
@@ -291,8 +313,6 @@ nodefony.registerService("firewall", function(){
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){
-		//console.log( context.session )
-		context.session.setFlashBag("redirect" , "HTTPS" );
 		return context.redirectHttps(301) ;
 	};
 

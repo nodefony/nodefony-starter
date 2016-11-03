@@ -68,9 +68,10 @@ nodefony.register.call(nodefony.security.factory, "passport-digest",function(){
 		})(context, function(error, res){
 			if ( res  ){
 				context.user = res ;	
+				this.contextSecurity.logger("AUTHORISATION "+this.getKey()+" SUCCESSFULLY : " + res.username ,"INFO");
 			}
 			var token = {
-				name:this.getKey(),
+				name:"Digest",
 				user:res
 			}
 

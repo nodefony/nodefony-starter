@@ -5,7 +5,7 @@
  */
 
 //== Kernel
-var App = new stage.appKernel(null, "dev", {
+var App = new stage.appKernel( "dev", {
 	debug: true,
 	location:{
 		html5Mode:false

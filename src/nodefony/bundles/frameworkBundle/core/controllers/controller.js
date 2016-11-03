@@ -290,7 +290,6 @@ nodefony.register("controller", function(){
 		});
 
 		fileStream.on("close",function(){
-			//console.log("CLOSSSSSSSSE")
 			response.end();
 		});
 
@@ -396,7 +395,6 @@ nodefony.register("controller", function(){
 		});
 
 		fileStream.on("close",function(){
-			//console.log("CLOSSSSSSSSE")
 			response.end();
 		});
 
@@ -424,12 +422,34 @@ nodefony.register("controller", function(){
 		} );
 	};  
 
+	Controller.prototype.createUnauthorizedException = function(message){
+		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:401");
+		this.context.response.setStatusCode(401) ;
+		return resolver.callController( {
+			message:message || null 
+		} );
+	};  
+
+	Controller.prototype.createException = function(message){
+		var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:500");
+		this.context.response.setStatusCode(500) ;
+		return resolver.callController( {
+			message:message || null 
+		} );
+	}; 
+
+
 	Controller.prototype.redirect = function(url ,status){
 		if (! url )
 			throw new Error("Redirect error no url !!!")
 		var result = this.getResponse().redirect(url, status)
 		this.notificationsCenter.fire("onResponse", result , this.context);
 	};
+
+	Controller.prototype.redirectHttps = function(status){
+		return this.context.redirectHttps(301 || status) ;
+	};
+
 
 	Controller.prototype.forward = function(name, param){
 		var resolver = this.container.get("router").resolveName(this.container, name);

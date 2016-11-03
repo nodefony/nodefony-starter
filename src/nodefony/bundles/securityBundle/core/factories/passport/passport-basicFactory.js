@@ -41,11 +41,14 @@ nodefony.register.call(nodefony.security.factory, "passport-basic",function(){
 							return done(error, null)
 						}
 						if ( passwd !== password ){
-							return done("Password not valid", null);
+							return done(null, false);
 						}
 						this.contextSecurity.provider.loadUserByUsername(username, function(error, result){
 							if ( error ){
 								return done(error, null)
+							}
+							if ( ! result ){
+								return done( null, false  )
 							}
 							return done( null, result  )
 							
@@ -69,9 +72,10 @@ nodefony.register.call(nodefony.security.factory, "passport-basic",function(){
 		})(context, function(error, res){
 			if ( res ){
 				context.user = res ;	
+				this.contextSecurity.logger("AUTHORISATION "+this.getKey()+" SUCCESSFULLY : " + res.username ,"INFO");
 			}
 			var token = {
-				name:this.getKey(),
+				name:"Basic",
 				user:res
 			}
 			return callback(error, token)
