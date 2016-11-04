@@ -442,7 +442,7 @@ nodefony.registerService("firewall", function(){
 										if (meta){
 											context.user = meta.userFull ;
 										}
-										var next = context.kernelHttp.checkCrossDomain( context ) ;
+										var next = context.kernelHttp.checkValidDomain( context ) ;
 										if ( next !== 200){
 											return ;
 										}
@@ -450,7 +450,7 @@ nodefony.registerService("firewall", function(){
 					 				}.bind(this));
 								}else{
 									context.crossDomain = context.isCrossDomain() ;
-									var next = context.kernelHttp.checkCrossDomain( context ) ;
+									var next = context.kernelHttp.checkValidDomain( context ) ;
 									if ( next !== 200){
 										return ;
 									}
@@ -501,7 +501,7 @@ nodefony.registerService("firewall", function(){
 									if (meta){
 										context.user = meta.userFull ;
 									}
-									var next = context.kernelHttp.checkCrossDomain( context ) ;
+									var next = context.kernelHttp.checkValidDomain( context ) ;
 									if ( next !== 200){
 										return ;
 									}
@@ -509,7 +509,7 @@ nodefony.registerService("firewall", function(){
 					 			}.bind(this));
 							}else{
 								context.crossDomain = context.isCrossDomain() ;
-								var next = context.kernelHttp.checkCrossDomain( context ) ;
+								var next = context.kernelHttp.checkValidDomain( context ) ;
 								if ( next !== 200){
 									return ;
 								}

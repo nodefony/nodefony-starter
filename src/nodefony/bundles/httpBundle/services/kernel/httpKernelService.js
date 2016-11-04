@@ -320,11 +320,11 @@ nodefony.registerService("httpKernel", function(){
 	}
 
 
-	httpKernel.prototype.checkCrossDomain = function(context){
-		if ( context.crossDomain ){
-			var next =  401 ;
+	httpKernel.prototype.checkValidDomain = function(context){
+		if ( context.validDomain ){
+			var next =  200 ;
 		}else{
-			var next = 200 ;
+			var next = 401 ;
 		}
 		switch (next){
 			case 200 :
