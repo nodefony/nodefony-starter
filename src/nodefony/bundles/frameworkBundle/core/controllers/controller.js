@@ -468,6 +468,10 @@ nodefony.register("controller", function(){
 		this.context.showDebugBar = false;
 	};
 
+	Controller.prototype.getRoute = function(){
+		return this.context.resolver.getRoute();
+	}
+
 		
 	Controller.prototype.generateUrl = function(name, variables, absolute){
 		if (absolute){

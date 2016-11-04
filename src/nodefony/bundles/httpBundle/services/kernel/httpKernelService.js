@@ -21,7 +21,6 @@ nodefony.registerService("httpKernel", function(){
 		this.reader = this.container.get("reader");
 		this.serverStatic = serverStatic;
 		this.engineTemplate = this.container.get("templating");
-		//this.settings =  this.container.getParameters("bundles.http");
 
 		this.domain = this.kernel.domain;
 		this.httpPort = this.kernel.httpPort;
@@ -132,9 +131,6 @@ nodefony.registerService("httpKernel", function(){
 		switch  ( requestProto ){
 			case "http" :
 			case "https" :
-				if ( context.proxy ){
-				}else{
-				}
 				var protocolOrigin = URL.protocol ;
 			break;
 			case "ws" :
@@ -167,9 +163,6 @@ nodefony.registerService("httpKernel", function(){
 		
 		return false ;
 	}
-
-
-
 	
 	httpKernel.prototype.getEngineTemplate = function(name){
 		return nodefony.templatings[name];
@@ -327,11 +320,11 @@ nodefony.registerService("httpKernel", function(){
 	}
 
 
-	httpKernel.prototype.checkValidDomain = function(context){
-		if ( context.validDomain ){
-			var next =  200 ;
+	httpKernel.prototype.checkCrossDomain = function(context){
+		if ( context.crossDomain ){
+			var next =  401 ;
 		}else{
-			var next = 401 ;
+			var next = 200 ;
 		}
 		switch (next){
 			case 200 :

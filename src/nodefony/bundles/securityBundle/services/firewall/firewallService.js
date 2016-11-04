@@ -437,19 +437,20 @@ nodefony.registerService("firewall", function(){
 											throw err ;
 						 				}
 										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG")
-										//context.crossDomain = context.isCrossDomain() ;
+										context.crossDomain = context.isCrossDomain() ;
 										var meta = session.getMetaBag("security");
 										if (meta){
 											context.user = meta.userFull ;
 										}
-										var next = context.kernelHttp.checkValidDomain( context ) ;
+										var next = context.kernelHttp.checkCrossDomain( context ) ;
 										if ( next !== 200){
 											return ;
 										}
 										context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 				}.bind(this));
 								}else{
-									var next = context.kernelHttp.checkValidDomain( context ) ;
+									context.crossDomain = context.isCrossDomain() ;
+									var next = context.kernelHttp.checkCrossDomain( context ) ;
 									if ( next !== 200){
 										return ;
 									}
@@ -494,20 +495,21 @@ nodefony.registerService("firewall", function(){
 										throw err ;
 						 			}
 									this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
-									//context.crossDomain = context.isCrossDomain() ;
+									context.crossDomain = context.isCrossDomain() ;
 
 									var meta = session.getMetaBag("security");
 									if (meta){
 										context.user = meta.userFull ;
 									}
-									var next = context.kernelHttp.checkValidDomain( context ) ;
+									var next = context.kernelHttp.checkCrossDomain( context ) ;
 									if ( next !== 200){
 										return ;
 									}
 									context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 			}.bind(this));
 							}else{
-								var next = context.kernelHttp.checkValidDomain( context ) ;
+								context.crossDomain = context.isCrossDomain() ;
+								var next = context.kernelHttp.checkCrossDomain( context ) ;
 								if ( next !== 200){
 									return ;
 								}
@@ -522,27 +524,7 @@ nodefony.registerService("firewall", function(){
 		});
 	};
 
-	var checkValidDomain = function(context){
-		if ( context.validDomain ){
-			var next =  200 ;
-		}else{
-			var next = 401 ;
-		}
-		switch (next){
-			case 200 :
-				this.logger("\033[34m VALID DOMAIN  \033[0mREQUEST REFERER : " + context.originUrl.href ,"DEBUG");
-			break;
-			default:
-				this.logger("\033[31m CROSS DOMAIN Unauthorized \033[0mREQUEST REFERER : " + context.originUrl.href ,"ERROR");
-				context.notificationsCenter.fire("onError",context.container, {
-					status:next,
-					message:"crossDomain Unauthorized "
-				});
-			break;
-		}
-		return next  ;
-	}
-
+	
 	Firewall.prototype.handlerHttp = function( context, request, response, meta){
 		try {
 			if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){

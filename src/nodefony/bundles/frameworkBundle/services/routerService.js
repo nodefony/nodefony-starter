@@ -45,6 +45,10 @@ nodefony.registerService("router", function(){
 		}
 	};
 
+	Resolver.prototype.getRoute = function(){
+		return this.route ;
+	};
+
 	var regAction =/^(.+)Action$/; 
 	Resolver.prototype.getAction= function(name){
 		for (var func in this.controller.prototype){
