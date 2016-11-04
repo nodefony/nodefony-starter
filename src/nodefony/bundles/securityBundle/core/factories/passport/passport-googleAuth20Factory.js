@@ -24,7 +24,6 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 			this.User = this.contextSecurity.container.get("sequelize").getEntity("user") ;
 		})
 
-
 	};
 
 	Factory.prototype.getStrategy = function(options){
@@ -53,7 +52,11 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 					where: {username: obj.username}, 
 					defaults:obj
 				}).then(function(user){
-					cb(null, user[0]);
+					if ( nodefony.typeOf( user)  === "array" ){ 
+						cb(null, user[0]);
+					}else{
+						cb(null, user);	
+					}
 				}).catch(function(e){
 					cb(e, null)	
 				})

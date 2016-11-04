@@ -99,7 +99,7 @@ security:
             pattern:                    ^/auth/google
             provider:                   nodefony
             form_login:
-              login_path:               /login/passport-google
+              login_path:               /
               default_target_path:      /
             passport-google-oauth20:
               clientID:                 '1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com'
