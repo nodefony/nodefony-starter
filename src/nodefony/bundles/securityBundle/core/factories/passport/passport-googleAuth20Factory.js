@@ -39,12 +39,12 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 					surname		: profile.name.givenName,
 					password	: "",
 					provider	: profile.provider,
-					lang		: profile.language,
+					lang		: profile._json.language,
 					roles		: "USER",	
 					gender		: profile.gender,
 					displayName	: profile.displayName,
-					url		: profile.url,
-					image		: profile.image
+					url		: profile._json.url,
+					image		: profile._json.image.url
 				}
 			}
 
@@ -53,7 +53,7 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 					where: {username: obj.username}, 
 					defaults:obj
 				}).then(function(user){
-					cb(null, user);
+					cb(null, user[0]);
 				}).catch(function(e){
 					cb(e, null)	
 				})
@@ -80,7 +80,6 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 			return ;
 		}
 		if ( route.name === "googleCallBackArea" ){ 
-			
 			this.passport.authenticate('google', { 
 				session: false, 
 			})(context, function(error, res){
