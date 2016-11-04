@@ -21,7 +21,9 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 		this.passport.use(this.strategy);
 
 		this.contextSecurity.container.get("kernel").listen(this,"onReady",function(){
-			this.User = this.contextSecurity.container.get("sequelize").getEntity("user") ;
+			this.orm = this.contextSecurity.container.get("sequelize") ;
+			this.User = this.orm.getEntity("user") ;
+			this.connection = this.orm.getConnection("nodefony");
 		})
 
 	};
@@ -32,7 +34,6 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 			if ( profile ){
 				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
 				var obj = {
-					id		: profile.id,	
 					username	: profile.displayName,
 					name		: profile.name.familyName || "",
 					surname		: profile.name.givenName || "",

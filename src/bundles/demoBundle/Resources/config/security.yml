@@ -107,7 +107,7 @@ security:
               callbackURL:              "https://nodefony.net/auth/google/callback"
             logout:                     /logout
             anonymous:                  ~
-            context:                    ~
+            context:                    google
             redirectHttps:              true
             crossDomain: 
                 allow-origin:          {"google":"accounts.google.com"}

@@ -305,9 +305,15 @@ nodefony.registerController("demo", function(){
 				return this.redirect(this.generateUrl("saslArea"));
 			}.bind(this))
 			.catch(function(error){
-				this.logger(util.inspect(error.errors) );
-				this.setFlashBag("error",error.errors[0].message );
-				return this.redirect(this.generateUrl("subscribe"));
+				if ( error.errors  ){
+					this.logger(util.inspect(error.errors) );
+					this.setFlashBag("error",error.errors[0].message );
+					return this.redirect(this.generateUrl("subscribe"));
+				}else{
+					this.logger(util.inspect(error) , "ERROR");	
+					this.setFlashBag("error",error.message );
+					return this.redirect(this.generateUrl("subscribe"));
+				}
 			}.bind(this))
 		
 		}
