@@ -93,7 +93,26 @@ security:
             anonymous:                  ~
             context:                    ~
             redirectHttps:              true
+        
+        # passport-local  DEMO SECURITY AREA 
+        google_area:
+            pattern:                    ^/auth/google
+            provider:                   nodefony
+            form_login:
+              login_path:               /login/passport-google
+              default_target_path:      /
+            passport-google-oauth20:
+              clientID:                 '1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com'
+              clientSecret:             "xS7E8otmqcKMttxrBKl1B1ML" 
+              callbackURL:              "https://nodefony.net/auth/google/callback"
+            logout:                     /logout
+            anonymous:                  ~
+            context:                    ~
+            redirectHttps:              true
 
+
+
+        
 
     #TODO authorisation               
     access_control:

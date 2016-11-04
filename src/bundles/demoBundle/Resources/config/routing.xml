@@ -53,6 +53,16 @@
 		<default key="controller">frameworkBundle:default:401</default>
 	</route>
 
+	<!-- GOOGLE -->
+	<route id="googleArea" pattern="/auth/google">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
+
+	<route id="googleCallBackArea" pattern="/auth/google/callback">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
+
+
 
 
 

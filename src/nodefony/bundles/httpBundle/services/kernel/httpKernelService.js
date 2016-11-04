@@ -124,7 +124,7 @@ nodefony.registerService("httpKernel", function(){
 		//console.log( context.proxy )
 		if (  context.proxy  ){
 			requestProto = context.proxy.proxyProto ;	
-			requestPort =	context.proxy.proxyPort	
+			requestPort =	context.proxy.proxyPort;	
 		}
 		
 		//console.log( "requestProto : " + requestProto)
@@ -152,13 +152,13 @@ nodefony.registerService("httpKernel", function(){
 		//console.log( "check protocol Request:" + requestProto +" Origin : "+protocolOrigin)		
 		// check protocol  	
 		if (requestProto+":" !== protocolOrigin  ){
-			return true 
+			return true ; 
 		}
 
 		//console.log( "check port Request:" + requestPort +" Origin : "+portOrigin)		
 		// check port
 		if (requestPort != portOrigin  ){
-			return true 
+			return true ;
 		}
 		
 		return false ;
