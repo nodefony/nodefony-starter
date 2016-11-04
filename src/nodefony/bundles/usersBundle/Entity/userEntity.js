@@ -20,7 +20,7 @@ nodefony.registerEntity("user", function(){
 				enabled		:	{type: Sequelize.BOOLEAN, defaultValue:true},
 				credentialsNonExpired:	{type: Sequelize.BOOLEAN, defaultValue:true},
 				accountNonLocked:	{type: Sequelize.BOOLEAN, defaultValue:true},
-				email		:	{type: Sequelize.STRING, unique: true},
+				email		:	{type: Sequelize.STRING},
 				name		:	Sequelize.STRING,
 				surname		:	Sequelize.STRING,
 				lang		:	{type: Sequelize.STRING, defaultValue: "en_en" },
