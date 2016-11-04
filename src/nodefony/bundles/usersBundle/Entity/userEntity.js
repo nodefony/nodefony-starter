@@ -16,6 +16,7 @@ nodefony.registerEntity("user", function(){
 				id		:	{type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
 				username	:	{type: Sequelize.STRING, unique: true, allowNull: false},
 				password	:	Sequelize.STRING,
+				provider	:	{type: Sequelize.STRING, defaultValue: "nodefony"},
 				enabled		:	{type: Sequelize.BOOLEAN, defaultValue:true},
 				credentialsNonExpired:	{type: Sequelize.BOOLEAN, defaultValue:true},
 				accountNonLocked:	{type: Sequelize.BOOLEAN, defaultValue:true},
@@ -23,7 +24,11 @@ nodefony.registerEntity("user", function(){
 				name		:	Sequelize.STRING,
 				surname		:	Sequelize.STRING,
 				lang		:	{type: Sequelize.STRING, defaultValue: "en_en" },
-				roles		:	{type: Sequelize.STRING, defaultValue:  'ADMIN'}
+				roles		:	{type: Sequelize.STRING, defaultValue:  'ADMIN'},
+				gender		:	Sequelize.STRING,
+				displayName	:	Sequelize.STRING,
+				url		:	Sequelize.STRING,
+				image		:	Sequelize.STRING
     		},{
 			classMethods: {
 				getUserPassword : function(username, callback){

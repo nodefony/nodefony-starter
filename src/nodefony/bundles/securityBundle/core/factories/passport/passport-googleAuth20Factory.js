@@ -1,7 +1,6 @@
 var passport = require('passport');
-
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
+var nodefonyPassport = require("passport-nodefony");
 
 
 
@@ -21,16 +20,47 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 
 		this.passport.use(this.strategy);
 
+		this.contextSecurity.container.get("kernel").listen(this,"onReady",function(){
+			this.User = this.contextSecurity.container.get("sequelize").getEntity("user") ;
+		})
+
+
 	};
 
 	Factory.prototype.getStrategy = function(options){
 		return  new GoogleStrategy(options, function(accessToken, refreshToken, profile, cb){
-			this.contextSecurity.logger("TRY AUTHORISATION "+ this.name+" : "+username ,"DEBUG");
-			console.log(arguments)	
-			/*User.findOrCreate({ googleId: profile.id }, function (err, user) {
-				return cb(err, user);
-			});*/
+			var obj = null ;
+			if ( profile ){
+				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
+				var obj = {
+					id		: profile.id,	
+					username	: profile.displayName,
+					name		: profile.name.familyName,
+					surname		: profile.name.givenName,
+					password	: "",
+					provider	: profile.provider,
+					lang		: profile.language,
+					roles		: "USER",	
+					gender		: profile.gender,
+					displayName	: profile.displayName,
+					url		: profile.url,
+					image		: profile.image
+				}
+			}
 
+			if ( obj ){
+				this.User.findOrCreate({
+					where: {username: obj.username}, 
+					defaults:obj
+				}).then(function(user){
+					cb(null, user);
+				}).catch(function(e){
+					cb(e, null)	
+				})
+				return ;	
+			}
+			cb(new Error("Profile Google error") , null );
+		
 		}.bind(this));	
 	}
 
@@ -44,23 +74,22 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 
 	Factory.prototype.handle = function( context, callback){
 		
-		console.log( "HANDLE")
 		var route = context.resolver.getRoute() ;
 		if ( route.name === "googleArea" ) {
-			console.log("googleArea")
 			this.passport.authenticate('google', { scope: ['profile'] })(context);
 			return ;
 		}
-
-		if (route.name === "googleCallbackArea" ){ 
-			console.log("googleCallbackArea")
+		if ( route.name === "googleCallBackArea" ){ 
 			
 			this.passport.authenticate('google', { 
 				session: false, 
 			})(context, function(error, res){
+				if ( error ){
+					return callback(error, null);	
+				}
 				if ( res ){
 					context.user = res ;	
-					this.contextSecurity.logger("AUTHORISATION "+this.getKey()+" SUCCESSFULLY : " + res.username ,"INFO");
+					//this.contextSecurity.logger("AUTHORISATION "+this.getKey()+" SUCCESSFULLY : " + res.username ,"INFO");
 				}
 				var token = {
 					name:"Google",

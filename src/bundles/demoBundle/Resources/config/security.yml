@@ -109,10 +109,15 @@ security:
             anonymous:                  ~
             context:                    ~
             redirectHttps:              true
-
-
-
-        
+            crossDomain: 
+                allow-origin:          {"google":"accounts.google.com"}
+                Access-Control:         {
+                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
+                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
+                        "access-control-Allow-Credentials":true,
+                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
+                        "access-control-max-age":10
+                }
 
     #TODO authorisation               
     access_control:
