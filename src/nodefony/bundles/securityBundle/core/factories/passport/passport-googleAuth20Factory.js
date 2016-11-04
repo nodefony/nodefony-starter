@@ -34,16 +34,16 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 				var obj = {
 					id		: profile.id,	
 					username	: profile.displayName,
-					name		: profile.name.familyName,
-					surname		: profile.name.givenName,
+					name		: profile.name.familyName || "",
+					surname		: profile.name.givenName || "",
 					password	: "",
 					provider	: profile.provider,
 					lang		: profile._json.language,
 					roles		: "USER",	
-					gender		: profile.gender,
+					gender		: profile.gender || "",
 					displayName	: profile.displayName,
-					url		: profile._json.url,
-					image		: profile._json.image.url
+					url		: profile._json.url || "",
+					image		: profile._json.image.url || ""
 				}
 			}
 
