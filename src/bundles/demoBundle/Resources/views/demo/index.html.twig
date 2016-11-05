@@ -61,12 +61,28 @@
 	<!-- Home start -->
 	<span itemscope itemtype="http://schema.org/SoftwareApplication">
 	<section id="home" class="pfblock-image screen-height">
-        	<div class="home-overlay"></div>
+        	<div class="home-overlay">
+		
+		
+		</div>
 		<div class="intro">
 			<div class="start"> {{ "welcome"|trans() }} {{user.name }} {{user.surname}}</div>
 			<h1 class="success" style="font-size:60px"> <strong itemprop="name" class="text-primary">NODEFONY </strong> FRAMEWORK  </h1>
 			<h3 class="success"> <strong class="text-primary"> </strong> {{ "framework"|trans }}   </h3>
+	
+			<div class="container"  >
+				<div class="row">
+
+					<div class="col-sm-6 col-sm-offset-3" style="margin-top:60px">
+
+						<div class="pfblock-subtitle text-primary">
+							<a href="https://nodejs.org"><img alt="node.js" width="200px" height="200px" src="/demoBundle/images/nodejs-new-pantone-white.png"></a>  
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+
 
         	<a href="#system">
 			<div class="scroll-down">
@@ -86,10 +102,9 @@
 				<div class="col-sm-6 col-sm-offset-3" style="margin-top:60px">
 
 					<div class="pfblock-header wow fadeInUp">
-						<h2 class="pfblock-title "> WEB APPLICATION</h2>
+						<h2 class="pfblock-title text-primary" > WEB APPLICATION</h2>
 						<div class="pfblock-line"></div>
 						<div class="pfblock-subtitle text-primary">
-							NODE.JS  
 						</div>
 					</div>
 
@@ -102,7 +117,7 @@
 				<div class="col-sm-3">
 					<div class="iconbox wow slideInRight">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/web-server-icon.png" style="width:60px;height:42px"></img>
+							<img src = "/demoBundle/images/web-server-icon.png" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">SERVEURS</h3>
@@ -117,7 +132,7 @@
 				<div class="col-sm-3">
 					<div class="iconbox wow slideInRight">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/framework.jpg" style="width:60px;height:42px"></img>
+							<img src = "/demoBundle/images/framework.jpg" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">FRAMEWORK SERVICE</h3>
@@ -133,14 +148,14 @@
 				<div class="col-sm-3">
 					<div class="iconbox wow slideInRight">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/sequelize.png" style="width:60px;height:42px"></img>
+							<img src = "/demoBundle/images/sequelize.png" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">ORM SERVICE</h3>
 							<div class="iconbox-desc">
 								 Sequelize</br>
 								 MYSQL SQLITE</br> 
-								 sessions, users
+								 Sessions, Users
 							</div>
 						</div>
 					</div>
@@ -148,13 +163,13 @@
 				<div class="col-sm-3">
 					<div class="iconbox wow slideInRight">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/monitoring.jpg" style="width:60px;height:42px"></img>
+							<img src = "/demoBundle/images/monitoring.jpg" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">NONITORING APPICATION</h3>
 							<div class="iconbox-desc">
-								 Monitoring websoket</br>
-								 Monitoring http</br>
+								 Monitoring Websoket</br>
+								 Monitoring Http</br>
 								 Monitoring Sessions</br>
 								 
 							</div>
@@ -174,7 +189,7 @@
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">REALTIME APPLICATION</h3>
 							<div class="iconbox-desc">
-								API realtime </br>
+								API Realtime </br>
 								Services Subscription	
 							</div>
 						</div>
@@ -185,13 +200,14 @@
 
 					<div class="iconbox wow slideInLeft">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/authentication.png" style="width:60px;height:53px"></img>
+							<img src = "/demoBundle/images/passportjs.png" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">AUTHENTICATION MANAGER</h3>
 							<div class="iconbox-desc">
-								Factory authentication </br>
-								Digest Basic
+								Users Authentication </br>
+								Passport Strategies Integration </br>
+								Digest Basic oAuth Local
 							</div>
 						</div>
 					</div>
@@ -208,7 +224,8 @@
 							<h3 class="iconbox-title">SESSIONS MANAGER</h3>
 							<div class="iconbox-desc">
 								Session Storage  </br>
-								session Context Secure	
+								Memcahed , File System , ORM <br>
+								Session Context Secure	
 							</div>
 						</div>
 					</div>
@@ -219,13 +236,14 @@
 
 					<div class="iconbox wow slideInRight">
 						<div class="iconbox-icon">
-							<img src = "/demoBundle/images/firewall.png" style="width:60px;height:42px"></img>
+							<img src = "/demoBundle/images/firewall.png" style="width:60px;height:60px"></img>
 						</div>
 						<div class="iconbox-text">
 							<h3 class="iconbox-title">SECURITY</h3>
 							<div class="iconbox-desc">
-								Firewall in application level </br>
-								Cors Manager 
+								Firewall in Application Level </br>
+								Cors Manager </br>
+								Sessions Secure 
 							</div>
 						</div>
 					</div>
