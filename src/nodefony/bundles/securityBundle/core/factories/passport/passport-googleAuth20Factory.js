@@ -33,13 +33,13 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 	Factory.prototype.getStrategy = function(options){
 		return  new GoogleStrategy(options, function(accessToken, refreshToken, profile, cb){
 			var obj = null ;
-			console.log(profile)
 			if ( profile ){
 				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
 				var obj = {
 					username	: profile.displayName,
 					name		: profile.name.familyName || "",
 					surname		: profile.name.givenName || "",
+					email		: profile.emails ? profile.emails[0].value : "" ,
 					password	: "",
 					provider	: profile.provider,
 					lang		: profile._json.language,
