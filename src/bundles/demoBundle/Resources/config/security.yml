@@ -105,6 +105,7 @@ security:
               clientID:                 '1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com'
               clientSecret:             "xS7E8otmqcKMttxrBKl1B1ML" 
               callbackURL:              "https://nodefony.net/auth/google/callback"
+              scopes:                   ['profile','email']
             logout:                     /logout
             anonymous:                  ~
             context:                    google

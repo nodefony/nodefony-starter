@@ -26,11 +26,14 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 			this.connection = this.orm.getConnection("nodefony");
 		})
 
+		this.scopes = settings.scopes || ['profile'] ; 
+
 	};
 
 	Factory.prototype.getStrategy = function(options){
 		return  new GoogleStrategy(options, function(accessToken, refreshToken, profile, cb){
 			var obj = null ;
+			console.log(profile)
 			if ( profile ){
 				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
 				var obj = {
@@ -80,7 +83,7 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 		
 		var route = context.resolver.getRoute() ;
 		if ( route.name === "googleArea" ) {
-			this.passport.authenticate('google', { scope: ['profile'] })(context);
+			this.passport.authenticate('google', { scope: this.scopes })(context);
 			return ;
 		}
 		if ( route.name === "googleCallBackArea" ){ 
