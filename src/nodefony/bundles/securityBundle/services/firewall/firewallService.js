@@ -221,7 +221,10 @@ nodefony.registerService("firewall", function(){
 					this.token = token ;
 					
 					context.session.migrate(true);
-					var userFull = {
+					//console.log( context.user )
+					var userFull = context.user.dataValues ;
+					delete userFull.password ;
+					/*{
 						createdAt:context.user.createdAt,
 						updatedAt:context.user.updatedAt,
 						roles:context.user.roles,
@@ -234,7 +237,7 @@ nodefony.registerService("firewall", function(){
 						enabled:context.user.enabled,
 						username:context.user.username,
 						id:context.user.id
-					}
+					}*/
 					
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
@@ -382,7 +385,7 @@ nodefony.registerService("firewall", function(){
 					return func(result, context.nodeReader.bind(context));
 				}catch(e){
 					context.logger(e.message, "ERROR");
-					console.log(e)
+					console.trace(e)
 				}
 			};
 		}(this);
@@ -396,12 +399,10 @@ nodefony.registerService("firewall", function(){
 		// listen KERNEL EVENTS
 		this.kernel.listen(this, "onBoot",function(){
 			this.sessionService = this.get("sessions");
-			//this.sessionService.settings.start = "firewall";
 			this.orm = this.get(this.kernel.settings.orm);
 		});
 
 		this.kernel.listen(this, "onSecurity",function(context){
-				
 			switch (context.type){
 				case "HTTP" :
 				case "HTTPS" :
@@ -421,43 +422,38 @@ nodefony.registerService("firewall", function(){
 								if (error){
 									return context.security.handleError(context, error);
 								}
-								context.crossDomain = context.isCrossDomain() ;
-								var meta = session.getMetaBag("security");
+								if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+									return context.security.redirectHttps(context);
+								}
 								try {
-									this.handlerHttp(context, request, response, meta);
+									return this.handlerHttp(context, request, response, session);
 								}catch(error){
-									context.notificationsCenter.fire("onError", context.container, error );
+									return context.notificationsCenter.fire("onError", context.container, error );
 								}
 							}.bind(this));	
 						}else{
 							try {
 								if ( context.sessionAutoStart === "autostart" ){
-					 				this.sessionService.start(context, "default", function(err, session){
-						 				if (err){
-											throw err ;
+					 				this.sessionService.start(context, "default", function(error, session){
+						 				if (error){
+											throw error ;
 						 				}
-										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG")
-										context.crossDomain = context.isCrossDomain() ;
-										var meta = session.getMetaBag("security");
-										if (meta){
-											context.user = meta.userFull ;
+										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+										try {
+											return this.handlerHttp(context, request, response, session);
+										}catch(error){
+											return context.notificationsCenter.fire("onError", context.container, error );
 										}
-										var next = context.kernelHttp.checkValidDomain( context ) ;
-										if ( next !== 200){
-											return ;
-										}
-										context.notificationsCenter.fire("onRequest", context.container, request, response);
-					 				}.bind(this));
+									}.bind(this))
 								}else{
-									context.crossDomain = context.isCrossDomain() ;
 									var next = context.kernelHttp.checkValidDomain( context ) ;
 									if ( next !== 200){
 										return ;
 									}
-									context.notificationsCenter.fire("onRequest", context.container, request, response);	
+									return context.notificationsCenter.fire("onRequest", context.container, request, response);	
 								}
 							}catch(e){
-								context.notificationsCenter.fire("onError", context.container, e );	
+								return context.notificationsCenter.fire("onError", context.container, e );	
 							}
 						}
 					}.bind(this));
@@ -479,10 +475,8 @@ nodefony.registerService("firewall", function(){
 							if (error){
 								return context.security.handleError(context, error);
 							}
-							var meta = session.getMetaBag("security");
-							context.crossDomain = context.isCrossDomain() ;
 							try {
-								this.handlerHttp(context, request, response, meta);
+								this.handlerHttp(context, request, response, session);
 							}catch(error){
 								context.notificationsCenter.fire("onError", context.container, error );
 							}
@@ -495,44 +489,37 @@ nodefony.registerService("firewall", function(){
 										throw err ;
 						 			}
 									this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
-									context.crossDomain = context.isCrossDomain() ;
-
-									var meta = session.getMetaBag("security");
-									if (meta){
-										context.user = meta.userFull ;
+									try {
+										return this.handlerHttp(context, request, response, session);
+									}catch(error){
+										return context.notificationsCenter.fire("onError", context.container, error );
 									}
-									var next = context.kernelHttp.checkValidDomain( context ) ;
-									if ( next !== 200){
-										return ;
-									}
-									context.notificationsCenter.fire("onRequest", context.container, request, response);
 					 			}.bind(this));
 							}else{
-								context.crossDomain = context.isCrossDomain() ;
 								var next = context.kernelHttp.checkValidDomain( context ) ;
 								if ( next !== 200){
 									return ;
 								}
-								context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								return context.notificationsCenter.fire("onRequest", context.container, request, response);	
 							}	
 						}catch(e){
-							context.notificationsCenter.fire("onError", context.container, e );	
+							return context.notificationsCenter.fire("onError", context.container, e );	
 						}
 					}
 				break;
 			}
 		});
 	};
-
 	
-	Firewall.prototype.handlerHttp = function( context, request, response, meta){
+	Firewall.prototype.handlerHttp = function( context, request, response, session){
+		var next = context.kernelHttp.checkValidDomain( context ) ;
+		if ( next !== 200){
+			return ;
+		}
 		try {
-			if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-				return context.security.redirectHttps(context);
-			}
-			
+			context.crossDomain = context.isCrossDomain() ;
 			//CROSS DOMAIN //FIXME width callback handle for async response  
-			if (  context.crossDomain ){
+			if (  context.security && context.crossDomain ){
 				var next = context.security.handleCrossDomain(context, request, response) ;
 				switch (next){
 					case 204 :
@@ -549,29 +536,35 @@ nodefony.registerService("firewall", function(){
 					break;
 				}
 			}
+			var meta = session.getMetaBag("security");
 			//console.log(meta)
-			if (meta){
-				//if ( meta.user ){
-					context.security.provider.loadUserByUsername( meta.user ,function(error, user){
-						if (error){
-							return context.notificationsCenter.fire("onError", context.container, error );
-						}
-						context.user = user ;
-						try {
-							context.notificationsCenter.fire("onRequest", context.container, request, response );
-						}catch(e){
-							context.notificationsCenter.fire("onError", context.container, e );	
-						}
-					}.bind(this)) ;
-				//	return ;	
-				//}
-			}else{
-				context.security.handle( context, request, response);
+			if ( meta ){
+				context.user = meta.userFull ; 		
+			}
+			if ( context.security ){
+				if ( ! meta ){
+					return context.security.handle( context, request, response);	
+				}
+				/*context.security.provider.loadUserByUsername( meta.user ,function(error, user){
+					if (error){
+						return context.notificationsCenter.fire("onError", context.container, error );
+					}
+					context.user = user ;
+					try {
+						return context.notificationsCenter.fire("onRequest", context.container, request, response );
+					}catch(e){
+						return context.notificationsCenter.fire("onError", context.container, e );	
+					}
+				}.bind(this)) ;*/
 			}
 
-			
+			return context.notificationsCenter.fire("onRequest", context.container, request, response);
+
 		}catch(e){
-			context.security.handleError(context, e);
+			if ( context.security ){
+				return context.security.handleError(context, e);
+			}
+			throw e ;
 		}
 	};
 
