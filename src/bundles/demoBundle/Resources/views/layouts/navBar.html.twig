@@ -68,7 +68,11 @@
 
 			<ul class="nav navbar-nav navbar-right ">
 				<li style='top:12px' >
-					<i class="fa fa-user" ></i>
+					{% if  user.image  %}
+						<img width="26px" height="26px" src="{{ user.image }}" alt=""></img>
+					{% else %}
+						<i class="fa fa-user" ></i>
+					{% endif %}
 				</li>
 				<li class="dropdown">
 					{% if  user.username  %}
