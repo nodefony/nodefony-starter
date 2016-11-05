@@ -40,7 +40,7 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 					name		: profile.name.familyName || "",
 					surname		: profile.name.givenName || "",
 					email		: profile.emails ? profile.emails[0].value : "" ,
-					password	: "",
+					password	: this.generatePassWd(),
 					provider	: profile.provider,
 					lang		: profile._json.language,
 					roles		: "USER",	
@@ -70,6 +70,14 @@ nodefony.register.call(nodefony.security.factory, "passport-google-oauth20",func
 		
 		}.bind(this));	
 	}
+
+	Factory.prototype.generatePassWd = function(){
+		var date = new Date().getTime();
+		var buf = crypto.randomBytes(256);
+		var hash = crypto.createHash('md5');
+		return hash.update(buf).digest("hex");
+	};
+
 
 	Factory.prototype.getKey = function(){
 		return "passport-google-oauth20";
