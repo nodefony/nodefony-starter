@@ -203,7 +203,9 @@
 				if (error.length) {
 					var message = error.html();
 					$("#error").remove();
-					this.logger(message, "ERROR" ) ;
+					if ( message !== "Missing credentials" ){
+						this.logger(message, "ERROR" ) ;
+					}
 				}
 				var add = $("#adduser");
 				if (add.length) {

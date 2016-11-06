@@ -25,8 +25,6 @@ nodefony.registerController("demo", function(){
 		this.mother.constructor(container, context);
 	};
 
-	
-
 	/**
  	 *
  	 *	DEMO index 

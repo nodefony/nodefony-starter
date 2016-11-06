@@ -1,13 +1,12 @@
 {% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
 
-
 {{trans_default_domain("demo")}}
-
 
 {% block stylesheets %}
 	{{ parent() }}
 
-	{% stylesheets  output="/assets/css/clean.css" filter="?uglifycss" 
+	{% stylesheets  output="/demoBundle/assets/css/vendor.css" filter="?uglifycss" 
+	    "/demoBundle/plugins/gritter/css/jquery.gritter.css"
             "/demoBundle/clean/assets/css/simple-line-icons.css"
             "/demoBundle/clean/assets/css/animate.css"
         %}
@@ -20,7 +19,8 @@
 	{{ parent() }}
 
 	<!-- LIBRARY DESIGN-->
-	{% javascripts output='/assets/js/vendor.js' filter='?uglifyjs2'
+	{% javascripts output='/demoBundle/assets/js/vendor.js' filter='?uglifyjs2'
+		"/demoBundle/plugins/gritter/js/jquery.gritter.js"
 		"/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js" 
 		"/demoBundle/clean/assets/js/jquery.sticky.js" 
 		"/demoBundle/clean/assets/js/smoothscroll.js" 
@@ -30,7 +30,7 @@
 	{% endjavascripts %}
 
 	<!-- KERNEL STAGE-->
-	{% javascripts output='/assets/js/stage.js' filter='?uglifyjs2'
+	{% javascripts output='/demoBundle/assets/js/stage.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/twig/twig.js" 
 		"/vendors/stage/kernel/autoload.js" 
 		"/vendors/stage/kernel/kernel.js" 
@@ -58,13 +58,12 @@
 		<div id="status"></div>
 	</div>
 
+	<div class="hide" id="error">{{ getFlashBag('error') }}</div>
+
 	<!-- Home start -->
 	<span itemscope itemtype="http://schema.org/SoftwareApplication">
 	<section id="home" class="pfblock-image screen-height">
-        	<div class="home-overlay">
-		
-		
-		</div>
+        	<div class="home-overlay"></div>
 		<div class="intro">
 			<div class="start"> {{ "welcome"|trans() }} {{user.name }} {{user.surname}}</div>
 			<h1 class="success" > <strong itemprop="name" class="text-primary" style="font-size:60px">NODEFONY </strong>   </h1>
@@ -256,7 +255,6 @@
 		</div><!-- .container -->
 
 	</section>
-
 	<span>	
 	<!-- Scroll to top -->
 

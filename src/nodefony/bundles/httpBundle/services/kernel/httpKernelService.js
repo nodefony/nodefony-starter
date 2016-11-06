@@ -118,9 +118,6 @@ nodefony.registerService("httpKernel", function(){
 			}	
 		}
 		//console.log( "portOrigin ::::" + portOrigin )
-
-
-	
 		//console.log( context.proxy )
 		if (  context.proxy  ){
 			requestProto = context.proxy.proxyProto ;	
@@ -319,6 +316,13 @@ nodefony.registerService("httpKernel", function(){
 		}
 	}
 
+	var flashTwig = function(key){
+		if ( this.session ){
+			return this.session.getFlashBag(key) ;
+		}
+		return null ;
+	}
+
 
 	httpKernel.prototype.checkValidDomain = function(context){
 		if ( context.validDomain ){
@@ -345,7 +349,6 @@ nodefony.registerService("httpKernel", function(){
 						context.close(3001,  "DOMAIN Unauthorized "+ context.domain );
 					break;
 				}
-				
 			break;
 		}
 		return next  ;	
@@ -361,17 +364,32 @@ nodefony.registerService("httpKernel", function(){
 		//I18n
 		var translation = new nodefony.services.translation( container, type );
 		container.set("translation", translation );
-
 		
 		switch (type){
 			case "HTTP" :
 			case "HTTPS" :
 				var context = new nodefony.context.http(container, request, response, type);
 				container.set("context", context);
+				//response events	
+				context.response.response.on("finish",function(){
+					context.fire("onFinish", context);
+					this.container.leaveScope(container);
+					delete context.extendTwig ;
+					if (context.proxy) delete context.proxy ;
+					context.clean();
+					delete context;	
+					delete request ;
+					delete response ;
+					delete container ;
+					delete translation ;
+					if (domain) {
+						delete domain.container ;
+						delete domain ;
+					}
+				}.bind(this));
 				
 				// PROXY
 				if ( request.headers["x-forwarded-for"] ){
-					//console.log(request.headers)
 					if ( request.headers["x-forwarded-proto"] ){
 						context.type = request.headers["x-forwarded-proto"].toUpperCase();
 					}
@@ -384,19 +402,16 @@ nodefony.registerService("httpKernel", function(){
 						proxyVia	: request.headers["via"] 
 					}
 					this.logger( "PROXY REQUEST x-forwarded VIA : " + context.proxy.proxyVia , "DEBUG");
-					//var protocole = type.toLowerCase()+"://" ;
-					//var destURL = protocole+context.proxy.proxyHost+":"+port ;
 				}
 
 				context.crossDomain = context.isCrossDomain() ;
-				//console.log( context.crossDomain  )
-
 
 				//twig extend context
 				context.extendTwig = {
 					nodefony:{
 						url:context.request.url
 					},
+					getFlashBag:flashTwig.bind(context),
 					render:render,
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
@@ -427,25 +442,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 
 				this.kernel.fire("onHttpRequest", container, context, type);
-
-				//response events	
-				context.response.response.on("finish",function(){
-					context.fire("onFinish", context);
-					this.container.leaveScope(container);
-					delete context.extendTwig ;
-					if (context.proxy) delete context.proxy ;
-					context.clean();
-					delete context;	
-					delete request ;
-					delete response ;
-					delete container ;
-					delete translation ;
-					if (domain) {
-						delete domain.container ;
-						delete domain ;
-					}
-				}.bind(this));
-
+				
 				if (! this.firewall){
 					request.on('end', function(){
 						try {
@@ -470,7 +467,24 @@ nodefony.registerService("httpKernel", function(){
 			case "WEBSOCKET" :
 			case "WEBSOCKET SECURE" :
 				var context = new nodefony.context.websocket(container, request, response, type);
+
 				container.set("context", context);
+
+				context.listen(this,"onClose" , function(reasonCode, description){
+					context.fire("onFinish", context, reasonCode, description);
+					delete 	context.extendTwig ;
+					context.clean();
+					delete context ;
+					if (domain) {
+						delete domain.container ;
+						delete domain ;
+					}
+					//if (context.profiling) delete context.profiling ;
+					delete container ;
+					delete translation ;
+					delete request ;
+					delete response ;
+				});
 
 				context.crossDomain = context.isCrossDomain() ;
 
@@ -505,21 +519,6 @@ nodefony.registerService("httpKernel", function(){
 
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				
-				context.listen(this,"onClose" , function(reasonCode, description){
-					context.fire("onFinish", context, reasonCode, description);
-					delete 	context.extendTwig ;
-					context.clean();
-					delete context ;
-					if (domain) {
-						delete domain.container ;
-						delete domain ;
-					}
-					//if (context.profiling) delete context.profiling ;
-					delete container ;
-					delete translation ;
-					delete request ;
-					delete response ;
-				});
 				if (! this.firewall){
 					try {
 						if ( context.sessionAutoStart === "autostart" ){

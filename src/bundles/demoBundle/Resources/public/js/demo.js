@@ -5,6 +5,48 @@
  */
 
 //== Kernel
+stage.appKernel.prototype.initializeLog = function(settings){
+	var syslog =  new stage.syslog(settings);
+	
+	syslog.listenWithConditions(this,{
+		severity:{
+			data:"ERROR,INFO"
+		}		
+	},function(pdu){
+		if (pdu.payload.stack ){
+				console.error( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+  pdu.payload.stack);
+		}else{
+			$.gritter.add({
+				title: "NODEFONY " + pdu.severityName ,
+				text: pdu.payload,
+				image: '/favicon.ico',
+				class_name:"gritter-light"
+				
+			});	
+		}
+	});
+
+	syslog.listenWithConditions(this,{
+		severity:{
+			data:"CRITIC,WARNING,DEBUG "
+		}		
+	},function(pdu){
+		switch( pdu.severityName){
+			case "CRITIC" :
+				console.error( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+			break;
+			case "WARNING" :
+				console.warn ("SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+			break;
+			case "DEBUG" :
+				console.log( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+ pdu.payload);
+			break;
+		}
+	});
+
+	return syslog ;
+}
+
 var App = new stage.appKernel( "dev", {
 	debug: true,
 	location:{
@@ -28,6 +70,11 @@ var App = new stage.appKernel( "dev", {
 
 	onDomLoad: function() {
 
+		var error = $("#error").html();
+		if (error) {
+			$("#error").remove();
+			this.logger(error, "ERROR" ) ;
+		}
 
 		/* ---------------------------------------------- /*
 		 * Navbar
@@ -96,9 +143,6 @@ var App = new stage.appKernel( "dev", {
 		$("#langs").bind("change",function(){
 			window.location.href = "?lang="+$(this).val();
 		})
-
 	}
-
-
 });
 
