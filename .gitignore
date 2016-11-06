@@ -4,12 +4,12 @@ docs/**
 tmp/**
 web/**
 **/assets/**
+nodefony.db
+app/Resources/databases/**
 
 node_modules/**
 npm-debug.log
-
 *.[oa]
-app/Resources/databases/**
 
 #Ignore vin backup
 *.swp
