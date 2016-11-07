@@ -34,7 +34,6 @@ nodefony.register.call(nodefony.security.factory, "passport-github2",function(){
 		return  new GitHubStrategy(options, function(accessToken, refreshToken, profile, cb){
 			var obj = null ;
 			if ( profile ){
-				console.log(profile)
 				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
 				var obj = {
 					username	: profile._json.login,
