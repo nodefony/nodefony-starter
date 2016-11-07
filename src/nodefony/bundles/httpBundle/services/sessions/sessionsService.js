@@ -516,9 +516,9 @@ nodefony.registerService("sessions", function(){
 		var ret = inst.start(context, sessionContext, function(err, session){
 			context.session = session ;
 			if ( ! err ){ 
+				session.setMetaBag("url", Url.parse(context.url ) );
 				context.listen(session, "onFinish",function(){
 					this.setMetaBag("lastUsed", new Date() );
-					this.setMetaBag("url", context.request.url || context.request.resourceURL );
 					if ( ! this.saved ){
 						this.save(context.user ? context.user.id : null);	
 					}

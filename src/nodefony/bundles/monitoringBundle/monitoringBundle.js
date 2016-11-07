@@ -429,7 +429,6 @@ nodefony.registerBundle ("monitoring", function(){
 						default:
 							var content = null ;
 					}
-					
 					context.profiling["request"] = {
 						url:context.url,
 						method:context.request.method,
@@ -523,7 +522,6 @@ nodefony.registerBundle ("monitoring", function(){
 
 					//console.log(context.request.remoteAddress)
 					//console.log(context.profiling["context"].remoteAddress)
-
 					context.profiling["request"] = {
 						url:context.url,
 						headers:context.request.httpRequest.headers,
