@@ -493,6 +493,7 @@ nodefony.registerService("httpKernel", function(){
 					nodefony:{
 						url:context.originUrl
 					},
+					getFlashBag:flashTwig.bind(context),
 					render:render.bind(container),
 					controller:controller.bind(container),
 					trans:translation.trans.bind(translation),
