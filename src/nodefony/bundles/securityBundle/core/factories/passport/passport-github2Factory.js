@@ -37,18 +37,16 @@ nodefony.register.call(nodefony.security.factory, "passport-github2",function(){
 				console.log(profile)
 				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
 				var obj = {
-					username	: profile.displayName,
-					name		: profile.name.familyName || "",
-					surname		: profile.name.givenName || "",
+					username	: profile._json.login,
+					name		: profile.username || "",
+					surname		: profile._json.name || "",
 					email		: profile.emails ? profile.emails[0].value : "" ,
 					password	: this.generatePassWd(),
 					provider	: profile.provider,
-					lang		: profile._json.language,
 					roles		: "USER",	
-					gender		: profile.gender || "",
 					displayName	: profile.displayName,
 					url		: profile._json.url || "",
-					image		: profile._json.image.url || ""
+					image		: profile._json.avatar_url || ""
 				}
 			}
 
