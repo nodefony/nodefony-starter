@@ -63,6 +63,7 @@
 }
 
 #nodefony-container ul li .details {
+	overflow-y:		auto;
 	background-color:	#FFF;
 	border:			solid 1px #bbb;
 	color:			#2f2f2f;
@@ -74,6 +75,8 @@
 	padding:		9px 0;
 	display:		none;
 	font-size:		12px;
+	max-height:		600px;
+	mim-width:		200px;
 }
 
 #nodefony-container ul li .details ul {
