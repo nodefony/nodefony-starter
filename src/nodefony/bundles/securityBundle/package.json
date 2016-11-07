@@ -13,7 +13,8 @@
 		"passport-http":"*",
 		"passport-local":"*",
 		"passport-nodefony":"*",
-		"passport-google-oauth":"*"
+		"passport-google-oauth":"*",
+		"passport-github2":"*"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

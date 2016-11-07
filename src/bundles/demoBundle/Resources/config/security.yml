@@ -119,6 +119,32 @@ security:
                         "access-control-expose-headers":"WWW-Authenticate ,X-Json",
                         "access-control-max-age":10
                 }
+         # passport-github2  DEMO SECURITY AREA 
+        github_area:
+            pattern:                    ^/auth/github
+            provider:                   nodefony
+            form_login:
+              login_path:               /
+              default_target_path:      /
+            passport-github2:
+              clientID:                 '897f1253147acb34c95e'
+              clientSecret:             "97938b2a4373f1326c82a71dbd989862cf920cc4" 
+              callbackURL:              "https://nodefony.net/auth/github/callback"
+              scopes:                   [ 'user:email' ]
+            logout:                     /logout
+            anonymous:                  ~
+            context:                    github
+            redirectHttps:              true
+            crossDomain: 
+                allow-origin:          {"google":"accounts.google.com"}
+                Access-Control:         {
+                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
+                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
+                        "access-control-Allow-Credentials":true,
+                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
+                        "access-control-max-age":10
+                }
+
 
     #TODO authorisation               
     access_control:

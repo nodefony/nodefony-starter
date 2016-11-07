@@ -62,7 +62,17 @@
 		<default key="controller">frameworkBundle:default:401</default>
 	</route>
 
+	<!-- GITHUB -->
+	<route id="githubArea" pattern="/auth/github">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
 
+	<route id="githubCallBackArea" pattern="/auth/github/callback">
+		<default key="controller">frameworkBundle:default:401</default>
+	</route>
+
+
+	
 
 
 
