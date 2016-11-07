@@ -387,7 +387,7 @@ nodefony.registerService("httpKernel", function(){
 						delete domain ;
 					}
 				}.bind(this));
-				
+
 				// PROXY
 				if ( request.headers["x-forwarded-for"] ){
 					if ( request.headers["x-forwarded-proto"] ){
@@ -433,7 +433,6 @@ nodefony.registerService("httpKernel", function(){
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
 				}else{
-					//var error = new Error("Not Found", 404);	
 					return context.notificationsCenter.fire("onError", container, {
 						status:404,
 						error:"URI :" + request.url,
@@ -442,6 +441,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 
 				this.kernel.fire("onHttpRequest", container, context, type);
+				
 				
 				if (! this.firewall){
 					request.on('end', function(){

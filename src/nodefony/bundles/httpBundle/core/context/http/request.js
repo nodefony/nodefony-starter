@@ -96,9 +96,12 @@ nodefony.register("Request",function(){
 			this.dataSize+= data.length;
 		}.bind(this));
 
-		this.request.on('end', function (data) {
+		this.request.on('end', function () {
 			try {
-				this.body = Buffer.concat(this.data);
+				if ( ! this.request ){
+					return ;
+				}
+				this.body = Buffer.concat(this.data || [] );
 				parserRequestBody.call(this, this.request );
 				switch (typeof this.queryPost){
 					case "object" :
@@ -114,6 +117,7 @@ nodefony.register("Request",function(){
 						//nodefony.extend( this.query, this.queryFile);
 				}
 			}catch(e){
+				console.trace(e)
 				if (e.status){
 					throw e ;
 				}
