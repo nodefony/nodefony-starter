@@ -136,7 +136,7 @@ security:
             context:                    github
             redirectHttps:              true
             crossDomain: 
-                allow-origin:          {"google":"accounts.google.com"}
+                allow-origin:          {"github":"github.com"}
                 Access-Control:         {
                         "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
                         "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
