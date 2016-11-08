@@ -3,38 +3,24 @@ security:
 
     # strategy when change security context (multi firewalls areas) 
     session_fixation_strategy:  migrate  # la stratégie peut être soit: none, migrate, invalidate
-
-    #  
-    #       name secured area
+ 
     #
-    #       // FACTORY TOKENS   
-    #       http_digest:            # browser window authentication 
-    #         private_key:          mykey
-    #         realm:                myreal
-    #
-    #       http_basic              # browser window authentication 
-    #         realm:                myreal
-    #
-    #       sasl:                   # FORM LOCAL
-    #         private_key:          mykey
-    #         realm:                myreal
-    #
-    #       // PROVIDER
-    #       provider:                   nodefony || in_memory
-    #
-    #
-    #       // CROSS DOMAIN CORS SERVER 
-    #       crossDomain: 
-    #         allow-origin:         "*" || {"name":"domain", "myName":"mydomain.com"}
-    #         Access-Control:       headers to allow in request {access-control-allow-methods :"GET"}      
-    #
+    #  FIREWALL  AREAS
     #
     firewalls: ~ 
 
-    #TODO authorisation             
-    access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+    # 
+    # TODO
+    #
+    # FIREWALL ACCES CONTROL    
+    #
+    #access_control:
+    #    - { path: ^/admin, roles: ROLE_ADMIN }
 
+
+    #
+    #  FIREWALL  PROVIDER
+    #
     providers:
         in_memory:
              memory:

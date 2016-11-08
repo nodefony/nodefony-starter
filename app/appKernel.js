@@ -25,7 +25,7 @@ nodefony.register("appKernel",function(){
 			"./src/nodefony/bundles/usersBundle",
 			"./src/experimental/webRtcBundle",
 			"./src/nodefony/bundles/documentationBundle",
-			"./src/bundles/demoBundle",
+			"./src/bundles/demoBundle"
 		]);
 
 		/*

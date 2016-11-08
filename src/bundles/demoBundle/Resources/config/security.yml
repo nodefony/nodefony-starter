@@ -1,51 +1,25 @@
 # Security
 security:
     firewalls:
-        #  
-        #       name secured_area
-        #
-        #       // FACTORY TOKENS   
-        #       http_digest:            # browser window authentication 
-        #         private_key:          mykey
-        #         realm:                myreal
-        #
-        #       http_basic              # browser window authentication 
-        #         realm:                myreal
-        #
-        #       sasl:                   # FORM LOCAL
-        #         private_key:          mykey
-        #         realm:                myreal
-        #
-        #       // PROVIDER
-        #       provider:                   nodefony || in_memory
-        #
-        #
-        #       // CROSS DOMAIN CORS SERVER 
-        #       crossDomain: 
-        #         allow-origin:         "*" || {"name":"domain", "myName":"mydomain.com"}
-        #         Access-Control:       headers to allow in request {access-control-allow-methods :"GET"}      
-        #
-        #
+
+        # SASL  DEMO SECURITY AREA
         demo_area:
             pattern:                    ^/demo
             provider:                   nodefony
             form_login:
               login_path:               /login/nodefony-sasl  
               default_target_path:      /
-            #FACTORY AUTHENTICATION
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"
             crossDomain: 
                 allow-origin:           "*"
-                #allow-origin:          {"localhost":"localhost:83", "cci":"mydomain.com"}
-                Access-Control:         {
-                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
-                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-                        "access-control-Allow-Credentials":true,
-                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
-                        "access-control-max-age":10
-                        }
+                Access-Control:         
+                  access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
+                  access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+                  access-control-Allow-Credentials:     true
+                  access-control-expose-headers:        "WWW-Authenticate ,X-Json"
+                  access-control-max-age":              10
             remember_me:                false           #TODO
             logout:                     /logout
             anonymous:                  ~
@@ -102,24 +76,25 @@ security:
               login_path:               /
               default_target_path:      /
             passport-google-oauth20:
-              clientID:                 '1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com'
+              clientID:                 "1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com"
               clientSecret:             "xS7E8otmqcKMttxrBKl1B1ML" 
               callbackURL:              "https://nodefony.net/auth/google/callback"
-              scopes:                   ['profile','email']
+              scopes:                   ["profile","email"]
             logout:                     /logout
             anonymous:                  ~
             context:                    google
             redirectHttps:              true
             crossDomain: 
-                allow-origin:          {"google":"accounts.google.com"}
-                Access-Control:         {
-                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
-                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-                        "access-control-Allow-Credentials":true,
-                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
-                        "access-control-max-age":10
-                }
-         # passport-github2  DEMO SECURITY AREA 
+                allow-origin:          
+                  google:               accounts.google.com
+                Access-Control:         
+                  access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
+                  access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+                  access-control-Allow-Credentials:     true
+                  access-control-expose-headers:        "WWW-Authenticate ,X-Json"
+                  access-control-max-age:               10
+
+        # passport-github2  DEMO SECURITY AREA 
         github_area:
             pattern:                    ^/auth/github
             provider:                   nodefony
@@ -127,20 +102,20 @@ security:
               login_path:               /
               default_target_path:      /
             passport-github2:
-              clientID:                 '897f1253147acb34c95e'
+              clientID:                 "897f1253147acb34c95e"
               clientSecret:             "97938b2a4373f1326c82a71dbd989862cf920cc4" 
               callbackURL:              "https://nodefony.net/auth/github/callback"
-              scopes:                   [ 'user:email' ]
+              scopes:                   [ "user:email" ]
             logout:                     /logout
             anonymous:                  ~
             context:                    github
             redirectHttps:              true
             crossDomain: 
-                allow-origin:          {"github":"github.com"}
-                Access-Control:         {
-                        "access-control-allow-methods":"GET, POST, PUT, DELETE, OPTIONS",
-                        "access-control-allow-headers":"ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-                        "access-control-Allow-Credentials":true,
-                        "access-control-expose-headers":"WWW-Authenticate ,X-Json",
-                        "access-control-max-age":10
-                }
+                allow-origin:          
+                  github:               github.com
+                Access-Control:
+                  access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
+                  access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+                  access-control-Allow-Credentials:     true
+                  access-control-expose-headers:        "WWW-Authenticate ,X-Json"
+                  access-control-max-age:               10
