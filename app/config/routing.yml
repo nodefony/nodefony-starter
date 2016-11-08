@@ -1,12 +1,7 @@
-Default:
+home: 
   pattern:  /
   defaults: 
-    controller: demoBundle:demo:login
-  
+    controller: "documentationBundle:default:index"
 
-readme:
-    pattern:   /readme 
-    defaults:  
-      controller: frameworkBundle:default:readme    
 
 

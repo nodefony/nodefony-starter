@@ -144,18 +144,3 @@ security:
                         "access-control-expose-headers":"WWW-Authenticate ,X-Json",
                         "access-control-max-age":10
                 }
-
-
-    #TODO authorisation               
-    access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }          #TODO
-
-    providers:
-        in_memory:
-             memory:
-                users:
-                    admin: { password: 'admin', roles: 'ROLE_ADMIN' }
-                    1000: { password: '1000', roles: 'ROLE_ADMIN' }
-        nodefony:
-             entity:
-                name:   "user"
