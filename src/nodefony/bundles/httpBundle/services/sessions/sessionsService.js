@@ -79,6 +79,7 @@ nodefony.registerService("sessions", function(){
 		}
 		this.manager = manager ;
 		this.strategy = this.manager.sessionStrategy ;
+		this.strategyNone = false ;
 		this.logger = manager.logger.bind(manager);
 		this.setName(name);
 		this.id = null ;
@@ -182,27 +183,13 @@ nodefony.registerService("sessions", function(){
 						return createSession.call(this, this.lifetime,  null, callback);
 					break;
 					case "none" :
-						this.storage.start(this.id, this.contextSession,function(error, result){
-							if (error){
-								callback(error, null);	
-								return ;
-							}
-							this.deSerialize(result);
-							if (  ! this.isValidSession(result, context) ){
-								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-								this.contextSession = contextSession;
-								return createSession.call(this, this.lifetime, null, callback);
-							}
-							this.manager.logger("STRATEGY SESSION NONE==> "+this.name + " : "+this.id, "DEBUG");
-							this.contextSession = contextSession;
-							return createSession.call(this, this.lifetime, this.id, callback);
-						}.bind(this));
+						this.strategyNone = true ;
 					break;
 				}
-				return ;
+				if ( ! this.strategyNone ){
+					return ;
+				}
 			}
-			//console.log('pass status ' + this.status)
-			//console.log(this.id)
 
 			if ( contextSession ){
 				this.contextSession = contextSession ;
@@ -210,7 +197,9 @@ nodefony.registerService("sessions", function(){
 			this.storage.start(this.id, this.contextSession, function(error, result){
 				if (error){
 					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
-					this.invalidate();
+					if ( ! this.strategyNone ){
+						this.invalidate();
+					}
 					return ;
 				}
 				if ( result &&  Object.keys(result).length ){
@@ -221,8 +210,10 @@ nodefony.registerService("sessions", function(){
 					}
 				}else{
 					if ( this.settings.use_strict_mode ){
-						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " use_strict_mode ", "ERROR");
-						this.invalidate();
+						if ( ! this.strategyNone ){
+							this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " use_strict_mode ", "ERROR");
+							this.invalidate();
+						}
 					}
 				}
 				this.status = "active" ;
@@ -419,6 +410,7 @@ nodefony.registerService("sessions", function(){
 		try {
 			return this.storage.write(this.id, this.serialize(user), this.contextSession,function(err, result){
 				if (err){
+					console.trace(err);
 					this.logger( err ,"ERROR" )
 					this.saved = false ; 
 				}else{

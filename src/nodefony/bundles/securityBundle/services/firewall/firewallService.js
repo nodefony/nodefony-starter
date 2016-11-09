@@ -219,8 +219,9 @@ nodefony.registerService("firewall", function(){
 						return this.handleError(context, error) ;
 					}
 					this.token = token ;
-					
-					context.session.migrate(true);
+					if ( ! context.session.strategyNone ){	
+						context.session.migrate(true);
+					}
 					//console.log( context.user )
 					var userFull = context.user.dataValues ;
 					delete userFull.password ;

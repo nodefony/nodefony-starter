@@ -12,7 +12,7 @@ nodefony.registerEntity("session", function(){
 	var Session = function(db,  ormService ){
 		var model = db.define("session", {
 			session_id	: {type:  Sequelize.STRING, primaryKey: true },
-			context		: {type:  Sequelize.STRING, defaultValue: "default" },
+			context		: {type:  Sequelize.STRING, defaultValue: "default",primaryKey: true },
 			Attributes	: {
 				type:  Sequelize.TEXT,
 				set:function( value ){
