@@ -253,7 +253,9 @@ stage.registerController("dashboardController", function() {
 							}
 						break;
 					} 
-					manageWidgetServer(ele, conf )	
+					if ( conf ){
+						manageWidgetServer(ele, conf )	
+					}
 				}
 				// Manage kernel config
 				var ele = $("#KERNEL").find(".config");
