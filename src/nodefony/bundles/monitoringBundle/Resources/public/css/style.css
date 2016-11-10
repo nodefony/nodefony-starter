@@ -7024,13 +7024,6 @@ body {
   padding-left: 0;
   padding-right: 0;
 }
-.app-header .navbar .navbar-header {
-  width: 200px;
-}
-.app-header .navbar .navbar-collapse {
-  margin-left: 200px;
-  padding-right: 15px;
-}
 .app-header .navbar .navbar-brand {
   display: block;
   padding: 0 35px;

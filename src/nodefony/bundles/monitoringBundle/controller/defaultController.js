@@ -38,8 +38,10 @@ nodefony.registerController("default", function(){
 						}
 						return obj;
 					}.call(this);
+
 					return this.render('monitoringBundle::'+module+'.xml.twig', {
-						bundles:bundles
+						bundles:bundles,
+						user:this.context.user
 					})	
 				}
 				return this.render('monitoringBundle::'+module+'.xml.twig')	
