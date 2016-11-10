@@ -34,9 +34,9 @@ nodefony.registerService("monitoring", function(){
 		if( this.realTime ){
 			this.createServer();
 		}
-		this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
-		console.log(this.name)
-
+		this.kernel.listen(this, "onReady" ,function(){
+			this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
+		})
 	};
 
 	service.prototype.logger = function(pci, severity, msgid,  msg){
