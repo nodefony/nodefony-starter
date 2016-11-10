@@ -27,7 +27,7 @@ name :				AppBundle
 locale :			en_en
 version :                       "Beta"
 App:
-  projectName:                  "Demo" 
+  projectName:                  "nodefony" 
   projectYear:                  2015 
   locale:                       "en_en"
   authorName:                   "admin"

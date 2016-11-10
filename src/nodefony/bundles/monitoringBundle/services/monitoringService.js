@@ -31,8 +31,11 @@ nodefony.registerService("monitoring", function(){
 		this.port = 1318;
 		this.server = null;
 		this.syslog = kernel.syslog ;
-		if( this.realTime )
+		if( this.realTime ){
 			this.createServer();
+		}
+		this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
+		console.log(this.name)
 
 	};
 
@@ -93,20 +96,37 @@ nodefony.registerService("monitoring", function(){
 				this.logger("CONNECT PM2 REALTIME MONITORING", "DEBUG");
 			}.bind(this));
 			// PM2 REALTIME
+			
 			var pm2Interval = setInterval(function(){
-				pm2.describe("nodefony",function(err, list){
-					//console.log(list)
+				pm2.describe(this.name,function(err, list){
+					var clusters = {
+						pm2:[],
+						name:this.name
+					}
+					if ( list ){
+						for ( var i = 0 ; i <  list.length ; i++){
+							clusters.pm2.push({
+								monit:list[i].monit,
+								name:list[i].name,
+								pid:list[i].pid,
+								pm_id:list[i].pm_id,
+								pm2_env:{
+									exec_mode:list[i]["pm2_env"].exec_mode,
+									restart_time:list[i]["pm2_env"].restart_time,
+									pm_uptime:list[i]["pm2_env"].pm_uptime,
+									status:list[i]["pm2_env"].status
+								}
+							}); 	
+						}
+					}
 					if (closed || this.stopped ){
 						clearInterval( pm2Interval );
 						return ;	
 					}
-					var ele = {
-						pm2:list
-					};
-					conn.write(JSON.stringify(ele));	
-				});
+					conn.write(JSON.stringify(clusters));	
+				}.bind(this));
 				
-			},1000);
+			}.bind(this),1000);
 
 			//SESSIONS  INTERVAL
 				//CONTEXT
