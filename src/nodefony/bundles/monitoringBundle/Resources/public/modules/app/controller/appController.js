@@ -292,7 +292,7 @@ stage.registerController("appController", function() {
 	 * 
 	 */
 	controller.prototype.indexAction = function() {		
-		this.render( this.kernel.uiContainer , this.renderPartial("appModule::index"), "prepend") ;
+		this.render( this.kernel.uiContainer , this.renderPartial("appModule::index", {config: this.config}), "prepend") ;
 
 		// section elements definition
 		var section = {};

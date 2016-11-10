@@ -1,29 +1,49 @@
-<!-- header -->
+
 <div class="app-header">
-	<div class="navbar navbar-fixed-top bg-white" role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-header bg-primary">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+<nav class="navbar navbar-fixed-top bg-white" role="navigation">
+
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#custom-collapse">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href=""></a>
-			</div>
-			<div class="navbar-collapse collapse box-shadow">
-				<p class="navbar-text calling hide"><i class="fa fa-circle-o-notch fa-spin"></i></p>
-				<ul class="nav navbar-nav navbar-right">
-					<li class="dropdown">
-						<a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Nodefony <span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="">Aide</a></li>
-							<li role="presentation" class="divider"></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
+			</button>
+			<a class="navbar-brand text-primary" href="" style="margin-left:20px" ><strong class="text-primary">NODEFONY MONITORING</strong></a>
 		</div>
-	</div>
+
+		<div class="collapse navbar-collapse" id="custom-collapse">
+
+			<ul class="nav navbar-nav navbar-left">
+
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right ">
+				{% if  user  %}
+					<li style='top:12px ' class="dropdown"  >
+					{% if  user.image  %}
+						<!--img width="26px" height="26px" src="{{ user.image }}" alt=""></img-->
+						<i class="icon fa glyphicon glyphicon-user" ></i>
+					{% else %}
+						<i class="icon fa glyphicon glyphicon-user" ></i>
+					{% endif %}
+					</li>
+					<li style='top:12px ;right:20px' class="dropdown">
+						<strong class="text-primary">{{user.username}}</strong>
+					</li>
+				{% else %}
+					<li style='top:12px ;right:20px'>
+						<strong class="text-primary"> VERSION {{version}}  ©</strong>	
+					</li>
+				{% endif %}
+				
+			</ul>
+		</div>
+
+	</div><!-- .container -->
+
+</nav>
 </div>
-<!-- /header -->
+
+
