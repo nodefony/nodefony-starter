@@ -32,30 +32,41 @@ nodefony.registerService("webCrawler", function(){
 
 	webCrawler.prototype.siteAll = function(urlBase, search ,context, callback ){
 
+		var recurse = 0 ;
 		var Link = url.parse(urlBase);
 
 		this.base = Link.host;
 
 		this.protocol = Link.protocol ? Link.protocol+"//" : 'http://' ;
 
-		this.recurse = 0 ;
-		myLoop.call(this, urlBase, context, function(crawled){
+		myLoop.call(this, urlBase, context, function(error, crawled){
 			//console.log(crawled)
 			var obj = {} ;
-			for ( var page in crawled){
-				var text = crawled[page].page.selector("body").text() ;
-				//var index = text.indexOf(search) ;
-				var reg = new RegExp(search, 'gi')
-				var index = text.search(reg);
-				if ( index !== -1 ){
-					obj[ crawled[page].page.url ] = {
-						text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
-						title: crawled[page].page.title
-					}
-				}	
+			try {
+				
+				for ( var page in crawled){
+					
+					if ( crawled &&   crawled[page] && crawled[page].page && crawled[page].page.selector ){
+						var text = crawled[page].page.selector("body").text() ;
+						if ( ! text ){
+							continue ;
+						}
+						//var index = text.indexOf(search) ;
+						var reg = new RegExp(search, 'gi')
+						var index = text.search(reg);
+						if ( index !== -1 ){
+							obj[ crawled[page].page.url ] = {
+								text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
+								title: crawled[page].page.title
+							}
+						}	
+					}	
+				}
+			}catch(e){
+				this.logger(e, "ERROR");	
 			}
 			callback(obj)
-		});
+		}.bind(this),recurse);
 	}
 
 	var makeRequestHttp = function(link, context ,callback){
@@ -162,22 +173,20 @@ nodefony.registerService("webCrawler", function(){
 	}
 
 
-	var myLoop = function(link, context, finish){
-		this.recurse++ ;	
+	var myLoop = function(link, context, finish, recurse){
+		
 		if (  this.crawled[ link ] ){
 			if ( this.crawled[ link ].page ){
-				finish(this.crawled)
+				finish(null, this.crawled)
 				return ;
 			}
 		}
 		makeRequestHttp.call(this, link , context, function(error, pageObject){
-			this.recurse-- ;
 			
-			if ( error ){ return }
+			if ( error  ){ return }
 			
 			this.crawled[ pageObject.url ] = [];
 			this.crawled[ pageObject.url ]["page"] = pageObject ;
-			
 			
 			async.eachSeries(pageObject.links, function(item, cb){
 				if (item.linkUrl){
@@ -191,17 +200,29 @@ nodefony.registerService("webCrawler", function(){
 				cb(null);
 			}.bind(this),
 			function(error){
-				for( var i= 0 ; i < this.crawled[pageObject.url].length ; i++  ){
-					//console.log( this.crawled[pageObject.url] )
-					if (this.crawled[pageObject.url][i] in this.crawled){
-						continue ;
-					}else{
-						this.crawled[ this.crawled[pageObject.url][i] ]  = [];
-						myLoop.call(this, this.crawled[pageObject.url][i], context, finish);
+				if ( ! error ){
+					
+					for( var i= 0 ; i < this.crawled[pageObject.url].length ; i++  ){
+						//console.log( this.crawled[pageObject.url] )
+						if (this.crawled[pageObject.url][i] in this.crawled){
+							continue ;
+						}else{
+							recurse++ ;
+							this.crawled[ this.crawled[pageObject.url][i] ]  = [];
+							myLoop.call(this, this.crawled[pageObject.url][i], context, function(){
+								recurse-- ;	
+								if ( recurse === 0 ){
+									//console.log("FINISH")
+									finish(error, this.crawled)
+								}
+							}.bind(this), 0);
+
+						}
 					}
 				}
-				if ( this.recurse === 0 ){
-					finish(this.crawled)
+				if ( recurse === 0 ){
+					//console.log( "FINISH 2" )
+					finish(error, this.crawled)
 				}
 				
 			}.bind(this));	
