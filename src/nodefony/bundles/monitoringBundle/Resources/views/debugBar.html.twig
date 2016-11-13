@@ -8,8 +8,8 @@
 
 <div id="nodefony-container"  >
 	<ul class="pull-left">
-		<li> <img class="logo" src="/favicon.ico"> </li>
-		<li> <label class="label" > <a target="blank" href='{{path("monitoring-index")}}'>{{kernelSettings.name}} &nbsp <label class="label label-default" >{{kernelSettings.system.version}}</label> </a></label>
+		<li> <img class="logo" src="/frameworkBundle/images/nodefony-logo.png"> </li>
+		<li> <label class="label"> <a target="blank"  href='{{path("monitoring-index")}}'>NODEFONY </label><label class="label label-default" >{{kernelSettings.system.version}}</label> </a>
 			<div class="details">
 				<ul>
 					{% for key, value in kernelSettings %}
@@ -370,8 +370,8 @@
 	</ul>
 </div>
 
-<div id="nodefony-small" class='hidden'>
-	<img src="/favicon.ico">
+<div id="nodefony-small" class='hidden logo'>
+	<img src="/frameworkBundle/images/nodefony-logo.png">
 </div>
 
 {% javascripts output='/monitoringBundle/assets/js/debugBar.js' filter='?uglifyjs2'

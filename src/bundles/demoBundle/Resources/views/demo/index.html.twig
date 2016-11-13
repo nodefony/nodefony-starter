@@ -61,27 +61,30 @@
 	<div class="hide" id="error">{{ getFlashBag('error') }}</div>
 
 	<!-- Home start -->
+
 	<span itemscope itemtype="http://schema.org/SoftwareApplication">
 	<section id="home" class="pfblock-image screen-height">
-        	<div class="home-overlay"></div>
+        	<div class="home-overlay">
+		
+		</div>
+
 		<div class="intro">
-			<div class="start"> {{ "welcome"|trans() }} {{user.name }} {{user.surname}}</div>
-			<h1 class="success" > <strong itemprop="name" class="text-primary" style="font-size:60px">NODEFONY </strong>   </h1>
-			<h3 class="success" style="font-size:20px"> <strong class="text-primary"> </strong> {{ "framework"|trans }}   </h3>
+			<div class="start"> {{ "welcome"|trans() }} {{user.displayName }} </div>
+			<h1 class="success" > <a href="https://nodefony.net"><strong itemprop="name" class="text-primary" style="font-size:60px"><!--img alt="nodefony" width="200px" height="182px" src="/frameworkBundle/images/nodefony-logo.png"-->NODEFONY </strong> </a>  </h1>
+			<h3 class="success" style="font-size:20px; paddind-top:20px"> <strong class="text-primary"> </strong> {{ "framework"|trans }}   </h3>
 	
 			<div class="container"  >
 				<div class="row">
+					<div class="col-sm-6 col-sm-offset-3" style="margin-top:30px">
 
-					<div class="col-sm-6 col-sm-offset-3" style="margin-top:60px">
-
-						<div class="pfblock-subtitle text-primary">
-							<a href="https://nodejs.org"><img alt="node.js" width="200px" height="200px" src="/demoBundle/images/nodejs-new-pantone-white.png"></a>  
+						<div class="pfblock-subtitle text-primary" style="clear:both;">
+							<a href="https://nodejs.org"><img alt="node.js" width="200px" height="123px" src="/demoBundle/images/nodejs/nodejs-new-pantone-white.png"></a>  
+							<a href="https://github.com/nodefony/nodefony" style="padding-left:30px"><img alt="node.js" width="32px" height="32px" src="/demoBundle/images/github/GitHub-Mark-Light-32px.png" ></a>  
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
 
         	<a href="#system">
 			<div class="scroll-down">

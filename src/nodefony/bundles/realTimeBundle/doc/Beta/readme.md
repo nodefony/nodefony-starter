@@ -10,7 +10,7 @@ __Table of content__
 
 ## <a name="architecture"></a> Realtime Architecture
 
-[![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/Alpha/RealTime/realtime.png)](https://github.com/ccamensuli/nodefony) [![nodefony](https://raw.githubusercontent.com/ccamensuli/nodefony/master/src/nodefony/doc/Alpha/RealTime/browserRealTime.png)](https://github.com/ccamensuli/nodefony)
+[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/doc/Alpha/RealTime/realtime.png)](https://github.com/nodefony/nodefony) [![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/doc/Alpha/RealTime/browserRealTime.png)](https://github.com/nodefony/nodefony)
 
 ## <a name="protocol"></a> Realtime Protocol
  

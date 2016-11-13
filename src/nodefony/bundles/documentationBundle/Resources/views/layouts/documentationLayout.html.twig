@@ -134,7 +134,7 @@
 					//var dt = new Date( data[i].date ) ;
 					//var date = dt.toLocaleDateString() + " " + dt.toLocaleTimeString() ;
 					var sha= data[i].sha.substr(0,7);
-					var shaLink = "https://github.com/ccamensuli/nodefony/commit/"+sha;
+					var shaLink = "https://github.com/nodefony/nodefony/commit/"+sha;
 
 					var date = new Date(data[i].date).toDateString();
 					var li = "<li class='list-group-item'>";
@@ -174,13 +174,13 @@
 				console.log( "ERROR" );
 			});*/
 
-			$.get("https://api.github.com/repos/ccamensuli/nodefony/issues?state=open",function(data){
+			$.get("https://api.github.com/repos/nodefony/nodefony/issues?state=open",function(data){
 				var ele = $("#issues");
 				for (var i = 0 ; i < data.length ; i++){
 					var date = new Date(data[i].created_at).toDateString();
 					var li = "<li class='list-group-item'>";
 					li += "<span style='background-color:blue' class='badge'>#"+data[i].number+"</span>" ;
-					li += "<a href='https://github.com/ccamensuli/nodefony/issues/"+data[i].number+"'><span style=''>" + data[i].title +"</span></a>";
+					li += "<a href='https://github.com/nodefony/nodefony/issues/"+data[i].number+"'><span style=''>" + data[i].title +"</span></a>";
 					li += "<div> opened on "+date+" by "+data[i].user.login+" </div>"	
 					li += "</li>";
 					ele.append(li);

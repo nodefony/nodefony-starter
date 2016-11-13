@@ -70,7 +70,6 @@ a,
 
 h1, h2, h3, h4, h5, h6 {
 	font: 700 40px/1.2 Raleway, sans-serif;
-	text-transform: uppercase;
 	letter-spacing: 5px;
 	margin: 5px 0 5px;
 	color: #222;
@@ -176,7 +175,6 @@ textarea.form-control {
 
 .btn {
 	font-family: Raleway, sans-serif;
-	text-transform: uppercase;
 	letter-spacing: 1px;
 	font-size: 13px;
 	padding: 8px 26px;
@@ -524,7 +522,6 @@ textarea.form-control {
 	border: 0;
 	border-radius: 0;
 	margin: 0;
-	text-transform: uppercase;
 	font-family: Raleway, sans-serif;
 }
 
@@ -969,3 +966,148 @@ figure.effect-bubba:hover p {
 
 }
 
+.box-sm {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-color: rgba(0,0,0,.2);
+    color: #000;
+    -webkit-box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    display: block;
+    outline: none;
+    overflow: hidden;
+    right: 0;
+    -webkit-animation:  .2s;
+    animation:  .2s;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-user-select: text;
+    min-width: 300px;
+    position: relative;
+    z-index: 986;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    -webkit-user-select: none;
+}
+
+.account {
+    background: #f5f5f5;
+    border-top: 1px solid #ccc;
+    border-color: rgba(0,0,0,.2);
+    padding: 10px 0;
+    width: 100%;
+    display: table;
+    white-space: nowrap;
+    line-height: normal;
+    text-align: left;
+    color: #000;
+}
+
+.account div{
+    display: table-cell;
+}
+
+.account a{
+    color: #666;
+    cursor: default;
+    text-decoration: none;
+    margin: 0 20px;
+    background: #f8f8f8;
+    border: 1px solid #c6c6c6;
+    display: inline-block;
+    line-height: 28px;
+    padding: 0 12px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.login-box {
+    padding: 10px 15px;
+}
+.login-box .user-img img {
+    width: 100%;
+    height: 100%;
+}
+.login-box .user-img a.change-img {
+    font-size: 8px;
+    line-height: 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    height: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fdfdfd;
+    background: rgba(0,0,0,.7);
+}
+
+.login-box .user-img {
+    position: relative;
+    float: left;
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+}
+
+.reset-ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.login-box .user-info span {
+    font-size: 17px;
+    display: block;
+    padding: 0 0 10px;
+}
+
+.login-box .user-info span i {
+    font-size: 80%;
+    font-style: normal;
+    display: block;
+    opacity: .7;
+    -moz-opacity: .7;
+    filter: alpha(opacity:70);
+}
+
+.dropdown-menu {
+    position: absolute;
+    z-index: 1050!important;
+    top: 105%;
+    left: 0;
+    display: none;
+    float: left;
+    min-width: 150px;
+    margin: 5px 0 0;
+    padding: 5px;
+    list-style: none;
+    text-align: left;
+    border-width: 1px;
+    border-style: solid;
+    background: #fff;
+}
+.dropdown-menu li {
+    position: relative;
+}
+
+.dropdown-menu li>a, .ui-menu li>a {
+    font-weight: 400;
+    color: #858598;
+    line-height: 20px;
+    position: relative;
+    display: block;
+    clear: both;
+    margin: 0;
+    padding: 5px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dropdown-menu li>a:hover {
+    color: #2b2f33;
+    background: #eff4f6;
+}

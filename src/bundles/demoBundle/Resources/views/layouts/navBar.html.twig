@@ -75,23 +75,72 @@
 				</li>
 				<li class="dropdown">
 					{% if  user.username  %}
+						{% if  user.displayName  %}
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.displayName}} <span class="caret"></span></a>
+						{% else %}
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}} <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li><a href="{{path('demoLogout')}}">{{ "logout"|trans() }}</a></li>
-						</ul>
+						{% endif %}
+					<div class="dropdown-menu float-right">
+					<div class="box-sm">
+						<div  class="login-box clearfix" style="padding: 10px 15px;">
+							<div class="user-img" >
+								{% if  user.image  %}
+									<img  src="{{ user.image }}" alt=""></img>
+								{% else %}
+									<img class="fa fa-user" ></img>
+								{% endif %}
+							</div>
+							<div class="user-info">
+								<span>{{user.username }} 
+									<i>{{user.name }} {{user.surname }}</i>
+								</span>
+							</div>
+						</div>
+						<div class="account" >
+							<div class="">
+								<a href="{{path('demoLogout')}}" class="btn btn-flat display-block font-normal ">
+									<i class="glyph-icon icon-power-off"></i> {{ "logout"|trans() }}
+								</a>
+							</div>	
+							<div class="">
+								<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
+									<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
+								</a>
+							</div>
+						</div>
+					</div>
+					</div>
 					{% else %}
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  >{{ "Login"|trans() }}  <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							
-							<li><a href="{{path('saslArea')}}">{{ "nodefony-sasl"|trans() }}</a></li>
+					<div class="dropdown-menu ">
+					<div class="box-sm" >
+						<div class=" " style="padding: 10px 15px;">
+							AUTHENTICATIONS TYPES	
+						</div>
+						<div class="divider"></div>
+						<ul class="reset-ul">
+							<li>
+								<a href="{{path('saslArea')}}">{{ "nodefony-sasl"|trans() }}
+									<i class="glyph-icon float-right icon-caret-right"></i>
+								</a>
+							</li>
 							<li><a href="{{path('basicArea')}}">{{ "passport-basic"|trans() }}</a></li>
 							<li><a href="{{path('digestArea')}}">{{ "passport-digest"|trans() }}</a></li>
 							<li><a href="{{path('localArea')}}">{{ "passport-local"|trans() }}</a></li>
 							<li><a href="{{path('googleArea')}}">{{ "passport-google"|trans() }}</a></li>
 							<li><a href="{{path('githubArea')}}">{{ "passport-github"|trans() }}</a></li>
-							<li><a href="{{path('subscribe')}}">{{ "Create Local User "|trans() }}</a></li>
 						</ul>
+						<div class="account" >
+							<div class="">
+								<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
+									<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
+								</a>
+							</div>
+						</div>
+
 					{% endif %}
+					</div>
+					</div>
 				</li>
 			</ul>
 		</div>
@@ -99,4 +148,6 @@
 	</div><!-- .container -->
 
 </nav>
+
+
 

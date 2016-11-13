@@ -4,53 +4,12 @@ nodefony.registerFixture("users", function(){
 	var userPromise = function(resolve, reject){
 		 
 		var user = this.getEntity("user");
-		/*var tab = [{
-				username:"anonymous",
-				name: "anonymous",
-				surname: "anonymous",
-				password: "",
-				roles:"ANONYMOUS"
-			},{
-				username:"admin",
-				name: "administrator",
-				surname: "nodefony",
-				password: "f3084b5754aa27d3a9b86af28a569bc4",
-				roles:"ADMIN"
-			},{
-				username:"cci",
-				name: "christophe",
-				surname: "CAMENSULI",
-				password: "df6b3f921393a0d4ea273f044694c39c",
-				lang:"fr_fr",
-				roles:"USER"
-
-			},{
-				username:"1000",
-				name: "Utilisateur",
-				surname: "1000",
-				password: "5fb539cef0da8097c351fe3aa6c497d9",
-				lang:"fr_fr",
-				roles:"USER"
-			},{
-				username:"2000",
-				name: "Utilisateur",
-				surname: "2000",
-				password: "3e91bde18f174002ada78e2ac9267658",
-				lang:"fr_fr",
-				roles:"USER"
-			},{
-				username:"3000",
-				name: "Utilisateur",
-				surname: "3000",
-				password: "a82afd4773f6d2f6b17666d54e78dbd4",
-				lang:"fr_fr",
-				roles:"USER"
-			}];*/
 
 		var tab = [{
 				username:"anonymous",
-				name: "anonymous",
-				surname: "anonymous",
+				name: "",
+				surname: "",
+				displayName: "Anonymous",
 				password: "",
 				lang:"en_en",
 				roles:"ANONYMOUS"
@@ -58,12 +17,14 @@ nodefony.registerFixture("users", function(){
 				username:"admin",
 				name: "administrator",
 				surname: "nodefony",
+				displayName: "administrator",
 				password: "admin",
 				roles:"ADMIN"
 			},{
 				username:"1000",
 				name: "User",
 				surname: "1000",
+				displayName: "1000",
 				password: "1234",
 				lang:"fr_fr",
 				roles:"USER"
@@ -71,6 +32,7 @@ nodefony.registerFixture("users", function(){
 				username:"2000",
 				name: "User",
 				surname: "2000",
+				displayName: "2000",
 				password: "1234",
 				lang:"fr_fr",
 				roles:"USER"
@@ -78,6 +40,7 @@ nodefony.registerFixture("users", function(){
 				username:"3000",
 				name: "User",
 				surname: "3000",
+				displayName: "3000",
 				password: "1234",
 				lang:"fr_fr",
 				roles:"USER"
