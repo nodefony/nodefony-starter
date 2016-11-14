@@ -19,7 +19,7 @@ stage.appKernel.prototype.initializeLog = function(settings){
 			$.gritter.add({
 				title: "NODEFONY " + pdu.severityName ,
 				text: pdu.payload,
-				image: '/favicon.ico',
+				image: '/frameworkBundle/images/nodefony-logo.png',
 				class_name:"gritter-light"
 				
 			});	
