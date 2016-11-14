@@ -7308,6 +7308,14 @@ body {
 .icon-shadow {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
+.panel-nodefony {
+  border-color: #43853d;
+}
+.panel-nodefony > .panel-heading {
+  color: #FFF;
+  background-color: #167b87;
+  border-color: #43853d;
+}
 .font-normal {
   font-weight: normal;
 }
