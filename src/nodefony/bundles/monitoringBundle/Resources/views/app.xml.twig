@@ -16,11 +16,7 @@
 			{% endfor %}
 		</bundles>
 
-		<user>
-			{% for ele, value in user %}
-				<{{ele}} > {{value}} </{{ele}}>
-			{% endfor %}
-		</user>
+		<user>{% for ele, value in user %}<{{ele}}>{{value}}</{{ele}}>{% endfor %}</user>
 
 	</content>
 	
