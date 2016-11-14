@@ -10,7 +10,7 @@ nodefony.registerFixture("users", function(){
 				name: "",
 				surname: "",
 				displayName: "Anonymous",
-				password: "",
+				password: user.generatePassword(),
 				lang:"en_en",
 				roles:"ANONYMOUS"
 			},{

@@ -6,6 +6,12 @@
  *
  */
 var Sequelize =require("sequelize");
+var crypto;
+try {
+  crypto = require('crypto');
+} catch (err) {
+  console.log('crypto support is disabled!');
+}
 
 
 nodefony.registerEntity("user", function(){
@@ -53,6 +59,12 @@ nodefony.registerEntity("user", function(){
 						if (error)
 							return callback(error, null);	
 					});
+				},
+				generatePassword:function(){
+					var date = new Date().getTime();
+					var buf = crypto.randomBytes(256);
+					var hash = crypto.createHash('md5');
+					return hash.update(buf).digest("hex");	
 				}
 			}
 		});
