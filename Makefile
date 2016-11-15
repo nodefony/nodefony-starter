@@ -130,7 +130,7 @@ framework:
 	@if [ ! -d web/vendors ] ; then  \
 		mkdir web/vendors ;\
 		cd web/vendors ;\
-		ln -s ../../src/stage stage ;\
+		ln -s ../../src/nodefony-stage stage ;\
 		cd ../.. ;\
 	fi
 
