@@ -1,0 +1,3 @@
+[submodule "src/nodefony-stage"]
+	path = src/nodefony-stage
+	url = git@github.com:nodefony/nodefony-stage.git
