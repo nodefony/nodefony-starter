@@ -93,6 +93,8 @@ asset:
 	fi \
 
 framework:
+	git submodule init;
+	git submodule update;
 	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
