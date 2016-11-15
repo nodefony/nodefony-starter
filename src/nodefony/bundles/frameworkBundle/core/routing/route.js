@@ -101,34 +101,35 @@ nodefony.register("Route", function(){
 		return this.pattern ;
 	}
 
-	Route.prototype.match = function(request){
-		if ( request.url ){	
-			if (typeof request.url == "string"){
-				var url = Url.parse(request.url).pathname ;	
-			}else{
-				var url = request.url.pathname  ;
-			}
-		}else{
-			if ( request.resourceURL &&  request.httpRequest ){
-				var url = request.resourceURL.pathname;
-				request.method = "WEBSOCKET";
-			}
-		}
-		//console.log(request.url)
-		//console.log(url)
+	Route.prototype.match = function(context){
+		
+		var url = context.request.url.pathname ;
 		var res = url.match(this.pattern);
 		//console.log(res)
 		if (!res) {
 			return res;
 		}
+
 		//check requierments
-		if ( ! this.matchRequirements(request) ){
-			return false;	
+		try {
+			this.matchRequirements(context) ;	
+		}catch(e){
+			throw  e  ;
 		}
-		//check requierments
-		if ( ! this.matchOptions(request) ){
-			return false;
+		//check Hostname
+		try {
+			this.matchHostname(context) ;	
+		}catch(e){
+			throw  e  ;
 		}
+
+		//check options
+		try {
+			this.matchOptions(context) ;	
+		}catch(e){
+			throw  e  ;
+		}
+
 		var map = [];
 		res.slice(1).forEach(function(param, i) {
 			var k = this.variables[i] || 'wildcard';
@@ -149,40 +150,55 @@ nodefony.register("Route", function(){
 			var index = map.push( param )
 			map[k] = map[index-1] ;
 		}.bind(this));
+
 		if ( map && map.wildcard) {
 			map['*'] = map.wildcard;
 		}
 		return map;
 	}
 
-	Route.prototype.matchRequirements = function(request){
-		var testReq = true ;	
+
+	Route.prototype.matchHostname = function(context){
+		if ( this.host !== null ){
+			if ( this.host === context.domain){
+				return true;
+			}
+			throw {
+				message:	"Domain "+ context.domain +" Unauthorized",
+				status:		401
+			};
+		}
+		return true ;
+	}
+
+	Route.prototype.matchRequirements = function(context){
 		if ( this.hasRequirements() ){
 			for(var i  in this.requirements ){
 				switch (i){
 					case "method":
 						var req = this.requirements[i].replace(" ","").toUpperCase();
-						/*if (request.httpRequest)
-							request.method = "WEBSOCKET";*/
-						if (req.split(",").lastIndexOf(request.method) < 0){
-							testReq = false;
+						if (req.split(",").lastIndexOf(context.method) < 0){
+							throw {
+								message:	"Method "+ context.method +" Unauthorized",
+								status:		401	
+							}
 						}
 					break;
 					case "domain":
-						if (request.domain !== this.requirements[i]){
-							testReq = false;
+						if (context.domain !== this.requirements[i]){
+							throw {
+								message:	"Domain "+ context.domain +" Unauthorized",
+								status:		401
+							};
 						}
 					break;
 				}
-				if (!testReq)
-					break;
 			}
-			return testReq;
 		}
-		return testReq;
+		return true;
 	}
 
-	Route.prototype.matchOptions = function(request){
+	Route.prototype.matchOptions = function(context){
 		var testOpt = true ;	
 		for(var i  in this.options ){
 			

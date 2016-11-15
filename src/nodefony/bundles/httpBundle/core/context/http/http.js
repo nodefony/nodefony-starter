@@ -33,6 +33,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.sessionService = this.get("sessions");
 		this.sessionAutoStart = this.sessionService.settings.start ; 
 		this.cookies = {};
+		this.method = this.request.getMethod() ;
 		this.isAjax = this.request.isAjax() ;
 		this.secureArea = null ;
 		this.showDebugBar = true ;
@@ -137,7 +138,7 @@ nodefony.register.call(nodefony.context, "http", function(){
  		 */
 		try {
 			if (!  this.resolver ){
-				this.resolver = this.get("router").resolve(this.container, this.request);
+				this.resolver = this.get("router").resolve(this.container,  this);
 			}
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);	

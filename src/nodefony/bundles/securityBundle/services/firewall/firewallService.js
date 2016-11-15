@@ -313,7 +313,7 @@ nodefony.registerService("firewall", function(){
 	securedArea.prototype.overrideURL = function(context, url ){
 		context.request.url = Url.parse( Url.resolve(context.request.url, url) ) ;
 		var router = this.kernel.get("router") ; 
-		return router.resolve(context.container, context.request);
+		return router.resolve(context.container, context);
 	};
 	
 	securedArea.prototype.redirectHttps = function(context){

@@ -23,22 +23,25 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}	
 		this.kernelHttp = this.container.get("httpKernel");
 		this.request = request ; 
+		this.method = "WEBSOCKET";
+		this.request.method = "WEBSOCKET";
+
 		this.remoteAddress = this.request.remoteAddress ;
 		this.origin = request.origin;
 		//TODO acceptProtocol header sec-websocket-protocol   
 		this.connection = request.accept(null, this.origin);
 		this.response = new nodefony.wsResponse( this.connection ,container , type);
 
-		var myUrl = url.parse( this.protocol+"://" + this.request.host ) ;
-		myUrl.hash = this.request.resourceURL.hash
-		myUrl.search = this.request.resourceURL.search
-		myUrl.query = this.request.resourceURL.query
-		myUrl.pathname = this.request.resourceURL.pathname
-		myUrl.path = this.request.resourceURL.path
+		this.request.url = url.parse( this.protocol+"://" + this.request.host ) ;
+		this.request.url.hash = this.request.resourceURL.hash ;
+		this.request.url.search = this.request.resourceURL.search;
+		this.request.url.query = this.request.resourceURL.query;
+		this.request.url.pathname = this.request.resourceURL.pathname;
+		this.request.url.path = this.request.resourceURL.path;
 
-		this.url =  url.format( myUrl ) ; 
-		this.port = myUrl.port ; 
-		this.domain = myUrl.hostname ; 
+		this.url =  url.format( this.request.url ) ; 
+		this.port = this.request.url.port ; 
+		this.domain = this.request.url.hostname ; 
 		
 		try{
 			this.originUrl = url.parse( request.origin ); 
@@ -164,9 +167,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		this.response.body = message ;
 		try {
 			if ( ! this.resolver ){
-				this.resolver = this.get("router").resolve(this.container, this.request);
+				this.resolver = this.get("router").resolve(this.container,  this);
 			}else{
-				this.resolver.match(this.resolver.route, this.request)	;
+				try {
+					this.resolver.match(this.resolver.route,  this)	;
+				}catch(e){
+					this.request.reject();
+					this.notificationsCenter.fire("onError", this.container, e);	
+					return ;
+				}
 			}
 			this.fire("onMessage", message, this, "RECEIVE") ;
 			if (this.resolver.resolve) {
@@ -184,9 +193,16 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		this.container.get("translation").handle( this );
 		try {
 			if ( ! this.resolver ){
-				this.resolver  = this.get("router").resolve(this.container, this.request);
+				this.resolver  = this.get("router").resolve(this.container,  this);
 			}else{
-				this.resolver.match(this.resolver.route, this.request);	
+				try {
+					this.resolver.match(this.resolver.route,  this)	;
+				}catch(e){
+					this.request.reject();
+					this.notificationsCenter.fire("onError", this.container, e);
+					return ;	
+				}
+				//this.resolver.match(this.resolver.route,  this);	
 			}
 			//WARNING EVENT KERNEL
 			this.kernel.fire("onRequest", this, this.resolver);

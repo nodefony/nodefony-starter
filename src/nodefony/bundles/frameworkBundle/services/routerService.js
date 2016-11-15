@@ -29,12 +29,12 @@ nodefony.registerService("router", function(){
 		
 	};
 
-	Resolver.prototype.match = function(route, request){
+	Resolver.prototype.match = function(route, context){
 		try {
-			var match = route.match(request); 
+			var match = route.match(context); 
 			if ( match ){
 				this.variables = match;
-				this.request = request;
+				this.request = context.request.request;
 				this.route = route;
 				this.parsePathernController(route.defaults.controller);
 				
@@ -375,13 +375,18 @@ nodefony.registerService("router", function(){
 		return this.routes;
 	};
 
-	Router.prototype.resolve = function(container, request){
+	Router.prototype.resolve = function(container, context){
 		var resolver = new Resolver(container, this);
 		for (var i = 0; i<this.routes.length; i++){
 			var route = this.routes[i];
-			var res = resolver.match(route, request);
-			if (res)
-				break;
+			try {
+				var res = resolver.match(route, context);
+				if ( res ){
+					break ;
+				}
+			}catch(e){
+				throw e ;
+			}
 		}
 		return resolver;
 	};
@@ -417,9 +422,9 @@ nodefony.registerService("router", function(){
 					case "pattern" :
 						newRoute.setPattern(arg);
 					break;
-					case "hostname-pattern" :
+					case "host" :
 						newRoute.setHostname(arg);
-						break;					
+					break;					
 					case "defaults" :
 						for (var ob in arg){
 							newRoute.addDefault(ob, arg[ob] );	

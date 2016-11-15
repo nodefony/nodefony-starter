@@ -23,8 +23,8 @@
 #  FRAMEWORK NODEFONY
 #
 #     APP CONFIG  
-name :				AppBundle
-locale :			en_en
+name :                          AppBundle
+locale :                        en_en
 version :                       "Beta"
 App:
   projectName:                  "nodefony" 
@@ -44,6 +44,20 @@ monitoringBundle:
   debugBar:                     true
   #storage:                      false
   
+
+#
+#       OVERRIDE BUNDLE REALTIME 
+#
+#       see REALTIME BUNDLE config for more options
+#
+#
+realTimeBundle:
+  services:
+    monitoring:
+      type:                       tcp
+      port:                       1318
+      domain:                     nodefony.com
+
 #
 #       OVERRIDE BUNDLE HTTP 
 #

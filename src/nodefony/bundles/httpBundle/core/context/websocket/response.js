@@ -39,7 +39,6 @@ nodefony.register("wsResponse",function(){
 
 
 	Response.prototype.send = function(data, type){
-		//console.log(data)
 		switch (type){
 			case "utf8":
 				this.connection.sendUTF(data.utf8Data);

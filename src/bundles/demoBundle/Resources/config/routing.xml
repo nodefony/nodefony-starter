@@ -4,8 +4,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nodefony.com/schema/routing http://nodefony.com/schema/routing/routing-1.0.xsd">
 
-
-
 	<!-- MANAGE  DOCUMENTATION  -->
 	<route id="documentation" pattern="/documentation">
 		<default key="controller">demoBundle:demo:readme</default>
@@ -25,7 +23,6 @@
 	<route id="demoSecure" pattern="/demo/secure">
 		<default key="controller">frameworkBundle:default:401</default>
 	</route>
-
 	
 	<route id="adduser" pattern="/adduser">
 		<default key="controller">demoBundle:demo:addUser</default>
@@ -35,7 +32,6 @@
 	<route id="demoLogout" pattern="/logout">
 		<default key="controller">usersBundle:default:logout</default>
 	</route>
-
 
 	<!-- ROUTE SECURE FOR TEST FIRWALL AREA -->
 	<route id="saslArea" pattern="/demo">
@@ -71,11 +67,6 @@
 		<default key="controller">frameworkBundle:default:401</default>
 	</route>
 
-
-	
-
-
-
 	<!-- HOME -->
 	<route id="home" pattern="/">
 		<default key="controller">demoBundle:demo:index</default>
@@ -98,9 +89,6 @@
 		<requirement key="method">GET</requirement>
 	</route>
 	
-	
-
-
 	<route id="sql" pattern="/query/sql">
 		<default key="controller">demoBundle:demo:querySql</default>
 		<requirement key="method">GET</requirement>
@@ -161,7 +149,7 @@
 		<default key="controller">demoBundle:demo:json</default>
 	</route>
 
-		<!-- json -->
+	<!-- redirect -->
 	<route id="redirect"  pattern="/redirect">
 		<default key="controller">demoBundle:demo:redirectGoogle</default>
 	</route>

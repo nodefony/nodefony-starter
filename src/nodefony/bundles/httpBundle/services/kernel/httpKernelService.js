@@ -426,7 +426,7 @@ nodefony.registerService("httpKernel", function(){
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				
 				try {
-					var resolver  = this.get("router").resolve(container, request);
+					var resolver  = this.get("router").resolve(container, context);
 				}catch(e){
 					return context.notificationsCenter.fire("onError", container, e );	
 				}
@@ -435,7 +435,7 @@ nodefony.registerService("httpKernel", function(){
 				}else{
 					return context.notificationsCenter.fire("onError", container, {
 						status:404,
-						error:"URI :" + request.url,
+						error:"URI :" + context.url,
 						message:"not Found"
 					});
 				}
@@ -506,7 +506,7 @@ nodefony.registerService("httpKernel", function(){
 
 				context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
-				var resolver  = this.get("router").resolve(container, request);
+				var resolver  = this.get("router").resolve(container, context);
 				if (resolver.resolve) {
 					context.resolver = resolver ;	
 				}else{
