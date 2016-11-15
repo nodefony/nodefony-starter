@@ -425,6 +425,7 @@ nodefony.registerService("httpKernel", function(){
 				//request events	
 				context.notificationsCenter.listen(this, "onError", this.onError);
 				
+				// FRONT ROUTER 
 				try {
 					var resolver  = this.get("router").resolve(container, context);
 				}catch(e){
@@ -442,8 +443,7 @@ nodefony.registerService("httpKernel", function(){
 
 				this.kernel.fire("onHttpRequest", container, context, type);
 				
-				
-				if (! this.firewall){
+				if ( ( ! this.firewall ) || resolver.bypassFirewall ){
 					request.on('end', function(){
 						try {
 							if ( context.sessionAutoStart === "autostart" ){
@@ -520,7 +520,7 @@ nodefony.registerService("httpKernel", function(){
 
 				this.kernel.fire("onWebsocketRequest", container, context, type);
 				
-				if (! this.firewall){
+				if ( ( ! this.firewall ) || resolver.bypassFirewall ){
 					try {
 						if ( context.sessionAutoStart === "autostart" ){
 					 		this.sessionService.start(context, "default", function(err, session){

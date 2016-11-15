@@ -26,6 +26,8 @@ nodefony.registerService("router", function(){
 		this.variables = new Array();
 		this.notificationsCenter = this.container.get("notificationsCenter") ;
 		this.context = this.container.get("context") ;
+		this.defaultLang= null ;
+		this.bypassFirewall = false ;
 		
 	};
 
@@ -37,6 +39,8 @@ nodefony.registerService("router", function(){
 				this.request = context.request.request;
 				this.route = route;
 				this.parsePathernController(route.defaults.controller);
+				this.bypassFirewall = route.bypassFirewall ;
+				this.defaultLang = route.defaultLang ;
 				
 			}		
 			return match;
@@ -425,6 +429,9 @@ nodefony.registerService("router", function(){
 					case "host" :
 						newRoute.setHostname(arg);
 					break;					
+					case "firewalls" :
+						newRoute.setFirewallConfigRoute(arg);
+					break;
 					case "defaults" :
 						for (var ob in arg){
 							newRoute.addDefault(ob, arg[ob] );	

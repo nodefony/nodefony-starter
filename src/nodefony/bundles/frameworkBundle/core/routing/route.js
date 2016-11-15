@@ -45,6 +45,8 @@ nodefony.register("Route", function(){
 		}
 		this.variables = [];
 		this.pattern = null;
+		this.bypassFirewall = false ;
+		this.defaultLang = null ;
 	};
 
 	Route.prototype.setName = function(name){
@@ -155,6 +157,15 @@ nodefony.register("Route", function(){
 			map['*'] = map.wildcard;
 		}
 		return map;
+	}
+
+	Route.prototype.setFirewallConfigRoute = function(obj){
+		if ( ! obj ){
+			return ;
+		}
+		if (obj.bypass){
+			this.bypassFirewall = true ;
+		}
 	}
 
 

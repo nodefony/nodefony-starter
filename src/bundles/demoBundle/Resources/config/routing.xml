@@ -36,6 +36,7 @@
 	<!-- ROUTE SECURE FOR TEST FIRWALL AREA -->
 	<route id="saslArea" pattern="/demo">
 		<default key="controller">frameworkBundle:default:401</default>
+		<!--firewall key="bypass">true</firewall-->
 	</route>
 	<route id="localArea" pattern="/local">
 		<default key="controller">frameworkBundle:default:401</default>
