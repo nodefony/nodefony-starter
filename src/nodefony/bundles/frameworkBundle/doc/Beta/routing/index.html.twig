@@ -157,11 +157,13 @@ Tue Oct 11 2016 13:12:05 DEBUG SERVICE INJECTION  : START SERVICE webCrawler( co
 			</p>
 			<pre>
 routeName: 
-  pattern:   pattern
-  defaults:  {controller: "nameBundle:controller:action"} 
+  pattern:	pattern
+  defaults:	{controller: "nameBundle:controller:action"} 
   requirements:
-    method:  GET,DELETE,POST,PUT,WEBSOCKET
-    domain:  domain.com
+    method:	GET,DELETE,POST,PUT,WEBSOCKET
+  host:		domain.com
+  firewalls:
+    bypass:     true
 
 			</pre>
 	
@@ -230,7 +232,7 @@ routeName:
 	  		</tr>
 
 			<tr> 
-		  		<td class="config-parameters">routeName.requirement.domain</td>
+		  		<td class="config-parameters">routeName.host</td>
 		  		<td>Domain who must match </td>
 		  		<td>String</td>
 		  		<td>
@@ -238,6 +240,24 @@ routeName:
 					<span class="badge">All</span>
 				</td>
 	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.firewalls</td>
+		  		<td>Config parameters for firewall</td>
+		  		<td>Object</td>
+		  		<td>
+				</td>
+	  		</tr>
+			<tr> 
+		  		<td class="config-parameters">routeName.firewalls.bypass</td>
+		  		<td>Bypass firewall for this route </td>
+		  		<td>Boolean</td>
+		  		<td>
+					
+					<span class="badge">false</span>
+				</td>
+	  		</tr>
+
+
 
 
 	  		</tbody>  
@@ -396,20 +416,16 @@ demo-websoket:
 
 		<code>demoBundle/controller/websocketController.js</code> :
 	</p>
-
-
 	<pre>
 
 
 nodefony.registerController("websocket", function(){
-
 
 	var websocketController = function(container, context){
 		this.mother = this.$super;
 		this.mother.constructor(container, context);
 		this.kernel = this.get("kernel") ;
 	};
-
 
 	websocketController.prototype.indexAction = function(<strong>message</strong>){
 		
@@ -450,10 +466,7 @@ nodefony.registerController("websocket", function(){
 			default :
 				throw new Error(" METHOD NOT ALLOWED")
 		}
-	
 	}
-
-	
 	return websocketController;
 });
 	</pre>
