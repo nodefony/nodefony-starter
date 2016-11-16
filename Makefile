@@ -61,7 +61,6 @@ restart:
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
-	#make clean
 	@if [  -f package.json  ] ; then  \
 		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
@@ -93,8 +92,11 @@ asset:
 	fi \
 
 framework:
+	echo "###########  GIT SUBMODULES ###########" ;
+	git submodule sync;
 	git submodule init;
 	git submodule update;
+
 	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
