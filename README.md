@@ -78,7 +78,7 @@ $ sudo vim /etc/hosts
 Start the server to check:
 ```bash
 
-# TO START NODEFONY IN DEVELOPPEMENT NODE
+# TO START NODEFONY IN DEVELOPMENT NODE
 
 $ ./nodefony_dev
 
