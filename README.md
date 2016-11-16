@@ -77,7 +77,25 @@ $ sudo vim /etc/hosts
 
 Start the server to check:
 ```bash
+
+# TO START NODEFONY IN DEVELOPPEMENT NODE
+
 $ ./nodefony_dev
+
+
+# OR 
+
+# TO START NODEFONY IN PRODUCTION CLUSTER NODE
+
+$ make start
+
+# TO STOP 
+$ make stop
+
+# TO KILL ALL
+$ make kill
+
+
 ```
 
 Access to App with URL : http://nodefony.com:5151
