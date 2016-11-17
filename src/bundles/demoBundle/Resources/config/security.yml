@@ -75,7 +75,6 @@ security:
             pattern:                    ^/auth/google
             provider:                   nodefony
             form_login:
-              #login_path:               /
               default_target_path:      /
               check_path:               /auth/google
             passport-google-oauth20:
@@ -102,7 +101,6 @@ security:
             pattern:                    ^/auth/github
             provider:                   nodefony
             form_login:
-              #login_path:               /
               default_target_path:      /
               check_path:               /auth/github
             passport-github2:
