@@ -9,6 +9,7 @@ security:
             form_login:
               login_path:               /login/nodefony-sasl  
               default_target_path:      /
+              check_path:               /demo
             sasl:
               private_key:              "Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
               realm:                    "nodefony"
@@ -34,6 +35,7 @@ security:
             form_login:
               login_path:               /login/passport-http-basic
               default_target_path:      /
+              check_path:               /basic
             passport-basic:
               realm:                    "nodefony"
             logout:                     /logout
@@ -47,6 +49,7 @@ security:
             form_login:
               login_path:               /login/passport-http-digest
               default_target_path:      /
+              check_path:               /digest
             passport-digest:
               realm:                    "nodefony"
             logout:                     /logout
@@ -60,6 +63,7 @@ security:
             form_login:
               login_path:               /login/passport-local
               default_target_path:      /
+              check_path:               /local
             passport-local:
               usernameField: 'email'
               passwordField: 'passwd'
@@ -75,6 +79,7 @@ security:
             form_login:
               login_path:               /
               default_target_path:      /
+              check_path:               /auth/google
             passport-google-oauth20:
               clientID:                 "1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com"
               clientSecret:             "xS7E8otmqcKMttxrBKl1B1ML" 
@@ -101,6 +106,7 @@ security:
             form_login:
               login_path:               /
               default_target_path:      /
+              check_path:               /auth/github
             passport-github2:
               clientID:                 "897f1253147acb34c95e"
               clientSecret:             "97938b2a4373f1326c82a71dbd989862cf920cc4" 
