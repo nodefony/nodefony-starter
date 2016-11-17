@@ -1,17 +1,18 @@
 security:
   firewalls:
     secured_webrtc:
-      pattern:                    ^/webrtc
-      context:                    webrtc
-      provider:                   nodefony
+      pattern:                            ^/webrtc
+      context:                            webrtc
+      provider:                           nodefony
       form_login:
-        login_path:               /login/passport-local 
-        check_path:               /local
-        default_target_path:      /webrtc
+        login_path:                       /login/passport-local 
+        check_path:                       /local
+        default_target_path:              /webrtc
+        always_use_default_target_path:   false
       passport-local:
-              usernameField: 'email'
-              passwordField: 'passwd'
-      redirectHttps:              true
+              usernameField:              'email'
+              passwordField:              'passwd'
+      redirectHttps:                      true
       crossDomain: 
-        allow-origin:             "*"
+        allow-origin:                     "*"
 

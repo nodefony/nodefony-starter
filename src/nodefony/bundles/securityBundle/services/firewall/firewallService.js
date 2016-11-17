@@ -107,6 +107,7 @@ nodefony.registerService("firewall", function(){
 		this.checkLogin = null;
 		this.redirect_Https = false ;
 		this.defaultTarget = "/" ;
+		this.alwaysUseDefaultTarget = false ;
 
 		this.firewall.kernel.listen(this, "onReady",function(){
 			try {
@@ -161,7 +162,7 @@ nodefony.registerService("firewall", function(){
 					}else{
 						context.response.setStatusCode( 401 ) ;
 					}
-					if ( ( context.request.url.pathname !==  this.formLogin ) && ( context.request.url.pathname !== this.checkLogin ) ){
+					if ( ( context.request.url.pathname !==  this.formLogin ) && ( context.request.url.pathname !== this.checkLogin ) && ( ! this.alwaysUseDefaultTarget ) ){
 						var area = context.session.getMetaBag("area") ;
 						if (area &&  area !== this.name){
 							context.session.clearFlashBag("default_target_path" );
@@ -342,6 +343,11 @@ nodefony.registerService("firewall", function(){
 	securedArea.prototype.setDefaultTarget = function(route){
 		this.defaultTarget = route;
 	};
+
+	securedArea.prototype.setAlwaysUseDefaultTarget= function(data){
+		this.alwaysUseDefaultTarget = data;
+	};
+
 
 	securedArea.prototype.setContextSession = function(context){
 		this.sessionContext = context ;
@@ -596,6 +602,9 @@ nodefony.registerService("firewall", function(){
 									}
 									if (param[config].default_target_path){
 										area.setDefaultTarget(param[config].default_target_path);
+									}
+									if (param[config].always_use_default_target_path){
+										area.setAlwaysUseDefaultTarget(param[config].always_use_default_target_path);	
 									}
 								break;
 								case "remember_me":
