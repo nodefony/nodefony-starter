@@ -4,7 +4,7 @@ make clean ;
 
 
 #configuring the system
-make framework
+make
 
 
 
