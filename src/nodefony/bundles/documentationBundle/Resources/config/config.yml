@@ -34,5 +34,6 @@ name :				documentationBundle
 version:			"Beta"
 locale :			en_en
 
-
+#elasticSearch:
+#  host:                         "127.0.0.1:9200"
 

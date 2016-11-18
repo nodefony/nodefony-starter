@@ -716,6 +716,26 @@ nodefony.register("syslog", function(){
        		}
    	};
 
+	syslog.prototype.error = function(data){
+		return this.logger(data,"ERROR");
+	};
+
+	syslog.prototype.warning = function(data){
+		return this.logger(data,"WARNING");	
+	};
+
+	syslog.prototype.info = function(data){
+		return this.logger(data,"INFO");
+	};
+
+	syslog.prototype.debug = function(data){
+		return this.logger(data,"DEBUG");
+	};
+
+	syslog.prototype.trace = function(data){
+		return this.logger(data,"NOTICE");
+	};
+
 	return syslog;
 
 });

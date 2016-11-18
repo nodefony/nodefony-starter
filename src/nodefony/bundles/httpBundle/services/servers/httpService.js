@@ -45,9 +45,9 @@ nodefony.registerService("http", function(){
 					var d = nodedomain.create();
 					d.on('error', function(er) {
 						if ( d.container ){
-							this.httpKernel.onError( d.container, er.stack)	
+							this.httpKernel.onError( d.container, er.stack,  "ERROR", "SERVICE HTTP")	
 						}else{
-							this.httpKernel.logger(er.stack);
+							this.httpKernel.logger(er.stack, "ERROR", "SERVICE HTTP");
 						}
 					}.bind(this));
 					d.add(request);
@@ -62,7 +62,7 @@ nodefony.registerService("http", function(){
 					if ( d.container ){
 						this.httpKernel.onError( d.container, er.stack)	
 					}else{
-						this.httpKernel.logger(er.stack);
+						this.httpKernel.logger(er.stack, "ERROR", "SERVICE HTTP");
 					}
 				}.bind(this));
 				d.add(request);
@@ -84,7 +84,7 @@ nodefony.registerService("http", function(){
 
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
-			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER HTTP", "LISTEN");
+			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : http://"+this.domain+":"+this.port , "INFO", "SERVICE HTTP", "LISTEN");
 			this.ready = true ;
 		}.bind(this));
 
@@ -92,13 +92,13 @@ nodefony.registerService("http", function(){
 			var httpError = "server HTTP Error : "+error.errno;
 			switch (error.errno){
 				case "ENOTFOUND":
-					this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain));
+					this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC", "SERVICE HTTPS");
 				break;
 				case "EADDRINUSE":
-					this.httpKernel.logger( new Error(httpError+" port HTTP in use check other servers : ")) ;
+					this.httpKernel.logger( new Error(httpError+" port HTTP in use check other servers : "), "CRITIC", "SERVICE HTTPS") ;
 				break;
 				default :
-					this.httpKernel.logger( new Error(httpError) );	
+					this.httpKernel.logger( new Error(httpError) ,"CRITIC", "SERVICE HTTPS");	
 			}	
 		}.bind(this));
 
@@ -106,7 +106,7 @@ nodefony.registerService("http", function(){
 		this.kernel.listen(this, "onTerminate",function(){
 			if (this.server){
 				this.server.close(function(){
-					this.httpKernel.logger(" SHUTDOWN HTTP  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
+					this.httpKernel.logger(" SHUTDOWN HTTP Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
 				}.bind(this));
 			}
 		}.bind(this));

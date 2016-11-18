@@ -18,8 +18,12 @@ nodefony.registerService("webCrawler", function(){
 		this.kernel = kernel ;
 		this.syslog = this.container.get("syslog");
 		this.crawled = {};
+		this.elastic = null ;
 		
-			
+	
+		this.kernel.listen(this, "onReady", function(){
+			this.elastic = this.kernel.getBundle("documentation").elastic;
+		})	
 	}
 
 	webCrawler.prototype.logger = function(pci, severity, msgid,  msg){
@@ -39,34 +43,39 @@ nodefony.registerService("webCrawler", function(){
 
 		this.protocol = Link.protocol ? Link.protocol+"//" : 'http://' ;
 
-		myLoop.call(this, urlBase, context, function(error, crawled){
-			//console.log(crawled)
-			var obj = {} ;
-			try {
-				
-				for ( var page in crawled){
-					
-					if ( crawled &&   crawled[page] && crawled[page].page && crawled[page].page.selector ){
-						var text = crawled[page].page.selector("body").text() ;
-						if ( ! text ){
-							continue ;
-						}
-						//var index = text.indexOf(search) ;
-						var reg = new RegExp(search, 'gi')
-						var index = text.search(reg);
-						if ( index !== -1 ){
-							obj[ crawled[page].page.url ] = {
-								text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
-								title: crawled[page].page.title
+		if ( this.elastic ){
+			myLoop.call(this, urlBase, context, function(error, crawled){
+				console.log("PASSS")
+			});
+		}else{
+			myLoop.call(this, urlBase, context, function(error, crawled){
+				//console.log(crawled)
+				var obj = {} ;
+				try {
+					for ( var page in crawled){
+						
+						if ( crawled &&   crawled[page] && crawled[page].page && crawled[page].page.selector ){
+							var text = crawled[page].page.selector("body").text() ;
+							if ( ! text ){
+								continue ;
 							}
+							//var index = text.indexOf(search) ;
+							var reg = new RegExp(search, 'gi')
+							var index = text.search(reg);
+							if ( index !== -1 ){
+								obj[ crawled[page].page.url ] = {
+									text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
+									title: crawled[page].page.title
+								}
+							}	
 						}	
-					}	
+					}
+				}catch(e){
+					this.logger(e, "ERROR");	
 				}
-			}catch(e){
-				this.logger(e, "ERROR");	
-			}
-			callback(obj)
-		}.bind(this),recurse);
+				callback(obj)
+			}.bind(this),recurse);
+		}
 	}
 
 	var makeRequestHttp = function(link, context ,callback){
