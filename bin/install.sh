@@ -8,5 +8,5 @@ make
 
 
 
-./nodefony_dev
+./nodefony_dev &
 
