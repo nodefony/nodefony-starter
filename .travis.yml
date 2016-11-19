@@ -9,3 +9,9 @@ before_install:
 branches:
   only:
   - master
+
+addons:
+  hosts:
+  - nodefony.com
+
+install: false
