@@ -1,4 +1,5 @@
-# **NODEFONY  FRAMEWORK**
+# **NODEFONY  FRAMEWORK**   [![Build Status](https://secure.travis-ci.org/nodefony/nodefony.png)](http://travis-ci.org/nodefony/nodefony)
+
 
 ##  **Framework Node.js  Symfony Like**
 
