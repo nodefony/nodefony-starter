@@ -1,6 +1,21 @@
 # **NODEFONY  FRAMEWORK**   
 [![Build Status](https://secure.travis-ci.org/nodefony/nodefony.png)](http://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
 
+Nodefony is Node.js full-stack web framework.  
+
+Nodefony can be used to develop a complete solution to create a web application.
+
+The Nodefony project is inspired by the PHP Symfony framwork, a developer can find most of the concepts, configurations and patterns of Symfony framwork.
+
+Nodefony is not an exhaustive port of symfony, nodefony add services like:
+- Web servers (websocket(s), http(s)).
+- Notion of real-time context in the controller.
+- Notion of synchronous or asynchronous execution. 
+
+Now in this version Beta,  Nodefony is evolved to a stable version without major fundamental changes.
+
+Evolution priorities up to the stable version will focus on robustness, unit testing, documentation and security.
+
 
 ##  **Framework Node.js  Symfony Like**
 
