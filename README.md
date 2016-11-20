@@ -137,7 +137,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 ## <a name="cli"></a>Command Line Interface
 ```bash
 $./console -h            
-	      _   _    ___    ____    _____   _____    ___    _   _  __   __
+              _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
              |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
              | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
