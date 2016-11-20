@@ -1,6 +1,5 @@
 # **NODEFONY  FRAMEWORK**   
-[![Build Status](https://secure.travis-ci.org/nodefony/nodefony.png)](http://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nodefony/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+[![Build Status](https://travis-ci.org/nodefony/nodefony.svg?branch=master)](https://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nodefony/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 Nodefony is Node.js full-stack web framework.  
 
