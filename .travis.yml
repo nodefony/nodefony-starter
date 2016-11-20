@@ -1,9 +1,17 @@
 language: node_js
+
+os:
+  - linux
+  - osx
+
 sudo: true
+
 node_js:
   - "4"
   - "5"
   - "6"
+  - "7"
+
 before_install:
   - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/dev/bin/install.sh | /bin/sh"
 
@@ -13,6 +21,9 @@ branches:
 
 addons:
   hosts:
-  - nodefony.com
+    - nodefony.com
+  apt:
+    sources: [ 'ubuntu-toolchain-r-test']
+    packages: ['libstdc++6']
 
 install: false
