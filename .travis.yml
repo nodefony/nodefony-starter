@@ -13,6 +13,9 @@ branches:
 
 addons:
   hosts:
-  - nodefony.com
+    - nodefony.com
+  apt:
+    sources: [ 'ubuntu-toolchain-r-test']
+    packages: ['libstdc++6']
 
 install: false
