@@ -134,7 +134,7 @@ asseticBundle:
 #
 sequelizeBundle: 
   debug:        false
-#  connectors:                       
+#  connectors:                    
 #    nodefony:
 #      driver:          mysql
 #      dbname:          'nodefony'

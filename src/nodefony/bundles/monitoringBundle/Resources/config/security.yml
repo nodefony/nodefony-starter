@@ -5,7 +5,7 @@ security:
 #           pattern:                    ^/nodefony
 #           provider:                   nodefony
 #           form_login:
-#             check_path:               /secure
+#             check_path:               /nodefony
 #             login_path:               /demo/login  
 #             default_target_path:      /
            #FACTORY (strategy) AUTHENTICATION

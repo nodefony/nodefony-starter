@@ -31,9 +31,9 @@ nodefony.registerService("websocket", function(){
 
 		if ( this.websocketServer ){
 			this.ready = true ;
+			this.httpKernel.logger(" Server is listening on DOMAIN : ws://"+this.domain+":"+this.port , "INFO", "SERVICE WEBSOCKET");
 		}
 			
-		this.httpKernel.logger(" Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER WEBSOCKET");
 
 		var logString =  "WEBSOCKET";
 		this.websocketServer.on('request', function(request) {
@@ -42,7 +42,7 @@ nodefony.registerService("websocket", function(){
 					if ( d.container ){
 						this.httpKernel.onErrorWebsoket( d.container, er.stack)	
 					}else{
-						this.httpKernel.logger(er.stack);
+						this.httpKernel.logger(er.stack, "ERROR", "SERVICE WEBSOCKET");
 					}
 				}.bind(this));
 				d.add(request);
@@ -54,7 +54,7 @@ nodefony.registerService("websocket", function(){
 		this.kernel.listen(this, "onTerminate",function(){
 			if (this.websocketServer && this.ready){
 				this.websocketServer.shutDown();
-				this.httpKernel.logger(" SHUTDOWN WEBSOCKET Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER WEBSOCKET");
+				this.httpKernel.logger(" SHUTDOWN WEBSOCKET Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVICE WEBSOCKET");
 			}
 		}.bind(this));
 

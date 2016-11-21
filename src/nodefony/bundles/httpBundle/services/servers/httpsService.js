@@ -63,7 +63,7 @@ nodefony.registerService("https", function(){
 						if ( d.container ){
 							this.httpKernel.onError( d.container, er.stack)	
 						}else{
-							this.httpKernel.logger(er.stack);
+							this.httpKernel.logger(er.stack , "ERROR", "SERVICE HTTPS");
 						}
 					}.bind(this));
 					d.add(request);
@@ -78,7 +78,7 @@ nodefony.registerService("https", function(){
 					if ( d.container ){
 						this.httpKernel.onError( d.container, er.stack)	
 					}else{
-						this.httpKernel.logger(er.stack);
+						this.httpKernel.logger(er.stack,"ERROR", "SERVICE HTTPS");
 					}
 				}.bind(this));
 				d.add(request);
@@ -99,7 +99,7 @@ nodefony.registerService("https", function(){
 
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
-			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER HTTPS", "LISTEN");
+			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : https://"+this.domain+":"+this.port , "INFO", "SERVICE HTTPS", "LISTEN");
 			this.ready = true ;
 		}.bind(this));
 
@@ -107,13 +107,13 @@ nodefony.registerService("https", function(){
 			var httpError = "server HTTPS Error : "+error.errno;
 			switch (error.errno){
 				case "ENOTFOUND":
-					this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain));
+					this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC", "SERVICE HTTPS");
 				break;
 				case "EADDRINUSE":
-					this.httpKernel.logger( new Error(httpError+" port HTTPS in use check other servers : "));
+					this.httpKernel.logger( new Error(httpError+" port HTTPS in use check other servers : "), "CRITIC", "SERVICE HTTPS");
 				break;
 				default :
-					this.httpKernel.logger( new Error(httpError) );	
+					this.httpKernel.logger( new Error(httpError), "CRITIC" );	
 			}	
 		}.bind(this));
 
@@ -127,7 +127,7 @@ nodefony.registerService("https", function(){
 		this.kernel.listen(this, "onTerminate",function(){
 			if (this.server){
 				this.server.close(function(){
-					this.httpKernel.logger(" SHUTDOWN HTTPS  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
+					this.httpKernel.logger(" SHUTDOWN HTTPS  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVICE HTTPS");
 				}.bind(this));
 			}
 		}.bind(this));

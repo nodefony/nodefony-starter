@@ -106,6 +106,8 @@ nodefony.registerService("firewall", function(){
 		this.formLogin = null;
 		this.checkLogin = null;
 		this.redirect_Https = false ;
+		this.defaultTarget = "/" ;
+		this.alwaysUseDefaultTarget = false ;
 
 		this.firewall.kernel.listen(this, "onReady",function(){
 			try {
@@ -144,13 +146,12 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.handleError = function(context, e){
-		if (context.session){
-			//context.session.clear();	
-		}
+		
 		switch ( context.type ){
 			case "HTTP" :
 			case "HTTPS" :
 				if (this.formLogin) {
+					
 					if (e.message){
 						this.logger(e.message, "DEBUG");
 					}else{
@@ -160,6 +161,21 @@ nodefony.registerService("firewall", function(){
 						context.response.setStatusCode( e.status, e.message ) ;
 					}else{
 						context.response.setStatusCode( 401 ) ;
+					}
+					if ( ( context.request.url.pathname !==  this.formLogin ) && ( context.request.url.pathname !== this.checkLogin ) && ( ! this.alwaysUseDefaultTarget ) ){
+						var area = context.session.getMetaBag("area") ;
+						if (area &&  area !== this.name){
+							context.session.clearFlashBag("default_target_path" );
+							var target_path = null ;
+						}else{
+							var target_path = context.session.getFlashBag("default_target_path" ) ;	
+						}
+						if ( ! target_path ){
+							context.session.setFlashBag("default_target_path", context.request.url.pathname ) ;
+						}else{
+							context.session.setFlashBag("default_target_path", target_path ) ;	
+						}
+						context.session.setMetaBag("area", this.name );
 					}
 					context.resolver = this.overrideURL(context, this.formLogin);
 					if ( !  context.resolver.resolve ){
@@ -222,23 +238,8 @@ nodefony.registerService("firewall", function(){
 					if ( ! context.session.strategyNone ){	
 						context.session.migrate(true);
 					}
-					//console.log( context.user )
 					var userFull = context.user.dataValues ;
 					delete userFull.password ;
-					/*{
-						createdAt:context.user.createdAt,
-						updatedAt:context.user.updatedAt,
-						roles:context.user.roles,
-						lang:context.user.lang,
-						surname:context.user.surname,
-						name:context.user.name,
-						email:context.user.email,
-						accountNonLocked:context.user.accountNonLocked,
-						credentialsNonExpired:context.user.credentialsNonExpired,
-						enabled:context.user.enabled,
-						username:context.user.username,
-						id:context.user.id
-					}*/
 					
 					var ret = context.session.setMetaBag("security",{
 						firewall:this.name,
@@ -247,43 +248,31 @@ nodefony.registerService("firewall", function(){
 						factory:this.factory.name,
 						tokenName:this.token.name
 					});
-					//context.session.getMetaBag("security") ;
-					//console.log( context.request.url.pathname )
-					//console.log( this.checkLogin )
-					if ( this.defaultTarget ){
-						
-						context.resolver = this.overrideURL(context, this.defaultTarget);
-						if ( context.isAjax ){
-							var obj = context.setXjson( {
-								message:"OK",
-								status:200,
-							});
-							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
-							return ;
-						}else{
-							this.redirect(context, this.defaultTarget);
-							return ;
-						}
+					var target_path =  context.session.getFlashBag("default_target_path" ) ;
+					if ( target_path ){
+						var target = target_path;
 					}else{
-						if ( context.isAjax ){
-							var obj = context.setXjson( {
-								message:"OK",
-								status:200,
-							});
-							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
-							return ;
-						}
-						if ( context.request.url.pathname === this.checkLogin ){
-							return this.redirect(context, "/");
-						}
+						var target = this.defaultTarget ;	
 					}
-					context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
+					context.resolver = this.overrideURL(context, target);
+					if ( context.isAjax ){
+						var obj = context.setXjson( {
+							message:"OK",
+							status:200,
+						});
+						context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
+						return ;
+					}else{
+						this.redirect(context, target);
+						return ;
+					}
+					
+					//context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
 				}.bind(this));	
 			}
 		}catch(e){
 			this.handleError(context, e);
 		}
-
 	};
 
 	// Factory
@@ -311,6 +300,7 @@ nodefony.registerService("firewall", function(){
 	};
 
 	securedArea.prototype.overrideURL = function(context, url ){
+		context.method = "GET" ;
 		context.request.url = Url.parse( Url.resolve(context.request.url, url) ) ;
 		var router = this.kernel.get("router") ; 
 		return router.resolve(context.container, context);
@@ -353,6 +343,11 @@ nodefony.registerService("firewall", function(){
 	securedArea.prototype.setDefaultTarget = function(route){
 		this.defaultTarget = route;
 	};
+
+	securedArea.prototype.setAlwaysUseDefaultTarget= function(data){
+		this.alwaysUseDefaultTarget = data;
+	};
+
 
 	securedArea.prototype.setContextSession = function(context){
 		this.sessionContext = context ;
@@ -607,6 +602,9 @@ nodefony.registerService("firewall", function(){
 									}
 									if (param[config].default_target_path){
 										area.setDefaultTarget(param[config].default_target_path);
+									}
+									if (param[config].always_use_default_target_path){
+										area.setAlwaysUseDefaultTarget(param[config].always_use_default_target_path);	
 									}
 								break;
 								case "remember_me":

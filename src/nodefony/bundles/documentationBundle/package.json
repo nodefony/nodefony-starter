@@ -9,6 +9,7 @@
 		"javascript"
   	],
   	"dependencies": {
-		"cheerio" : "*"
+		"cheerio" : "*",
+		"elasticsearch" : "*"
   	}
 }

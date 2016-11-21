@@ -1,29 +1,107 @@
-/*
- *	The MIT License (MIT)
- *	
- *	Copyright (c) /2016  | 
- *
- *	Permission is hereby granted, free of charge, to any person obtaining a copy
- *	of this software and associated documentation files (the 'Software'), to deal
- *	in the Software without restriction, including without limitation the rights
- *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *	copies of the Software, and to permit persons to whom the Software is
- *	furnished to do so, subject to the following conditions:
- *
- *	The above copyright notice and this permission notice shall be included in
- *	all copies or substantial portions of the Software.
- *
- *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *	THE SOFTWARE.
- */
+var elasticsearch = require('elasticsearch');
 
 nodefony.registerBundle ("documentation", function(){
 
+	var classElasticLog = function(config){
+		//console.log(config)
+		this.logger("INIT SYSLOG ELASTIC ", "INFO")
+	};
+
+	classElasticLog.prototype.error = function(data, ele){
+		try{
+			if ( ele && ele !== "undefined" ){
+				try {
+					var str = JSON.stringify(ele) ;
+					var res = data + " : "  + str ? str : "" ;
+				}catch(e){
+					var res = data ;
+				}
+			}else{
+				var res =  data + " : "  + JSON.stringify(ele) ;
+			}
+			return this.logger(res,"ERROR");
+		}catch(e){
+			console.log(e)
+		}
+	};
+
+	classElasticLog.prototype.warning = function(data, ele){
+		try{
+			if ( ele && ele !== "undefined" ){
+				try {
+					var str = JSON.stringify(ele) ;
+					var res = data + " : "  + str ? str : "" ;
+				}catch(e){
+					var res = data ;
+				}
+			}else{
+				var res =  data + " : "  + JSON.stringify(ele) ;
+			}
+			return this.logger(res,"WARNING");
+		}catch(e){
+			console.log(e)
+		}
+	};
+
+	classElasticLog.prototype.info = function(data, ele){
+		try{
+			if ( ele && ele !== "undefined" ){
+				try {
+					var str = JSON.stringify(ele) ;
+					var res = data + " : "  + str ? str : "" ;
+				}catch(e){
+					var res = data ;
+				}
+			}else{
+				var res =  data + " : "  + JSON.stringify(ele) ;
+			}
+			return this.logger(res, "INFO");
+		}catch(e){
+			console.log(e)
+		}
+	};
+
+	classElasticLog.prototype.debug = function(data, ele){
+		try{
+			if ( ele && ele !== "undefined" ){
+				try {
+					var str = JSON.stringify(ele) ;
+					var res = data + " : "  + str ? str : "" ;	
+				}catch(e){
+					var res = data ;
+				}
+			}else{
+				var res =  data + " : "  + JSON.stringify(ele) ;
+			}
+			return this.logger(res ,"DEBUG");
+		}catch(e){
+			console.log(e)
+		}
+	};
+
+	classElasticLog.prototype.trace = function(method, requestUrl, body, responseBody, responseStatus){
+		try{
+			var ele = {
+				method: method,
+				url:requestUrl,
+				body:body
+			}
+			if ( ele  ){
+				try {
+					var str = JSON.stringify(ele) ;
+					var res = data + " : "  + str ? str : "" ;
+				}catch(e){
+					var res = data ;
+				}
+			}else{
+				var res =  method + " : "  + requestUrl ;
+			}
+			return this.logger(res ,"NOTICE");
+		}catch(e){
+			console.log(e)
+		}
+	};
+	
 	/**
 	 *	The class is a **`documentation` BUNDLE** .
 	 *	@module App
@@ -41,6 +119,8 @@ nodefony.registerBundle ("documentation", function(){
 
 		this.mother = this.$super;
 		this.mother.constructor(kernel, container);
+		this.elasticReady = false ; 
+		this.elastic = null ;
 
 		/*
 		 *	If you want kernel wait documentationBundle event <<onReady>> 
@@ -48,7 +128,85 @@ nodefony.registerBundle ("documentation", function(){
 		 *      this.waitBundleReady = true ; 
 		 */	
 		
+
+		if ( this.settings.elasticSearch && this.settings.elasticSearch.host ){
+
+			this.waitBundleReady = true ;
+			classElasticLog.prototype.logger = function(pci, severity, msgid,  msg){
+				var syslog = this.container.get("syslog");
+				if (! msgid) msgid = "ELASTIC SEARCH ";
+				return syslog.logger(pci, severity, msgid,  msg)	
+			}.bind(this) ;
+
+			this.elastic = new elasticsearch.Client({
+				host: this.settings.elasticSearch.host,
+				log: classElasticLog.bind(this) 
+			});
+			this.pingElastic(function(error){
+				if (error) {
+					this.logger(" elasticsearch cluster is down!", "ERROR") ;
+					this.elasticReady = false ; 
+					this.fire("onReady", this, this.elastic);
+				} else {
+					this.logger(" elasticsearch cluster is UP!", "DEBUG") ;
+					this.elasticReady = true ;  
+					this.fire("onReady", this, this.elastic);
+
+					
+					this.createIndexElastic(function(error, response){
+						if (error){
+							return this.log(error);
+						}
+						this.elastic.transport.log.debug("INDEX DOCUMENTATION NODEFONY OK " ) ;	
+						//this.elastic.transport.log("CREATE")
+					}.bind(this))
+				}
+			}.bind(this));
+		}else{
+			this.logger("ELASTIC SEARCH DISABLED : webcrawler search in memory !!  try to install elastic server  ", "WARNING")
+		}
 	};
+
+	documentation.prototype.pingElastic = function(callback){
+		this.elastic.ping({
+  			requestTimeout: 3000,
+		}, function (error) {
+			callback(error)
+		}.bind(this));
+	}
+
+	documentation.prototype.createIndexElastic = function(callback){
+		this.elastic.exists({
+  			index: 'nodefony',
+  			type: 'documentation',
+  			id: 1
+		}, function (error, exists) {
+  			if (exists === true) {
+				callback(null, exists)
+  			} else {
+				this.elastic.create({
+  					index: 'nodefony',
+					type: 'documentation',
+  					id: '1',
+					body: {
+						title: 'Documentation',
+					}
+				}, function (error, response) {
+  					callback(error, response)
+				});
+  			}
+		}.bind(this));
+	};
+
+	documentation.prototype.deleteIndexElastic = function(callback){
+		this.elastic.delete({
+  			index: 'nodefony',
+  			type: 'documentation',
+  			id: '1'
+		}, function (error, response) {
+  			callback(error, response);
+		});
+	}
 
 	return documentation;
 });

@@ -163,7 +163,7 @@ nodefony.register("fileClass", function(){
 		var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
 		if (this.type === "symbolicLink"){
 			var path = fs.readlinkSync(this.path, encode);	
-			return fs.readFileSync(this.dirName+"/"+path, encode);
+			return fs.readFileSync(path, encode);
 		}
 		return fs.readFileSync(this.path, encode);
 	};

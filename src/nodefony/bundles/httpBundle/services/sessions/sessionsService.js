@@ -300,6 +300,16 @@ nodefony.registerService("sessions", function(){
 		this.flashBag = {} ;
 	}
 
+	Session.prototype.clearFlashBag = function(key){
+		if (! key ){
+			throw new Error ("clearFlashBag key must be define : " + key)
+		}
+		if ( this.flashBag[key]){
+			delete this.flashBag[key] ;
+		}
+	}
+
+
 
 
 	Session.prototype.setCookieSession = function( leftTime){

@@ -126,7 +126,10 @@ nodefony.registerService("router", function(){
 			var result =  this.action.apply(controller, this.variables);
 			switch (true){
 				case result instanceof nodefony.Response :
-					this.notificationsCenter.fire("onResponse", result, this.context);
+					if ( this.context.nbCallController == 0  ){
+						this.context.nbCallController++ ;
+						this.notificationsCenter.fire("onResponse", result, this.context);
+					}
 				break ;
 				case result instanceof nodefony.wsResponse :
 					this.notificationsCenter.fire("onResponse", result, this.context);

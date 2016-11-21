@@ -23,7 +23,6 @@ nodefony.register("appKernel",function(){
 		this.registerBundles([
 			"./src/nodefony/bundles/sequelizeBundle",
 			"./src/nodefony/bundles/usersBundle",
-			"./src/experimental/webRtcBundle",
 			"./src/nodefony/bundles/documentationBundle",
 			"./src/bundles/demoBundle"
 		]);

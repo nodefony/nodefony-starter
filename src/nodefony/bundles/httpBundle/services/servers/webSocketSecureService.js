@@ -28,12 +28,10 @@ nodefony.registerService("websocketSecure", function(){
 			httpServer: http
 		}));
 			
-		this.httpKernel.logger(" Server  is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER WEBSOCKET SECURE");
-
 		if ( this.websocketServer ){
 			this.ready = true ;
+			this.httpKernel.logger(" Server  is listening on DOMAIN : wss://"+this.domain+":"+this.port , "INFO", "SERVICE WEBSOCKET SECURE");
 		}
-
 
 		var logString =  "WEBSOCKET SECURE";
 		this.websocketServer.on('request', function(request) {
@@ -42,7 +40,7 @@ nodefony.registerService("websocketSecure", function(){
 					if ( d.container ){
 						this.httpKernel.onErrorWebsoket( d.container, er.stack)	
 					}else{
-						this.httpKernel.logger(er.stack);
+						this.httpKernel.logger(er.stack, "ERROR", "SERVICE WEBSOCKET SECURE");
 					}
 				}.bind(this));
 				d.add(request);
@@ -54,7 +52,7 @@ nodefony.registerService("websocketSecure", function(){
 		this.kernel.listen(this, "onTerminate",function(){
 			if ( this.websocketServer && this.ready ){
 				this.websocketServer.shutDown();
-				this.httpKernel.logger(" SHUTDOWN WEBSOCKET SECURE Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVER WEBSOCKET SECURE");
+				this.httpKernel.logger(" SHUTDOWN WEBSOCKET SECURE Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVICE WEBSOCKET SECURE");
 			}
 		}.bind(this));
 

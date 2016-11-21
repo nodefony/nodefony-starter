@@ -577,7 +577,7 @@ nodefony.registerController("api", function(){
 			var nodefonyDb = orm.getConnection("nodefony") ;
 
 			var users = null ;
-			nodefonyDb.query('SELECT * FROM users')
+			nodefonyDb.query('SELECT id,username,name,surname,lang,provider FROM users')
 			.then(function(result){
 				users = result[0];
 			}.bind(this))

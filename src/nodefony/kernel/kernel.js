@@ -74,15 +74,30 @@ nodefony.register("kernel", function(){
 		this.boot(options);
 		
 		/**
-		 *	@event onTerminate
+		 *	@signals
+		 *
+		 *	onTerminate
 		 */
 		process.on('SIGINT', function() {
+			this.logger("SIGINT", "CRITIC")
+			this.fire("onSignal", "SIGINT", this)
 			this.terminate(0);	
 		}.bind(this));
 		process.on('SIGTERM', function() {
+			this.logger("SIGTERM", "CRITIC")
+			this.fire("onSignal", "SIGTERM", this)
 			this.terminate(0);	
 		}.bind(this));
-
+		process.on('SIGHUP', function() {
+			this.logger("SIGHUP", "CRITIC")
+			this.fire("onSignal", "SIGHUP", this)
+			this.terminate(0);	
+		}.bind(this));
+		process.on('SIGQUIT',function() {
+			this.logger("SIGQUIT", "CRITIC")
+			this.fire("onSignal", "SIGQUIT", this)
+			this.terminate(0);
+		}.bind(this));
 	};
 
 	/**
@@ -643,11 +658,10 @@ nodefony.register("kernel", function(){
 		try {
 			this.fire("onTerminate",this);
 		}catch(e){
-			console.log(e)
+			console.trace(e)
 			code = 1;
 			process.nextTick(function(){
 				this.logger("Cycle Of Live terminate KERNEL CODE : "+code,"INFO");
-				//process.exit(code);
 			}.bind(this));
 			this.logger(e,"ERROR");
 		}
