@@ -1,1 +1,1 @@
-/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/doc/1.0/readme.md
+src/nodefony/bundles/unitTestBundle/doc/1.0/readme.md
