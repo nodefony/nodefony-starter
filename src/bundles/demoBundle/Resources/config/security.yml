@@ -78,8 +78,8 @@ security:
               default_target_path:      /
               check_path:               /auth/google
             passport-google-oauth20:
-              clientID:                 "1079412680991-n17mf87m0581hefjj48ahgmc5q1ri12f.apps.googleusercontent.com"
-              clientSecret:             "xS7E8otmqcKMttxrBKl1B1ML" 
+              clientID:                 "clientID"
+              clientSecret:             "clientSecret" 
               callbackURL:              "https://nodefony.net/auth/google/callback"
               scopes:                   ["profile","email"]
             logout:                     /logout
@@ -104,8 +104,8 @@ security:
               default_target_path:      /
               check_path:               /auth/github
             passport-github2:
-              clientID:                 "897f1253147acb34c95e"
-              clientSecret:             "97938b2a4373f1326c82a71dbd989862cf920cc4" 
+              clientID:                 "clientID"
+              clientSecret:             "clientSecret" 
               callbackURL:              "https://nodefony.net/auth/github/callback"
               scopes:                   [ "user:email" ]
             logout:                     /logout
