@@ -2,13 +2,14 @@
   	"name": "UNITTEST",
   	"version": "1.0",
   	"description": "",
-  	"author": "admin admin@nodefony.com",
+  	"author": "cci ccamensuli@gmail.com",
   	"contributors": [],
   	"keywords": [
 		"nodefony",
 		"javascript"
   	],
   	"dependencies": {
-
+		"mocha": "*",
+		"chai": "*"
   	}
 }
