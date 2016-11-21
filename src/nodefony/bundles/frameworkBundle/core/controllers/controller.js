@@ -438,7 +438,6 @@ nodefony.register("controller", function(){
 		} );
 	}; 
 
-
 	Controller.prototype.redirect = function(url ,status){
 		if (! url )
 			throw new Error("Redirect error no url !!!")

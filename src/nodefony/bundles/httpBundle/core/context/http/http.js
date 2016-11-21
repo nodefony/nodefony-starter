@@ -27,6 +27,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		this.container.set("notificationsCenter", this.notificationsCenter);
 
 		this.resolver = null ;
+		this.nbCallController = 0 ;
 		this.request = new nodefony.Request( request, container, type);
 		this.response = new nodefony.Response( response, container, type);
 		this.session = null;

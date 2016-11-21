@@ -71,6 +71,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		this.user = null ;
 
 		this.resolver = null ;
+		this.nbCallController = 0 ;
 		//  manage EVENTS
 		this.notificationsCenter = nodefony.notificationsCenter.create();
 		this.container.set("notificationsCenter", this.notificationsCenter);
