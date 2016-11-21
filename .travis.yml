@@ -7,8 +7,9 @@ os:
 sudo: true
 
 node_js:
-  - "4"
+#  - "4"
   - "6"
+#  - "7"
   
 services:
   - mysql
