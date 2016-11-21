@@ -25,7 +25,7 @@ addons:
     sources: [ 'ubuntu-toolchain-r-test']
     packages: ['libstdc++6']
 
-install: false
+install: true
 
 notifications:
   webhooks:
