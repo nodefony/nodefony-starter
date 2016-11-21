@@ -10,7 +10,22 @@ node_js:
   - "4"
   - "6"
   
+services:
+  - mysql
+  - memcached
+  - elasticsearch
+  
+env:
+  - DB=sqlite
+  - DB=mysql
+  
+  
+before_script:
+  - sudo apt-get install nginx -y
+  - sleep 10
+  
 before_install:
+  - mysql -e "create database IF NOT EXISTS nodefony;" -uroot
   - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/dev/bin/install.sh | /bin/sh"
 
 branches:
