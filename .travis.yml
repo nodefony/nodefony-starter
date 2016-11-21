@@ -27,6 +27,8 @@ addons:
 
 install: true
 
+test: true
+
 notifications:
   webhooks:
     urls:
