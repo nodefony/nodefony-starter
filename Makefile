@@ -94,8 +94,7 @@ asset:
 framework:
 	echo "###########  GIT SUBMODULES ###########" ;
 	git submodule sync;
-	git submodule init;
-	git submodule update;
+	git submodule update --init --recursive
 
 	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
 	@if [ ! -d tmp ] ; then  \
