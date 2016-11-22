@@ -131,9 +131,11 @@ $ make
 
 <h3> System :</h3>
 <p class="doc3">
-	
-	To bind server http(s) on network interface  
-	Add host name "nodefony.com" in your /etc/hosts  :
+	By defaut NODEFONY bind all servers on loopback   ( localhost : 127.0.0.1 ) </br>
+	If you want listen network interface with a domain you can change binding.</br>  	
+	To bind server http(s) on network interface  </br>
+	Add domain name in your /etc/hosts example : "nodefony.com"   :
+
 	<pre class="doc3" >
 $ sudo vim /etc/hosts
 
@@ -143,6 +145,7 @@ $ sudo vim /etc/hosts
 #
 ##
 127.0.0.1       localhost nodefony.com
+
 	</pre>
 	
 </p>
@@ -153,16 +156,39 @@ $ sudo vim /etc/hosts
 <h2>Running NODEFONY : <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
 <div class="doc2">
 	<p >
-		By default NODEFONY SERVERS listen on ports :
+		By default NODEFONY BIND SERVERS listen on  :
 		<ul class="doc3">
 			<li>
-			http : 5151
+				domain : localhost
 			</li>
 			<li>
-			https: 5152
+				http : 5151
+			</li>
+			<li>
+				https: 5152
 			</li>
 		</ul>
-		If you want change listen port http(s) by defaut <small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small><br>
+		If you want change listen port http(s) by defaut or domain  <small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small><br>
+		<pre>
+#
+#  NODEFONY FRAMEWORK
+#
+#       KERNEL CONFIG
+#
+#
+name:                           "NODEFONY"
+system:
+  version:                      "1.0.2-beta"
+<strong>  domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )
+  domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
+  httpPort:                     5151
+  httpsPort:                    5152</strong>
+  statics:                      true
+  security:                     true
+  realtime:                     true
+  monitoring:                   true
+
+		</pre>
 		To check  you can run nodefony in dev mode  
 	</p>
 
