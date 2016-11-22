@@ -6,20 +6,31 @@ var http = require("http");
 
 const assert = require('assert');
 
-describe("SERVER WEB test", function(){
+describe("NODEFONY SERVER WEB", function(){
 
-	//var assert = chai.assert;
-
-	describe('Service HTTP HTTPS', function(){
 	
-		it("HTTP", function(done){
+	describe('CONFIGURATIONS ', function(){
+
+		it("KERNEL", function(done){
+			console.log( kernel.settings.system.version );
+			done();
+		});
+
+	});
+
+
+	describe('Service', function(){
 			
+
+		it("HTTP", function(done){
+				
 			var options = {
-				hostname: '127.0.0.1',
-				port: 5151,
+				hostname: kernel.settings.system.domain,
+				port: kernel.settings.system.httpPort,
 				path: '/json',
 				method: 'GET'
 			};
+
 			var request = http.request(options,function(res) {
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers.server, "nodefony");
@@ -33,6 +44,21 @@ describe("SERVER WEB test", function(){
 			})
 			request.end();
 		});
+
+		it("HTTPS", function(done){
+			done()
+		});
+
+
+		it("WEBSOCKET", function(done){
+			done()
+		});
+
+		it("WEBSOCKET_SECURE", function(done){
+			done()
+		});
+
+
 	});
 
 });

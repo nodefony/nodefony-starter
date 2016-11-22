@@ -1,6 +1,5 @@
 
 var Mocha = require('mocha'),
-    chai = require('chai'),
     fs = require('fs');
 
 nodefony.registerCommand("unitTest", function(){
@@ -44,12 +43,10 @@ nodefony.registerCommand("unitTest", function(){
 		var rootDir = this.container.get("kernel").rootDir;
 		var bundles = this.container.get("kernel").bundles;
 
-		this.mocha = new Mocha({
-			ui: 'bdd',
-			reporter: 'spec',
-			globals:["kernel"]
-		});
+		var settingMocha = this.kernel.getBundle("unitTest").settings.mocha.nodefony ;
 
+		this.mocha = new Mocha(settingMocha.console);
+		
 		var tests = [];
 
 		if(arg[2] == 'all'){
@@ -123,9 +120,6 @@ nodefony.registerCommand("unitTest", function(){
 			}
 
 		}.bind(this));
-
-
-
 	};	
 
 	return {

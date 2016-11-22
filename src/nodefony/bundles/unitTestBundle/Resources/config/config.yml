@@ -31,8 +31,15 @@
 
 ########## nodefony CONFIG BUNDLE  unitTestBundle  ############
 name :				unitTestBundle
-version:			"1.0"
+version:			"Beta"
 locale :			en_en
 
+mocha:
+  nodefony:
+    console:
+      ui: 'bdd'
+      reporter: 'list'          # spec | list
+      timeout: 10000
+    
 
 

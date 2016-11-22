@@ -9,7 +9,6 @@
 		"javascript"
   	],
   	"dependencies": {
-		"mocha": "*",
-		"chai": "*"
+		"mocha": "*"
   	}
 }
