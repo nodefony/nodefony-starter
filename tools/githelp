@@ -1,0 +1,16 @@
+
+
+
+ADD TAG
+git tag release01
+git push origin release01
+
+
+REMOVE TAG :
+
+$ git tag -d release01
+$ git push origin :refs/tags/release01
+
+
+
+
