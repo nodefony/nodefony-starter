@@ -28,7 +28,7 @@ locale :                        en_en
 version :                       "Beta"
 App:
   projectName:                  "nodefony" 
-  projectYear:                  2015 
+  projectYear:                  2016 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
@@ -134,13 +134,13 @@ asseticBundle:
 #
 sequelizeBundle: 
   debug:        false
-  connectors:                    
-    nodefony:
-      driver:          mysql
-      dbname:          'nodefony'
-      username:        'cci'
-      password:        '91984869'
-      options:
-        dialect:       mysql
-        host:          localhost
-        port:          '3306'
+#  connectors:                    
+#    nodefony:
+#      driver:          mysql
+#      dbname:          'nodefony'
+#      username:        'username'
+#      password:        'passwd'
+#      options:
+#        dialect:       mysql
+#        host:          localhost
+#        port:          '3306'
