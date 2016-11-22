@@ -4,6 +4,7 @@
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
+	  "test": "./console unitTest:launch:all"
   },
   "keywords": [
     "Node.js"

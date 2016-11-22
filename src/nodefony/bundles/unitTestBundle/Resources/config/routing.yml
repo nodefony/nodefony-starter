@@ -1,12 +1,14 @@
 #
+#
+#	ROUTING BUNDLE unitTestBundle 
+#
 #===============================================================================
 #
-#  Copyright © 2013/2014        CAMENSULI Christophe | christophe.camensuli@nodefony.com
+#  Copyright © 2015/2016         | 
 #
 # ===============================================================================
 #
-#        nodefony BUILDER YAML FILE 
-#
+#        GENERATE BY nodefony BUILDER YAML FILE 
 #
 # This file is YAML  FILE
 # ---
@@ -26,27 +28,11 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
-########## NODEFONY CONFIG BUNDLE  demoBundle  ############
-name :				demoBundle
-locale :			en_en
-version :                       "1.0"
 
-#
-#  OVERRIDE BUNDLE REALTIME 
-#
-realTimeBundle:
-  system:
-    reconnect:
-      handshake:                  true
-      connect:                    true
-  services:
-    random:
-      type:                       tcp
-      port:                       1315
-      domain:                     localhost
-    dmsg:
-      type:                       tcp
-      port:                       1316
-      domain:                     localhost
+########## nodefony ROUTING  unitTestBundle  ############
+
+unitTest: 
+  pattern:  /unitTest
+  defaults: {controller: "unitTestBundle:default:index"}
 
 

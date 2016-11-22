@@ -56,7 +56,7 @@ realTimeBundle:
     monitoring:
       type:                       tcp
       port:                       1318
-      domain:                     localhost 
+      domain:                     nodefony.com
 
 #
 #       OVERRIDE BUNDLE HTTP 
@@ -138,9 +138,9 @@ sequelizeBundle:
     nodefony:
       driver:          mysql
       dbname:          'nodefony'
-      username:        'cci'
-      password:        '91984869'
+      username:        'travis'
+      password:        ''
       options:
         dialect:       mysql
-        host:          localhost
+        host:          127.0.0.1
         port:          '3306'

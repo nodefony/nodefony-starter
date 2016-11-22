@@ -2,18 +2,29 @@ language: node_js
 
 os:
   - linux
-  - osx
+#  - osx
   
 sudo: true
 
 node_js:
-  - "4"
-  - "5"
   - "6"
-  - "7"
+  
+services:
+  - mysql
+  - memcached
+  - elasticsearch
+  
+env:
+  - DB=sqlite
+  - DB=mysql
+  
+before_script:
+  - sleep 10
   
 before_install:
-  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/dev/bin/install.sh | /bin/sh"
+  - sudo apt-get install nginx -y
+  - mysql -e "create database IF NOT EXISTS nodefony;" -uroot
+  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/master/.travis/bin/install.sh | /bin/sh"
 
 branches:
   only:
@@ -26,7 +37,9 @@ addons:
     sources: [ 'ubuntu-toolchain-r-test']
     packages: ['libstdc++6']
 
-install: false
+install: true
+
+test: true
 
 notifications:
   webhooks:

@@ -1,5 +1,5 @@
 # **NODEFONY  FRAMEWORK**   
-[![Build Status](https://travis-ci.org/nodefony/nodefony.svg?branch=dev)](https://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nodefony/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+[![Build Status](https://travis-ci.org/nodefony/nodefony.svg?branch=master)](https://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/nodefony/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 Nodefony is Node.js full-stack web framework.  
 
@@ -79,19 +79,6 @@ $ make
 
 ## <a name="start"></a>Start
 
-Add host name "nodefony.com" in your /etc/hosts  :
-```bash
-$ sudo vim /etc/hosts
-
-##
-# Host Database
-#
-# localhost is used to configure the loopback interface
-##
-127.0.0.1       localhost nodefony.com
-
-```
-
 Start the server to check:
 ```bash
 
@@ -115,7 +102,7 @@ $ make kill
 
 ```
 
-Access to App with URL : http://nodefony.com:5151
+Access to App with URL : http://localhost:5151
 
 [![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/dev/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
 
@@ -130,8 +117,9 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "1.0.0-beta"
-  		domain:                       nodefony.com
+  		version:                      "1.0.2-beta"
+		domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )
+		domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space
   		httpPort:                     5151
   		httpsPort:                    5152
   		statics:                      true
@@ -267,7 +255,7 @@ $ make install
 $ ./nodefony_dev
 ```
 
-Access to bundle route with URL : http://nodefony.com:5151/hello
+Access to bundle route with URL : http://localhost:5151/hello
 
 
 #### Start Framework in PRODUCTION CLUSTER MODE:
@@ -283,7 +271,7 @@ $ make kill
 
 #### Monitoring FRAMEWORK in PRODUCTION CLUSTER MODE:
 
-Access to monitoring route with URL : http://nodefony.com:5151/nodefony
+Access to monitoring route with URL : http://localhost:5151/nodefony
 
 [![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/doc/Beta/cluster.png)](https://github.com/nodefony/nodefony)
 
