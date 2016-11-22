@@ -78,11 +78,11 @@ nodefony.registerCommand("unitTest", function(){
 
 								if(bundleName != tests[i].bundle){
 									bundleName = tests[i].bundle;
-									this.logger("\033[46m\033[37m\n   ★★★ BUNDLE : " + bundleName + " ★★★\n","DEBUG");
+									this.logger("★★★ BUNDLE : " + bundleName + " ★★★\n","INFO");
 								}
-								this.logger("       ‣ " + tests[i].name,"DEBUG");
+								this.logger("       ‣ " + tests[i].name,"INFO");
 							}
-							this.logger("\033[0m\033[0m","DEBUG");
+							this.logger("\033[0m\033[0m","INFO");
 							break;
 					}
 					this.terminate(1);

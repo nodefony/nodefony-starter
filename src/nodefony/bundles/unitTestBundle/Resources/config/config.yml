@@ -39,7 +39,7 @@ mocha:
     console:
       ui: 'bdd'
       reporter: 'list'          # spec | list
-      timeout: 10000
+      timeout: 20000
     
 
 

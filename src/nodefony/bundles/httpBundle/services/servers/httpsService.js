@@ -28,27 +28,50 @@ nodefony.registerService("https", function(){
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
 		this.ready = false ;
+
+		this.key = null ;
+		this.cert = null ;
+		this.ca = null ;
 		
 	};
-	
-	
-	Https.prototype.createServer = function(port, domain){
+
+
+	Https.prototype.getCertificats = function(){
 		this.settings = this.get("container").getParameters("bundles.http").https || null ;
-		
+
 		var key = checkPath(this.settings.certificats.key, this.kernel.rootDir );
 		var cert = checkPath(this.settings.certificats.cert, this.kernel.rootDir);
 		var ca = checkPath(this.settings.certificats.ca, this.kernel.rootDir);
+
 		try {
-			var opt = {
-				key: fs.readFileSync(key),
-				cert:fs.readFileSync(cert)
-			};
+			this.key = fs.readFileSync(key) ;
+			this.cert = fs.readFileSync(cert) ;
 			if ( ca ){
-				opt["ca"] = fs.readFileSync(ca);
+				this.ca = fs.readFileSync(ca) ;
+			}
+
+			var opt = {
+				key: this.key,
+				cert:this.cert
+			};
+			if ( this.ca ){
+				opt["ca"] = this.ca;
 			}
 		}catch(e){
-			this.httpKernel.logger(e);
 			throw e ;
+		}
+		return opt ;
+	}
+	
+	
+	Https.prototype.createServer = function(port, domain){
+		//this.settings = this.get("container").getParameters("bundles.http").https || null ;
+		
+		try {
+			var opt = this.getCertificats();
+		}catch(e){
+			this.httpKernel.logger(e);
+			throw e ;	
 		}
 
 		this.options = nodefony.extend(opt, this.settings.certificats.options);

@@ -9,6 +9,7 @@
 		"javascript"
   	],
   	"dependencies": {
-		"mocha": "*"
+		"mocha": "*",
+		"tunnel": "*"
   	}
 }
