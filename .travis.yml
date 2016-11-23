@@ -24,7 +24,7 @@ before_script:
 before_install:
   - sudo apt-get install nginx -y
   - mysql -e "create database IF NOT EXISTS nodefony;" -uroot
-  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/master/.travis/bin/install.sh | /bin/sh"
+  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/dev/.travis/bin/install.sh | /bin/sh"
 
 branches:
   only:
