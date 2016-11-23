@@ -4,36 +4,71 @@ var Mocha = require('mocha'),
 
 nodefony.registerCommand("unitTest", function(){
 
-	var getTestFiles = function(bundles, bundleName, testName){
+	var regFile = /^(.*)Test\.js$/;
 
-		var tests = [];
-		var regFile = /^.*\.js$/;
-		bundleName = bundleName.replace('Bundle', '');
-		if(bundles[bundleName] && bundles[bundleName].finder){
-			var dirBundle = bundles[bundleName].finder.path[0].dirName;
-			var files = bundles[bundleName].finder.find({exclude:/^docs$|^public$/}).findByNode('tests').files;
+	/*var getBundlesTestFiles = function(bundles, bundleName, testName, tests){
+		if( bundles[bundleName].finder){
+			var files = bundles[bundleName].finder.find({
+				exclude:/^doc$|^public$|^Resources$/
+			}).findByNode('tests').files;
 			for(var i = 0; i < files.length; i++){
 				if(files[i].type == 'File' && regFile.exec(files[i].name)){
-					tests.push({
-						bundle: bundleName,
-						name: files[i].name,
-						dir: files[i].dirName.split('/tests/')[1] || '',
-						dirBundle: dirBundle
-					});
+					if ( testName ){
+						if (files[i].name === testName  ){
+							files[i].bundle = bundleName ;
+							tests.push( files[i] );
+						}
+					}else{
+						files[i].bundle = bundleName ;
+						tests.push( files[i] );
+					}
 				}
 			}
 		}
+	};*/
 
-		return tests;
-	};
-
-	var isExistTest = function(file){
-		if(!fs.existsSync(file)){
-			this.logger(file + " doesn't exist", "ERROR");
-			return false;
+	var getBundlesTestFiles = function(bundles, bundleName, testName, tests){
+		if( bundles[bundleName].finder){
+			var finder = bundles[bundleName].finder.find({
+				exclude:/^doc$|^public$|^Resources$/,
+				match:regFile
+			});
+			if (finder.files.length ){
+				for(var i = 0 ; i < finder.files.length ; i++){
+					if ( testName ){
+						if (finder.files[i].name === testName  ){
+							finder.files[i].bundle = bundleName;
+							tests.push( finder.files[i] );
+						}
+					}else{
+						finder.files[i].bundle = bundleName;
+						tests.push( finder.files[i] );
+					}
+				}
+			}
 		}
-		return true;
 	};
+
+	var getNodefonyTestFiles = function(rootDir, testName, tests){
+		var finder = new nodefony.finder( {
+			path:rootDir+"/vendors/nodefony",
+			exclude:/^bundles$|^doc$/,
+			match:regFile
+		});
+		if (finder.result.files.length ){
+			for(var i = 0 ; i < finder.result.files.length ; i++){
+				if ( testName ){
+					if (finder.result.files[i].name === testName  ){
+						finder.result.files[i].bundle = "nodefony";
+						tests.push( finder.result.files[i] );
+					}
+				}else{
+					finder.result.files[i].bundle = "nodefony";
+					tests.push( finder.result.files[i] );
+				}
+			}
+		}
+	} 
 
 	var unitTest = function(container, command, options){
 
@@ -50,33 +85,31 @@ nodefony.registerCommand("unitTest", function(){
 		var tests = [];
 
 		if(arg[2] == 'all'){
+			getNodefonyTestFiles.call(this, rootDir, null, tests)
 			for(var bundle in bundles){
-				tests = tests.concat(getTestFiles.call(this, bundles, bundle));
+				getBundlesTestFiles.call(this, bundles, bundle, null, tests);
 			}
-		} else if(arg[2] == 'bundle' || arg[2] == 'single'){
-			if(arg[2] == 'single'){
-				var bundleName = command[0].split(':')[0];
-				var testName = command[0].split(':')[1];
-			} else {
-				var bundleName = command[0];
+		} else if(arg[2] == 'bundle'){
+			var bundleName = command[0];
+			var testName = command[1];
+			bundleName = bundleName.replace('Bundle', '');
+			if (bundleName === "nodefony" ){
+				getNodefonyTestFiles.call(this, rootDir, testName, tests);	
+			}else{
+				getBundlesTestFiles.call(this, bundles, bundleName, testName , tests);
 			}
-
-			tests = getTestFiles.call(this, bundles, bundleName, testName || undefined);
 		}
 
 		this.kernel.listen(this, 'onReady', function(kernel){
 
 			switch ( arg[1] ){
-
 				case "list" :
-
-					switch( arg[2 ]){
+					switch( arg[2] ){
 						case "all":
 						case "bundle" : 
 							var bundleName = '';
-							for(var i = 0; i < tests.length; i++){
-
-								if(bundleName != tests[i].bundle){
+							for(var i = 0; i < tests.length ; i++){
+								if ( bundleName != tests[i].bundle){
 									bundleName = tests[i].bundle;
 									this.logger("★★★ BUNDLE : " + bundleName + " ★★★\n","INFO");
 								}
@@ -95,9 +128,9 @@ nodefony.registerCommand("unitTest", function(){
 						case "single" :								
 						case "all":
 						case "bundle" : 
-
+							//console.log(tests)
 							for(var i = 0; i < tests.length; i++){
-								this.mocha.addFile(tests[i].dirBundle + '/' + tests[i].bundle + 'Bundle/tests/' + (tests[i].dir != '' ? tests[i].dir + '/' : '') + tests[i].name);
+								this.mocha.addFile( tests[i].path );
 							}
 
 							this.mocha.run( function(failures){
@@ -128,9 +161,7 @@ nodefony.registerCommand("unitTest", function(){
 			listAll: ["unitTest:list:all", "List all unit tests"],
 			listBundle: ["unitTest:list:bundle bundleName", "List all bundle unit tests"],
 			launchAll: ["unitTest:launch:all", "Launch all tests"],
-			launchBundle: ["unitTest:launch:bundle bundleName", "Launch bundle tests"],
-			launchSingle: ["unitTest:launch:single bundleName testfile", "Launch single test"]
-
+			launchBundle: ["unitTest:launch:bundle bundleName { testfile }", "Launch bundle tests"],
 		},
 		worker: unitTest
 	};

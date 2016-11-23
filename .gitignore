@@ -4,8 +4,10 @@ docs/**
 tmp/**
 web/**
 **/assets/**
+
 nodefony.db
 app/Resources/databases/**
+app/Resources/databases/nodefony.db
 
 node_modules/**
 npm-debug.log

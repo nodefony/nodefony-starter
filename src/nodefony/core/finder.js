@@ -254,7 +254,6 @@ nodefony.register("finder", function(){
 		}
 		//this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
 		if (this.settings.path){	
-			this.in(this.settings.path);
 			this.result = this.find();
 		}
 	};
@@ -298,6 +297,7 @@ nodefony.register("finder", function(){
 		}else{
 			var extend = nodefony.extend({}, defaultSettings, settings) ;	
 		}
+		this.in(extend.path);
 		this.notificationsCenter = nodefony.notificationsCenter.create(extend);
 		try {
 			for (var i = 0 ; i < this.path.length ; i++){
