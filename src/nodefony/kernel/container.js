@@ -109,10 +109,13 @@ nodefony.register("Container", function(){
 
 	Container.prototype.enterScope = function(name){
 		var sc = new Scope(name, this)
-		//console.log("ENTER SCOPE :" + sc.id)
-		//var index = this.scope[name].push( sc );
 		this.scope[name][sc.id] = sc ;
-		//sc.index = index;
+		return sc;
+	}
+
+	Container.prototype.enterScopeExtended = function(name){
+		var sc = new ExtendedScope(name, this)
+		this.scope[name][sc.id] = sc ;
 		return sc;
 	}
 
@@ -183,6 +186,7 @@ nodefony.register("Container", function(){
     		this.parameters = new parent.protoParameters();
     		this.scope = parent.scope;
 		this.id = generateId();
+
 	}.herite(Container);
 
 	Scope.prototype.set = function(name, obj){
@@ -199,10 +203,44 @@ nodefony.register("Container", function(){
 		}
 	};
 
-	Scope.prototype.leaveScope = function(name){
-    		this.mother.leaveScope(this)
+
+	/*
+ 	 *
+ 	 *	ExtendedScope CLASS
+ 	 *
+ 	 */
+
+	var ExtendedScope = function(name, parent){
+    		this.name = name;
+		this.parent = parent;
+    		this.mother = this.$super;
+    		this.mother.constructor();
+    		this.services = new parent.protoService();
+    		this.parameters = new parent.protoParameters();
+    		this.scope = parent.scope;
+		this.id = generateId();
+
+		this.protoService = function(){};
+		this.protoService.prototype = nodefony.extend({},this.parent.protoService.prototype);
+
+		this.protoParameters = function(){};
+		this.protoParameters.prototype = nodefony.extend({},this.parent.protoParameters.prototype) ;
+
+	}.herite(Container);
+
+	ExtendedScope.prototype.set = function(name, obj){
+    		this.services[name] = obj ;
+    		return this.mother.set(name, obj);
 	};
 
-
+	ExtendedScope.prototype.setParameters = function(name, str){
+		if ( parseParameterString.call(this.parameters, name, str) === str ){
+			return this.mother.setParameters(name, str);
+		}else{
+			this.logger(new Error("container parameter "+ name+" parse error"));
+			return false;
+		}
+	};
+	
 	return Container;
 });

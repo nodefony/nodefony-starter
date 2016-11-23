@@ -1,5 +1,12 @@
 /*
- *   New node file
+ *   MODEFONY FRAMEWORK
+ *
+ *   MOCHA UNIT TEST
+ *
+ *   nodefony add in context : 
+ *	namespace nodefony
+ *	instance  kernel console  
+ *
  */
 
 var http = require("http");

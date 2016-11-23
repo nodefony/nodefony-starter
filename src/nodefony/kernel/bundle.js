@@ -24,7 +24,7 @@ nodefony.register("Bundle", function(){
 		}
 		this.finder = new nodefony.finder( {
 			path:this.path,
-			exclude:/^docs$|^test$|^public$|^doc$/,
+			exclude:/^docs$|^tests$|^public$|^doc$/,
 		});
 		this.controllers = {};
 		this.views = {};

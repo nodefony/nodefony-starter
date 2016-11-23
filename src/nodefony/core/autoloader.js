@@ -147,15 +147,30 @@ module.exports = function(){
 	 *
  	 */
 	autoload.prototype.loadDirectory = function(path){
+		switch (path){
+			case "vendors/nodefony/kernel" :
+				var settings = {
+					path:path,
+					exclude:/^tests$/,
+					onFinish:function(error, res){
+						if (error)
+							throw error;
+						res.forEach(autoloadEach.bind(this))
+					}.bind(this)
+				}
+			break;
+			default:
+				var settings = {
+					path:path,
+					onFinish:function(error, res){
+						if (error)
+							throw error;
+						res.forEach(autoloadEach.bind(this))
+					}.bind(this)
+				}
+		}
 		if ( nodefony.finder ){
-			var finder = new nodefony.finder({
-				path:path,
-				onFinish:function(error, res){
-					if (error)
-						throw error;
-					res.forEach(autoloadEach.bind(this))
-				}.bind(this)
-			});
+			var finder = new nodefony.finder(settings);
 			return finder.result
 		}
 		throw new Error("AUTOLOADER finder not found  Load nodefony finder ")
