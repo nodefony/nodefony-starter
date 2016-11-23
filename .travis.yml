@@ -15,8 +15,8 @@ services:
   - elasticsearch
   
 env:
-  - DB=sqlite
-  - DB=mysql
+  - DB='sqlite'
+  - DB='mysql'
   
 before_script:
   - sleep 10
