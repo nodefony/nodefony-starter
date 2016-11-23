@@ -14,7 +14,7 @@ asciify("      NODEFONY", {font:'standard'}, function(err, res){
 	
 	process.env["MODE_START"] = "NODEFONY_CONSOLE" ;
 
-	kernel = new nodefony.console( "prod", false, autoloader,{
+	var kernel = new nodefony.console( "prod", false, autoloader,{
 		node_start:process.env["MODE_START"]
 	});
 });
