@@ -6,10 +6,14 @@
  *
  */
 
-var passport = require('passport');
-var LdapStrategy = require('passport-ldapauth');
+try {
+	var passport = require('passport');
+	var LdapStrategy = require('passport-ldapauth');
 
-var nodefonyPassport = require("passport-nodefony");
+	var nodefonyPassport = require("passport-nodefony");
+}catch(e){
+	console.error(e);
+}
 
 
 

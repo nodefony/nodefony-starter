@@ -561,7 +561,6 @@ nodefony.register("Bundle", function(){
 				exclude:/^docs$|^tests$/
 			});
 		}catch(e){
-			console.trace(e)
 			this.logger(e,"ERROR");
 		}
 		return res.result;
