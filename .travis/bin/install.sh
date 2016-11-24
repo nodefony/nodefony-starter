@@ -15,5 +15,10 @@ fi
 #configuring the system
 make
 
-./nodefony_dev &
+if [ "$DB" = "mysql" ]
+then
+	make start &
+else
+	./nodefony_dev &
+fi
 
