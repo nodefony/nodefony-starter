@@ -11,25 +11,35 @@ install:
 	@echo "";
 
 	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console npm:install";\
 		./console npm:install ;\
 	else \
+		echo "./.console_dev npm:install";\
 		./.console_dev npm:install ;\
 	fi \
 
+	@echo "make asset";
 	make asset
+	@echo "make sequelize";
 	make sequelize
 
 	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console router:generate:routes";\
 		./console router:generate:routes ;\
+		echo "./console npm:list";\
 		./console npm:list ;\
 	else \
+		echo "./.console_dev router:generate:routes";\
 		./.console_dev router:generate:routes ;\
+		echo "./.console_dev npm:list";\
 		./.console_dev npm:list ;\
 	fi \
 
 	
 node:
+	@echo "make framework";
 	make framework
+	@echo "make install";
 	make install
 
 
@@ -68,14 +78,16 @@ restart:
 # NODEFONY BUILD FRAMEWORK 
 npm:
 	@if [  -f package.json  ] ; then \
-		@echo "" ;\
+		echo "" ;\
 		echo "#######################################################" ; \
 		echo "#            NODE JS  MODULES  INSTALLATION           #" ; \
 		echo "#######################################################" ; \
 		echo "" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
+			echo "npm -s install" ;\
 			npm -s install  ;\
 		else \
+			echo "npm -ddd install" ;\
 			npm -ddd install  ;\
 		fi \
 	fi
@@ -91,10 +103,14 @@ asset:
 	@echo "";
 
 	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console assets:install" ;\
 		./console assets:install ;\
+		echo "./console assets:dump" ;\
 		./console assets:dump ;\
 	else \
+		echo "./.console_dev assets:install" ;\
 		./.console_dev assets:install ;\
+		echo "./.console_dev assets:dump" ;\
 		./.console_dev assets:dump ;\
 	fi \
 	 
@@ -163,7 +179,9 @@ framework:
 	fi
 
 sequelize:
+	@echo "./console Sequelize:generate:entities";
 	./console Sequelize:generate:entities
+	@echo "./console Sequelize:fixtures:load";
 	./console Sequelize:fixtures:load
 
 clean:
