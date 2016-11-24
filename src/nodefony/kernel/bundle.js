@@ -22,10 +22,14 @@ nodefony.register("Bundle", function(){
 		if ( ! config ){
 			this.container.setParameters("bundles."+this.name, {});
 		}
-		this.finder = new nodefony.finder( {
-			path:this.path,
-			exclude:/^docs$|^tests$|^public$|^doc$/,
-		});
+		try {
+			this.finder = new nodefony.finder( {
+				path:this.path,
+				exclude:/^docs$|^tests$|^public$|^doc$/,
+			});
+		}catch(e){
+			this.logger(e, "ERROR");	
+		}
 		this.controllers = {};
 		this.views = {};
 		this.views["."] = {};
@@ -34,7 +38,11 @@ nodefony.register("Bundle", function(){
 
 		this.reader = this.container.get("kernel").reader;
 		
-		this.resourcesFiles = this.finder.result.findByNode("Resources") ;
+		try {
+			this.resourcesFiles = this.finder.result.findByNode("Resources") ;
+		}catch(e){
+			this.logger("Bundle " + this.name +" Resources directory not found", "WARNING");
+		}
 
 		// Register Service
 		this.registerServices();
@@ -217,18 +225,25 @@ nodefony.register("Bundle", function(){
 	}
 
 	Bundle.prototype.registerViews = function(result){
+		
 
 		var serviceTemplate = this.get("templating") ;
 
 		if ( ! result ){
-			var views = new nodefony.finder( {
-				path:this.path+"/Resources/views",
-			}).result;
+			try {
+				var views = new nodefony.finder( {
+					path:this.path+"/Resources/views",
+				}).result;
+			}catch(e){
+				this.logger("Bundle " + this.name +" views directory not found", "WARNING");
+			}
 	
 		}else{
 			// find  views files 
 			var views = result.findByNode("views") ;
 		}
+
+		if ( ! views ) return ;
 		
 		views.getFiles().forEach(function(file, index, array){
 			var basename = path.basename(file.dirName);
@@ -543,7 +558,7 @@ nodefony.register("Bundle", function(){
 		try {
 			var res  = new nodefony.finder( {
 				path:this.path+"/Resources/public",
-				exclude:/^docs$|^test$/
+				exclude:/^docs$|^tests$/
 			});
 		}catch(e){
 			this.logger(e,"ERROR");

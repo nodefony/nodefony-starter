@@ -67,7 +67,7 @@ nodefony.registerService("less", function(){
 						}.bind(this)
 					});
 				}catch(e){
-					this.logger("LESS SERVICE "+e,"ERROR")
+					this.logger("Bundle " + this.kernel.bundles[bundle].name + " NO PUBLIC DIRECTORY ","WARNING")
 				}
 				
 			}

@@ -15,7 +15,7 @@ nodefony.register("finder", function(){
 		this.mother = this.$super;
 		this.mother.constructor(path);
 		this.parent = parent ;
-		if ( this.parent !== null)
+		if ( this.parent !== null && this.parent.children)
 			this.parent.children.push(this);
 		this.children = [];
 	}.herite(nodefony.fileClass);
@@ -246,13 +246,6 @@ nodefony.register("finder", function(){
 		this.path = [];
 		this.errorParse = [];
 		this.settings = nodefony.extend({}, defaultSettings, settings);	
-		this.tree = this.settings.json ; 
-		if (this.tree){
-			this.wrapper = jsonTree ;
-		}else{
-			this.wrapper = 	nodefony.fileClass ;
-		}
-		//this.notificationsCenter = nodefony.notificationsCenter.create(this.settings);
 		if (this.settings.path){	
 			this.result = this.find();
 		}
@@ -265,12 +258,16 @@ nodefony.register("finder", function(){
 				this.path.push(new this.wrapper(Path, null))
 				return this;
 			}catch(e){
-				return this ; 	
+				throw e;
 			}
 		}
 		if(this.typePath === "array" ){
 			for (var i = 0 ; i < Path.length ; i++){
-				this.path.push(new this.wrapper(Path[i], null))
+				try {
+					this.path.push(new this.wrapper(Path[i], null))
+				}catch(e){
+					throw e;
+				}
 			}
 			return this;
 		}
@@ -297,6 +294,14 @@ nodefony.register("finder", function(){
 		}else{
 			var extend = nodefony.extend({}, defaultSettings, settings) ;	
 		}
+
+		this.tree = extend.json ; 
+		if (this.tree){
+			this.wrapper = jsonTree ;
+		}else{
+			this.wrapper = 	nodefony.fileClass ;
+		}
+
 		this.in(extend.path);
 		this.notificationsCenter = nodefony.notificationsCenter.create(extend);
 		try {

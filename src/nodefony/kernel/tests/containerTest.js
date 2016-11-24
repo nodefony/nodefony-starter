@@ -1,11 +1,12 @@
 /*
- *   MODEFONY FRAMEWORK
+ *   MODEFONY FRAMEWORK UNIT TEST
  *
- *   MOCHA UNIT TEST
+ *   MOCHA STYLE
  *
- *   nodefony add in context : 
- *	namespace nodefony
- *	instance  kernel console  
+ *   In the global context you can find : 
+ *
+ *	nodefony : namespace to get library  
+ *	kernel :   instance of kernel who launch the test   
  *
  */
 
