@@ -17,8 +17,8 @@ make
 
 if [ "$DB" = "mysql" ]
 then
-	make start 
-	make status
+	make start & 
+	make status &
 else
 	./nodefony_dev &
 fi
