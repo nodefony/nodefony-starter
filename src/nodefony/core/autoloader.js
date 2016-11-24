@@ -170,8 +170,12 @@ module.exports = function(){
 				}
 		}
 		if ( nodefony.finder ){
-			var finder = new nodefony.finder(settings);
-			return finder.result
+			try {
+				var finder = new nodefony.finder(settings);
+			}catch(e){
+				return finder.result ;
+			}
+			return finder.result ;
 		}
 		throw new Error("AUTOLOADER finder not found  Load nodefony finder ")
 	};

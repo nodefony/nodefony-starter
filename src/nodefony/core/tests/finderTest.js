@@ -59,7 +59,7 @@ describe("NODEFONY CORE FINDER", function(){
 			var res = finder.find({
 				recurse:false,
 				onFinish:function(error, result){
-					console.log("RESULT length :" + result.length());
+					//console.log("RESULT length :" + result.length());
 					done();
 				}	
 			});
@@ -71,7 +71,7 @@ describe("NODEFONY CORE FINDER", function(){
 				recurse:false,
 				json:true,
 				onFinish:function(error, result){
-					console.log("RESULT length :" + result.length());
+					//console.log("RESULT length :" + result.length());
 					//console.log(result.json.nodefony.children.web)	
 				}	
 			});
@@ -81,7 +81,7 @@ describe("NODEFONY CORE FINDER", function(){
 				json:true,
 				recurse:true,
 				onFinish:function(error, result){
-					console.log("RESULT length :" + result.length());
+					//console.log("RESULT length :" + result.length());
 					//console.log(result.json.nodefony.children.web)
 					done();
 				}.bind(this)

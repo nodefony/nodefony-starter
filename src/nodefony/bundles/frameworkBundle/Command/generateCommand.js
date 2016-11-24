@@ -39,7 +39,7 @@ nodefony.registerCommand("generate",function(){
 					Command,
 					controller.call(this, name, "controller" ,"defaultController",null,location),
 					manager,
-					tests,
+					tests.call(this, param),
 					Resources.call(this, name, type, location),
 					documentation.call(this, param, location),
 					core,
@@ -140,7 +140,11 @@ nodefony.registerCommand("generate",function(){
 
 	var Command = {
 		name:"Command",
-		type:"directory"
+		type:"directory",
+		childs:[{
+			name:".gitignore",
+			type:"file"
+		}]
 	};
 
 		
@@ -197,28 +201,51 @@ nodefony.registerCommand("generate",function(){
 	
 	}
 
-
-
-
 	var manager = {
 		name:"services",
-		type:"directory"
+		type:"directory",
+		childs:[{
+			name:".gitignore",
+			type:"file"
+		}]
 	};
-	var tests = {
-		name:"tests",
-		type:"directory"
-	};
+
+	var tests = function(param){
+		
+		return {
+			name:"tests",
+			type:"directory",
+			childs:[{
+				name:param.bundleName+"Test.js",
+				type:"file",
+				skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/testFile.skeleton",
+				params:param
+			}]
+		};
+	}
 	var core = {
 		name:"core",
-		type:"directory"
+		type:"directory",
+		childs:[{
+			name:".gitignore",
+			type:"file"
+		}]
 	};
 	var translations = {
 		name:"translations",
-		type:"directory"
+		type:"directory",
+		childs:[{
+			name:".gitignore",
+			type:"file"
+		}]
 	};
 	var entity = {
 		name:"Entity",
-		type:"directory"
+		type:"directory",
+		childs:[{
+			name:".gitignore",
+			type:"file"
+		}]
 	};
 
 	var public = function(){
@@ -227,25 +254,49 @@ nodefony.registerCommand("generate",function(){
 			type:"directory",
 			childs:[{
 				name:"js",
-				type:"directory"
+				type:"directory",
+				childs:[{
+					name:".gitignore",
+					type:"file"
+				}]
 			},{
 				name:"css",
-				type:"directory"
+				type:"directory",
+				childs:[{
+					name:".gitignore",
+					type:"file"
+				}]
 			},{
 				name:"images",
-				type:"directory"
+				type:"directory",
+				childs:[{
+					name:".gitignore",
+					type:"file"
+				}]
 			},{
 				name:"assets",
 				type:"directory",
 				childs:[{
 					name:"js",
-					type:"directory"
+					type:"directory",
+					childs:[{
+						name:".gitignore",
+						type:"file"
+					}]
 				},{
 					name:"css",
-					type:"directory"
+					type:"directory",
+					childs:[{
+						name:".gitignore",
+						type:"file"
+					}]
 				},{
 					name:"images",
-					type:"directory"
+					type:"directory",
+					childs:[{
+						name:".gitignore",
+						type:"file"
+					}]
 				}]
 			}]
 		}

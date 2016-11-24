@@ -47,12 +47,21 @@ describe("NODEFONY KERNEL ", function(){
 	describe('CONTAINER', function(){
 			
 		beforeEach(function(){
+		})
+
+		before(function(){
 			if ( ! global.globalContainer ){
 				global.globalContainer  = new nodefony.Container() ;
 			}	
 		})
 
 		it("LIB LOADED", function(done){
+			// check nodefony namespace
+			assert.equal( typeof nodefony, "object" );
+			
+			// check instance kernel 
+			assert.equal( kernel instanceof nodefony.kernel, true );
+
 			assert.equal( typeof nodefony.Container, "function" );
 			done()
 		});
