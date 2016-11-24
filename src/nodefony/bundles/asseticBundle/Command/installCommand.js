@@ -71,7 +71,11 @@ nodefony.registerCommand("assets",function(){
 	Asset.prototype.parseBundles = function(){
 		this.bundles = this.kernel.getBundles();
 		for ( var bundle in this.bundles ){
-			var result = this.bundles[bundle].getPublicDirectory();	
+			try {
+				var result = this.bundles[bundle].getPublicDirectory();	
+			}catch(e){
+				continue ;
+			}
 			if ( result.length() ){
 				var name = path.basename(this.bundles[bundle].path) ;
 				var srcpath = this.bundles[bundle].path+"/Resources/public";
