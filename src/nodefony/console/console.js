@@ -240,23 +240,19 @@ nodefony.register("console", function(){
 			var dependencies = createNpmiDependenciesArray(conf.path, options) ;
 
 			for (var i= 0 ; i < dependencies.length ; i++){
-				//console.log(dependencies[i])
-				this.workerSyslog.logger("INSTALL BUNDLE " + name +" dependence : " + dependencies[i].name);	
-				var nodeDep =  dependencies[i].name ;
-				var nodeDepVersion = dependencies[i].version ;
+				var nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
+				this.workerSyslog.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
 				npmi(dependencies[i], function (err, result) {
     					if (err) {
         					if (err.code === npmi.LOAD_ERR)    
 							this.workerSyslog.logger(err.message, "ERROR", "NMP load error");
         					else if (err.code === npmi.INSTALL_ERR) 
 							this.workerSyslog.logger(err.message, "ERROR", "NMP install error");
+						this.workerSyslog.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
 						this.terminate();
     					}
 					// installed
-					this.workerSyslog.logger(nodeDep+'@'+nodeDepVersion+' installed successfully in nodefony');
-					if ( i === dependencies.length-1){
-						this.loadBundle(file);
-					}
+					this.workerSyslog.logger(nodeDep+' installed successfully in nodefony');
 				}.bind(this));
 
 			}
@@ -269,8 +265,6 @@ nodefony.register("console", function(){
 			}
 		}
 	};
-
-
 
 	Console.prototype.initWorkerSyslog = function(settings){
 		var red, blue, reset;
