@@ -1,17 +1,17 @@
 /*
  *
  *
- *	PASSPORT DIGEST  FACTORY
+ *	PASSPORT LOCAL  FACTORY
  *
  *
  */
-
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-
-
-var nodefonyPassport = require("passport-nodefony");
-
+try{
+	var passport = require('passport');
+	var LocalStrategy = require('passport-local').Strategy;
+	var nodefonyPassport = require("passport-nodefony");
+}catch(e){
+	this.logger(e);
+}
 
 
 nodefony.register.call(nodefony.security.factory, "passport-local",function(){

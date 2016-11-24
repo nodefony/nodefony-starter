@@ -185,5 +185,11 @@ module.exports = function(){
 		this.prefixes.push(prefix);
 	};
 
-	return new autoload();
+	autoload.prototype.setKernel = function(kernel){
+		self.kernel = kernel;
+	};
+
+	var auto = new autoload();
+	self.logger = auto.logger.bind(auto);
+	return auto ;
 }();

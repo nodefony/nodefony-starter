@@ -5,10 +5,9 @@
 //var heapdump = require('heapdump');
 //heapdump.writeSnapshot();
 
-
 /*
  *
- * NODEFONY FRAMEWORK START 
+ * NODEFONY FRAMEWORK  
  *
  *	DEVELOPPEMENT
  *
@@ -24,8 +23,9 @@ process.env["MODE_START"] = "NODEFONY_DEV" ;
 require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	console.log('\033[31m'+res+'\033[0m'); 
 	// KERNEL 
-	var kernel =new nodefony.appKernel("SERVER", "dev", true, autoloader, {
+	var kernel = new nodefony.appKernel("SERVER", "dev", true, autoloader, {
 		node_start:process.env["MODE_START"]
 	});
+	autoloader.setKernel(kernel);
+	return kernel ;
 });
-

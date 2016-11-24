@@ -1,21 +1,17 @@
 /*
  *
  *
- *	PASSPORT DIGEST  FACTORY
+ *	PASSPORT ldapauth  FACTORY
  *
  *
  */
-
 try {
 	var passport = require('passport');
 	var LdapStrategy = require('passport-ldapauth');
-
 	var nodefonyPassport = require("passport-nodefony");
 }catch(e){
-	console.error(e);
+	this.logger( e );
 }
-
-
 
 nodefony.register.call(nodefony.security.factory, "passport-ldapauth",function(){
 

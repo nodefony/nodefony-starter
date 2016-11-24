@@ -1,9 +1,10 @@
-var passport = require('passport');
-var GitHubStrategy = require('passport-github2').Strategy;
-var nodefonyPassport = require("passport-nodefony");
-
-
-
+try{
+	var passport = require('passport');
+	var GitHubStrategy = require('passport-github2').Strategy;
+	var nodefonyPassport = require("passport-nodefony");
+}catch(e){
+	this.logger(e);
+}
 
 nodefony.register.call(nodefony.security.factory, "passport-github2",function(){
 

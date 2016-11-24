@@ -18,6 +18,7 @@ make
 if [ "$DB" = "mysql" ]
 then
 	make start & 
+	sleep 5;
 	make status &
 else
 	./nodefony_dev &

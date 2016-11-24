@@ -9,10 +9,8 @@ var util = require('util');
 var path = require("path");
 var cluster = require('cluster');
 
-
 nodefony.register("kernel", function(){
 	
-
 	/**
 	 *	@event onTerminate
 	 *

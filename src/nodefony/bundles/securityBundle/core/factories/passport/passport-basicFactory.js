@@ -6,12 +6,13 @@
  *
  */
 
-var passport = require('passport');
-var BasicStrategy = require('passport-http').BasicStrategy;
-
-
-var nodefonyPassport = require("passport-nodefony");
-
+try {
+	var passport = require('passport');
+	var BasicStrategy = require('passport-http').BasicStrategy;
+	var nodefonyPassport = require("passport-nodefony");
+}catch(e){
+	this.logger(e);
+}
 
 nodefony.register.call(nodefony.security.factory, "passport-basic",function(){
 

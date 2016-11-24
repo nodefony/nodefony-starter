@@ -16,11 +16,13 @@ autoloader.load("./app/appKernel.js");
  */
 if ( process.env["MODE_START"] && process.env["MODE_START"] === "PM2"){
 
-	return new nodefony.appKernel("SERVER", "prod", false, autoloader,{
+	var kernel = new nodefony.appKernel("SERVER", "prod", false, autoloader,{
 		node_start:process.env["MODE_START"]
 	});
-}
 
+	autoloader.setKernel(kernel);
+	return kernel ;
+}
 
 /*
  *
@@ -58,12 +60,13 @@ if (cluster.isMaster) {
 			});	
 		});
 	});
-	
 
 }else {
-	return new nodefony.appKernel("SERVER", "prod", false, autoloader,{
+	var kernel = new nodefony.appKernel("SERVER", "prod", false, autoloader,{
 		node_start:process.env["MODE_START"]	
 	});
+	autoloader.setKernel(kernel);
+	return kernel ;
 }
 
 

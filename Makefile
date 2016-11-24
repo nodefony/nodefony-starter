@@ -4,6 +4,12 @@ VERBOSE = 0
 all: framework npm  install 
 
 install:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY INSTALL           #" ;
+	@echo "#########################################" ;
+	@echo "";
+
 	@if [ $(VERBOSE) = 0 ] ; then \
 		./console npm:install ;\
 	else \
@@ -61,8 +67,12 @@ restart:
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
-	@if [  -f package.json  ] ; then  \
-		echo "###########  NODE JS  MODULES  INSTALLATION  ###########" ;\
+	@if [  -f package.json  ] ; then \
+		@echo "" ;\
+		echo "#######################################################" ; \
+		echo "#            NODE JS  MODULES  INSTALLATION           #" ; \
+		echo "#######################################################" ; \
+		echo "" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
 			npm -s install  ;\
 		else \
@@ -74,6 +84,11 @@ deps:
 	./console npm:install
 
 asset:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY ASSETS            #" ;
+	@echo "#########################################" ;
+	@echo "";
 
 	@if [ $(VERBOSE) = 0 ] ; then \
 		./console assets:install ;\
@@ -92,11 +107,21 @@ asset:
 	fi \
 
 framework:
-	echo "###########  GIT SUBMODULES ###########" ;
+	@echo "";
+	@echo "#######################################" ;
+	@echo "#            GIT SUBMODULES           #" ;
+	@echo "#######################################" ;
+	@echo "";
+
 	git submodule sync;
 	git submodule update --init --recursive
 
-	echo "###########  CREATE FRAMEWORK REPOSITORY ###########" ;
+	@echo "";
+	@echo "####################################################" ;
+	@echo "#            CREATE FRAMEWORK REPOSITORY           #" ;
+	@echo "####################################################" ;
+	@echo "";
+
 	@if [ ! -d tmp ] ; then  \
 		mkdir tmp ;\
 	fi
@@ -143,16 +168,28 @@ sequelize:
 
 clean:
 	@if [ -e  node_modules ] ; then \
-		echo "###########  CLEAN  NODE MODULES ###########" ;\
+		echo ""; \
+		echo "############################################" ;\
+		echo "#            CLEAN  NODE MODULES           #" ;\
+		echo "############################################" ;\
+		echo ""; \
 		rm -rf node_modules/.bin ; \
 		rm -rf node_modules/* ; \
 	fi
 	@if [ -e  tmp ] ; then \
-		echo "###########  CLEAN  TEMPORARY  ###########" ;\
+		echo ""; \
+		echo "##########################################" ;\
+		echo "#            CLEAN  TEMPORARY            #" ;\
+		echo "##########################################" ;\
+		echo ""; \
 		rm -rf tmp/* ; \
 	fi
 	@if [ -e  web ] ; then \
-		echo "###########  CLEAN  WEB PUBLIC DIRECTOY  ###########" ;\
+		echo ""; \
+		echo "###################################################" ;\
+		echo "#            CLEAN  WEB PUBLIC DIRECTOY           #" ;\
+		echo "###################################################" ;\
+		echo ""; \
 		rm -rf web/* ; \
 	fi
 	make framework
