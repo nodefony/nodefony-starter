@@ -1,6 +1,6 @@
 {
   "name": "nodefony",
-  "version": "0.1.0",
+  "version": "1.0.3-beta",
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {

@@ -1,4 +1,4 @@
-var dns = require('dns');
+//var dns = require('dns');
 
 nodefony.registerController("api", function(){
 

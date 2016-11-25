@@ -6,6 +6,11 @@ var https = require('https');
 var nodedomain = require('domain');
 var Path = require("path");
 
+const dns = require('dns');
+
+
+
+
 nodefony.registerService("https", function(){
 	
 
@@ -32,7 +37,21 @@ nodefony.registerService("https", function(){
 		this.key = null ;
 		this.cert = null ;
 		this.ca = null ;
-		
+		this.address = null ;
+		this.family = null ;
+
+		this.type = "HTTPS";
+		this.kernel.listen(this, "onBoot",function(){
+			this.bundle = this.kernel.getBundles("http") ;
+			this.bundle.listen(this, "onServersReady", function(type, service){
+				if ( type === this.type){
+					dns.lookup(this.domain,function(err, addresses, family){
+						this.address = addresses ;
+						this.family = family ;
+					}.bind(this))
+				}
+			})
+		});
 	};
 
 
@@ -76,7 +95,6 @@ nodefony.registerService("https", function(){
 
 		this.options = nodefony.extend(opt, this.settings.certificats.options);
 
-		var logString ="HTTPS";
 		this.server = https.createServer(this.options, function(request, response){
 			response.setHeader("Server", "nodefony");
 			if (  this.kernel.settings.system.statics ){
@@ -92,7 +110,7 @@ nodefony.registerService("https", function(){
 					d.add(request);
 					d.add(response);
 					d.run(function() {
-						this.kernel.fire("onServerRequest", request, response, logString, d)
+						this.kernel.fire("onServerRequest", request, response, this.type, d)
 					}.bind(this));
 				}.bind(this));
 			}else{
@@ -107,7 +125,7 @@ nodefony.registerService("https", function(){
 				d.add(request);
 				d.add(response);
 				d.run(function() {
-					this.kernel.fire("onServerRequest", request, response, logString, d)
+					this.kernel.fire("onServerRequest", request, response, this.type, d)
 				}.bind(this));	
 			}
 		}.bind(this));
@@ -122,8 +140,9 @@ nodefony.registerService("https", function(){
 
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
-			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : https://"+this.domain+":"+this.port , "INFO", "SERVICE HTTPS", "LISTEN");
+			this.httpKernel.logger(this.type+"  Server is listening on DOMAIN : https://"+this.domain+":"+this.port , "INFO", "SERVICE HTTPS", "LISTEN");
 			this.ready = true ;
+			this.bundle.fire("onServersReady", this.type, this);
 		}.bind(this));
 
 		this.server.on("error",function(error){

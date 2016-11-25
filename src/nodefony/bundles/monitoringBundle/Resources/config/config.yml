@@ -34,6 +34,6 @@ realTimeBundle:
     monitoring:
       type:                       tcp
       port:                       1318
-      domain:                     nodefony.com
+      domain:                     localhost
 
 

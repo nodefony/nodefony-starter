@@ -14,15 +14,28 @@ nodefony.registerService("http", function(){
 		this.firewall =  security ;
 		this.kernel = this.httpKernel.kernel ;
 		this.ready = false ;
+		this.type = "HTTP";
+		this.address = null ;
+		this.family = null ;
 
+		this.kernel.listen(this, "onBoot",function(){
+			this.bundle = this.kernel.getBundles("http") ;
+			this.bundle.listen(this, "onServersReady", function(type, service){
+				if ( type === this.type){
+					dns.lookup(this.domain,function(err, addresses, family){
+						this.address = addresses ;
+						this.family = family ;
+					}.bind(this))
+				}
+			})
+		});
 	};
 
-
-	Http.prototype.createZone = function(request, response, logString){
+	Http.prototype.createZone = function(request, response){
 
 		require("zone").enable();
 		zone.create(function httpZone() {
-			this.kernel.fire("onServerRequest", request, response, logString, zone)
+			this.kernel.fire("onServerRequest", request, response, this.type, zone)
 		}.bind(this))
 		.then(function(result) {
 			// Runs when succesful
@@ -36,12 +49,11 @@ nodefony.registerService("http", function(){
 	Http.prototype.createServer = function(port, domain){
 		this.settings = this.get("container").getParameters("bundles.http").http || null ;
 
-		var logString ="HTTP";
 		this.server = http.createServer(function(request, response){
 			response.setHeader("Server", "nodefony");
 			if ( this.kernel.settings.system.statics ){
 				this.httpKernel.serverStatic.handle(request, response , function(){
-					//this.createZone(request, response, logString);
+					//this.createZone(request, response);
 					var d = nodedomain.create();
 					d.on('error', function(er) {
 						if ( d.container ){
@@ -53,7 +65,7 @@ nodefony.registerService("http", function(){
 					d.add(request);
 					d.add(response);
 					d.run(function() {
-						this.kernel.fire("onServerRequest", request, response, logString, d)
+						this.kernel.fire("onServerRequest", request, response, this.type, d)
 					}.bind(this));
 				}.bind(this));
 			}else{
@@ -68,7 +80,7 @@ nodefony.registerService("http", function(){
 				d.add(request);
 				d.add(response);
 				d.run(function() {
-					this.kernel.fire("onServerRequest", request, response, logString, d)
+					this.kernel.fire("onServerRequest", request, response, this.type, d)
 				}.bind(this));	
 			}
 		}.bind(this))
@@ -84,8 +96,9 @@ nodefony.registerService("http", function(){
 
 		// LISTEN ON PORT 
 		this.server.listen(this.port, this.domain, function() {
-			this.httpKernel.logger(logString+"  Server is listening on DOMAIN : http://"+this.domain+":"+this.port , "INFO", "SERVICE HTTP", "LISTEN");
+			this.httpKernel.logger(this.type+"  Server is listening on DOMAIN : http://"+this.domain+":"+this.port , "INFO", "SERVICE HTTP", "LISTEN");
 			this.ready = true ;
+			this.bundle.fire("onServersReady", this.type, this);
 		}.bind(this));
 
 		this.server.on("error",function(error){
