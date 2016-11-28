@@ -9,7 +9,6 @@ var xml = require('xml2js');
 
 nodefony.register.call( nodefony.io, "protocol",function(){
 
-
 	var parser = function(type, settings){
 		switch(type){
 			case "xml" :
@@ -79,17 +78,20 @@ nodefony.register.call( nodefony.io, "protocol",function(){
 		xml : {}
 	};
 
-	var protocol = function(rootName, settings){
-		this.settings = nodefony.extend(true, {}, defaultSettingsProtocol, settings );
-		this.root = rootName;
-		this.extention = this.settings.extention;
-		this.request = {};
-		this.response = {};
-		this.parser = parser.call(this, this.extention, this.settings.xml);
-		this.builderResponse = builder.call(this, "response", this.extention, this.settings.xml);
-		this.builderRequest = builder.call(this, "request", this.extention, this.settings.xml);
+	var protocol = class protocol {
 
-	};
+		constructor (rootName, settings){
+			this.settings = nodefony.extend(true, {}, defaultSettingsProtocol, settings );
+			this.root = rootName;
+			this.extention = this.settings.extention;
+			this.request = {};
+			this.response = {};
+			this.parser = parser.call(this, this.extention, this.settings.xml);
+			this.builderResponse = builder.call(this, "response", this.extention, this.settings.xml);
+			this.builderRequest = builder.call(this, "request", this.extention, this.settings.xml);
+
+		};
+	}
 
 	return {
 		reader: protocol

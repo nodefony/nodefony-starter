@@ -5,10 +5,8 @@
  *
  *
  */
-
 var mime = require('mime');
 var crypto = require('crypto');
-
 
 nodefony.register("fileClass", function(){
 
@@ -41,6 +39,15 @@ nodefony.register("fileClass", function(){
 		}
 	};
 
+	var regHidden = /^\./;
+
+	var defautWriteOption = { 
+		flags: 'w',
+		defaultEncoding: 'utf8'
+		//mode: 0o666
+	};
+
+
 	/*
  	 *
  	 *	CLASS File
@@ -49,160 +56,166 @@ nodefony.register("fileClass", function(){
  	 */
 	var regRelatif = /^(\.\.\/)+/;
 	var regAbsolute = /^\//;
-	var File = function(Path){
-		if (Path){
-			this.stats =  fs.lstatSync(Path);
-			this.type = this.checkType();	
-			if ( this.stats.isSymbolicLink() ){
-				var res = fs.readlinkSync( Path ) ;
-				this.path = findPath(Path, res) ;
+
+	var File = class File {
+		constructor(Path){
+			if (Path){
+				this.stats =  fs.lstatSync(Path);
+				this.type = this.checkType();	
+				if ( this.stats.isSymbolicLink() ){
+					var res = fs.readlinkSync( Path ) ;
+					this.path = findPath(Path, res) ;
+				}else{
+					this.path = this.getRealpath(Path) ;	
+				}
+				this.name = path.basename(this.path);
+				if (this.type === "File"){
+					this.mimeType = this.getMimeType(this.name);
+					this.encoding = this.getCharset();
+				}
+				this.dirName = this.dirname();
+				this.match = null;
 			}else{
-				this.path = this.getRealpath(Path) ;	
+				throw new Error("error fileClass : "+ Path)
 			}
-			this.name = path.basename(this.path);
-			if (this.type === "File"){
-				this.mimeType = this.getMimeType(this.name);
-				this.encoding = this.getCharset();
+		}
+
+		checkType (){
+			if ( this.stats.isDirectory() ){
+				return "Directory";
 			}
-			this.dirName = this.dirname();
-			this.match = null;
-		}else{
-			throw new Error("error fileClass : "+ Path)
+			if ( this.stats.isFile() ){
+				return "File";
+			}
+			if ( this.stats.isBlockDevice() ){
+				return "BlockDevice";
+			}
+			if ( this.stats.isCharacterDevice() ){
+				return "CharacterDevice";
+			}
+			if ( this.stats.isSymbolicLink() ){
+				return "symbolicLink";
+			}
+			if ( this.stats.isFIFO() ){
+				return "Fifo";
+			}
+			if ( this.stats.isSocket() ){
+				return "Socket";
+			}
+			return ;
+		};
+
+		checkSum (type){
+			if (! type ){
+				var type = 'md5' ;
+			}
+			return crypto.createHash(type).update(this.content()).digest("hex") ; 
+		};
+
+		getMimeType (name){
+			return  mime.lookup(name);
+		};
+
+		getCharset (mimeType){
+			return mime.charsets.lookup(mimeType || this.mimeType  )
+		};
+
+		getRealpath (Path, cache){
+			return  fs.realpathSync(Path, cache);
+		};
+
+		matchName (ele){
+		 	
+			if (ele instanceof RegExp ){
+				this.match = ele.exec(this.name);
+				return this.match;
+			}
+			if (ele === this.name)
+				return true;
+			return false;
+		};
+
+		getExtention (){
+			if ( this.isFile ){
+				var tab = this.name.split('.');
+				if (tab.length > 1) return tab.reverse()[0];
+			}
+			return null ; 
+		};
+
+		matchType (type){
+			return type === this.type;
+		};
+
+		isFile (){
+			return this.type === "File";
+		};
+
+		isDirectory (){
+			return this.type === "Directory";
+		};
+
+		isSymbolicLink (){
+			return this.type === "symbolicLink";
+		};
+
+		dirname (){
+			return path.dirname(this.path);
+		};
+
+
+		isHidden (){
+			return regHidden.test(this.name);
+		};
+
+		content (encoding){
+			var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
+			if (this.type === "symbolicLink"){
+				var path = fs.readlinkSync(this.path, encode);	
+				return fs.readFileSync(path, encode);
+			}
+			return fs.readFileSync(this.path, encode);
+		};
+
+		read (encoding){
+			var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
+			if (this.type === "symbolicLink"){
+				var path = fs.readlinkSync(this.path, encode);	
+				return fs.readFileSync(path, encode);
+			}
+			return fs.readFileSync(this.path, encode);
+		};
+
+		readByLine (callback, encoding){
+			var res = this.content(encoding);
+			var nb = 0 ;
+			res.toString().split('\n').forEach(function(line){
+				callback(line, ++nb );	
+			})
 		}
-	};
 
-	File.prototype.checkType = function(){
-		if ( this.stats.isDirectory() ){
-			return "Directory";
-		}
-		if ( this.stats.isFile() ){
-			return "File";
-		}
-		if ( this.stats.isBlockDevice() ){
-			return "BlockDevice";
-		}
-		if ( this.stats.isCharacterDevice() ){
-			return "CharacterDevice";
-		}
-		if ( this.stats.isSymbolicLink() ){
-			return "symbolicLink";
-		}
-		if ( this.stats.isFIFO() ){
-			return "Fifo";
-		}
-		if ( this.stats.isSocket() ){
-			return "Socket";
-		}
-		return ;
-	};
+		
+		write (data, options) {
+			return fs.writeFileSync( this.path, data, nodefony.extend({}, defautWriteOption ,options ) ) ;
+		};
 
-	File.prototype.checkSum = function(type){
-		if (! type ){
-			var type = 'md5' ;
-		}
-		return crypto.createHash(type).update(this.content()).digest("hex") ; 
-	};
+		move (target){
+			try {
+				fs.renameSync(this.path, target);
+				return new File(target);
+			}catch(e){
+				throw e;
+			}
+		};
 
-	File.prototype.getMimeType = function(name){
-		return  mime.lookup(name);
-	};
+		unlink (){
+			try {
+				fs.unlinkSync(this.path);
+			}catch(e){
+				throw e;
+			}
+		};
 
-	File.prototype.getCharset = function(mimeType){
-		return mime.charsets.lookup(mimeType || this.mimeType  )
-	};
-
-	File.prototype.getRealpath = function(Path, cache){
-		return  fs.realpathSync(Path, cache);
-	};
-
-	File.prototype.matchName = function(ele){
-		 
-		if (ele instanceof RegExp ){
-			this.match = ele.exec(this.name);
-			return this.match;
-		}
-		if (ele === this.name)
-			return true;
-		return false;
-	};
-
-	File.prototype.getExtention = function(){
-		if ( this.isFile ){
-			var tab = this.name.split('.');
-			if (tab.length > 1) return tab.reverse()[0];
-		}
-		return null ; 
-	};
-
-	File.prototype.matchType = function(type){
-		return type === this.type;
-	};
-
-	File.prototype.isFile = function(){
-		return this.type === "File";
-	};
-
-	File.prototype.isDirectory = function(){
-		return this.type === "Directory";
-	};
-
-	File.prototype.isSymbolicLink = function(){
-		return this.type === "symbolicLink";
-	};
-
-	File.prototype.dirname = function(){
-		return path.dirname(this.path);
-	};
-
-	var regHidden = /^\./;
-	File.prototype.isHidden = function(){
-		return regHidden.test(this.name);
-	};
-
-	File.prototype.content = function(encoding){
-		var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
-		if (this.type === "symbolicLink"){
-			var path = fs.readlinkSync(this.path, encode);	
-			return fs.readFileSync(path, encode);
-		}
-		return fs.readFileSync(this.path, encode);
-	};
-
-	File.prototype.read = File.prototype.content ;
-
-
-	File.prototype.readByLine = function(callback, encoding){
-		var res = this.content(encoding);
-		var nb = 0 ;
-		res.toString().split('\n').forEach(function(line){
-			callback(line, ++nb );	
-		})
-	}
-
-	var defautWriteOption = { 
-		flags: 'w',
-		defaultEncoding: 'utf8'
-		//mode: 0o666
-	};
-	File.prototype.write = function(data, options) {
-		return fs.writeFileSync( this.path, data, nodefony.extend({}, defautWriteOption ,options ) ) ;
-	};
-
-	File.prototype.move = function(target){
-		try {
-			fs.renameSync(this.path, target);
-			return new File(target);
-		}catch(e){
-			throw e;
-		}
-	};
-
-	File.prototype.unlink = function(){
-		try {
-			fs.unlinkSync(this.path);
-		}catch(e){
-			throw e;
-		}
 	};
 
 	return File;

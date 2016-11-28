@@ -191,37 +191,6 @@ nodefony.register("injection", function(){
 	};
 	
 
-	/*
- 	 *
- 	 *	CALSS INJECTION
- 	 *
- 	 *
- 	 */
-	var Injection = function(container){
-		
-		this.container = container;
-		this.kernel = this.container.get('kernel');
-		this.reader = function(context){
-			var func = context.container.get("reader").loadPlugin("injection", pluginReader);
-			return function(result, parser){
-				return func(result, context.nodeReader.bind(context), parser);
-			};
-		}(this);
-	};
-	
-	Injection.prototype.nodeReader = function(jsonServices){
-		//console.log('\n\n');
-		//console.log(require('util').inspect(jsonServices, {depth: null}));
-		var services = {};
-		for(var lib in jsonServices){
-			if(jsonServices[lib].class) {
-				services[lib] = this.set(lib, jsonServices[lib]);
-				startService.call(this,lib, services[lib] )
-			}
-		}
-		//startServices.call(this, services);
-	};
-	
 	var startService = function(name, services){
 		this.startService(name, services, true);
 	};
@@ -231,103 +200,137 @@ nodefony.register("injection", function(){
 			this.startService(lib, services[lib], true);
 		}
 	};
-	
-	Injection.prototype.startService = function(name, service){
-		var myOrder = service.orderArguments.toString();
-		try{
-			if(service.class){
 
-				var context = prepareExec.newWith(
-					service.class, 
-					service.injections, 
-					service.orderArguments
-				);
-				
-				if(service.calls){
-					for(var c=0; c < service.calls.length; c++){
-						if(context[service.calls[c][0]]){
-							prepareExec.callWith.call(context, context[service.calls[c][0]], this.findInjections(service.calls[c][1]));
-						} else {
-							this.logger('call Method ' + service.call[c][0] + ' in service ' + name + ' not found');
-							return ;
+	/*
+ 	 *
+ 	 *	CALSS INJECTION
+ 	 *
+ 	 *
+ 	 */
+	var Injection = class Injection {
+		constructor (container){
+			
+			this.container = container;
+			this.kernel = this.container.get('kernel');
+			this.reader = function(context){
+				var func = context.container.get("reader").loadPlugin("injection", pluginReader);
+				return function(result, parser){
+					return func(result, context.nodeReader.bind(context), parser);
+				};
+			}(this);
+		};
+	
+		nodeReader (jsonServices){
+			//console.log('\n\n');
+			//console.log(require('util').inspect(jsonServices, {depth: null}));
+			var services = {};
+			for(var lib in jsonServices){
+				if(jsonServices[lib].class) {
+					services[lib] = this.set(lib, jsonServices[lib]);
+					startService.call(this,lib, services[lib] )
+				}
+			}
+			//startServices.call(this, services);
+		};
+	
+		
+		startService (name, service){
+			var myOrder = service.orderArguments.toString();
+			try{
+				if(service.class){
+
+					var context = prepareExec.newWith(
+						service.class, 
+						service.injections, 
+						service.orderArguments
+					);
+					
+					if(service.calls){
+						for(var c=0; c < service.calls.length; c++){
+							if(context[service.calls[c][0]]){
+								prepareExec.callWith.call(context, context[service.calls[c][0]], this.findInjections(service.calls[c][1]));
+							} else {
+								this.logger('call Method ' + service.call[c][0] + ' in service ' + name + ' not found');
+								return ;
+							}
 						}
 					}
-				}
-				if(service.properties){
-					for(var p in service.properties){
-						if(service.properties[p][0] == '@'){
-							context[p] = this.container.get(service.properties[p].substring(1));
+					if(service.properties){
+						for(var p in service.properties){
+							if(service.properties[p][0] == '@'){
+								context[p] = this.container.get(service.properties[p].substring(1));
+							}
 						}
 					}
+					this.container.set( name, context );
+					var funclog = name + ( myOrder !== "false" ? '( '+myOrder  +' )' : '()' );
+					this.logger('START SERVICE ' +funclog, 'DEBUG');
 				}
-				this.container.set( name, context );
-				var funclog = name + ( myOrder !== "false" ? '( '+myOrder  +' )' : '()' );
-				this.logger('START SERVICE ' +funclog, 'DEBUG');
+			} catch(e){
+				this.logger(e, 'ERROR', 'INJECTION', 'START SERVICE '+ name + ' ERROR');
 			}
-		} catch(e){
-			this.logger(e, 'ERROR', 'INJECTION', 'START SERVICE '+ name + ' ERROR');
-		}
-	};
+		};
 	
-	Injection.prototype.findInjections = function(injections){
-		var params = {};
-		if(injections instanceof Array){
-			for(var elm=0; elm < injections.length; elm ++){
-				switch(injections[elm][0]){
-					case '@':
-						try{
-							var name = injections[elm].substring(1);
-							var service = this.container.get(name);
-							params[name] = service;
-						}catch(e) {
-							//this.logger('Instance service (' + name + ') doesn\'t exist !!!');
-						}
-						break;
+		findInjections (injections){
+			var params = {};
+			if(injections instanceof Array){
+				for(var elm=0; elm < injections.length; elm ++){
+					switch(injections[elm][0]){
+						case '@':
+							try{
+								var name = injections[elm].substring(1);
+								var service = this.container.get(name);
+								params[name] = service;
+							}catch(e) {
+								//this.logger('Instance service (' + name + ') doesn\'t exist !!!');
+							}
+							break;
+					}
 				}
 			}
-		}
-		return params;
-	};
+			return params;
+		};
 
-	Injection.prototype.logger = function(pci, severity, msgid,  msg){
-		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "SERVICE INJECTION";
-		return syslog.logger(pci, severity, msgid,  msg);
-	};
+		logger (pci, severity, msgid,  msg){
+			var syslog = this.container.get("syslog");
+			if (! msgid) msgid = "SERVICE INJECTION";
+			return syslog.logger(pci, severity, msgid,  msg);
+		};
 
-	Injection.prototype.set = function(name, service){
-		var Class = nodefony.services[service.class[0]];
-		if (! Class) throw new Error("Service Name "+ name +" class not found");
-		var order = prepareExec.getArguments.call(Class);
-		if(order[0] == "") order = false;
-		if(Class){
-			Class.prototype.name = name;
-			Class.prototype.container = this.container;
-			Class.prototype.get = function(name){
-				if (this.container)
-					return this.container.get(name);
-				return null;
-			};
+		set (name, service){
+			var Class = nodefony.services[service.class[0]];
+			if (! Class) throw new Error("Service Name "+ name +" class not found");
+			var order = prepareExec.getArguments.call(Class);
+			if(order[0] == "") order = false;
+			if(Class){
+				Class.prototype.name = name;
+				Class.prototype.container = this.container;
+				Class.prototype.get = function(name){
+					if (this.container)
+						return this.container.get(name);
+					return null;
+				};
 
-			Class.prototype.set = function(name, obj){
-				if (this.container)
-					return this.container.set(name, obj);
-				return null;
+				Class.prototype.set = function(name, obj){
+					if (this.container)
+						return this.container.set(name, obj);
+					return null;
+				}
+				//var func = Class.herite(nodefony.service);
+				return this.container.setParameters("services." + name, {
+					class: Class,
+					name:name,
+					orderArguments: order,
+					injections: this.findInjections(service.arguments),
+					calls: service.calls,
+					properties: service.properties,
+					scope: service.scope ? service.scope : "container"
+					//synthetic: /true/i.test(service.synthetic)
+				});
+			} else {
+				this.logger(service.class + ' never registred');
 			}
-			//var func = Class.herite(nodefony.service);
-			return this.container.setParameters("services." + name, {
-				class: Class,
-				name:name,
-				orderArguments: order,
-				injections: this.findInjections(service.arguments),
-				calls: service.calls,
-				properties: service.properties,
-				scope: service.scope ? service.scope : "container"
-				//synthetic: /true/i.test(service.synthetic)
-			});
-		} else {
-			this.logger(service.class + ' never registred');
-		}
+		};
 	};
 	
 	return Injection;

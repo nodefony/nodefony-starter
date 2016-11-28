@@ -15,49 +15,7 @@ var fs = require('fs'),
 
 nodefony.register("Reader", function(){
 
-
-
-	var pluginConfig = function(){
 	
-		var json = function(file, callback, parser){
-			if (parser){
-				file = this.render(file, parser.data, parser.options);	
-			}
-			try{
-				var json = JSON.parse(file);
-				if(callback) callback(json);	
-			} catch(e){
-				throw(e);
-			}
-		};
-		var yml = function(file, callback, parser){
-			if (parser){
-				file = this.render(file, parser.data, parser.options);	
-			}
-			try{
-				var json = yaml.load(file);
-				if(callback) callback(json);	
-			} catch(e){
-				throw(e);
-			}
-		};
-		var xml = function(file, callback, parser){
-			if (parser){
-				file = this.render(file, parser.data, parser.options);	
-			}
-			this.xmlParser.parseString(file, function(error, node){
-				if(error) throw(error);
-				if( callback ) callback( this.xmlToJson(node) );	
-			}.bind(this));
-		};
-		return {
-			xml:xml,
-			json:json,
-			yml:yml,
-			annotations:null
-		};
-	};
-
 	var defaultSetting = {
 		parserXml:{
 			//explicitCharkey: true,
@@ -106,6 +64,7 @@ nodefony.register("Reader", function(){
 					this.logger("DROP FILE : "+mypath+" NO PLUGIN FIND", "WARNING")
 			}
 		} catch(e){
+			console.trace(e);
 			throw {
 				message: e,
 				file: file
@@ -125,134 +84,168 @@ nodefony.register("Reader", function(){
 	 *		var reader = new nodefony.Reader(container, settings);
  	 *
  	 */
-	var Reader = function(container, localSettings){
-		this.settings = nodefony.extend(true, {}, defaultSetting, localSettings);
-		this.plugins = {};
-		this.container = container;
-		this.xmlParser = new xmlParser( this.settings.parserXml );
-		this.engine = require("twig") ; 
-		/**
- 		 * @method  readConfig
- 		 *
- 		 *
- 		 */
-		this.readConfig = this.loadPlugin("config", this.pluginConfig);
-	};
-	
-	Reader.prototype.pluginConfig = pluginConfig();
-
-	Reader.prototype.readFileSync = function(file, localSettings){
-		try {
-			return fs.readFileSync(file, nodefony.extend( {}, this.settings.readFile, localSettings));
-		}catch(e){
-			this.logger(e);
-			throw e;
-		}
-	};
-
-	/**
- 	 *	@method render
- 	 *
- 	 */	
-	Reader.prototype.render = function(str, data, options){
-	//	console.log(str)
-	//	console.log(data)
-	//	console.log(this.settings.ejs)
-		/*var settings = nodefony.extend({}, this.settings.ejs , options);
-		var Render = compile.call(this, str, settings);
-		console.log(Render(data))
-		try {
-			return Render(data);
-		}catch(e){
-			this.logger(e);
-		}*/
-		return this.engine.twig({data:str}).render(data);
-		
-	};
-
-	/**
- 	 *	@method loadPlugin
- 	 *
- 	 */
-	Reader.prototype.loadPlugin = function(name, plugin){
-		this.plugins[name] = plugin;
-		var context = this;
-		return function(){
-			Array.prototype.unshift.call(arguments, name);
-			return load.apply(context, arguments);
+	var Reader = class Reader {
+		constructor (container, localSettings){
+			this.settings = nodefony.extend(true, {}, defaultSetting, localSettings);
+			this.plugins = {};
+			this.container = container;
+			this.xmlParser = new xmlParser( this.settings.parserXml );
+			this.engine = require("twig") ; 
+			/**
+ 		 	* @method  readConfig
+ 		 	*
+ 		 	*
+ 		 	*/
+			this.readConfig = this.loadPlugin("config", this.pluginConfig);
+			//this.pluginConfig = this.pluginConfig();
 		};
-	};
 	
-	/**
- 	 *	@method logger
- 	 *
- 	 */
-	Reader.prototype.logger = function(pci, severity, msgid,  msg){
-		var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "READER ";
-		return syslog.logger(pci, severity, msgid,  msg);
-	};
+		pluginConfig (){
+	
+			var json = function(file, callback, parser){
+				if (parser){
+					file = this.render(file, parser.data, parser.options);	
+				}
+				try{
+					var json = JSON.parse(file);
+					if(callback) callback(json);	
+				} catch(e){
+					throw(e);
+				}
+			};
+			var yml = function(file, callback, parser){
+				if (parser){
+					file = this.render(file, parser.data, parser.options);	
+				}
+				try{
+					var json = yaml.load(file);
+					if(callback) callback(json);	
+				} catch(e){
+					throw(e);
+				}
+			};
+			var xml = function(file, callback, parser){
+				if (parser){
+					file = this.render(file, parser.data, parser.options);	
+				}
+				this.xmlParser.parseString(file, function(error, node){
+					if(error) throw(error);
+					if( callback ) callback( this.xmlToJson(node) );	
+				}.bind(this));
+			};
+			return {
+				xml:xml,
+				json:json,
+				yml:yml,
+				annotations:null
+			};
+		};
 
-	
-	/**
- 	 *	@method xmlToJson
- 	 *
- 	 */
-	Reader.prototype.xmlToJson = function(node){
-		var json = {};		
-		if(node instanceof Array){	
-				
-			for(var key = 0 ; key < node.length; key++) {	
-				
-				if(node[key] instanceof Object){					
-					if(node[key]['id']){						
-						json[node[key]['id']] = {};						
-						for(var param in node[key]){
-							if(param != 'id'){
-								if(node[key][param] instanceof Array){
-									json[node[key]['id']][param] = node[key][param];
-									for(var elm=0; elm < json[node[key]['id']][param].length; elm ++){
-										if(json[node[key]['id']][param][elm]['key'] && json[node[key]['id']][param][elm]['_']){
-											json[node[key]['id']][param][elm][json[node[key]['id']][param][elm]['key']] = json[node[key]['id']][param][elm]['_'];
-											delete json[node[key]['id']][param][elm]['key'];
-											delete json[node[key]['id']][param][elm]['_'];
+		readFileSync (file, localSettings){
+			try {
+				return fs.readFileSync(file, nodefony.extend( {}, this.settings.readFile, localSettings));
+			}catch(e){
+				this.logger(e);
+				throw e;
+			}
+		};
+
+		/**
+ 	 	*	@method render
+ 	 	*
+ 	 	*/	
+		render (str, data, options){
+		
+			return this.engine.twig({data:str}).render(data);
+			
+		};
+
+		/**
+ 	 	*	@method loadPlugin
+ 	 	*
+ 	 	*/
+		loadPlugin (name, plugin){
+			this.plugins[name] = plugin;
+			var context = this;
+			return function(){
+				Array.prototype.unshift.call(arguments, name);
+				return load.apply(context, arguments);
+			};
+		};
+		
+		/**
+ 	 	*	@method logger
+ 	 	*
+ 	 	*/
+		logger (pci, severity, msgid,  msg){
+			var syslog = this.container.get("syslog");
+			if (! msgid) msgid = "READER ";
+			return syslog.logger(pci, severity, msgid,  msg);
+		};
+
+		
+		/**
+ 	 	*	@method xmlToJson
+ 	 	*
+ 	 	*/
+		xmlToJson (node){
+			var json = {};		
+			if(node instanceof Array){	
+					
+				for(var key = 0 ; key < node.length; key++) {	
+					
+					if(node[key] instanceof Object){					
+						if(node[key]['id']){						
+							json[node[key]['id']] = {};						
+							for(var param in node[key]){
+								if(param != 'id'){
+									if(node[key][param] instanceof Array){
+										json[node[key]['id']][param] = node[key][param];
+										for(var elm=0; elm < json[node[key]['id']][param].length; elm ++){
+											if(json[node[key]['id']][param][elm]['key'] && json[node[key]['id']][param][elm]['_']){
+												json[node[key]['id']][param][elm][json[node[key]['id']][param][elm]['key']] = json[node[key]['id']][param][elm]['_'];
+												delete json[node[key]['id']][param][elm]['key'];
+												delete json[node[key]['id']][param][elm]['_'];
+											}
 										}
+									} else {
+										json[node[key]['id']][param] = this.xmlToJson(node[key][param]);
 									}
-								} else {
-									json[node[key]['id']][param] = this.xmlToJson(node[key][param]);
 								}
 							}
-						}
-						
-					} else if(node[key]['key'] && node[key]['_']){						
-						json[node[key]['key']] = node[key]['_'];						
-					} else if(node[key]['key'] && !node[key]['_']){						
-						for(var param in node[key]){
-							if(param != 'key'){
-								json[node[key]['key']] = {};
-								var res = this.xmlToJson(node[key][param]);
-								json[node[key]['key']][param] = res;
+							
+						} else if(node[key]['key'] && node[key]['_']){						
+							json[node[key]['key']] = node[key]['_'];						
+						} else if(node[key]['key'] && !node[key]['_']){						
+							for(var param in node[key]){
+								if(param != 'key'){
+									json[node[key]['key']] = {};
+									var res = this.xmlToJson(node[key][param]);
+									json[node[key]['key']][param] = res;
+								}
 							}
-						}
+						} else {
+							return node;
+						}					
 					} else {
 						return node;
-					}					
-				} else {
-					return node;
-				}
-			}			
-			return json;			
-		} else if(node instanceof Object){		
-				
-			for(var key in node){
-				json[key] = this.xmlToJson(node[key]);
-			}			
-			return json;			
-		} else {
-			return node;
-		}
-		return json;
+					}
+				}			
+				return json;			
+			} else if(node instanceof Object){		
+					
+				for(var key in node){
+					json[key] = this.xmlToJson(node[key]);
+				}			
+				return json;			
+			} else {
+				return node;
+			}
+			return json;
+		};
+
 	};
+	Reader.prototype.pluginConfig = Reader.prototype.pluginConfig();
 
 	return Reader;
 

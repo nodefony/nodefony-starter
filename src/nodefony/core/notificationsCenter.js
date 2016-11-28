@@ -8,108 +8,112 @@ nodefony.register("notificationsCenter",function(){
 
 	var defaultNbListeners = 20 ;
 			
+	
+	var Notification = class Notification {
 
-	var Notification = function(settings, context, nbListener){
-		this.event = new events.EventEmitter();	
-		this.setMaxListeners(nbListener || defaultNbListeners);
-		if (settings) {
-			this.settingsToListen(settings, context);
-		}
-	};
-
-	Notification.prototype.setMaxListeners = function(nb){
-		return this.event.setMaxListeners(nb);
-	};
-
-	/**
-	 *
-	 *	@method listen 
-	 *
-	 */
-	Notification.prototype.listen = function(context, eventName, callback) {
-		var event = arguments[1];
-		var ContextClosure = this;
-		if ( callback instanceof Function )
-			this.event.addListener(eventName, callback.bind(context))	
-		return function() {
-			Array.prototype.unshift.call(arguments, event)
-			return ContextClosure.fire.apply(ContextClosure, arguments);
-		}
-	};
-
-	/**
-	 *
-	 *	@method fire 
-	 *
-	 */
-	Notification.prototype.fire = function(eventName) {
-		var ret = false;
-		try {
-			return this.event.emit.apply(this.event, arguments)
-		} catch (e) {
-			if(e.stack){
-				console.error(e.message);
-				console.error(e.stack);
-				throw e ;
-			}else{
-				console.error(e);
-				throw e ;
+		constructor(settings, context, nbListener) {
+			this.event = new events.EventEmitter();	
+			this.setMaxListeners(nbListener || defaultNbListeners);
+			if (settings) {
+				this.settingsToListen(settings, context);
 			}
 		}
-		return ret;
-	};
-
-	/**
-	 *
-	 *	@method once 
-	 *
-	 */ 
-	Notification.prototype.once =function(){
-		return this.event.once.apply(this.event, arguments);	
-	};
 
 
-	/**
-	 *
-	 *	@method settingsToListen 
-	 *
-	 */
-	Notification.prototype.settingsToListen = function(localSettings, context) {
-		for (var i in localSettings) {
-			var res = regListenOn.exec(i);
-			if (!res)
-				continue;
-			this.listen(context || this, res[0], localSettings[i]);
-		}
-	};
+		/**
+	 	*
+	 	*	@method setMaxListeners 
+	 	*
+	 	*/
+		setMaxListeners (){
+			return this.event.setMaxListeners.apply(this.event, arguments);	
+		};
 
-	/**
-	 *
-	 *	@method unListen 
-	 *
-	 */
-	Notification.prototype.unListen =function(){
-		return this.event.removeListener.apply(this.event, arguments);	
-	};
+		
+		/**
+	 	*
+	 	*	@method listen 
+	 	*
+	 	*/
+		listen (context, eventName, callback) {
+			var event = arguments[1];
+			var ContextClosure = this;
+			if ( callback instanceof Function )
+				this.event.addListener(eventName, callback.bind(context))	
+			return function() {
+				Array.prototype.unshift.call(arguments, event)
+				return ContextClosure.fire.apply(ContextClosure, arguments);
+			}
+		};
 
-	/**
-	 *
-	 *	@method removeAllListeners 
-	 *
-	 */ 
-	Notification.prototype.removeAllListeners =function(){
-		return this.event.removeAllListeners.apply(this.event, arguments);	
-	};
+		/**
+	 	*
+	 	*	@method fire 
+	 	*
+	 	*/
+		fire (eventName) {
+			var ret = false;
+			try {
+				return this.event.emit.apply(this.event, arguments)
+			} catch (e) {
+				if(e.stack){
+					console.error(e.message);
+					console.error(e.stack);
+					throw e ;
+				}else{
+					console.error(e);
+					throw e ;
+				}
+			}
+			return ret;
+		};
 
-	/**
-	 *
-	 *	@method setMaxListeners 
-	 *
-	 */
-	Notification.prototype.setMaxListeners =function(){
-		return this.event.setMaxListeners.apply(this.event, arguments);	
+		/**
+	 	*
+	 	*	@method once 
+	 	*
+	 	*/ 
+		once (){
+			return this.event.once.apply(this.event, arguments);	
+		};
+
+
+		/**
+	 	*
+	 	*	@method settingsToListen 
+	 	*
+	 	*/
+		settingsToListen (localSettings, context) {
+			for (var i in localSettings) {
+				var res = regListenOn.exec(i);
+				if (!res)
+					continue;
+				this.listen(context || this, res[0], localSettings[i]);
+			}
+		};
+
+		/**
+	 	*
+	 	*	@method unListen 
+	 	*
+	 	*/
+		unListen (){
+			return this.event.removeListener.apply(this.event, arguments);	
+		};
+
+		/**
+	 	*
+	 	*	@method removeAllListeners 
+	 	*
+	 	*/ 
+		removeAllListeners (){
+			return this.event.removeAllListeners.apply(this.event, arguments);	
+		};
+
+		
+
 	};
-	
+		
 	return {
 	
 		notification:Notification,
@@ -118,8 +122,8 @@ nodefony.register("notificationsCenter",function(){
 		 *	@method create 
 		 *
 		 */
-		create: function(settings, context) {
-			return new Notification(settings, context);
+		create: function(settings, context, nbListener) {
+			return new Notification(settings, context, nbListener);
 		}	
 	
 	};
