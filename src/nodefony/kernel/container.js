@@ -124,9 +124,7 @@ nodefony.register("Container", function(){
 				if (sc){
 					//console.log("pass leaveScope "+ scope.id)
 					delete this.scope[scope.name][scope.id];
-					sc.destroy();
 					sc= null ;
-					//return sc[0].parent;
 				}
 				//console.log(this.scope)
 			}
@@ -179,9 +177,9 @@ nodefony.register("Container", function(){
 
 	var Scope = class Scope extends Container {
 		constructor( name, parent){
+    			super();
     			this.name = name;
 			this.parent = parent;
-    			super();
     			this.services = new parent.protoService();
     			this.parameters = new parent.protoParameters();
     			this.scope = parent.scope;

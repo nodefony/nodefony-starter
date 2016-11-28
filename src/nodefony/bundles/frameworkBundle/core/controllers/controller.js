@@ -481,7 +481,7 @@ nodefony.register("controller", function(){
 			}
 			var router = this.container.get("router");	
 			try {
-				return router.generatePath.apply(router, arguments);
+				return router.generatePath.call(router, name, variables, absolute);
 			}catch(e){
 				throw e ;
 			}

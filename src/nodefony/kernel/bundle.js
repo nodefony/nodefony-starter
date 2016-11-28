@@ -129,7 +129,7 @@ nodefony.register("Bundle", function(){
 	var Bundle = class Bundle {
 
 		constructor (kernel , container){
-			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x21[0m","DEBUG","KERNEL");
+			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG","KERNEL");
 			this.kernel = kernel ;
 			this.notificationsCenter = nodefony.notificationsCenter.create();
 			this.waitBundleReady = false ;
@@ -181,11 +181,11 @@ nodefony.register("Bundle", function(){
 							var config = this.container.getParameters("bundles."+name[1])
 							if ( config ){
 								var ext = nodefony.extend(true, {}, config , result[ele])
-								this.logger("\x21[32m OVERRIDING\x21[0m  CONFIG bundle  : "+name[1]  ,"WARNING")
+								this.logger("\x1b[32m OVERRIDING\x1b[0m  CONFIG bundle  : "+name[1]  ,"WARNING")
 								//this.container.setParameters("bundles."+name[1], ext);	
 							}else{
 								var ext = result[ele] ;
-								this.logger("\x21[32m OVERRIDING\x21[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING");
+								this.logger("\x1b[32m OVERRIDING\x1b[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING");
 								//this.container.setParameters("bundles."+name[1], result[ele]);	
 							}
 							if ( this.kernel.bundles[name[1]] ){
@@ -202,7 +202,7 @@ nodefony.register("Bundle", function(){
 				}
 				var config = this.container.getParameters("bundles."+this.name);
  		        	if ( Object.keys(config).length ){
-					this.logger("\x21[32m BUNDLE IS ALREADY OVERRIDING BY AN OTHERONE  INVERT\x21[0m  CONFIG  "+ util.inspect(config)  ,"WARNING");
+					this.logger("\x1b[32m BUNDLE IS ALREADY OVERRIDING BY AN OTHERONE  INVERT\x1b[0m  CONFIG  "+ util.inspect(config)  ,"WARNING");
 					this.settings = nodefony.extend(true, {}, result, config ); 
 					this.container.setParameters("bundles."+this.name, this.settings);
 				}else{
@@ -217,7 +217,7 @@ nodefony.register("Bundle", function(){
 		};
 
 		fire (ev){
-			this.logger(ev, "DEBUG", "EVENT BUNDLE "+this.name+"\x21[0m")
+			this.logger(ev, "DEBUG", "EVENT BUNDLE "+this.name+"\x1b[0m")
 			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
 		};
 
@@ -291,7 +291,6 @@ nodefony.register("Bundle", function(){
 					if (typeof Class === "function" ){
 						Class.prototype.name = name;
 						Class.prototype.bundle = this;
-						//var func = Class.herite(nodefony.controller);
 						this.controllers[name] = Class ;
 						this.logger("Bundle "+this.name+" Register Controller : "+name , "DEBUG");
 					}else{
@@ -316,8 +315,7 @@ nodefony.register("Bundle", function(){
 						if (typeof Class === "function" ){
 							Class.prototype.name = name;
 							Class.prototype.bundle = this;
-							//var func = Class.herite(nodefony.controller);
-							this.controllers[name] = func ;
+							this.controllers[name] = Class ;
 						}else{
 							this.logger("Register Controller : "+name +"  error Controller closure bad format ");
 						}

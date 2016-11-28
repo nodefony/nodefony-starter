@@ -10,7 +10,7 @@ var Url = require("url");
 nodefony.registerService("httpKernel", function(){
 
 
-	var controller = function(pattern, data){
+	var myController = function(pattern, data){
 		try {
 			var router = this.get("router");
 			var resolver = router.resolveName(this, pattern) ;
@@ -339,7 +339,7 @@ nodefony.registerService("httpKernel", function(){
 					switch ( context.type ){
 						case "HTTP":
 						case "HTTPS":
-							this.logger("\x21[31m  DOMAIN Unauthorized \x21[0mREQUEST DOMAIN : " + context.domain ,"ERROR");
+							this.logger("\x1b[31m  DOMAIN Unauthorized \x1b[0mREQUEST DOMAIN : " + context.domain ,"ERROR");
 							context.notificationsCenter.fire("onError",context.container, {
 								status:next,
 								message:"Domain : "+context.domain+" Unauthorized "
@@ -378,19 +378,13 @@ nodefony.registerService("httpKernel", function(){
 						delete context.extendTwig ;
 						if (context.proxy) delete context.proxy ;
 						context.clean();
-						context.destroy();	
 						context = null ;
-						request.destroy() ;
 						request = null ;
-						response.destroy() ;
 						response = null ;
-						container.destroy() ;
 						container = null ;
-						translation.destroy() ;
 						translation = null ;
 						if (domain) {
 							delete domain.container ;
-							domain.destroy() ;
 							domain = null ;
 						}
 					});
@@ -420,7 +414,7 @@ nodefony.registerService("httpKernel", function(){
 						},
 						getFlashBag:flashTwig.bind(context),
 						render:render,
-						controller:controller.bind(container),
+						controller:myController.bind(container),
 						trans:translation.trans.bind(translation),
 						getLocale:translation.getLocale.bind(translation),
 						trans_default_domain:function(){
@@ -509,7 +503,7 @@ nodefony.registerService("httpKernel", function(){
 						},
 						getFlashBag:flashTwig.bind(context),
 						render:render.bind(container),
-						controller:controller.bind(container),
+						controller:myController.bind(container),
 						trans:translation.trans.bind(translation),
 						getLocale:translation.getLocale.bind(translation),
 						trans_default_domain:function(){

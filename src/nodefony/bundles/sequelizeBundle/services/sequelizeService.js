@@ -1,7 +1,6 @@
 nodefony.registerService("sequelize", function(){
 
 
-
 	var error = function(err){
 		
 		if (this.state !== "DISCONNECTED"){
@@ -27,65 +26,67 @@ nodefony.registerService("sequelize", function(){
 		}
 	};
 
-
 	/*
 	 * 
 	 * CLASS LIBRARY CONNECTION
 	 * 
 	 */
-	var connectionDB = function(name, type, options, orm){
-		this.state = "DISCONNECTED";
-		this.name = name;
-		this.type = type;
-		this.db = null;
-		this.orm = orm;
-		this.intervalId = null;
-		this.connect(type, options);
-	};	
-	
-	connectionDB.prototype.setConnection = function(db){
-		if(! db){
-			throw new Error("Cannot create class connection without db native");
-		}
-		this.db = db;
+	var connectionDB = class connectionDB {
+
+		constructor (name, type, options, orm){
+			this.state = "DISCONNECTED";
+			this.name = name;
+			this.type = type;
+			this.db = null;
+			this.orm = orm;
+			this.intervalId = null;
+			this.connect(type, options);
+		};	
 		
-		this.orm.notificationsCenter.fire("onConnect", this.name, this.db );
-		this.state = "CONNECTED";
-	};
-	
-	connectionDB.prototype.getConnection = function(db){
-		return this.db;
-	};
-	
-	connectionDB.prototype.connect = function(type, config){
-		if ( this.orm.debug ){
-			config.options.logging = function(value){
-				this.logger(value, "DEBUG")
-			}.bind(this.orm);
-		}else{
-			config.options.logging = false;	
-		}
-		try {
-			switch(type){
-				case "sqlite" :
-					config.options.storage = process.cwd() + config.dbname;
-				break;
-			
+		setConnection (db){
+			if(! db){
+				throw new Error("Cannot create class connection without db native");
 			}
-			var conn = new this.orm.engine(config.dbname, config.username, config.password, config.options );	
-			this.logger(this.name + " :  CONNECT to database "+ type+" : " +config.dbname, "DEBUG");
-			process.nextTick(function () {
-				this.setConnection(conn);
-			}.bind(this));
-		}catch(err){
-			error.call(this, err);	
-			this.orm.fire('onErrorConnection', this.name, conn, this.orm);
-		}
-	};
+			this.db = db;
+			
+			this.orm.notificationsCenter.fire("onConnect", this.name, this.db );
+			this.state = "CONNECTED";
+		};
 		
-	connectionDB.prototype.logger = function(pci, severity, msgid,  msg){
-		if (! msgid) msgid = "SERVICE sequelize CONNECTION";
-		return this.orm.logger(pci, severity, msgid,  msg);
+		getConnection (db){
+			return this.db;
+		};
+		
+		connect (type, config){
+			if ( this.orm.debug ){
+				config.options.logging = function(value){
+					this.logger(value, "DEBUG")
+				}.bind(this.orm);
+			}else{
+				config.options.logging = false;	
+			}
+			try {
+				switch(type){
+					case "sqlite" :
+						config.options.storage = process.cwd() + config.dbname;
+					break;
+				
+				}
+				var conn = new this.orm.engine(config.dbname, config.username, config.password, config.options );	
+				this.logger(this.name + " :  CONNECT to database "+ type+" : " +config.dbname, "DEBUG");
+				process.nextTick( ()  => {
+					this.setConnection(conn);
+				});
+			}catch(err){
+				error.call(this, err);	
+				this.orm.fire('onErrorConnection', this.name, conn, this.orm);
+			}
+		};
+			
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVICE sequelize CONNECTION";
+			return this.orm.logger(pci, severity, msgid,  msg);
+		};
 	};
 
 
@@ -94,70 +95,69 @@ nodefony.registerService("sequelize", function(){
 	 * CLASS SERVICE sequelize
 	 * 
 	 */
-	var sequelize = function(container, kernel, autoLoader){
-	
-		this.container = container ;	
-		this.mother = this.$super;
-		this.mother.constructor("sequelize", container, kernel, autoLoader);
-		this.engine = require('sequelize');
-		this.connections = {};
-		this.boot();
+	var sequelize = class sequelize extends nodefony.orm {
 
-	}.herite(nodefony.orm);
+		constructor (container, kernel, autoLoader){
+			super("sequelize", container, kernel, autoLoader )
+			this.container = container ;	
+			this.engine = require('sequelize');
+			this.connections = {};
+			this.boot();
 
-	sequelize.prototype.fire = function(ev){
-		this.logger(ev, "DEBUG", "EVENT SEQUELIZE")
-		return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-	};
+		};
+
+		fire (ev){
+			this.logger(ev, "DEBUG", "EVENT SEQUELIZE")
+			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
+		};
 
 
-	sequelize.prototype.boot = function(){
-		this.mother.boot();	
-		this.kernel.listen(this, 'onBoot', function(kernel){
-			this.settings = this.container.getParameters("bundles.sequelize");
-			this.debug = this.settings.debug ;
-			if ( this.settings.connectors && Object.keys(this.settings.connectors).length ){
-				for(var name in this.settings.connectors){
-					this.createConnection(name, this.settings.connectors[name]);
+		boot (){
+			super.boot();	
+			this.kernel.listen(this, 'onBoot', (kernel) => {
+				this.settings = this.container.getParameters("bundles.sequelize");
+				this.debug = this.settings.debug ;
+				if ( this.settings.connectors && Object.keys(this.settings.connectors).length ){
+					for(var name in this.settings.connectors){
+						this.createConnection(name, this.settings.connectors[name]);
+					}
+				}else{
+					process.nextTick( () => {
+						this.fire('onOrmReady', this);
+					});	
 				}
-			}else{
-				process.nextTick(function () {
-					this.fire('onOrmReady', this);
-				}.bind(this));	
-			}
-		}.bind(this));	
-	};
+			});	
+		};
 
-	sequelize.prototype.createConnection = function(name, config){
-		//var url;
-		
-		/*switch(config.driver){
-			case 'mysql':
-				url = "mysql://" + config.user + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.database;
+		createConnection (name, config){
+			//var url;
+			
+			/*switch(config.driver){
+				case 'mysql':
+					url = "mysql://" + config.user + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.database;
+					break;
+					
+				case 'sqlite':
+					url = config;
+					//url = "sqlite://" + process.cwd() + config.dbname;
+					break;
+					
+				case 'mongodb':
+					url = "mongodb://" + (false ? '' : config.user + ":" + config.password) + '@' + config.host + ":" + config.port + "/" + config.database;
 				break;
 				
-			case 'sqlite':
-				url = config;
-				//url = "sqlite://" + process.cwd() + config.dbname;
+				case 'postgres':
+					url = "postgres://" + config.user + ":" + config.password + "@" + config.host + "/" + config.database;
 				break;
 				
-			case 'mongodb':
-				url = "mongodb://" + (false ? '' : config.user + ":" + config.password) + '@' + config.host + ":" + config.port + "/" + config.database;
-			break;
-			
-			case 'postgres':
-				url = "postgres://" + config.user + ":" + config.password + "@" + config.host + "/" + config.database;
-			break;
-			
-			default: 
-				throw {
-					message: "driver (" + config.driver + ") not exist"
-				}
-		}*/
-		return this.connections[name] = new connectionDB( name, config.driver, config, this );		
+				default: 
+					throw {
+						message: "driver (" + config.driver + ") not exist"
+					}
+			}*/
+			return this.connections[name] = new connectionDB( name, config.driver, config, this );		
+		};
 	};
-
-
 
 	return sequelize ;
 

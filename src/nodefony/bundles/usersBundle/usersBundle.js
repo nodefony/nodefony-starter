@@ -11,20 +11,20 @@ nodefony.registerBundle ("users", function(){
 	 *	@param {class} container
 	 *	
 	 */
-	var users = function(kernel, container){
+	var users = class  users extends nodefony.Bundle{
+		constructor(kernel, container){
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+			super(kernel, container);
+			// load bundle library 
+			this.autoLoader.loadDirectory(this.path+"/core");
 
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
-
-		/*
-		 *	If you want kernel wait usersBundle event <<onReady>> 
-		 *
-		 *      this.waitBundleReady = true ; 
-		 */	
-		
+			/*
+		 	*	If you want kernel wait usersBundle event <<onReady>> 
+		 	*
+		 	*      this.waitBundleReady = true ; 
+		 	*/	
+			
+		};
 	};
 
 	return users;

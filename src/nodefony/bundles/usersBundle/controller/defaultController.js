@@ -1,39 +1,39 @@
 
 nodefony.registerController("default", function(){
 
-		/**
-		 *	The class is a **`default` CONTROLLER** .
-		 *	@module App
-		 *	@main App
-		 *	@class default
-		 *	@constructor
-		 *	@param {class} container   
-		 *	@param {class} context
-		 *	
-		 */
-		var defaultController = function(container, context){
-			this.mother = this.$super;
-			this.mother.constructor(container, context);
+	/**
+		*	The class is a **`default` CONTROLLER** .
+		*	@module App
+		*	@main App
+		*	@class default
+		*	@constructor
+		*	@param {class} container   
+		*	@param {class} context
+		*	
+		*/
+	var defaultController = class defaultController extends nodefony.controller {
+		constructor(container, context){
+			super(container, context);
 		};
 
 
-		defaultController.prototype.connectAction = function(login){
+		connectAction (login){
 			return this.render('usersBundle::connect.html.twig',{
 				security:this.context.user,
 			        login:login ? true : false 
 			});
 		};
 
-		defaultController.prototype["401Action"] = function(error){
+		["401Action"] (error){
 			var res = nodefony.extend( {url:this.context.url}, error);
 			this.getResponse().setStatusCode(401,"Unauthorized");
 			return this.render('frameworkBundle::401.html.twig', res );
 		};
 
 
-		defaultController.prototype.loginAction = function(){
+		loginAction (){
 			if ( ! this.context.session ){
-				this.startSession("default", function(error, session){
+				this.startSession("default", (error, session) => {
 					if (error)
 						throw error ;
 					var log  = session.getFlashBag("session") ;
@@ -53,7 +53,7 @@ nodefony.registerController("default", function(){
 					}
 					//this.getResponse().setStatusCode(401,"Unauthorized");
 					this.renderAsync('usersBundle::login.html.twig',log);
-				}.bind(this));
+				});
 			}else{
 				var log = this.context.session.getFlashBag("session") ;
 				if ( log ){
@@ -76,7 +76,7 @@ nodefony.registerController("default", function(){
 			}
 		};
 
-		defaultController.prototype.logoutAction = function(){
+		logoutAction (){
 			
 			if ( this.context.session ){
 				var security = this.context.session.getMetaBag("security") ;
@@ -90,7 +90,7 @@ nodefony.registerController("default", function(){
 					case "http_basic":
 					case "http_Digest":
 						this.getRequest().request.headers["authorization"] = "";
-						this.get("security").getSecuredArea(security.firewall).factory.handle(this.context, function(error, token){
+						this.get("security").getSecuredArea(security.firewall).factory.handle(this.context, (error, token) => {
 							var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
 							this.context.session.invalidate() ;
 							if ( formlogin ){
@@ -100,7 +100,7 @@ nodefony.registerController("default", function(){
 								return ;
 							}	
 							return this.redirect( "/" );
-						}.bind(this));
+						});
 						return ;
 					break;
 				}
@@ -118,6 +118,7 @@ nodefony.registerController("default", function(){
 
 			return this.redirect( "/" );
 		};
+	};
 
-		return defaultController;
+	return defaultController;
 });

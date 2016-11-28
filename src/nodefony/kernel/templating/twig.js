@@ -18,7 +18,9 @@ nodefony.registerTemplate("twig", function(){
 	var Twig = class Twig extends nodefony.templates {
 
 		constructor (container, options){
+
 			super(container, twig, options);
+
 			this.kernelSettings = this.container.getParameters("kernel");
 			this.cache = ( this.kernelSettings.environment === "dev"  ) ?  false : true ; 
 			twig.cache( this.cache );

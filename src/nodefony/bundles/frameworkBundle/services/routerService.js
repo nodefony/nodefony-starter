@@ -10,154 +10,7 @@ var Querystring = require('querystring');
 
 nodefony.registerService("router", function(){
 
-	/*
- 	 *
- 	 * CLASS RESOLVER
- 	 *
- 	 *
- 	 */
-	var Resolver = function(container, router){
-		this.container = container;
-		this.router = router ;
-		this.resolve = false;
-		this.kernel = this.container.get("kernel");
-		this.defaultAction = null;
-		this.defaultView = null;
-		this.variables = new Array();
-		this.notificationsCenter = this.container.get("notificationsCenter") ;
-		this.context = this.container.get("context") ;
-		this.defaultLang= null ;
-		this.bypassFirewall = false ;
-		
-	};
 
-	Resolver.prototype.match = function(route, context){
-		try {
-			var match = route.match(context); 
-			if ( match ){
-				this.variables = match;
-				this.request = context.request.request;
-				this.route = route;
-				this.parsePathernController(route.defaults.controller);
-				this.bypassFirewall = route.bypassFirewall ;
-				this.defaultLang = route.defaultLang ;
-				
-			}		
-			return match;
-		}catch(e){
-			throw e ;
-		}
-	};
-
-	Resolver.prototype.getRoute = function(){
-		return this.route ;
-	};
-
-	var regAction =/^(.+)Action$/; 
-	Resolver.prototype.getAction= function(name){
-		for (var func in this.controller.prototype){
-			if (typeof this.controller.prototype[func] === "function"){
-				var res = regAction.exec(func);
-				if (res){
-					if ( res[1] === name)
-						return this.controller.prototype[func];
-				}else{
-				
-				}
-			}
-		}
-		return null;
-	};
-
-	Resolver.prototype.parsePathernController = function(name){
-		var tab = name.split(":")
-		this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
-		if ( this.bundle ){
-			if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
-				this.context.autoloadCache.bundles[this.bundle.name] = {
-					controllers:{}	
-				}
-			}
-			if (this.bundle.name !== "framework")
-				this.container.set("bundle", this.bundle)
-			this.controller = this.getController(tab[1]);
-			if ( this.controller ){
-				this.action = this.getAction(tab[2]);
-				if (! this.action ){
-					throw new Error("Resolver "+ name +" :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
-				}
-			}else{
-				throw new Error("Resolver "+ name +" : controller not exist :"+tab[1] );
-			}
-			this.defaultView = this.getDefaultView(tab[1], tab[2] );
-			this.resolve = true;
-		}else{
-			throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
-		}
-	};
-	
-	Resolver.prototype.getDefaultView = function(controller, action){
-		//FIXME .html ???
-		var res = this.bundle.name+"Bundle"+":"+controller+":"+action+".html."+this.container.get("templating").extention;
-		return res ; 	
-	};
-	
-	Resolver.prototype.getController= function(name){
-		if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name].controllers[name]){
-			this.context.autoloadCache.bundles[this.bundle.name].controllers[name] = true ;
-			this.bundle.reloadController(name, this.container);
-		}
-		return this.bundle.controllers[name];
-		
-	};
-
-	Resolver.prototype.logger = function(pci, severity, msgid,  msg){
-		if (! msgid) msgid = "SERVICE RESOLVER";
-		return this.router.syslog.logger(pci, severity, msgid,  msg);
-	};
-
-	Resolver.prototype.callController= function(data){
-		try {
-			var controller = new this.controller( this.container, this.context );
-			this.container.set("controller", controller );
-			if ( data ){
-				this.variables.push(data); 
-			}
-			var result =  this.action.apply(controller, this.variables);
-			switch (true){
-				case result instanceof nodefony.Response :
-					if ( this.context.nbCallController == 0  ){
-						this.context.nbCallController++ ;
-						this.notificationsCenter.fire("onResponse", result, this.context);
-					}
-				break ;
-				case result instanceof nodefony.wsResponse :
-					this.notificationsCenter.fire("onResponse", result, this.context);
-				break ;
-				case result instanceof Promise :
-					return result;
-				break ;
-				case nodefony.typeOf(result) === "object":
-					if ( this.defaultView ){
-						result = controller.render(this.defaultView, result );
-						this.notificationsCenter.fire("onResponse", result, this.context);
-					}else{
-						throw {
-							status:500,
-							message:"default view not exist"
-						}
-					}
-				break;
-				default:
-					//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
-					// CASE async controller wait fire onResponse by other entity
-			}
-			return result;
-		}catch(e){
-			throw e;
-		}
-	};
-	nodefony.Resolver = Resolver ;
 
 	/*
  	 *
@@ -173,7 +26,7 @@ nodefony.registerService("router", function(){
 				xml = this.render(xml, parser.data, parser.options);
 			}
 			var routes = [];
-			this.xmlParser.parseString(xml, function(err, node){
+			this.xmlParser.parseString(xml, (err, node) => {
 				if(err) this.logger("ROUTER xmlParser.parseString : " + err, 'WARNING');
 				if ( ! node ) return node;
 				for(var key in node){
@@ -199,7 +52,7 @@ nodefony.registerService("router", function(){
 							break;
 					}
 				}
-			}.bind(this));
+			});
 			if(callback) {
 				normalizeXmlJson.call(this, this.xmlToJson.call(this, routes), callback);
 			} else {
@@ -260,33 +113,159 @@ nodefony.registerService("router", function(){
 		};
 	}();
 
-	var Router = function(container){
-		this.container = container ;
 
-		//this.routes = {};
-		this.routes = [];
-		this.reader = function(context){
-			var func = context.container.get("reader").loadPlugin("routing", pluginReader);
-			return function(result){
-				return func(result, context.nodeReader.bind(context));
-			};
-		}(this);
-		this.engineTemplate = this.container.get("templating");
-		this.engineTemplate.extendFunction("path", function(){
+	/*
+ 	 *
+ 	 * CLASS RESOLVER
+ 	 *
+ 	 *
+ 	 */
+	var regAction =/^(.+)Action$/; 
+	nodefony.Resolver  = class Resolver { 
+		constructor (container, router){
+			this.container = container;
+			this.router = router ;
+			this.resolve = false;
+			this.kernel = this.container.get("kernel");
+			this.defaultAction = null;
+			this.defaultView = null;
+			this.variables = new Array();
+			this.notificationsCenter = this.container.get("notificationsCenter") ;
+			this.context = this.container.get("context") ;
+			this.defaultLang= null ;
+			this.bypassFirewall = false ;
+			
+		};
+
+		match (route, context){
 			try {
-				return this.generatePath.apply(this, arguments);
+				var match = route.match(context); 
+				if ( match ){
+					this.variables = match;
+					this.request = context.request.request;
+					this.route = route;
+					this.parsePathernController(route.defaults.controller);
+					this.bypassFirewall = route.bypassFirewall ;
+					this.defaultLang = route.defaultLang ;
+					
+				}		
+				return match;
 			}catch(e){
-				this.logger(e.error)
-				throw {
-					status:500,
-					error:e.error
+				throw e ;
+			}
+		};
+
+		getRoute (){
+			return this.route ;
+		};
+
+		getAction (name){
+			var obj = Object.getOwnPropertyNames(this.controller.prototype) ; 
+			for (var i= 0 ; i < obj.length ; i++ ){ //  func in obj ){
+				if (typeof this.controller.prototype[obj[i]] === "function"){
+					var res = regAction.exec(obj[i]);
+					if (res){
+						if ( res[1] === name)
+							return this.controller.prototype[obj[i]];
+					}else{
+					
+					}
 				}
 			}
-		}.bind(this));
+			return null;
+		};
 
-		this.syslog = this.container.get("syslog"); 
+		parsePathernController (name){
+			var tab = name.split(":")
+			this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
+			if ( this.bundle ){
+				if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
+					this.context.autoloadCache.bundles[this.bundle.name] = {
+						controllers:{}	
+					}
+				}
+				if (this.bundle.name !== "framework")
+					this.container.set("bundle", this.bundle)
+				this.controller = this.getController(tab[1]);
+				if ( this.controller ){
+					this.action = this.getAction(tab[2]);
+					if (! this.action ){
+						throw new Error("Resolver "+ name +" :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
+					}
+				}else{
+					throw new Error("Resolver "+ name +" : controller not exist :"+tab[1] );
+				}
+				this.defaultView = this.getDefaultView(tab[1], tab[2] );
+				this.resolve = true;
+			}else{
+				throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
+			}
+		};
+		
+		getDefaultView (controller, action){
+			//FIXME .html ???
+			var res = this.bundle.name+"Bundle"+":"+controller+":"+action+".html."+this.container.get("templating").extention;
+			return res ; 	
+		};
+		
+		getController (name){
+			if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name].controllers[name]){
+				this.context.autoloadCache.bundles[this.bundle.name].controllers[name] = true ;
+				this.bundle.reloadController(name, this.container);
+			}
+			return this.bundle.controllers[name];
+			
+		};
+
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVICE RESOLVER";
+			return this.router.syslog.logger(pci, severity, msgid,  msg);
+		};
+
+		callController (data){
+			try {
+				var controller = new this.controller( this.container, this.context );
+				this.container.set("controller", controller );
+				if ( data ){
+					this.variables.push(data); 
+				}
+				var result =  this.action.apply(controller, this.variables);
+				switch (true){
+					case result instanceof nodefony.Response :
+						if ( this.context.nbCallController == 0  ){
+							this.context.nbCallController++ ;
+							this.notificationsCenter.fire("onResponse", result, this.context);
+						}
+					break ;
+					case result instanceof nodefony.wsResponse :
+						this.notificationsCenter.fire("onResponse", result, this.context);
+					break ;
+					case result instanceof Promise :
+						return result;
+					break ;
+					case nodefony.typeOf(result) === "object":
+						if ( this.defaultView ){
+							result = controller.render(this.defaultView, result );
+							this.notificationsCenter.fire("onResponse", result, this.context);
+						}else{
+							throw {
+								status:500,
+								message:"default view not exist"
+							}
+						}
+					break;
+					default:
+						//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
+						// CASE async controller wait fire onResponse by other entity
+				}
+				return result;
+			}catch(e){
+				throw e;
+			}
+		};
 	};
 
+	
 
 	var generateQueryString = function(obj, name){
 		var size = ( Object.keys(obj).length ) ;
@@ -305,159 +284,185 @@ nodefony.registerService("router", function(){
 		return   str ; 
 	}
 
-	Router.prototype.generatePath = function(name, variables, host){
-		var route =  this.getRoute(name) ;
-		var queryString = variables ? variables["queryString"]: null ;
-		if (! route )
-			throw {error:"no route to host  "+ name};
-		var path = route.path;
-		if ( route.variables.length  || queryString  ){
-			if (! variables ){
-				var txt = "";
-				for (var i= 0 ; i < route.variables.length ;i++ ){
-					txt += "{"+route.variables[i]+"} ";
+	var Router = class Router { 
+		constructor (container){
+			this.container = container ;
+			this.routes = [];
+			this.reader = function(context){
+				var func = context.container.get("reader").loadPlugin("routing", pluginReader);
+				return function(result){
+					return func(result, context.nodeReader.bind(context));
+				};
+			}(this);
+			this.engineTemplate = this.container.get("templating");
+			this.engineTemplate.extendFunction("path", (name, variables, host) => {
+				try {
+					return this.generatePath( name, variables, host);
+				}catch(e){
+					this.logger(e.error)
+					throw {
+						status:500,
+						error:e.error
+					}
 				}
-				throw {error:"router generate path route "+ name + " must have variable "+ txt}
-			}
-			for (var ele in variables ){
-				if (ele === "_keys") continue ;
-				if (ele === "queryString" ){
- 				       	queryString = variables[ele] ;
-					continue ;
+			});
+			this.syslog = this.container.get("syslog"); 
+		};
+	
+		generatePath (name, variables, host){
+			var route =  this.getRoute(name) ;
+			var queryString = variables ? variables["queryString"]: null ;
+			if (! route )
+				throw {error:"no route to host  "+ name};
+			var path = route.path;
+			if ( route.variables.length  || queryString  ){
+				if (! variables ){
+					var txt = "";
+					for (var i= 0 ; i < route.variables.length ;i++ ){
+						txt += "{"+route.variables[i]+"} ";
+					}
+					throw {error:"router generate path route "+ name + " must have variable "+ txt}
 				}
-				var index = route.variables.indexOf(ele);
-				if ( index >= 0 ){
-					path = path.replace("{"+ele+"}",  variables[ele]);
-				}else{
-					throw {error:"router generate path route "+ name + " don't  have variable "+ ele};
+				for (var ele in variables ){
+					if (ele === "_keys") continue ;
+					if (ele === "queryString" ){
+ 				       		queryString = variables[ele] ;
+						continue ;
+					}
+					var index = route.variables.indexOf(ele);
+					if ( index >= 0 ){
+						path = path.replace("{"+ele+"}",  variables[ele]);
+					}else{
+						throw {error:"router generate path route "+ name + " don't  have variable "+ ele};
+					}	
 				}	
-			}	
-		}
-		if ( queryString ){
-			path += generateQueryString.call(this, queryString, name);
-		}
-		if (host){
-			return host+path ;
-		}
-		return path ;
+			}
+			if ( queryString ){
+				path += generateQueryString.call(this, queryString, name);
+			}
+			if (host){
+				return host+path ;
+			}
+			return path ;
 
-	};
-		
-	/*Router.prototype.addRoute = function(name , route){
-		if (route instanceof nodefony.Route){
-			this.routes[name] = route;
-		}else{
-			var routeC = this.createRoute(route);
-			this.routes[name] = routeC;
-		}
-		this.logger("ADD Route : "+route.path + "   ===> "+route.defaults.controller, "DEBUG");
-	};*/
+		};
+			
+		/*addRoute (name , route){
+			if (route instanceof nodefony.Route){
+				this.routes[name] = route;
+			}else{
+				var routeC = this.createRoute(route);
+				this.routes[name] = routeC;
+			}
+			this.logger("ADD Route : "+route.path + "   ===> "+route.defaults.controller, "DEBUG");
+		};*/
 
-	Router.prototype.getRoute = function(name){
-		if (this.routes[name])
-			return this.routes[name];
-		this.logger("Route name: "+name +" not exist");
-		return null ;
-	};
+		getRoute (name){
+			if (this.routes[name])
+				return this.routes[name];
+			this.logger("Route name: "+name +" not exist");
+			return null ;
+		};
 
-	Router.prototype.setRoute = function(name, route){
-		if ( route instanceof nodefony.Route){
-			var myroute = route;
-		}else{
-			var myroute = this.createRoute(route);
-		}
-		var index = this.routes.push(myroute);
-		//var index = this.routes.unshift(myroute);
-		if (this.routes[name]){
-			this.logger("WARNING ROUTES HAS SAME NAME : "+myroute.path + "   ===> "+myroute.defaults.controller, "WARNING");
-		}
-		this.routes[name] = this.routes[index-1];
-		this.logger("ADD Route : "+myroute.path + "   ===> "+myroute.defaults.controller, "DEBUG");
-	};
+		setRoute (name, route){
+			if ( route instanceof nodefony.Route){
+				var myroute = route;
+			}else{
+				var myroute = this.createRoute(route);
+			}
+			var index = this.routes.push(myroute);
+			//var index = this.routes.unshift(myroute);
+			if (this.routes[name]){
+				this.logger("WARNING ROUTES HAS SAME NAME : "+myroute.path + "   ===> "+myroute.defaults.controller, "WARNING");
+			}
+			this.routes[name] = this.routes[index-1];
+			this.logger("ADD Route : "+myroute.path + "   ===> "+myroute.defaults.controller, "DEBUG");
+		};
 
-	Router.prototype.getRoutes = function(name){
-		if (name){
-			return this.routes[name];
-		}
-		return this.routes;
-	};
+		getRoutes (name){
+			if (name){
+				return this.routes[name];
+			}
+			return this.routes;
+		};
 
-	Router.prototype.resolve = function(container, context){
-		var resolver = new Resolver(container, this);
-		for (var i = 0; i<this.routes.length; i++){
-			var route = this.routes[i];
-			try {
-				var res = resolver.match(route, context);
-				if ( res ){
-					break ;
+		resolve (container, context){
+			var resolver = new nodefony.Resolver(container, this);
+			for (var i = 0; i<this.routes.length; i++){
+				var route = this.routes[i];
+				try {
+					var res = resolver.match(route, context);
+					if ( res ){
+						break ;
+					}
+				}catch(e){
+					throw e ;
 				}
+			}
+			return resolver;
+		};
+
+		resolveName (container, name){
+			try {
+				var resolver = new nodefony.Resolver(container, this);	
+				var route = resolver.parsePathernController(name);
+				return resolver;
 			}catch(e){
 				throw e ;
 			}
-		}
-		return resolver;
-	};
+		};
 
-	Router.prototype.resolveName = function(container, name){
-		try {
-			var resolver = new Resolver(container, this);	
-			var route = resolver.parsePathernController(name);
-			return resolver;
-		}catch(e){
-			throw e ;
-		}
-	};
+		createRoute (obj){
+			return new nodefony.Route(obj);
+		};
 
-	Router.prototype.createRoute = function(obj){
-		return new nodefony.Route(obj);
-	};
+		logger (pci, severity, msgid,  msg){
+			//var syslog = this.container.get("syslog");
+			if (! msgid) msgid = "SERVICE ROUTER";
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		};
 
-	Router.prototype.logger = function(pci, severity, msgid,  msg){
-		//var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "SERVICE ROUTER";
-		return this.syslog.logger(pci, severity, msgid,  msg);
-	};
-
-	Router.prototype.nodeReader = function(obj){
-		//console.log(require('util').inspect(obj, {depth: null}));
-		for (var route in obj){
-			var name = route ;
-			var newRoute = new nodefony.Route(route);
-			for ( var ele in obj[route] ){
-				var arg = obj[route][ele];
-				switch ( ele ){
-					case "pattern" :
-						newRoute.setPattern(arg);
-					break;
-					case "host" :
-						newRoute.setHostname(arg);
-					break;					
-					case "firewalls" :
-						newRoute.setFirewallConfigRoute(arg);
-					break;
-					case "defaults" :
-						for (var ob in arg){
-							newRoute.addDefault(ob, arg[ob] );	
-						}
-					break;
-					case "requirements" :
-						for (var ob in arg){
-							newRoute.addRequirement(ob, arg[ob] );	
-						}
-					break;
-					case "options" :
-						for (var ob in arg){
-							newRoute.addOptions(ob, arg[ob] );	
-						}
-					break;
-					default:
-						this.logger(" Tag : "+ele+ " not exist in routings definition")
+		nodeReader (obj){
+			//console.log(require('util').inspect(obj, {depth: null}));
+			for (var route in obj){
+				var name = route ;
+				var newRoute = new nodefony.Route(route);
+				for ( var ele in obj[route] ){
+					var arg = obj[route][ele];
+					switch ( ele ){
+						case "pattern" :
+							newRoute.setPattern(arg);
+						break;
+						case "host" :
+							newRoute.setHostname(arg);
+						break;					
+						case "firewalls" :
+							newRoute.setFirewallConfigRoute(arg);
+						break;
+						case "defaults" :
+							for (var ob in arg){
+								newRoute.addDefault(ob, arg[ob] );	
+							}
+						break;
+						case "requirements" :
+							for (var ob in arg){
+								newRoute.addRequirement(ob, arg[ob] );	
+							}
+						break;
+						case "options" :
+							for (var ob in arg){
+								newRoute.addOptions(ob, arg[ob] );	
+							}
+						break;
+						default:
+							this.logger(" Tag : "+ele+ " not exist in routings definition")
+					}
 				}
+				newRoute.compile();
+				//this.addRoute(name, newRoute);
+				this.setRoute(name, newRoute);
 			}
-			newRoute.compile();
-			//this.addRoute(name, newRoute);
-			this.setRoute(name, newRoute);
-		}
+		};	
 	};	
 
 	return Router;

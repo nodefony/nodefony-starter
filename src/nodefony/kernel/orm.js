@@ -110,10 +110,10 @@ nodefony.register("orm", function(){
 		initializeLog (){
 			
 			var red, blue, green, reset;
-			red   = '\x21[31m';
-			blue  = '\x21[34m';
-			green = '\x21[32m';
-			reset = '\x21[0m';
+			red   = '\x1B[31m';
+			blue  = '\x1B[34m';
+			green = '\x1B[32m';
+			reset = '\x1B[0m';
 			
 			var syslog =  new nodefony.syslog(settingsSyslog);
 			

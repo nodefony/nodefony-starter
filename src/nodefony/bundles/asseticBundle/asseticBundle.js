@@ -319,14 +319,14 @@ nodefony.registerBundle ("assetic", function(){
             					delete token.match; // cleanup
             					return token;
         				},
-        				parse:  (token, context, chain) => {
+        				parse:  function (token, context, chain)  {
 						var cdn = that.settings.CDN.javascripts;
 						if (cdn){
 							context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{
 							context["asset_url"] = token.assetic.output ;
 						}
-                				output = Twig.parse.apply(this, [token.output, context]);
+                				var output = Twig.parse.apply(this, [token.output, context]);
             					return {
                 					chain: chain,
                 					output: output
@@ -385,14 +385,15 @@ nodefony.registerBundle ("assetic", function(){
             					delete token.match; // cleanup
             					return token;
         				},
-        				parse:  (token, context, chain) => {
+        				parse:  function (token, context, chain)  {
 						var cdn = that.settings.CDN.stylesheets ;
 						if (cdn){
 							context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{
 							context["asset_url"] = token.assetic.output ;
 						}
-                				output = Twig.parse.apply(this, [token.output, context]);
+						//console.log(this)
+                				var output = Twig.parse.apply(this, [token.output, context]);
 						//console.log("PARSE : " + token.assetic.output)
             					return {
                 					chain: chain,

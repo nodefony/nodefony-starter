@@ -686,7 +686,7 @@ nodefony.register("syslog", function(){
 				var func = (pdu) => {
                				var res = myFuncCondition(Conditions, pdu)
                				if (res){
-                   				callback.apply(context || this, arguments)
+                   				callback.call(context || this, pdu)
                				}
            			};
            			super.listen(this, "onLog", func);
