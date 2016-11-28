@@ -25,7 +25,7 @@ nodefony.register("appKernel",function(){
 				"./src/nodefony/bundles/sequelizeBundle",
 				"./src/nodefony/bundles/usersBundle",
 				"./src/nodefony/bundles/documentationBundle",
-				//"./src/nodefony/bundles/unitTestBundle",
+				"./src/nodefony/bundles/unitTestBundle",
 				//"./src/bundles/demoBundle"
 			]);
 
@@ -46,10 +46,8 @@ nodefony.register("appKernel",function(){
 
 					// create WEBSOCKET SECURE server
 					var wss = this.get("websocketServerSecure").createServer(https);
-
 				});
 			};
-					
 		};
 	};
 

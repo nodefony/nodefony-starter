@@ -92,6 +92,27 @@ nodefony.register("kernel", function(){
 		});
 	};
 
+	var logConsoleNodefony = function(syslog){
+		var red, blue, green, reset;
+		red   = '\x1b[31m';
+		blue  = '\x1b[34m';
+		green = '\x1b[32m';
+		yellow = '\x1B[33m';
+		reset = '\x1b[0m';
+
+		// CRITIC ERROR
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"CRITIC,ERROR"
+			}		
+		},(pdu) => {
+			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+			var date = new Date(pdu.timeStamp) ;
+			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+		});
+	};
+
+
 	/**
 	 *	KERKEL class   
 	 *	The class is a **`KERNEL NODEFONY`** .
@@ -263,23 +284,15 @@ nodefony.register("kernel", function(){
 			this.process = process ;
 			if (cluster.isMaster) {
 				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER MASTER \x1b[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId+"\n");
-				//this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
 				this.fire("onCluster", "MASTER", this,  process);
 
 			}else if (cluster.isWorker) {
-				//this.logger("		      \033[34m"+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.process+"\n", "INFO", "SERVER WELCOME");
 				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER WORKER \x1b[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId);
-				//this.sendMessage("		      \033[34mNODEFONY "+this.type+" WORKER \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId);
 				this.workerId = cluster.worker.id ;
 				this.worker = cluster.worker ;
-				//this.logger("\x1B[33m EVENT KERNEL onCluster\033[0m", "DEBUG");
 				this.fire("onCluster", "WORKER",  this, process);
 				process.on("message" , this.listen(this, "onMessage" ) ); 
 				this.listen(this, "onMessage", function(worker, message){
-					//console.log(this.worker)
-					//console.log(this.process)
-					//console.log(arguments)
-					//console.log("PASS onMessage")
 				})
 			}
 		}
@@ -317,8 +330,11 @@ nodefony.register("kernel", function(){
 		initializeLog (options){
 			var syslog =  new nodefony.syslog(settingsSyslog);
 			if (this.type === "CONSOLE") {
-				if ( this.environment === "dev" )
+				if ( this.environment === "dev" ){
 					logConsole.call(this, syslog);
+				}else{
+					logConsoleNodefony.call(this, syslog);	
+				}
 				return syslog ;
 			}
 			if ( this.settings.system.log.console ||  this.environment === "dev"){
@@ -408,7 +424,7 @@ nodefony.register("kernel", function(){
 	 	*	@method getName 
          	*/
 		getName (){
-			this.name = "KERNEL";//path.basename(this.rootDir);	
+			this.name = "KERNEL";	
 		};
 		
 		/**
@@ -609,7 +625,12 @@ nodefony.register("kernel", function(){
 							// ROUTING
 							try {
 								this.logger("ROUTER LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
-								this.container.get("router").reader(ele.path);
+								var router = this.container.get("router") ;
+								if ( router ){
+									router.reader(ele.path);
+								}else{
+									this.logger("Router service not ready to LOAD FILE :"+ele.path ,"WARNING", "SERVICE KERNEL READER");	
+								}
 							}catch(e){
 								this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG ROUTING :"+ele.name)
 							}

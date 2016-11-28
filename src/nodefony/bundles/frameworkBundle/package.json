@@ -1,0 +1,15 @@
+{
+	"name": "nodefony-framework",
+	"version": "1.0",
+	"description": "Bundle Framework ",
+	"contributors": [],
+	"scripts": {},
+	"keywords": [
+		"nodefony",
+		"javascript"
+	],
+	"dependencies": {
+	},
+	"author": "cci <christophe.camensuli@gmail.com>",
+	"license": "CECILL-B"
+}

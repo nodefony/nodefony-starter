@@ -49,20 +49,23 @@ nodefony.registerBundle ("unitTest", function(){
 	 *	@param {class} container
 	 *	
 	 */
-	var unitTest = function(kernel, container){
+	var unitTest = class unitTest extends nodefony.Bundle {
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+		constructor (kernel, container){
 
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
+			super(kernel, container);
 
-		/*
-		 *	If you want kernel wait unitTestBundle event <<onReady>> 
-		 *
-		 *      this.waitBundleReady = true ; 
-		 */	
-		
+			// load bundle library 
+			this.autoLoader.loadDirectory(this.path+"/core");
+
+			
+			/*
+		 	*	If you want kernel wait unitTestBundle event <<onReady>> 
+		 	*
+		 	*      this.waitBundleReady = true ; 
+		 	*/	
+			
+		};
 	};
 
 	return unitTest;

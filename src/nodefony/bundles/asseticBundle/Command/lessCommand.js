@@ -8,21 +8,22 @@
 
 nodefony.registerCommand("less",function(){
 
-	
 
-	var Less = function(container, command, options){
+	var Less = class Less {
+		constructor(container, command, options){
 
-		this.engine = require("less");
-		var arg = command[0].split(":");
+			this.engine = require("less");
+			var arg = command[0].split(":");
 
-		switch ( arg[1] ){
-			case "render" :
-			break;
-			default:
-				this.logger(new Error(command[0] + " command error"),"ERROR")
-				this.showHelp();
-		}
-	}
+			switch ( arg[1] ){
+				case "render" :
+				break;
+				default:
+					this.logger(new Error(command[0] + " command error"),"ERROR")
+					this.showHelp();
+			}
+		};
+	};
 
 
 	return {
