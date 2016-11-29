@@ -55,10 +55,11 @@ nodefony.registerService("dmsg", function(){
 			this.port = 1316;
 			this.nbConnections = 0;
 
-			this.createWatcher();
-
-			this.server = null;	
-			this.createServer();
+			if ( this.kernel.type === "SERVER" ) {
+				this.createWatcher();
+				this.server = null;	
+				this.createServer();
+			}
 
 		};
 

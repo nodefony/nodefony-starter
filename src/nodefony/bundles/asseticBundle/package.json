@@ -9,9 +9,9 @@
 		"javascript"
 	],
 	"dependencies": {
-		"less": "*",
-		"uglify-js": "*",
-		"uglifycss" :"*"
+		"less": "2.7.1",
+		"uglify-js": "2.7.4",
+		"uglifycss" :"0.0.25"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

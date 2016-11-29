@@ -37,7 +37,7 @@ nodefony.registerService("monitoring", function(){
 			this.port = 1318;
 			this.server = null;
 			this.syslog = kernel.syslog ;
-			if( this.realTime ){
+			if( this.realTime  &&  this.kernel.type === "SERVER" ){
 				this.createServer();
 			}
 			this.kernel.listen(this, "onReady" ,() => {

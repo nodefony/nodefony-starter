@@ -305,18 +305,19 @@ nodefony.register("console", function(){
 				for (var i= 0 ; i < dependencies.length ; i++){
 					var nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
 					this.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
-					npmi(dependencies[i],  (err, result) =>  {
+					npmi(dependencies[i],  function (nodeDep, err, result) {
     						if (err) {
         						if (err.code === npmi.LOAD_ERR)    
 								this.logger(err.message, "ERROR", "NMPI load error");
         						else if (err.code === npmi.INSTALL_ERR) 
 								this.logger(err.message, "ERROR", "NMPI install error");
 							this.logger("Try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMPI install error");
+							return ;
 							//this.terminate();
     						}
 						// installed
 						this.logger(nodeDep+' installed successfully in nodefony');
-					});
+					}.bind(this, nodeDep));
 
 				}
 				//this.terminate();
@@ -324,7 +325,7 @@ nodefony.register("console", function(){
 			}catch(e){
 				console.trace(e);
 				if (e.code != "ENOENT"){
-						this.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
+					this.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
 				}
 			}
 		};

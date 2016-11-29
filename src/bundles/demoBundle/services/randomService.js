@@ -81,8 +81,11 @@ nodefony.registerService("random", function(){
 			this.domain = kernel.domain;
 			this.port = 1315;
 			this.server = null;
-			this.createServer();
-			this.protocol = new nodefony.io.protocol["json-rpc"]();
+
+			if ( this.kernel.type === "SERVER" ) { 
+				this.createServer();
+				this.protocol = new nodefony.io.protocol["json-rpc"]();
+			}
 		};
 
 		logger (pci, severity, msgid,  msg){

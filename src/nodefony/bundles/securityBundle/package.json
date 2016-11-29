@@ -9,13 +9,13 @@
 		"javascript"
 	],
 	"dependencies": {
-		"passport": "*",
-		"passport-http":"*",
-		"passport-local":"*",
+		"passport": "0.3.2",
+		"passport-http":"0.3.0",
+		"passport-local":"1.0.0",
 		"passport-nodefony":"*",
-		"passport-google-oauth":"*",
-		"passport-github2":"*",
-		"passport-ldapauth":"*"
+		"passport-google-oauth":"1.0.0",
+		"passport-github2":"0.1.10",
+		"passport-ldapauth":"0.6.0"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

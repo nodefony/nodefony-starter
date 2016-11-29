@@ -30,6 +30,11 @@ branches:
   only:
   - master
 
+cache:
+  directories:
+    - node_modules # NPM packages
+
+
 addons:
   hosts:
     - nodefony.com
