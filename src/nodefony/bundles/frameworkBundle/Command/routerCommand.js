@@ -51,7 +51,7 @@ nodefony.registerCommand("router",function(){
 				default:
 					this.showHelp()
 			}
-			this.terminate();
+			this.terminate(0);
 		}
 
 		getRoutes (name, display){

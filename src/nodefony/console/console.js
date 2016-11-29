@@ -140,7 +140,6 @@ nodefony.register("console", function(){
 			this.syslog = this.initializeLog(settingsSysLog);
 
 			this.commands = {};
-			//this.workerSyslog = this.initWorkerSyslog(settingsSysLog);
 			this.getOptsTab = [];
 			
 			if ( process.argv[2] && process.argv[2] === "npm:install" ||  process.argv[2] && process.argv[2] === "npm:list" ){
@@ -309,11 +308,11 @@ nodefony.register("console", function(){
 					npmi(dependencies[i],  (err, result) =>  {
     						if (err) {
         						if (err.code === npmi.LOAD_ERR)    
-								this.logger(err.message, "ERROR", "NMP load error");
+								this.logger(err.message, "ERROR", "NMPI load error");
         						else if (err.code === npmi.INSTALL_ERR) 
-								this.logger(err.message, "ERROR", "NMP install error");
-							this.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
-							this.terminate();
+								this.logger(err.message, "ERROR", "NMPI install error");
+							this.logger("Try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMPI install error");
+							//this.terminate();
     						}
 						// installed
 						this.logger(nodeDep+' installed successfully in nodefony');
