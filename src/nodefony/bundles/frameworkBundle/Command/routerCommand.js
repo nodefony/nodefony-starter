@@ -112,21 +112,21 @@ nodefony.registerCommand("router",function(){
 		};*/
 
 
-		displayTable (titre, ele){
+		displayTable (titre, ele, firstMatch){
 			var table = new AsciiTable(titre);
 			table.setHeading(
 				"NB", 
 				"ROUTE",
 				"PATH",
-				"VARIABLES",
-				"HOST",
+				//"VARIABLES",
+				//"HOST",
 				"BUNDLE",
 				"CONTROLLER",
 				"ACTION",
-				"OPTIONS",
+				//"OPTIONS"
 				//"SCHEMES",
-				"PATTERN",
-				"FIRST MATCH"		
+				//"PATTERN",
+				firstMatch ? "FIRST MATCH" :" " 		
 			);
 			table.setAlignCenter(3);
 			table.setAlignCenter(11);
@@ -136,15 +136,15 @@ nodefony.registerCommand("router",function(){
 					i+1,
 					ele[i].name,
 					ele[i].path,
-					ele[i].variables,
-					ele[i].host|| "",
+					//ele[i].variables,
+					//ele[i].host|| "",
 					detail[0],
 					detail[1],
 					detail[2],
-					util.inspect( ele[i].options),
+					//util.inspect( ele[i].options)
 					//ele[i].schemes|| "",
-					ele[i].pattern,
-					ele[i].firstMatch || ""
+					//ele[i].pattern,
+					firstMatch ? ele[i].firstMatch || "" : " "
 				);
 			}
 			//table.removeBorder()
@@ -167,7 +167,7 @@ nodefony.registerCommand("router",function(){
 			}
 			if (tab.length){
 				tab[0]["firstMatch"] = "*";
-				this.displayTable("MATCH URL : "+ Url, tab);
+				this.displayTable("MATCH URL : "+ Url, tab, true);
 			}else{
 				this.logger("no routes match ","ERROR")
 				this.displayTable("no routes match GENARATE ALL ROUTE", routes);

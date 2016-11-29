@@ -26,11 +26,15 @@ install:
 	@if [ $(VERBOSE) = 0 ] ; then \
 		echo "./console router:generate:routes";\
 		./console router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
 		echo "./console npm:list";\
 		./console npm:list ;\
 	else \
 		echo "./.console_dev router:generate:routes";\
 		./.console_dev router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
 		echo "./.console_dev npm:list";\
 		./.console_dev npm:list ;\
 	fi \
