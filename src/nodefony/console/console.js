@@ -147,15 +147,16 @@ nodefony.register("console", function(){
 	 	*	@param {Function} callbackFinish
          	*/
 		registerBundles (path, callbackFinish, nextick){
-			var func = () => {
+			//console.log(arguments)
+			
+			var func = ( Path ) => {
 				try{
 					var finder = new nodefony.finder( {
-						path:path,
+						path:Path,
 						recurse:false,
 						onFile:(file) => {
 							if (file.matchName(this.regBundle)){
 								try {
-									//this.loadBundle(file);
 									if ( process.argv[2] && process.argv[2] === "npm:install" ){
 										var name = this.getBundleName(file.name);
 										this.InstallPackage(name, file);	
@@ -175,10 +176,15 @@ nodefony.register("console", function(){
 					this.workerSyslog.logger(e, "ERROR");
 				}
 			}
+			
 			if ( nextick === undefined ){
-				process.nextTick( func.bind(this) );	
+				process.nextTick( () =>{
+					func.call(this, path );
+				})
+				//func.apply(this)
+				//process.nextTick( func.bind(this) );	
 			}else{
-				func.apply(this)	
+				func.call(this, path )	
 			}
 		};
 
@@ -251,30 +257,34 @@ nodefony.register("console", function(){
 
 				var dependencies = createNpmiDependenciesArray(conf.path, options) ;
 
+				var myLogger = this.workerSyslog || this.syslog ;
+
 				for (var i= 0 ; i < dependencies.length ; i++){
 					var nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
-					this.workerSyslog.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
+					myLogger.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
 					npmi(dependencies[i],  (err, result) =>  {
     						if (err) {
         						if (err.code === npmi.LOAD_ERR)    
-								this.workerSyslog.logger(err.message, "ERROR", "NMP load error");
+								myLogger.logger(err.message, "ERROR", "NMP load error");
         						else if (err.code === npmi.INSTALL_ERR) 
-								this.workerSyslog.logger(err.message, "ERROR", "NMP install error");
-							this.workerSyslog.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
+								myLogger.logger(err.message, "ERROR", "NMP install error");
+							myLogger.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
 							this.terminate();
     						}
 						// installed
-						this.workerSyslog.logger(nodeDep+' installed successfully in nodefony');
+						myLogger.logger(nodeDep+' installed successfully in nodefony');
 					});
 
 				}
 				//this.terminate();
 
 			}catch(e){
+				myLogger = this.workerSyslog || this.syslog ;
+				console.log(e)
 				//console.log(this.workerSyslog)
 				if (e.code != "ENOENT"){
-					if ( this.workerSyslog ){
-						this.workerSyslog.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
+					if ( myLogger ){
+						myLogger.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
 					}else{
 						this.syslog.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
 					}
@@ -414,7 +424,7 @@ nodefony.register("console", function(){
 			return res;
 		};
 
-		readBundleDirectory (path){
+		/*readBundleDirectory (path){
 			var finder = new nodefony.finder({
 				path:path,
 				recurse:false,
@@ -424,7 +434,7 @@ nodefony.register("console", function(){
 					}
 				}
 			})	
-		};
+		};*/
 
 		startTimer (name){
 			this.startTime = new Date();	

@@ -270,7 +270,11 @@ nodefony.register("kernel", function(){
 				//bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			}
 
-			this.fire("onPreRegister", this );
+			try {
+				this.fire("onPreRegister", this );
+			}catch(e){
+				this.logger(e);
+			}
 			this.registerBundles(bundles, () => {
 				this.preboot = true ;
 				this.logger("\x1B[33m EVENT KERNEL onPreBoot\x1b[0m", "DEBUG");
