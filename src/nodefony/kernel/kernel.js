@@ -92,25 +92,6 @@ nodefony.register("kernel", function(){
 		});
 	};
 
-	var logConsoleNodefony = function(syslog){
-		var red, blue, green, reset;
-		red   = '\x1b[31m';
-		blue  = '\x1b[34m';
-		green = '\x1b[32m';
-		yellow = '\x1B[33m';
-		reset = '\x1b[0m';
-
-		// CRITIC ERROR
-		syslog.listenWithConditions(this,{
-			severity:{
-				data:"CRITIC,ERROR"
-			}		
-		},(pdu) => {
-			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
-			var date = new Date(pdu.timeStamp) ;
-			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
-		});
-	};
 
 
 	/**
@@ -333,14 +314,7 @@ nodefony.register("kernel", function(){
          	*/
 		initializeLog (options){
 			var syslog =  new nodefony.syslog(settingsSyslog);
-			if (this.type === "CONSOLE") {
-				if ( this.environment === "dev" ){
-					logConsole.call(this, syslog);
-				}else{
-					logConsoleNodefony.call(this, syslog);	
-				}
-				return syslog ;
-			}
+			
 			if ( this.settings.system.log.console ||  this.environment === "dev"){
 			
 				logConsole.call(this, syslog);
@@ -464,7 +438,6 @@ nodefony.register("kernel", function(){
 			var ret = regBundleName.exec(str);
 			return  ret[1] ;
 		};
-
 		
 		loadBundle (file){
 			try {

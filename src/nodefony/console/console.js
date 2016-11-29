@@ -40,20 +40,7 @@ nodefony.register("console", function(){
     		return deps;
 	};
 
-	var settingsSysLog = {
-		//rateLimit:100,
-		//burstLimit:10,
-		moduleName:"CONSOLE",
-		defaultSeverity:"INFO"
-	};
-
-	/*
- 	 *
- 	 */
-	var syslogger = function(){
-		this.workerSyslog.logger.apply(this.workerSyslog, arguments)
-	};
-
+	
 	var generateHelp = function(obj, str){
 		str+= "\x1B[32mnodefony\x1B[0m\n"
 		str +=  "\t\x1B[32m"+ "npm:list"+"\x1B[0m							 List all installed packages \n";
@@ -93,24 +80,67 @@ nodefony.register("console", function(){
 		console.log(table.render());	
 	};
 
+
+	var settingsSysLog = {
+		//rateLimit:100,
+		//burstLimit:10,
+		moduleName:"CONSOLE",
+		defaultSeverity:"INFO"
+	};
+	
+	var logConsoleNodefony = function(syslog){
+		
+		var red, blue, green, reset;
+		red   = '\x1b[31m';
+		blue  = '\x1b[34m';
+		green = '\x1b[32m';
+		yellow = '\x1B[33m';
+		reset = '\x1b[0m';
+
+		// CRITIC ERROR
+		syslog.listenWithConditions(this,{
+			severity:{
+				data:"CRITIC,ERROR"
+			}		
+		},(pdu) => {
+			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+			var date = new Date(pdu.timeStamp) ;
+			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+		});
+
+		// INFO DEBUG
+		var data ;
+		this.debug ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
+		syslog.listenWithConditions(this, {
+			severity:{
+				data:data
+			}		
+		},(pdu) => {
+			if ( pdu.msgid === "SERVER WELCOME"){
+				console.log(   blue + "              "+reset + " "+ pdu.payload);	
+				return ;
+			}
+			var date = new Date(pdu.timeStamp) ;
+			console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+		});
+	};
+
+
 	var Console = class Console extends nodefony.appKernel {
+
 		constructor (environment, debug, loader , settings){
-			
 			// App Kernel 
 			super("CONSOLE", environment, debug, loader, {
-				/*onPreRegister:function(){
-					console.log("		      \033[34m"+this.type+" \033[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+process.pid+"\n");
-				},*/
 				onBoot:function(){
 					if ( process.argv[2] && process.argv[2] === "npm:list" ){
 						this.listPackage(this.rootDir+"/package.json")
 					}	
 				}
-
 			});
+			this.syslog = this.initializeLog(settingsSysLog);
 
 			this.commands = {};
-			this.workerSyslog = this.initWorkerSyslog(settingsSysLog);
+			//this.workerSyslog = this.initWorkerSyslog(settingsSysLog);
 			this.getOptsTab = [];
 			
 			if ( process.argv[2] && process.argv[2] === "npm:install" ||  process.argv[2] && process.argv[2] === "npm:list" ){
@@ -123,7 +153,7 @@ nodefony.register("console", function(){
 					if (ret)
 						this.terminate(1);
 				}catch(e){
-					this.logger(e);
+					this.logger(e, "ERROR");
 					this.terminate(1);
 					return ;
 				}
@@ -131,7 +161,7 @@ nodefony.register("console", function(){
 					try {
 						var res = this.matchCommand();
 					}catch(e){
-						this.logger(e);
+						this.logger(e,  "ERROR");
 						this.terminate(1);
 					}
 				})
@@ -139,6 +169,21 @@ nodefony.register("console", function(){
 			
 			
 		};
+
+		initializeLog ( settings ) {
+			var syslog =  new nodefony.syslog(settingsSysLog);
+			logConsoleNodefony.call(this, syslog);	
+			return syslog ;
+		}
+
+			/**
+	 	*	@method logger
+         	*/
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "CONSOLE "
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		};
+
 
 		/**
 	 	*	register Bundle 
@@ -165,7 +210,7 @@ nodefony.register("console", function(){
 									}
 								}catch(e){
 									console.trace(e)
-									this.workerSyslog.logger(e, "ERROR");
+									this.logger(e, "ERROR");
 								}	
 							}
 						},
@@ -173,7 +218,7 @@ nodefony.register("console", function(){
 					});
 				}catch(e){
 					console.log(e)
-					this.workerSyslog.logger(e, "ERROR");
+					this.logger(e, "ERROR");
 				}
 			}
 			
@@ -192,7 +237,7 @@ nodefony.register("console", function(){
 			var conf = require(conf);
 			npm.load(conf, (error) => {
 				if (error){
-					this.workerSyslog.logger(error,"ERROR");
+					this.logger(error,"ERROR");
 					this.terminate();
 					return ;
 				}
@@ -218,14 +263,14 @@ nodefony.register("console", function(){
 				var config = require(conf.path);
 				npm.load( config ,(error) => {
 					if (error){
-						this.workerSyslog.logger(error, "ERROR");
+						this.logger(error, "ERROR");
 						this.terminate();
 					}
 					var dependencies = createNpmDependenciesArray(conf.path) ;
-					this.workerSyslog.logger("Install Package BUNDLE : "+ name,"INFO");
+					this.logger("Install Package BUNDLE : "+ name,"INFO");
 					npm.commands.install(dependencies,  (er, data) => {
 						if (er){
- 				       			this.workerSyslog.logger(er, "ERROR", "SERVICE NPM BUNDLE " + name);
+ 				       			this.logger(er, "ERROR", "SERVICE NPM BUNDLE " + name);
 							this.terminate();
 							return ;
 						}
@@ -235,7 +280,7 @@ nodefony.register("console", function(){
 
 			}catch(e){
 				if (e.code != "ENOENT"){
-					this.workerSyslog.logger("Install Package BUNDLE : "+ name +":"+e,"ERROR");
+					this.logger("Install Package BUNDLE : "+ name +":"+e,"ERROR");
 					throw e ;
 				}
 			}
@@ -257,42 +302,35 @@ nodefony.register("console", function(){
 
 				var dependencies = createNpmiDependenciesArray(conf.path, options) ;
 
-				var myLogger = this.workerSyslog || this.syslog ;
 
 				for (var i= 0 ; i < dependencies.length ; i++){
 					var nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
-					myLogger.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
+					this.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
 					npmi(dependencies[i],  (err, result) =>  {
     						if (err) {
         						if (err.code === npmi.LOAD_ERR)    
-								myLogger.logger(err.message, "ERROR", "NMP load error");
+								this.logger(err.message, "ERROR", "NMP load error");
         						else if (err.code === npmi.INSTALL_ERR) 
-								myLogger.logger(err.message, "ERROR", "NMP install error");
-							myLogger.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
+								this.logger(err.message, "ERROR", "NMP install error");
+							this.logger("try to install in mode cli   : npm install  "+nodeDep, "ERROR", "NMP install error");
 							this.terminate();
     						}
 						// installed
-						myLogger.logger(nodeDep+' installed successfully in nodefony');
+						this.logger(nodeDep+' installed successfully in nodefony');
 					});
 
 				}
 				//this.terminate();
 
 			}catch(e){
-				myLogger = this.workerSyslog || this.syslog ;
-				console.log(e)
-				//console.log(this.workerSyslog)
+				console.trace(e);
 				if (e.code != "ENOENT"){
-					if ( myLogger ){
-						myLogger.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
-					}else{
-						this.syslog.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
-					}
+						this.logger("Install Package BUNDLE : "+ name +":"+e,"WARNING");
 				}
 			}
 		};
 
-		initWorkerSyslog (settings){
+		/*initWorkerSyslog (settings){
 			var red, blue, reset;
 			red   = '\x1B[31m';
 			blue  = '\x1B[34m';
@@ -329,7 +367,7 @@ nodefony.register("console", function(){
 				console.log(pdu.payload)
 			});
 			return syslog;
-		};
+		};*/
 
 		
 		loadCommand (){
@@ -377,7 +415,7 @@ nodefony.register("console", function(){
 							var worker = this.commands[bundle][cmd];
 							if (worker){
 								worker.prototype.showHelp = this.getopts.showHelp.bind(this.getopts) ;
-								worker.prototype.logger = syslogger.bind(this) ;
+								worker.prototype.logger = this.logger.bind(this) ;
 								try {
 									ret = new worker(this.container, this.cli.argv , this.cli.options );
 								}catch(e){

@@ -40,7 +40,12 @@ nodefony.registerBundle ("assetic", function(){
 				if ( files[i].slice(-1) === '*'  ){
 					files[i] = files[i].slice(0, -1);
 				}
-				var file = new nodefony.fileClass( this.webDir + files[i] ) ;
+				try {
+					var file = new nodefony.fileClass( this.webDir + files[i] ) ;
+				}catch(e){
+					this.kernel.logger(e, "ERROR");
+					continue ;
+				}
 				tab.push(file) ;
 				ino+=file.stats.ino ; 
 			}
@@ -56,7 +61,7 @@ nodefony.registerBundle ("assetic", function(){
 				output = "/assets/"+type+"/"+ret.hash+"_assetic."+type ;
 			}
 			if (this.kernelType === "CONSOLE"){
-				this.kernel.workerSyslog.logger("GENERATE FILE : " + output ,"INFO" );	
+				this.kernel.logger("GENERATE FILE : " + output ,"INFO" );	
 			}
 			try {
 				return  {
@@ -82,7 +87,7 @@ nodefony.registerBundle ("assetic", function(){
 							//TODO multiple filter
 							for ( var j=0 ; j < myFilters.length ; j++ ){
 								if (this.kernelType === "CONSOLE"){
-									this.kernel.workerSyslog.logger("FILE : " + files[i].path + " FILTER : "+myFilters[j].name,"INFO" );	
+									this.kernel.logger("FILE : " + files[i].path + " FILTER : "+myFilters[j].name,"INFO" );	
 								}
 								myFilters[j].filter.call(myFilters[j], files[i] ,function(e, myData){
 									if ( e) {

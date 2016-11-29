@@ -26,9 +26,10 @@ nodefony.registerCommand("Sequelize",function(){
 							}
 							var tab =[];
 							this.ormService.listen(this, "onReadyConnection",(connectionName, connection , service) => {
+								this.logger("DATABASE  : "+connection.options.dialect +" CONNECTION : "+connectionName, "INFO");
 								tab.push( new Promise( (resolve, reject) => {
-										this.logger("DATABASE SYNC : "+connectionName);
-										connection.sync({force: force,logging:this.logger,hooks:true}).then( (db)  => {
+										this.logger("DATABASE SYNC : "+ connectionName);
+										connection.sync({force: force,logging:this.logger, hooks:true}).then( (db)  => {
 											this.logger("DATABASE :" + db.config.database +" CONNECTION : "+connectionName+" CREATE ALL TABLES", "INFO");
 											resolve(connectionName);
 										}).catch( (error) =>  {
@@ -44,7 +45,7 @@ nodefony.registerCommand("Sequelize",function(){
 									this.logger(e,"ERROR");
 								})
 								.done( () => {
-									this.terminate();
+									this.terminate(0);
 								})
 
 							});
@@ -88,10 +89,10 @@ nodefony.registerCommand("Sequelize",function(){
 								})
 								.then( () => {
 									this.logger("LOAD FIXTURE ENTITY :  SUCCESS")		
-									this.terminate();
+									this.terminate(0);
 								})
 								.done( () => {
-									this.terminate();
+									this.terminate(1);
 								})
 							});
 							break;
@@ -107,7 +108,7 @@ nodefony.registerCommand("Sequelize",function(){
 								var conn = this.ormService.getConnection(db);
 								if ( ! conn){
 									this.logger("CONNECTION : "+db +" NOT FOUND" , "ERROR");
-									this.terminate();
+									this.terminate(1);
 									return ;	
 								}
 								var sql = command[2];	
@@ -115,7 +116,7 @@ nodefony.registerCommand("Sequelize",function(){
 								conn.query(sql)
 								.catch( (error) => {
 									this.logger(error, "ERROR");
-									this.terminate();	
+									this.terminate(1);	
 								})
 								.then( (result) => {
 									//console.log(result[0])
@@ -140,14 +141,14 @@ nodefony.registerCommand("Sequelize",function(){
 								var conn = this.ormService.getEntity(entity);
 								if ( ! conn){
 									this.logger("ENTITY : "+entity +" NOT FOUND" , "ERROR");
-									this.terminate();
+									this.terminate(1);
 									return ;	
 								}
 								this.logger( "ENTITY :"+ entity +" \nEXECUTE findAll   " , "INFO");
 								conn.findAll()
 								.catch( (error) => {
 									this.logger(error, "ERROR");
-									this.terminate();	
+									this.terminate(1);	
 								})
 								.then( (result) => {
 									//var attribute = result[0].$options.attributes ;
@@ -156,18 +157,18 @@ nodefony.registerCommand("Sequelize",function(){
 									
 								})
 								.done( () => {
-									this.terminate();
+									this.terminate(0);
 								})
 							break;
 							default:
 								this.showHelp();
-								this.terminate();
+								this.terminate(0);
 						}
 					});
 				break;
 				default:
 					this.showHelp();
-					this.terminate();
+					this.terminate(0);
 			}
 		};
 	};
