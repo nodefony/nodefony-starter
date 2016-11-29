@@ -103,9 +103,9 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 			// LISTEN EVENTS SOCKET	
 
-			this.connection.on('message', this.handleMessage.bind(this));
+			this.connection.on('message', this.handleMessage.bind(this) );
 
-			this.connection.on('close', onClose.bind(this)); 
+			this.connection.on('close', onClose.bind(this) ); 
 
 			/* // assembleFragments:false 
  		 	* this.connection.on('frame', function(webSocketFrame) {
@@ -171,11 +171,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		};
 
 		clean (){
-			delete this.request ;
+			//delete this.request ;
+			this.request = null ;
 			this.response.clean();
-			delete	this.response ;
-			delete 	this.notificationsCenter ;
-			delete this.cookies ;
+			//delete	this.response ;
+			this.response = null ;
+			//delete 	this.notificationsCenter ;
+			this.notificationsCenter = null ;
+			//delete this.cookies ;
+			this.cookies = null ;
 		}
 
 		handleMessage (message){
@@ -245,7 +249,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 		};
 
-
 		send (data, type){
 			//console.log(this.response)
 			if ( this.response ){
@@ -254,7 +257,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}
 			return null ;
 		};
-
 	
 		close (reasonCode, description ){
 			if ( this.connection ){

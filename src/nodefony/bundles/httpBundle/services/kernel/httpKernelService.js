@@ -471,24 +471,24 @@ nodefony.registerService("httpKernel", function(){
 
 					container.set("context", context);
 
-					context.listen(this,"onClose" , function(reasonCode, description){
+					context.listen(this,"onClose" , (reasonCode, description) => {
 						context.fire("onFinish", context, reasonCode, description);
 						delete 	context.extendTwig ;
 						context.clean();
-						context.destroy() ;
+						//context.destroy() ;
 						context = null ;
 						//if (context.profiling) delete context.profiling ;
-						request.destroy() ;
+						//request.destroy() ;
 						request = null ;
-						response.destroy() ;
+						//response.destroy() ;
 						response = null ;
-						container.destroy() ;
+						//container.destroy() ;
 						container = null ;
-						translation.destroy() ;
+						//translation.destroy() ;
 						translation = null ;
 						if (domain) {
 							delete domain.container ;
-							domain.destroy() ;
+							//domain.destroy() ;
 							domain = null ;
 						}
 

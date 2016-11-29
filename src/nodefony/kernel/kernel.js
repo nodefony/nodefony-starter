@@ -243,12 +243,12 @@ nodefony.register("kernel", function(){
 
 			// REALTIME
 			if ( this.settings.system.realtime) {
-				//bundles.push("./vendors/nodefony/bundles/realTimeBundle");
+				bundles.push("./vendors/nodefony/bundles/realTimeBundle");
 			}
 
 			// MONITORING
 			if ( this.settings.system.monitoring) {
-				//bundles.push("./vendors/nodefony/bundles/monitoringBundle");
+				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			}
 
 			try {

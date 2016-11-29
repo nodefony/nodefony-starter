@@ -12,7 +12,8 @@ nodefony.register("wsResponse",function(){
 
 	var Response = class Response {
 
-		construction (connection, container, type){
+		constructor (connection, container, type){
+
 			this.container = container ;
 			this.kernel = this.container.get("kernel") ;
 			this.connection = connection ;
@@ -26,6 +27,7 @@ nodefony.register("wsResponse",function(){
 
 			// struct headers
 			this.headers = {};
+			this.type = "utf8" ; 
 		};
 
 		logger (pci, severity, msgid,  msg){
@@ -33,7 +35,6 @@ nodefony.register("wsResponse",function(){
 			if (! msgid) msgid = "WEBSOCKET RESPONSE";
 			return syslog.logger(pci, severity, msgid,  msg);
 		};
-
 
 		send (data, type){
 			switch (type){
