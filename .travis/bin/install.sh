@@ -1,7 +1,5 @@
 #!/bin/sh
 
-make clean ;
-
 echo "INSTALL NODEFONY TRAVIS ENVIRONEMENT $DB ACTIVE ";
 
 if [ "$DB" = "mysql" ]
@@ -13,11 +11,11 @@ else
 fi
 
 #configuring the system
-make
+make build
 
 if [ "$DB" = "mysql" ]
 then
-	make start & 
+	make deploy & 
 	sleep 5;
 	make status &
 else

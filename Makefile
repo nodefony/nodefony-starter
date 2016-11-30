@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: framework npm  install 
+all:  install 
 
 install:
 	@echo "";
@@ -18,9 +18,36 @@ install:
 		./.console_dev npm:install ;\
 	fi \
 
-	@echo "make asset";
-	make asset
-	@echo "make sequelize";
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#        NODEFONY ASSETS INSTALL        #" ;
+	@echo "#########################################" ;
+	@echo "";
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console assets:install" ;\
+		./console assets:install ;\
+	else \
+		echo "./.console_dev assets:install" ;\
+		./.console_dev assets:install ;\
+	fi \
+
+build:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY BUILD             #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	#@echo "make clean";
+	make clean ;
+
+	#@echo "make npm";
+	make npm ;
+	
+	#@echo "make install";
+	make install ;
+
+	#@echo "make sequelize";
 	make sequelize
 
 	@if [ $(VERBOSE) = 0 ] ; then \
@@ -38,14 +65,6 @@ install:
 		echo "./.console_dev npm:list";\
 		./.console_dev npm:list ;\
 	fi \
-
-	
-node:
-	@echo "make framework";
-	make framework
-	@echo "make install";
-	make install
-
 
 #
 # PM2 MANAGEMENT PRODUCTION 
@@ -96,8 +115,9 @@ npm:
 		fi \
 	fi
 
-deps:
-	./console npm:install
+deploy:
+	make asset ;
+	make start ;
 
 asset:
 	@echo "";
@@ -214,8 +234,7 @@ clean:
 		echo ""; \
 		rm -rf web/* ; \
 	fi
-	make framework
+	make framework ;
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc
-
