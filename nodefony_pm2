@@ -18,23 +18,25 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	config.merge_logs= true;
 
 	pm2.connect(true, function() {
+		console.log("PM2 CONNECT")
+		console.log(config);
 		
   		pm2.start(config, function(err) {
+			console.log("PM2 START")
     			if (err) return console.error('Error while launching applications', err.stack || err);
 
     			// Display logs in standard output 
     			pm2.launchBus(function(err, bus) {
-				bus.on('process:msg',function(packet) {
-					//console.log( packet.process )
-					//console.log( packet )
-      				});
-      				/*bus.on('log:out', function(packet) {
-       					//console.log( packet.data );
-      				});
-
-      				bus.on('log:err', function(packet) {
-        				//console.error('[App:%s][Err] %s', packet.process.name, packet.data);
-      				});*/
+				//bus.on('process:msg',function(packet) {
+				//	console.log( packet.process )
+				//	console.log( packet )
+      				//});
+      				//bus.on('log:out', function(packet) {
+       				//	console.log( packet.data );
+      				//});
+      				//bus.on('log:err', function(packet) {
+        			//	console.error('[App:%s][Err] %s', packet.process.name, packet.data);
+      				//});
     			});
   		});
 	});

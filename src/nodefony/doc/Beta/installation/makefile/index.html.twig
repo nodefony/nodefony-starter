@@ -10,15 +10,21 @@
 
 <h2>BUILD NODEFONY FRAMEWORK </h2>
 
-<h3>Build All</h3>
+<h3>Build</h3>
 
 <div class="doc3">
+	<p>
+		Must be call the first time   ( generally after clone repo )</br>
+		If you want Makefile be verbose on dependencies npm install  open Makefile and set VERBOSE = 1 
+		<ul>
+			<li>Build all sources of NODEFONY framework</li>
+		</ul>
+	</p>
+
 <pre>
-$ make 
+$ make build
 </pre>
 </div>
-
-
 
 <h3>Makefile build differents part of framework :</h3>
 
@@ -33,17 +39,10 @@ $ make << target >>
 <h3> All </h3>
 <div class="doc3">
 	<p>
-		Must be call the first time   ( generally after clone repo )</br>
-		If you want Makefile be verbose on dependencies npm install  open Makefile and set VERBOSE = 1 
-		<ul>
-			<li>Build all sources of NODEFONY framework</li>
-		</ul>
-	</p>
-	<p>
-	   
+		All target 
 	</p>
 	<pre>
-all: framework npm  install
+		Make
 	</pre>
 </div>
 
@@ -51,7 +50,7 @@ all: framework npm  install
 <h3> framework </h3>
 <div class="doc3">
 	<p>
-		Must be call the first time   ( generally call by 'all' taget )
+		Must be call the first time   ( generally call by 'build' taget )
 	  
 		<ul>
 			<li>Build directories framework</li>
@@ -142,11 +141,33 @@ npm:
 	</p>
 	<pre>
 install:
-	./console npm:install
-	make asset
-	make sequelize
-	./console router:generate:routes
-	./console npm:list
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY INSTALL           #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console npm:install";\
+		./console npm:install ;\
+	else \
+		echo "./.console_dev npm:install";\
+		./.console_dev npm:install ;\
+	fi \
+
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#        NODEFONY ASSETS INSTALL        #" ;
+	@echo "#########################################" ;
+	@echo "";
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console assets:install" ;\
+		./console assets:install ;\
+	else \
+		echo "./.console_dev assets:install" ;\
+		./.console_dev assets:install ;\
+	fi \
+
 	</pre>
 </div>
 

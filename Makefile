@@ -117,7 +117,7 @@ npm:
 
 deploy:
 	make asset ;
-	make start ;
+	make start &
 
 asset:
 	@echo "";
