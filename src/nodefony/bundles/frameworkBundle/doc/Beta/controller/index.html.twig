@@ -139,24 +139,31 @@ nodefony.<strong>registerController</strong>("name", function(){
 		
 		/*
 		 *	Class controller name
-		 *	constructor 
+		 *	 
 		 */ 
-		var <strong>myController</strong> = function(container, context){
-			this.mother = this.$super;
-			this.mother.constructor(container, context);
+		var <strong>myController</strong> = class myController extends nodefony.controller {
+
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			};
+				
+			/*
+		 	*	Action controller
+		 	*	( action render public  ) 
+		 	*
+		 	*/
+			<strong>indexAction</strong>(){
+				var kernel = this.get("kernel") ;
+				var settings = kernel.settings ;
+				var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
+				return this.renderResponse(html);
+			};
+
 		};
-		
-		/*
-		 *	Action controller
-		 *	( action render public with object prototype ) 
-		 *
-		 */
-		<strong>myController</strong>.prototype.indexAction = function(){
-			var kernel = this.get("kernel") ;
-			var settings = kernel.settings ;
-			var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
-			return this.renderResponse(html);
-		};
+
 
 		// RETURN  class
 		return <strong>myController;</strong>
@@ -178,7 +185,7 @@ nodefony.<strong>registerController</strong>("name", function(){
  *	Action index in controller default  
  *
  */
-defaultController.prototype.index<strong>Action</strong> = function(){
+index<strong>Action</strong> (){
 	...
 };
 	
@@ -200,7 +207,7 @@ defaultController.prototype.index<strong>Action</strong> = function(){
  *	 Detect  request context
  *
  */
-defaultController.prototype.indexAction = function(){
+indexAction (){
 
 	// two methods to detect the request context
 
@@ -605,7 +612,7 @@ console.log(response);
 /*
  *	RENDER RAW DATA
  */
-defaultController.prototype.indexAction = function(){
+indexAction (){
 	var kernel = this.get("kernel") ;
 	var settings = kernel.settings ;
 	var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
@@ -618,7 +625,7 @@ defaultController.prototype.indexAction = function(){
 /*
  *	RENDER TEMPLATE 
  */
-defaultController.prototype.indexAction = function(){
+indexAction (){
 	var kernel = this.get("kernel") ;
 	<strong>return this.render("demoBundle:Default:index.html.twig",{
 		settings:kernel.settings	
@@ -631,7 +638,7 @@ defaultController.prototype.indexAction = function(){
 /*
  *	RENDER TEMPLATE AUTO
  */
-defaultController.prototype.indexAction = function(){
+indexAction (){
 	var kernel = this.get("kernel") ;
 	<strong>return {
 		settings:kernel.settings	
@@ -664,12 +671,12 @@ defaultController.prototype.indexAction = function(){
 /*
  *	RENDER RAW DATA
  */
-defaultController.prototype.rawResponseAsyncAction= function(){
+rawResponseAsyncAction(){
 	var kernel = this.get("kernel") ;
 	var settings = kernel.settings ;
 
 	// SYSCALL async 
-	var childHost =  <strong>exec</strong>('hostname', function(error, stdout, stderr){
+	var childHost =  <strong>exec</strong>('hostname', (error, stdout, stderr) => {
 		var hostname = stdout ;	
 
 		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
@@ -683,7 +690,7 @@ defaultController.prototype.rawResponseAsyncAction= function(){
 		return <strong>this.renderResponse</strong>(content, 200 , {
 			"content-type" :"Application/xml"
 		})
-	}.bind(this));
+	});
 
 	<strong>return null;</strong>
 };
@@ -700,7 +707,7 @@ defaultController.prototype.rawResponseAsyncAction= function(){
 <h2 name="logger" id="logger">Controller Logger  :</h2>
 <div class="doc2 ">
 	<pre>
-myController.prototype.indexAction = function(){
+indexAction (){
 	var kernel = this.get("kernel") ;
 	var settings = kernel.settings ;
 	<strong>this.logger( "Nodefony version : Alpha" , "INFO");</strong>
@@ -748,9 +755,9 @@ Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony versi
 </p>
 
 	<pre>
-demoController.prototype.htmlAction= function(name){
+htmlAction (name){
 	var name = "nodefony";
-	return this.renderResponse('&lt;html&gt;&lt;script&gt;console.log("'+name+'")&lt;/script&gt;&lt;/html&gt;');
+	return <strong>this.renderResponse</strong>('&lt;html&gt;&lt;script&gt;console.log("'+name+'")&lt;/script&gt;&lt;/html&gt;');
 };
 
 	</pre>
@@ -765,7 +772,7 @@ demoController.prototype.htmlAction= function(name){
 </p>
 
 	<pre>
-demoController.prototype.indexAction= function(){
+indexAction (){
 	var kernel = this.get("kernel") ;
 	return <strong>this.render</strong>("demoBundle:Default:index.html.twig",{
 		title:"nodefony",
@@ -790,25 +797,25 @@ demoController.prototype.indexAction= function(){
 </p>
 
 	<pre>
-demoController.prototype.querySqlJoinAction = function(){
+querySqlJoinAction (){
 
 	var orm = this.getORM() ;
 
 	var nodefonyDb = orm.getConnection("nodefony") ;
 
 	nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
-	.then(function(result){
+	.then((result) => {
 		var joins = result[0];
 		for (var i = 0 ; i < joins.length ; i++){
 			joins[i].metaBag = JSON.parse( joins[i].metaBag )
 		}
 		return joins ;
-	}.bind(this))
-	.done(function(data){
+	})
+	.done((data) => {
 		<strong>this.renderAsync</strong>('demoBundle:orm:orm.html.twig', {
 			joins:data,
 		});
-	}.bind(this))
+	})
 }
 	</pre>
 
@@ -827,7 +834,7 @@ demoController.prototype.querySqlJoinAction = function(){
 </p>
 
 	<pre>
-demoController.prototype.websoketAction= function(message){
+websoketAction (message){
 	<strong>var context = this.getContext();</strong>
 	switch( this.getMethod() ){
 		case "GET" :
@@ -841,13 +848,13 @@ demoController.prototype.websoketAction= function(message){
 				// PREPARE  PUSH MESSAGES SERVER 
 				// SEND MESSAGES TO CLIENTS
 				var i = 0 ;
-				var id = setInterval(function(){
+				var id = setInterval(() => {
 					var mess = "I am a  message "+ i +"\n" ;
 					<strong>context.send(mess);</strong>
 					// LOG  MESSAGE SENDING IN TERMINAL
 					this.logger( "SEND TO CLIENT :" + mess , "INFO");
 					i++
-				}.bind(this), 1000);
+				}, 1000);
 
 				setTimeout(function(){
 					clearInterval(id);
@@ -897,7 +904,7 @@ Thu Oct 06 2016 15:49:19 INFO REQUEST WEBSOCKET SECURE  : Thu Oct 06 2016 15:49:
 </p>
 
 	<pre>
-demoController.prototype.jsonAction= function(){
+jsonAction (){
 	return <strong>this.renderJson</strong>({
 		foo:"bar",
 		bar:"foo"
@@ -915,7 +922,7 @@ demoController.prototype.jsonAction= function(){
 </p>
 
 	<pre>
-demoController.prototype.downloadAction = function(){
+downloadAction (){
 
 	var kernel = this.get('kernel') ;
 
@@ -936,7 +943,7 @@ demoController.prototype.downloadAction = function(){
 </p>
 
 	<pre>
-demoController.prototype.mediaStreamAction = function(){
+mediaStreamAction (){
 
 	var kernel = this.get('kernel') ;
 
@@ -962,7 +969,7 @@ demoController.prototype.mediaStreamAction = function(){
 </p>
 
 	<pre>
-demoController.prototype.uploadAction = function(){
+uploadAction (){
 	
 	var files = this.<strong>getParameters</strong>("query.files");
 	var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
@@ -1027,7 +1034,7 @@ demoController.prototype.uploadAction = function(){
 <h4 name="redirect" id="redirect"> Redirecting </h4>
 <div class="doc4">
 	<pre>
-demoController.prototype.redirectGoogleAction= function(){
+redirectGoogleAction (){
 	// status 301 or 302
 	return <strong>this.redirect</strong>("http://google.com");
 };
@@ -1040,7 +1047,7 @@ demoController.prototype.redirectGoogleAction= function(){
 <div class="doc4">
 	<pre>
 
-demoController.prototype.docAction = function(){
+docAction (){
 	var docBundle = this.get("kernel").getBundles("documentation"); 
 	if (  docBundle ){
 		return <strong>this.forward</strong>("documentationBundle:default:navDoc");
@@ -1064,7 +1071,7 @@ demoController.prototype.docAction = function(){
 
 	<pre>
 
-demoController.prototype.generateUrlAction = function(){
+generateUrlAction (){
 	// absolute
 	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"},true) );	
 

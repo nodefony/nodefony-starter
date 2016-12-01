@@ -11,24 +11,24 @@ Open Bundle App "appKernel.js" to add new DOCUMENTATION Bundle in **registerBund
 
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader){
-		
-		// kernel constructor
-		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type)
+	var appKernel = class appKernel extends nodefony.kernel {
 
-		/*
-	 	*	Bundles to register in Application
-	 	*/
-		this.registerBundles([
-			"src/nodefony/documentationBundle"
-		]);
+		constructor (type, environment, debug, loader, settings){
+			
+			// kernel constructor
+			super(environment, debug, loader, type, settings)
 
-		...
+			/*
+	 		*	Bundles to register in Application
+	 		*/
+			this.registerBundles([
+				...
+				"src/nodefony/bundles/documentationBundle"
+			]);
 
-
-					
-	}.herite(nodefony.kernel);
+			...
+		};
+	};
 
 	return appKernel;
 })

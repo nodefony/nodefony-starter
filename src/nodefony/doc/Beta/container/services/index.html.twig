@@ -135,19 +135,26 @@ nodefony.<strong>registerService</strong>("name", function(){
 		 *	Class service name
 		 *	constructor 
 		 */ 
-		var <strong>nameService</strong> = function(injection1, injection2){
+		var <strong>nameService</strong> = class <strong>nameService</strong> {
+
+			/*
+		 	*	constructor  service
+		 	*/	
+			constructor (injection1, injection2){
+				this.injection1 = injection1 ;
+				this.injection2 = injection2 ;
+			};
+			
+			/*
+		 	*	Method  service
+		 	*/
+			runTask (){
+				var kernel = this.get("kernel") ;
+				var settings = kernel.settings ;
+			};
 		};
 		
-		/*
-		 *	Method  service
-		 *	 
-		 *
-		 */
-		<strong>nameService</strong>.prototype.runTask = function(){
-			var kernel = this.get("kernel") ;
-			var settings = kernel.settings ;
-		};
-
+		
 		// RETURN  class
 		return <strong>nameService;</strong>
 });
@@ -249,8 +256,6 @@ Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKe
 </div>
 
 
-
-
 <h2  id="service">Services Usage  :</h2>
 
 <div class="doc2">
@@ -267,7 +272,7 @@ Wed Oct 19 2016 14:57:08 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKe
 		</p>
 
 		<pre>
-demoController.prototype.footerAction = function(){
+footerAction (){
 	// get kernel service
 	<strong>var kernel = this.get("kernel");</strong>
 	var version =  kernel.settings.system.version ;

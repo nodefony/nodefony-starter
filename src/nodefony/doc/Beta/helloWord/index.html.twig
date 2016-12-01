@@ -49,30 +49,31 @@ Open Bundle App "appKernel.js" to add new hello Bundle in **registerBundles** ar
 
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader){
+	var appKernel = class appKernel extends nodefony.kernel {
 
-		// kernel constructor
-		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type)
+		constructor (type, environment, debug, loader, settings){
+			
+			// kernel constructor
+			super(environment, debug, loader, type, settings)
 
-		/*
-	 	*	Bundles to register in Application
-	 	*/
-		this.registerBundles([
+			/*
+	 		*	Bundles to register in Application
+	 		*/
+			this.registerBundles([
+				...
+				"./src/bundles/helloBundle"
+			]);
+
 			...
-			"./src/bundles/helloBundle"
-		]);
-
-		...
-
-	}.herite(nodefony.kernel);
+		};
+	};
 
 	return appKernel;
 })
 </pre>
 <h2> Start Nodefony to check new Bundle hello:</h2>
 <pre>
-$ make install
+$ make  or make install
 $ ./nodefony_dev
 </pre>
 

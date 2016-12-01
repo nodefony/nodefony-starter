@@ -100,15 +100,19 @@ var autoloader = require("../vendors/nodefony/core/autoloader");
 var globalContainer  = new nodefony.Container() ;
 
 // CREATE CLASSS TO ADD 
-var myClass = function(){
-	this.settings = {
-		foo:"bar"
+var myClass = class myClass {
+	constructor(){
+		this.settings = {
+			foo:"bar"
+		};
 	};
-}
 
-myClass.prototype.getConfig = function(){
-	return this.settings ;
-}
+	getConfig (){
+		return this.settings ;
+	};
+
+};
+
 
 // SET INSTANCE AS SERVICE TO CONTAINER 
 <strong> globalContainer.set( "myService", new myClass() );</strong>
@@ -361,7 +365,7 @@ Container {
 		</p>
 
 		<pre>
-demoController.prototype.footerAction = function(){
+footerAction (){
 	// get kernel service
 	<strong>var kernel = this.get("kernel");</strong>
 	var version =  kernel.settings.system.version ;
@@ -386,7 +390,7 @@ demoController.prototype.footerAction = function(){
 		</p>
 
 		<pre>
-demoController.prototype.formAction = function(){
+formAction (){
 
 	// get bundle settings ( Paramaters inherits from global container  ) 
 	this.httpSettings = <strong> this.getParameters</strong>("bundles.http");
