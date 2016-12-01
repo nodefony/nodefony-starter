@@ -2,24 +2,185 @@
 
 nodefony.registerController("api", function(){
 
-		/**
-		 *	The class is a **`api` CONTROLLER** .
-		 *	@module api
-		 *	@main api
-		 *	@class api
-		 *	@constructor
-		 *	@param {class} container   
-		 *	@param {class} context
-		 *	
-		 */
-		var apiController = function(container, context){
-			this.mother = this.$super;
-			this.mother.constructor(container, context);
+	var dataTableParsing = function(query, results){
+		var dataTable = {
+			draw: parseInt( query.draw, 10),
+			recordsTotal:results.count,
+			recordsFiltered: ( query.search.value !== "" ? results.rows.length : results.count ) ,
+			data:[]
+		}; 
+		for (var i = 0 ; i < results.rows.length  ; i++){
+			var payload= {};
+			//var data = JSON.parse(results.rows[i].data) ;
+			payload["uid"] = results.rows[i].id ;
+			payload["payload"] = JSON.parse( results.rows[i].data ) ;
+			payload["timeStamp"] = results.rows[i].createdAt ;
+			payload["username"] =  results.rows[i].username ;
+			payload["url"] =  results.rows[i].url ;
+			payload["route"] =  results.rows[i].route ;
+			payload["method"] =  results.rows[i].method ;
+			payload["state"] =  results.rows[i].state ;
+			payload["protocole"] =  results.rows[i].protocole ;
+			payload["remoteAddress"] =  results.rows[i].remoteAddress ;
+			payload["userAgent"] =  results.rows[i].userAgent ;
+			dataTable.data.push(payload);
+		}
+		return dataTable ;
+	}
+
+
+	var dataTableSessionParsing = function(query, results){
+		var dataTable = {
+			draw: parseInt( query.draw, 10),
+			recordsTotal: results.recordsTotal || results.count,
+			recordsFiltered:  results.count  ,
+			data:[]
+		}; 
+
+		for (var i = 0 ; i < results.rows.length  ; i++){
+			var payload= {};
+			payload["session_id"] = results.rows[i].session_id ;
+			payload["context"] =  results.rows[i].context  ;
+			payload["createdAt"] = results.rows[i].createdAt ;
+			payload["updatedAt"] = results.rows[i].updatedAt ;
+			payload["user"] =  results.rows[i].user ? results.rows[i].user : {username:"Anonymous"} ;
+			payload["user_id"] =  results.rows[i].user_id ;
+			payload["Attributes"] =  results.rows[i].Attributes ;
+			payload["flashBag"] =  results.rows[i].flashBag ;
+			payload["metaBag"] =  results.rows[i].metaBag ;
+			dataTable.data.push(payload);
+		}
+		return dataTable ;
+	}
+
+	/**
+	*
+	*	@method 
+	*
+	*/
+	var finderSession = function(Path , Result , finish){
+		var finder = new nodefony.finder({
+			path:Path,
+			/*onFile:function(file){
+				Result.count = Result.count+1 ;
+				var content  = JSON.parse( file.content() ) ;
+				var mtime = new Date( file.stats.mtime );
+				content["updatedAt"] = mtime ;
+				content["session_id"] =file.name ;
+				content["context"] = path.basename(file.dirname() ) ;
+				Result.rows.push(  content )  ;	
+			}.bind(this),*/
+			onFinish:function(error, result){
+				var files = result.getFiles() ;
+				var nbTotal = files.length();
+				Result["recordsTotal"] = nbTotal ;
+
+				// sort
+				var resTmp = files ;
+				for ( var i = 0 ; i < Result.options.order.length ; i++){
+					
+					var colonm = Result.options.order[i][0] ; 
+					var direction = Result.options.order[i][1]
+					var callback = null ; 
+					switch ( colonm ){
+						case "updatedAt" :
+							if ( direction  === "desc"){
+								var callback = function(a,b){
+									//var obj1 = JSON.parse( a.content() ) ;
+									//console.log(a)
+									//var obj2 = JSON.parse( b.content() )
+									//console.log(obj2)
+									var mtimea = new Date( a.stats.mtime ).getTime() ;
+									var mtimeb = new Date( b.stats.mtime ).getTime() ;
+									if ( mtimea > mtimeb) return 1;
+									if (  mtimea < mtimeb) return -1;
+									return 0;
+								}
+							}else{
+								var callback = function(a,b){
+									var mtimea = new Date( a.stats.mtime ).getTime() ;
+									var mtimeb = new Date( b.stats.mtime ).getTime() ;
+									if ( mtimea < mtimeb) return 1;
+									if (  mtimea > mtimeb) return -1;
+									return 0;
+								}
+							}
+						break ;
+						case "username" :
+							if ( direction  === "desc"){
+								var callback = function(a,b){
+									var obj1 = JSON.parse( a.content() ) ;
+									var obj2 = JSON.parse( b.content() ) ;
+									return parseInt (obj2.user_id , 10)  - parseInt (obj1.user_id , 10)
+								}
+							}else{
+								var callback = function(a,b){
+									var obj1 = JSON.parse( a.content() ) ;
+									var obj2 = JSON.parse( b.content() ) ;
+									return parseInt (obj1.user_id , 10)  - parseInt (obj2.user_id , 10)
+								}
+							}	
+						break;
+						default:
+									
+							if ( direction  === "desc"){
+								var callback = function(a,b){
+									var obj1 = JSON.parse( a.content() ) ;
+									var obj2 = JSON.parse( b.content() ) ;
+									if ( obj1[colonm].toString() > obj2[colonm].toString()) return 1;
+									if ( obj1[colonm].toString() < obj2[colonm].toString()) return -1;
+									return 0;
+								}
+							}else{
+								var callback = function(a,b){
+									var obj1 = JSON.parse( a.content() ) ;
+									var obj2 = JSON.parse( b.content() ) ;
+									if ( obj1[colonm].toString() < obj2[colonm].toString()) return 1;
+									if ( obj1[colonm].toString() > obj2[colonm].toString()) return -1;
+									return 0;
+								}
+							}
+							
+					}
+					resTmp = files.sort(callback);
+				}
+				var res = resTmp.slice(Result.options["offset"], Result.options["limit"]+Result.options["offset"] ) ;
+
+				res.forEach(function(file){
+					//console.log(file.content())
+					var content  = JSON.parse( file.content() ) ;
+					var mtime = new Date( file.stats.mtime );
+					content["updatedAt"] = mtime ;
+					content["session_id"] =file.name ;
+					content["context"] = path.basename(file.dirname() ) ;
+					Result.rows.push(  content )  ;	
+				})
+				Result.count = nbTotal ;
+				finish(error, Result);
+			}
+		});
+		return finder;	
+	}
+
+	/**
+		*	The class is a **`api` CONTROLLER** .
+		*	@module api
+		*	@main api
+		*	@class api
+		*	@constructor
+		*	@param {class} container   
+		*	@param {class} context
+		*	
+		*/
+	var apiController =  class apiController extends nodefony.controller {
+
+		constructor (container, context){
+			super(container, context);
 			this.kernel = this.get("kernel") ;
 		};
 
 
-		apiController.prototype.renderRest = function(data, async){
+		renderRest (data, async){
 		
 			var context = this.getContext() ;
 			var type = context.request.queryGet.format || context.request.headers["X-FORMAT"] || "" ;
@@ -49,7 +210,7 @@ nodefony.registerController("api", function(){
 			}
 		};
 
-		apiController.prototype.renderDatatable = function(data, async){
+		renderDatatable (data, async){
 			var context = this.getContext() ;
 
 			var response = this.getResponse() ;
@@ -65,11 +226,11 @@ nodefony.registerController("api", function(){
 
 
 		/**
-		 *
-		 *	@method routesAction
-		 *
-		 */
-		apiController.prototype.routesAction = function(name){
+		*
+		*	@method routesAction
+		*
+		*/
+		routesAction (name){
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -79,11 +240,11 @@ nodefony.registerController("api", function(){
 		};
 
 		/**
-		 *
-		 *	@method servicesAction
-		 *
-		 */
-		apiController.prototype.servicesAction = function(name){
+		*
+		*	@method servicesAction
+		*
+		*/
+		servicesAction (name){
 			var serviceParam = this.container.getParameters("services") ;
 			var services = {}
 			for (var service in serviceParam){
@@ -117,13 +278,12 @@ nodefony.registerController("api", function(){
 			});
 		};
 
-
 		/**
-		 *
-		 *	@method syslogAction
-		 *
-		 */
-		apiController.prototype.syslogAction = function(){
+		*
+		*	@method syslogAction
+		*
+		*/
+		syslogAction (){
 			return this.renderRest({
 				code:200,
 			        type:"SUCCESS",
@@ -132,39 +292,12 @@ nodefony.registerController("api", function(){
 			});
 		};
 
-
-		var dataTableParsing = function(query, results){
-			var dataTable = {
-				draw: parseInt( query.draw, 10),
-				recordsTotal:results.count,
-				recordsFiltered: ( query.search.value !== "" ? results.rows.length : results.count ) ,
-				data:[]
-			}; 
-			for (var i = 0 ; i < results.rows.length  ; i++){
-				var payload= {};
-				//var data = JSON.parse(results.rows[i].data) ;
-				payload["uid"] = results.rows[i].id ;
-				payload["payload"] = JSON.parse( results.rows[i].data ) ;
-				payload["timeStamp"] = results.rows[i].createdAt ;
-				payload["username"] =  results.rows[i].username ;
-				payload["url"] =  results.rows[i].url ;
-				payload["route"] =  results.rows[i].route ;
-				payload["method"] =  results.rows[i].method ;
-				payload["state"] =  results.rows[i].state ;
-				payload["protocole"] =  results.rows[i].protocole ;
-				payload["remoteAddress"] =  results.rows[i].remoteAddress ;
-				payload["userAgent"] =  results.rows[i].userAgent ;
-				dataTable.data.push(payload);
-			}
-			return dataTable ;
-		}
-		
 		/**
-		 *
-		 *	@method requestsAction
-		 *
-		 */
-		apiController.prototype.requestsAction = function(){
+		*
+		*	@method requestsAction
+		*
+		*/
+		requestsAction (){
 			var bundle = this.get("kernel").getBundles("monitoring") ;
 			var storageProfiling = bundle.settings.storage.requests ;
 			switch( storageProfiling ){
@@ -294,11 +427,11 @@ nodefony.registerController("api", function(){
 		}
 
 		/**
-		 *
-		 *	@method requestAction
-		 *
-		 */
-		apiController.prototype.requestAction = function(uid){
+		*
+		*	@method requestAction
+		*
+		*/
+		requestAction (uid){
 			var bundle = this.get("kernel").getBundles("monitoring") ;
 			var storageProfiling = bundle.settings.storage.requests ;
 			switch( storageProfiling ){
@@ -373,11 +506,11 @@ nodefony.registerController("api", function(){
 		}
 
 		/**
-		 *
-		 *	@method requestsAction
-		 *
-		 */
-		apiController.prototype.configAction = function(){
+		*
+		*	@method requestsAction
+		*
+		*/
+		configAction (){
 			var http = this.get("httpServer");
 			if ( http && http.ready){
 				var httpConfig = {	
@@ -460,11 +593,11 @@ nodefony.registerController("api", function(){
 		}
 
 		/**
-		 *
-		 *	@method requestsAction
-		 *
-		 */
-		apiController.prototype.bundleAction = function( bundleName ){
+		*
+		*	@method requestsAction
+		*
+		*/
+		bundleAction ( bundleName ){
 			var config = this.getParameters( "bundles."+bundleName );
 			var bundle = this.get("kernel").getBundle(bundleName)
 			//console.log(bundle)
@@ -516,11 +649,11 @@ nodefony.registerController("api", function(){
 		}
 
 		/**
-		 *
-		 *	@method realTimeAction
-		 *
-		 */
-		apiController.prototype.realtimeAction = function(name){
+		*
+		*	@method realTimeAction
+		*
+		*/
+		realtimeAction (name){
 
 			var service  = this.get("realTime");
 			if ( ! service){
@@ -566,11 +699,11 @@ nodefony.registerController("api", function(){
 		};
 
 		/**
-		 *
-		 *	@method 
-		 *
-		 */
-		apiController.prototype.usersAction = function(name){
+		*
+		*	@method 
+		*
+		*/
+		usersAction (name){
 
 			var orm = this.getORM() ;
 
@@ -590,141 +723,8 @@ nodefony.registerController("api", function(){
 				}, true);
 			}.bind(this))
 		}
-
-		var dataTableSessionParsing = function(query, results){
-			var dataTable = {
-				draw: parseInt( query.draw, 10),
-				recordsTotal: results.recordsTotal || results.count,
-				recordsFiltered:  results.count  ,
-				data:[]
-			}; 
-
-			for (var i = 0 ; i < results.rows.length  ; i++){
-				var payload= {};
-				payload["session_id"] = results.rows[i].session_id ;
-				payload["context"] =  results.rows[i].context  ;
-				payload["createdAt"] = results.rows[i].createdAt ;
-				payload["updatedAt"] = results.rows[i].updatedAt ;
-				payload["user"] =  results.rows[i].user ? results.rows[i].user : {username:"Anonymous"} ;
-				payload["user_id"] =  results.rows[i].user_id ;
-				payload["Attributes"] =  results.rows[i].Attributes ;
-				payload["flashBag"] =  results.rows[i].flashBag ;
-				payload["metaBag"] =  results.rows[i].metaBag ;
-				dataTable.data.push(payload);
-			}
-			return dataTable ;
-		}
-
-		/**
-		 *
-		 *	@method 
-		 *
-		 */
-		var finderSession = function(Path , Result , finish){
-			var finder = new nodefony.finder({
-				path:Path,
-				/*onFile:function(file){
-					Result.count = Result.count+1 ;
-					var content  = JSON.parse( file.content() ) ;
-					var mtime = new Date( file.stats.mtime );
-					content["updatedAt"] = mtime ;
-					content["session_id"] =file.name ;
-					content["context"] = path.basename(file.dirname() ) ;
-					Result.rows.push(  content )  ;	
-				}.bind(this),*/
-				onFinish:function(error, result){
-					var files = result.getFiles() ;
-					var nbTotal = files.length();
-					Result["recordsTotal"] = nbTotal ;
-
-					// sort
-					var resTmp = files ;
-					for ( var i = 0 ; i < Result.options.order.length ; i++){
-						
-						var colonm = Result.options.order[i][0] ; 
-						var direction = Result.options.order[i][1]
-						var callback = null ; 
-						switch ( colonm ){
-							case "updatedAt" :
-								if ( direction  === "desc"){
-									var callback = function(a,b){
-										//var obj1 = JSON.parse( a.content() ) ;
-										//console.log(a)
-										//var obj2 = JSON.parse( b.content() )
-										//console.log(obj2)
-										var mtimea = new Date( a.stats.mtime ).getTime() ;
-										var mtimeb = new Date( b.stats.mtime ).getTime() ;
-										if ( mtimea > mtimeb) return 1;
-										if (  mtimea < mtimeb) return -1;
-										return 0;
-									}
-								}else{
-									var callback = function(a,b){
-										var mtimea = new Date( a.stats.mtime ).getTime() ;
-										var mtimeb = new Date( b.stats.mtime ).getTime() ;
-										if ( mtimea < mtimeb) return 1;
-										if (  mtimea > mtimeb) return -1;
-										return 0;
-									}
-								}
-							break ;
-							case "username" :
-								if ( direction  === "desc"){
-									var callback = function(a,b){
-										var obj1 = JSON.parse( a.content() ) ;
-										var obj2 = JSON.parse( b.content() ) ;
-										return parseInt (obj2.user_id , 10)  - parseInt (obj1.user_id , 10)
-									}
-								}else{
-									var callback = function(a,b){
-										var obj1 = JSON.parse( a.content() ) ;
-										var obj2 = JSON.parse( b.content() ) ;
-										return parseInt (obj1.user_id , 10)  - parseInt (obj2.user_id , 10)
-									}
-								}	
-							break;
-							default:
-										
-								if ( direction  === "desc"){
-									var callback = function(a,b){
-										var obj1 = JSON.parse( a.content() ) ;
-										var obj2 = JSON.parse( b.content() ) ;
-										if ( obj1[colonm].toString() > obj2[colonm].toString()) return 1;
-										if ( obj1[colonm].toString() < obj2[colonm].toString()) return -1;
-										return 0;
-									}
-								}else{
-									var callback = function(a,b){
-										var obj1 = JSON.parse( a.content() ) ;
-										var obj2 = JSON.parse( b.content() ) ;
-										if ( obj1[colonm].toString() < obj2[colonm].toString()) return 1;
-										if ( obj1[colonm].toString() > obj2[colonm].toString()) return -1;
-										return 0;
-									}
-								}
-								
-						}
-						resTmp = files.sort(callback);
-					}
-					var res = resTmp.slice(Result.options["offset"], Result.options["limit"]+Result.options["offset"] ) ;
-
-					res.forEach(function(file){
-						//console.log(file.content())
-						var content  = JSON.parse( file.content() ) ;
-						var mtime = new Date( file.stats.mtime );
-						content["updatedAt"] = mtime ;
-						content["session_id"] =file.name ;
-						content["context"] = path.basename(file.dirname() ) ;
-						Result.rows.push(  content )  ;	
-					})
-					Result.count = nbTotal ;
-					finish(error, Result);
-				}
-			});
-			return finder;	
-		}
-
-		apiController.prototype.sessionsAction = function(){
+		
+		sessionsAction (){
 			// timeout 
 			this.getResponse().setTimeout(5000);
 			var sessionServices = this.get("sessions") ;
@@ -821,7 +821,7 @@ nodefony.registerController("api", function(){
 			}
 		}
 
-		apiController.prototype.pm2Action = function(action){
+		pm2Action (action){
 			var pm2 = require("pm2");
 			var name = this.getParameters("bundles.App.App.projectName") || "nodefony" ;
 			pm2.connect(true, function() {
@@ -837,7 +837,7 @@ nodefony.registerController("api", function(){
 			}.bind(this));
 		}
 
-		apiController.prototype.securityAction = function(action){
+		securityAction (action){
 			var service  = this.get("security");
 			if ( ! service){
 				return this.renderRest({
@@ -885,7 +885,8 @@ nodefony.registerController("api", function(){
 				message:"OK",
 				data:JSON.stringify(ele)
 			});
-		}
+		};
+	};
 
-		return apiController;
+	return apiController;
 });

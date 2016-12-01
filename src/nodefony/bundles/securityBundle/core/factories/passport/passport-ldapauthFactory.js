@@ -70,112 +70,116 @@ nodefony.register.call(nodefony.security.factory, "passport-ldapauth",function()
 		}
 	};
 
-	var Factory = function(contextSecurity,  settings){
-		this.name = this.getKey();
-		this.contextSecurity = contextSecurity ;
-		this.settings = settings ;
+	var Factory = class Factory {
 
-		this.passport = passport ;
-	
-		this.passport.framework( nodefonyPassport(this) );
+		constructor(contextSecurity,  settings){
+			this.name = this.getKey();
+			this.contextSecurity = contextSecurity ;
+			this.settings = settings ;
+
+			this.passport = passport ;
 		
-		this.strategy = this.getStrategy(this.settings) ;
+			this.passport.framework( nodefonyPassport(this) );
+			
+			this.strategy = this.getStrategy(this.settings) ;
 
-		this.passport.use(this.strategy);
+			this.passport.use(this.strategy);
 
-		this.contextSecurity.container.get("kernel").listen(this,"onReady",function(){
-			this.orm = this.contextSecurity.container.get("sequelize") ;
-			this.User = this.orm.getEntity("user") ;
-			this.connection = this.orm.getConnection("nodefony");
-		})
+			this.contextSecurity.container.get("kernel").listen(this,"onReady",function(){
+				this.orm = this.contextSecurity.container.get("sequelize") ;
+				this.User = this.orm.getEntity("user") ;
+				this.connection = this.orm.getConnection("nodefony");
+			})
 
-		this.profileWrapper = this.settings.profile_wrapper
-	};
+			this.profileWrapper = this.settings.profile_wrapper
+		};
 
-	Factory.prototype.wrapperLdap = function( profile ){
-		 
-		var obj = {} ;
-		for ( var name in this.profileWrapper ){
-			var res = parseParameterString.call({profile:profile}, this.profileWrapper[name], null );
-			if ( res ){
-				obj[name] = res ;	
-			}else{
-				obj[name] = "" ;	
+		wrapperLdap ( profile ){
+		 	
+			var obj = {} ;
+			for ( var name in this.profileWrapper ){
+				var res = parseParameterString.call({profile:profile}, this.profileWrapper[name], null );
+				if ( res ){
+					obj[name] = res ;	
+				}else{
+					obj[name] = "" ;	
+				}
 			}
+			return nodefony.extend( defaultWrapper.call(this) ,  obj ) ;
+		};
+
+
+		getStrategy (options){
+		
+			return  new LdapStrategy(options, ( profile, done) => {
+				this.contextSecurity.logger("TRY AUTHORISATION "+ this.name+" : "+profile.uid ,"DEBUG");
+				var obj = null ;
+				if ( profile ){
+					this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
+					obj = this.wrapperLdap(profile) ;
+				}else{
+					return done(new Error("Profile Ldap error") , null );	
+				}
+
+				if ( obj ){
+					this.User.findOrCreate({
+						where: {username: obj.username}, 
+						defaults:obj
+					}).then(function(user){
+						if ( nodefony.typeOf( user)  === "array" ){ 
+							done(null, user[0]);
+						}else{
+							done(null, user);	
+						}
+					}).catch(function(e){
+						done(e, null)	
+					})
+					return ;	
+				}
+				done(new Error("Profile Ldap error") , null );
+			});	
 		}
-		return nodefony.extend( defaultWrapper.call(this) ,  obj ) ;
-	};
+
+		generatePassWd (){
+			var date = new Date().getTime();
+			var buf = crypto.randomBytes(256);
+			var hash = crypto.createHash('md5');
+			return hash.update(buf).digest("hex");
+		};
 
 
-	Factory.prototype.getStrategy = function(options){
-	
-		return  new LdapStrategy(options, function( profile, done){
-			this.contextSecurity.logger("TRY AUTHORISATION "+ this.name+" : "+profile.uid ,"DEBUG");
-			var obj = null ;
-			if ( profile ){
-				this.contextSecurity.logger("PROFILE AUTHORISATION "+ this.name+" : "+profile.displayName ,"DEBUG");
-				obj = this.wrapperLdap(profile) ;
-			}else{
-				return done(new Error("Profile Ldap error") , null );	
-			}
+		getKey (){
+			return "passport-ldapauth";
+		};
 
-			if ( obj ){
-				this.User.findOrCreate({
-					where: {username: obj.username}, 
-					defaults:obj
-				}).then(function(user){
-					if ( nodefony.typeOf( user)  === "array" ){ 
-						done(null, user[0]);
-					}else{
-						done(null, user);	
-					}
-				}).catch(function(e){
-					done(e, null)	
-				})
-				return ;	
-			}
-			done(new Error("Profile Ldap error") , null );
-		}.bind(this));	
-	}
+		getPosition (){
+			return "http";	
+		};
 
-	Factory.prototype.generatePassWd = function(){
-		var date = new Date().getTime();
-		var buf = crypto.randomBytes(256);
-		var hash = crypto.createHash('md5');
-		return hash.update(buf).digest("hex");
-	};
+		handle ( context, callback){
+			this.contextSecurity.logger("HANDLE AUTHORISATION  "+ this.getKey(),"DEBUG");
+			this.passport.authenticate('ldapauth', { 
+				session: false, 
+			})(context, (error, res) => {
+				if (error){
+					return callback(error, null)	
+				}
+				if ( res  ){
+					context.user = res ;	
+					this.contextSecurity.logger("AUTHORISATION "+this.name+" SUCCESSFULLY : " + res.username ,"INFO");
+				}
+				var token = {
+					name:"ldap",
+					user:res
+				}
 
+				return callback(error, token)
+			});
+		};
 
-	Factory.prototype.getKey = function(){
-		return "passport-ldapauth";
-	};
+		generatePasswd (realm, user, passwd){
 
-	Factory.prototype.getPosition = function(){
-		return "http";	
-	};
-
-	Factory.prototype.handle = function( context, callback){
-		this.contextSecurity.logger("HANDLE AUTHORISATION  "+ this.getKey(),"DEBUG");
-		this.passport.authenticate('ldapauth', { 
-			session: false, 
-		})(context, function(error, res){
-			if (error){
-				return callback(error, null)	
-			}
-			if ( res  ){
-				context.user = res ;	
-				this.contextSecurity.logger("AUTHORISATION "+this.name+" SUCCESSFULLY : " + res.username ,"INFO");
-			}
-			var token = {
-				name:"ldap",
-				user:res
-			}
-
-			return callback(error, token)
-		}.bind(this));
-	};
-
-	Factory.prototype.generatePasswd = function(realm, user, passwd){
+		};
 	};
 
 	return Factory ;

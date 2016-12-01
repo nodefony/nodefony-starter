@@ -12,7 +12,6 @@ var crypto = require('crypto');
 
 nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 
-
 	/*
  	 *
  	 *
@@ -85,125 +84,126 @@ nodefony.register.call(nodefony.security.tokens, "Digest",function(){
 		return MD5.update(A2).digest("hex");
 	};
 
-	var Digest = function( request, response, options){
-		this.name = "Digest" ;
-		if (! arguments.length ){
-			return this.generatePasswd ;
-		}
-		this.settings = nodefony.extend({}, settingsDigest, options);	
-		this.auth = false ;
-		this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
-		this.host = request.headers["host"];
-		this.secret = this.host+":"+request.headers["user-agent"]+":"+ ( request.headers["referer"] || request.remoteAddress )
-		this.request = request ;
-		this.response = response;
-		this.method = request.method;
-	};
+	var Digest = class Digest {
 
-	Digest.prototype.generateNonce = function(){
-		var ts = new Date().getTime();
-		var SHA1 = crypto.createHash('sha1');
-		return  ts + SHA1.update(ts+":"+this.secret+":"+this.settings.private_key).digest("hex");
-	};
-
-	Digest.prototype.recalculateNonce = function(){
-		var nonce = this.nonce.substring(lenghtTs);
-		var ts = this.nonce.substring(0,lenghtTs);
-		if (this.settings.max_time !== 0 ){
-			var tm = new Date().getTime();
-			var tmTimeout = parseInt(tm,10);
-			var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
-			if ( (! this.auth ) &&  tm > tsTimeout){
-				throw {
-					status:401,
-					message:"Digest TIMEOUT"	
-				};
+		constructor ( request, response, options){
+			this.name = "Digest" ;
+			if (! arguments.length ){
+				return this.generatePasswd ;
 			}
-		}
-		var SHA1 = crypto.createHash('sha1');
-		var res = SHA1.update(ts+":"+this.secret+":"+this.settings.private_key).digest("hex");
-		return nonce === res ;
-	};
-
-
-	/*Digest.prototype.recalculateResponse = function(A1){
-		var uri = this["digest-uri"] || this.uri ;
-		var A2 = generateA2(this.method, uri ,null,this.qop ); 
-		//var res = responseDigest(A1, this.nonce, this.nc, new Buffer(this.cnonce, 'base64').toString('ascii'), this.qop, A2) ;
-		var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
-		return res;
-	};*/
-
-	Digest.prototype.recalculateResponse = function(passwd){
-		var A1 = generateA1(this.username, this.settings.realm, passwd);
-		var uri = this["digest-uri"] || this.uri ;
-		var A2 = generateA2(this.method, uri ,null,this.qop );
-		var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
-		return res;
-	};
-
-		
-	Digest.prototype.generateResponse = function(){
-		this.nonce = this.generateNonce();
-		var line = "" ;
-		var obj = {
-			nonce:'"'+this.nonce+'"',
-			realm:  this.settings.realm,//+this.host,
-			qop:"auth"
+			this.settings = nodefony.extend({}, settingsDigest, options);	
+			this.auth = false ;
+			this.authorization = request.headers["authorization"] || ( request.query ? request.query.authorization : null ) ;
+			this.host = request.headers["host"];
+			this.secret = this.host+":"+request.headers["user-agent"]+":"+ ( request.headers["referer"] || request.remoteAddress )
+			this.request = request ;
+			this.response = response;
+			this.method = request.method;
 		};
-		var length = Object.keys(obj).length -1 ; 
-		for (var ele in obj ){
-			if (length)
-				line+=ele+"="+obj[ele]+","	
-			else
-				line+=ele+"="+obj[ele]	
-			length-=1;
-		}
-		//return  '"'+new Buffer(line).toString('base64')+'"';	
-		return  this.name+' '+line;	
-	};
 
-	Digest.prototype.checkResponse = function( getUserPassword, callback){
-		try {
-			parseAuthorization.call(this, this.authorization);
-			var res = this.recalculateNonce();
-			if (! res){
-				callback( {
-					status:401,
-					message:"Incorrect password. "	
-				},null);
-			}
-			getUserPassword(this.username, function (error, userHashToCompare){
-				if (error){
-					callback (error, null);;
-					return; 
+		generateNonce (){
+			var ts = new Date().getTime();
+			var SHA1 = crypto.createHash('sha1');
+			return  ts + SHA1.update(ts+":"+this.secret+":"+this.settings.private_key).digest("hex");
+		};
+
+		recalculateNonce (){
+			var nonce = this.nonce.substring(lenghtTs);
+			var ts = this.nonce.substring(0,lenghtTs);
+			if (this.settings.max_time !== 0 ){
+				var tm = new Date().getTime();
+				var tmTimeout = parseInt(tm,10);
+				var tsTimeout = parseInt(ts,10)+this.settings.max_time ;
+				if ( (! this.auth ) &&  tm > tsTimeout){
+					throw {
+						status:401,
+						message:"Digest TIMEOUT"	
+					};
 				}
-				//console.log(userHashToCompare)
-				//console.log(this.response)
-				res = this.recalculateResponse(userHashToCompare);
-				//console.log(this.recalculateResponseA1(userHashToCompare) )
-				if (res === this.response){
-					this.auth = true ;
-					return callback(null, true);
-				}else{
+			}
+			var SHA1 = crypto.createHash('sha1');
+			var res = SHA1.update(ts+":"+this.secret+":"+this.settings.private_key).digest("hex");
+			return nonce === res ;
+		};
+
+
+		/*recalculateResponse (A1){
+			var uri = this["digest-uri"] || this.uri ;
+			var A2 = generateA2(this.method, uri ,null,this.qop ); 
+			//var res = responseDigest(A1, this.nonce, this.nc, new Buffer(this.cnonce, 'base64').toString('ascii'), this.qop, A2) ;
+			var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
+			return res;
+		};*/
+
+		recalculateResponse (passwd){
+			var A1 = generateA1(this.username, this.settings.realm, passwd);
+			var uri = this["digest-uri"] || this.uri ;
+			var A2 = generateA2(this.method, uri ,null,this.qop );
+			var res = responseDigest(A1, this.nonce, this.nc, this.cnonce, this.qop, A2) ;
+			return res;
+		};
+
+			
+		generateResponse (){
+			this.nonce = this.generateNonce();
+			var line = "" ;
+			var obj = {
+				nonce:'"'+this.nonce+'"',
+				realm:  this.settings.realm,//+this.host,
+				qop:"auth"
+			};
+			var length = Object.keys(obj).length -1 ; 
+			for (var ele in obj ){
+				if (length)
+					line+=ele+"="+obj[ele]+","	
+				else
+					line+=ele+"="+obj[ele]	
+				length-=1;
+			}
+			//return  '"'+new Buffer(line).toString('base64')+'"';	
+			return  this.name+' '+line;	
+		};
+
+		checkResponse ( getUserPassword, callback){
+			try {
+				parseAuthorization.call(this, this.authorization);
+				var res = this.recalculateNonce();
+				if (! res){
 					callback( {
 						status:401,
 						message:"Incorrect password. "	
-					},null); 
+					},null);
 				}
-			}.bind(this));
-		}catch(e){
-			callback (e, null); 
-		}
+				getUserPassword(this.username,  (error, userHashToCompare) => {
+					if (error){
+						callback (error, null);;
+						return; 
+					}
+					//console.log(userHashToCompare)
+					//console.log(this.response)
+					res = this.recalculateResponse(userHashToCompare);
+					//console.log(this.recalculateResponseA1(userHashToCompare) )
+					if (res === this.response){
+						this.auth = true ;
+						return callback(null, true);
+					}else{
+						callback( {
+							status:401,
+							message:"Incorrect password. "	
+						},null); 
+					}
+				});
+			}catch(e){
+				callback (e, null); 
+			}
+		};
+
+		generatePasswd (realm, username, passwd){
+			var Realm = realm || this.settings.realm ;//+ host ;
+			return generateA1(username, Realm, passwd)
+		};
 	};
 
-	Digest.prototype.generatePasswd = function(realm, username, passwd){
-		var Realm = realm || this.settings.realm ;//+ host ;
-		return generateA1(username, Realm, passwd)
-	};
-
-				 
 	return Digest;
-
 
 });

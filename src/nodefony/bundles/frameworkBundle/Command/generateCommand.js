@@ -302,65 +302,35 @@ nodefony.registerCommand("generate",function(){
 		}
 	}
 
-	var generate = function(container, command, options){
-		this.kernel = this.container.get("kernel") ;
-		//this.twig = this.container.get("templating");
-		this.config = this.container.getParameters("bundles.App");
-		this.configKernel = this.container.getParameters("kernel");
-		var arg = command[0].split(":");
-		switch ( arg[1] ){
-			case "bundle" : 
-				if ( command[1] ){
-					this.generateBundle(command[1], command[2]);
-				}else{
-					this.showHelp();
-				}
-			break;
-			case "controller" : 
-				switch (command.length){
-					case 1:
-						this.showHelp();
-					break;
-					case 2:
-						this.showHelp();
-					break;
-					case 3:
-						this.generateController( command[1], command[2]);
-					break;
-				}
-			break;
-			case "command" : 
-				console.log("GENERATE command");
-				this.generateCommand(command[1], command[2]);	
-			break;
-			case "service" : 
-				console.log("GENERATE service");
-				this.generateService();	
-			break;
-			default:
-				this.showHelp()
+	/*
+	 *	commands generator
+	 *
+	 */
+	var commands = function(bundlePath, name){
+		bundlePath.matchName(regBundle);
+		if ( bundlePath.match ){
+			var bundleName = bundlePath.match[0] ;
+		}else{
+			throw new Error("Bad bundle name")
 		}
-		this.terminate();
+		name = name.replace("Command","");
 
+		var file  = {
+			name:name+"Command.js",
+			type:"file",
+			skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/commandClass.skeleton",
+			params:{
+				name:name
+			}
+		};
+		this.build(file, new nodefony.fileClass(bundlePath.path+"/Command") );
 	};
-
-	generate.prototype.generateBundle = function(name, path){	
-		this.logger("GENERATE bundle : " + name +" LOCATION : " + path)
-		try {
-			var file = new nodefony.fileClass(path);
-			return bundle.call(this, file, name, "yml", path);
-		}catch (e){
-			this.logger(e, "ERROR");
-		}
-	};
-
-
 
 	/*
 	 *	controller generator
 	 *
 	 */
-	var regController = /^(.*)Controller$/;
+	
 	var controller = function(bundleName, directory, controllerName, viewDir, location){
 		var res = regController.exec(controllerName);
 		if ( res ){
@@ -432,58 +402,100 @@ nodefony.registerCommand("generate",function(){
 			this.logger(e, "ERROR")
 		}
 	};
-	generate.prototype.generateController = function( name, path){
-		this.logger("GENERATE controller : " + name +" BUNDLE LOCATION : " + path)
-		try {
-			var file = new nodefony.fileClass(path);
-			return controllers.call(this, file, name, "yml");
-		}catch (e){
-			this.logger(e, "ERROR");
-		}
 
-	
-	};
+	var regController = /^(.*)Controller$/;
 
 	/*
-	 *	commands generator
-	 *
-	 */
-	var commands = function(bundlePath, name){
-		bundlePath.matchName(regBundle);
-		if ( bundlePath.match ){
-			var bundleName = bundlePath.match[0] ;
-		}else{
-			throw new Error("Bad bundle name")
-		}
-		name = name.replace("Command","");
+ 	 *
+ 	 */
+	var generate = class generate {
 
-		var file  = {
-			name:name+"Command.js",
-			type:"file",
-			skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/commandClass.skeleton",
-			params:{
-				name:name
+		constructor(container, command, options){
+			this.kernel = this.container.get("kernel") ;
+			//this.twig = this.container.get("templating");
+			this.config = this.container.getParameters("bundles.App");
+			this.configKernel = this.container.getParameters("kernel");
+			var arg = command[0].split(":");
+			switch ( arg[1] ){
+				case "bundle" : 
+					if ( command[1] ){
+						this.generateBundle(command[1], command[2]);
+					}else{
+						this.showHelp();
+					}
+				break;
+				case "controller" : 
+					switch (command.length){
+						case 1:
+							this.showHelp();
+						break;
+						case 2:
+							this.showHelp();
+						break;
+						case 3:
+							this.generateController( command[1], command[2]);
+						break;
+					}
+				break;
+				case "command" : 
+					console.log("GENERATE command");
+					this.generateCommand(command[1], command[2]);	
+				break;
+				case "service" : 
+					console.log("GENERATE service");
+					this.generateService();	
+				break;
+				default:
+					this.showHelp()
+			}
+			this.terminate();
+
+		};
+
+		generateBundle (name, path){	
+			this.logger("GENERATE bundle : " + name +" LOCATION : " + path)
+			try {
+				var file = new nodefony.fileClass(path);
+				return bundle.call(this, file, name, "yml", path);
+			}catch (e){
+				this.logger(e, "ERROR");
 			}
 		};
-		this.build(file, new nodefony.fileClass(bundlePath.path+"/Command") );
-	};
 
-	generate.prototype.generateCommand = function(name, path){
-		var command = function(file, name ){
-			console.log(file)
+
+
+		
+
+		generateController ( name, path){
+			this.logger("GENERATE controller : " + name +" BUNDLE LOCATION : " + path)
+			try {
+				var file = new nodefony.fileClass(path);
+				return controllers.call(this, file, name, "yml");
+			}catch (e){
+				this.logger(e, "ERROR");
+			}
+
+		
 		};
-		this.logger("GENERATE Command : " + name +" LOCATION : " + path+"Command")
-		try {
-			var file = new nodefony.fileClass( path);
-			return commands.call(this, file, name);
-		}catch (e){
-			this.logger(e, "ERROR");
-		}
-	
-	};
 
-	generate.prototype.generateService = function(){
-	
+		
+		generateCommand (name, path){
+			var command = function(file, name ){
+				console.log(file)
+			};
+			this.logger("GENERATE Command : " + name +" LOCATION : " + path+"Command")
+			try {
+				var file = new nodefony.fileClass( path);
+				return commands.call(this, file, name);
+			}catch (e){
+				this.logger(e, "ERROR");
+			}
+		
+		};
+
+		generateService (){
+		
+		};
 	};
 
 

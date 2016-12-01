@@ -11,27 +11,29 @@ Open Bundle App "appKernel.js" to add new USERS Bundle in **registerBundles** ar
 
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader){
-		
-		// kernel constructor
-		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type)
+	var appKernel = class appKernel extends nodefony.kernel {
 
-		/*
-	 	*	Bundles to register in Application
-	 	*/
-		this.registerBundles([
-			"src/nodefony/bundles/usersBundle"
-		]);
+		constructor (type, environment, debug, loader, settings){
+			
+			// kernel constructor
+			super(environment, debug, loader, type, settings)
 
-		...
+			/*
+	 		*	Bundles to register in Application
+	 		*/
+			this.registerBundles([
+				...
+				"src/nodefony/bundles/usersBundle"
+			]);
 
+			...
+		};
+	};
 
-					
-	}.herite(nodefony.kernel);
 
 	return appKernel;
 })
+
 ```
 ## <a name="authors"></a>Authors
 

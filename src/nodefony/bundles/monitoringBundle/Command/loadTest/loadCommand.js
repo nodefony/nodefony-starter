@@ -9,59 +9,63 @@ var Url = require("url");
 
 nodefony.registerCommand("Monitoring",function(){
 
+	var monitoring = class monitoring {
 
-	var monitoring = function(container, command, options){
-		var arg = command[0].split(":");
-		switch ( arg[1] ){
-			case "test":
-				this.serverLoad = this.container.get("serverLoad");
-				switch( arg[2]){
-					case "load":
-						try {
-							var url = Url.parse( command[1] );
-							var nb = parseInt( command[2] ,10 );
-							var concurence = parseInt( command[3] ,10 );
-						}catch(e){
+		constructor (container, command, options){
+			var arg = command[0].split(":");
+			switch ( arg[1] ){
+				case "test":
+					this.serverLoad = this.container.get("serverLoad");
+					switch( arg[2]){
+						case "load":
+							try {
+								var url = Url.parse( command[1] );
+								var nb = parseInt( command[2] ,10 );
+								var concurence = parseInt( command[3] ,10 );
+							}catch(e){
+								this.showHelp();
+								this.terminate(1);
+							}
+							if ( ! url.protocol ){
+								var proto = "http";
+								url.protocol = "http:";
+								url.href = "http://"+url.href;
+							}else{
+								var proto = url.protocol.replace(":", "");	
+							}
+							this.serverLoad.handleConnection({
+								type: proto,
+								nbRequest:nb || 1000,
+								concurence:concurence || 40,
+								url:url.href,
+								method:'GET'
+							},this)
+						break;
+						default:
 							this.showHelp();
-							this.terminate();
-						}
-						if ( ! url.protocol ){
-							var proto = "http";
-							url.protocol = "http:";
-							url.href = "http://"+url.href;
-						}else{
-							var proto = url.protocol.replace(":", "");	
-						}
-						this.serverLoad.handleConnection({
-							type: proto,
-							nbRequest:nb || 1000,
-							concurence:concurence || 40,
-							url:url.href,
-							method:'GET'
-						},this)
-					break;
-					default:
-						this.showHelp();
-						this.terminate();
-				}
-			break;
-			default:
-			this.showHelp();
-			this.terminate();
-		}
+							this.terminate(0);
+					}
+				break;
+				default:
+				this.showHelp();
+				this.terminate(0);
+			}
 
-	}
+		};
+		 
+		listen (service, event, callback){
+			
+		};
 
-	monitoring.prototype.send = function(data, encodage){
-		this.logger(data, "INFO");	
-	}
+		send (data, encodage){
+			this.logger(data, "INFO");	
+		};
 
 
-	monitoring.prototype.close = function(code){
-		this.terminate(code);	
-	}
-
-
+		close (code){
+			this.terminate(code);	
+		};
+	};
 
 	return {
 		name:"Monitoring",

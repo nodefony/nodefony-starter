@@ -115,53 +115,53 @@ nodefony.registerController("finder", function(){
 
 
 
-	var finderController = function(container, context){
-		this.mother = this.$super;
-		this.mother.constructor(container, context);
-	};
+	var finderController = class finderController extends nodefony.controller {
 
-	
-	finderController.prototype.indexAction = function(){
-		var query = this.getParameters("query");
-		if (! query.get.path)
-			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;
-		else
-			var path = query.get.path ;
+		constructor (container, context){
+			super(container, context);
+		};
 
-		// secure path
-		//var securePath = this.get("kernel").rootDir ;
-		var securePath = this.get("kernel").getBundles("demo").path ;
-		var reg = new RegExp( "^"+securePath )
-		if ( ! reg.test(path)){
-			throw {
-				status:401
+		indexAction (){
+			var query = this.getParameters("query");
+			if (! query.get.path)
+				var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;
+			else
+				var path = query.get.path ;
+
+			// secure path
+			//var securePath = this.get("kernel").rootDir ;
+			var securePath = this.get("kernel").getBundles("demo").path ;
+			var reg = new RegExp( "^"+securePath )
+			if ( ! reg.test(path)){
+				throw {
+					status:401
+				}
+				//var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images"	
 			}
-			//var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images"	
-		}
 
-		try{ 
-			search.call(this, path) ;
-		}catch(e){
-			throw e ;
-		}
-	};
+			try{ 
+				search.call(this, path) ;
+			}catch(e){
+				throw e ;
+			}
+		};
 
-	finderController.prototype.downloadAction = function(path){
-		var query = this.getParameters("query");
-		if (! query.get.path)
-			throw new Error("Download Not path to host")
-		else
-			var path = query.get.path ;
-		var file = new nodefony.fileClass(path);
+		downloadAction (path){
+			var query = this.getParameters("query");
+			if (! query.get.path)
+				throw new Error("Download Not path to host")
+			else
+				var path = query.get.path ;
+			var file = new nodefony.fileClass(path);
 
-		try {
-			return encode.call(this, file);
-		}catch(e){
-			throw e;		
-		}
+			try {
+				return encode.call(this, file);
+			}catch(e){
+				throw e;		
+			}
+		};
 	};
 
 	return finderController ;
-
 });
 

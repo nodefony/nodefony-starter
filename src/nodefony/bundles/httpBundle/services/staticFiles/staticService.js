@@ -15,100 +15,102 @@ nodefony.registerService("statics", function(){
 		maxAge: 96*60*60
 	};
 	
-	var static = function( container, options){
-		this.container = container ;
-		this.kernel = this.container.get("kernel") ;
-		this.type = this.kernel.type;
-		if( ! this.kernel.settings.system.statics ) return null ;
-		if( this.type !== "SERVER") return  null ;
-		this.connect = require("connect");
-		this.syslog = this.container.get("syslog");
-		this.server = this.connect();
+	var Static = class Static {
+		constructor ( container, options){
+			this.container = container ;
+			this.kernel = this.container.get("kernel") ;
+			this.type = this.kernel.type;
+			if( ! this.kernel.settings.system.statics ) return null ;
+			if( this.type !== "SERVER") return  null ;
+			this.connect = require("connect");
+			this.syslog = this.container.get("syslog");
+			this.server = this.connect();
 
-		this.settingsAssetic = this.container.getParameters("bundles.assetic");
+			this.settingsAssetic = this.container.getParameters("bundles.assetic");
 
-		this.mime = this.connect.static.mime;
-		this.kernel.listen(this, "onBoot",function(){
-			this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
-			if (this.settings.cache)
-				this.server.use(this.connect.staticCache());	
-			this.initStaticFiles()
-		});
-
-		this.environment = this.kernel.environment ;
-		this.kernel.listen(this, "onReady", function(){
-			this.serviceLess = this.container.get("less");
-		})
-	
-	};
-
-	static.prototype.initStaticFiles = function(){
-		var settings = this.container.getParameters("bundles.http").statics ;
-		for(var static in settings ){
-			if ( static === "settings" ) continue ;
-			var path = this.kernel.rootDir + settings[static].path ;
-			var age = settings[static].maxage;
-			this.logger("Add static route ===> " + path ,"DEBUG");
-			this.addDirectory(path ,{
-				maxAge: eval ( age )
+			this.mime = this.connect.static.mime;
+			this.kernel.listen(this, "onBoot",() => {
+				this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
+				if (this.settings.cache)
+					this.server.use(this.connect.staticCache());	
+				this.initStaticFiles()
 			});
-		}
-	};
 
-	static.prototype.logger = function(pci, severity, msgid,  msg){
-		if (! msgid) msgid = "SERVER STATIC FILE ";
-		return this.syslog.logger(pci, severity, msgid,  msg);
-	};
+			this.environment = this.kernel.environment ;
+			this.kernel.listen(this, "onReady", () => {
+				this.serviceLess = this.container.get("less");
+			})
+		
+		};
 
-	static.prototype.addDirectory = function(path, options){
-		var settings = nodefony.extend({}, this.settings, options);
-		return this.server.use ( this.connect.static(path, settings) );
-	};
-
-
-	static.prototype.serve = function(request, response, callback){
-		/*if (this.environment === "dev" && this.kernel.debug){
-			this.logger("URL : "+request.url , "DEBUG")
-		}*/
-		var type  = this.mime.lookup(request.url);
-		response.setHeader("Content-Type", type);
-		// LESS IN THE FLY
-		if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
-			try {
-				var res = this.serviceLess.handle(request, response, type, function(err, dest){
-					this.server.handle(request, response, function(){
-						response.setHeader("Content-Type", "text/html");
-						callback.apply(this, arguments);	
-					}.bind(this));	
-				}.bind(this));
-				if (res) return ; 
-			}catch(e){
-				this.logger(e, "ERROR");	
+		initStaticFiles (){
+			var settings = this.container.getParameters("bundles.http").statics ;
+			for(var myStatic in settings ){
+				if ( myStatic === "settings" ) continue ;
+				var path = this.kernel.rootDir + settings[myStatic].path ;
+				var age = settings[myStatic].maxage;
+				this.logger("Add static route ===> " + path ,"DEBUG");
+				this.addDirectory(path ,{
+					maxAge: eval ( age )
+				});
 			}
-		}
-		this.server.handle(request, response, function(){
-			callback.apply(this, arguments);	
-		}.bind(this));
-	};
+		};
 
-	static.prototype.get = function(name){
-		if (this.container)
-			return this.container.get(name);
-		return null;
-	};
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVER STATIC FILE ";
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		};
 
-	static.prototype.set = function(name, obj){
-		if (this.container)
-			return this.container.set(name, obj);
-		return null;
-	};
+		addDirectory (path, options){
+			var settings = nodefony.extend({}, this.settings, options);
+			return this.server.use ( this.connect.static(path, settings) );
+		};
 
-	static.prototype.handle = function(request, response, callback){
-		request.path = request.url;
-		this.serve(request, response, callback )
-	}
+
+		serve (request, response, callback){
+			/*if (this.environment === "dev" && this.kernel.debug){
+				this.logger("URL : "+request.url , "DEBUG")
+			}*/
+			var type  = this.mime.lookup(request.url);
+			response.setHeader("Content-Type", type);
+			// LESS IN THE FLY
+			if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
+				try {
+					var res = this.serviceLess.handle(request, response, type, (err, dest) => {
+						this.server.handle(request, response, () => {
+							response.setHeader("Content-Type", "text/html");
+							callback.apply(this, arguments);	
+						});	
+					});
+					if (res) return ; 
+				}catch(e){
+					this.logger(e, "ERROR");	
+				}
+			}
+			this.server.handle(request, response, () => {
+				callback.apply(this, arguments);	
+			});
+		};
+
+		get (name){
+			if (this.container)
+				return this.container.get(name);
+			return null;
+		};
+
+		set (name, obj){
+			if (this.container)
+				return this.container.set(name, obj);
+			return null;
+		};
+
+		handle (request, response, callback){
+			request.path = request.url;
+			this.serve(request, response, callback )
+		};
+	};
 	
-	return static;
+	return Static;
 
 })
 

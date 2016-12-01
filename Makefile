@@ -1,7 +1,7 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 
-all: framework npm  install 
+all:  install 
 
 install:
 	@echo "";
@@ -18,30 +18,49 @@ install:
 		./.console_dev npm:install ;\
 	fi \
 
-	@echo "make asset";
-	make asset
-	@echo "make sequelize";
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#        NODEFONY ASSETS INSTALL        #" ;
+	@echo "#########################################" ;
+	@echo "";
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console assets:install" ;\
+		./console assets:install ;\
+	else \
+		echo "./.console_dev assets:install" ;\
+		./.console_dev assets:install ;\
+	fi \
+
+build:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY BUILD             #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	make clean ;
+
+	make npm ;
+	
+	make install ;
+
 	make sequelize
 
 	@if [ $(VERBOSE) = 0 ] ; then \
 		echo "./console router:generate:routes";\
 		./console router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
 		echo "./console npm:list";\
 		./console npm:list ;\
 	else \
 		echo "./.console_dev router:generate:routes";\
 		./.console_dev router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
 		echo "./.console_dev npm:list";\
 		./.console_dev npm:list ;\
 	fi \
-
-	
-node:
-	@echo "make framework";
-	make framework
-	@echo "make install";
-	make install
-
 
 #
 # PM2 MANAGEMENT PRODUCTION 
@@ -50,7 +69,6 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
-	#make asset
 	./nodefony_pm2 &
 
 stop:
@@ -92,8 +110,9 @@ npm:
 		fi \
 	fi
 
-deps:
-	./console npm:install
+deploy:
+	make asset ;
+	make start &
 
 asset:
 	@echo "";
@@ -210,8 +229,10 @@ clean:
 		echo ""; \
 		rm -rf web/* ; \
 	fi
-	make framework
+	make framework ;
+
+test:
+	npm test ;
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc
-

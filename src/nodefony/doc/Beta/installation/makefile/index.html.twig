@@ -10,16 +10,6 @@
 
 <h2>BUILD NODEFONY FRAMEWORK </h2>
 
-<h3>Build All</h3>
-
-<div class="doc3">
-<pre>
-$ make 
-</pre>
-</div>
-
-
-
 <h3>Makefile build differents part of framework :</h3>
 
 <div class="doc3">
@@ -28,9 +18,13 @@ $ make << target >>
 </pre>
 </div>
 
+
+
+
 <h2>Targets NODEFONY FRAMEWORK </h2>
 
-<h3> All </h3>
+<h3>Build</h3>
+
 <div class="doc3">
 	<p>
 		Must be call the first time   ( generally after clone repo )</br>
@@ -39,11 +33,49 @@ $ make << target >>
 			<li>Build all sources of NODEFONY framework</li>
 		</ul>
 	</p>
+
+<pre>
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY BUILD             #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	make clean ;
+
+	make npm ;
+	
+	make install ;
+
+	make sequelize
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console router:generate:routes";\
+		./console router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
+		echo "./console npm:list";\
+		./console npm:list ;\
+	else \
+		echo "./.console_dev router:generate:routes";\
+		./.console_dev router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
+		echo "./.console_dev npm:list";\
+		./.console_dev npm:list ;\
+	fi \
+
+</pre>
+</div>
+
+
+<h3> All </h3>
+<div class="doc3">
 	<p>
-	   
+		All target just call target install
 	</p>
 	<pre>
-all: framework npm  install
+all:  install 
 	</pre>
 </div>
 
@@ -51,7 +83,7 @@ all: framework npm  install
 <h3> framework </h3>
 <div class="doc3">
 	<p>
-		Must be call the first time   ( generally call by 'all' taget )
+		Must be call the first time   ( generally call by 'build' taget )
 	  
 		<ul>
 			<li>Build directories framework</li>
@@ -142,11 +174,33 @@ npm:
 	</p>
 	<pre>
 install:
-	./console npm:install
-	make asset
-	make sequelize
-	./console router:generate:routes
-	./console npm:list
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY INSTALL           #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console npm:install";\
+		./console npm:install ;\
+	else \
+		echo "./.console_dev npm:install";\
+		./.console_dev npm:install ;\
+	fi \
+
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#        NODEFONY ASSETS INSTALL        #" ;
+	@echo "#########################################" ;
+	@echo "";
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console assets:install" ;\
+		./console assets:install ;\
+	else \
+		echo "./.console_dev assets:install" ;\
+		./.console_dev assets:install ;\
+	fi \
+
 	</pre>
 </div>
 
@@ -204,7 +258,7 @@ clean:
 <div class="doc3">
 	<p>
 		Must be call before run nodefony (developpement or prodution)  </br>
-		Generally call by 'all' taget 
+		Generally call by 'build' target 
 		<ul>
 			<li>Generate ORM databases and entities of all bundles registred </li>
 			<li>Generate fixtures of all bundles registred </li>
@@ -235,7 +289,6 @@ sequelize:
 
 	<pre>
 start:
-	make asset
 	./nodefony_pm2 &
 	</pre>
 </div>
@@ -256,6 +309,24 @@ stop:
 
 	</pre>
 </div>
+
+
+<h3>  deploy   </h3>
+<div class="doc3">
+<p>
+		DEPLOY  NODEFONY IN PRODUTION MODE  FOR SCRIPTING </br>
+		<ul>
+			<li>Compile ASSETS and run  </li>
+		</ul>
+	</p>
+
+	<pre>
+deploy:
+	make asset ;
+	make start &
+	</pre>
+</div>
+
 
 
 <h3> Targets : kill startup show monit</h3>

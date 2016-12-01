@@ -335,31 +335,32 @@ documentation-version:
 nodefony.registerController("default", function(){
 
 
-	var defaultController = function(container, context){
-		this.mother = this.$super;
-		this.mother.constructor(container, context);
-		this.kernel = this.get("kernel") ;
+	var defaultController = class defaultController extends nodefony.controller {
+
+		constructor  (container, context){
+			super(container, context);
+			this.kernel = this.get("kernel") ;
+		};
+
+		indexAction (<strong>version</strong>){
+
+			if( ! version ){
+				var defaultVersion = this.kernel.settings.system.version;
+			}else{
+				var defaultVersion = version ;
+			}
+			var url = this.<strong>generateUrl</strong>("documentation-version",{
+				<strong>bundle:"nodefony",
+				version:defaultVersion</strong>
+			})
+			return this.redirect(url);
+
+		};
+
+		versionAction (<strong>version, bundle</strong>){
+			...
+		};
 	};
-
-
-	defaultController.prototype.indexAction = function(<strong>version</strong>){
-
-		if( ! version ){
-			var defaultVersion = this.kernel.settings.system.version;
-		}else{
-			var defaultVersion = version ;
-		}
-		var url = this.<strong>generateUrl</strong>("documentation-version",{
-			<strong>bundle:"nodefony",
-			version:defaultVersion</strong>
-		})
-		return this.redirect(url);
-
-	}
-
-	defaultController.prototype.versionAction = function(<strong>version, bundle</strong>){
-		...
-	}
 
 	return defaultController;
 });
@@ -421,52 +422,55 @@ demo-websoket:
 
 nodefony.registerController("websocket", function(){
 
-	var websocketController = function(container, context){
-		this.mother = this.$super;
-		this.mother.constructor(container, context);
-		this.kernel = this.get("kernel") ;
+	var websocketController = class websocketController extends nodefony.controller {
+
+		constructor (container, context){
+			super(container, context);
+			this.kernel = this.get("kernel") ;
+		};
+
+		indexAction (<strong>message</strong>){
+			
+			var context = this.getContext();
+				
+			switch( <strong>this.getMethod()</strong> ){
+				case "GET" :
+					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+				break;
+				case "WEBSOCKET" :
+					if (<strong>message</strong>){
+						// MESSAGES CLIENT
+						this.logger( message.utf8Data , "INFO");
+					}else{
+						// PREPARE  PUSH MESSAGES SERVER 
+						// SEND MESSAGES TO CLIENTS
+						var i = 0 ;
+						var id = setInterval( () => {
+							var mess = "I am a  message "+ i +"\n" ;
+							context.send(mess);
+							this.logger( "SEND TO CLIENT :" + mess , "INFO");
+							i++
+						}, 1000);
+
+						setTimeout( () => {
+							clearInterval(id);
+							// close reason , descripton
+							context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
+							id = null ;
+						}, 10000);
+						this.context.listen(this, "onClose" , () => {
+							if (id){
+								clearInterval(id);	
+							}
+						})
+					}
+				break;
+				default :
+					throw new Error(" METHOD NOT ALLOWED")
+			}
+		};
 	};
 
-	websocketController.prototype.indexAction = function(<strong>message</strong>){
-		
-		var context = this.getContext();
-			
-		switch( <strong>this.getMethod()</strong> ){
-			case "GET" :
-				return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
-			break;
-			case "WEBSOCKET" :
-				if (<strong>message</strong>){
-					// MESSAGES CLIENT
-					this.logger( message.utf8Data , "INFO");
-				}else{
-					// PREPARE  PUSH MESSAGES SERVER 
-					// SEND MESSAGES TO CLIENTS
-					var i = 0 ;
-					var id = setInterval(function(){
-						var mess = "I am a  message "+ i +"\n" ;
-						context.send(mess);
-						this.logger( "SEND TO CLIENT :" + mess , "INFO");
-						i++
-					}.bind(this), 1000);
-
-					setTimeout(function(){
-						clearInterval(id);
-						// close reason , descripton
-						context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
-						id = null ;
-					}, 10000);
-					this.context.listen(this, "onClose" , function(){
-						if (id){
-							clearInterval(id);	
-						}
-					})
-				}
-			break;
-			default :
-				throw new Error(" METHOD NOT ALLOWED")
-		}
-	}
 	return websocketController;
 });
 	</pre>

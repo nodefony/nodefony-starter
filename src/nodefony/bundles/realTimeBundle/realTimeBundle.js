@@ -34,14 +34,14 @@ nodefony.registerBundle ("realTime", function(){
 	 *	@param {class} container
 	 *	
 	 */
-	var realTime = function(kernel, container){
+	var realTime = class realTime extends nodefony.Bundle {
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+		constructor(kernel, container){
 
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
-
+			super(kernel, container);
+			// load bundle library 
+			this.autoLoader.loadDirectory(this.path+"/core");
+		};
 	};
 
 	return realTime;

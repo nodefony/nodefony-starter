@@ -9,10 +9,11 @@
 
 nodefony.registerBundle ("demo", function(){
 
-	var demo = function(kernel, container){
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
-	}
+	var demo = class demo extends nodefony.Bundle {
+		constructor(kernel, container){
+			super(kernel, container);
+		};
+	};
 
 	return demo ;
 });

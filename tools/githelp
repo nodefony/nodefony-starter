@@ -13,4 +13,4 @@ $ git push origin :refs/tags/release01
 
 
 // TRACK REMOTE BRANCH 
-$ git branch --track ES6
+$ git branch --track origin/ES6

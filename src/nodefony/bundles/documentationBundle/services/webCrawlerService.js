@@ -13,70 +13,6 @@ var https = require('https');
 nodefony.registerService("webCrawler", function(){
 
 
-	var webCrawler = function(container, kernel){
-		this.container = container ;
-		this.kernel = kernel ;
-		this.syslog = this.container.get("syslog");
-		this.crawled = {};
-		this.elastic = null ;
-		
-	
-		this.kernel.listen(this, "onReady", function(){
-			this.elastic = this.kernel.getBundle("documentation").elastic;
-		})	
-	}
-
-	webCrawler.prototype.logger = function(pci, severity, msgid,  msg){
-		//var syslog = this.container.get("syslog");
-		if (! msgid) msgid = "SERVICE WEB CRAWLER";
-		return this.syslog.logger(pci, severity, msgid,  msg);
-	};
-
-
-
-	webCrawler.prototype.siteAll = function(urlBase, search ,context, callback ){
-
-		var recurse = 0 ;
-		var Link = url.parse(urlBase);
-
-		this.base = Link.host;
-
-		this.protocol = Link.protocol ? Link.protocol+"//" : 'http://' ;
-
-		if ( this.elastic ){
-			myLoop.call(this, urlBase, context, function(error, crawled){
-				console.log("PASSS")
-			});
-		}else{
-			myLoop.call(this, urlBase, context, function(error, crawled){
-				//console.log(crawled)
-				var obj = {} ;
-				try {
-					for ( var page in crawled){
-						
-						if ( crawled &&   crawled[page] && crawled[page].page && crawled[page].page.selector ){
-							var text = crawled[page].page.selector("body").text() ;
-							if ( ! text ){
-								continue ;
-							}
-							//var index = text.indexOf(search) ;
-							var reg = new RegExp(search, 'gi')
-							var index = text.search(reg);
-							if ( index !== -1 ){
-								obj[ crawled[page].page.url ] = {
-									text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
-									title: crawled[page].page.title
-								}
-							}	
-						}	
-					}
-				}catch(e){
-					this.logger(e, "ERROR");	
-				}
-				callback(obj)
-			}.bind(this),recurse);
-		}
-	}
 
 	var makeRequestHttp = function(link, context ,callback){
 
@@ -120,24 +56,24 @@ nodefony.registerService("webCrawler", function(){
 			options.agent = keepAliveAgent;	
 		}
 	
-		var req = wrapper(options, function(res) {
+		var req = wrapper(options, (res) => {
 			var bodyRaw = "";
 			res.setEncoding('utf8');
-			res.on('data', function (chunk) {
+			res.on('data',  (chunk) => {
 				//this.logger( chunk, "DEBUG");
 				bodyRaw += chunk ;
-			}.bind(this));
+			});
 
-			res.on('end', function(){
+			res.on('end', () => {
 				parseLink.call(this, link, bodyRaw ,  callback ) ;
-			}.bind(this))
+			})
 
-		}.bind(this));
+		});
 
-		req.on('error', function(e) {
+		req.on('error', (e) => {
 			this.logger('Problem with request: ' + e.message, "ERROR");
 			
-		}.bind(this));
+		});
 
 		req.end();
 	}
@@ -160,7 +96,7 @@ nodefony.registerService("webCrawler", function(){
 		pageObject.selector = $;
 
 		// find link
-		$('a').each(function(i, elem){
+		$('a').each((i, elem) => {
 			//console.log(elem.attribs.href)
 			if ( elem.attribs.href === "#" || elem.attribs.href === "/") {
 				return ;
@@ -177,7 +113,7 @@ nodefony.registerService("webCrawler", function(){
 			if ( href ){
 				pageObject.links.push({linkText: $(elem).text(), linkUrl: href  })
 			}
-		}.bind(this));
+		});
 		callback(null, pageObject);
 	}
 
@@ -190,14 +126,14 @@ nodefony.registerService("webCrawler", function(){
 				return ;
 			}
 		}
-		makeRequestHttp.call(this, link , context, function(error, pageObject){
+		makeRequestHttp.call(this, link , context, (error, pageObject) => {
 			
 			if ( error  ){ return }
 			
 			this.crawled[ pageObject.url ] = [];
 			this.crawled[ pageObject.url ]["page"] = pageObject ;
 			
-			async.eachSeries(pageObject.links, function(item, cb){
+			async.eachSeries(pageObject.links, (item, cb) => {
 				if (item.linkUrl){
 					// test if the url actually points to the same domain
 					if( item.linkUrl.host == this.base ){
@@ -207,8 +143,7 @@ nodefony.registerService("webCrawler", function(){
 					}
 				}
 				cb(null);
-			}.bind(this),
-			function(error){
+			}, (error) => {
 				if ( ! error ){
 					
 					for( var i= 0 ; i < this.crawled[pageObject.url].length ; i++  ){
@@ -218,13 +153,13 @@ nodefony.registerService("webCrawler", function(){
 						}else{
 							recurse++ ;
 							this.crawled[ this.crawled[pageObject.url][i] ]  = [];
-							myLoop.call(this, this.crawled[pageObject.url][i], context, function(){
+							myLoop.call(this, this.crawled[pageObject.url][i], context, () => {
 								recurse-- ;	
 								if ( recurse === 0 ){
 									//console.log("FINISH")
 									finish(error, this.crawled)
 								}
-							}.bind(this), 0);
+							}, 0);
 
 						}
 					}
@@ -233,11 +168,78 @@ nodefony.registerService("webCrawler", function(){
 					//console.log( "FINISH 2" )
 					finish(error, this.crawled)
 				}
-				
-			}.bind(this));	
-		}.bind(this))
+			});	
+		})
 		
 	}
+
+	var webCrawler = class webCrawler {
+		constructor (container, kernel){
+			this.container = container ;
+			this.kernel = kernel ;
+			this.syslog = this.container.get("syslog");
+			this.crawled = {};
+			this.elastic = null ;
+		
+			this.kernel.listen(this, "onReady", () => {
+				this.elastic = this.kernel.getBundle("documentation").elastic;
+			})	
+		};
+
+		logger (pci, severity, msgid,  msg){
+			//var syslog = this.container.get("syslog");
+			if (! msgid) msgid = "SERVICE WEB CRAWLER";
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		};
+
+
+
+		siteAll (urlBase, search ,context, callback ){
+
+			console.log(urlBase)
+			var recurse = 0 ;
+			var Link = url.parse(urlBase);
+
+			this.base = Link.host;
+
+			this.protocol = Link.protocol ? Link.protocol+"//" : 'http://' ;
+
+			if ( this.elastic ){
+				myLoop.call(this, urlBase, context, function(error, crawled){
+					console.log("PASSS")
+				});
+			}else{
+				myLoop.call(this, urlBase, context, (error, crawled) => {
+					//console.log(crawled)
+					var obj = {} ;
+					try {
+						for ( var page in crawled){
+							
+							if ( crawled &&   crawled[page] && crawled[page].page && crawled[page].page.selector ){
+								var text = crawled[page].page.selector("body").text() ;
+								if ( ! text ){
+									continue ;
+								}
+								//var index = text.indexOf(search) ;
+								var reg = new RegExp(search, 'gi')
+								var index = text.search(reg);
+								if ( index !== -1 ){
+									obj[ crawled[page].page.url ] = {
+										text : "..." + text.substring( index - 100 , index + 100 ) + "..." ,
+										title: crawled[page].page.title
+									}
+								}	
+							}	
+						}
+					}catch(e){
+						this.logger(e, "ERROR");	
+					}
+					callback(obj)
+				},recurse);
+			}
+		};
+	};
+
 
 	return webCrawler
 

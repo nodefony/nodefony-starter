@@ -46,7 +46,7 @@ describe("BUNDLE DEMO", function(){
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers.server, "nodefony");
 				res.setEncoding('utf8');
-				res.on('data', function (chunk) {
+				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
 					assert.deepStrictEqual(res, {foo:"bar",bar:"foo"});
 					done();	
@@ -72,7 +72,7 @@ describe("BUNDLE DEMO", function(){
 				agent: false
 			};
 
-			var request = https.request(options,function(res) {
+			var request = https.request(options, (res) => {
 				assert.equal(res.statusCode, 200);
 				assert.equal(res.headers.server, "nodefony");
 				res.setEncoding('utf8');
@@ -96,12 +96,12 @@ describe("BUNDLE DEMO", function(){
 			client.connect(url, null, "nodefony", null, {});
 			client.on('connect', function(connection) { 
 				console.log( "websoket connection ok on : " + url)	
-				connection.on("message", function(message){
+				connection.on("message", (message) => {
 					//console.log(message)
 					iter++	
-				}.bind(this))
+				})
 				//connection.close(); 
-				connection.on('close', function(reasonCode, description) {
+				connection.on('close', (reasonCode, description) =>  {
 					assert.equal(iter, 9);
 					assert.equal(reasonCode, 1000);
 					assert.equal(description, "NODEFONY CONTROLLER CLOSE SOCKET");

@@ -9,20 +9,23 @@
 nodefony.registerBundle ("http", function(){
 
 	
-	var httpServer  = function(kernel, container){
+	var httpServer  = class httpServer extends nodefony.Bundle {
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+		constructor (kernel, container){
 
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
+			// load bundle library 
 
-		//this.waitBundleReady = true ; 
+			super(kernel, container );
 
-		//setTimeout(function(){
-		//	this.fire("onReady")
-		//}.bind(this),10000);
-	}
+			this.autoLoader.loadDirectory(this.path+"/core");
+
+			//this.waitBundleReady = true ; 
+
+			//setTimeout(function(){
+			//	this.fire("onReady")
+			//}.bind(this),10000);
+		}
+	};
 
 	return httpServer;
 });

@@ -1,7 +1,7 @@
 {
-	"name": "HTTP",
+	"name": "nodefony-framework",
 	"version": "1.0",
-	"description": "Manager HTTP ",
+	"description": "Bundle Framework ",
 	"contributors": [],
 	"scripts": {},
 	"keywords": [
@@ -9,8 +9,6 @@
 		"javascript"
 	],
 	"dependencies": {
-		"memcached"	: "2.2.2",
-		"qs"		: "6.3.0"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

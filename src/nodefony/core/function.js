@@ -14,10 +14,13 @@
  *
  */
 
-nodefony.provide("functions");
+
+return ;
+
 
 nodefony.register("functions" , function(){
 
+	//console.log(this);
 
 	// Multiple heritage
 	var recHeriteMultiple = function(){

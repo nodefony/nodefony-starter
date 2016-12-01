@@ -8,48 +8,48 @@
  *
  *
  */
-
+"use strict;"
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader, settings){
-		
-		// kernel constructor
-		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type, settings)
+	var appKernel = class appKernel extends nodefony.kernel {
 
-		/*
-	 	*	Bundles to register in Application
-	 	*/
-		this.registerBundles([
-			"./src/nodefony/bundles/sequelizeBundle",
-			"./src/nodefony/bundles/usersBundle",
-			"./src/nodefony/bundles/documentationBundle",
-			"./src/nodefony/bundles/unitTestBundle",
-			"./src/bundles/demoBundle"
-		]);
+		constructor (type, environment, debug, loader, settings){
+			
+			// kernel constructor
+			super(environment, debug, loader, type, settings)
 
-		/*
- 		 *
- 		 *	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
- 		 */
-		if (type === "SERVER"){
-			this.listen(this,"onPostReady", function(){
-				// create HTTP server 
-				var http = this.get("httpServer").createServer();
+			/*
+	 		*	Bundles to register in Application
+	 		*/
+			this.registerBundles([
+				"./src/nodefony/bundles/sequelizeBundle",
+				"./src/nodefony/bundles/usersBundle",
+				"./src/nodefony/bundles/documentationBundle",
+				"./src/nodefony/bundles/unitTestBundle",
+				"./src/bundles/demoBundle"
+			]);
 
-				// create HTTPS server
-				var https = this.get("httpsServer").createServer();
+			/*
+ 		 	*
+ 		 	*	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
+ 		 	*/
+			if (type === "SERVER"){
+				this.listen(this,"onPostReady", () => {
+					// create HTTP server 
+					var http = this.get("httpServer").createServer();
 
-				// create WEBSOCKET server
-				var ws = this.get("websocketServer").createServer(http);
+					// create HTTPS server
+					var https = this.get("httpsServer").createServer();
 
-				// create WEBSOCKET SECURE server
-				var wss = this.get("websocketServerSecure").createServer(https);
+					// create WEBSOCKET server
+					var ws = this.get("websocketServer").createServer(http);
 
-			}.bind(this));
+					// create WEBSOCKET SECURE server
+					var wss = this.get("websocketServerSecure").createServer(https);
+				});
+			};
 		};
-				
-	}.herite(nodefony.kernel);
+	};
 
 	return appKernel;
 })

@@ -100,18 +100,20 @@ app/config/
 				<pre>
 nodefony.registerController("default", function(){
 		
-	var defaultController = function(container, context){
-		this.mother = this.$super;
-		this.mother.constructor(container, context);
-	};
-	
-	defaultController.prototype.indexAction = function(version){
-		// GET config bundle App
-		<strong> var bundleAppSettings = this.getParameters("bundles.App") ;</strong>
-		//// GET config bundle http
-		<strong> var bundleHttpSettings = this.getParameters("bundles.http") ;</strong>
+	var defaultController = class defaultController extends nodefony.controller {
+
+		constructor(container, context){
+			super(container, context);
+		};
 		
-		return this.renderJson(bundleAppSettings);		
+		indexAction (version){
+			// GET config bundle App
+			<strong> var bundleAppSettings = this.getParameters("bundles.App") ;</strong>
+			//// GET config bundle http
+			<strong> var bundleHttpSettings = this.getParameters("bundles.http") ;</strong>
+			
+			return this.renderJson(bundleAppSettings);		
+		};
 	};
 
 	return defaultController;
@@ -120,7 +122,8 @@ nodefony.registerController("default", function(){
 				</li>
 				<li>In Kernel you can find  <code> this.settings </code> with framework configuration 
 				<pre>
-defaultController.prototype.indexAction = function(version){
+
+indexAction (version){
 	// GET kernel service and get config
 	var kernelGlobalSettings = this.get("kernel").settings ;
 	
@@ -130,7 +133,7 @@ defaultController.prototype.indexAction = function(version){
 				</li>
 				<li>In Bundle you can find <code> this.settings </code> with bundle configuration  
 				<pre>
-defaultController.prototype.indexAction = function(version){
+indexAction (version){
 	// GET kernel service , get demo bundle  config
 	var demoBundleGlobalSettings = this.get("kernel").getBundle("demo").settings ;
 	
@@ -142,16 +145,18 @@ defaultController.prototype.indexAction = function(version){
 					<pre>
 nodefony.registerService("myService", function(){
 
-	var myService = function(kernel, container){
-		this.kernel = kernel ;
-		this.container = container ;
-		this.name = "myService";
-	
-	}
+	var myService = class myService {
 
-	myService.prototype.myFunction = function(file  ,done){
-		<strong>var kernelGlobalSettings = this.container.getParameters("kernel") ;</strong>
-	}
+		constructor (kernel, container)
+			this.kernel = kernel ;
+			this.container = container ;
+			this.name = "myService";
+		};
+
+		myFunction (){
+			<strong>var kernelGlobalSettings = this.container.getParameters("kernel") ;</strong>
+		};
+	};
 
 	return myService ;
 });

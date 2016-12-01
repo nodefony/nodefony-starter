@@ -34,28 +34,26 @@ nodefony.registerBundle ("sequelize", function(){
 	 *	@param {class} container
 	 *	
 	 */
-	var sequelize = function(kernel, container){
+	var sequelize = class sequelize  extends nodefony.Bundle {
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
-		
-		
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
+		constructor (kernel, container){
 
-		
-		/*
-		 *	If you want kernel wait sequelizeBundle event <<onReady>> 
-		 *
-		 *      this.waitBundleReady = true ; 
-		 */	
-		this.waitBundleReady = true ; 
+			super( kernel, container);
+			// load bundle library 
+			this.autoLoader.loadDirectory(this.path+"/core");
+			
+			/*
+		 	*	If you want kernel wait sequelizeBundle event <<onReady>> 
+		 	*
+		 	*      this.waitBundleReady = true ; 
+		 	*/	
+			this.waitBundleReady = true ; 
 
-		var service =  this.get("sequelize");
-		service.listen(this, "onOrmReady",function(){
-			this.fire("onReady", this, service);	
-		}.bind(this));
-		
+			var service =  this.get("sequelize");
+			service.listen(this, "onOrmReady",() => {
+				this.fire("onReady", this, service);	
+			});
+		};
 	};
 
 	return sequelize;

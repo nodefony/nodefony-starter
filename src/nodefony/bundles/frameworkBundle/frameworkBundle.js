@@ -5,18 +5,16 @@
  */
 nodefony.registerBundle ("framework", function(){
 
-	var framework = function(kernel, container){
+	var framework = class framework extends nodefony.Bundle {
+		constructor (kernel, container){
+			super(kernel, container);
+			// load bundle library 
+			this.autoLoader.loadDirectory(this.path+"/core");
 
-		// load bundle library 
-		this.autoLoader.loadDirectory(this.path+"/core");
+		}
+	};
 
-		this.mother = this.$super;
-		this.mother.constructor(kernel, container);
-
-		
-	}
-
-	return framework
+	return framework ;
 });
 
 

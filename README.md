@@ -74,7 +74,7 @@ $ git clone https://github.com/nodefony/nodefony.git
 
 $ cd nodefony
 
-$ make
+$ make build
 
 ```
 
@@ -118,7 +118,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "1.0.3-beta"
+  		version:                      "2.0.0-ES6-beta"
 		domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )
 		domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space
   		httpPort:                     5151
@@ -144,12 +144,12 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 $./console -h            
               _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
-             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
              | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
 
-
-		      CONSOLE Version : 1.0 PLATFORM : darwin  PROCESS PID : 60384
+		      NODEFONY CONSOLE CLUSTER MASTER Version : 1.0.3-beta PLATFORM : darwin  PROCESS PID : 85821
 
 Usage: node console
 
@@ -158,7 +158,7 @@ Usage: node console
 
 Commands : [arguments]
 nodefony
-	npm:list								 List all installed packages
+	npm:list							 List all installed packages 
 	npm:install							 Install all framework packages
 framework
 	generate:bundle nameBundle path                                  Generate a Bundle directory in path directory
@@ -166,20 +166,25 @@ framework
 	generate:command nameCommand path                                Generate a command js file in bundle path
 	generate:service nameService path                                Generate a service js file in bundle path
 	router:generate:routes                                           Generate all routes
-	router:generate:route routeName                                  Generate one route
-	router:match:url url                                             Get route who match url
+	router:generate:route routeName                                  Generate one route Example : ./console router:generate:route home 
+	router:match:url url                                             Get route who match url Example : ./console router:match:url /nodefony
 assetic
-	assets:install                                                   Installs bundles web assets link under a public web directory
-	assets:dump                                                      Dump  all bundles web assets under a public web directory
+	assets:install                                                   Installs bundles web assets link under a public web directory 
+	assets:dump                                                      Dump  all bundles web assets under a public web directory 
 security
-	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5
+	encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5 Example : ./console encoders:Digest secured_area login password
+monitoring
+	Monitoring:test:load URL [nbRequests] [concurence]               load test example ./console Monitoring:test:load http://nodefony.com:5151/demo 10000 100 
 sequelize
 	Sequelize:fixtures:load                                          Load data fixtures to your database
-	Sequelize:generate:entities                                      Generate All Entities
-	Sequelize:query:sql connectionName SQL                           query sql in database connection  
+	Sequelize:generate:entities [force]                              Generate All Entities force to delete table if exist  example : ./console Sequelize:generate:entities force 
+	Sequelize:query:sql connectionName SQL                           query sql in database connection  example : ./console  Sequelize:query:sql nodefony  'select * from users'
 	Sequelize:entity:findAll entity                                  query findAll ENTITY
-App
-	server:run                                                       Run Application                                                     Run Application
+unitTest
+	unitTest:list:all                                                List all unit tests
+	unitTest:list:bundle bundleName                                  List all bundle unit tests
+	unitTest:launch:all                                              Launch all tests
+	unitTest:launch:bundle bundleName { testfile }                   Launch bundle tests
 
 ```
 
@@ -225,34 +230,35 @@ Open Bundle App "appKernel.js" to add new hello Bundle in **registerBundles** ar
 ```js
 /*
  *	ENTRY POINT FRAMEWORK APP KERNEL
+ *
  */
-
 nodefony.register("appKernel",function(){
 
-	var appKernel = function(type, environment, debug, loader){
+	var appKernel = class appKernel extends nodefony.kernel {
 
-		// kernel constructor
-		var kernel = this.$super;
-		kernel.constructor(environment, debug, loader, type)
+		constructor (type, environment, debug, loader, settings){
+			
+			// kernel constructor
+			super(environment, debug, loader, type, settings)
 
-		/*
-	 	*	Bundles to register in Application
-	 	*/
-		this.registerBundles([
-			...
-			"./src/bundles/helloBundle"
-		]);
+			/*
+	 		*	Bundles to register in Application
+	 		*/
+			this.registerBundles([
+				...
+				"./src/bundles/helloBundle"
+			]);
 
-		...
-
-	}.herite(nodefony.kernel);
+			...	
+		};
+	};
 
 	return appKernel;
 })
 ```
 #### Start Framework to check new Bundle hello:
 ```bash
-$ make install
+$ make 
 $ ./nodefony_dev
 ```
 

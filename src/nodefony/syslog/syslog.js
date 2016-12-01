@@ -1,16 +1,4 @@
 /*
- * Depandances PROVIDE :
- * =====================
- */
-nodefony.provide("syslog");
-/*
- * Depandances REQUIRE :
- * =====================
- */
-
-
-
-/*
  *
  *
  *
@@ -73,8 +61,6 @@ nodefony.register("syslog", function(){
    	sysLogSeverity["INFO"]=6;
    	sysLogSeverity["DEBUG"]=7;
 
-
-
    	/**
     	 *  Protocol Data Unit
      	 * @class  PDU
@@ -82,9 +68,9 @@ nodefony.register("syslog", function(){
     	 * @module library
     	 * @return {PDU}
     	 */
-   	var PDU = function(){
-       		var guid = 0;
-       		return function(pci, severity, moduleName, msgid, msg, date){
+	var guid = 0;
+	nodefony.PDU = class PDU {
+		constructor(pci, severity, moduleName, msgid, msg, date ) {
 			/* timeStamp @type Date*/
                		this.timeStamp = new Date(date).getTime() || new Date().getTime();
            		/* uid */
@@ -105,49 +91,49 @@ nodefony.register("syslog", function(){
            		/* msgid */
                		this.msgid = msgid || "";
            		/* msg */
-               		this.msg = msg || "";	
-       		}
-   	}();
-   	nodefony.PDU = PDU;
-   	/**
-    	 * Get Date in string format
-    	 * @method getDate
-    	 * @return {String} a date in string format .
-    	 */
-   	PDU.prototype.getDate = function(){
-       		return new Date(this.timeStamp).toTimeString();
-   	};
-
-   	/**
-    	 * get a string representating the PDU protocole
-    	 * @method toString
-    	 * @return {String}  .
-    	 */
-   	PDU.prototype.toString = function(){
-
-       		return  "TimeStamp:"+this.getDate() +
-           		"  Log:" +this.payload +
-           		"  ModuleName:" +this.moduleName +
-           		"  SeverityName:"+this.severityName+
-           		"  MessageID:"+this.msgid +
-           		"  UID:"+this.uid +
-                   	"  Message:"+this.msg;
-   	};
-
-	PDU.prototype.parseJson = function(str){
-		try {
-			var json = JSON.parse(str);
-			for (var ele in json){
-				if (ele in this){
-					this[ele] = json[ele];
-				}
-			}
-		}catch(e){
-			throw e
+               		this.msg = msg || "";
 		}
-		return json
-	};
 
+		/**
+    	 	* Get Date in string format
+    	 	* @method getDate
+    	 	* @return {String} a date in string format .
+    	 	*/
+   		getDate(){
+       			return new Date(this.timeStamp).toTimeString();
+   		};
+
+   		/**
+    	 	* get a string representating the PDU protocole
+    	 	* @method toString
+    	 	* @return {String}  .
+    	 	*/
+   		toString (){
+       			return  "TimeStamp:"+this.getDate() +
+           			"  Log:" +this.payload +
+           			"  ModuleName:" +this.moduleName +
+           			"  SeverityName:"+this.severityName+
+           			"  MessageID:"+this.msgid +
+           			"  UID:"+this.uid +
+                   		"  Message:"+this.msg;
+   		};
+
+		parseJson (str){
+			try {
+				var json = JSON.parse(str);
+				for (var ele in json){
+					if (ele in this){
+						this[ele] = json[ele];
+					}
+				}
+			}catch(e){
+				throw e
+			}
+			return json
+		};
+
+
+	}
 
 
    	var operators = {
@@ -381,7 +367,7 @@ nodefony.register("syslog", function(){
            	}else{
            		var myseverity = severity;
            	}
-       		return new PDU(payload, myseverity,
+       		return new nodefony.PDU(payload, myseverity,
                            	moduleName,
                            	msgid,
                            	msg);
@@ -441,299 +427,293 @@ nodefony.register("syslog", function(){
     	 *    @param {Object} settings The settings to extend.
     	 *    @return syslog
     	 */
-   	var syslog = function(settings){
+	var syslog = class syslog extends nodefony.notificationsCenter.notification {
 
-       		this.mother = this.$super;
-       		/*
-         	 * mother class notification center
-         	 */
-       		this.mother.constructor(settings);
-       		/**
-             	 * extended settings
-        	 * @property settings
-             	 * @type Object
-             	 * @see defaultSettings
-             	 */
-           	this.settings = nodefony.extend({},defaultSettings, settings);
-       		/**
-             	 * ring buffer structure container instances of PDU
-        	 * @property ringStack
-             	 * @type Array
-             	 */
-           	this.ringStack = new Array();
-       		/**
-             	 * Ratelimit  Management log printed
-        	 * @property burstPrinted
-             	 * @type Number
-             	 */
-           	this.burstPrinted = 0;
-       		/**
-             	 * Ratelimit  Management log dropped
-        	 * @property missed
-             	 * @type Number
-             	 */
-           	this.missed =0;
-       		/**
-             	 * Management log invalid
-        	 * @property invalid
-             	 * @type Number
-             	 */
-       		this.invalid = 0;
+		constructor( settings ) {
 
-       		/**
-             	 * Counter log valid
-        	 * @property valid
-             	 * @type Number
-             	 */
-       		this.valid = 0;
-       		/**
-             	 * Ratelimit  Management begin of burst
-        	 * @property start
-             	 * @private
-             	 * @type Number
-             	 */
-           	this.start = 0;
+			super( settings );
+       			/**
+             	 	* extended settings
+        	 	* @property settings
+             	 	* @type Object
+             	 	* @see defaultSettings
+             	 	*/
+           		this.settings = nodefony.extend({},defaultSettings, settings);
+       			/**
+             	 	* ring buffer structure container instances of PDU
+        	 	* @property ringStack
+             	 	* @type Array
+             	 	*/
+           		this.ringStack = new Array();
+       			/**
+             	 	* Ratelimit  Management log printed
+        	 	* @property burstPrinted
+             	 	* @type Number
+             	 	*/
+           		this.burstPrinted = 0;
+       			/**
+             	 	* Ratelimit  Management log dropped
+        	 	* @property missed
+             	 	* @type Number
+             	 	*/
+           		this.missed =0;
+       			/**
+             	 	* Management log invalid
+        	 	* @property invalid
+             	 	* @type Number
+             	 	*/
+       			this.invalid = 0;
 
-       		this.fire = this.settings.async ? this.mother.fireAsync : this.mother.fire ;
-   	}.herite(nodefony.notificationsCenter.notification);
+       			/**
+             	 	* Counter log valid
+        	 	* @property valid
+             	 	* @type Number
+             	 	*/
+       			this.valid = 0;
+       			/**
+             	 	* Ratelimit  Management begin of burst
+        	 	* @property start
+             	 	* @private
+             	 	* @type Number
+             	 	*/
+           		this.start = 0;
+       			this.fire = this.settings.async ? super.fireAsync : super.fire ;
+		}
 
+   		pushStack (pdu){
+       			if (this.ringStack.length === this.settings.maxStack){
+               			this.ringStack.shift();
+           		}
+       			var index = this.ringStack.push(pdu);
+       			this.valid++;
+       			return index;
+   		};
 
-
-   	syslog.prototype.pushStack = function(pdu){
-       		if (this.ringStack.length === this.settings.maxStack){
-               		this.ringStack.shift();
-           	}
-       		var index = this.ringStack.push(pdu);
-       		//console.log(this);
-       		this.valid++;
-       		return index;
-   	};
-   	/**
-     	 * logger message
-    	 * @method logger
-     	 * @param {void} payload payload for log. protocole controle information
-     	 * @param {Number || String} severity severity syslog like.
-     	 * @param {String} msgid informations for message. example(Name of function for debug)
-     	 * @param {String} msg  message to add in log. example (I18N)
-     	 */
-   	syslog.prototype.logger = function(payload, severity, msgid, msg){
-           	if (this.settings.rateLimit){
-               		var now = new Date().getTime();
-               		this.start = this.start || now;
-               		if (now > this.start + this.settings.rateLimit){
-               			this.burstPrinted = 0;
-               			this.missed =0;
-               			this.start = 0;
-               		}
-               		if(this.settings.burstLimit && this.settings.burstLimit > this.burstPrinted ){
-               			try {
-                   			if (payload instanceof  PDU ){
-                       				var pdu = payload
-                   			}else{
-                       				var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
-                   			}
-               			}catch(e){
-                   			this.invalid++;
-                   			return "INVALID"
+   		/**
+     	 	* logger message
+    	 	* @method logger
+     	 	* @param {void} payload payload for log. protocole controle information
+     	 	* @param {Number || String} severity severity syslog like.
+     	 	* @param {String} msgid informations for message. example(Name of function for debug)
+     	 	* @param {String} msg  message to add in log. example (I18N)
+     	 	*/
+   		logger (payload, severity, msgid, msg){
+           		if (this.settings.rateLimit){
+               			var now = new Date().getTime();
+               			this.start = this.start || now;
+               			if (now > this.start + this.settings.rateLimit){
+               				this.burstPrinted = 0;
+               				this.missed =0;
+               				this.start = 0;
                			}
+               			if(this.settings.burstLimit && this.settings.burstLimit > this.burstPrinted ){
+               				try {
+                   				if (payload instanceof  nodefony.PDU ){
+                       					var pdu = payload
+                   				}else{
+                       					var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
+                   				}
+               				}catch(e){
+						console.trace(e)
+                   				this.invalid++;
+                   				return "INVALID"
+               				}
+               				this.pushStack( pdu);
+               				this.fire("onLog", pdu);
+               				this.burstPrinted++;
+               				return "ACCEPTED";
+               			}
+               			this.missed++;
+               			return "DROPPED";
+           		}else{
+           			try {
+               				if (payload instanceof  nodefony.PDU ){
+                   				var pdu = payload;
+               				}else{
+                   				var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
+               				}
+           			}catch(e){
+					console.trace(e);
+               				this.invalid++;
+               				return "INVALID";
+           			}
                			this.pushStack( pdu);
                			this.fire("onLog", pdu);
-               			this.burstPrinted++;
-               			return "ACCEPTED";
-               		}
-               		this.missed++;
-               		return "DROPPED";
-           	}else{
-           		try {
-               			if (payload instanceof  PDU ){
-                   			var pdu = payload;
-               			}else{
-                   			var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
-               			}
-           		}catch(e){
-               			this.invalid++;
-               			return "INVALID";
+           			return "ACCEPTED";
            		}
-               		this.pushStack( pdu);
-               		this.fire("onLog", pdu);
-           		return "ACCEPTED";
-           	}
-   	}
+   		}
 
+   		/**
+     	 	* Clear stack of logs
+     	 	*
+     	 	* @method clearLogStack
+      	 	*
+      	 	*
+     	 	*
+     	 	*/
+   		clearLogStack (){
+       			this.ringStack.length = 0;
+   		}
 
+   		/**
+     	 	* get hitory of stack
+    	 	* @method getLogStack
+      	 	* @param {Number} start .
+     	 	* @param {Number} end .
+     	 	* @return {array} new array between start end
+     	 	* @return {PDU} pdu
+     	 	*/
+   		getLogStack (start, end, contition){
+			if (contition){
+				var stack = this.getLogs(contition) ; 
+			}else{
+				var stack = this.ringStack ;
+			}
+           		if ( arguments.length  === 0)
+               			return stack[stack.length-1];
+           		if ( ! end)
+               			return stack.slice(start);
+           		if (start === end)
+               			return stack[stack.length - start-1];
+			return stack.slice(start, end );
+   		}
 
-   	/**
-     	 * Clear stack of logs
-     	 *
-     	 * @method clearLogStack
-      	 *
-      	 *
-     	 *
-     	 */
-   	syslog.prototype.clearLogStack = function(){
-       		this.ringStack.length = 0;
-   	}
+   		/**
+     	 	* get logs with conditions
+    	 	* @method getLogs
+      	 	* @param {Object} conditions .
+     	 	* @return {array} new array with matches conditions
+     	 	*/
+   		getLogs (conditions, stack){
+			var myStack = stack || this.ringStack ;
+       			if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
+           			var myFuncCondition = logicCondition[conditions.checkConditions];
+           			delete conditions.checkConditions;
+       			}else{
+           			var myFuncCondition = logicCondition[this.settings.checkConditions];
+       			}
+       			var tab = [];
+			try {
+				var Conditions = sanitizeConditions(conditions);
+			}catch(e){
+				throw new Error("registreNotification conditions format error: "+ e);
+			}
+       			if (Conditions){
+           			for (var i = 0 ; i<myStack.length; i++){
+               				var res = myFuncCondition(Conditions,myStack[i])
+               					if (res)
+                   					tab.push(myStack[i]);
+           			}
+       			}
+       			return tab;
+   		};
 
-   	/**
-     	 * get hitory of stack
-    	 * @method getLogStack
-      	 * @param {Number} start .
-     	 * @param {Number} end .
-     	 * @return {array} new array between start end
-     	 * @return {PDU} pdu
-     	 */
-   	syslog.prototype.getLogStack = function(start, end, contition){
-		if (contition){
-			var stack = this.getLogs(contition) ; 
-		}else{
-			var stack = this.ringStack ;
-		}
-           	if ( arguments.length  === 0)
-               		return stack[stack.length-1];
-           	if ( ! end)
-               		return stack.slice(start);
-           	if (start === end)
-               		return stack[stack.length - start-1];
-		return stack.slice(start, end );
-   	}
+   		/**
+     	 	* take the stack and build a JSON string
+    	 	* @method logToJson
+     	 	* @return {String} string in JSON format
+     	 	*/
+   		logToJson (conditions){
+       			if (conditions)
+           			var stack = this.getLogs(conditions)
+       			else
+           			var stack = this.ringStack
+           				return JSON.stringify(stack);
+   		};
 
+   		/**
+    	 	* load the stack as JSON string
+   	 	* @method loadStack
+   	 	* @param {Object} json or string stack serialize
+	 	* @param {boolean} fire conditions events  .
+	 	* @param {function} callback before fire conditions events
+    	 	* @return {String}
+    	 	*/
+   		loadStack (stack, doEvent, beforeConditions){
+       			if (! stack )
+           			throw new Error("syslog loadStack : not stack in arguments ")
+               		switch(nodefony.typeOf(stack)){
+                   		case "string" :
+                       			try {
+						//console.log(stack);
+                           			var st = JSON.parse(stack);
+                           			return arguments.callee.call(this, st, doEvent);
+                       			}catch(e){
+                           			throw e;
+                       			}
+                       			break;
+                   		case "array" :
+                   		case "object" :
+                       			try {
+                           			for(var i= 0 ; i<stack.length ; i++){
+                               				var pdu = new nodefony.PDU(stack[i].payload, stack[i].severity, stack[i].moduleName || this.settings.moduleName , stack[i].msgid, stack[i].msg, stack[i].timeStamp)
+                                   			this.pushStack( pdu);
 
-   	/**
-     	 * get logs with conditions
-    	 * @method getLogs
-      	 * @param {Object} conditions .
-     	 * @return {array} new array with matches conditions
-     	 */
-   	syslog.prototype.getLogs = function(conditions, stack){
-		var myStack = stack || this.ringStack ;
-       		if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
-           		var myFuncCondition = logicCondition[conditions.checkConditions];
-           		delete conditions.checkConditions;
-       		}else{
-           		var myFuncCondition = logicCondition[this.settings.checkConditions];
-       		}
-       		var tab = [];
-		try {
-			var Conditions = sanitizeConditions(conditions);
-		}catch(e){
-			throw new Error("registreNotification conditions format error: "+ e);
-		}
-       		if (Conditions){
-           		for (var i = 0 ; i<myStack.length; i++){
-               			var res = myFuncCondition(Conditions,myStack[i])
-               				if (res)
-                   				tab.push(myStack[i]);
-           		}
-       		}
-       		return tab;
-   	};
+                                   			if (doEvent) {
+								if (beforeConditions && typeof beforeConditions  === "function")
+									beforeConditions.call(this, pdu, stack[i]);
+                                       				this.fire("onLog", pdu);
+                                   			}
+                           			}
+                       			}catch(e){
+                           			throw e;
+                       			}
+                       			break;
+                   		default :
+                       			throw new Error("syslog loadStack : bad stack in arguments type")
+               		};
+               		return st || stack;
+   		};
+   		
+   		/**
+     	 	*
+     	 	*    @method  listenWithConditions
+     	 	*
+     	 	*/
+   		listenWithConditions (context, conditions, callback  ){
+       			if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
+           			var myFuncCondition = logicCondition[conditions.checkConditions];
+           			delete conditions.checkConditions;
+       			}else{
+           			var myFuncCondition = logicCondition[this.settings.checkConditions];
+       			}
+			try {
+				var Conditions = sanitizeConditions(conditions);
+			}catch(e){
+				throw new Error("registreNotification conditions format error: "+ e);	
+			}
+       			if (Conditions){
+				var func = (pdu) => {
+               				var res = myFuncCondition(Conditions, pdu)
+               				if (res){
+                   				callback.call(context || this, pdu)
+               				}
+           			};
+           			super.listen(this, "onLog", func);
+				return func ;
+       			}
+   		};
 
+		error (data){
+			return this.logger(data,"ERROR");
+		};
 
-   	/**
-     	 * take the stack and build a JSON string
-    	 * @method logToJson
-     	 * @return {String} string in JSON format
-     	 */
-   	syslog.prototype.logToJson = function(conditions){
-       		if (conditions)
-           		var stack = this.getLogs(conditions)
-       		else
-           		var stack = this.ringStack
-           			return JSON.stringify(stack);
-   	};
+		warning (data){
+			return this.logger(data,"WARNING");	
+		};
 
-   	/**
-    	 * load the stack as JSON string
-   	 * @method loadStack
-   	 * @param {Object} json or string stack serialize
-	 * @param {boolean} fire conditions events  .
-	 * @param {function} callback before fire conditions events
-    	 * @return {String}
-    	 */
-   	syslog.prototype.loadStack = function(stack, doEvent, beforeConditions){
-       		if (! stack )
-           		throw new Error("syslog loadStack : not stack in arguments ")
-               			switch(nodefony.typeOf(stack)){
-                   			case "string" :
-                       				try {
-							//console.log(stack);
-                           				var st = JSON.parse(stack);
-                           				return arguments.callee.call(this, st, doEvent);
-                       				}catch(e){
-                           				throw e;
-                       				}
-                       				break;
-                   			case "array" :
-                   			case "object" :
-                       				try {
-                           				for(var i= 0 ; i<stack.length ; i++){
-                               					var pdu = new PDU(stack[i].payload, stack[i].severity, stack[i].moduleName || this.settings.moduleName , stack[i].msgid, stack[i].msg, stack[i].timeStamp)
-                                   				this.pushStack( pdu);
+		info (data){
+			return this.logger(data,"INFO");
+		};
 
-                                   				if (doEvent) {
-									if (beforeConditions && typeof beforeConditions  === "function")
-										beforeConditions.call(this, pdu, stack[i]);
-                                       					this.fire("onLog", pdu);
-                                   				}
-                           				}
-                       				}catch(e){
-                           				throw e;
-                       				}
-                       				break;
-                   			default :
-                       				throw new Error("syslog loadStack : bad stack in arguments type")
-               			};
-               	return st || stack;
-   	};
+		debug (data){
+			return this.logger(data,"DEBUG");
+		};
 
-   	
-   	/**
-     	 *
-     	 *    @method  listenWithConditions
-     	 *
-     	 */
-   	syslog.prototype.listenWithConditions = function(context, conditions, callback  ){
-       		if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
-           		var myFuncCondition = logicCondition[conditions.checkConditions];
-           		delete conditions.checkConditions;
-       		}else{
-           		var myFuncCondition = logicCondition[this.settings.checkConditions];
-       		}
-		try {
-			var Conditions = sanitizeConditions(conditions);
-		}catch(e){
-			throw new Error("registreNotification conditions format error: "+ e);	
-		}
-       		if (Conditions){
-			var func = function(pdu){
-               			var res = myFuncCondition(Conditions, pdu)
-               			if (res){
-                   			callback.apply(context || this, arguments)
-               			}
-           		};
-           		this.mother.listen(this, "onLog", func);
-			return func ;
-       		}
-   	};
+		trace (data){
+			return this.logger(data,"NOTICE");
+		};
 
-	syslog.prototype.error = function(data){
-		return this.logger(data,"ERROR");
-	};
-
-	syslog.prototype.warning = function(data){
-		return this.logger(data,"WARNING");	
-	};
-
-	syslog.prototype.info = function(data){
-		return this.logger(data,"INFO");
-	};
-
-	syslog.prototype.debug = function(data){
-		return this.logger(data,"DEBUG");
-	};
-
-	syslog.prototype.trace = function(data){
-		return this.logger(data,"NOTICE");
 	};
 
 	return syslog;

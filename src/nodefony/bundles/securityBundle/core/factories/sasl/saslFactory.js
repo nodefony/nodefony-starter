@@ -44,121 +44,122 @@ nodefony.register.call(nodefony.security.factory, "sasl",function(){
 	};
 
 
-	var Factory = function(contextSecurity, settings){
-		this.name = this.getKey();
-		this.settings = settings ;
-		this.contextSecurity = contextSecurity ;
-		this.token = this.getAllMechanisms();
-		this.defaultToken = "Digest";
-	};
+	var Factory = class Factory {
 
-	Factory.prototype.getKey = function(){
-		return "sasl";
-	};
+		constructor (contextSecurity, settings){
+			this.name = this.getKey();
+			this.settings = settings ;
+			this.contextSecurity = contextSecurity ;
+			this.token = this.getAllMechanisms();
+			this.defaultToken = "Digest";
+		};
 
-	Factory.prototype.getPosition = function(){
-		return "Form";
-	};
+		getKey (){
+			return "sasl";
+		};
 
-	Factory.prototype.handle = function(context, callback){
-		var request = context.request ;
-		var response = context.response ;
+		getPosition (){
+			return "Form";
+		};
 
-		try {
-			var res = parseSASLAuth(request);
-		}catch(e){
-			this.contextSecurity.logger(e.message, "WARNING")	
-			request.headers["authorization"]= null;
-			var res = {
-				mechanism:this.defaultToken
-			}
-		}
-		try {
-			var typeMech = this.getMechanisms(res.mechanism);
-		}catch( e ){
-			var typeMech = this.getMechanisms( this.defaultToken );
-			var token = new typeMech( request, response, this.settings);
-			response.headers["WWW-Authenticate"] = this.generateResponse(token);
-			callback( e, null);
-			return ;
-		}
+		handle (context, callback){
+			var request = context.request ;
+			var response = context.response ;
 
-		var token = new typeMech( request, response, this.settings);
-		this.contextSecurity.logger("TRY AUTHORISATION "+ this.name +" "+token.name ,"DEBUG")
-		try {
-			if (! token.authorization){ 
-				response.headers["WWW-Authenticate"] = this.generateResponse(token);
-				throw {
-					status:401,
-					message:"Unauthorized"
-				};
-			}
-			token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider), function(error, result){
-				if (error){
-					response.headers["WWW-Authenticate"] = this.generateResponse(token);
-					callback( error, null);
-					return ;
- 			        }	
-				if ( result === true ){
-					this.contextSecurity.provider.loadUserByUsername(token.username, function(error, result){
-						if ( error ){
-							response.headers["WWW-Authenticate"] = this.generateResponse(token);
-							callback( error, null);
-							return ;
-						}
-						context.user = 	result;
-						callback(null,token)
-					}.bind(this));
+			try {
+				var res = parseSASLAuth(request);
+			}catch(e){
+				this.contextSecurity.logger(e.message, "WARNING")	
+				request.headers["authorization"]= null;
+				var res = {
+					mechanism:this.defaultToken
 				}
-			}.bind(this))
+			}
+			try {
+				var typeMech = this.getMechanisms(res.mechanism);
+			}catch( e ){
+				var typeMech = this.getMechanisms( this.defaultToken );
+				var token = new typeMech( request, response, this.settings);
+				response.headers["WWW-Authenticate"] = this.generateResponse(token);
+				callback( e, null);
+				return ;
+			}
 
-		}catch(e){
-			response.headers["WWW-Authenticate"] = this.generateResponse(token);
-			callback( e, null);
-		}	
-	};
+			var token = new typeMech( request, response, this.settings);
+			this.contextSecurity.logger("TRY AUTHORISATION "+ this.name +" "+token.name ,"DEBUG")
+			try {
+				if (! token.authorization){ 
+					response.headers["WWW-Authenticate"] = this.generateResponse(token);
+					throw {
+						status:401,
+						message:"Unauthorized"
+					};
+				}
+				token.checkResponse( this.contextSecurity.provider.getUserPassword.bind(this.contextSecurity.provider), (error, result) => {
+					if (error){
+						response.headers["WWW-Authenticate"] = this.generateResponse(token);
+						callback( error, null);
+						return ;
+ 			        	}	
+					if ( result === true ){
+						this.contextSecurity.provider.loadUserByUsername(token.username, (error, result) => {
+							if ( error ){
+								response.headers["WWW-Authenticate"] = this.generateResponse(token);
+								callback( error, null);
+								return ;
+							}
+							context.user = 	result;
+							callback(null,token)
+						});
+					}
+				})
+
+			}catch(e){
+				response.headers["WWW-Authenticate"] = this.generateResponse(token);
+				callback( e, null);
+			}	
+		};
 
 
-	Factory.prototype.generateResponse = function(token){
-		//console.log(request)
-		var res = "SASL ";
-		var line = {
-			"mechanisms":token.name
+		generateResponse (token){
+			//console.log(request)
+			var res = "SASL ";
+			var line = {
+				"mechanisms":token.name
+			}
+			line["challenge"]=token.generateResponse();
+		 	
+			for (var ele in line){
+				res+=ele+"="+line[ele]+","
+			}
+			return res.substring(0,res.length-1) ;
+		};
+
+		getAllMechanisms (){
+			var mech = '"';
+			this.nbMechanism = 0;
+			for (var me in nodefony.security.tokens){
+				mech+=me+" ";
+				this.nbMechanism++;
+			}
+			var str = mech.substring(0,mech.length-1)
+			str+='"';
+			return str;
+		};
+
+		getMechanisms (mech){
+			if ( mech in nodefony.security.tokens){
+				return nodefony.security.tokens[mech]
+			}else{
+				throw new Error("SASL mechanism token  : "+mech+" is not implemented");
+			}
 		}
-		line["challenge"]=token.generateResponse();
-		 
-		for (var ele in line){
-			res+=ele+"="+line[ele]+","
-		}
-		return res.substring(0,res.length-1) ;
+		
+		generatePasswd (realm, user, passwd){
+			var func = new nodefony.security.tokens["Digest"]();
+			return func(realm, user, passwd);	
+		};
 	};
-
-	Factory.prototype.getAllMechanisms = function(){
-		var mech = '"';
-		this.nbMechanism = 0;
-		for (var me in nodefony.security.tokens){
-			mech+=me+" ";
-			this.nbMechanism++;
-		}
-		var str = mech.substring(0,mech.length-1)
-		str+='"';
-		return str;
-	};
-
-	Factory.prototype.getMechanisms = function(mech){
-		if ( mech in nodefony.security.tokens){
-			return nodefony.security.tokens[mech]
-		}else{
-			throw new Error("SASL mechanism token  : "+mech+" is not implemented");
-		}
-	}
-	
-	Factory.prototype.generatePasswd = function(realm, user, passwd){
-		var func = new nodefony.security.tokens["Digest"]();
-		return func(realm, user, passwd);	
-	};
-
-
 
 	return Factory ;
 
