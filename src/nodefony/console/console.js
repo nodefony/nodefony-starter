@@ -71,11 +71,20 @@ nodefony.register("console", function(){
 		table.setAlignCenter(11);
 		
 		for (var pack in ele){
-			var lgt = ele[pack].desc.length > 110 ? " ..." : "" ;
+			if ( ele[pack].desc ){
+				var lgt = ele[pack].desc.length > 110 ? " ..." : "" ;
+			}else{
+				var lgt = "" ;
+			}
+			if (  ele[pack].desc ) {
+				var desc = ele[pack].desc.substring(0,110) + lgt
+			}else{
+				var desc = "" ; 	
+			}
 			table.addRow(
 				ele[pack].name,
 				ele[pack].version,
-				ele[pack].desc.substring(0,110) + lgt
+				desc
 			);	
 		}
 		//table.removeBorder()
