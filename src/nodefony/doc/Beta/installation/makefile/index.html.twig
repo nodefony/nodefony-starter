@@ -10,6 +10,19 @@
 
 <h2>BUILD NODEFONY FRAMEWORK </h2>
 
+<h3>Makefile build differents part of framework :</h3>
+
+<div class="doc3">
+<pre>
+$ make << target >>
+</pre>
+</div>
+
+
+
+
+<h2>Targets NODEFONY FRAMEWORK </h2>
+
 <h3>Build</h3>
 
 <div class="doc3">
@@ -22,27 +35,47 @@
 	</p>
 
 <pre>
-$ make build
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#            NODEFONY BUILD             #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	make clean ;
+
+	make npm ;
+	
+	make install ;
+
+	make sequelize
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./console router:generate:routes";\
+		./console router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
+		echo "./console npm:list";\
+		./console npm:list ;\
+	else \
+		echo "./.console_dev router:generate:routes";\
+		./.console_dev router:generate:routes ;\
+		echo "./console router:match:url /";\
+		./console router:match:url /\
+		echo "./.console_dev npm:list";\
+		./.console_dev npm:list ;\
+	fi \
+
 </pre>
 </div>
 
-<h3>Makefile build differents part of framework :</h3>
-
-<div class="doc3">
-<pre>
-$ make << target >>
-</pre>
-</div>
-
-<h2>Targets NODEFONY FRAMEWORK </h2>
 
 <h3> All </h3>
 <div class="doc3">
 	<p>
-		All target 
+		All target just call target install
 	</p>
 	<pre>
-		Make
+all:  install 
 	</pre>
 </div>
 
@@ -256,7 +289,6 @@ sequelize:
 
 	<pre>
 start:
-	make asset
 	./nodefony_pm2 &
 	</pre>
 </div>
@@ -277,6 +309,24 @@ stop:
 
 	</pre>
 </div>
+
+
+<h3>  deploy   </h3>
+<div class="doc3">
+<p>
+		DEPLOY  NODEFONY IN PRODUTION MODE  FOR SCRIPTING </br>
+		<ul>
+			<li>Compile ASSETS and run  </li>
+		</ul>
+	</p>
+
+	<pre>
+deploy:
+	make asset ;
+	make start &
+	</pre>
+</div>
+
 
 
 <h3> Targets : kill startup show monit</h3>

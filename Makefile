@@ -38,16 +38,12 @@ build:
 	@echo "#########################################" ;
 	@echo "";
 
-	#@echo "make clean";
 	make clean ;
 
-	#@echo "make npm";
 	make npm ;
 	
-	#@echo "make install";
 	make install ;
 
-	#@echo "make sequelize";
 	make sequelize
 
 	@if [ $(VERBOSE) = 0 ] ; then \
@@ -73,7 +69,6 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
-	#make asset
 	./nodefony_pm2 &
 
 stop:
