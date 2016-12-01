@@ -118,7 +118,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "1.0.2-beta"
+  		version:                      "1.0.3-beta"
 		domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )
 		domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space
   		httpPort:                     5151
