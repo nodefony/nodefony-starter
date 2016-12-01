@@ -1,12 +1,27 @@
 #!/usr/bin/env node
 var pm2 = require('pm2');
 var cluster = require('cluster');	
+var AsciiTable = require('ascii-table');
+
 
 var instances =  require('os').cpus().length ;
 
 require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	console.log('\n');
 	console.log('\033[31m'+res+'\033[0m');
+
+
+	var table = new AsciiTable("NODEFONY LAUNCHER PROD PM2 START ");	
+	table.setHeading(
+		"NAME",
+		"EXEC MODE",
+		"INSTANCES",
+		"MAX MEMORY RESTART",
+		"AUTO RESTART",
+		"MAX RESTART"
+		//"ERROR FILE LOG",
+		//"OUTPUT FILE LOG"
+	);
 
 	var config = require("./config/pm2.json");
 	config.instances = instances ;
@@ -17,14 +32,21 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	config.out_file = process.cwd()+"/tmp/nodefony.log"; 
 	config.merge_logs= true;
 
-	pm2.connect(true, function() {
-		console.log("PM2 CONNECT")
-		console.log(config);
-		
-  		pm2.start(config, function(err) {
-			console.log("PM2 START")
-    			if (err) return console.error('Error while launching applications', err.stack || err);
+	table.addRow(
+		config.name,
+		config.exec_mode,
+		config.instances,
+		config.max_memory_restart,
+		config.autorestart,
+		config.max_restarts
+		//config.error_file,
+		//config.out_file
+	);
 
+	pm2.connect(true, function() {
+  		pm2.start(config, function(err) {
+    			if (err) return console.error('Error while launching applications', err.stack || err);
+			console.log(table.render());
     			// Display logs in standard output 
     			pm2.launchBus(function(err, bus) {
 				//bus.on('process:msg',function(packet) {

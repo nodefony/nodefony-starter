@@ -236,5 +236,8 @@ clean:
 	fi
 	make framework ;
 
+test:
+	npm test ;
+
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc

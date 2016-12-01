@@ -14,8 +14,15 @@ nodefony.registerService("{{name}}", function(){
 	 *	
 	 */
 
-	var {{name}} = function(){
+	var {{name}} = class {{name}} {
 		
+
+		constructor(){
+
+		}
+
+
+
 	};
 
 	return {{name}};

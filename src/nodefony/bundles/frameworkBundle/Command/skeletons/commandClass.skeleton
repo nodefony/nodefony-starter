@@ -5,40 +5,41 @@
 
 nodefony.registerCommand("{{name}}",function(){
 
-	var command = function(container, command, options){
+	var {{name}} = class {{name}} {
 
-		var arg = command[0].split(":");
-		switch ( arg[1] ){
-			case "example" : 
-				// test command arguments
+		constructor(container, command, options){
 
-				if ( command[1] ){
-					this.logger("ARGUMENT 1 = " + command[1]) 
-				}else{
-					this.showHelp();
-				}
-				if ( command[2] ){
-					this.logger("ARGUMENT 2 = " +command[2]) 
-				}else{
-					this.showHelp();
-				}
-				
-			break;
-			default:
-				this.logger(arg[1] + " : Not find ","ERROR")
-				this.showHelp()
-		}
-		this.terminate();
+			var arg = command[0].split(":");
+			switch ( arg[1] ){
+				case "example" : 
+					// test command arguments
+
+					if ( command[1] ){
+						this.logger("ARGUMENT 1 = " + command[1]) 
+					}else{
+						this.showHelp();
+					}
+					if ( command[2] ){
+						this.logger("ARGUMENT 2 = " +command[2]) 
+					}else{
+						this.showHelp();
+					}
+					
+				break;
+				default:
+					this.logger(arg[1] + " : Not find ","ERROR")
+					this.showHelp()
+			}
+			this.terminate();
+		};
 	};
-
-
 
 	return {
 		name:"{{name}}",
 		commands:{
 			id:["{{name}}:example myArg1 myArg2" ,"documentation command  to see in showHelp() "],
 		},
-		worker:command
+		worker:{{name}}
 	}
 });
 
