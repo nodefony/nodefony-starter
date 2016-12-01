@@ -55,12 +55,15 @@ nodefony.registerService("dmsg", function(){
 			this.port = 1316;
 			this.nbConnections = 0;
 
-			if ( this.kernel.type === "SERVER" ) {
-				this.createWatcher();
-				this.server = null;	
-				this.createServer();
-			}
+			this.kernel.listen(this, "onReady" ,() => {
+				if ( this.kernel.type === "SERVER" ) {
+					this.port = this.container.getParameters("bundles.realTime.services.dmsg.port") || 1316;
+					this.createWatcher();
+					this.server = null;	
+					this.createServer();
+				}
 
+			});
 		};
 
 		logger (pci, severity, msgid,  msg){

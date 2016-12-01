@@ -37,12 +37,14 @@ nodefony.registerService("monitoring", function(){
 			this.port = 1318;
 			this.server = null;
 			this.syslog = kernel.syslog ;
-			if( this.realTime  &&  this.kernel.type === "SERVER" ){
-				this.createServer();
-			}
+
 			this.kernel.listen(this, "onReady" ,() => {
-				this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
-			})
+                                this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
+                                this.port = this.container.getParameters("bundles.realTime.services.monitoring.port") || 1318;
+                                if( this.realTime  &&  this.kernel.type === "SERVER" ){
+                                        this.createServer();
+                                }
+                        })
 		};
 
 		logger (pci, severity, msgid,  msg){
