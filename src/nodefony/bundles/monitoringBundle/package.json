@@ -9,8 +9,8 @@
 		"javascript"
 	],
 	"dependencies": {
-		"request": "*",
-		"useragent": "*"
+		"request": "2.79.0",
+		"useragent": "2.1.9"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

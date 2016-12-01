@@ -9,7 +9,7 @@
 		"javascript"
   	],
   	"dependencies": {
-		"mocha": "*",
-		"tunnel": "*"
+		"mocha": "3.2.0",
+		"tunnel": "0.0.4"
   	}
 }

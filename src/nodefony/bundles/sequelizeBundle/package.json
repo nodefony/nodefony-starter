@@ -9,7 +9,7 @@
 		"javascript"
 	],
 	"dependencies": {
-		"sequelize":"*"
+		"sequelize":"3.27.0"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"
