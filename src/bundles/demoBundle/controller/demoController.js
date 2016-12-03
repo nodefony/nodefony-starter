@@ -23,6 +23,7 @@ nodefony.registerController("demo", function(){
 
 		constructor(container, context){
 			super(container, context);
+			this.kernel = this.get("kernel");
 		};
 
 		/**
@@ -576,7 +577,7 @@ nodefony.registerController("demo", function(){
 			}
 			if ( ! this.isAjax() ){
 				//return this.forward("demoBundle:finder:index");
-				return this.redirect ( this.generateUrl( "finder",{queryString:{"path":"/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/upload"}} ) );
+				return this.redirect ( this.generateUrl( "finder",{queryString:{"path":this.kernel.rootDir+"/src/bundles/demoBundle/Resources/upload"}} ) );
 			}else{
 				var res = {
 					"files": [],
