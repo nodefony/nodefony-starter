@@ -16,6 +16,8 @@ Now in this version Beta,  Nodefony is evolved to a stable version without major
 
 Evolution priorities up to the stable version will focus on robustness, unit testing, documentation and security.
 
+#### Now nodefony is ported with ECMAScript 6 ( Class, Inheritance ).
+
 You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nodefony](https://travis-ci.org/nodefony/nodefony)**
 
 ##  **Framework Node.js  Symfony Like**
