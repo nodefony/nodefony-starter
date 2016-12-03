@@ -16,7 +16,7 @@ make build
 if [ "$DB" = "mysql" ]
 then
 	make deploy & 
-	sleep 10;
+	sleep 15;
 	make status &
 else
 	./nodefony_dev &
