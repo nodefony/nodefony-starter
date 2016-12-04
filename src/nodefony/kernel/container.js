@@ -8,34 +8,29 @@
 
 var shortId = require('shortid');
 
-var generateId = function(){
-	return shortId.generate();
-};
-
 
 nodefony.register("Container", function(){
-
-
-	/*
- 	 *
- 	 *	CONTAINER CLASS
- 	 *
- 	 */
+	
 	var ISDefined = function(ele){
-		if (ele !== null && ele !== undefined )
-			return true
+		if (ele !== null && ele !== undefined ){
+			return true ;
+		}
 		return false;
-	}
+	};
+
+	var generateId = function(){
+		return shortId.generate();
+	};
 
 	var parseParameterString = function(str, value){
+		var ns = null ; 
 		switch( nodefony.typeOf(str) ){
 			case "string" :
 				return parseParameterString.call(this,str.split(".") , value);
-			break;
 			case "array" :
 				switch(str.length){
 					case 1 :
-						var ns = Array.prototype.shift.call(str);
+						ns = Array.prototype.shift.call(str);
 						if ( ! this[ns] ){
 							this[ns] = value;
 						}else{
@@ -46,9 +41,8 @@ nodefony.register("Container", function(){
 							}
 						}
 						return value ;
-					break;
 					default :
-						var ns = Array.prototype.shift.call(str);
+						ns = Array.prototype.shift.call(str);
 						if ( ! this[ns] && ISDefined(value) ){
 							this[ns] = {};
 						}
@@ -60,33 +54,40 @@ nodefony.register("Container", function(){
 		}
 	};
 
+	/*
+ 	 *
+ 	 *	CONTAINER CLASS
+ 	 *
+ 	 */
 	var Container = class Container {
+
 		constructor (services, parameters){
 			this.protoService = function(){};
 			this.protoParameters = function(){};
 			this.scope = {};
 			this.services = new this.protoService();
 			if (services && typeof services === "object"){
-				for (var service in services)
+				for (var service in services){
 					this.set(service, services[service]);
+				}
 			}
 			this.parameters = new this.protoParameters();
 			if (parameters && typeof parameters === "object"){
-				for (var parameter in parameters)
+				for (var parameter in parameters){
 					this.set(parameter, parameters[parameter]);
+				}
 			}
-
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			var syslog = this.get("syslog");
-			if (! msgid) msgid = "CONTAINER SERVICES ";
+			if (! msgid) { msgid = "CONTAINER SERVICES "; }
 			return syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		set (name, object){
 			return this.protoService.prototype[name] = object;
-		};
+		}
 
 		get (name){
 			if (name in this.services){
@@ -94,33 +95,34 @@ nodefony.register("Container", function(){
 			}
 			return null;
 			//this.logger("GET : " + name+" don't exist", "WARNING");	
-		};
+		}
 
 		has (name){
 			return this.services[name];
-		};
+		}
 
 		addScope (name){
-			if (! this.scope[name] )
+			if (! this.scope[name] ){
 				return  this.scope[name] = {};
+			}
 			return this.scope[name];
 		}
 
 		enterScope (name){
-			var sc = new Scope(name, this)
+			var sc = new Scope(name, this);
 			this.scope[name][sc.id] = sc ;
 			return sc;
 		}
 
 		enterScopeExtended (name){
-			var sc = new ExtendedScope(name, this)
+			var sc = new ExtendedScope(name, this);
 			this.scope[name][sc.id] = sc ;
 			return sc;
 		}
 
 		leaveScope (scope){
 			if ( this.scope[scope.name] ){
-				var sc = this.scope[scope.name][scope.id]
+				var sc = this.scope[scope.name][scope.id];
 				if (sc){
 					//console.log("pass leaveScope "+ scope.id)
 					delete this.scope[scope.name][scope.id];
@@ -128,7 +130,7 @@ nodefony.register("Container", function(){
 				}
 				//console.log(this.scope)
 			}
-		};
+		}
 
 		removeScope (name){
 			if ( this.scope[name] ){
@@ -138,8 +140,6 @@ nodefony.register("Container", function(){
 				delete this.scope[name] ;
 			}
 		}
-
-
 
 		setParameters (name, str){
 			if (typeof name !== "string"){
@@ -156,7 +156,7 @@ nodefony.register("Container", function(){
 				this.logger(new Error("container parameter "+ name+" parse error"));
 				return false;
 			}
-		};
+		}
 
 		getParameters (name){
 			if (typeof name !== "string"){
@@ -165,8 +165,7 @@ nodefony.register("Container", function(){
 			}
 			//return parseParameterString.call(this.protoParameters.prototype, name, null);  
 			return parseParameterString.call(this.parameters, name, null);  
-		};
-
+		}
 	};
 
 	/*
@@ -186,12 +185,12 @@ nodefony.register("Container", function(){
     			this.scope = parent.scope;
 			this.id = generateId();
 
-		};
+		}
 
 		set (name, obj){
     			this.services[name] = obj ;
     			return super.set(name, obj);
-		};
+		}
 
 		setParameters (name, str){
 			if ( parseParameterString.call(this.parameters, name, str) === str ){
@@ -200,8 +199,7 @@ nodefony.register("Container", function(){
 				this.logger(new Error("container parameter "+ name+" parse error"));
 				return false;
 			}
-		};
-
+		}
 	};
 
 	/*
@@ -209,8 +207,8 @@ nodefony.register("Container", function(){
  	 *	ExtendedScope CLASS
  	 *
  	 */
-
 	var ExtendedScope = class ExtendedScope extends Container {
+
 		constructor (name, parent){
     			super();
     			this.name = name;
@@ -225,13 +223,12 @@ nodefony.register("Container", function(){
 
 			this.protoParameters = function(){};
 			this.protoParameters.prototype = nodefony.extend({},this.parent.protoParameters.prototype) ;
-
-		};
+		}
 
 		set (name, obj){
     			this.services[name] = obj ;
     			return super.set(name, obj);
-		};
+		}
 
 		setParameters (name, str){
 			if ( parseParameterString.call(this.parameters, name, str) === str ){
@@ -240,7 +237,7 @@ nodefony.register("Container", function(){
 				this.logger(new Error("container parameter "+ name+" parse error"));
 				return false;
 			}
-		};
+		}
 	};
 	
 	return Container;

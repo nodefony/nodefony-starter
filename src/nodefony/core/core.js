@@ -4,12 +4,16 @@
  *
  *
  */
-var fs = require("fs");
-var util = require('util');
-var path = require("path");
+const yaml = require("js-yaml");
+const util = require('util');	
+const path = require("path");
+const fs = require("fs");
+const cluster = require('cluster');
+const url = require("url");
+const async = require('async');
+const xmlParser = require('xml2js').Parser;
 
 var nodefony = function(){
-
 
 	/**
 	 *	The class is a **`Nodefony Nodefony `** .
@@ -31,7 +35,6 @@ var nodefony = function(){
 			this.services= {};
 		}
 
-
 		isFunction  (it) {
 			return Object.prototype.toString.call(it) === '[object Function]';
 		}
@@ -43,12 +46,12 @@ var nodefony = function(){
 		/**
 	 	*	@method require
 	 	*/
-		require (){ } ;
+		require (){ } 
 
 		/**
 	 	*	@method provide
 	 	*/
-		provide (){ } ;
+		provide (){ } 
 
 		/**
 	 	*	@method typeOf
@@ -59,7 +62,7 @@ var nodefony = function(){
 			var t = typeof value;
 			if (t === 'object'){
 
-				if (value === null ) return "object";
+				if (value === null ) {return "object";}
 
 				if ( this.isArray( value ) ){
 					return "array";
@@ -67,23 +70,25 @@ var nodefony = function(){
 				if ( this.isFunction( value ) ) {
         				return 'function';
       				}
-				if (value instanceof Date )
+				if (value instanceof Date ){
 					return "date";
-				if ( value.callee )
+				}
+				if ( value.callee ){
 					return "arguments";
-				if (value instanceof SyntaxError )
+				}
+				if (value instanceof SyntaxError ){
 					return "SyntaxError";
-				if (value instanceof Error )
+				}
+				if (value instanceof Error ){
 					return "Error";
+				}
 			} else {
 				if (t === 'function' && typeof value.call === 'undefined') {
     					return 'object';
 				}
 			}
   			return t;
-		};
-
-		
+		}
 	
 		/**
  	 	* extend jquery for nodejs only 
@@ -117,7 +122,7 @@ var nodefony = function(){
 			for ( ; i < length; i++ ) {
 
 				// Only deal with non-null/undefined values
-				if ( ( options = arguments[ i ] ) != null ) {
+				if ( ( options = arguments[ i ] ) !== null ) {
 
 					// Extend the base object
 					for ( name in options ) {
@@ -130,7 +135,7 @@ var nodefony = function(){
 						}
 
 						// Recurse if we're merging plain objects or arrays
-						var bool = this.typeOf( copy ) 
+						var bool = this.typeOf( copy ); 
 						if ( deep && copy && ( bool === "object" ||
 							( copyIsArray = (bool === "array") ) ) ) {
 
@@ -156,7 +161,6 @@ var nodefony = function(){
 			return target;
 		}
 
-
 		/**
  	 	*  Register Nodefony Library element
 	 	*  @method register
@@ -165,14 +169,15 @@ var nodefony = function(){
 	 	*
  	 	*/	
 		register (name, closure){
+			var register = null ;
 			if (typeof closure === "function") {
 				// exec closure 
-				var register = closure(this, name);
+				register = closure(this, name);
 			} else {
-				var register = closure;
+				register = closure;
 			}
 			return this[name] = register;
-		};
+		}
 
 		/**
  	 	*  Register Nodefony Bundle 
@@ -186,8 +191,7 @@ var nodefony = function(){
 				return this.bundles[name] = closure();	
 			}
 			throw new Error( "Register bundle : "+ name +"  error bundle bad format" );
-		};
-
+		}
 
 		/**
  	 	*  Register Nodefony controller
@@ -202,7 +206,7 @@ var nodefony = function(){
 				return  closure();
 			}
 			throw new Error( "Register Controller : "+ name +"  error Controller bad format" );
-		};
+		}
 
 		/**
  	 	*  Register Nodefony Template
@@ -213,7 +217,7 @@ var nodefony = function(){
  	 	*/
 		registerTemplate (name, closure){
 			return this.templatings[name] = closure();
-		};
+		}
 
 		/**
  	 	*  Register Nodefony service 
@@ -230,8 +234,7 @@ var nodefony = function(){
 				return this.services[name] = closure();
 			}
 			throw new Error( "Register Service : "+ name +"  error Service bad format" );
-		};
-
+		}
 
 		/**
  	 	*  Register Nodefony entity 
@@ -246,8 +249,7 @@ var nodefony = function(){
 				//return this.entities[name] = closure();
 			}
 			throw new Error( "Register Entity : "+ name +"  error Entity bad format" );
-			
-		};
+		}
 		
 		/**
  	 	*  Register Nodefony fixture 
@@ -262,7 +264,7 @@ var nodefony = function(){
 				//return this.fixtures[name] = closure();
 			}
 			throw new Error( "Register fixtures : "+ name +"  error fixtures bad format" );
-		};
+		}
 
 		/**
  	 	*  Register Nodefony command 

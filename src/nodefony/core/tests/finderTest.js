@@ -9,9 +9,6 @@
  *	kernel :   instance of kernel who launch the test   
  *
  */
-
-
-
 const assert = require('assert');
 
 describe("NODEFONY CORE FINDER", function(){
@@ -20,7 +17,7 @@ describe("NODEFONY CORE FINDER", function(){
 
 
 		beforeEach(function(){
-		})
+		});
 		
 		before(function(){
 			try {
@@ -30,9 +27,7 @@ describe("NODEFONY CORE FINDER", function(){
 			}catch(e){
 				throw e;
 			}
-		})
-
-
+		});
 
 		it("LIB LOADED", function(done){
 			assert.equal( typeof nodefony.finder, "function" );
@@ -40,16 +35,17 @@ describe("NODEFONY CORE FINDER", function(){
 		});
 
 		it("NEW", function(done){
+			var finder = null ;
 			assert.equal( typeof nodefony.finder, "function" );
 			
 			assert.throws( function(){
-				var finder = new nodefony.finder({
+				finder = new nodefony.finder({
 					path:"path not found "	
-				})
+				});
 			} );
 
-			var finder = new nodefony.finder({})
-			assert.equal(finder instanceof nodefony.finder , true);
+			finder = new nodefony.finder({});
+			assert.equal( finder instanceof nodefony.finder , true);
 			done();
 
 		});
@@ -89,7 +85,7 @@ describe("NODEFONY CORE FINDER", function(){
 
 			//console.log(finderJson.)
 
-		})	
+		});	
 
 
 	});

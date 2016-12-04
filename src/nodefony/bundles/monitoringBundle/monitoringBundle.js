@@ -1,10 +1,9 @@
-var util = require('util');
 try {
-	var Git = require("nodegit");
+	const Git = require("nodegit");
 }catch(e){
 	console.log(e);
 }
-var useragent = require('useragent');
+const useragent = require('useragent');
 
 nodefony.registerBundle ("monitoring", function(){
 

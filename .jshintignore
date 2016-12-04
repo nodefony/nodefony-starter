@@ -1,0 +1,7 @@
+src/nodefony/core/tests/**
+src/nodefony/kernel/tests/**
+
+src/nodefony/core/function.js
+
+src/nodefony/bundles/**/Resources/public/**
+

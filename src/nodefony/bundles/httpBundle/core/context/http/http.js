@@ -5,8 +5,6 @@
  *
  *
  */
-var fs = require("fs");
-var url = require("url");
 
 nodefony.register.call(nodefony.context, "http", function(){
 

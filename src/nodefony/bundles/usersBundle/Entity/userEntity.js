@@ -5,12 +5,10 @@
  *
  *
  */
-var Sequelize =require("sequelize");
-var crypto;
 try {
-  crypto = require('crypto');
+	var Sequelize =require("sequelize");
 } catch (err) {
-  console.log('crypto support is disabled!');
+  console.log('sequelize  is disabled!');
 }
 
 

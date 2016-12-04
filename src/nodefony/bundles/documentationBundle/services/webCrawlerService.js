@@ -1,11 +1,6 @@
-var fs = require('fs');
-var url = require('url');
-
 
 var request = require('request');
 var cheerio = require('cheerio');
-var async = require('async');
-var _ = require('lodash');
 var https = require('https');
 
 

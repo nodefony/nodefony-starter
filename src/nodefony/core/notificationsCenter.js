@@ -1,13 +1,10 @@
-var events = require('events');
+const events = require('events');
 
 
 nodefony.register("notificationsCenter",function(){
 
 	var regListenOn = /^on(.*)$/;
-
-
 	var defaultNbListeners = 20 ;
-			
 	
 	var Notification = class Notification {
 
@@ -19,7 +16,6 @@ nodefony.register("notificationsCenter",function(){
 			}
 		}
 
-
 		/**
 	 	*
 	 	*	@method setMaxListeners 
@@ -27,9 +23,8 @@ nodefony.register("notificationsCenter",function(){
 	 	*/
 		setMaxListeners (){
 			return this.event.setMaxListeners.apply(this.event, arguments);	
-		};
+		}
 
-		
 		/**
 	 	*
 	 	*	@method listen 
@@ -38,23 +33,24 @@ nodefony.register("notificationsCenter",function(){
 		listen (context, eventName, callback) {
 			var event = arguments[1];
 			var ContextClosure = this;
-			if ( callback instanceof Function )
-				this.event.addListener(eventName, callback.bind(context))	
-			return function() {
-				Array.prototype.unshift.call(arguments, event)
-				return ContextClosure.fire.apply(ContextClosure, arguments);
+			if ( callback instanceof Function ){
+				this.event.addListener(eventName, callback.bind(context));
 			}
-		};
+			return function() {
+				Array.prototype.unshift.call(arguments, event);
+				return ContextClosure.fire.apply(ContextClosure, arguments);
+			};
+		}
 
 		/**
 	 	*
 	 	*	@method fire 
 	 	*
 	 	*/
-		fire (eventName) {
+		fire () {
 			var ret = false;
 			try {
-				return this.event.emit.apply(this.event, arguments)
+				return this.event.emit.apply(this.event, arguments);
 			} catch (e) {
 				if(e.stack){
 					console.error(e.message);
@@ -66,7 +62,7 @@ nodefony.register("notificationsCenter",function(){
 				}
 			}
 			return ret;
-		};
+		}
 
 		/**
 	 	*
@@ -75,8 +71,7 @@ nodefony.register("notificationsCenter",function(){
 	 	*/ 
 		once (){
 			return this.event.once.apply(this.event, arguments);	
-		};
-
+		}
 
 		/**
 	 	*
@@ -86,11 +81,12 @@ nodefony.register("notificationsCenter",function(){
 		settingsToListen (localSettings, context) {
 			for (var i in localSettings) {
 				var res = regListenOn.exec(i);
-				if (!res)
+				if (!res){
 					continue;
+				}
 				this.listen(context || this, res[0], localSettings[i]);
 			}
-		};
+		}
 
 		/**
 	 	*
@@ -99,7 +95,7 @@ nodefony.register("notificationsCenter",function(){
 	 	*/
 		unListen (){
 			return this.event.removeListener.apply(this.event, arguments);	
-		};
+		}
 
 		/**
 	 	*
@@ -108,14 +104,9 @@ nodefony.register("notificationsCenter",function(){
 	 	*/ 
 		removeAllListeners (){
 			return this.event.removeAllListeners.apply(this.event, arguments);	
-		};
-
-		
-
+		}
 	};
-		
 	return {
-	
 		notification:Notification,
 		/**
 		 *
@@ -125,7 +116,5 @@ nodefony.register("notificationsCenter",function(){
 		create: function(settings, context, nbListener) {
 			return new Notification(settings, context, nbListener);
 		}	
-	
 	};
-
-})
+});

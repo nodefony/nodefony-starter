@@ -23,6 +23,8 @@
       "url": "http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html"
     }
   ],
+  "os" : [ "darwin", "linux" ],
+  "engines" : { "node" : ">=4" },
   "dependencies": {
     "npm":		"4.0.2",
     "npmi":		"2.0.1",
@@ -44,7 +46,8 @@
     "cookie":		"0.3.1",
     "markdown-it":	"8.1.0",
     "promise":		"7.1.1",
-    "pm2":		"2.1.6"
+    "pm2":		"2.1.6",
+    "jshint":		"*"
   },
   "devDependencies": {},
   "author": "cci <christophe.camensuli@gmail.com>",

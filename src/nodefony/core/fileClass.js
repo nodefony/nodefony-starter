@@ -5,8 +5,10 @@
  *
  *
  */
-var mime = require('mime');
-var crypto = require('crypto');
+const mime = require('mime');
+const crypto = require('crypto');
+//var fs = require("fs");
+//var path = require("path");
 
 nodefony.register("fileClass", function(){
 
@@ -76,7 +78,7 @@ nodefony.register("fileClass", function(){
 				this.dirName = this.dirname();
 				this.match = null;
 			}else{
-				throw new Error("error fileClass : "+ Path)
+				throw new Error("error fileClass : "+ Path);
 			}
 		}
 
@@ -103,26 +105,26 @@ nodefony.register("fileClass", function(){
 				return "Socket";
 			}
 			return ;
-		};
+		}
 
 		checkSum (type){
 			if (! type ){
-				var type = 'md5' ;
+				type = 'md5' ;
 			}
 			return crypto.createHash(type).update(this.content()).digest("hex") ; 
-		};
+		}
 
 		getMimeType (name){
 			return  mime.lookup(name);
-		};
+		}
 
 		getCharset (mimeType){
-			return mime.charsets.lookup(mimeType || this.mimeType  )
-		};
+			return mime.charsets.lookup(mimeType || this.mimeType );
+		}
 
 		getRealpath (Path, cache){
 			return  fs.realpathSync(Path, cache);
-		};
+		}
 
 		matchName (ele){
 		 	
@@ -130,43 +132,43 @@ nodefony.register("fileClass", function(){
 				this.match = ele.exec(this.name);
 				return this.match;
 			}
-			if (ele === this.name)
+			if (ele === this.name){
 				return true;
+			}
 			return false;
-		};
+		}
 
 		getExtention (){
 			if ( this.isFile ){
 				var tab = this.name.split('.');
-				if (tab.length > 1) return tab.reverse()[0];
+				if (tab.length > 1) { return tab.reverse()[0]; }
 			}
 			return null ; 
-		};
+		}
 
 		matchType (type){
 			return type === this.type;
-		};
+		}
 
 		isFile (){
 			return this.type === "File";
-		};
+		}
 
 		isDirectory (){
 			return this.type === "Directory";
-		};
+		}
 
 		isSymbolicLink (){
 			return this.type === "symbolicLink";
-		};
+		}
 
 		dirname (){
 			return path.dirname(this.path);
-		};
-
+		}
 
 		isHidden (){
 			return regHidden.test(this.name);
-		};
+		}
 
 		content (encoding){
 			var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
@@ -175,7 +177,7 @@ nodefony.register("fileClass", function(){
 				return fs.readFileSync(path, encode);
 			}
 			return fs.readFileSync(this.path, encode);
-		};
+		}
 
 		read (encoding){
 			var encode =  encoding ? encoding : ( this.encoding ?  this.encoding : 'utf8' ) ;
@@ -184,20 +186,19 @@ nodefony.register("fileClass", function(){
 				return fs.readFileSync(path, encode);
 			}
 			return fs.readFileSync(this.path, encode);
-		};
+		}
 
 		readByLine (callback, encoding){
 			var res = this.content(encoding);
 			var nb = 0 ;
 			res.toString().split('\n').forEach(function(line){
 				callback(line, ++nb );	
-			})
+			});
 		}
-
 		
 		write (data, options) {
 			return fs.writeFileSync( this.path, data, nodefony.extend({}, defautWriteOption ,options ) ) ;
-		};
+		}
 
 		move (target){
 			try {
@@ -206,7 +207,7 @@ nodefony.register("fileClass", function(){
 			}catch(e){
 				throw e;
 			}
-		};
+		}
 
 		unlink (){
 			try {
@@ -214,8 +215,7 @@ nodefony.register("fileClass", function(){
 			}catch(e){
 				throw e;
 			}
-		};
-
+		}
 	};
 
 	return File;

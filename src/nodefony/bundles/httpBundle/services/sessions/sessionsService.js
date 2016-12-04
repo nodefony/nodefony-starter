@@ -1,7 +1,6 @@
 /*
  * New node file
  */
-var crypto = require('crypto');
 
 nodefony.registerService("sessions", function(){
 

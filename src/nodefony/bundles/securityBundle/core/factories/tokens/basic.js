@@ -5,7 +5,7 @@
  *
  */
 
-var crypto = require('crypto');
+//var crypto = require('crypto');
 
 
 nodefony.register.call(nodefony.security.tokens, "Basic",function(){

@@ -7,10 +7,9 @@
  *
  *
  */
-var url = require("url")
+//var url = require("url")
 var qs = require('querystring');
 var QS = require('qs');
-var xml = require('xml2js');
 
 nodefony.register("Request",function(){
 
@@ -28,7 +27,7 @@ nodefony.register("Request",function(){
 					break;
 					case "application/xml":
 					case "text/xml":
-						var Parser = new xml.Parser( settingsXml );
+						var Parser = new xmlParser( settingsXml );
 						Parser.parseString(this.body.toString(this.charset) , (err, result) => {
 							if ( err )
 								throw err ;

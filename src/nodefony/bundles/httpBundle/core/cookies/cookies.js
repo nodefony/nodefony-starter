@@ -7,8 +7,8 @@
  *
  *
  */
-var crypto = require('crypto');
-var cookieLib = require('cookie');
+//var crypto = require('crypto');
+const cookieLib = require('cookie');
 
 nodefony.register("cookies",function(){
 	

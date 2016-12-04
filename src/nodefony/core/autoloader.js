@@ -1,11 +1,9 @@
-
-var yaml = require("js-yaml");
-var fs = require("fs");
-var vm = require("vm");
-var util = require('util')
+const fs = require("fs");
+const vm = require("vm");
 
 module.exports = function(){
 
+	
 	var self = this;
 	// copy require not present see load runInThisContext
 	self.require = require;
@@ -28,7 +26,6 @@ module.exports = function(){
 		constructor() {
 			//this.prefixes = new Array();
 			this.load("vendors/nodefony/core/core.js");
-			//this.load("vendors/nodefony/core/function.js");
 			this.load("vendors/nodefony/core/notificationsCenter.js");
 			this.load("vendors/nodefony/syslog/syslog.js");
 			this.load("vendors/nodefony/core/fileClass.js");
@@ -79,8 +76,9 @@ module.exports = function(){
 			}
 			if(fs.existsSync(file)){
 				try {
+					var txt = null ; 
 					if ( vm.Script ){
-						var txt = fs.readFileSync(file, {encoding: 'utf8'});
+						txt = fs.readFileSync(file, {encoding: 'utf8'});
 						cache[file] =  new vm.Script(txt, {
 							filename:file,
 							displayErrors:true,
@@ -88,13 +86,13 @@ module.exports = function(){
 							produceCachedData:true,
 						});
 					}else{
-						var txt = fs.readFileSync(file, {encoding: 'utf8'});
+						txt = fs.readFileSync(file, {encoding: 'utf8'});
 						cache[file] = vm.createScript(txt, file, true);
 					}
 					if ( force ){
-						if (this.syslog) this.logger(file, "WARNING","AUTOLOADER RELOAD FORCE");
+						if (this.syslog) {this.logger(file, "WARNING","AUTOLOADER RELOAD FORCE");}
 					}else{
-						if (this.syslog) this.logger(file, "DEBUG","AUTOLOADER LOAD");	
+						if (this.syslog){ this.logger(file, "DEBUG","AUTOLOADER LOAD");}	
 					}
 					return cache[file].runInThisContext({
 						filename:file,
@@ -110,7 +108,7 @@ module.exports = function(){
 		}
 
 
-		run (file, force){
+		/*run (file, force){
 			if (file in cache &&  force !== true){
 				cache[file] = script.runInThisContext({
 					filename:file,
@@ -119,7 +117,7 @@ module.exports = function(){
 			}else{
 				return this.load( file, force );
 			}
-		}
+		}*/
 
 		/**
  	 	* @method logger
@@ -131,12 +129,10 @@ module.exports = function(){
  	 	*/
 		logger (pci, severity, msgid,  msg){
 			if (this.syslog){
-				if (! msgid) msgid = "AUTOLOADER  ";
+				if (! msgid){ msgid = "AUTOLOADER  ";}
 				return this.syslog.logger(pci, severity , msgid,  msg);
 			}
-		};
-
-
+		}
 
 		/**
  	 	* @method loadDirectory
@@ -145,31 +141,31 @@ module.exports = function(){
 	 	*
  	 	*/
 		loadDirectory (path){
+			var settings = null ;
+			var finder = null ;
 			switch (path){
 				case "vendors/nodefony/kernel" :
-					var settings = {
+					settings = {
 						path:path,
 						exclude:/^tests$/,
 						onFinish:(error, res) => {
-							if (error)
-								throw error;
-							res.forEach( this.autoloadEach.bind(this) )
+							if (error){ throw error;}
+							res.forEach( this.autoloadEach.bind(this));
 						}
-					}
+					};
 				break;
 				default:
-					var settings = {
+					settings = {
 						path:path,
 						onFinish:(error, res) => {
-							if (error)
-								throw error;
-							res.forEach( this.autoloadEach.bind(this)   )
+							if (error){ throw error;}
+							res.forEach( this.autoloadEach.bind(this));
 						}
-					}
+					};
 			}
 			if ( nodefony.finder ){
 				try {
-					var finder = new nodefony.finder(settings);
+					finder = new nodefony.finder(settings);
 				}catch(e){
 					this.logger(e);
 					if ( finder ){
@@ -179,27 +175,26 @@ module.exports = function(){
 				}
 				return finder.result ;
 			}
-			throw new Error("AUTOLOADER finder not found  Load nodefony finder ")
-		};
+			throw new Error("AUTOLOADER finder not found  Load nodefony finder ");
+		}
 
-
-		autoloadEach (ele, index, array){
+		autoloadEach (ele){
 			if ( regJs.exec(ele.path) ){
-				var res = this.load.call(self, ele.path)
+				this.load.call(self, ele.path);
 				//this.logger("AUTOLOAD : "+ele.name, "DEBUG");
 			}
-		};
+		}
 
 		addPrefix (prefix){
 			//TODO check if prefix exist
 			this.prefixes.push(prefix);
-		};
+		}
 
 		setKernel (kernel){
 			self.kernel = kernel;
-		};
+		}
 
-	}
+	};
 
 	var auto = new autoload();
 	self.logger =  auto.logger.bind(auto);

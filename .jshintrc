@@ -1,0 +1,26 @@
+{
+    "esversion":	6,
+    "node":		true,
+    "undef":		true,
+    "unused":		true,
+    "boss":		true,
+    "eqeqeq":		true,
+    "curly":		true,
+    "globals": {
+      "nodefony":	true,
+      "process":	true,
+      "require":	true,
+      "console":	true,
+      "module":		true,
+      "exports":	true,
+      "kernel":		true,
+      "yaml":		true,
+      "util":		true,
+      "fs":		true,
+      "path":		true,
+      "cluster":	true,
+      "xmlParser":	true,
+      "async":		true,
+      "url":		true
+    }	
+}
