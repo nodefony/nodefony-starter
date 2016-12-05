@@ -4,7 +4,6 @@
 
 var https = require('https');
 var nodedomain = require('domain');
-var Path = require("path");
 
 const dns = require('dns');
 
@@ -14,7 +13,7 @@ nodefony.registerService("https", function(){
 		if ( ! myPath ){
 			return null ;
 		}
-		var abs = Path.isAbsolute( myPath ) ;
+		var abs = path.isAbsolute( myPath ) ;
 		if ( abs ){
 			return myPath ;
 		}else{
@@ -62,24 +61,22 @@ nodefony.registerService("https", function(){
 
 		getCertificats (){
 			this.settings = this.get("container").getParameters("bundles.http").https || null ;
-
-			var key = checkPath(this.settings.certificats.key, this.kernel.rootDir );
-			var cert = checkPath(this.settings.certificats.cert, this.kernel.rootDir);
-			var ca = checkPath(this.settings.certificats.ca, this.kernel.rootDir);
-
+			var opt = {
+				keyPath:checkPath(this.settings.certificats.key, this.kernel.rootDir ),
+				certPath:checkPath(this.settings.certificats.cert, this.kernel.rootDir),
+				caPath:checkPath(this.settings.certificats.ca, this.kernel.rootDir),
+				key:null,
+				cert:null,
+				ca:null
+			};
 			try {
-				this.key = fs.readFileSync(key) ;
-				this.cert = fs.readFileSync(cert) ;
-				if ( ca ){
-					this.ca = fs.readFileSync(ca) ;
-				}
-
-				var opt = {
-					key: this.key,
-					cert:this.cert
-				};
-				if ( this.ca ){
-					opt["ca"] = this.ca;
+				this.key = fs.readFileSync(opt.keyPath) ;
+				opt.key = this.key ;
+				this.cert = fs.readFileSync(opt.certPath) ;
+				opt.cert = this.cert ;
+				if ( opt.caPath ){
+					this.ca = fs.readFileSync(opt.caPath) ;
+					opt.ca = this.ca;
 				}
 			}catch(e){
 				throw e ;
@@ -91,6 +88,23 @@ nodefony.registerService("https", function(){
 			
 			try {
 				var opt = this.getCertificats();
+				for (var ele in opt ){
+					switch ( ele ){
+						case "keyPath" :
+							this.logger( " READ CERTIFICATE KEY : "+opt[ele], "DEBUG"); 
+						break;
+						case "certPath" :
+							this.logger( " READ CERTIFICATE CERT : "+opt[ele], "DEBUG"); 
+						break;
+						case "caPath" :
+							if ( opt[ele] ){
+								this.logger( " READ CERTIFICATE CA : "+opt[ele], "DEBUG"); 
+							}else{
+								this.logger( " NO CERTIFICATE CA : "+opt[ele], "WARNING");	
+							}
+						break;
+					}
+				}
 			}catch(e){
 				this.logger(e);
 				throw e ;	
