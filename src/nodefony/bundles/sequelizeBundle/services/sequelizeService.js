@@ -41,7 +41,7 @@ nodefony.registerService("sequelize", function(){
 			this.orm = orm;
 			this.intervalId = null;
 			this.connect(type, options);
-		};	
+		}
 		
 		setConnection (db){
 			if(! db){
@@ -51,11 +51,11 @@ nodefony.registerService("sequelize", function(){
 			
 			this.orm.notificationsCenter.fire("onConnect", this.name, this.db );
 			this.state = "CONNECTED";
-		};
+		}
 		
 		getConnection (db){
 			return this.db;
-		};
+		}
 		
 		connect (type, config){
 			if ( this.orm.debug ){
@@ -81,14 +81,13 @@ nodefony.registerService("sequelize", function(){
 				error.call(this, err);	
 				this.orm.fire('onErrorConnection', this.name, conn, this.orm);
 			}
-		};
+		}
 			
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVICE sequelize CONNECTION";
 			return this.orm.logger(pci, severity, msgid,  msg);
-		};
+		}
 	};
-
 
 	/*
 	 * 
@@ -99,18 +98,10 @@ nodefony.registerService("sequelize", function(){
 
 		constructor (container, kernel, autoLoader){
 			super("sequelize", container, kernel, autoLoader )
-			this.container = container ;	
 			this.engine = require('sequelize');
 			this.connections = {};
 			this.boot();
-
-		};
-
-		fire (ev){
-			this.logger(ev, "DEBUG", "EVENT SEQUELIZE")
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-		};
-
+		}
 
 		boot (){
 			super.boot();	
@@ -127,11 +118,11 @@ nodefony.registerService("sequelize", function(){
 					});	
 				}
 			});	
-		};
+		}
 
 		createConnection (name, config){
 			//var url;
-			
+			// ORM2 CHECK 	
 			/*switch(config.driver){
 				case 'mysql':
 					url = "mysql://" + config.user + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.database;
@@ -156,7 +147,7 @@ nodefony.registerService("sequelize", function(){
 					}
 			}*/
 			return this.connections[name] = new connectionDB( name, config.driver, config, this );		
-		};
+		}
 	};
 
 	return sequelize ;

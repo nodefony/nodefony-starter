@@ -15,21 +15,25 @@ nodefony.registerService("statics", function(){
 		maxAge: 96*60*60
 	};
 	
-	var Static = class Static {
+	var Static = class Static extends nodefony.Service {
+
 		constructor ( container, options){
-			this.container = container ;
-			this.kernel = this.container.get("kernel") ;
+
+			var kernel = container.get("kernel");
+			super( "statics", container, kernel.notificationsCenter   );
+
+			this.kernel = kernel;
 			this.type = this.kernel.type;
-			if( ! this.kernel.settings.system.statics ) return null ;
-			if( this.type !== "SERVER") return  null ;
+			if( ! this.kernel.settings.system.statics ) { return  ; }
+			if( this.type !== "SERVER") { return ; }
 			this.connect = require("connect");
-			this.syslog = this.container.get("syslog");
+			//this.syslog = this.container.get("syslog");
 			this.server = this.connect();
 
 			this.settingsAssetic = this.container.getParameters("bundles.assetic");
 
 			this.mime = this.connect.static.mime;
-			this.kernel.listen(this, "onBoot",() => {
+			this.listen(this, "onBoot",() => {
 				this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
 				if (this.settings.cache)
 					this.server.use(this.connect.staticCache());	
@@ -37,11 +41,10 @@ nodefony.registerService("statics", function(){
 			});
 
 			this.environment = this.kernel.environment ;
-			this.kernel.listen(this, "onReady", () => {
+			this.listen(this, "onReady", () => {
 				this.serviceLess = this.container.get("less");
 			})
-		
-		};
+		}
 
 		initStaticFiles (){
 			var settings = this.container.getParameters("bundles.http").statics ;
@@ -54,18 +57,17 @@ nodefony.registerService("statics", function(){
 					maxAge: eval ( age )
 				});
 			}
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVER STATIC FILE ";
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		addDirectory (path, options){
 			var settings = nodefony.extend({}, this.settings, options);
 			return this.server.use ( this.connect.static(path, settings) );
-		};
-
+		}
 
 		serve (request, response, callback){
 			/*if (this.environment === "dev" && this.kernel.debug){
@@ -90,24 +92,24 @@ nodefony.registerService("statics", function(){
 			this.server.handle(request, response, () => {
 				callback.apply(this, arguments);	
 			});
-		};
+		}
 
 		get (name){
 			if (this.container)
 				return this.container.get(name);
 			return null;
-		};
+		}
 
 		set (name, obj){
 			if (this.container)
 				return this.container.set(name, obj);
 			return null;
-		};
+		}
 
 		handle (request, response, callback){
 			request.path = request.url;
 			this.serve(request, response, callback )
-		};
+		}
 	};
 	
 	return Static;

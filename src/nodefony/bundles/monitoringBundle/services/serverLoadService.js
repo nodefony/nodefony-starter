@@ -300,7 +300,7 @@ nodefony.registerService("serverLoad", function(){
 	};
 
 	// service
-	var service = class service {
+	var serverLoad = class serverLoad {
 
 		constructor( container, kernel){
 			this.container = container ;
@@ -363,6 +363,6 @@ nodefony.registerService("serverLoad", function(){
 		};
 	};
 
-	return service ;
+	return serverLoad ;
 
 })

@@ -62,10 +62,13 @@ nodefony.registerService("httpKernel", function(){
  	 *
  	 *
  	 */
-	var httpKernel = class httpKernel {
+	const httpKernel = class httpKernel extends nodefony.Service {
+
 		constructor (container, serverStatic ){
-			this.container = container ;
-			this.kernel = this.container.get("kernel");
+
+			var kernel = container.get("kernel");
+			super("httpKernel", container, kernel.notificationsCenter );
+			this.kernel = kernel;
 			this.reader = this.container.get("reader");
 			this.serverStatic = serverStatic;
 			this.engineTemplate = this.container.get("templating");
@@ -75,7 +78,7 @@ nodefony.registerService("httpKernel", function(){
 			this.httpsPort = this.kernel.httpsPort;
 
 			this.container.addScope("request");
-			this.kernel.listen(this, "onServerRequest" , (request, response, type, domain) => {
+			this.listen(this, "onServerRequest" , (request, response, type, domain) => {
 				try {
 					this.handle(request, response, type, domain);
 				}catch(e){
@@ -83,22 +86,22 @@ nodefony.registerService("httpKernel", function(){
 				}
 			});
 			this.firewall = null ;
-			this.kernel.listen(this, "onReady", () => {
+			this.listen(this, "onReady", () => {
 				this.firewall = this.get("security") ;
 			});
 			// listen KERNEL EVENTS
-			this.kernel.listen(this, "onBoot",() =>{
+			this.listen(this, "onBoot",() =>{
 				this.sessionService = this.get("sessions");
 				this.compileAlias();
 			});
 
-			this.kernel.listen(this, "onClientError", (e, socket) => {
+			this.listen(this, "onClientError", (e, socket) => {
 				this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR")
 			});
 		};
 
 		boot (){
-		 	/*this.kernel.listen(this, "onBoot", function(){
+		 	/*this.listen(this, "onBoot", function(){
 		 	});*/
 		};
 
@@ -442,7 +445,7 @@ nodefony.registerService("httpKernel", function(){
 						});
 					}
 
-					this.kernel.fire("onHttpRequest", container, context, type);
+					this.fire("onHttpRequest", container, context, type);
 					
 					if ( ( ! this.firewall ) || resolver.bypassFirewall ){
 						request.on('end', () => {
@@ -526,7 +529,7 @@ nodefony.registerService("httpKernel", function(){
 						});
 					}
 
-					this.kernel.fire("onWebsocketRequest", container, context, type);
+					this.fire("onWebsocketRequest", container, context, type);
 					
 					if ( ( ! this.firewall ) || resolver.bypassFirewall ){
 						try {
@@ -548,7 +551,7 @@ nodefony.registerService("httpKernel", function(){
 					}
 				break;
 			}
-			this.kernel.fire("onSecurity", context);
+			this.fire("onSecurity", context);
 		};
 	};
 	

@@ -5,16 +5,14 @@
  *
  */
 var shortId = require('shortid');
-var Path = require('path') ;
 
 nodefony.registerService("upload", function(){
 
 	var uploadedFile =  class uploadedFile extends nodefony.fileClass { 
 
-		constructor (tmpName, path, dataFile, service) {
-			//if( tmpName && path){
-			//}
-			super( path );
+		constructor (tmpName, myPath, dataFile, service) {
+
+			super( myPath );
 			this.serviceUpload = service ;
 			this.tmpName = tmpName ;
 			this.headers = dataFile.headers ;
@@ -37,7 +35,7 @@ nodefony.registerService("upload", function(){
 						return inst ;
 					}
 				}
-				var dirname = Path.dirname(target) ; 
+				var dirname = path.dirname(target) ; 
 				if ( fs.existsSync(dirname) ){
 					var inst = super.move(target);
 					//delete this.serviceUpload[this.tmpName];
@@ -50,11 +48,11 @@ nodefony.registerService("upload", function(){
 				this.error = e;
 				throw e;
 			}
-		};
+		}
 
 		realName (){
 			return this.headers.filename ;
-		};
+		}
 
 		getMimeType (){
 			if ( this.headers ) {
@@ -62,21 +60,20 @@ nodefony.registerService("upload", function(){
 			}else{
 				return super.getMimeType( this.name );
 			}
-		};
-
+		}
 	};
 
-
-
-	var upload = class upload  {
+	var upload = class upload  extends nodefony.Service {
 		 
-		constructor(httpKernel) {
+		constructor( httpKernel ) {
+
+			super( "upload", httpKernel.container, httpKernel.notificationsCenter );
 
 			this.httpKernel = httpKernel ;
-			this.kernel = this.get("kernel");
-			this.syslog = this.container.get("syslog");
+			this.kernel = this.httpKernel.kernel ;
+			//this.syslog = this.container.get("syslog");
 
-			this.kernel.listen(this,"onBoot" , () =>{
+			this.listen(this,"onBoot" , () => {
 				this.config = this.container.getParameters("bundles.http").upload;
 				if (/^\//.test(this.config.tmp_dir)){
 					this.path = this.config.tmp_dir;
@@ -94,7 +91,7 @@ nodefony.registerService("upload", function(){
 					}
 				}
 			});
-		};
+		}
 
 		createUploadFile (request, dataFile){
 
@@ -105,7 +102,7 @@ nodefony.registerService("upload", function(){
 			}else{	
 				return this.createTmpFile(request, dataFile);
 			}
-		}; 
+		} 
 
 		createTmpFile (request, dataFile){
 			// create tmp file
@@ -127,7 +124,7 @@ nodefony.registerService("upload", function(){
 				throw e ;
 			}
 			return new uploadedFile(name , myPath, dataFile, this);
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "HTTP UPLOAD";
@@ -136,7 +133,7 @@ nodefony.registerService("upload", function(){
 
 		generateId (){
 			return shortId.generate();
-		};
+		}
 	};
 
 	return  upload ;

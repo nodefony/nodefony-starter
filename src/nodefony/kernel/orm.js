@@ -27,14 +27,13 @@ nodefony.register("orm", function(){
 			});
 		}
 	};
-
 	
-	var Orm = class Orm {
+	var Orm = class Orm  extends nodefony.Service {
+
 		constructor (name, container, kernel, autoLoader){
 			
-			this.container = container;
-			this.name = name ;
-			this.notificationsCenter = nodefony.notificationsCenter.create();
+			super( name, container  );
+
 			this.kernel = kernel;
 			if (( this.kernel.debug === false && this.debug === true) || this.debug === undefined )
 				this.debug = this.kernel.debug ;
@@ -46,16 +45,8 @@ nodefony.register("orm", function(){
 			this.connections = {};
 			this.connectionNotification = 0 ;
 
-		};
-	
-		get (service){
-			return this.container.get(service);
-		};
-
-		set (service, value){
-			return this.container.set(service, value);
-		};
-
+		}
+		
 		boot (){
 			
 			this.listen(this, "onReadyConnection", connectionMonitor);
@@ -104,8 +95,7 @@ nodefony.register("orm", function(){
 					this.logger(e, "ERROR", this.name+" ENTITY");
 				}
 			});
-		};
-	
+		}
 
 		initializeLog (){
 			
@@ -155,37 +145,23 @@ nodefony.register("orm", function(){
 				});
 			}
 			return syslog;
-		};
-
-
-		listen (){
-			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
-		};
-
-		fire (ev){
-			this.logger(ev, "DEBUG", "EVENT SERVICE "+this.name)
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-		};
-
-		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE "+this.name;
-			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		getConnection (name){
-			if ( this.connections[name] )
+			if ( this.connections[name] ){
 				return this.connections[name].db;
-			return null
-		};
+			}
+			return null;
+		}
 		
 		getEntity (name){
-			if (name)
+			if (name){
 				return this.entities[name];
-			else
+			}else{
 				return this.entities;
-		};
+			}
+		}
 	};
 	
-
 	return Orm;
 });

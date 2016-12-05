@@ -6,13 +6,16 @@
 var WebSocketServer = require('websocket');
 var nodedomain = require('domain');
 
-
 nodefony.registerService("websocketSecure", function(){
 	
 	// https://github.com/Worlize/WebSocket-Node/wiki/Documentation
 
-	var websocket = class websocket {
+	var websocket = class websocket extends nodefony.Service {
+
 		constructor ( httpKernel, security, options ){
+
+			super( "websocketSecure", httpKernel.container, httpKernel.notificationsCenter , options  );
+
 			this.httpKernel = httpKernel;
 			this.port = this.httpKernel.kernel.httpsPort ;
 			this.domain = this.httpKernel.kernel.settings.system.domain ;
@@ -20,10 +23,15 @@ nodefony.registerService("websocketSecure", function(){
 			this.kernel = this.httpKernel.kernel ;
 			this.ready = false ;
 			this.type = "WEBSOCKET SECURE";
-			this.kernel.listen(this, "onBoot",() => {
+			this.listen(this, "onBoot",() => {
 				this.bundle = this.kernel.getBundles("http") ;
 				
 			});
+		};
+
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVICE WEBSOCKET SECURE ";
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		};
 	
 		createServer (http, settings){
@@ -36,7 +44,6 @@ nodefony.registerService("websocketSecure", function(){
 						this.websocketServer =  new WebSocketServer.server(nodefony.extend({}, this.settings, {
 							httpServer: http
 						}));
-							
 						
 						this.websocketServer.on('request', (request) => {
 							var d = nodedomain.create();
@@ -44,31 +51,31 @@ nodefony.registerService("websocketSecure", function(){
 									if ( d.container ){
 										this.httpKernel.onErrorWebsoket( d.container, er.stack)	
 									}else{
-										this.httpKernel.logger(er.stack, "ERROR", "SERVICE WEBSOCKET SECURE");
+										this.logger(er.stack, "ERROR");
 									}
 								});
 								d.add(request);
 								d.run( () => {
-									this.kernel.fire("onServerRequest", request, null, this.type, d)
+									this.fire("onServerRequest", request, null, this.type, d)
 								});
 						});
 
-						this.kernel.listen(this, "onTerminate", () =>{
+						this.listen(this, "onTerminate", () =>{
 							if ( this.websocketServer && this.ready ){
 								this.websocketServer.shutDown();
-								this.httpKernel.logger(" SHUTDOWN WEBSOCKET SECURE Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVICE WEBSOCKET SECURE");
+								this.logger(" SHUTDOWN WEBSOCKET SECURE Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
 							}
 						});
 
 
 						if ( this.websocketServer ){
 							this.ready = true ;
-							this.httpKernel.logger(" Server  is listening on DOMAIN : wss://"+this.domain+":"+this.port , "INFO", "SERVICE WEBSOCKET SECURE");
+							this.logger(" Server  is listening on DOMAIN : wss://"+this.domain+":"+this.port , "INFO");
 						}
 
 						return this.websocketServer;
 					}catch(e){
-						this.kernel.logger(e);
+						this.logger(e);
 						throw e ;	
 					}
 				}

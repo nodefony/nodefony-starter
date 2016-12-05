@@ -28,6 +28,7 @@ module.exports = function(){
 			this.load("vendors/nodefony/core/core.js");
 			this.load("vendors/nodefony/core/notificationsCenter.js");
 			this.load("vendors/nodefony/syslog/syslog.js");
+			this.load("vendors/nodefony/core/service.js");
 			this.load("vendors/nodefony/core/fileClass.js");
 			this.load("vendors/nodefony/core/finder.js");
 			this.load("vendors/nodefony/core/reader.js");

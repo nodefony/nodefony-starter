@@ -6,8 +6,6 @@ var pm2 = require('pm2');
 nodefony.registerService("monitoring", function(){
 
 
-
-
 	var connection = class connection  {
 
 		 constructor(socket){
@@ -23,14 +21,14 @@ nodefony.registerService("monitoring", function(){
 		};
 	};
 
-	var service = class service {
+	var monitoring = class monitoring extends nodefony.Service {
 
 		constructor( realTime, container, kernel ){
 		
+			super("monitoring", container, kernel.notificationsCenter );
+
 			this.realTime = realTime ;
-			this.container = container ;
 			this.kernel = kernel ;
-			this.name ="monitoring" ;
 			this.status = "disconnect";
 			this.connections= [];
 			this.domain = kernel.domain;
@@ -38,7 +36,7 @@ nodefony.registerService("monitoring", function(){
 			this.server = null;
 			this.syslog = kernel.syslog ;
 
-			this.kernel.listen(this, "onReady" ,() => {
+			this.listen(this, "onReady" ,() => {
                                 this.name = this.container.getParameters("bundles.App.App.projectName") || "nodefony" ;
                                 this.port = this.container.getParameters("bundles.realTime.services.monitoring.port") || 1318;
                                 if( this.realTime  &&  this.kernel.type === "SERVER" ){
@@ -215,6 +213,6 @@ nodefony.registerService("monitoring", function(){
 		};
 	};
 
-	return service; 
+	return monitoring; 
 
 });

@@ -460,38 +460,33 @@ nodefony.registerService("sessions", function(){
  	 *
  	 *
  	 */
-	var SessionsManager = class SessionsManager {
+	var SessionsManager = class SessionsManager  extends nodefony.Service {
+
 		constructor ( security, httpKernel){
+
+			super( "sessions", httpKernel.container, httpKernel.notificationsCenter   );
+
 			this.httpKernel = httpKernel;
 			this.firewall = security ; 
 			this.kernel = httpKernel.kernel;
-			this.container = this.kernel.container ;
 			this.sessionStrategy = "none" ;
-			this.kernel.listen(this, "onBoot",() => {
+			this.listen(this, "onBoot",() => {
 				this.settings = this.container.getParameters("bundles.http").session;
 				this.defaultSessionName = this.settings.name ;
 				this.initializeStorage();
 			});
 
-			this.kernel.listen(this, "onTerminate",() => {
+			this.listen(this, "onTerminate",() => {
 				if ( this.storage )
 					this.storage.close();	
 			});
-		};
-
-		get (service){
-			return this.container.get(service);	
-		};
-
-		set (service, value){
-			return this.container.set(service, value);
 		};
 
 		initializeStorage (){
 			var storage =  eval("nodefony."+this.settings.handler) ;
 			if (storage){
 				this.storage = new storage(this) ;
-				this.kernel.listen(this, "onReady",function(){
+				this.listen(this, "onReady",function(){
 					this.storage.open("default");
 				});
 			}else{
@@ -502,9 +497,9 @@ nodefony.registerService("sessions", function(){
 		};
 	
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
+			//var syslog = this.container.get("syslog");
 			if (! msgid) msgid = "SERVICE SESSIONS";
-			return syslog.logger(pci, severity || "DEBUG", msgid,  msg);
+			return this.syslog.logger(pci, severity || "DEBUG", msgid,  msg);
 		};
 		
 		start (context, sessionContext, callback){
@@ -541,7 +536,7 @@ nodefony.registerService("sessions", function(){
 
 		addContextSession (context){
 			if (this.storage){
-				this.kernel.listen(this, "onReady",function(){
+				this.listen(this, "onReady",function(){
 					this.storage.open(context)	
 				});
 			}

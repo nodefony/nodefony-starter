@@ -284,9 +284,12 @@ nodefony.registerService("router", function(){
 		return   str ; 
 	}
 
-	var Router = class Router { 
+	var Router = class Router extends nodefony.Service { 
+
 		constructor (container){
-			this.container = container ;
+
+			super("router", container );
+			//this.container = container ;
 			this.routes = [];
 			this.reader = function(context){
 				var func = context.container.get("reader").loadPlugin("routing", pluginReader);
@@ -294,7 +297,7 @@ nodefony.registerService("router", function(){
 					return func(result, context.nodeReader.bind(context));
 				};
 			}(this);
-			this.engineTemplate = this.container.get("templating");
+			this.engineTemplate = this.get("templating");
 			this.engineTemplate.extendFunction("path", (name, variables, host) => {
 				try {
 					return this.generatePath( name, variables, host);
@@ -306,8 +309,8 @@ nodefony.registerService("router", function(){
 					}
 				}
 			});
-			this.syslog = this.container.get("syslog"); 
-		};
+			//this.syslog = this.container.get("syslog"); 
+		}
 	
 		generatePath (name, variables, host){
 			var route =  this.getRoute(name) ;

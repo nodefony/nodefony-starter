@@ -111,7 +111,7 @@ nodefony.registerService("firewall", function(){
 			this.defaultTarget = "/" ;
 			this.alwaysUseDefaultTarget = false ;
 
-			this.firewall.kernel.listen(this, "onReady",() => {
+			this.firewall.listen(this, "onReady",() => {
 				try {
 					if ( this.providerName in this.firewall.providers){
 						this.provider = this.firewall.providers[ this.providerName ].Class ;	
@@ -374,10 +374,12 @@ nodefony.registerService("firewall", function(){
 		none:true
 	};
 
-	var Firewall = class Firewall {
+	var Firewall = class Firewall extends nodefony.Service {
 
 		constructor(container, kernel ){
-			this.container = container;
+
+			super("firewall", container, kernel.notificationsCenter ) ;
+			//this.container = container;
 			this.kernel = kernel;
 			this.reader = function(context){
 				var func = context.container.get("reader").loadPlugin("security", pluginReader);
@@ -395,15 +397,15 @@ nodefony.registerService("firewall", function(){
 			this.providers = {};
 			this.sessionStrategy = "invalidate" ;
 
-			this.syslog = this.container.get("syslog");
+			//this.syslog = this.container.get("syslog");
 
 			// listen KERNEL EVENTS
-			this.kernel.listen(this, "onBoot",() => {
+			this.listen(this, "onBoot",() => {
 				this.sessionService = this.get("sessions");
 				this.orm = this.get(this.kernel.settings.orm);
 			});
 
-			this.kernel.listen(this, "onSecurity",(context) => {
+			this.listen(this, "onSecurity",(context) => {
 				switch (context.type){
 					case "HTTP" :
 					case "HTTPS" :
@@ -510,7 +512,7 @@ nodefony.registerService("firewall", function(){
 					break;
 				}
 			});
-		};
+		}
 	
 		handlerHttp ( context, request, response, session){
 			var next = context.kernelHttp.checkValidDomain( context ) ;
@@ -567,7 +569,7 @@ nodefony.registerService("firewall", function(){
 				}
 				throw e ;
 			}
-		};
+		}
 
 
 		setSessionStrategy (strategy){
@@ -576,7 +578,7 @@ nodefony.registerService("firewall", function(){
 				return this.sessionStrategy = strategy ;
 			}
 			throw new Error("sessionStrategy strategy not found");
-		};
+		}
 
 		nodeReader (obj){
 			//console.log(obj.security.firewalls)
@@ -625,7 +627,7 @@ nodefony.registerService("firewall", function(){
 										area.setRedirectHttps(param[config]);
 									break;
 									case "provider" :
-										//this.kernel.listen(this, "onReady",function(provider, context){
+										//this.listen(this, "onReady",function(provider, context){
 											var provider = param[config] ;
 											//if ( provider in this.providers ){
 												area.setProvider(provider);
@@ -637,7 +639,7 @@ nodefony.registerService("firewall", function(){
 									break;
 									case "context" :
 										if ( param[config] ){
-											this.kernel.listen(this, "onBoot",function(context, contextSecurity){
+											this.listen(this, "onBoot",function(context, contextSecurity){
 												//console.log( this.sessionService );
 												contextSecurity.setContextSession(context);
 												this.sessionService.addContextSession(context);
@@ -657,7 +659,7 @@ nodefony.registerService("firewall", function(){
 						}
 					break;
 					case "session_fixation_strategy":
-						this.kernel.listen(this, "onBoot",function(strategy){
+						this.listen(this, "onBoot",function(strategy){
 							this.setSessionStrategy(strategy);
 							this.sessionService.setSessionStrategy(this.sessionStrategy);
 						}.bind(this ,obj[ele]));
@@ -723,11 +725,11 @@ nodefony.registerService("firewall", function(){
 										}
 									break;
 									case "entity" :
-										this.kernel.listen(this, "onBoot", () => {
+										this.listen(this, "onBoot", () => {
 											this.orm.listen(this, "onOrmReady", function(){
 												var ent = this.orm.getEntity(element[pro].name)
 												if (! ent){
-													this.logger("ENTITY PROVIDER : "+ provider+ "not found","ERROR");
+													this.logger("ENTITY PROVIDER : "+ provider+ " not found","ERROR");
 													return ;
 												}
 												this.providers[provider] = {
@@ -759,33 +761,22 @@ nodefony.registerService("firewall", function(){
 			}else{
 				this.logger("securedAreas :" + name +"already exist ")
 			}
-		};
+		}
 
 		getSecuredArea (name){
 			if (name in this.securedAreas){
 				return this.securedAreas[name] ;
 			}
 			return null ;
-		};
+		}
 
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "\x1b[36mSERVICE FIREWALL\x1b[0m";
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 
-		get (name){
-			if (this.container)
-				return this.container.get(name);
-			return null;
-		};
-
-		set (name, obj){
-			if (this.container)
-				return this.container.set(name, obj);
-			return null;
-		};
 	};
 
 	return Firewall;

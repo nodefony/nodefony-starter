@@ -86,8 +86,6 @@ nodefony.register("kernel", function(){
 		});
 	};
 
-
-
 	/**
 	 *	KERKEL class   
 	 *	The class is a **`KERNEL NODEFONY`** .
@@ -100,17 +98,18 @@ nodefony.register("kernel", function(){
 	 *	@param {class} autoLoader
 	 *	
 	 */
-	var kernel = class kernel {	
+	var kernel = class kernel extends nodefony.Service {	
 
 		constructor (environment, debug, autoLoader, type, options){
+
+			super( "KERNEL" , null, null , options);
+
 			this.rootDir = process.cwd();
 			this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
 			this.appPath = this.rootDir+"/app/";
 			this.configPath = this.rootDir+"/vendors/nodefony/config/config.yml" ;
 			this.platform = process.platform ;
-			this.getName();
 			this.type = type;
-			this.container = null; 
 			this.bundles = {};
 			this.environment = environment;
 			this.debug = debug || false;
@@ -126,7 +125,6 @@ nodefony.register("kernel", function(){
 			this.options = options ;
 			this.node_start = options.node_start ;
 
-			
 			this.boot(options);
 			
 			/**
@@ -155,28 +153,7 @@ nodefony.register("kernel", function(){
 				this.terminate(0);
 			});
 		}
-
-		/**
-	 	 *	@method get
-	 	 *	@param {String} name of service
-         	 */
-		get (name){
-			if (this.container)
-				return this.container.get(name);
-			return null;
-		}
-
-		/**
-	 	*	@method set
-	 	*	@param {String} name of service
-	 	*	@param {Object} instance of service
-         	*/
-		set (name, obj){
-			if (this.container)
-				return this.container.set(name, obj);
-			return null;
-		}
-		
+				
 		/**
 	 	*	@method boot
          	*/
@@ -209,7 +186,7 @@ nodefony.register("kernel", function(){
 			});
 
 			//  manage GLOBAL EVENTS
-			this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
+			//this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 			this.container.set("notificationsCenter", this.notificationsCenter);
 			this.initCluster();
 
@@ -282,27 +259,7 @@ nodefony.register("kernel", function(){
 				data : message
 			});
 		}
-
-		/**
-	 	*	@method fire
-	 	*	@param {String} event name 
-	 	*	@param {Arguments} ... arguments to inject  
-         	*/
-		fire (){
-			//this.logger(ev, "DEBUG", "EVENT KERNEL")
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-		}
-
-		/**
-	 	*	@method listen
-	 	*	@param {Oject} context
-	 	*	@param {String} event
-	 	*	@param {Function} callback
-         	*/
-		listen (){
-			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
-		}
-	
+			
 		/**
 	 	*	@method initializeLog
          	*/
@@ -362,7 +319,7 @@ nodefony.register("kernel", function(){
 	 	*	@method initializeContainer
          	*/
 		initializeContainer (){
-			this.container = new nodefony.Container();	
+			//this.container = new nodefony.Container();	
 			this.container.set("kernel", this);	
 			this.container.set("container", this.container);	
 		}

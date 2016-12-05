@@ -7,8 +7,12 @@ var nodedomain = require('domain');
 
 nodefony.registerService("http", function(){
 	
-	var Http = class Http {
+	var Http = class Http extends nodefony.Service {
+
 		constructor (httpKernel , security, options ){
+
+			super( "http", httpKernel.container, httpKernel.notificationsCenter , options  );
+
 			this.httpKernel = httpKernel ;
 			this.port = this.httpKernel.kernel.httpPort ;
 			this.domain = this.httpKernel.kernel.settings.system.domain ;
@@ -19,7 +23,7 @@ nodefony.registerService("http", function(){
 			this.address = null ;
 			this.family = null ;
 
-			this.kernel.listen(this, "onBoot",function(){
+			this.listen(this, "onBoot",function(){
 				this.bundle = this.kernel.getBundles("http") ;
 				this.bundle.listen(this, "onServersReady", function(type, service){
 					if ( type === this.type){
@@ -32,18 +36,23 @@ nodefony.registerService("http", function(){
 			});
 		};
 
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVICE HTTP ";
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		};
+
 		createZone (request, response){
 
 			require("zone").enable();
 			zone.create( () => {
-				this.kernel.fire("onServerRequest", request, response, this.type, zone)
+				this.fire("onServerRequest", request, response, this.type, zone)
 			})
 			.then((result) => {
 				// Runs when succesful
-				this.httpKernel.logger("ZONE SUCCES","INFO");
+				this.logger("ZONE SUCCES","INFO");
 			})
 			.catch( (err) => {
-				this.httpKernel.logger(err);
+				this.logger(err);
 			});
 		}
 	
@@ -58,15 +67,15 @@ nodefony.registerService("http", function(){
 						var d = nodedomain.create();
 						d.on('error', (er) => {
 							if ( d.container ){
-								this.httpKernel.onError( d.container, er.stack,  "ERROR", "SERVICE HTTP")	
+								this.httpKernel.onError( d.container, er.stack,  "ERROR")	
 							}else{
-								this.httpKernel.logger(er.stack, "ERROR", "SERVICE HTTP");
+								this.logger(er.stack, "ERROR");
 							}
 						});
 						d.add(request);
 						d.add(response);
 						d.run(() => {
-							this.kernel.fire("onServerRequest", request, response, this.type, d)
+							this.fire("onServerRequest", request, response, this.type, d)
 						});
 					});
 				}else{
@@ -75,13 +84,13 @@ nodefony.registerService("http", function(){
 						if ( d.container ){
 							this.httpKernel.onError( d.container, er.stack)	
 						}else{
-							this.httpKernel.logger(er.stack, "ERROR", "SERVICE HTTP");
+							this.logger(er.stack, "ERROR");
 						}
 					});
 					d.add(request);
 					d.add(response);
 					d.run( () => {
-						this.kernel.fire("onServerRequest", request, response, this.type, d)
+						this.fire("onServerRequest", request, response, this.type, d)
 					});	
 				}
 			})
@@ -97,7 +106,7 @@ nodefony.registerService("http", function(){
 
 			// LISTEN ON PORT 
 			this.server.listen(this.port, this.domain, () => {
-				this.httpKernel.logger(this.type+"  Server is listening on DOMAIN : http://"+this.domain+":"+this.port , "INFO", "SERVICE HTTP", "LISTEN");
+				this.logger(this.type+"  Server is listening on DOMAIN : http://"+this.domain+":"+this.port , "INFO");
 				this.ready = true ;
 				this.bundle.fire("onServersReady", this.type, this);
 			});
@@ -106,27 +115,27 @@ nodefony.registerService("http", function(){
 				var httpError = "server HTTP Error : "+error.errno;
 				switch (error.errno){
 					case "ENOTFOUND":
-						this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC", "SERVICE HTTPS");
+						this.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC");
 					break;
 					case "EADDRINUSE":
-						this.httpKernel.logger( new Error(httpError+" port HTTP in use check other servers : "), "CRITIC", "SERVICE HTTPS") ;
+						this.logger( new Error(httpError+" port HTTP in use check other servers : "), "CRITIC") ;
 					break;
 					default :
-						this.httpKernel.logger( new Error(httpError) ,"CRITIC", "SERVICE HTTPS");	
+						this.logger( new Error(httpError) ,"CRITIC", "SERVICE HTTPS");	
 				}	
 			});
 
 
-			this.kernel.listen(this, "onTerminate",() => {
+			this.listen(this, "onTerminate",() => {
 				if (this.server){
 					this.server.close(() => {
-						this.httpKernel.logger(" SHUTDOWN HTTP Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
+						this.logger(" SHUTDOWN HTTP Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
 					});
 				}
 			});
 
 			this.server.on("clientError",(e, socket) =>{
-				this.kernel.fire("onClientError", e, socket);
+				this.fire("onClientError", e, socket);
 				socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
 			});
 

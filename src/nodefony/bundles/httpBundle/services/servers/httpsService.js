@@ -22,9 +22,12 @@ nodefony.registerService("https", function(){
 		}
 	}
 
-	var Https = class Https {
+	var Https = class Https extends nodefony.Service {
 
 		constructor (httpKernel , security, options){
+
+			super( "https", httpKernel.container, httpKernel.notificationsCenter , options  );
+
 			this.httpKernel = httpKernel;
 			this.port = this.httpKernel.kernel.httpsPort ;
 			this.domain = this.httpKernel.kernel.settings.system.domain ;
@@ -39,7 +42,7 @@ nodefony.registerService("https", function(){
 			this.family = null ;
 
 			this.type = "HTTPS";
-			this.kernel.listen(this, "onBoot",function(){
+			this.listen(this, "onBoot",function(){
 				this.bundle = this.kernel.getBundles("http") ;
 				this.bundle.listen(this, "onServersReady", function(type, service){
 					if ( type === this.type){
@@ -50,6 +53,11 @@ nodefony.registerService("https", function(){
 					}
 				})
 			});
+		};
+
+		logger (pci, severity, msgid,  msg){
+			if (! msgid) msgid = "SERVICE HTTPS ";
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		};
 
 		getCertificats (){
@@ -79,13 +87,12 @@ nodefony.registerService("https", function(){
 			return opt ;
 		};
 	
-	
 		createServer (port, domain){
 			
 			try {
 				var opt = this.getCertificats();
 			}catch(e){
-				this.httpKernel.logger(e);
+				this.logger(e);
 				throw e ;	
 			}
 
@@ -100,13 +107,13 @@ nodefony.registerService("https", function(){
 							if ( d.container ){
 								this.httpKernel.onError( d.container, er.stack)	
 							}else{
-								this.httpKernel.logger(er.stack , "ERROR", "SERVICE HTTPS");
+								this.logger(er.stack , "ERROR", "SERVICE HTTPS");
 							}
 						});
 						d.add(request);
 						d.add(response);
 						d.run( () => {
-							this.kernel.fire("onServerRequest", request, response, this.type, d)
+							this.fire("onServerRequest", request, response, this.type, d)
 						});
 					});
 				}else{
@@ -115,13 +122,13 @@ nodefony.registerService("https", function(){
 						if ( d.container ){
 							this.httpKernel.onError( d.container, er.stack)	
 						}else{
-							this.httpKernel.logger(er.stack,"ERROR", "SERVICE HTTPS");
+							this.logger(er.stack,"ERROR");
 						}
 					});
 					d.add(request);
 					d.add(response);
 					d.run( () => {
-						this.kernel.fire("onServerRequest", request, response, this.type, d)
+						this.fire("onServerRequest", request, response, this.type, d)
 					});	
 				}
 			});
@@ -136,7 +143,7 @@ nodefony.registerService("https", function(){
 
 			// LISTEN ON PORT 
 			this.server.listen(this.port, this.domain, () => {
-				this.httpKernel.logger(this.type+"  Server is listening on DOMAIN : https://"+this.domain+":"+this.port , "INFO", "SERVICE HTTPS", "LISTEN");
+				this.logger(this.type+"  Server is listening on DOMAIN : https://"+this.domain+":"+this.port , "INFO");
 				this.ready = true ;
 				this.bundle.fire("onServersReady", this.type, this);
 			});
@@ -145,27 +152,27 @@ nodefony.registerService("https", function(){
 				var httpError = "server HTTPS Error : "+error.errno;
 				switch (error.errno){
 					case "ENOTFOUND":
-						this.httpKernel.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC", "SERVICE HTTPS");
+						this.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC");
 					break;
 					case "EADDRINUSE":
-						this.httpKernel.logger( new Error(httpError+" port HTTPS in use check other servers : "), "CRITIC", "SERVICE HTTPS");
+						this.logger( new Error(httpError+" port HTTPS in use check other servers : "), "CRITIC");
 					break;
 					default :
-						this.httpKernel.logger( new Error(httpError), "CRITIC" );	
+						this.logger( new Error(httpError), "CRITIC" );	
 				}	
 			});
 
 			this.server.on("clientError",(e, socket) => {
-				this.kernel.fire("onClientError", e, socket);
+				this.fire("onClientError", e, socket);
 				socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
 			});
 
 
 
-			this.kernel.listen(this, "onTerminate", () => {
+			this.listen(this, "onTerminate", () => {
 				if (this.server){
 					this.server.close( () => {
-						this.httpKernel.logger(" SHUTDOWN HTTPS  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO", "SERVICE HTTPS");
+						this.logger(" SHUTDOWN HTTPS  Server is listening on DOMAIN : "+this.domain+"    PORT : "+this.port , "INFO");
 					});
 				}
 			});
