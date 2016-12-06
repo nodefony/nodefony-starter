@@ -65,11 +65,8 @@ nodefony.register("Request",function(){
 			this.container = container ;
 			this.request = request;
 			this.headers = 	request.headers ;
-			this.host = this.getHost() ; //request.headers.host;
+			this.host = this.getHost() ; 
 			this.hostname = this.getHostName(this.host) ;
-			//console.log( request.url )
-			//console.log( request )
-			//console.log( request.headers.host )
 			this.sUrl = this.getFullUrl( request );
 			this.url = this.getUrl(this.sUrl) ;
 			if ( this.url.search ){
@@ -82,7 +79,7 @@ nodefony.register("Request",function(){
 			this.queryGet = this.url.query;
 			this.query = this.url.query;
 			
-			this.method = this.getMethod() ;// request.method;
+			this.method = this.getMethod() ;
 			this.rawContentType = {} ;
 			this.contentType = this.getContentType(this.request);
 			this.charset = this.getCharset(this.request);
@@ -124,7 +121,7 @@ nodefony.register("Request",function(){
 					throw new Error ("Request "+this.url.href +" Content-type : " + this.contentType + " data Request :   "+ this.body.length+"   " + e );
 				}
 			});
-		};
+		}
 
 		getHost (){
 			return this.request.headers.host ;
@@ -177,7 +174,7 @@ nodefony.register("Request",function(){
 			var syslog = this.container.get("syslog");
 			if (! msgid) msgid = "HTTP REQUEST  ";
 			return syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		getContentType ( request ){
 			if ( request.headers["content-type"] ){
@@ -214,7 +211,7 @@ nodefony.register("Request",function(){
 		getDomain (){
 			return this.getHostName() ;
 			//return this.host.split(":")[0];
-		};
+		}
 
 		getRemoteAddress (){
 			// proxy mode
@@ -231,15 +228,15 @@ nodefony.register("Request",function(){
 				return  this.request.connection.socket.remoteAddress ;
 			}
 			return null ;
-		};
+		}
 
 		setUrl (Url){
 			this.url = this.getUrl(Url);
-		};
+		}
 
 		getUrl (sUrl, query){
 			return url.parse( sUrl, query);
-		};
+		}
 
 		getFullUrl (request){
 			// proxy mode
@@ -251,7 +248,7 @@ nodefony.register("Request",function(){
 			}else{
 				return 'http://' + this.host + request.url;
 			}
-		};
+		}
 
 		isAjax (){
 			if ( this.headers['x-requested-with'] )

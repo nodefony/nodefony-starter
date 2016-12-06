@@ -14,17 +14,14 @@ nodefony.register.call(nodefony.context, "http", function(){
  	 *
  	 *
  	 */
-	var Http = class Http {
+	var Http = class Http extends nodefony.Service {
 
 		constructor (container, request, response, type){
+
+			super ("httpContext", container);
 			this.type = type;
-			this.container = container; 
 		
 			this.protocol = ( type === "HTTPS" ) ? "https" : "http" ;
-
-			//  manage EVENTS
-			this.notificationsCenter = nodefony.notificationsCenter.create();
-			this.container.set("notificationsCenter", this.notificationsCenter);
 
 			this.resolver = null ;
 			this.nbCallController = 0 ;
@@ -75,13 +72,13 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.remoteAddress = this.request.remoteAddress ; 
 
 			// LISTEN EVENTS KERNEL 
-			this.notificationsCenter.listen(this, "onView", (result, context, view, param) => {
+			this.listen(this, "onView", (result, context, view, param) => {
 				this.response.body = result;
 			});
-			this.notificationsCenter.listen(this, "onResponse", this.send);
-			this.notificationsCenter.listen( this, "onRequest" , this.handle );
-			this.notificationsCenter.listen( this, "onTimeout" , function(context){
-				this.notificationsCenter.fire("onError", this.container, {
+			this.listen(this, "onResponse", this.send);
+			this.listen( this, "onRequest" , this.handle );
+			this.listen( this, "onTimeout" , function(context){
+				this.fire("onError", this.container, {
 					status:408,
 					message:new Error("Timeout :" + this.url)
 				} );	
@@ -97,7 +94,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return  this.kernelHttp.isCrossDomain( this );
 		}
 
-
 		getRemoteAddress (){
 			return this.request.getRemoteAddress() ;
 		};
@@ -110,7 +106,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return this.request.getHostName() ;
 		};
 
-
 		getUserAgent (){
 			return this.request.getUserAgent();
 		};
@@ -118,7 +113,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 		getMethod (){
 			return this.request.getMethod() ;
 		};
-
 
 		handle (container, request , response, data){
 			var get = this.container.setParameters("query.get", this.request.queryGet );
@@ -147,14 +141,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 					// timeout response after  callController (to change timeout in action )
 					this.response.response.setTimeout(this.response.timeout, () => {
 						this.timeoutExpired = true ;
-						this.notificationsCenter.fire("onTimeout", this);
+						this.fire("onTimeout", this);
 					})
 					return ret ;
 				}
 				/*
  			 	*	NOT FOUND
  			 	*/
-				this.notificationsCenter.fire("onError", this.container, {
+				this.fire("onError", this.container, {
 							status:404,
 							error:"URI :" + request.url,
 							message:"not Found"
@@ -163,7 +157,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				/*
  			 	*	ERROR IN CONTROLLER 
  			 	*/
-				this.notificationsCenter.fire("onError", this.container, e);		
+				this.fire("onError", this.container, e);		
 			}
 		}
 
@@ -204,7 +198,7 @@ nodefony.register.call(nodefony.context, "http", function(){
  			*/
 			this.response.writeHead();
 
-			this.notificationsCenter.fire("onSend", response, context);
+			this.fire("onSend", response, context);
 			if ( ! context.profiling ){
 				/*
  	 			* WRITE RESPONSE
@@ -213,7 +207,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				// END REQUEST
 				return this.close();
 			}
-			this.notificationsCenter.fire("onSendMonitoring", response, context);
+			this.fire("onSendMonitoring", response, context);
 		};
 
 		flush (data, encoding){
@@ -222,25 +216,15 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		close (){
 			//console.log("CLOSE CONTEXT")
-			this.notificationsCenter.fire("onClose", this);
+			this.fire("onClose", this);
 			// END REQUEST
 			return this.response.end();
 		};
 	
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
 			if (! msgid) msgid = this.type + " REQUEST";
-			return syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		};
-
-		listen (){
-			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
-		};
-
-		fire (){
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-		};
-
 
 		getRequest (){
 			return this.request;	
@@ -250,24 +234,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return this.response;	
 		};
 
-		get (name){
-			if (this.container)
-				return this.container.get(name);
-			return null;
-		};
-
-		set (name, obj){
-			if (this.container)
-				return this.container.set(name, obj);
-			return null;
-		};
-
 		redirect (Url, status){
 			if (typeof Url === "object")
 				this.response.redirect(url.format(Url), status)
 			else	
 				this.response.redirect(Url, status)
-			this.notificationsCenter.fire("onResponse", this.response, this);
+			this.fire("onResponse", this.response, this);
 		};
 
 		redirectHttps ( status ){
@@ -292,7 +264,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			var urlChange = nodefony.extend({}, this.request.url , urlExtend )
 			var newUrl  = url.format(urlChange);
 			this.response.redirect( newUrl, status );
-			this.notificationsCenter.fire("onResponse", this.response, this);
+			this.fire("onResponse", this.response, this);
 		};
 
 		setXjson ( xjson){

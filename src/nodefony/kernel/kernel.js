@@ -180,14 +180,14 @@ nodefony.register("kernel", function(){
 				// manage LOG
 				if (this.environment === "prod")
 					this.environment = result.system.debug ? "dev" : "prod" ;
-				this.syslog = this.initializeLog(options);
+				this.initializeLog(options);
 				this.autoLoader.syslog = this.syslog;
-				this.container.set("syslog",this.syslog);
+				//this.container.set("syslog",this.syslog);
 			});
 
 			//  manage GLOBAL EVENTS
 			//this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
-			this.container.set("notificationsCenter", this.notificationsCenter);
+			//this.container.set("notificationsCenter", this.notificationsCenter);
 			this.initCluster();
 
 			this.eventReadywait = 0 ;
@@ -264,24 +264,24 @@ nodefony.register("kernel", function(){
 	 	*	@method initializeLog
          	*/
 		initializeLog (options){
-			var syslog =  new nodefony.syslog(settingsSyslog);
+			//var syslog =  new nodefony.syslog(settingsSyslog);
 			
 			if ( this.settings.system.log.console ||  this.environment === "dev"){
 			
-				logConsole.call(this, syslog);
+				logConsole.call(this, this.syslog);
 
 			}else{
 				//FIXME do service with nodefony.log
 				// PM2
 				if ( this.settings.system.log.active && options.node_start === "PM2" ){
-					logConsole.call(this, syslog);
+					logConsole.call(this, this.syslog);
 				}
 
 				if ( this.settings.system.log.file ){
 					this.logStream = new nodefony.log(this.rootDir+this.settings.system.log.error,{
 						rotate:this.settings.system.log.rotate
 					});
-					syslog.listenWithConditions(this,{
+					this.syslog.listenWithConditions(this,{
 						severity:{
 							data:"CRITIC,ERROR"
 						}		
@@ -296,7 +296,7 @@ nodefony.register("kernel", function(){
 						rotate:this.settings.system.log.rotate
 					});
 					( this.debug ) ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
-					syslog.listenWithConditions(this,{
+					this.syslog.listenWithConditions(this,{
 						severity:{
 							data:data
 						}		
@@ -312,7 +312,7 @@ nodefony.register("kernel", function(){
 					});
 				}
 			}
-			return syslog;
+			//return syslog;
 		}
 
 		/**

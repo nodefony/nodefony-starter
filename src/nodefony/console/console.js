@@ -146,9 +146,10 @@ nodefony.register("console", function(){
 					if ( process.argv[2] && process.argv[2] === "npm:list" ){
 						this.listPackage(this.rootDir+"/package.json")
 					}	
-				}
+				},
+				syslog:settingsSysLog
 			});
-			this.syslog = this.initializeLog(settingsSysLog);
+			this.initializeLog(settingsSysLog);
 
 			this.commands = {};
 			this.getOptsTab = [];
@@ -181,12 +182,10 @@ nodefony.register("console", function(){
 		};
 
 		initializeLog ( settings ) {
-			var syslog =  new nodefony.syslog(settingsSysLog);
-			logConsoleNodefony.call(this, syslog);	
-			return syslog ;
+			logConsoleNodefony.call(this, this.syslog);	
 		}
 
-			/**
+		/**
 	 	*	@method logger
          	*/
 		logger (pci, severity, msgid,  msg){
@@ -202,7 +201,6 @@ nodefony.register("console", function(){
 	 	*	@param {Function} callbackFinish
          	*/
 		registerBundles (path, callbackFinish, nextick){
-			//console.log(arguments)
 			
 			var func = ( Path ) => {
 				try{
@@ -341,46 +339,6 @@ nodefony.register("console", function(){
 			}
 		};
 
-		/*initWorkerSyslog (settings){
-			var red, blue, reset;
-			red   = '\x1B[31m';
-			blue  = '\x1B[34m';
-			reset = '\x1B[0m';
-			
-			var syslog =  new nodefony.syslog(settings);
-
-			// CRITIC ERROR
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:"ERROR"
-				}		
-			},(pdu) => {
-				if (typeof  pdu.payload === 'object') {
-    					if ( pdu.payload.message) {
-						console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload.message) +"\n"+ reset);
-						return ;
-    					}
-    					if (pdu.payload.stack) {
-						console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload.stack) +"\n"+ reset);
-						return ;
-    					}
-  				}
-				console.log("\x1B[46m\n\n    "+ util.inspect( pdu.payload) +"\n"+ reset);
-			});
-			// INFO DEBUG
-			var data ;
-			this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
-			syslog.listenWithConditions(this,{
-				severity:{
-					data:data
-				}		
-			},(pdu) => {
-				console.log(pdu.payload)
-			});
-			return syslog;
-		};*/
-
-		
 		loadCommand (){
 			this.stop = false;
 			for ( var bundle in this.bundles ){

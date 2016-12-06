@@ -25,13 +25,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 	}
 
 
-	var websocket = class websocket {
+	var websocket = class websocket extends nodefony.Service {
 
 		constructor (container, request, response ,type){
+
+			super ("websocketContext", container);
 			this.type = type ;
 			this.protocol = ( type === "WEBSOCKET SECURE" ) ? "wss" : "ws" ;
 			
-			this.container = container;
+			//this.container = container;
 			this.kernel = this.container.get("kernel") ;
 			if ( this.kernel.environment === "dev" ){
 				this.autoloadCache = {
@@ -89,17 +91,14 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 			this.resolver = null ;
 			this.nbCallController = 0 ;
-			//  manage EVENTS
-			this.notificationsCenter = nodefony.notificationsCenter.create();
-			this.container.set("notificationsCenter", this.notificationsCenter);
 
-			// LISTEN EVENTS KERNEL 
-			this.notificationsCenter.listen(this, "onView", (result) => {
+			// LISTEN EVENTS  
+			this.listen(this, "onView", (result) => {
 				this.response.body = result;
 			});
-			this.notificationsCenter.listen(this, "onResponse", this.send);
-			this.notificationsCenter.listen(this, "onRequest", this.handle);
-			this.notificationsCenter.listen(this, "onError", this.handleError);
+			this.listen(this, "onResponse", this.send);
+			this.listen(this, "onRequest", this.handle);
+			this.listen(this, "onError", this.handleError);
 
 			// LISTEN EVENTS SOCKET	
 
@@ -157,17 +156,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}	
 		};
 
-
 		parseCookies (){
 			return  nodefony.cookies.cookiesParser(this);
-		};
-
-		listen (){
-			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
-		};
-
-		fire (){
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
 		};
 
 		clean (){
@@ -192,7 +182,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 						this.resolver.match(this.resolver.route,  this)	;
 					}catch(e){
 						this.request.reject();
-						this.notificationsCenter.fire("onError", this.container, e);	
+						this.fire("onError", this.container, e);	
 						return ;
 					}
 				}
@@ -203,7 +193,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 					this.request.reject();
 				}
 			}catch(e){
-				this.notificationsCenter.fire("onError", this.container, e);	
+				this.fire("onError", this.container, e);	
 			}	
 
 		};
@@ -218,7 +208,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 						this.resolver.match(this.resolver.route,  this)	;
 					}catch(e){
 						this.request.reject();
-						this.notificationsCenter.fire("onError", this.container, e);
+						this.fire("onError", this.container, e);
 						return ;	
 					}
 					//this.resolver.match(this.resolver.route,  this);	
@@ -231,11 +221,10 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 					request.reject();
 				}
 			}catch(e){
-				this.notificationsCenter.fire("onError", this.container, e);	
+				this.fire("onError", this.container, e);	
 			}		
 
 		};
-
 
 		handleError (container, error){
 			return 	onClose.call(this, error.status, error.message );
@@ -243,9 +232,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}; 
 
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
 			if (! msgid) msgid = "REQUEST "+this.type ;
-			return syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
 
 		};
 
@@ -262,18 +250,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			if ( this.connection ){
 				this.connection.close(reasonCode, description);
 			}
-		};
-
-		get (name){
-			if (this.container)
-				return this.container.get(name);
-			return null;
-		};
-
-		set (name, obj){
-			if (this.container)
-				return this.container.set(name, obj);
-			return null;
 		};
 	};
 

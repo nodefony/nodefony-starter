@@ -25,8 +25,9 @@ nodefony.register("Service", function(){
 			if ( ! this.syslog ){
 				this.settingsSyslog = nodefony.extend({}, settingsSyslog , {
 					moduleName: this.name	
-				})
+				},options.syslog || {} );
 				this.syslog = new nodefony.syslog( this.settingsSyslog );	
+				this.set("syslog", this.syslog);
 			}else{
 				this.settingsSyslog = this.syslog.settings ;	
 			}
@@ -36,7 +37,8 @@ nodefony.register("Service", function(){
 				if ( notificationsCenter ){
 					throw new Error ("Service nodefony notificationsCenter not valid must be instance of nodefony.notificationsCenter.notification");
 				}
-				this.notificationsCenter = nodefony.notificationsCenter.create(options, this); 	
+				this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
+				this.set("notificationsCenter", this.notificationsCenter);	
 			}	
 		}
 	
