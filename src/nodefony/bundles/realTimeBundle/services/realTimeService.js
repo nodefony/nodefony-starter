@@ -1,26 +1,4 @@
-/*
- *	The MIT License (MIT)
- *	
- *	Copyright (c) 2013/2014 cci | christophe.camensuli@nodefony.com
- *
- *	Permission is hereby granted, free of charge, to any person obtaining a copy
- *	of this software and associated documentation files (the 'Software'), to deal
- *	in the Software without restriction, including without limitation the rights
- *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *	copies of the Software, and to permit persons to whom the Software is
- *	furnished to do so, subject to the following conditions:
- *
- *	The above copyright notice and this permission notice shall be included in
- *	all copies or substantial portions of the Software.
- *
- *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *	THE SOFTWARE.
- */
+
 var net = require('net');
 var dgram = require('dgram');
 var xml = require('xml2js');
@@ -37,19 +15,19 @@ nodefony.registerService("realTime", function(){
 
 		constructor(){
 			this.connections = {};
-		};
+		}
 
 		generateId (){
 			return shortId.generate();
-		};
+		}
 
 		getClientId (client){
 			return client.idClient ;
-		};
+		}
 
 		getConnectionId (client){
 			return client.idConnection ;
-		};
+		}
 
 		setConnection (connection, obj){
 			var id  = this.generateId() ;
@@ -62,12 +40,12 @@ nodefony.registerService("realTime", function(){
 				clients:{}
 			} ;
 			return id;
-		};
+		}
 
 		getConnection (client){
 			var id  = this.getConnectionId(client);
 			return 	this.connections[id];
-		};
+		}
 
 		removeConnection (id){
 			if (this.connections[id]) {
@@ -75,8 +53,7 @@ nodefony.registerService("realTime", function(){
 				return true ;
 			}
 			return false ;
-		};
-
+		}
 
 		setClient (idConnection, client){
 			if (this.connections[idConnection] ){
@@ -88,7 +65,7 @@ nodefony.registerService("realTime", function(){
 			}else{
 				throw idConnection ;
 			}
-		};
+		}
 
 		getClient (clientId){
 			for (var connection in this.connections){
@@ -99,7 +76,7 @@ nodefony.registerService("realTime", function(){
 				}	
 			}
 			return null;
-		};
+		}
 
 		removeClient (client){
 			var idConnection = this.getConnectionId(client);
@@ -111,13 +88,13 @@ nodefony.registerService("realTime", function(){
 				}
 			}
 			return false ;
-		};
+		}
 
 		removeAllClientConnection (){
 			for (var ele in this.connections ){
 			
 			}
-		};
+		}
 	};
 
 	/**
@@ -179,7 +156,7 @@ nodefony.registerService("realTime", function(){
 			this.initSyslog();
 			this.protocol = new nodefony.io.protocol.bayeux();
 			this.listen(this, "onError", this.onError );
-			this.listen(this, "onMessage", this.onMessage );
+			//this.listen(this, "onMessage", this.onMessage );
 			this.kernel.listen(this, "onReady", () => {
 				this.settings = this.container.getParameters("bundles.realTime");
 				for (var services in this.settings.services){
@@ -187,12 +164,12 @@ nodefony.registerService("realTime", function(){
 				}
 			});
 
-		};
+		}
 
 		registerService (name, definition){
 			this.services[name] = definition;
 			return 	this.services[name];
-		};
+		}
 
 		initSyslog (){
 			this.listenWithConditions(this,{
@@ -207,12 +184,11 @@ nodefony.registerService("realTime", function(){
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVICE REALTIME";
 			return super.logger(pci, severity, msgid,  msg)
-		};
-		
+		}
 
 		getServices (){
 			return this.services ;
-		};
+		}
 		
 		onHandshake (message, connectionId, ipClient){
 			var advice = this.settings.system.reconnect.handshake ;
@@ -220,7 +196,7 @@ nodefony.registerService("realTime", function(){
 			response.clientId = connectionId;
 			response.successful = true ;
 			return this.protocol.send(response) ;
-		};
+		}
 
 		onSubscribe (message, data, context){ 
 			var name = message.subscription.split("/")[2] ;
@@ -470,7 +446,7 @@ nodefony.registerService("realTime", function(){
 					return this.send( context ,this.protocol.send(message) );
 			}
 			return client;
-		};
+		}
 
 		onUnSubscribe (message, data, context, error){
 			try{
@@ -489,21 +465,21 @@ nodefony.registerService("realTime", function(){
 			}catch(e){
 				this.logger("UNSUBCRIBE  : "+ e , "ERROR");	
 			}
-		};
+		}
 
 		onConnect (message, ipClient){
 			var advice = this.settings.system.reconnect.connect ;
 			var response = this.protocol.connectResponse(message, advice, {address:ipClient});
 			response.data = this.getServices();
 			return  this.protocol.send(response) ;	
-		};
+		}
 
 		onDisconnect (message, context){
 			var response = this.protocol.disconnectResponse(message);
 			cleanConnection.call(this, message.clientId, this.protocol.send(response) , context );
 			//return this.protocol.send(response);
 			//return this.send( context, this.protocol.send(response) );	
-		};
+		}
 
 		onPublish (message){
 			var client = this.connections.getClient(message.clientId);
@@ -523,11 +499,11 @@ nodefony.registerService("realTime", function(){
 				var error = this.protocol.errorResponse(404, message.subscription+","+message.id, "Unknown Channel" );
 				return this.protocol.publishResponse(message.subscription, message.id, error );
 			}	
-		};
+		}
 
 		onError ( error, connection){
 			return this.send(connection, this.protocol.close( error) );
-		};
+		}
 
 		handleConnection (message, context){
 			switch(context.type){
@@ -624,7 +600,7 @@ nodefony.registerService("realTime", function(){
 				default :
 					throw new Error ("BAYEUX message bad format ");
 			}
-		};
+		}
 
 		send ( connection, message){
 			//console.log("SEND :   "+ message)
@@ -645,7 +621,7 @@ nodefony.registerService("realTime", function(){
 			}catch(e){
 				this.logger(e,"ERROR")
 			}
-		};
+		}
 	};
 
 	return realTime;

@@ -15,10 +15,10 @@ nodefony.registerBundle ("{{name}}", function(){
 	 */
 	var {{name}} = class {{name}}  extends nodefony.Bundle {
 
-		constructor (kernel, container){
+		constructor (name, kernel, container){
 
 			// Mother Class constructor 
-			super( kernel, container );
+			super( name, kernel, container );
 
 			// Load core bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");

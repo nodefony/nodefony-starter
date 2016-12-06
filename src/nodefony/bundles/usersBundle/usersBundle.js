@@ -12,9 +12,9 @@ nodefony.registerBundle ("users", function(){
 	 *	
 	 */
 	var users = class  users extends nodefony.Bundle{
-		constructor(kernel, container){
+		constructor(name, kernel, container){
 
-			super(kernel, container);
+			super(name, kernel, container);
 			// load bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");
 

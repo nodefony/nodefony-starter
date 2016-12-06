@@ -16,18 +16,19 @@ nodefony.registerService("less", function(){
 
 	//less.logger.addListener(
 
-	var Less = class Less {
+	var Less = class Less extends nodefony.Service {
 
 		constructor (kernel, container){
+
+			super("less", container, container.get("notificationsCenter") );
+
 			this.engine = require("less");	
 			this.kernel = kernel ;
-			this.syslog = this.container.get("syslog") ;
 			this.environment = this.kernel.environment ;
 			this.filesLess = [];
 			this.hasLess = false ;
-			this.name = "LESS" ;
 
-			this.kernel.listen(this, "onBoot", () => {
+			this.listen(this, "onBoot", () => {
 				this.settings = container.getParameters("bundles.assetic").less;
 				for (var bundle in this.kernel.bundles ){
 					try {

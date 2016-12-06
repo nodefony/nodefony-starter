@@ -19,9 +19,9 @@ nodefony.registerBundle ("monitoring", function(){
 	 */
 	var monitoring = class monitoring extends nodefony.Bundle {
 
-		constructor( kernel, container ){
+		constructor(name, kernel, container ){
 
-			super(kernel, container);
+			super(name, kernel, container);
 
 			// load bundle library 
 			//this.autoLoader.loadDirectory(this.path+"/core");

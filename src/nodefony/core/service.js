@@ -14,6 +14,7 @@ nodefony.register("Service", function(){
 		constructor(name, container, notificationsCenter, options ){
 
 			this.name = name ;
+
 			if ( container instanceof nodefony.Container  ){
 				this.container = container ;
 			}else{
@@ -51,9 +52,8 @@ nodefony.register("Service", function(){
 		}
 	
 		logger(pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = this.name + " "; }
-			return syslog.logger(pci, severity, msgid,  msg);	
+			return this.syslog.logger(pci, severity, msgid,  msg);	
 		}
 
 		/**
@@ -95,6 +95,18 @@ nodefony.register("Service", function(){
 			if (this.container)
 				return this.container.set(name, obj);
 			return null;
+		}
+
+		getParameters (){
+			return this.container.getParameters.apply(this.container , arguments);
+		}
+
+		setParameters (){
+			return this.container.setParameters.apply(this.container ,arguments);
+		}
+
+		has (){
+			return this.container.has.apply(this.container ,arguments);	
 		}
 	}
 

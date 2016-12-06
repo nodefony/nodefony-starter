@@ -148,7 +148,7 @@ nodefony.register("injection", function(){
         	};
 
 		var reg = /constructor\s*\((.*)\)/ ;
-		var reg2 = /function\s*\((.*)\)/ ;
+		//var reg2 = /function\s*\((.*)\)/ ;
    	    	var getArguments = function() {
 			var str = this.toString() ;
 			var m = str.match(reg);
@@ -158,6 +158,7 @@ nodefony.register("injection", function(){
    	        		return m.split(',');
 			}else{
 				// case function 
+				var reg2 = new RegExp(this.name+"\s*\((.*)\)");
 				m = str.match( reg2 ) ;
 				if ( m ){
 					m = m[1].replace(/\s*/g, '');
@@ -203,6 +204,7 @@ nodefony.register("injection", function(){
  	 *
  	 */
 	const Injection = class Injection {
+
 		constructor (container){
 			
 			this.container = container;

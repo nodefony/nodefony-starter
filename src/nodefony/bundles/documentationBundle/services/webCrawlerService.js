@@ -168,30 +168,30 @@ nodefony.registerService("webCrawler", function(){
 		
 	}
 
-	var webCrawler = class webCrawler {
+	var webCrawler = class webCrawler extends nodefony.Service {
+
 		constructor (container, kernel){
-			this.container = container ;
+
+			super("webCrawler", container, container.get("notificationsCenter") );
+
 			this.kernel = kernel ;
-			this.syslog = this.container.get("syslog");
 			this.crawled = {};
 			this.elastic = null ;
 		
-			this.kernel.listen(this, "onReady", () => {
+			this.listen(this, "onReady", () => {
 				this.elastic = this.kernel.getBundle("documentation").elastic;
 			})	
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			//var syslog = this.container.get("syslog");
 			if (! msgid) msgid = "SERVICE WEB CRAWLER";
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
-
-
+		}
 
 		siteAll (urlBase, search ,context, callback ){
 
-			console.log(urlBase)
+			//console.log(urlBase)
 			var recurse = 0 ;
 			var Link = url.parse(urlBase);
 

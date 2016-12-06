@@ -127,15 +127,18 @@ nodefony.register("Bundle", function(){
 	/*
  	 *	BUNDLE CLASS
  	 */
-	var Bundle = class Bundle {
+	var Bundle = class Bundle extends nodefony.Service {
 
-		constructor (kernel , container){
+		constructor (name , kernel , container){
+
+			super( name, container );
+			
 			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG","KERNEL");
 			this.kernel = kernel ;
-			this.notificationsCenter = nodefony.notificationsCenter.create();
+			//this.notificationsCenter = nodefony.notificationsCenter.create();
 			this.waitBundleReady = false ;
 			this.locale = this.kernel.settings.system.locale ;
-			this.container = container ;
+			//this.container = container ;
 			var config = this.container.getParameters("bundles."+this.name) ;
 			if ( ! config ){
 				this.container.setParameters("bundles."+this.name, {});
@@ -215,19 +218,10 @@ nodefony.register("Bundle", function(){
 			}
 		}
 
-		listen (){
-			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
-		}
-
-		fire (ev){
-			this.logger(ev, "DEBUG", "EVENT BUNDLE "+this.name+"\x1b[0m");
-			return this.notificationsCenter.fire.apply(this.notificationsCenter, arguments);
-		}
-
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
+			//var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = "BUNDLE "+this.name.toUpperCase(); }
-			return syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
 		loadFile (path, force){
@@ -641,29 +635,6 @@ nodefony.register("Bundle", function(){
 			}
 			return null ;
 		}
-
-		get (name){
-                	if (this.container){
-                        	return this.container.get(name);
-			}
-                	return null;
-        	}
-
-        	set (name, obj){
-                	if (this.container){
-                        	return this.container.set(name, obj);
-			}
-                	return null;
-        	}
-
-		getParameters (){
-			return this.container.getParameters.apply(this.container , arguments);
-		}
-
-		setParameters (){
-			return this.container.setParameters.apply(this.container ,arguments);
-		}
-
 	};
 
 	return Bundle;

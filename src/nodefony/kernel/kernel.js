@@ -397,10 +397,10 @@ nodefony.register("kernel", function(){
 				if (Class) {
 					if (typeof Class === "function" ){
 						Class.prototype.path = file.dirName;
-						Class.prototype.name = name;
+						//Class.prototype.name = name;
 						Class.prototype.autoLoader = this.autoLoader;
-						Class.prototype.container = this.container;
-						this.bundles[name] = new Class( this, this.container);
+						//Class.prototype.container = this.container;
+						this.bundles[name] = new Class( name, this, this.container);
 						if ( this.bundles[name].waitBundleReady ){
 							this.eventReadywait += 1 ;
 							this.bundles[name].listen(this,"onReady", waitingBundle);
@@ -452,16 +452,16 @@ nodefony.register("kernel", function(){
          	*/	
 		initApplication (){
 			var App = class App extends nodefony.Bundle {
-				constructor (myKernel, myContainer){
-					super(myKernel, myContainer);
+				constructor (name, myKernel, myContainer){
+					super(name, myKernel, myContainer);
 				}
 			};
 			App.prototype.path = this.appPath ;
-			App.prototype.name = "App";
+			//App.prototype.name = "App";
 			App.prototype.autoLoader = this.autoLoader;
-			App.prototype.container = this.container;
+			//App.prototype.container = this.container;
 			//var func = App.herite(nodefony.Bundle);
-			this.bundles.App = new App(this, this.container);
+			this.bundles.App = new App("App", this, this.container);
 			//this.logger("\033[32m INITIALIZE APPLICATION   \033[0m","DEBUG");
 			this.readConfigDirectory(this.appPath+"config", (result) => {
 				if (result){

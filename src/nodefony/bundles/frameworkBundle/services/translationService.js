@@ -60,19 +60,22 @@ nodefony.registerService("translation", function(){
 
 	var reg = /^(..){1}_?(..)?$/;
 
-	var i18n = class i18n {
+	var i18n = class i18n extends nodefony.Service {
 
 		constructor ( container, type ){
-			this.container = container;
-			this.kernel = this.container.get("kernel");
+
+			super("translation", container, container.get("notificationsCenter") );
+
+			//this.container = container;
+			this.kernel = this.get("kernel");
 			
 			this.defaultLocale = null ;
-			if (this.container.has("translation") ){
-				this.defaultLocale = this.container.get("translation").defaultLocale ;
+			if (this.has("translation") ){
+				this.defaultLocale = this.get("translation").defaultLocale ;
 			}
 			this.requestType = type; 
-			this.engineTemplate = this.container.get("templating");
-			this.container.setParameters("translate", translate);
+			this.engineTemplate = this.get("templating");
+			this.setParameters("translate", translate);
 			this.defaultDomain = "messages"; 
 			//console.log(this.container.parameters.__proto__);
 			//console.log(this.container.getParameters("kernel"));
@@ -92,18 +95,18 @@ nodefony.registerService("translation", function(){
 		}
 
 		boot (){
-			this.defaultLocale = this.container.getParameters("kernel.system.locale"); 
+			this.defaultLocale = this.getParameters("kernel.system.locale"); 
 			this.engineTemplate.extendFunction("getLangs", this.getLangs.bind(this));
 
-		 	this.kernel.listen(this, "onBoot", function(){
-				var dl =  this.container.getParameters("bundles.App").App.locale;
+		 	this.listen(this, "onBoot", () => {
+				var dl =  this.getParameters("bundles.App").App.locale;
 				if (dl  ){
 				//if (dl && dl !== this.defaultLocale ){
 					this.defaultLocale = dl ; 
 				}
 					this.getFileLocale(dl);
-				this.kernel.logger("default Local APPLICATION ==> " + this.defaultLocale ,"DEBUG");
-		 	}.bind(this));
+				this.logger("default Local APPLICATION ==> " + this.defaultLocale ,"DEBUG");
+		 	});
 
 			translate[this.defaultLocale] = {};
 			
@@ -111,7 +114,7 @@ nodefony.registerService("translation", function(){
 
 		trans (value, args){
 			try {
-				var str = this.container.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value) || value;
+				var str = this.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value) || value;
 				//console.log("translate."+this.defaultLocale+"."+this.defaultDomain+"."+value);
 				if (args){
 					if (args[0]){
@@ -122,8 +125,7 @@ nodefony.registerService("translation", function(){
 					var domain = args[1] ? this.trans_default_domain( args[1]) : null ;		
 				}
 			}catch (e){
-				this.kernel.logger("TRANSALTION : ", "ERROR");
-				this.kernel.logger(e,"ERROR");
+				this.logger(e,"ERROR");
 				return value ;
 			}
 			return str;
@@ -159,12 +161,12 @@ nodefony.registerService("translation", function(){
 
 		getLang (context){
 			if ( ! context.session ){
-				var Lang = this.container.getParameters("query.request").lang 
+				var Lang = this.getParameters("query.request").lang 
 				if ( Lang ){
 					this.defaultLocale = Lang;	
 				}
 			}else{
-				var queryGetlang = this.container.getParameters("query.request").lang ;
+				var queryGetlang = this.getParameters("query.request").lang ;
 				if (context.user){
 					if ( queryGetlang ){
 						var Lang  = queryGetlang ;
@@ -184,10 +186,10 @@ nodefony.registerService("translation", function(){
 				}
 				context.session.set("lang",this.defaultLocale );
 			}
-			if ( ! this.container.getParameters("translate."+this.defaultLocale)   ){
+			if ( ! this.getParameters("translate."+this.defaultLocale)   ){
 				this.getFileLocale(this.defaultLocale);
 			}else{
-				if ( ! this.container.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain) ){
+				if ( ! this.getParameters("translate."+this.defaultLocale+"."+this.defaultDomain) ){
 					this.getFileLocale(this.defaultLocale);	
 				}
 			}

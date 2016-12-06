@@ -300,22 +300,23 @@ nodefony.registerService("serverLoad", function(){
 	};
 
 	// service
-	var serverLoad = class serverLoad {
+	var serverLoad = class serverLoad extends nodefony.Service {
 
 		constructor( container, kernel){
-			this.container = container ;
+
+			super( "serverLoad", container, container.get("notificationsCenter") )
 			this.kernel = kernel ;
-			this.name ="serverLoad" ;
 			this.connections = {} ;
 			this.userAgent = "nodefony/"+ this.kernel.settings.system.version +" ("+process.platform+";"+process.arch+") V8/" +process.versions.v8 +" node/"+process.versions.node;
 		};
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "\x1b[34m SERVICE SERVER LOAD \x1b[0m";
-			if ( this.realTime )
-				this.realTime.logger(pci, severity,msgid);
-			else
-				this.kernel.logger(pci, severity,msgid);
+			if ( this.realTime ){
+				return this.realTime.logger(pci, severity,msgid);
+			}else{
+				return this.kernel.logger(pci, severity,msgid);
+			}
 		};
 
 		handleConnection (message , context){

@@ -12,9 +12,9 @@ nodefony.registerBundle ("assetic", function(){
 
 	var assetic = class assetic extends nodefony.Bundle {
 
-		constructor (kernel, container){
+		constructor (name, kernel, container){
 			
-			super( kernel, container );
+			super(name, kernel, container );
 
 			// load bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");
@@ -31,7 +31,7 @@ nodefony.registerBundle ("assetic", function(){
 			this.environment = this.kernel.environment ;
 			this.debug = this.kernel.debug ;
 			this.kernelType  =  kernel.type ;
-		};
+		}
 
 		generateFileName (files){
 			var ino ="";

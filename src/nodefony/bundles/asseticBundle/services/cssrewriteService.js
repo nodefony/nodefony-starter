@@ -10,12 +10,11 @@
 nodefony.registerService("cssrewrite", function(){
 
 
-	var cssrewrite = class cssrewrite {
+	var cssrewrite = class cssrewrite extends nodefony.Service{
 		constructor (kernel, container){
 
+			super("cssrewrite", container , container.get("notificationsCenter") );
 			this.kernel = kernel ;
-			this.container = container ;
-			this.name = "cssrewrite";
 		
 		}
 
@@ -55,7 +54,7 @@ nodefony.registerService("cssrewrite", function(){
 					throw  new Error("Service  cssrewrite FILTER bad path type  ");
 				
 			}
-		};
+		}
 	};
 
 	return cssrewrite ;

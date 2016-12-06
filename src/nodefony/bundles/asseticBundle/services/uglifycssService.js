@@ -10,13 +10,13 @@
 nodefony.registerService("uglifycss", function(){
 
 
-	var uglifyjs2 = class uglifyjs2 {
-		constructor (kernel, container){
+	var uglifyjs2 = class uglifyjs2 extends nodefony.Service {
 
+		constructor (kernel, container){
+			
+			super( "uglifycss" ,container, container.get("notificationsCenter") );
 			this.kernel = kernel ;
-			this.container = container ;
 			this.engine = require("uglifycss") ;
-			this.name = "uglifycss";
 		
 		}
 
