@@ -167,13 +167,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 			delete 	this.request ;
 			this.response.clean();
 			delete 	this.response ;
-			delete  this.notificationsCenter ;
+			//delete  this.notificationsCenter ;
 			delete  this.session ;
 			delete  this.cookies ;
 			if (this.proxy) delete this.proxy ;
 			if (this.user)  delete this.user
 			if (this.security ) delete this.security ;
-			delete this.container ;
+			//delete this.container ;
+			super.clean();
 			//if (this.profiling) delete context.profiling ;
 		}
 

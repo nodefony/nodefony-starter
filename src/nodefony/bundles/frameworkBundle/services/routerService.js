@@ -121,21 +121,24 @@ nodefony.registerService("router", function(){
  	 *
  	 */
 	var regAction =/^(.+)Action$/; 
-	nodefony.Resolver  = class Resolver { 
+	nodefony.Resolver  = class Resolver extends nodefony.Service { 
+
 		constructor (container, router){
-			this.container = container;
+
+			super("resolver" , container, container.get("notificationsCenter") ) ;
+			//this.container = container;
 			this.router = router ;
 			this.resolve = false;
 			this.kernel = this.container.get("kernel");
 			this.defaultAction = null;
 			this.defaultView = null;
 			this.variables = new Array();
-			this.notificationsCenter = this.container.get("notificationsCenter") ;
+			//this.notificationsCenter = this.container.get("notificationsCenter") ;
 			this.context = this.container.get("context") ;
 			this.defaultLang= null ;
 			this.bypassFirewall = false ;
 			
-		};
+		}
 
 		match (route, context){
 			try {
@@ -153,11 +156,11 @@ nodefony.registerService("router", function(){
 			}catch(e){
 				throw e ;
 			}
-		};
+		}
 
 		getRoute (){
 			return this.route ;
-		};
+		}
 
 		getAction (name){
 			var obj = Object.getOwnPropertyNames(this.controller.prototype) ; 
@@ -173,7 +176,7 @@ nodefony.registerService("router", function(){
 				}
 			}
 			return null;
-		};
+		}
 
 		parsePathernController (name){
 			var tab = name.split(":")
@@ -200,13 +203,13 @@ nodefony.registerService("router", function(){
 			}else{
 				throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
 			}
-		};
+		}
 		
 		getDefaultView (controller, action){
 			//FIXME .html ???
 			var res = this.bundle.name+"Bundle"+":"+controller+":"+action+".html."+this.container.get("templating").extention;
 			return res ; 	
-		};
+		}
 		
 		getController (name){
 			if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name].controllers[name]){
@@ -215,12 +218,13 @@ nodefony.registerService("router", function(){
 			}
 			return this.bundle.controllers[name];
 			
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVICE RESOLVER";
-			return this.router.syslog.logger(pci, severity, msgid,  msg);
-		};
+			//return this.router.syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
+		}
 
 		callController (data){
 			try {
@@ -262,7 +266,7 @@ nodefony.registerService("router", function(){
 			}catch(e){
 				throw e;
 			}
-		};
+		}
 	};
 
 	

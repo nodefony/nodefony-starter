@@ -12,6 +12,7 @@ nodefony.register("Service", function(){
 	const Service = class Service {
 	
 		constructor(name, container, notificationsCenter, options ){
+
 			this.name = name ;
 			if ( container instanceof nodefony.Container  ){
 				this.container = container ;
@@ -40,6 +41,13 @@ nodefony.register("Service", function(){
 				this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
 				this.set("notificationsCenter", this.notificationsCenter);	
 			}	
+		}
+
+		clean(){
+			delete this.settingsSyslog ;
+			delete this.syslog ;
+			delete this.notificationsCenter;
+			delete this.container
 		}
 	
 		logger(pci, severity, msgid,  msg){

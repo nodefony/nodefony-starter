@@ -11,10 +11,12 @@
 nodefony.register("templates", function(){
 
 	// TODO wrapper engine
-	var Template = class Template{
+	var Template = class Template extends nodefony.Service {
 
 		constructor (container, engine, options){
-			this.container = container;
+				
+			super("templates", container , container.get("notificationsCenter") );
+
 			this.settings = options;
 			this.engine = engine;
 		}
@@ -32,9 +34,9 @@ nodefony.register("templates", function(){
 		};
 
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
+			//var syslog = this.container.get("syslog");
 			if (! msgid) msgid = "TEMPLATE ";
-			return syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 	};
 

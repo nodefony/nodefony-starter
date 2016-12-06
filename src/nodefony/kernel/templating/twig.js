@@ -28,7 +28,7 @@ nodefony.registerTemplate("twig", function(){
 			container.set("Twig" , this);
 			this.version = twig.VERSION ;
 			this.name = "Twig" ;
-		};
+		}
 
 		renderFile (file, option, callback){
 			if (! option) var option = {};
@@ -43,7 +43,7 @@ nodefony.registerTemplate("twig", function(){
 			}catch(e){
 				callback(e, null);
 			}
-		};
+		}
 
 		render (view, param){
 			var Render = this.compile(view)
@@ -53,7 +53,7 @@ nodefony.registerTemplate("twig", function(){
 			}catch(e){
 				throw e ;
 			}
-		};
+		}
 		
 		compile ( file , callback){
 			return this.engine.twig({
@@ -69,15 +69,15 @@ nodefony.registerTemplate("twig", function(){
 					callback(error, null)
 				}
 			})
-		};
+		}
 
 		extendFunction (){
 			return twig.extendFunction.apply(twig, arguments)
-		};
+		}
 
 		extendFilter (){
 			return twig.extendFilter.apply(twig, arguments)
-		};
+		}
 
 	};
 

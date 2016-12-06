@@ -149,7 +149,6 @@ nodefony.register("console", function(){
 				},
 				syslog:settingsSysLog
 			});
-			this.initializeLog(settingsSysLog);
 
 			this.commands = {};
 			this.getOptsTab = [];
@@ -192,7 +191,6 @@ nodefony.register("console", function(){
 			if (! msgid) msgid = "CONSOLE "
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		};
-
 
 		/**
 	 	*	register Bundle 
