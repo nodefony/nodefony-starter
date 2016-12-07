@@ -107,7 +107,7 @@ $ make kill
 
 Access to App with URL : http://localhost:5151
 
-[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/dev/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
+[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
 Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/src/nodefony/config/config.yml)**  if you want change httpPort, domain server, locale ...
@@ -120,7 +120,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "2.0.0-ES6-beta"
+  		version:                      "2.0.1-beta"
 		domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )
 		domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space
   		httpPort:                     5151
