@@ -1,15 +1,16 @@
 var Mocha = require('mocha') ;
 
-
 nodefony.registerService("unitTest", function(){
 
 
 	var regFile = /^(.*)Test\.js$/;
 
 
-	var service = class service {
+	var test = class test extends nodefony.Service {
 
 		constructor (kernel, options){
+
+			super("unitTest", kernel.container, kernel.notificationsCenter ) ;
 			this.kernel = kernel ;
 			this.bundles = kernel.bundles; 
 
@@ -31,7 +32,7 @@ nodefony.registerService("unitTest", function(){
 		}
 
 		mochaRunTest (callback){
-			return this.mocha.run(  callback )
+			return this.mocha.run( callback )
 		}
 
 		getBundlesTestFiles ( bundleName, testName, tests){
@@ -54,7 +55,7 @@ nodefony.registerService("unitTest", function(){
 					}
 				}
 			}
-		};
+		}
 
 		getNodefonyTestFiles ( testName, tests){
 			var finder = new nodefony.finder( {
@@ -75,9 +76,9 @@ nodefony.registerService("unitTest", function(){
 					}
 				}
 			}
-		}; 
+		} 
 	}; 
 
-	return service ;
+	return test ;
 });
 

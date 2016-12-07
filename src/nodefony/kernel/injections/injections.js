@@ -203,14 +203,16 @@ nodefony.register("injection", function(){
  	 *
  	 *
  	 */
-	const Injection = class Injection {
+	const Injection = class Injection extends nodefony.Service {
 
 		constructor (container){
 			
-			this.container = container;
+			super("injection",container, container.get("notificationsCenter") );
+
+			//this.container = container;
 			this.kernel = this.container.get('kernel');
 			this.reader = function(context){
-				var func = context.container.get("reader").loadPlugin("injection", pluginReader);
+				var func = context.get("reader").loadPlugin("injection", pluginReader);
 				return function(result, parser){
 					return func(result, context.nodeReader.bind(context), parser);
 				};
@@ -220,8 +222,8 @@ nodefony.register("injection", function(){
 		nodeReader (jsonServices){
 			var services = {};
 			for(var lib in jsonServices){
-				if(jsonServices[lib].class) {
-					services[lib] = this.set(lib, jsonServices[lib]);
+				if( jsonServices[lib].class ) {
+					services[lib] = this.setService(lib, jsonServices[lib]);
 					this.startService(lib, services[lib] );
 				}
 			}
@@ -251,11 +253,11 @@ nodefony.register("injection", function(){
 					if(service.properties){
 						for(var p in service.properties){
 							if(service.properties[p][0] === '@'){
-								context[p] = this.container.get(service.properties[p].substring(1));
+								context[p] = this.get(service.properties[p].substring(1));
 							}
 						}
 					}
-					this.container.set( name, context );
+					this.set( name, context );
 					var funclog = name + ( myOrder !== "false" ? '( '+myOrder  +' )' : '()' );
 					this.logger('START SERVICE ' +funclog, 'DEBUG');
 				}
@@ -272,7 +274,7 @@ nodefony.register("injection", function(){
 						case '@':
 							try{
 								var name = injections[elm].substring(1);
-								var service = this.container.get(name);
+								var service = this.get(name);
 								params[name] = service;
 							}catch(e) {
 								//this.logger('Instance service (' + name + ') doesn\'t exist !!!');
@@ -285,32 +287,18 @@ nodefony.register("injection", function(){
 		}
 
 		logger (pci, severity, msgid,  msg){
-			var syslog = this.container.get("syslog");
+			//var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = "SERVICE INJECTION";}
-			return syslog.logger(pci, severity, msgid,  msg);
+			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
-		set (name, service){
+		setService (name, service){
 			var Class = nodefony.services[service.class[0]];
 			if (! Class) { throw new Error("Service Name "+ name +" class not found");}
 			var order = prepareExec.getArguments.call(Class);
 			if( order[0] === "" ) { order = false; }
 			if(Class){
-				Class.prototype.name = name;
-				Class.prototype.container = this.container;
-				Class.prototype.get = function(name){
-					if (this.container){
-						return this.container.get(name);
-					}
-					return null;
-				};
-				Class.prototype.set = function(name, obj){
-					if (this.container){
-						return this.container.set(name, obj);
-					}
-					return null;
-				};
-				return this.container.setParameters("services." + name, {
+				return this.setParameters("services." + name, {
 					class: Class,
 					name:name,
 					orderArguments: order,
