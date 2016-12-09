@@ -223,7 +223,9 @@ nodefony.register("console", function(){
 						onFinish:callbackFinish || this.initializeBundles.bind(this)
 					});
 				}catch(e){
-					console.log(e)
+					for( let i=0 ; i < path.length ; i++){
+						this.logger("registerBundles in appkernel.js : " + path[i] ,"INFO");
+					}
 					this.logger(e, "ERROR");
 				}
 			}

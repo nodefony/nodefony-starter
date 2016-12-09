@@ -441,7 +441,7 @@ nodefony.registerService("firewall", function(){
 						 					if (error){
 												throw error ;
 						 					}
-											this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+											//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
 											try {
 												return this.handlerHttp(context, request, response, session);
 											}catch(error){
@@ -491,7 +491,7 @@ nodefony.registerService("firewall", function(){
 						 				if (err){
 											throw err ;
 						 				}
-										this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+										//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
 										try {
 											return this.handlerHttp(context, request, response, session);
 										}catch(error){

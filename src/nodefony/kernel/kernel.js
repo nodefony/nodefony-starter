@@ -427,6 +427,7 @@ nodefony.register("kernel", function(){
 						onFile:(file) => {
 							if (file.matchName(this.regBundle) ){
 								try {
+									this.logger("registerBundles in appkernel.js : " + file.name ,"DEBUG","APP KERNEL")
 									this.loadBundle(file);
 								}catch(e){
 									this.logger(e);
@@ -436,7 +437,10 @@ nodefony.register("kernel", function(){
 						onFinish:callbackFinish || this.initializeBundles.bind(this)
 					});
 				}catch(e){
-					this.logger(e);
+					for( let i=0 ; i < path.length ; i++){
+						this.logger("registerBundles in appkernel.js : " + path[i] ,"DEBUG");
+					}
+					this.logger(e, "ERROR");
 				}
 			};
 			if ( nextick === undefined ){
