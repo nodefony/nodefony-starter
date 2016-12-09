@@ -1,19 +1,21 @@
-"ignore": [
-    "**/node_modules/**",
-    "**/public/**",
-    "**/experimental/**",
-    "**/config/**",
-    "**/vendors/**",
-    "**/web/**",
-    "**/doc/**",
-    "**/images/**",
-    "**/translations/**"
-],
-"test": [
-    "**/test/**",
-    "**/tests/**"
-],
-"dependencies": {
-    "unused-ignores": [
-    ]
-  }
+{
+	"ignore": [
+		"**/node_modules/**",
+		"**/public/**",
+		"**/experimental/**",
+    		"**/config/**",
+    		"**/vendors/**",
+    		"**/web/**",
+    		"**/doc/**",
+    		"**/images/**",
+    		"**/translations/**"
+	],
+	"test": [
+		"**/test/**",
+		"**/tests/**"
+	],
+	"dependencies": {
+		"unused-ignores": [
+		]
+	}
+}
