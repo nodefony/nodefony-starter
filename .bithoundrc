@@ -16,6 +16,12 @@
 	],
 	"dependencies": {
 		"unused-ignores": [
+		],
+		"mute": [
+			"connect"
 		]
+	},
+	"critics": {
+		"wc": { "limit": 5000 }
 	}
 }
