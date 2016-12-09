@@ -28,7 +28,7 @@
 #
 name:                           "NODEFONY"
 system:
-  version:                      "2.0.1-beta"
+  version:                      "2.0.2-beta"
   domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
   httpPort:                     5151

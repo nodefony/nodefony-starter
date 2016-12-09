@@ -27,7 +27,8 @@ locale :			en_en
 debugBar:                       true
 
 storage:
-  requests:                     orm           # syslog    
+  active:                     true                      
+  requests:                   orm           # syslog    
 
 realTimeBundle:
   services:

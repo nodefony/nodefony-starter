@@ -168,7 +168,6 @@ nodefony.registerService("httpKernel", function(){
 				}	
 			}
 			//console.log( "portOrigin ::::" + portOrigin )
-			//console.log( context.proxy )
 			if (  context.proxy  ){
 				requestProto = context.proxy.proxyProto ;	
 				requestPort =	context.proxy.proxyPort;	
@@ -207,7 +206,6 @@ nodefony.registerService("httpKernel", function(){
 			if (requestPort != portOrigin  ){
 				return true ;
 			}
-			
 			return false ;
 		}
 		
@@ -391,25 +389,7 @@ nodefony.registerService("httpKernel", function(){
 							domain = null ;
 						}
 					});
-
-					// PROXY
-					if ( request.headers["x-forwarded-for"] ){
-						if ( request.headers["x-forwarded-proto"] ){
-							context.type = request.headers["x-forwarded-proto"].toUpperCase();
-						}
-						context.proxy = {
-							proxyServer	: request.headers["x-forwarded-server"],	
-							proxyProto	: request.headers["x-forwarded-proto"],
-							proxyPort	: request.headers["x-forwarded-port"],
-							proxyFor	: request.headers["x-forwarded-for"],
-							proxyHost	: request.headers["x-forwarded-host"],	
-							proxyVia	: request.headers["via"] 
-						}
-						this.logger( "PROXY REQUEST x-forwarded VIA : " + context.proxy.proxyVia , "DEBUG");
-					}
-
-					context.crossDomain = context.isCrossDomain() ;
-
+					
 					//twig extend context
 					context.extendTwig = {
 						nodefony:{
@@ -494,11 +474,8 @@ nodefony.registerService("httpKernel", function(){
 							//domain.destroy() ;
 							domain = null ;
 						}
-
 					});
-
-					context.crossDomain = context.isCrossDomain() ;
-
+					
 					//twig extend context
 					context.extendTwig = {
 						nodefony:{

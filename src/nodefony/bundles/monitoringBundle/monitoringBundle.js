@@ -1,5 +1,5 @@
 try {
-	const Git = require("nodegit");
+	var Git = require("nodegit");
 }catch(e){
 	console.log(e);
 }
@@ -35,6 +35,7 @@ nodefony.registerBundle ("monitoring", function(){
 			this.infoKernel = {};
 			this.infoBundles = {};
 			
+			// MANAGE GIT
 			this.gitInfo = {} ;
 			try {
 				Git.Repository.open(this.kernel.rootDir).then( (repo) => {
@@ -43,9 +44,9 @@ nodefony.registerBundle ("monitoring", function(){
 					});	
 				})
 			}catch(e){
+				this.logger(e, "WARNING");
 				this.gitInfo["currentBranch"] = null ;	
 			}
-
 
 			this.kernel.listen(this, "onPreBoot", (kernel) => {
 
@@ -79,7 +80,7 @@ nodefony.registerBundle ("monitoring", function(){
 
 			this.kernel.listen(this, "onPostReady", (kernel) => {
 
-				if ( this.settings.storage ){
+				if ( this.settings.storage.active ){
 					this.storageProfiling = this.settings.storage.requests ;
 				}else{
 					this.storageProfiling = null ;	
@@ -228,9 +229,12 @@ nodefony.registerBundle ("monitoring", function(){
 			this.kernel.listen(this, "onRequest",(context) => {
 
 				context.profiling = null ;
+				context.storage = this.isMonitoring(context) ;
 
-				if ( ! this.isMonitoring(context) ){
-					return ;
+				if ( ! context.storage  ){
+					if ( ! this.settings.debugBar ){
+						return ;
+					}
 				}
 
 				try {
@@ -460,11 +464,49 @@ nodefony.registerBundle ("monitoring", function(){
 								"content-type":response.response.getHeader('content-type'),
 								headers:response.response._headers	
 							}
-							this.saveProfile(context, (error, res) => {
-								if (error){
-									this.kernel.logger(error);
-								}
+							if ( context.storage ){
+								this.saveProfile(context, (error, res) => {
+									if (error){
+										this.kernel.logger(error);
+									}
 
+									if ( ! context.timeoutExpired  ){
+
+										if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
+											var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
+											if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
+												this.templating.renderFile(View, context.profiling,function(error , result){
+													if (error){
+														throw error ;
+													}
+													response.body = response.body.replace("</body>",result+"\n </body>") ;
+												});
+											}else{
+												//context.setXjson(context.profiling);
+											}
+										}else{
+											//context.setXjson(context.profiling);	
+										}
+									}
+
+									/*
+ 	 						 		*  WRITE RESPONSE
+ 	 						 		*/  
+									if ( context && context.response ){
+										context.response.write();
+										// END REQUEST
+										return context.close();
+
+									}
+									if ( error ){
+										throw new Error ("MONITORING CAN SAVE REQUEST") ;
+									}
+									if ( ( ! context ) ||  ( ! context.response ) )
+										throw new Error ("MONITORING REQUEST ALREADY SENDED !!! ") ;	
+
+									
+								});
+							}else{
 								if ( ! context.timeoutExpired  ){
 
 									if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
@@ -483,24 +525,7 @@ nodefony.registerBundle ("monitoring", function(){
 										//context.setXjson(context.profiling);	
 									}
 								}
-
-								/*
- 	 						 	*  WRITE RESPONSE
- 	 						 	*/  
-								if ( context && context.response ){
-									context.response.write();
-									// END REQUEST
-									return context.close();
-
-								}
-								if ( error ){
-									throw new Error ("MONITORING CAN SAVE REQUEST") ;
-								}
-								if ( ( ! context ) ||  ( ! context.response ) )
-									throw new Error ("MONITORING REQUEST ALREADY SENDED !!! ") ;	
-
-								
-							});
+							}
 						})
 						
 						
@@ -559,33 +584,38 @@ nodefony.registerBundle ("monitoring", function(){
 								context.profiling["response"].message.length = 0 ;
 								context.profiling["response"].message.push( ele ) ;	
 							}
-						 	
-							this.updateProfile(context,(error, result) => {
-								if (error){
-									this.kernel.logger(error);
-								}
-							});
+							if ( context.storage ){	
+								this.updateProfile(context,(error, result) => {
+									if (error){
+										this.kernel.logger(error);
+									}
+								});
+							}
 						})
 						
 						context.listen(this, "onFinish", (Context, reasonCode, description ) => {
 							if ( context.profiling ){
 								context.profiling["response"].statusCode = context.connection.state  ;	
 							}
-							this.updateProfile(context, (error, result) => {
+							if ( context.storage ){
+								this.updateProfile(context, (error, result) => {
+									if (error){
+										this.kernel.logger(error);
+									}
+									if (context){
+										delete context.profiling ;	
+									}
+								});
+							}
+						});	
+
+						if ( context.storage ){
+							this.saveProfile(context, (error, result) => {
 								if (error){
 									this.kernel.logger(error);
 								}
-								if (context){
-									delete context.profiling ;	
-								}
 							});
-						});	
-
-						this.saveProfile(context, (error, result) => {
-							if (error){
-								this.kernel.logger(error);
-							}
-						});
+						}
 					break;
 				}
 
@@ -604,10 +634,10 @@ nodefony.registerBundle ("monitoring", function(){
 		}		
 
 		isMonitoring (context){
-			var stop = this.storageProfiling && this.settings.debugBar ;
+			/*var stop = this.storageProfiling && this.settings.debugBar ;
 			if( ! stop){
 				return false;
-			} 
+			} */
 
 			if ( ! context.resolver.route ){
 				return false ;
@@ -617,7 +647,7 @@ nodefony.registerBundle ("monitoring", function(){
 
 			if ( ! context.resolver.resolve )
 				return false;
-			return true ;
+			return this.settings.storage.active ;
 		}
 
 		updateProfile ( context , callback){

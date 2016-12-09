@@ -249,7 +249,6 @@
 			{% endif %}
 			<div class="details">
 				<ul>
-						
 					{% for key, value in request %}
 						{% if key == "url" %}
 							<li><label>URL</label><span style="font-size:15px" class="label label-default">{{value}}</span></li>
@@ -258,6 +257,7 @@
 							<li><label>Remote Address</label><span>{{value}}</span></li>
 							<li class="separator"></li>
 						{% endif %}
+							
 						{% if key == "headers" %}
 							{% if id %}
 								<li><label class="label" ><a style="color:#999" target="blank" href='{{path("monitoring-index")}}#/request/{{id}}'>SHOW HEADERS</a></label></li>
@@ -281,6 +281,16 @@
 							<li class="separator"></li>
 						{% endif %}
 					{% endfor %}
+
+					{% if proxy %}
+						<li class="separator"></li>
+						<li><label style="color:#999">PROXY</label></li>
+						<label class="label label-default" ></label>
+						{% for key, value in proxy %}
+							<li><label>{{ key  }}</label><span >{{value}}</span></li>
+						{% endfor %}
+					{% endif %}	
+
 					{% if session %}
 						<li class="separator"></li>
 						<li><label style="color:#999">SESSION</label> <label >{{session.name}}</label></li>

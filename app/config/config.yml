@@ -42,9 +42,10 @@ App:
 #
 monitoringBundle:
   debugBar:                     true
-  #storage:                      false
+  storage:
+    active:                     true                      
+    requests:                   orm
   
-
 #
 #       OVERRIDE BUNDLE REALTIME 
 #
@@ -84,7 +85,7 @@ httpBundle:
 
   upload:
     tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000               #en Bytes
+    #max_filesize:                 100000               #in Bytes
 
   session:
     start:                        autostart                      # false 
@@ -100,7 +101,6 @@ httpBundle:
     certificats:
       key:                        "config/certificates/serverKey.pem"
       cert:                       "config/certificates/serverCert.pem"
-
 
 #
 #       OVERRIDE BUNDLE ASSETIC

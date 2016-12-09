@@ -39,7 +39,7 @@ nodefony.registerService("http", function(){
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVICE HTTP ";
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		createZone (request, response){
 
@@ -94,7 +94,6 @@ nodefony.registerService("http", function(){
 					});	
 				}
 			})
-
 			
 			if (this.settings.timeout){
 				this.server.timeout = this.settings.timeout;

@@ -571,7 +571,6 @@ nodefony.registerService("firewall", function(){
 			}
 		}
 
-
 		setSessionStrategy (strategy){
 			if (strategy in optionStrategy ){
 				this.logger("Set Session Strategy  : " + strategy,"DEBUG")

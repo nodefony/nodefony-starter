@@ -20,9 +20,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			super ("httpContext", container);
 			this.type = type;
-		
 			this.protocol = ( type === "HTTPS" ) ? "https" : "http" ;
-
 			this.resolver = null ;
 			this.nbCallController = 0 ;
 			this.request = new nodefony.Request( request, container, type);
@@ -84,6 +82,24 @@ nodefony.register.call(nodefony.context, "http", function(){
 				} );	
 				//context.clean();
 			} );
+
+			//case proxy
+			this.proxy = null ;
+			if ( request.headers["x-forwarded-for"] ){
+				if ( request.headers["x-forwarded-proto"] ){
+					this.type = request.headers["x-forwarded-proto"].toUpperCase();
+				}
+				this.proxy = {
+					proxyServer	: request.headers["x-forwarded-server"],	
+					proxyProto	: request.headers["x-forwarded-proto"],
+					proxyPort	: request.headers["x-forwarded-port"],
+					proxyFor	: request.headers["x-forwarded-for"],
+					proxyHost	: request.headers["x-forwarded-host"],	
+					proxyVia	: request.headers["via"] 
+				}
+				this.logger( "PROXY REQUEST x-forwarded VIA : " + this.proxy.proxyVia , "DEBUG");
+			}
+			this.crossDomain = this.isCrossDomain() ;
 		};
 
 		isValidDomain (){
@@ -149,9 +165,9 @@ nodefony.register.call(nodefony.context, "http", function(){
  			 	*	NOT FOUND
  			 	*/
 				this.fire("onError", this.container, {
-							status:404,
-							error:"URI :" + request.url,
-							message:"not Found"
+					status:404,
+					error:"URI :" + request.url,
+					message:"not Found"
 				});
 			}catch(e){
 				/*
@@ -200,7 +216,10 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.response.writeHead();
 
 			this.fire("onSend", response, context);
-			if ( ! context.profiling ){
+			if (  ! context.storage ){
+				if ( context.profiling ){
+					this.fire("onSendMonitoring", response, context);	
+				}
 				/*
  	 			* WRITE RESPONSE
  	 			*/  

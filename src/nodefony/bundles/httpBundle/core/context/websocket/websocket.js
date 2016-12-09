@@ -72,7 +72,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.cookies = {};
 			this.domain =  this.getHostName();
 			this.validDomain = this.isValidDomain() ;
-			this.crossDomain = null ;  
 
 			this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
 				remoteAddress:this.remoteAddress,
@@ -106,11 +105,26 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 			this.connection.on('close', onClose.bind(this) ); 
 
+			//case proxy 
+			this.proxy = null ; 
+                        if ( this.request.httpRequest.headers["x-forwarded-for"] ){
+                                this.proxy = {
+                                        proxyServer     : this.request.httpRequest.headers["x-forwarded-server"],
+                                        proxyProto      : this.request.httpRequest.headers["x-forwarded-proto"],
+                                        proxyPort       : this.request.httpRequest.headers["x-forwarded-port"],
+                                        proxyFor        : this.request.httpRequest.headers["x-forwarded-for"],
+                                        proxyHost       : this.request.httpRequest.headers["x-forwarded-host"],
+                                        proxyVia        : this.request.httpRequest.headers["via"]
+                                }
+                                this.logger( "PROXY WEBSOCKET REQUEST x-forwarded VIA : " + this.proxy.proxyVia , "DEBUG");
+                        }
+			this.crossDomain = this.isCrossDomain() ;
+
 			/* // assembleFragments:false 
  		 	* this.connection.on('frame', function(webSocketFrame) {
 				console.log(webSocketFrame.binaryPayload.toString())
 			}.bind(this));*/
-		};
+		}
 
 		isValidDomain (){
 			return  this.kernelHttp.isValidDomain(   this );
@@ -122,28 +136,28 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 		getRemoteAddress (){
 			return this.remoteAddress ;
-		};
+		}
 
 		getHost (){
 			return this.request.httpRequest.headers['host'] ;
-		};
+		}
 
 		getHostName (){
 			return this.domain ; 
 			//return this.originUrl.hostname ;
-		};
+		}
 
 		getUserAgent (){
 			return this.request.httpRequest.headers['user-agent'] ;
-		};
+		}
 
 		getMethod (){
 			return "WEBSOCKET" ;
-		};
+		}
 
 		getUser (){
 			return this.user || null ; 	
-		};
+		}
 
 		addCookie (cookie){
 			if ( cookie instanceof nodefony.cookies.cookie ){
@@ -154,11 +168,11 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 					error:"Response addCookies not valid cookies"
 				}
 			}	
-		};
+		}
 
 		parseCookies (){
 			return  nodefony.cookies.cookiesParser(this);
-		};
+		}
 
 		clean (){
 			//delete this.request ;
@@ -196,7 +210,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				this.fire("onError", this.container, e);	
 			}	
 
-		};
+		}
 
 		handle (container, request, response, data){
 			this.container.get("translation").handle( this );
@@ -223,19 +237,18 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}catch(e){
 				this.fire("onError", this.container, e);	
 			}		
-
-		};
+		}
 
 		handleError (container, error){
 			return 	onClose.call(this, error.status, error.message );
 		
-		}; 
+		} 
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "REQUEST "+this.type ;
 			return this.syslog.logger(pci, severity, msgid,  msg);
 
-		};
+		}
 
 		send (data, type){
 			//console.log(this.response)
@@ -244,13 +257,13 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				return this.response.send(data || this.response.body, type)
 			}
 			return null ;
-		};
+		}
 	
 		close (reasonCode, description ){
 			if ( this.connection ){
 				this.connection.close(reasonCode, description);
 			}
-		};
+		}
 	};
 
 	return websocket 

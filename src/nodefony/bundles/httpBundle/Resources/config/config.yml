@@ -92,7 +92,7 @@ statics:
 
 session:
   start:                        "autostart"            #"autostart"
-  use_strict_mode:              true                    
+  use_strict_mode:              false                    
   name:                         "nodefony"
   handler:                      session.storage.files
   save_path:                    "/tmp/sessions"
