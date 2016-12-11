@@ -18,7 +18,7 @@ nodefony.registerBundle ("security", function(){
 
 			// load bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");
-		};
+		}
 	};
 	return security;
 });

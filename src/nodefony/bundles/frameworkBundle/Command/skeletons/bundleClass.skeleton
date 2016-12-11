@@ -30,10 +30,8 @@ nodefony.registerBundle ("{{name}}", function(){
 		 	*      this.waitBundleReady = true ; 
 		 	*/	
 			
-		};
-
+		}
 	};
-
 	return {{name}};
 });
 {% endblock %}

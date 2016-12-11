@@ -11,7 +11,8 @@ var Sequelize =require("sequelize");
 nodefony.registerEntity("requests", function(){
 
 
-	var requests = function(db, ormService){
+	var requests = function(db/*, ormService*/){
+
 		var model = db.define("requests", {
 				id		:	{type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
 				remoteAddress	:	{type:Sequelize.STRING },
@@ -43,5 +44,5 @@ nodefony.registerEntity("requests", function(){
 		entity:requests
 
 	};
-})
+});
 

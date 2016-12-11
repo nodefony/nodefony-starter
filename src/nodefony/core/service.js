@@ -48,7 +48,7 @@ nodefony.register("Service", function(){
 			delete this.settingsSyslog ;
 			delete this.syslog ;
 			delete this.notificationsCenter;
-			delete this.container
+			delete this.container;
 		}
 	
 		logger(pci, severity, msgid,  msg){
@@ -81,8 +81,9 @@ nodefony.register("Service", function(){
 	 	 *	@param {String} name of service
          	 */
 		get (name){
-			if (this.container)
+			if (this.container){
 				return this.container.get(name);
+			}
 			return null;
 		}
 
@@ -92,8 +93,9 @@ nodefony.register("Service", function(){
 	 	*	@param {Object} instance of service
          	*/
 		set (name, obj){
-			if (this.container)
+			if (this.container){
 				return this.container.set(name, obj);
+			}
 			return null;
 		}
 
@@ -108,9 +110,6 @@ nodefony.register("Service", function(){
 		has (){
 			return this.container.has.apply(this.container ,arguments);	
 		}
-	}
-
+	};
 	return Service ;
-
-
 });

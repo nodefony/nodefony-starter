@@ -13,7 +13,7 @@ nodefony.registerBundle ("demo", function(){
 
 		constructor(name, kernel, container){
 			super(name, kernel, container);
-		};
+		}
 	};
 
 	return demo ;

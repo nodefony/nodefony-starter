@@ -24,8 +24,7 @@ nodefony.registerBundle ("users", function(){
 		 	*      this.waitBundleReady = true ; 
 		 	*/	
 			
-		};
+		}
 	};
-
 	return users;
 });

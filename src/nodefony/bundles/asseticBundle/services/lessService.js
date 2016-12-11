@@ -76,12 +76,12 @@ nodefony.registerService("less", function(){
 				}
 				//console.log(this.filesLess)
 			});
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE LESS";
+			if (! msgid) { msgid = "SERVICE LESS";}
 			return this.syslog.logger(pci, severity || "DEBUG", msgid,  msg);
-		};
+		}
 	
 		parse (file, dest, callback){
 			var vendors = process.cwd()+"/web/vendors" ;
@@ -114,7 +114,7 @@ nodefony.registerService("less", function(){
 					}
 				}
 			);
-		};
+		}
 
 		handle (request, response, type, callback){
 				//console.log(type + " :  " + request.url)
@@ -131,7 +131,7 @@ nodefony.registerService("less", function(){
 				return true;
 			}
 			return false;
-		};
+		}
 
 		filter (file, callback){
 			return this.parse(file, null, callback)

@@ -18,7 +18,7 @@ nodefony.registerController("{{name}}", function(){
 
 			constructor (container, context){
 				super(container, context);
-			};
+			}
 
 			/**
 		 	*
@@ -38,10 +38,8 @@ nodefony.registerController("{{name}}", function(){
 				}catch(e){
 					return this.forward("frameworkBundle:default:system",{view: "{{bundleName}}:{{directory}}:index.html.twig",bundle:this.getParameters("bundles.{{smallName}}")});
 				}
-			};
-
+			}
 		};
-
 		return {{controllerName}};
 });
 {% endblock %}

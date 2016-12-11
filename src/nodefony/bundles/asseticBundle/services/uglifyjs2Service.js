@@ -14,7 +14,7 @@ nodefony.registerService("uglifyjs2", function(){
 
 		constructor (kernel, container){
 
-			super( "uglifyjs2" ,container, container.get("notificationsCenter") )
+			super( "uglifyjs2" ,container, container.get("notificationsCenter") );
 
 			this.kernel = kernel ;
 			this.engine = require("uglify-js") ;

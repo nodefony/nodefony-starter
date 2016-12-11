@@ -65,7 +65,7 @@ nodefony.registerBundle ("unitTest", function(){
 		 	*      this.waitBundleReady = true ; 
 		 	*/	
 			
-		};
+		}
 	};
 
 	return unitTest;

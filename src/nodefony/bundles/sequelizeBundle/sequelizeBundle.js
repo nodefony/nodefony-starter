@@ -53,7 +53,7 @@ nodefony.registerBundle ("sequelize", function(){
 			service.listen(this, "onOrmReady",() => {
 				this.fire("onReady", this, service);	
 			});
-		};
+		}
 	};
 
 	return sequelize;

@@ -18,7 +18,7 @@ nodefony.registerBundle ("realTime", function(){
 			super(name, kernel, container);
 			// load bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");
-		};
+		}
 	};
 
 	return realTime;

@@ -53,7 +53,7 @@ nodefony.registerController("default", function(){
 		var defaultController = class defaultController extends nodefony.controller {
 			constructor (container, context){
 				super(container, context);
-			};
+			}
 
 			/**
 		 	*
@@ -73,7 +73,7 @@ nodefony.registerController("default", function(){
 				}catch(e){
 					return this.forward("frameworkBundle:default:system",{view: "unitTestBundle::index.html.twig",bundle:this.getParameters("bundles.unitTest")});
 				}
-			};
+			}
 		};
 		
 		return defaultController;
