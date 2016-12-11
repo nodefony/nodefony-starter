@@ -52,14 +52,14 @@ nodefony.register("syslog", function(){
            	"INFO",
            	"DEBUG"
    	];
-   	sysLogSeverity["EMERGENCY"]=0;
-   	sysLogSeverity["ALERT"]=1;
-   	sysLogSeverity["CRITIC"]=2;
-   	sysLogSeverity["ERROR"]=3;
-   	sysLogSeverity["WARNING"]=4;
-   	sysLogSeverity["NOTICE"]=5;
-   	sysLogSeverity["INFO"]=6;
-   	sysLogSeverity["DEBUG"]=7;
+   	sysLogSeverity.EMERGENCY = 0;
+   	sysLogSeverity.ALERT = 1;
+   	sysLogSeverity.CRITIC = 2;
+   	sysLogSeverity.ERROR = 3;
+   	sysLogSeverity.WARNING = 4;
+   	sysLogSeverity.NOTICE = 5;
+   	sysLogSeverity.INFO = 6;
+   	sysLogSeverity.DEBUG = 7;
 
    	/**
     	 *  Protocol Data Unit
@@ -101,7 +101,7 @@ nodefony.register("syslog", function(){
     	 	*/
    		getDate(){
        			return new Date(this.timeStamp).toTimeString();
-   		};
+   		}
 
    		/**
     	 	* get a string representating the PDU protocole
@@ -116,89 +116,89 @@ nodefony.register("syslog", function(){
            			"  MessageID:"+this.msgid +
            			"  UID:"+this.uid +
                    		"  Message:"+this.msg;
-   		};
+   		}
 
 		parseJson (str){
+			var json = null ;
 			try {
-				var json = JSON.parse(str);
+				json = JSON.parse(str);
 				for (var ele in json){
 					if (ele in this){
 						this[ele] = json[ele];
 					}
 				}
 			}catch(e){
-				throw e
+				throw e ;
 			}
-			return json
-		};
-
-
-	}
-
+			return json ;
+		}
+	};
 
    	var operators = {
-       		"<":function(ele1, ele2){ return ele1 < ele2},
-       		">":function(ele1, ele2){ return ele1 > ele2},
-       		"<=":function(ele1, ele2){ return ele1 <= ele2},
-       		">=":function(ele1, ele2){ return ele1 >= ele2},
-       		"==":function(ele1, ele2){ return ele1 === ele2},
-       		"!=":function(ele1, ele2){ return ele1 !== ele2},
-		"RegExp":function(ele1, ele2){return  ( ele2.test(ele1) )}
-   	}
+       		"<": function(ele1, ele2){ return ele1 < ele2; },
+       		">": function(ele1, ele2){ return ele1 > ele2; },
+       		"<=":function(ele1, ele2){ return ele1 <= ele2; },
+       		">=":function(ele1, ele2){ return ele1 >= ele2; },
+       		"==":function(ele1, ele2){ return ele1 === ele2; },
+       		"!=":function(ele1, ele2){ return ele1 !== ele2; },
+		"RegExp":function(ele1, ele2){return  ( ele2.test(ele1) );}
+   	};
 
    	var conditionsObj = {
        		severity:function(pdu, condition){
            		if (condition.operator !== "=="){
                			//console.log(pdu.severity);
                			//console.log(condition.data)
-               			return  operators[condition.operator](pdu.severity, condition.data)
+               			return  operators[condition.operator](pdu.severity, condition.data);
            		}else{
                			for (var sev in condition.data){
-                   			if ( sev === pdu.severityName)
-                       				return true
+                   			if ( sev === pdu.severityName){
+                       				return true;
+					}
                			}
            		}
-           		return false
+           		return false ;
        		},
        		msgid:function(pdu, condition){
 			if (condition.operator !== "=="){
-				return operators[condition.operator](pdu.msgid, condition.data)
+				return operators[condition.operator](pdu.msgid, condition.data);
 			}else{
            			for (var sev in condition.data){
-               				if ( sev === pdu.msgid)
-                   				return true
+               				if ( sev === pdu.msgid){
+                   				return true;
+					}
            			}
 			}
-           		return false
+           		return false ;
        		},
        		date:function(pdu, condition){
-           		return  operators[condition.operator](pdu.timeStamp, condition.data)
+           		return  operators[condition.operator](pdu.timeStamp, condition.data);
        		}
-   	}
+   	};
 
    	var logicCondition ={
        		"&&" : function(myConditions, pdu){
-           		var res= null
-           			for (var ele in myConditions){
-               				var res = conditionsObj[ele](pdu, myConditions[ele] )
-               					//console.log("condition :" +ele +"  "+res)
-               					if ( ! res ){
-                   					break;
-               					}
-           			}
-           		return res
+           		var res= null ;
+           		for (var ele in myConditions){
+               			res = conditionsObj[ele](pdu, myConditions[ele] );
+               			//console.log("condition :" +ele +"  "+res)
+               			if ( ! res ){
+                   			break;
+               			}
+           		}
+           		return res ;
        		},
        		"||" : function(myConditions, pdu){
-           		var res= null
-           			for (var ele in myConditions){
-               				var res = conditionsObj[ele](pdu, myConditions[ele] )
-               					if ( res ){
-                   					break;
-               					}
-           			}
-           		return res
+           		var res= null ;
+           		for (var ele in myConditions){
+               			res = conditionsObj[ele](pdu, myConditions[ele] );
+               				if ( res ){
+                   				break;
+               				}
+           		}
+           		return res ;
        		}
-   	}
+   	};
 
    	var checkFormatSeverity = function(ele){
        		var res = false;
@@ -213,7 +213,7 @@ nodefony.register("syslog", function(){
 				throw new Error("checkFormatSeverity bad format "+nodefony.typeOf(ele)+" : " + ele);
        		}
        		return res;
-   	}
+   	};
 
    	var checkFormatDate = function(ele){
        		var res = false;
@@ -228,7 +228,7 @@ nodefony.register("syslog", function(){
 				throw new Error("checkFormatDate bad format "+nodefony.typeOf(ele)+" : " + ele);
        		}
        		return res;
-   	}
+   	};
 
 	var checkFormatMsgId = function(ele){
 		var res = false;
@@ -248,28 +248,30 @@ nodefony.register("syslog", function(){
 				throw new Error("checkFormatMsgId bad format "+nodefony.typeOf(ele)+" : " + ele);
        		}
        		return res;
-
-	}
+	};
 
    	var severityToString = function(severity){
        		var myint = parseInt(severity,10) ;
+		var ele = null ; 
        		if (! isNaN(myint)){
-           		var ele = sysLogSeverity[myint];
+           		ele = sysLogSeverity[myint];
        		}else{
-           		var ele = severity;
+           		ele = severity;
        		}
-       		if (ele in sysLogSeverity)
+       		if (ele in sysLogSeverity){
            		return ele;
+		}
         	return false;
    	};
 
 
    	var sanitizeConditions = function(settingsCondition){
        		var res = true;
-       		if (nodefony.typeOf(settingsCondition) !== "object" )
+       		if (nodefony.typeOf(settingsCondition) !== "object" ){
            		return false;
+		}
        		for (var ele in settingsCondition){
-           		if (! ele in conditionsObj){
+           		if (! ( ele in conditionsObj ) ){
                			return false;
            		}
            		var condi = settingsCondition[ele];
@@ -285,7 +287,7 @@ nodefony.register("syslog", function(){
                            				if (res !== false){
                                					condi.data = sysLogSeverity[severityToString(res[0])];
                            				}else{
-                               					return false
+                               					return false;
                            				}
                        				}else{
                            				condi.operator = "==";
@@ -305,7 +307,7 @@ nodefony.register("syslog", function(){
                                    					return false;
                                					}
                            				}else{
-                               					return false
+                               					return false;
                            				}
                        				}
                    				break;
@@ -317,22 +319,23 @@ nodefony.register("syslog", function(){
                        				if (res !== false){
                            				if (nodefony.typeOf(res) === "array"){
 								condi.data = {};
-                               					for (var i = 0 ; i < res.length; i++){
+                               					for (let i = 0 ; i < res.length; i++ ){
                                    					condi.data[res[i]] = "||";
                                					}
                            				}else{
-								condi.data = res;	
+								condi.data = res ;	
 							}
                        				}else{
-                           				return false
+                           				return false ;
                        				}
                    				break;
                    			case "date":
                        				res =checkFormatDate(condi.data);
-                       				if (res)
+                       				if (res){
                            				condi.data = res;
-                       				else
+                       				}else{
                            				return false;
+						}
                    				break;
                    			default:
                        				return false;
@@ -347,25 +350,29 @@ nodefony.register("syslog", function(){
 
 
    	var translateSeverity = function(severity){
+		var myseverity = null ;
        		if (severity in sysLogSeverity){
-           		if (typeof severity === 'number')
-               			var myseverity = sysLogSeverity[sysLogSeverity[severity]]
-           		else
-               			var myseverity = sysLogSeverity[severity];
+           		if (typeof severity === 'number'){
+               			myseverity = sysLogSeverity[sysLogSeverity[severity]];
+           		}else{
+               			myseverity = sysLogSeverity[severity];
+			}
        		}else{
-			if (! severity)
+			if ( ! severity ){
 				return null;
-			else
+			}else{
 				throw new Error ("not nodefony syslog severity :"+severity);
+			}
        		}
        		return myseverity;
    	};
 
    	var createPDU = function(payload, severity, moduleName, msgid, msg){
+		var myseverity = null ;
        		if ( ! severity ){
-               		var myseverity = sysLogSeverity[this.settings.defaultSeverity];
+               		myseverity = sysLogSeverity[this.settings.defaultSeverity];
            	}else{
-           		var myseverity = severity;
+           		myseverity = severity;
            	}
        		return new nodefony.PDU(payload, myseverity,
                            	moduleName,
@@ -444,7 +451,7 @@ nodefony.register("syslog", function(){
         	 	* @property ringStack
              	 	* @type Array
              	 	*/
-           		this.ringStack = new Array();
+           		this.ringStack = [];
        			/**
              	 	* Ratelimit  Management log printed
         	 	* @property burstPrinted
@@ -487,7 +494,7 @@ nodefony.register("syslog", function(){
        			var index = this.ringStack.push(pdu);
        			this.valid++;
        			return index;
-   		};
+   		}
 
    		/**
      	 	* logger message
@@ -498,6 +505,7 @@ nodefony.register("syslog", function(){
      	 	* @param {String} msg  message to add in log. example (I18N)
      	 	*/
    		logger (payload, severity, msgid, msg){
+			var pdu = null ;
            		if (this.settings.rateLimit){
                			var now = new Date().getTime();
                			this.start = this.start || now;
@@ -509,14 +517,14 @@ nodefony.register("syslog", function(){
                			if(this.settings.burstLimit && this.settings.burstLimit > this.burstPrinted ){
                				try {
                    				if (payload instanceof  nodefony.PDU ){
-                       					var pdu = payload
+                       					pdu = payload ;
                    				}else{
-                       					var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
+                       					pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
                    				}
                				}catch(e){
-						console.trace(e)
+						console.trace(e);
                    				this.invalid++;
-                   				return "INVALID"
+                   				return "INVALID";
                				}
                				this.pushStack( pdu);
                				this.fire("onLog", pdu);
@@ -528,9 +536,9 @@ nodefony.register("syslog", function(){
            		}else{
            			try {
                				if (payload instanceof  nodefony.PDU ){
-                   				var pdu = payload;
+                   				pdu = payload;
                				}else{
-                   				var pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
+                   				pdu = createPDU.call(this, payload, severity, this.settings.moduleName, msgid, msg);
                				}
            			}catch(e){
 					console.trace(e);
@@ -564,17 +572,21 @@ nodefony.register("syslog", function(){
      	 	* @return {PDU} pdu
      	 	*/
    		getLogStack (start, end, contition){
+			var stack = null ;
 			if (contition){
-				var stack = this.getLogs(contition) ; 
+				stack = this.getLogs(contition) ; 
 			}else{
-				var stack = this.ringStack ;
+				stack = this.ringStack ;
 			}
-           		if ( arguments.length  === 0)
+           		if ( arguments.length  === 0){
                			return stack[stack.length-1];
-           		if ( ! end)
+			}
+           		if ( ! end){
                			return stack.slice(start);
-           		if (start === end)
+			}
+           		if (start === end){
                			return stack[stack.length - start-1];
+			}
 			return stack.slice(start, end );
    		}
 
@@ -586,27 +598,30 @@ nodefony.register("syslog", function(){
      	 	*/
    		getLogs (conditions, stack){
 			var myStack = stack || this.ringStack ;
+			var myFuncCondition = null ;
        			if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
-           			var myFuncCondition = logicCondition[conditions.checkConditions];
+           			myFuncCondition = logicCondition[conditions.checkConditions];
            			delete conditions.checkConditions;
        			}else{
-           			var myFuncCondition = logicCondition[this.settings.checkConditions];
+           			myFuncCondition = logicCondition[this.settings.checkConditions];
        			}
        			var tab = [];
+			var Conditions = null ;
 			try {
-				var Conditions = sanitizeConditions(conditions);
+				Conditions = sanitizeConditions(conditions);
 			}catch(e){
 				throw new Error("registreNotification conditions format error: "+ e);
 			}
        			if (Conditions){
            			for (var i = 0 ; i<myStack.length; i++){
-               				var res = myFuncCondition(Conditions,myStack[i])
-               					if (res)
+               				var res = myFuncCondition(Conditions,myStack[i]);
+               					if (res){
                    					tab.push(myStack[i]);
+						}
            			}
        			}
        			return tab;
-   		};
+   		}
 
    		/**
      	 	* take the stack and build a JSON string
@@ -614,12 +629,14 @@ nodefony.register("syslog", function(){
      	 	* @return {String} string in JSON format
      	 	*/
    		logToJson (conditions){
-       			if (conditions)
-           			var stack = this.getLogs(conditions)
-       			else
-           			var stack = this.ringStack
-           				return JSON.stringify(stack);
-   		};
+			var stack = null ;
+       			if (conditions){
+           			stack = this.getLogs( conditions );
+       			}else{
+           			stack = this.ringStack;
+           			return JSON.stringify(stack);
+			}
+   		}
 
    		/**
     	 	* load the stack as JSON string
@@ -630,14 +647,16 @@ nodefony.register("syslog", function(){
     	 	* @return {String}
     	 	*/
    		loadStack (stack, doEvent, beforeConditions){
-       			if (! stack )
-           			throw new Error("syslog loadStack : not stack in arguments ")
-               		switch(nodefony.typeOf(stack)){
+			var st = null ;
+       			if (! stack ){
+           			throw new Error("syslog loadStack : not stack in arguments ");
+			}
+               		switch( nodefony.typeOf(stack) ){
                    		case "string" :
                        			try {
 						//console.log(stack);
-                           			var st = JSON.parse(stack);
-                           			return arguments.callee.call(this, st, doEvent);
+                           			st = JSON.parse(stack);
+                           			return this.loadStack(st, doEvent);
                        			}catch(e){
                            			throw e;
                        			}
@@ -646,12 +665,13 @@ nodefony.register("syslog", function(){
                    		case "object" :
                        			try {
                            			for(var i= 0 ; i<stack.length ; i++){
-                               				var pdu = new nodefony.PDU(stack[i].payload, stack[i].severity, stack[i].moduleName || this.settings.moduleName , stack[i].msgid, stack[i].msg, stack[i].timeStamp)
+                               				var pdu = new nodefony.PDU(stack[i].payload, stack[i].severity, stack[i].moduleName || this.settings.moduleName , stack[i].msgid, stack[i].msg, stack[i].timeStamp);
                                    			this.pushStack( pdu);
 
                                    			if (doEvent) {
-								if (beforeConditions && typeof beforeConditions  === "function")
+								if (beforeConditions && typeof beforeConditions  === "function"){
 									beforeConditions.call(this, pdu, stack[i]);
+								}
                                        				this.fire("onLog", pdu);
                                    			}
                            			}
@@ -660,10 +680,10 @@ nodefony.register("syslog", function(){
                        			}
                        			break;
                    		default :
-                       			throw new Error("syslog loadStack : bad stack in arguments type")
-               		};
+                       			throw new Error("syslog loadStack : bad stack in arguments type");
+               		}
                		return st || stack;
-   		};
+   		}
    		
    		/**
      	 	*
@@ -671,52 +691,51 @@ nodefony.register("syslog", function(){
      	 	*
      	 	*/
    		listenWithConditions (context, conditions, callback  ){
+			var myFuncCondition = null ;
+			var Conditions = null ;
        			if ( conditions.checkConditions && conditions.checkConditions in logicCondition ){
-           			var myFuncCondition = logicCondition[conditions.checkConditions];
+           			myFuncCondition = logicCondition[conditions.checkConditions];
            			delete conditions.checkConditions;
        			}else{
-           			var myFuncCondition = logicCondition[this.settings.checkConditions];
+           			myFuncCondition = logicCondition[this.settings.checkConditions];
        			}
 			try {
-				var Conditions = sanitizeConditions(conditions);
+				Conditions = sanitizeConditions(conditions);
 			}catch(e){
 				throw new Error("registreNotification conditions format error: "+ e);	
 			}
        			if (Conditions){
 				var func = (pdu) => {
-               				var res = myFuncCondition(Conditions, pdu)
+               				var res = myFuncCondition(Conditions, pdu);
                				if (res){
-                   				callback.call(context || this, pdu)
+                   				callback.call( context || this, pdu);
                				}
            			};
            			super.listen(this, "onLog", func);
 				return func ;
        			}
-   		};
+   		}
 
 		error (data){
 			return this.logger(data,"ERROR");
-		};
+		}
 
 		warning (data){
 			return this.logger(data,"WARNING");	
-		};
+		}
 
 		info (data){
 			return this.logger(data,"INFO");
-		};
+		}
 
 		debug (data){
 			return this.logger(data,"DEBUG");
-		};
+		}
 
 		trace (data){
 			return this.logger(data,"NOTICE");
-		};
-
+		}
 	};
-
 	return syslog;
-
 });
 
