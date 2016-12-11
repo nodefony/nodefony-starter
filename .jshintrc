@@ -6,6 +6,7 @@
     "boss":		true,
     "eqeqeq":		true,
     "curly":		true,
+    "loopfunc":		true,
     "globals": {
       "nodefony":	true,
       "process":	true,

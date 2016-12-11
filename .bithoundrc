@@ -16,6 +16,7 @@
 	],
 	"dependencies": {
 		"unused-ignores": [
+			"jshint"
 		],
 		"mute": [
 			"connect"
