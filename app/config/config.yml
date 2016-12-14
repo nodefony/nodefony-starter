@@ -92,7 +92,7 @@ httpBundle:
     handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
-      maxAge:                     0   
+      maxAge:                     0                              # like cookie_lifetime php  =>seconde 
 
   http:
     responseTimeout:              40000
