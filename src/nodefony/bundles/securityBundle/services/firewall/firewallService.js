@@ -148,7 +148,6 @@ nodefony.registerService("firewall", function(){
 		}
 
 		handleError (context, e){
-			
 			switch ( context.type ){
 				case "HTTP" :
 				case "HTTPS" :

@@ -512,7 +512,7 @@ nodefony.registerService("sessions", function(){
 			var ret = inst.start(context, sessionContext, (err, session) =>{
 				context.session = session ;
 				if ( ! err ){ 
-					session.setMetaBag("url", Url.parse(context.url ) );
+					session.setMetaBag("url", url.parse(context.url ) );
 					context.listen(session, "onFinish",function(){
 						this.setMetaBag("lastUsed", new Date() );
 						if ( ! this.saved ){

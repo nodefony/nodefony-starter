@@ -23,7 +23,7 @@ nodefony.registerController("demo", function(){
 		constructor(container, context){
 			super(container, context);
 			this.kernel = this.get("kernel");
-		};
+		}
 
 		/**
  	 	*
@@ -42,7 +42,7 @@ nodefony.registerController("demo", function(){
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			});*/
-		};
+		}
 		
 		/**
  	 	*
@@ -145,7 +145,7 @@ nodefony.registerController("demo", function(){
 			return this.renderResponse(content, 200 , {
 				"content-type" :"Application/xml"
 			})
-		};
+		}
 
 		/**
  	 	*
@@ -171,7 +171,7 @@ nodefony.registerController("demo", function(){
 					"content-type" :"Application/xml"
 				})
 			});
-		};
+		}
 
 		/**
  	 	*
@@ -549,7 +549,7 @@ nodefony.registerController("demo", function(){
 	 	*/
 		indexRealTimeAction (){
 			return this.render("demoBundle:realTime:index.html.twig",{title:"realTime"});			
-		};
+		}
 
 		/*
  	 	*
@@ -558,7 +558,7 @@ nodefony.registerController("demo", function(){
  	 	*/
 		indexUploadAction (){
 			return this.render('demoBundle:demo:upload2.html.twig');
-		};
+		}
 
 		uploadAction (){
 		
@@ -604,7 +604,7 @@ nodefony.registerController("demo", function(){
 					{'Content-Type': 'application/json; charset=utf-8'}
 				);
 			}
-		};
+		}
 
 		/**
  	 	*	 renderView 
@@ -613,7 +613,7 @@ nodefony.registerController("demo", function(){
 		renderviewAction (name){
 			var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
 			return this.renderResponse(content);
-		};
+		}
 		
 		/**
  	 	*	@see renderResponse() with content html
@@ -622,7 +622,7 @@ nodefony.registerController("demo", function(){
 		htmlAction (name){
 			var name = "nodefony";
 			return this.renderResponse('<html><script>alert("'+name+'")</script></html>');
-		};
+		}
 
 		/**
  	 	*
@@ -630,7 +630,7 @@ nodefony.registerController("demo", function(){
  	 	*/
 		forwardAction (){
 			return this.forward("frameworkBundle:default:index")
-		};
+		}
 		
 		/**
  	 	*
@@ -640,7 +640,7 @@ nodefony.registerController("demo", function(){
 			// status 301 or 302
 			return this.redirect("http://google.com");
 			//return this.redirect("/json", 302);
-		};
+		}
 
 		/**
  	 	*
@@ -651,7 +651,7 @@ nodefony.registerController("demo", function(){
 				foo:"bar",
 				bar:"foo"
 			});
-		};
+		}
 
 		/**
  	 	*
@@ -664,7 +664,7 @@ nodefony.registerController("demo", function(){
 
 			// relative
 			//return this.redirect ( this.generateUrl("user", {name:"cci"} );
-		};
+		}
 
 		/**
  	 	*
@@ -708,7 +708,7 @@ nodefony.registerController("demo", function(){
 				default :
 					throw new Error("REALTIME METHOD NOT ALLOWED")
 			}
-		};
+		}
 
 		readmeAction (){
 			var kernel = this.container.get("kernel");
@@ -721,7 +721,12 @@ nodefony.registerController("demo", function(){
 			return  this.render('demoBundle:Default:documentation.html.twig',{
 				html:res
 			});
-		};
+		}
+
+		myrouteAction(page, ele){
+			this.renderResponse("MYpage : " + page + " Element :" + ele ,200);
+		}
+
 	};
 	
 	return demoController;

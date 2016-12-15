@@ -6,8 +6,6 @@
  *
  */
 
-var Url = require('url') ;
-
 nodefony.register("Route", function(){
 
 	var decode = function(str) {
@@ -22,6 +20,8 @@ nodefony.register("Route", function(){
  	 *	CLASS ROUTE
  	 *
  	 */
+	const regRoute = /(\/)?(\.)?\{([^}]+)\}(?:\(([^)]*)\))?(\?)?/g ; 
+
 	var Route = class Route {
 		constructor (name, obj){
 			this.name = name ; 
@@ -44,40 +44,39 @@ nodefony.register("Route", function(){
 			this.pattern = null;
 			this.bypassFirewall = false ;
 			this.defaultLang = null ;
-		};
+		}
 
 		setName (name){
 			this.name = name ;
-		};
+		}
 
 		setPattern (pattern){
 			this.path = pattern;
-		};
+		}
 		
 		setHostname (hostname){
 			this.host = hostname;
-		};
+		}
 		
 		addDefault (key , value){
 			this.defaults[key] = value;
-		};	
+		}
 
 		addRequirement (key , value){
 			this.requirements[key] = value;
-		};
+		}
 
 		getRequirement (key){
 			return this.requirements[key] ;
-		};
+		}
 
 		hasRequirements (){
 			return Object.keys( this.requirements ).length;
-		};
+		}
 
 		addOptions (key , value){
 			this.options[key] = value;
-		};
-
+		}
 
 		/*setPath (){}
 		setRequirements (){}
@@ -86,27 +85,57 @@ nodefony.register("Route", function(){
 		setHost (){}
 		setSchemes (){}*/
 		
+		checkDefaultParameters ( variable ){
+			for( var def in this.defaults ){
+				switch ( def ){
+					case "controller" :
+						continue ;
+					default :
+						if ( def === variable ){
+							return true ;
+						}
+				}
+			}
+			return false ;	
+		}
 
+		hydrateDefaultParameters ( res ){
+			if ( this.variables.length ){
+				for( let i = 0  ; i< this.variables.length ; i++ ){
+					if (  this.defaults[ this.variables[i] ] ){
+						if (res[i+1] === "" ){
+							res[i+1] = this.defaults[ this.variables[i] ]	
+						}	
+					}
+				}	
+			}	
+		}	
 		
 		compile (){
-			var pattern = this.path.replace(/(\/)?(\.)?\{([^}]+)\}(?:\(([^)]*)\))?(\?)?/g, function(match, slash, dot, key, capture, opt, offset) {
+			var pattern = this.path.replace( regRoute, (match, slash, dot, key, capture, opt, offset)  => {
 				var incl = (this.path[match.length+offset] || '/') === '/';
 				var index = this.variables.push(key);
-				//this.variables[key] = this.variables[index-1]; 
-				return (incl ? '(?:' : '')+(slash || '')+(incl ? '' : '(?:')+(dot || '')+'('+(capture || '[^/]+')+'))'+(opt || '');
-			}.bind(this));
-			pattern = pattern.replace(/([\/.])/g, '\\$1').replace(/\*/g, '(.+)');
+				if( this.checkDefaultParameters(key) ){
+					return (incl ? '(?:' : '')+(slash ? slash+"?" : '')+(incl ? '' : '(?:')+(dot || '')+'('+(capture || '[^/]*')+'))'+(opt || '');
+				}else{
+					return (incl ? '(?:' : '')+(slash || '')+(incl ? '' : '(?:')+(dot || '')+'('+(capture || '[^/]+')+'))'+(opt || '');
+				}
+			});
+			pattern = pattern.replace(/([\/.])/g, '\\$1');//.replace(/\*/g, '(.+)');
 			this.pattern = new RegExp('^'+pattern+'[\\/]?$', 'i');
 			return this.pattern ;
 		}
 
 		match (context){
-			
-			var url = context.request.url.pathname ;
-			var res = url.match(this.pattern);
-			//console.log(res)
+			var myUrl = context.request.url.pathname ;
+			var res = myUrl.match(this.pattern);
 			if (!res) {
 				return res;
+			}
+			try {
+				this.hydrateDefaultParameters( res );
+			}catch(e){
+				throw  e  ;	
 			}
 
 			//check requierments
@@ -123,32 +152,38 @@ nodefony.register("Route", function(){
 			}
 
 			//check options
-			try {
+			/*try {
 				this.matchOptions(context) ;	
 			}catch(e){
 				throw  e  ;
-			}
+			}*/
 
 			var map = [];
-			res.slice(1).forEach(function(param, i) {
-				var k = this.variables[i] || 'wildcard';
-				param = param && decode(param);
-				var req = this.getRequirement(k);
-				if ( req ){
-					if ( req instanceof RegExp){
-						var result = req.test(param) ;
-					}else{
-						var result = new RegExp(req).test(param);
+			try {
+				res.slice(1).forEach( (param, i)  => {
+					var k = this.variables[i] || 'wildcard';
+					param = param && decode(param);
+					var req = this.getRequirement(k);
+					if ( req ){
+						if ( req instanceof RegExp){
+							var result = req.test(param) ;
+						}else{
+							var result = new RegExp(req).test(param);
+						}
+						if( ! result ){
+							map = false ;
+							throw {BreakException:"Requirement Exception variable : " + k +" ==> " +param +" doesn't match with " + req   }
+						}
 					}
-					if( ! result ){
-						map = false ;
-						return;
-					}
+					var index = map.push( param )
+					map[k] = map[index-1] ;
+				});
+			}catch(e){
+				if (e.BreakException ){
+					throw e.BreakException ;
 				}
-				//var index = map.push( map[k] ? [].concat(map[k]).concat(param) : param );
-				var index = map.push( param )
-				map[k] = map[index-1] ;
-			}.bind(this));
+				throw e ;
+			}
 
 			if ( map && map.wildcard) {
 				map['*'] = map.wildcard;
@@ -164,7 +199,6 @@ nodefony.register("Route", function(){
 				this.bypassFirewall = true ;
 			}
 		}
-
 
 		matchHostname (context){
 			if ( this.host !== null ){
@@ -212,7 +246,7 @@ nodefony.register("Route", function(){
 				
 			}
 			return testOpt;
-		};
+		}
 	};
 
 	return Route

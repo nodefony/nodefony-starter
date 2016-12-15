@@ -154,7 +154,13 @@
 		<default key="controller">demoBundle:demo:redirectGoogle</default>
 	</route>
 
-
+	<!-- myroute -->
+	<route id="myroute"  pattern="/myroute/{page}/{elements}">
+		<default key="controller">demoBundle:demo:myroute</default>
+		<default key="page">13</default>
+		<default key="elements">myRouteDefaultValue</default>
+		<requirement key="page">^\d\d$</requirement>
+	</route>
 
 	<!-- TODO -->	
 	<!--  <import resource="routing2.xml" prefix="/prefix" />
