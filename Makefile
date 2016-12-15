@@ -62,6 +62,8 @@ build:
 		./.console_dev npm:list ;\
 	fi \
 
+	make certificates ;
+
 #
 # PM2 MANAGEMENT PRODUCTION 
 #
@@ -198,9 +200,7 @@ framework:
 	fi
 
 sequelize:
-	@echo "./console Sequelize:generate:entities";
 	./console Sequelize:generate:entities
-	@echo "./console Sequelize:fixtures:load";
 	./console Sequelize:fixtures:load
 
 clean:
@@ -233,6 +233,14 @@ clean:
 
 test:
 	npm test ;
+
+certificates:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#         NODEFONY CERTIFICATES         #" ;
+	@echo "#########################################" ;
+	@echo "";
+	./bin/generateCertificates.sh;
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc

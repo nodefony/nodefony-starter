@@ -76,11 +76,8 @@ describe("NODEFONY BUNDLE HTTP", function(){
 				cert:res.cert,
 				ca:res.ca,
 			};
-			doneHttps();
 			
-			//FIXME ca certificate
-			/*request(options, (error, res, body) => {
-
+			request(options, (error, res, body) => {
 				if (error){
 					throw error ;
 				}
@@ -94,9 +91,9 @@ describe("NODEFONY BUNDLE HTTP", function(){
 				assert.equal(res.statusCode, ret );
 				assert.equal(res.headers.server, "nodefony");
 				res.setEncoding('utf8');
-				doneHttp();
+				doneHttps();
 				
-			});*/
+			});
 
 		});
 

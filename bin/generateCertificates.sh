@@ -1,5 +1,11 @@
 #!/bin/bash
-FQDN="nodefony.com"
+FQDN="localhost"
+
+if [ -n "$1" ]
+then
+	FQDN="$1"	
+fi
+echo "NODEFONY GENERATE CERTIFICATES CN : ${FQDN}" 
 
 # make directories to work from
 mkdir -p ./config/certificates/{server,client,ca}
@@ -18,7 +24,7 @@ openssl req \
   -key ./config/certificates/ca/nodefony-root-ca.key.pem \
   -days 1024 \
   -out ./config/certificates/ca/nodefony-root-ca.crt.pem \
-  -subj "/C=FR/ST=Bdr/L=Marseille/O=NODEFONY Signing Authority /CN=nodefony.com"
+  -subj "/C=FR/ST=Bdr/L=Marseille/O=Nodefony Signing Authority /CN=nodefony.com"
 
 # Create a Device Certificate for each domain,
 # such as example.com, *.example.com, awesome.example.com
@@ -31,7 +37,7 @@ openssl genrsa \
 openssl req -new \
   -key ./config/certificates/server/privkey.pem \
   -out ./tmp/csr.pem \
-  -subj "/C=FR/ST=Bdr/L=Marseille/O=NODEFONY Tech Inc/CN=${FQDN}"
+  -subj "/C=FR/ST=Bdr/L=Marseille/O=Nodefony/CN=${FQDN}/subjectAltName=IP.1=127.0.0.1"
 
 # Sign the request from Device with your Root CA
 # -CAserial ./config/certificates/ca/nodefony-root-ca.srl
@@ -41,7 +47,7 @@ openssl x509 \
   -CAkey ./config/certificates/ca/nodefony-root-ca.key.pem \
   -CAcreateserial \
   -out ./config/certificates/server/cert.pem \
-  -days 500
+  -days 3650
 
 # Create a public key, for funzies
 # see https://gist.github.com/coolaj86/f6f36efce2821dfb046d
