@@ -19,7 +19,7 @@ const assert = require('assert');
 
 
 
-describe("ROUTING", function(){
+describe("BUNDLE DEMO", function(){
 
 	before(function(){
 			global.options = {
@@ -30,7 +30,7 @@ describe("ROUTING", function(){
 		};
 	})
 
-	describe('DEFAULT_VALUE', function(){
+	describe('ROUTING DEFAULT_VALUE', function(){
 			
 		it("myroute/", function(done){
 			global.options.path ='/myroute/';  
@@ -115,7 +115,7 @@ describe("ROUTING", function(){
 		});
 	});
 
-	describe('REQUIEREMENTS REGEXP', function(){
+	describe('ROUTING REQUIEREMENTS REGEXP', function(){
 		it("<requirement key='page'>^\d\d$</requirement>", function(done){
 			global.options.path ='/myroute/515/foo/';
 			var request = http.request(global.options,function(res) {
