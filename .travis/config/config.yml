@@ -98,8 +98,9 @@ httpBundle:
   https:
     responseTimeout:              40000
     certificats:
-      key:                        "config/certificates/serverKey.pem"
-      cert:                       "config/certificates/serverCert.pem"
+      key:                        "config/certificates/server/privkey.pem"
+      cert:                       "config/certificates/server/fullchain.pem"
+      ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
 
 
 #

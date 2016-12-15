@@ -724,7 +724,10 @@ nodefony.registerController("demo", function(){
 		}
 
 		myrouteAction(page, ele){
-			this.renderResponse("MYpage : " + page + " Element :" + ele ,200);
+			return this.renderJson({
+				page:page,
+				element:ele
+			});
 		}
 
 	};
