@@ -67,9 +67,7 @@ describe("BUNDLE DEMO", function(){
 				method: 'GET',
 				key: res.key,
 				cert:res.cert,
-				rejectUnauthorized: false,
-				requestCert: false,
-				agent: false
+				ca:res.ca
 			};
 
 			var request = https.request(options, (res) => {
@@ -115,10 +113,43 @@ describe("BUNDLE DEMO", function(){
 		});
 
 		it("WEBSOCKET_SECURE", function(done){
-			done()
+			var service = kernel.get("httpsServer");
+			var res = service.getCertificats() ;
+
+			var options = {
+				key: res.key,
+				cert:res.cert,
+				ca:res.ca
+			};
+
+			try {
+				var client = new WebSocketClient();
+			}catch(e){
+				throw e; 
+			}
+			
+			var iter = 0 ;
+
+			var url = 'wss://'+kernel.settings.system.domain+':'+kernel.settings.system.httpsPort+'/websoket'
+			client.connect(url, null, "nodefony", null, options);
+			client.on('connect', function(connection) { 
+				connection.on("message", (message) => {
+					//console.log(message)
+					iter++	
+				})
+				//connection.close(); 
+				connection.on('close', (reasonCode, description) =>  {
+					assert.equal(iter, 9);
+					assert.equal(reasonCode, 1000);
+					assert.equal(description, "NODEFONY CONTROLLER CLOSE SOCKET");
+					done();
+				});
+			
+			});
+			client.on('connectFailed', function() {
+				throw new Error( "websoket client error")
+			});
 		});
-
-
 	});
 
 });
