@@ -33,6 +33,6 @@
 
 unitTest: 
   pattern:  /unitTest
-  defaults: {controller: "unitTestBundle:default:index"}
+  defaults: {"controller": "unitTestBundle:default:index"}
 
 

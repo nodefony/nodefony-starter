@@ -50,7 +50,7 @@ You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nod
 
 -  **[GNU Make](https://www.gnu.org/software/make/)**  is a Tool which controls the generation of executables
 
--  **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime ####( >= 6 )
+-  **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime ( >= 6 )
 
 -  **[npm](https://www.npmjs.com/)**  is the Package Manager for javascript application
 

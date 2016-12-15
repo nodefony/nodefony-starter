@@ -34,15 +34,15 @@
 #secure:
 #  pattern:              /secure
 #  defaults: 
-#    controller:         usersBundle:default:401
+#    "controller":         usersBundle:default:401
 
 #login:
 #    pattern:            /login
 #    defaults: 
-#      controller:       usersBundle:default:login
+#      "controller":       usersBundle:default:login
 
 logout:
     pattern:            /logout
     defaults: 
-      controller:       usersBundle:default:logout
+      "controller":       usersBundle:default:logout
 

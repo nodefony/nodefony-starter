@@ -33,6 +33,6 @@
 
 {{name}}: 
   pattern:  /{{name}}
-  defaults: {controller: "{{ bundleName }}:default:index"}
+  defaults: {"controller": "{{ bundleName }}:default:index"}
 
 

@@ -33,34 +33,34 @@
 
 documentation: 
   pattern:  /documentation
-  defaults: {controller: "documentationBundle:default:index"}
+  defaults: {"controller": "documentationBundle:default:index"}
 
 documentation-search: 
   pattern:  /documentation/search
-  defaults: {controller: "documentationBundle:default:search"}
+  defaults: {"controller": "documentationBundle:default:search"}
 
 documentation-default: 
   pattern:  /documentation/{version}
-  defaults: {controller: "documentationBundle:default:index"}
+  defaults: {"controller": "documentationBundle:default:index"}
 
 documentation-version: 
   pattern:  /documentation/{version}/{bundle}
-  defaults: {controller: "documentationBundle:default:version"}
+  defaults: {"controller": "documentationBundle:default:version"}
 
 documentation-section: 
   pattern:  /documentation/{version}/{bundle}/{section}
-  defaults: {controller: "documentationBundle:default:version"}
+  defaults: {"controller": "documentationBundle:default:version"}
 
 documentation-git-getMostRecentCommit: 
   pattern:  /api/git/getMostRecentCommit
-  defaults: {controller: "documentationBundle:git:getMostRecentCommit"}
+  defaults: {"controller": "documentationBundle:git:getMostRecentCommit"}
 
 documentation-git-getStatus: 
   pattern:  /api/git/getStatus
-  defaults: {controller: "documentationBundle:git:getStatus"}
+  defaults: {"controller": "documentationBundle:git:getStatus"}
 
 
 documentation-git-getBranch: 
   pattern:  /api/git/getCurrentBranch
-  defaults: {controller: "documentationBundle:git:getCurrentBranch"}
+  defaults: {"controller": "documentationBundle:git:getCurrentBranch"}
 
