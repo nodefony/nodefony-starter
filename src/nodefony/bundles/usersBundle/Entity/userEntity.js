@@ -8,9 +8,8 @@
 try {
 	var Sequelize =require("sequelize");
 } catch (err) {
-  console.log('sequelize  is disabled!');
+  console.log('sequelize  is disabled! ' + err);
 }
-
 
 nodefony.registerEntity("user", function(){
 
@@ -44,8 +43,9 @@ nodefony.registerEntity("user", function(){
 				        		message:"User : " + username +" not Found"
 						}, null)
 					}).catch(function(error){
-						if (error)
-							return callback(error, null)
+						if (error){
+							return callback(error, null);
+						}
 					});
 				},	
 				loadUserByUsername : function(username, callback){
@@ -54,8 +54,9 @@ nodefony.registerEntity("user", function(){
 					}).then(function( user) {
 						return callback(null, user);
 					}).catch(function(error){
-						if (error)
+						if (error){
 							return callback(error, null);	
+						}
 					});
 				},
 				generatePassword:function(){
@@ -73,7 +74,7 @@ nodefony.registerEntity("user", function(){
 				if ( session ){
 					model.hasMany(session, {  foreignKey: 'user_id', onDelete: 'CASCADE' });
 				}else{
-					throw "ENTITY ASSOCIATION session NOT AVAILABLE"
+					throw "ENTITY ASSOCIATION session NOT AVAILABLE";
 				}
 			}
 		});
@@ -84,7 +85,6 @@ nodefony.registerEntity("user", function(){
 		type:"sequelize",
 		connection : "nodefony",
 		entity:User
-
 	};
-})
+});
 

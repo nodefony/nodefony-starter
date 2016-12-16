@@ -51,18 +51,16 @@ nodefony.registerFixture("users", function(){
 		
 			case "mysql" : 
 				connection.query('SET FOREIGN_KEY_CHECKS = 0')
-				.then(function(){
+				.then( () => {
 			 		return user.sync({ force: false });
 				})
-				.then(function(User){
+				.then((User) => {
 					this.logger("Database synchronised  " ,"INFO");
-					
-					return Sequelize.Promise.map( tab, function(obj) {
+					return Sequelize.Promise.map( tab, (obj) => {
 						return User.findOrCreate({where: {username: obj.username}, defaults:obj});
-					})
-					
-				}.bind(this))
-				.spread(function(ele){
+					});
+				})
+				.spread( function(){
 					for (var i = 0 ; i< arguments.length ;i++){
 						if (arguments[i][1]){
 							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
@@ -70,15 +68,15 @@ nodefony.registerFixture("users", function(){
 							this.logger("ALREADY EXIST USER : " +arguments[i][0].username,"INFO");
 						}
 					}
-				}.bind(this))
-				.then(function(){
+				}.bind(this) )
+				.then( () => {
 			    		connection.query('SET FOREIGN_KEY_CHECKS = 1');
 				})
-				.catch( function(error){
+				.catch( (error) => {
 					this.logger(error);
-					reject(error)
-				}.bind(this))
-				.done(function(error, result){
+					reject(error);
+				})
+				.done(function(/*error, result*/){
 					resolve("userEntity");
 				});
 			break;
@@ -112,16 +110,16 @@ nodefony.registerFixture("users", function(){
 
 				//connection.query('SELECT * FROM users  ')
 				connection.query('PRAGMA foreign_keys = 0  ')
-				.then(function(){
+				.then( () => {
 			 		return user.sync({ force: false });
 				})
-				.then(function(User){
+				.then( function (User)  {
 					this.logger("Database synchronised  " ,"INFO");
-					return Sequelize.Promise.map( tab, function(obj) {
-						return User.findOrCreate({where: {username: obj.username}, defaults:obj});
-					})
+					return Sequelize.Promise.map( tab, function (obj)  {
+						return  User.findOrCreate({where: {username: obj.username}, defaults:obj});
+					});
 				}.bind(this))
-				.spread(function(ele){
+				.spread( function() {
 					for (var i = 0 ; i< arguments.length ;i++){
 						if (arguments[i][1]){
 							this.logger("ADD USER : " +arguments[i][0].username,"INFO");
@@ -130,21 +128,21 @@ nodefony.registerFixture("users", function(){
 						}
 					}
 				}.bind(this))
-				.catch(function(error){
+				.catch( (error) => {
 					this.logger(error);
-					reject(error)
-				}.bind(this))
-				.done(function(){
+					reject(error);
+				})
+				.done( () =>{
 					resolve("userEntity");
-				}.bind(this))
+				});
 			break;
 		}
-	}
+	};
 
 	return {
 		type:"sequelize",
 		connection : "nodefony",
 		entity: "user",
 		fixture: userPromise
-	}
+	};
 });

@@ -22,6 +22,8 @@
       "cluster":	true,
       "xmlParser":	true,
       "async":		true,
+      "crypto":		true,
+      "Sequelize":	true,
       "url":		true
     }	
 }

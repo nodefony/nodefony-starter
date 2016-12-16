@@ -19,30 +19,30 @@ nodefony.register( "user", function(){
 			this.credentialsNonExpired = credentials;
 			this.accountNonLocked = blocked;
 			this.addRole(roles);
-		};
+		}
 
 		generateId (){
-			var date = new Date().getTime();
+			//var date = new Date().getTime();
 			var buf = crypto.randomBytes(256);
 			var hash = crypto.createHash('md5');
 			return hash.update(buf).digest("hex");
-		};
+		}
 
 		getName (){
-			return	this.username;
-		};
+			return this.username;
+		}
 
 		getPassword (){
-			return	this.password;
-		};
+			return this.password;
+		}
 
 		isEnable (){
 			return this.enabled;
-		};
+		}
 
 		addRole(role){
-			this.roles.push(role)
-		};
+			this.roles.push(role);
+		}
 	};
 
 	return User ;

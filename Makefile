@@ -82,18 +82,20 @@ kill:
 show:
 	./node_modules/pm2/bin/pm2 show nodefony
 
-monit:
+monitor:
 	./node_modules/pm2/bin/pm2 monit nodefony
 
 status:
 	./node_modules/pm2/bin/pm2 status
 
 reload:
-	./node_modules/pm2/bin/pm2 reload all
+	./node_modules/pm2/bin/pm2 reload nodefony
 
 restart:
-	./node_modules/pm2/bin/pm2 restart all
+	./node_modules/pm2/bin/pm2 restart nodefony
 
+logs:
+	./node_modules/pm2/bin/pm2 --lines 1000 logs nodefony
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
