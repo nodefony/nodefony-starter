@@ -13,10 +13,12 @@ nodefony.registerController("default", function(){
 		 *	
 		 */
 		var defaultController = class defaultController extends nodefony.controller {
+
 			constructor(container, context){
 				super(container, context);
 				this.kernel = this.get("kernel") ;
-			};
+				this.defaultVersion = this.kernel.settings.system.version;
+			}
 
 			/**
 		 	*
@@ -24,77 +26,84 @@ nodefony.registerController("default", function(){
 		 	*
 		 	*/
 			indexAction (version){
+				var defaultVersion = null ;
 				if( ! version ){
-					var defaultVersion = this.kernel.settings.system.version;
+					defaultVersion = this.defaultVersion;
 				}else{
-					var defaultVersion = version ;
+					defaultVersion = version ;
 				}
-				var url = this.generateUrl("documentation-version",{
+				var myUrl = this.generateUrl("documentation-version",{
 					bundle:"nodefony",
 					version:defaultVersion
 				})
-				return this.redirect(url);
-			};
+				return this.redirect(myUrl);
+			}
 
 			subSectionAction (version, bundle, section){
+				var subsection = null ;
+				var path = null ;
+				var finder  = null ;
 				if (this.query.subsection){
-					var subsection = this.query.subsection ;	
+					subsection = this.query.subsection ;	
 				}else{
-					var subsection = section ;	
+					subsection = section ;	
 				}
 
 				if ( ! bundle ) bundle = "nodefony" ;
 				if (  bundle === "nodefony"){
-					var path = this.kernel.nodefonyPath ;
+					path = this.kernel.nodefonyPath ;
 				}else{
 					if ( this.kernel.bundles[bundle] ){
-						var path = this.kernel.bundles[bundle].path ;
+						path = this.kernel.bundles[bundle].path ;
 					}else{
-						var path = this.kernel.nodefonyPath ;
+						path = this.kernel.nodefonyPath ;
 					}
 				}
 				try {
 					if ( version ){
 						if ( section ){
-							var finder  = new nodefony.finder( {
+							finder  = new nodefony.finder( {
 								path:path+"/doc/"+version+"/"+section,
 								depth:1
 							});
 						}else{
-							var finder  = new nodefony.finder( {
+							finder  = new nodefony.finder( {
 								path:path+"/doc/"+version,
 								depth:1
 							});
 						}
 					}else{
-						var finder  = new nodefony.finder( {
-							path:path+"/doc/Default",
-							depth:1
-						});	
+						throw "404";
 					}
 				}catch(e){
-					this.logger(e);
-					throw e ;
+					var myUrl = this.generateUrl("documentation-version",{
+						bundle:"nodefony",
+						version:this.defaultVersion
+					})
+					return this.redirect(myUrl);
 				}
 				var directory  = finder.result.getDirectories();
 				var sections = [];
-				directory.forEach(function(ele , index){
+				directory.forEach(function( ele ){
 					sections.push(ele.name)
 				})
 				return this.render("documentationBundle:layouts:navSection.html.twig", {bundle:bundle, version:version, section:section,sections:sections,subsection:subsection});
-			};
+			}
 
 			versionAction (version, bundle, section){
+				var subsection = null ;
+				var path = null ;
+				var finder  = null ;
 
 				if (this.query.subsection){
-					var subsection = this.query.subsection ;	
+					subsection = this.query.subsection ;	
 				}else{
-					var subsection = "" ;	
+					subsection = "" ;	
 				}
 
 				if ( ! bundle ) bundle = "nodefony" ; 
 				if ( bundle === "nodefony" ){
-					var path = this.kernel.nodefonyPath ;
+					path = this.kernel.nodefonyPath ;
 					var bundles = this.kernel.bundles ;
 					if (! section ){
 						var directoryBundles = [] ;
@@ -105,16 +114,16 @@ nodefony.registerController("default", function(){
 
 				}else{
 					if ( this.kernel.bundles[bundle] ){
-						var path = this.kernel.bundles[bundle].path
+						path = this.kernel.bundles[bundle].path;
 					}else{
-						var path = this.kernel.nodefonyPath ;
+						path = this.kernel.nodefonyPath ;
 					}
 				}
 
 				// get all version 
 				var finderVersion  = new nodefony.finder( {
 					path:path+"/doc",
-					recurse:false,
+					recurse:false
 				});
 				var directory  = finderVersion.result.getDirectories();
 				var all = [];
@@ -123,40 +132,40 @@ nodefony.registerController("default", function(){
 				});
 
 				// manage link 
+				var findPath = null ;
 				try {
 					if ( version ){
 						if ( section ){
 							if ( subsection ){
-								var findPath = path+"/doc/"+version+"/"+section+"/"+subsection ;
+								findPath = path+"/doc/"+version+"/"+section+"/"+subsection ;
 							}else{
-								var findPath = path+"/doc/"+version+"/"+section ;
+								findPath = path+"/doc/"+version+"/"+section ;
 							}
-							var finder  = new nodefony.finder( {
+							finder  = new nodefony.finder( {
 								path:findPath,
 								recurse:false,
-								followSymLink:true,
+								followSymLink:true
 							});
 						}else{
-							var finder  = new nodefony.finder( {
+							finder  = new nodefony.finder( {
 								path:path+"/doc/"+version,
 								recurse:false,
-								followSymLink:true,
+								followSymLink:true
 							});	
 						}
 					}else{
-						var finder  = new nodefony.finder( {
+						finder  = new nodefony.finder( {
 							path:path+"/doc/Default",
 							recurse:false,
-							followSymLink:true,
+							followSymLink:true
 						});
 					}
 				}catch(e){
-					var finder  = new nodefony.finder( {
-							path:path+"/doc/Default",
-							recurse:false,
-							followSymLink:true,
-						});
-
+					var myUrl = this.generateUrl("documentation-version",{
+						bundle:"nodefony",
+						version:this.defaultVersion
+					})
+					return this.redirect(myUrl);
 				}
 				var result = finder.result  ;
 
@@ -205,7 +214,7 @@ nodefony.registerController("default", function(){
 				}
 
 
-			};
+			}
 
 			navDocAction (){
 				
@@ -291,7 +300,6 @@ nodefony.registerController("default", function(){
 				   	</div>'
 			 	return this.getResponse(html);	
 			}
-
 			
 			searchAction (){
 
@@ -314,7 +322,7 @@ nodefony.registerController("default", function(){
 					this.renderJsonAsync({});	
 				}
 			
-			};
+			}
 		};
 
 		return defaultController;

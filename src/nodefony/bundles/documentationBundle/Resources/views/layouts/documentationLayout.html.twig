@@ -91,32 +91,53 @@
 		});
 		$("#buttonSearh").click(function(){
 			var ele = $("#search");
-			ele.empty();
 			var mysearch = search.val() ;
+			var spinner = $("#spinner");
 			if ( mysearch ){
-				$.get("/documentation/search",{
-					search:mysearch	
-				},function(data){
+				$.ajax({
+					url: "/documentation/search",
+					data:{
+						search:mysearch	
+					},
+					beforeSend:function(){
+						console.log("before")
+						ele.empty();
+						spinner.show();
+					},
+					success:function(data){
+						var text = null ;
+						for ( var link in data){
+							var reg = new RegExp(mysearch, 'gi');
+							var res  = reg.exec( data[link].text ) ;
+							if ( res ){
+								text = data[link].text.replace(res[0], "<span style='background-color:yellow' >"+res[0]+"</span>" );
+							}else{
+								continue ;	
+							}
+							var li = "<li class='list-group-item'>";
+							li += "<a href='"+link+"'><span style=''>" + data[link].title +"</span></a>";
+							li += "<div>  "+text+" </div>"	
+							li += "</li>";
+							ele.append(li);
+						}
+						if (! text ){
+							var li = "<li class='list-group-item'>";
+							li += "<div>  No result </div>"	
+							li += "</li>";
+							ele.append(li);
+	
+						}
+					},
+					complete:function(){
+						spinner.hide();
+						console.log("complete")
 
-				for ( var link in data){
-					var reg = new RegExp(mysearch, 'gi');
-					var res  = reg.exec( data[link].text ) ;
-					if ( res ){
-						var text = data[link].text.replace(res[0], "<span style='background-color:yellow' >"+res[0]+"</span>" );
-					}else{
-						continue ;	
 					}
-					var li = "<li class='list-group-item'>";
-					li += "<a href='"+link+"'><span style=''>" + data[link].title +"</span></a>";
-					li += "<div>  "+text+" </div>"	
-					li += "</li>";
-					ele.append(li);
-
-				}
-
 				}).fail(function() {
+					spinner.hide();
 					console.log( "ERROR" );
 				});
+
 			}else{
 				event.stopPropagation()
 				event.preventDefault()
@@ -204,11 +225,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	<i id="spinner" class="fa fa-refresh fa-spin fa-3x fa-fw" style="float: right;font-size: 20px;margin-right: 20px;"></i>
         <h4 class="modal-title" id="myModalLabel">Search</h4>
       </div>
       <div class="modal-body scroll-wrap">
 	<ul id="search" class="list-group">
-									
+		<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>							
 	</ul> 
       </div>
       <div class="modal-footer">
