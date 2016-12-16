@@ -39,7 +39,7 @@ describe("BUNDLE DEMO", function(){
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"13",element:"myRouteDefaultValue"});
+					assert.deepStrictEqual(res, {page:"51",element:"defaultValue"});
 					done();	
 				});
 			})
@@ -52,7 +52,7 @@ describe("BUNDLE DEMO", function(){
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"13",element:"myRouteDefaultValue"});
+					assert.deepStrictEqual(res, {page:"51",element:"defaultValue"});
 					done();	
 				});
 			})

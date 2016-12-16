@@ -108,6 +108,15 @@ nodefony.register("Route", function(){
 						}	
 					}
 				}	
+			}else{
+				for( var def in this.defaults ){
+					switch ( def ){
+						case "controller" :
+							continue ;
+						default :
+							res.push( this.defaults[def] );
+					}
+				}
 			}	
 		}	
 		
