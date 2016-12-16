@@ -59,7 +59,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.validDomain = this.isValidDomain() ;
 			this.crossDomain = null; 
 
-			this.logger("REQUEST "+request.method +" FROM : "+ this.request.remoteAddress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
+			this.logger( ( this.isAjax ? " AJAX REQUEST " : "REQUEST ") +request.method +" FROM : "+ this.request.remoteAddress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
 
 			//parse cookies
 			this.parseCookies();

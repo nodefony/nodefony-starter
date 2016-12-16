@@ -249,7 +249,7 @@ nodefony.registerService("firewall", function(){
 							factory:this.factory.name,
 							tokenName:this.token.name
 						});
-						var target_path =  context.session.getFlashBag("default_target_path" ) ;
+						var target_path =  context.session.getFlashBag("default_target_path") ;
 						var target = null ;
 						if ( target_path ){
 							target = target_path;
@@ -313,6 +313,11 @@ nodefony.registerService("firewall", function(){
 		}
 
 		redirect (context, url){
+			// no cache 
+			context.response.setHeaders({
+				"Cache-Control":"no-store, no-cache, must-revalidate",
+				"Expires":"Thu, 01 Jan 1970 00:00:00 GMT"
+			})
 			if ( url ){
 				return context.redirect(url, 301);
 			}
