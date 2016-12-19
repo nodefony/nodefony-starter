@@ -4,10 +4,6 @@
  *
  */
 
-var Promise = require('promise');
-
-
-
 nodefony.registerBundle ("assetic", function(){
 
 	var assetic = class assetic extends nodefony.Bundle {
@@ -19,12 +15,12 @@ nodefony.registerBundle ("assetic", function(){
 			// load bundle library 
 			this.autoLoader.loadDirectory(this.path+"/core");
 			this.container = container ;
-			this.webDir =  kernel.rootDir + "/web";
+			this.rootDir =  kernel.rootDir ;
+			this.webDir =  this.rootDir + "/web";
 
 
 			this.kernel.listen(this,"onPreBoot",() => {
 				this.engineTwig =  this.kernel.get("templating").engine ;
-				//console.log(this.engineTwig);
 				this.createExtendJavascript();
 				this.createExtendStylesheets();
 			});
@@ -33,15 +29,39 @@ nodefony.registerBundle ("assetic", function(){
 			this.kernelType  =  kernel.type ;
 		}
 
-		generateFileName (files){
+
+		checkPath (file, template, type){
+			var obj = path.parse(file);
+			switch( obj.root ){
+				case "/" :
+					try {
+						return  new nodefony.fileClass(this.webDir+file);	
+					}catch(e){
+						throw e ;
+					}
+				break;
+				case "" :
+					var tmpObj = path.parse( template );
+					try {	
+						this.logger("BLOCK "+type+" RELATIVE PATH  Template : " + template + " RELATIVE PATH  : "+ file,"DEBUG");
+						return  new nodefony.fileClass( tmpObj.dir+"/"+file );
+					}catch(e){
+						throw e ;
+					}
+			}
+			throw new Error(" Can't define path " + file +" in template :" + template );
+		}
+		
+		generateFileName (files, template, type){
 			var ino ="";
 			var tab = [];
+			var file = null ;
 			for ( var i=0 ; i < files.length ; i++ ){
 				if ( files[i].slice(-1) === '*'  ){
 					files[i] = files[i].slice(0, -1);
 				}
 				try {
-					var file = new nodefony.fileClass( this.webDir + files[i] ) ;
+					file = this.checkPath( files[i], template , type) ; 
 				}catch(e){
 					this.kernel.logger(e, "ERROR");
 					continue ;
@@ -52,11 +72,11 @@ nodefony.registerBundle ("assetic", function(){
 			return 	{
 				hash : crypto.createHash('md5').update(ino).digest("hex") ,
 				files : tab
-			}
+			};
 		}
 
-		createOutputFile (files, output, type){
-			var ret = this.generateFileName( files ) ;
+		createOutputFile (files, output, type, template){
+			var ret = this.generateFileName( files, template, type ) ;
 			if ( output  === ""){
 				output = "/assets/"+type+"/"+ret.hash+"_assetic."+type ;
 			}
@@ -67,19 +87,20 @@ nodefony.registerBundle ("assetic", function(){
 				return  {
 					name:output,	
 					files:ret.files
-				}
+				};
 			}catch(e){
 				throw e ;
 			}
 		}
 
-		concatFiles (files, outputFile, myFilters, type){
+		concatFiles (files, outputFile, myFilters){
 			try {
 				var data = "";
+				var hasFilters = null ;
 				if ( myFilters && myFilters.length){
-					var hasFilters = true;
+					hasFilters = true;
 				}else{
-					var hasFilters = false;
+					hasFilters = false;
 				}
 				for ( var i=0 ; i < files.length ; i++ ){
 					try {
@@ -97,7 +118,6 @@ nodefony.registerBundle ("assetic", function(){
 										
 								}) ;
 							}
-							
 						}else{
 							data += files[i].read()  ;
 
@@ -113,7 +133,7 @@ nodefony.registerBundle ("assetic", function(){
 		}
 
 		// try filter asunc !!!!!
-		/*concatFiles (files, outputFile, myFilters, type){
+		/*concatFiles (files, outputFile, myFilters){
 			try {
 				if ( myFilters && myFilters.length){
 					var hasFilters = true;
@@ -178,42 +198,39 @@ nodefony.registerBundle ("assetic", function(){
 			}
 		}*/
 
-
-		genetateFile ( block , type){
+		genetateFile ( block , type, template){
 			var files = [];  
 			var filters = [];
 			var output = "";
+			var reg = null ;
 			switch (type){
 				case "js" :
-					var reg = /.*\.js$/ ;
+					reg = /.*\.js$/ ;
 				break;
 				case "css" :
-					var reg = /.*\.css$/ ;
+					reg = /.*\.css$/ ;
 				break;
-			
 			}
-
-			for (var i=0 ; i < block.length ; i++){
+			var rep = null ;
+			for ( let i = 0 ; i < block.length ; i++){
 				var line = block[i].replace(/\s*/g, "");
 				if (line.match(/^\/\//) ){
 					continue ;
 				}
-				//console.log(line)
 				if ( line.match(/.*=.*/) ){
 					var ret	 = line.split("=");
-					//console.log(ret);
 					switch ( ret[0]  ){
 						case "output" :
 						case "Output" :
 						case "OUTPUT" :
-							var rep = ret[1].replace(/'|\"|\s*/g, "");
+							rep = ret[1].replace(/'|\"|\s*/g, "");
 							//console.log(rep)
 							output =  rep ;
 						break;
 						case "filter" :
 						case "Filter" :
 						case "FILTER" :
-							var rep = ret[1].replace(/'|\"|\s*/g, "");
+							rep = ret[1].replace(/'|\"|\s*/g, "");
 							if ( rep.match(/^\?.*/) ){
 								rep = rep.replace(/^\?/,"");
 								if (this.kernelType === "CONSOLE"){
@@ -236,22 +253,23 @@ nodefony.registerBundle ("assetic", function(){
 							continue ;
 					}
 				}else{
-					var rep = block[i].replace(/'|\"| /g, "");
+					rep = block[i].replace(/'|\"| /g, "");
 					files.push(rep);
 				}
 			}
 
+			var nodeOutput = null ;
 			try {
-				var nodeOutput = this.createOutputFile(files, output, type);
+				nodeOutput = this.createOutputFile(files, output, type, template);
 				var res = [] ;
-				for ( var i=0 ; i < nodeOutput.files.length ; i++ ){
+				for ( let i=0 ; i < nodeOutput.files.length ; i++ ){
 					switch( nodeOutput.files[i].checkType() ){
 						case "File":
 							res.push( nodeOutput.files[i] );
 						break;
 						case "Directory":
 							try {
-								var finder = new nodefony.finder( {
+								new nodefony.finder( {
 									path:nodeOutput.files[i].path,
 									recurse:true,
 									match:reg,
@@ -260,7 +278,7 @@ nodefony.registerBundle ("assetic", function(){
 											throw error ;
 										}
 										result.getFiles().forEach(function(file){
-											res.push(file)	
+											res.push(file);
 										});
 									}
 								});
@@ -275,8 +293,8 @@ nodefony.registerBundle ("assetic", function(){
 				if ( this.environment === "dev" || this.kernelType === "CONSOLE" ){
 					//create file if not exist
 					fs.openSync(this.webDir + output, 'w');
-					var file = new nodefony.fileClass( this.webDir + output )
-					this.concatFiles( res, file , filters, type);
+					var file = new nodefony.fileClass( this.webDir + output );
+					this.concatFiles( res, file , filters);
 				}
 			}catch(error){
 				throw error ;
@@ -303,16 +321,18 @@ nodefony.registerBundle ("assetic", function(){
         				// what type of tags can follow this one.
         				next: ["endjavascripts"], // match the type of the end tag
         				open: true,
-        				compile:  (token) => {
-            					var expression = token.match["input"];
+        				compile:  function (token)  {
+            					var expression = token.match.input;
 						
 						var res = expression.replace(/javascripts/, "");
 						res = res.replace(/\s/g, "\n");
 						res = res.split("\n" );
-						res = res.filter(function(e){ return e === 0 || e });
+						res = res.filter(function(e){
+ 						       	return ( e === 0  || e ) ;  
+						});
 
 						try {
-							var res = this.genetateFile( res , "js");
+							res = that.genetateFile( res , "js", this.path);
 						}catch(error){
 							throw error ;
 						}
@@ -327,9 +347,9 @@ nodefony.registerBundle ("assetic", function(){
         				parse:  function (token, context, chain)  {
 						var cdn = that.settings.CDN.javascripts;
 						if (cdn){
-							context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+							context.asset_url = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{
-							context["asset_url"] = token.assetic.output ;
+							context.asset_url = token.assetic.output ;
 						}
                 				var output = Twig.parse.apply(this, [token.output, context]);
             					return {
@@ -367,35 +387,34 @@ nodefony.registerBundle ("assetic", function(){
         				// what type of tags can follow this one.
         				next: ["endstylesheets"], // match the type of the end tag
         				open: true,
-        				compile: (token)  => {
-            					var expression = token.match["input"];
+        				compile: function (token) {
+            					var expression = token.match.input ;
 						
 						var res = expression.replace(/stylesheets/, "");
 						res = res.replace(/\s/g, "\n");
 						res = res.split("\n" );
-						res = res.filter(function(e){ return e === 0 || e });
-
+						res = res.filter(function(e){
+ 						       	return (e === 0 || e ); 
+						});
 						try {
-							var res = this.genetateFile( res , "css");
+							res = that.genetateFile( res , "css", this.path);
 						}catch(error){
 							throw error ;
 						}
-
 						//console.log("COMPILE : " +res.name)
             					// turn the string expression into tokens.
             					token.assetic = {
 							output:res.name
             					};
-
             					delete token.match; // cleanup
             					return token;
         				},
         				parse:  function (token, context, chain)  {
 						var cdn = that.settings.CDN.stylesheets ;
 						if (cdn){
-							context["asset_url"] = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
+							context.asset_url = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{
-							context["asset_url"] = token.assetic.output ;
+							context.asset_url = token.assetic.output ;
 						}
 						//console.log(this)
                 				var output = Twig.parse.apply(this, [token.output, context]);
