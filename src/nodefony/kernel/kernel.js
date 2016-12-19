@@ -39,12 +39,12 @@ nodefony.register("kernel", function(){
 		}
 	};
 
-	var settingsSyslog = {
+	/*var settingsSyslog = {
 		//rateLimit:100,
 		//burstLimit:10,
 		moduleName:"KERNEL",
 		defaultSeverity:"ERROR"
-	};
+	};*/
 
 	var logConsole = function(syslog){
 		var red, blue, green, reset, yellow;
@@ -67,7 +67,11 @@ nodefony.register("kernel", function(){
 
 		// INFO DEBUG
 		var data ;
-		( this.debug ) ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
+		if ( this.debug ){
+			data = "INFO,DEBUG,WARNING" ;
+		}else{
+			data = "INFO" ;
+		}
 		syslog.listenWithConditions(this, {
 			severity:{
 				data:data
@@ -178,8 +182,9 @@ nodefony.register("kernel", function(){
 				this.hostHttps = this.hostname +":"+this.httpsPort ;
 				this.domainAlias = result.system.domainAlias ;
 				// manage LOG
-				if (this.environment === "prod")
+				if (this.environment === "prod"){
 					this.environment = result.system.debug ? "dev" : "prod" ;
+				}
 				this.initializeLog(options);
 				this.autoLoader.syslog = this.syslog;
 				//this.container.set("syslog",this.syslog);
@@ -295,7 +300,11 @@ nodefony.register("kernel", function(){
 					this.logStreamD = new nodefony.log(this.rootDir+this.settings.system.log.messages,{
 						rotate:this.settings.system.log.rotate
 					});
-					( this.debug ) ? data = "INFO,DEBUG,WARNING" : data = "INFO" ;
+					if ( this.debug ){
+						data = "INFO,DEBUG,WARNING" ;
+					}else{
+						data = "INFO" ;
+					}
 					this.syslog.listenWithConditions(this,{
 						severity:{
 							data:data
@@ -305,7 +314,7 @@ nodefony.register("kernel", function(){
 							console.log(  pdu.payload);	
 							return ;
 						}
-						if (! pdu.payload ) return ; 
+						if (! pdu.payload ) { return ; } 
 						var reg = new RegExp("\\[32m");
 						var line = pdu.severityName +" SYSLOG "  + pdu.msgid +  " : "+ pdu.payload.replace(reg,"");
 						this.logStreamD.logger( new Date(pdu.timeStamp) + " " +line +"\n" );
@@ -344,7 +353,7 @@ nodefony.register("kernel", function(){
 	 	*	@method logger
          	*/
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "KERNEL ";
+			if (! msgid) { msgid = "KERNEL ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -363,8 +372,9 @@ nodefony.register("kernel", function(){
          	*/
 		getBundle (name){
 			for (var ns in this.bundles){
-				if (ns === name)
+				if (ns === name){
 					return this.bundles[ns];
+				}
 			}
 			return null;	
 		}
@@ -375,8 +385,9 @@ nodefony.register("kernel", function(){
 	 	*	@param {String} name
          	*/
 		getBundles (name){
-			if (name)
+			if (name){
 				return this.getBundle(name);
+			}
 			return this.bundles;	
 		}
 		
@@ -427,7 +438,7 @@ nodefony.register("kernel", function(){
 						onFile:(file) => {
 							if (file.matchName(this.regBundle) ){
 								try {
-									this.logger("registerBundles in appkernel.js : " + file.name ,"DEBUG","APP KERNEL")
+									this.logger("registerBundles in appkernel.js : " + file.name ,"DEBUG","APP KERNEL");
 									this.loadBundle(file);
 								}catch(e){
 									this.logger(e);
@@ -475,7 +486,7 @@ nodefony.register("kernel", function(){
 			// OVERRIDE VIEWS BUNDLE in APP DIRECTORY
 			this.listen(this, "onBoot" , () => {
 				for (var bundle in this.bundles){
-					if (bundle === "App") continue ;
+					if (bundle === "App") { continue ; }
 					var result = this.bundles.App.resourcesFiles.findByNode(bundle+"Bundle");
 					if ( result.length() ){
 						try {
@@ -512,7 +523,7 @@ nodefony.register("kernel", function(){
 					continue ;
 				}
 			}
-			if ( this.eventReadywait  === 0) waitingBundle.call(this) ;
+			if ( this.eventReadywait  === 0) { waitingBundle.call(this) ; }
 			this.logger("\x1B[33m EVENT KERNEL BOOT\x1b[0m", "DEBUG");
 			this.fire("onBoot", this);
 			this.booted = true ;
@@ -604,7 +615,7 @@ nodefony.register("kernel", function(){
 				console.trace(e);
 				code = 1;
 				process.nextTick( () => {
-					this.logger("Cycle Of Live terminate KERNEL CODE : "+code,"INFO");
+					this.logger("Kernel Life Cycle Terminate CODE : "+code,"INFO");
 				});
 				this.logger(e,"ERROR");
 			}
@@ -615,12 +626,11 @@ nodefony.register("kernel", function(){
 				this.logStreamD.close("Close debug stream\n");	
 			}
 			process.nextTick( () => {
-				this.logger("Cycle Of Live terminate KERNEL CODE : "+code,"INFO");
+				this.logger("Kernel Life Cycle Terminate CODE : "+code,"INFO");
 				process.exit(code);
 			});
 			return ;
 		}
-
 	};
 
 	return kernel ;
