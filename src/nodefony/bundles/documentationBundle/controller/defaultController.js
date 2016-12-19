@@ -94,6 +94,7 @@ nodefony.registerController("default", function(){
 				var subsection = null ;
 				var path = null ;
 				var finder  = null ;
+				var myUrl  = null ;
 
 				if (this.query.subsection){
 					subsection = this.query.subsection ;	
@@ -116,7 +117,12 @@ nodefony.registerController("default", function(){
 					if ( this.kernel.bundles[bundle] ){
 						path = this.kernel.bundles[bundle].path;
 					}else{
-						path = this.kernel.nodefonyPath ;
+						myUrl = this.generateUrl("documentation-version",{
+							bundle:"nodefony",
+							version:this.defaultVersion
+						})
+						return this.redirect(myUrl);
+						//path = this.kernel.nodefonyPath ;
 					}
 				}
 
@@ -161,7 +167,7 @@ nodefony.registerController("default", function(){
 						});
 					}
 				}catch(e){
-					var myUrl = this.generateUrl("documentation-version",{
+					myUrl = this.generateUrl("documentation-version",{
 						bundle:"nodefony",
 						version:this.defaultVersion
 					})
