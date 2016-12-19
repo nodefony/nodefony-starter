@@ -27,16 +27,18 @@ nodefony.registerService("router", function(){
 			}
 			var routes = [];
 			this.xmlParser.parseString(xml, (err, node) => {
-				if(err) this.logger("ROUTER xmlParser.parseString : " + err, 'WARNING');
-				if ( ! node ) return node;
+				if(err) { this.logger("ROUTER xmlParser.parseString : " + err, 'WARNING');}
+				if ( ! node ) { return node; }
 				for(var key in node){
 					switch(key){
 						case 'route': 
 							if(prefix){
-								for(var skey in node[key]){
-									node[key][skey]['id'] = prefix.replace('/', '_') + '_' + node[key][skey]['id'];
-									if(node[key][skey]['id'].charAt(0) == '_') node[key][skey]['id'] = node[key][skey]['id'].slice(1);
-									node[key][skey]['pattern'] = prefix + node[key][skey]['pattern'];
+								for( let skey in node[key]){
+									node[key][skey].id = prefix.replace('/', '_') + '_' + node[key][skey].id;
+									if ( node[key][skey].id.charAt(0) === '_'){
+										node[key][skey].id = node[key][skey].id.slice(1);
+									}
+									node[key][skey].pattern = prefix + node[key][skey].pattern;
 								}
 							}
 							routes = routes.concat(node[key]);
@@ -46,8 +48,8 @@ nodefony.registerService("router", function(){
 							/*
 							 * TODO PROBLEME DE LOAD DE FICHIER: path + getReaderFunc
 							 */
-							for(var skey in node[key]){
-								routes = routes.concat(importXmlConfig.call(this, '/' + node[key][skey]['resource'], (node[key][skey]['prefix'] ? node[key][skey]['prefix'] : '')));
+							for( let skey in node[key]){
+								routes = routes.concat(importXmlConfig.call(this, '/' + node[key][skey].resource, (node[key][skey].prefix ? node[key][skey].prefix : '')));
 							}
 							break;
 					}
@@ -84,7 +86,7 @@ nodefony.registerService("router", function(){
 					}
 				}
 			}
-			if(callback) callback(routes);
+			if(callback) { callback(routes); }
 		};
 		
 		var getObjectRoutesXML = function(file, callback, parser){
@@ -95,14 +97,14 @@ nodefony.registerService("router", function(){
 			if (parser){
 				file = this.render(file, parser.data, parser.options);
 			}
-			if(callback) callback(JSON.parse(file)); 
+			if(callback) { callback(JSON.parse(file)); }
 		};
 		
 		var getObjectRoutesYml = function(file, callback, parser){
 			if (parser){
 				file = this.render(file, parser.data, parser.options);
 			}
-			if(callback) callback(yaml.load(file)); 
+			if(callback) { callback(yaml.load(file)); }
 		};
 
 		return {
@@ -132,7 +134,7 @@ nodefony.registerService("router", function(){
 			this.kernel = this.container.get("kernel");
 			this.defaultAction = null;
 			this.defaultView = null;
-			this.variables = new Array();
+			this.variables = [];
 			//this.notificationsCenter = this.container.get("notificationsCenter") ;
 			this.context = this.container.get("context") ;
 			this.defaultLang= null ;
@@ -168,8 +170,9 @@ nodefony.registerService("router", function(){
 				if (typeof this.controller.prototype[obj[i]] === "function"){
 					var res = regAction.exec(obj[i]);
 					if (res){
-						if ( res[1] === name)
+						if ( res[1] === name){
 							return this.controller.prototype[obj[i]];
+						}
 					}else{
 					
 					}
@@ -179,16 +182,17 @@ nodefony.registerService("router", function(){
 		}
 
 		parsePathernController (name){
-			var tab = name.split(":")
+			var tab = name.split(":");
 			this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
 			if ( this.bundle ){
 				if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
 					this.context.autoloadCache.bundles[this.bundle.name] = {
 						controllers:{}	
-					}
+					};
 				}
-				if (this.bundle.name !== "framework")
-					this.container.set("bundle", this.bundle)
+				if (this.bundle.name !== "framework"){
+					this.container.set("bundle", this.bundle);
+				}
 				this.controller = this.getController(tab[1]);
 				if ( this.controller ){
 					this.action = this.getAction(tab[2]);
@@ -221,8 +225,7 @@ nodefony.registerService("router", function(){
 		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE RESOLVER";
-			//return this.router.syslog.logger(pci, severity, msgid,  msg);
+			if (! msgid) { msgid = "SERVICE RESOLVER"; }
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -236,7 +239,7 @@ nodefony.registerService("router", function(){
 				var result =  this.action.apply(controller, this.variables);
 				switch (true){
 					case result instanceof nodefony.Response :
-						if ( this.context.nbCallController == 0  ){
+						if ( this.context.nbCallController === 0  ){
 							this.context.nbCallController++ ;
 							this.notificationsCenter.fire("onResponse", result, this.context);
 						}
@@ -246,7 +249,6 @@ nodefony.registerService("router", function(){
 					break ;
 					case result instanceof Promise :
 						return result;
-					break ;
 					case nodefony.typeOf(result) === "object":
 						if ( this.defaultView ){
 							result = controller.render(this.defaultView, result );
@@ -255,7 +257,7 @@ nodefony.registerService("router", function(){
 							throw {
 								status:500,
 								message:"default view not exist"
-							}
+							};
 						}
 					break;
 					default:
@@ -273,7 +275,7 @@ nodefony.registerService("router", function(){
 
 	var generateQueryString = function(obj, name){
 		var size = ( Object.keys(obj).length ) ;
-		if ( ! size ) return "" ; 
+		if ( ! size ) { return "" ; }
 		var str = "?";
 		if ( nodefony.typeOf(obj) !== "object" || obj === null){
 			this.logger("BAD arguments queryString in route varaibles :" + name ,"WARNING");
@@ -281,12 +283,12 @@ nodefony.registerService("router", function(){
 		}
 		var iter = 1 ;
 		for (var ele in obj){
-			if (ele === "_keys") continue ;
+			if (ele === "_keys") { continue ; }
 			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter+1) >= size     ? "" : "&" )  ;
 			iter+=1 ;
 		}
 		return   str ; 
-	}
+	};
 
 	var Router = class Router extends nodefony.Service { 
 
@@ -306,11 +308,11 @@ nodefony.registerService("router", function(){
 				try {
 					return this.generatePath( name, variables, host);
 				}catch(e){
-					this.logger(e.error)
+					this.logger(e.error, "ERROR");
 					throw {
 						status:500,
 						error:e.error
-					}
+					};
 				}
 			});
 			//this.syslog = this.container.get("syslog"); 
@@ -318,9 +320,10 @@ nodefony.registerService("router", function(){
 	
 		generatePath (name, variables, host){
 			var route =  this.getRoute(name) ;
-			var queryString = variables ? variables["queryString"]: null ;
-			if (! route )
+			var queryString = variables ? variables.queryString : null ;
+			if (! route ){
 				throw {error:"no route to host  "+ name};
+			}
 			var path = route.path;
 			if ( route.variables.length  || queryString  ){
 				if (! variables ){
@@ -328,10 +331,10 @@ nodefony.registerService("router", function(){
 					for (var i= 0 ; i < route.variables.length ;i++ ){
 						txt += "{"+route.variables[i]+"} ";
 					}
-					throw {error:"router generate path route "+ name + " must have variable "+ txt}
+					throw {error:"router generate path route "+ name + " must have variable "+ txt};
 				}
 				for (var ele in variables ){
-					if (ele === "_keys") continue ;
+					if (ele === "_keys") { continue ;}
 					if (ele === "queryString" ){
  				       		queryString = variables[ele] ;
 						continue ;
@@ -352,7 +355,7 @@ nodefony.registerService("router", function(){
 			}
 			return path ;
 
-		};
+		}
 			
 		/*addRoute (name , route){
 			if (route instanceof nodefony.Route){
@@ -365,17 +368,19 @@ nodefony.registerService("router", function(){
 		};*/
 
 		getRoute (name){
-			if (this.routes[name])
+			if (this.routes[name]){
 				return this.routes[name];
+			}
 			this.logger("Route name: "+name +" not exist");
 			return null ;
-		};
+		}
 
 		setRoute (name, route){
+			var myroute = null ;
 			if ( route instanceof nodefony.Route){
-				var myroute = route;
+				myroute = route;
 			}else{
-				var myroute = this.createRoute(route);
+				myroute = this.createRoute(route);
 			}
 			var index = this.routes.push(myroute);
 			//var index = this.routes.unshift(myroute);
@@ -384,14 +389,14 @@ nodefony.registerService("router", function(){
 			}
 			this.routes[name] = this.routes[index-1];
 			this.logger("ADD Route : "+myroute.path + "   ===> "+myroute.defaults.controller, "DEBUG");
-		};
+		}
 
 		getRoutes (name){
 			if (name){
 				return this.routes[name];
 			}
 			return this.routes;
-		};
+		}
 
 		resolve (container, context){
 			var resolver = new nodefony.Resolver(container, this);
@@ -407,27 +412,26 @@ nodefony.registerService("router", function(){
 				}
 			}
 			return resolver;
-		};
+		}
 
 		resolveName (container, name){
 			try {
 				var resolver = new nodefony.Resolver(container, this);	
-				var route = resolver.parsePathernController(name);
+				resolver.parsePathernController(name);
 				return resolver;
 			}catch(e){
 				throw e ;
 			}
-		};
+		}
 
 		createRoute (obj){
 			return new nodefony.Route(obj);
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
-			//var syslog = this.container.get("syslog");
-			if (! msgid) msgid = "SERVICE ROUTER";
+			if (! msgid) { msgid = "SERVICE ROUTER";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		nodeReader (obj){
 			//console.log(require('util').inspect(obj, {depth: null}));
@@ -447,30 +451,29 @@ nodefony.registerService("router", function(){
 							newRoute.setFirewallConfigRoute(arg);
 						break;
 						case "defaults" :
-							for (var ob in arg){
+							for (let ob in arg){
 								newRoute.addDefault(ob, arg[ob] );	
 							}
 						break;
 						case "requirements" :
-							for (var ob in arg){
+							for (let ob in arg){
 								newRoute.addRequirement(ob, arg[ob] );	
 							}
 						break;
 						case "options" :
-							for (var ob in arg){
+							for (let ob in arg){
 								newRoute.addOptions(ob, arg[ob] );	
 							}
 						break;
 						default:
-							this.logger(" Tag : "+ele+ " not exist in routings definition")
+							this.logger(" Tag : "+ele+ " not exist in routings definition");
 					}
 				}
 				newRoute.compile();
 				//this.addRoute(name, newRoute);
 				this.setRoute(name, newRoute);
 			}
-		};	
+		}
 	};	
-
 	return Router;
 });

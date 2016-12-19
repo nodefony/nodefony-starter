@@ -38,18 +38,7 @@ nodefony.register("Response",function(){
 
 			//default Content-Type to implicit headers
 			this.setHeader("Content-Type", "text/html; charset=utf-8");
-
-			// free container scope
-			this.response.on("finish",() =>{
-				//console.log("FINISH response")
-				//if ( ! this.ended ){
-				//	this.kernel.container.leaveScope(this.container);
-				//}
-			})
-
-			/*this.response.on("close",() => {
-			})*/
-		};
+		}
 
 		clean (){
 			delete this.response ;	
@@ -72,45 +61,44 @@ nodefony.register("Response",function(){
 					error:"Response addCookies not valid cookies"
 				}
 			}	
-		};
+		}
 
 		setCookies (){
 			for (var cook in this.cookies){
 				this.setCookie(this.cookies[cook]);	
 			}
-		};
+		}
 
 		setCookie (cookie){
 			//this.response.on('header', function(){
 				this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
 				this.setHeader('Set-Cookie', cookie.serialize());
 			//}.bind(this))
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			var syslog = this.container.get("syslog");
-			if (! msgid) msgid = "HTTP RESPONSE";
+			if (! msgid) { msgid = "HTTP RESPONSE"; }
 			return syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		//ADD INPLICIT HEADER
 		setHeader (name, value){
 			this.response.setHeader(name, value);
-		};
+		}
 		
 		setHeaders (obj){
 			nodefony.extend(this.headers, obj);
-		};
+		}
 
 		setEncoding (encoding){
 			return this.encoding = encoding ;
-		};
-
+		}
 
 		setStatusCode (status, message){
 			this.statusCode = status ;
-			this.response.statusMessage = message || http['STATUS_CODES'][this.statusCode] ;
-		};
+			this.response.statusMessage = message || http.STATUS_CODES[this.statusCode] ;
+		}
 
 		setBody (ele){
 			switch (nodefony.typeOf(ele) ) {
@@ -125,7 +113,7 @@ nodefony.register("Response",function(){
 					this.body = ele;
 			}
 			return  ele ;
-		};
+		}
 
 		writeHead (statusCode, headers){
 			if ( ! this.response.headersSent ){
@@ -136,7 +124,7 @@ nodefony.register("Response",function(){
 			}else{
 				throw new Error("Headers already sent !!");	
 			}
-		};
+		}
 
 		flush (data, encoding){
 			if ( ! this.response.headersSent ) {
@@ -145,14 +133,14 @@ nodefony.register("Response",function(){
 				this.writeHead();
 			}
 			return this.response.write( data , encoding);
-		};
+		}
 
 		write (){
 			if (this.encoding )
 				return this.response.write( this.body + "\n", this.encoding);
 			else
 				return this.response.write( this.body + "\n");
-		};
+		}
 
 		end (data, encoding){
 			if ( this.response ){
@@ -161,9 +149,22 @@ nodefony.register("Response",function(){
 				return ret ;
 			}
 			return null ;
-		};	
+		}	
 
-		redirect (url, status){
+		redirect (url, status, headers ){
+			if ( headers ){
+				switch ( nodefony.typeOf( headers ) ){
+					case "object" :
+						this.setHeaders(headers);
+					break ;
+					case "boolean" :
+						this.setHeaders( {
+							"Cache-Control":"no-store, no-cache, must-revalidate",
+							"Expires":"Thu, 01 Jan 1970 00:00:00 GMT"
+						});
+					break;
+				}
+			}
 			if (status == "301"){
 				this.setStatusCode( status );
 			}else{
@@ -171,9 +172,7 @@ nodefony.register("Response",function(){
 			}
 			this.setHeader("Location", url);		
 			return this;
-		};
+		}
 	};
-	
 	return Response;
-
 });

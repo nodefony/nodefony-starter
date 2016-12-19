@@ -262,18 +262,16 @@ nodefony.registerService("firewall", function(){
 								message:"OK",
 								status:200,
 							});
-							context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
-							return ;
+							return context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
 						}else{
 							this.redirect(context, target);
-							return ;
+							return context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
 						}
 						
-						//context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
 					});	
 				}
 			}catch(e){
-				this.handleError(context, e);
+				return this.handleError(context, e);
 			}
 		}
 
@@ -309,19 +307,16 @@ nodefony.registerService("firewall", function(){
 		}
 		
 		redirectHttps (context){
-			return context.redirectHttps(301) ;
+			// no cache 
+			return context.redirectHttps(301, true) ;
 		}
 
-		redirect (context, url){
-			// no cache 
-			context.response.setHeaders({
-				"Cache-Control":"no-store, no-cache, must-revalidate",
-				"Expires":"Thu, 01 Jan 1970 00:00:00 GMT"
-			})
+		redirect (context, url ){
 			if ( url ){
-				return context.redirect(url, 301);
+				// no cache 
+				return context.redirect(url, 301, true);
 			}
-			return context.redirect(context.request.url, 301);
+			return context.redirect(context.request.url, 301, true);
 		}
 			
 		match (request){
@@ -481,7 +476,7 @@ nodefony.registerService("firewall", function(){
 									return context.security.handleError(context, error);
 								}
 								try {
-									this.handlerHttp(context, request, response, session);
+									return this.handlerHttp(context, request, response, session);
 								}catch(error){
 									context.notificationsCenter.fire("onError", context.container, error );
 								}
@@ -562,7 +557,6 @@ nodefony.registerService("firewall", function(){
 						}
 					}.bind(this)) ;*/
 				}
-
 				return context.notificationsCenter.fire("onRequest", context.container, request, response);
 
 			}catch(e){

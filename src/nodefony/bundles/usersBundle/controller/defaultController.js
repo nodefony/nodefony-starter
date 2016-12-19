@@ -84,7 +84,7 @@ nodefony.registerController("default", function(){
 				var security = this.context.session.getMetaBag("security") ;
 				if ( ! security ){
 					this.context.session.invalidate() ;
-					return this.redirect( "/" );	
+					return this.redirect( "/" , null, true);	
 				}
 				switch ( security.factory){
 					case "passport-basic" :
@@ -92,6 +92,7 @@ nodefony.registerController("default", function(){
 					case "http_basic":
 					case "http_Digest":
 						this.getRequest().request.headers.authorization = "";
+						this.getResponse().setHeader("WWW-Authenticate", "");
 						this.get("security").getSecuredArea(security.firewall).factory.handle(this.context, () => {
 							var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
 							this.context.session.invalidate() ;
@@ -101,7 +102,8 @@ nodefony.registerController("default", function(){
 								this.notificationsCenter.fire("onResponse", this.getResponse() , this.context);
 								return ;
 							}	
-							return this.redirect( "/" );
+							this.redirect( "/" , null, true);
+							this.notificationsCenter.fire("onResponse", this.getResponse() , this.context);
 						});
 						return ;
 				}
@@ -109,11 +111,12 @@ nodefony.registerController("default", function(){
 					var formlogin = this.get("security").getSecuredArea(security.firewall).formLogin ;
 					this.context.session.invalidate() ;
 					if ( formlogin ){
-						return this.redirect( formlogin );
+						return this.redirect( formlogin , null, true);
 					}	
 				}catch(e){
+					this.logger(e,"ERROR");
 					this.context.session.invalidate() ;
-					return this.redirect( "/" );	
+					return this.redirect( "/" , null, true);	
 				}
 			}
 

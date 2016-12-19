@@ -254,16 +254,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return this.response;	
 		};
 
-		redirect (Url, status){
-			if (typeof Url === "object")
-				this.response.redirect(url.format(Url), status)
-			else	
-				this.response.redirect(Url, status)
-			this.fire("onResponse", this.response, this);
+		redirect (Url, status, headers){
+			if (typeof Url === "object"){
+				return this.response.redirect(url.format(Url), status, headers)
+			}else{	
+				return this.response.redirect(Url, status, headers )
+			}
 		};
 
-		redirectHttps ( status ){
-			this.response.setHeader("Cache-Control" ,"no-cache")
+		redirectHttps ( status, headers){
+			
 			if ( this.session ){
 				this.session.setFlashBag("redirect" , "HTTPS" );
 			}
@@ -283,8 +283,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}
 			var urlChange = nodefony.extend({}, this.request.url , urlExtend )
 			var newUrl  = url.format(urlChange);
-			this.response.redirect( newUrl, status );
-			this.fire("onResponse", this.response, this);
+			return this.redirect( newUrl, status , headers);
 		};
 
 		setXjson ( xjson){
