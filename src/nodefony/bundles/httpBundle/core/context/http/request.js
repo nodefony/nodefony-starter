@@ -8,7 +8,7 @@
  *
  */
 //var url = require("url")
-var qs = require('querystring');
+//var qs = require('querystring');
 var QS = require('qs');
 
 nodefony.register("Request",function(){
@@ -29,8 +29,9 @@ nodefony.register("Request",function(){
 					case "text/xml":
 						var Parser = new xmlParser( settingsXml );
 						Parser.parseString(this.body.toString(this.charset) , (err, result) => {
-							if ( err )
+							if ( err ){
 								throw err ;
+							}
 							this.queryPost = result ;
 						});	
 					break;
@@ -62,6 +63,7 @@ nodefony.register("Request",function(){
 
 	var Request  = class Request {
 		constructor (request, container){
+
 			this.container = container ;
 			this.request = request;
 			this.headers = 	request.headers ;
@@ -77,6 +79,7 @@ nodefony.register("Request",function(){
 			this.queryPost = {}; 
 			this.queryFile = {}; 
 			this.queryGet = this.url.query;
+			
 			this.query = this.url.query;
 			
 			this.method = this.getMethod() ;
@@ -85,11 +88,11 @@ nodefony.register("Request",function(){
 			this.charset = this.getCharset(this.request);
 			this.domain = this.getDomain();
 			this.remoteAddress = this.getRemoteAddress();
-			this.data = new Array();
+			this.data = [];
 			this.dataSize = 0;
 
 			this.request.on('data',  (data) => {
-				this.data.push(data) 
+				this.data.push(data); 
 				this.dataSize+= data.length;
 			});
 
@@ -105,16 +108,16 @@ nodefony.register("Request",function(){
 							if (this.queryPost instanceof Buffer){
 								this.query = this.queryPost ;
 							}else{
-								nodefony.extend( this.query, this.queryPost);
+								 this.query = nodefony.extend( {},  this.query, this.queryPost);
 								//nodefony.extend( this.query, this.queryFile);
 							}
 						break;
 						default:
-							nodefony.extend( this.query, this.queryPost);
+							this.query = nodefony.extend({},  this.query, this.queryPost);
 							//nodefony.extend( this.query, this.queryFile);
 					}
 				}catch(e){
-					console.trace(e)
+					console.trace(e);
 					if (e.status){
 						throw e ;
 					}
@@ -129,8 +132,9 @@ nodefony.register("Request",function(){
 		}
 
 		getHostName (host){
-			if ( this.url && this.url.hostname )
+			if ( this.url && this.url.hostname ){
 				return this.url.hostname ;
+			}
 			if ( host ){
 				return host.split(":")[0] ;
 			}
@@ -172,7 +176,7 @@ nodefony.register("Request",function(){
 
 		logger (pci, severity, msgid,  msg){
 			var syslog = this.container.get("syslog");
-			if (! msgid) msgid = "HTTP REQUEST  ";
+			if (! msgid) { msgid = "HTTP REQUEST  ";}
 			return syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -182,7 +186,7 @@ nodefony.register("Request",function(){
 				if (tab.length > 1){
 					for (var i = 1 ; i<tab.length ;i++){
 						if (typeof tab[i] === "string"){
-							var ele = tab[i].split("=")
+							var ele = tab[i].split("=");
 							var key = ele[0].replace(" ","");
 							this.rawContentType[key]= ele[1]; 
 						}else{
@@ -198,12 +202,14 @@ nodefony.register("Request",function(){
 		}
 
 		getCharset ( request ){
+			var charset = null ;
 			if ( request.headers["content-type"] ){
-				var charset = request.headers["content-type"].split(";")[1];
-				if (charset)
+				charset = request.headers["content-type"].split(";")[1];
+				if (charset){
 					charset = charset.replace(" ","").split("=")[1];
-				else
+				}else{
 					charset = "utf8" ;
+				}
 			}
 			return  charset || "utf8" ; 
 		}
@@ -219,10 +225,10 @@ nodefony.register("Request",function(){
 				return this.headers['x-forwarded-for'] ;
 			}
 			if ( this.request.connection && this.request.connection.remoteAddress ){
-				return this.request.connection.remoteAddress 
+				return this.request.connection.remoteAddress ; 
 			}
 			if ( this.request.socket && this.request.socket.remoteAddress ){
-				return this.request.socket.remoteAddress
+				return this.request.socket.remoteAddress ;
 			}
 			if (this.request.connection &&  this.request.connection.socket && this.request.connection.socket.remoteAddress ){
 				return  this.request.connection.socket.remoteAddress ;
@@ -251,8 +257,9 @@ nodefony.register("Request",function(){
 		}
 
 		isAjax (){
-			if ( this.headers['x-requested-with'] )
-				return (  'xmlhttprequest' === this.headers['x-requested-with'].toLowerCase() ) 
+			if ( this.headers['x-requested-with'] ){
+				return ( 'xmlhttprequest' === this.headers['x-requested-with'].toLowerCase() );
+			}
 			return false;
 		}
 	};

@@ -13,7 +13,7 @@ nodefony.registerTemplate("twig", function(){
 			cache:true
 		},
 		views:null
-	}
+	};
 	
 	var Twig = class Twig extends nodefony.templates {
 
@@ -39,14 +39,14 @@ nodefony.registerTemplate("twig", function(){
 				}
 			});
 			try {
-				return this.engine.renderFile(file.path, option, callback)
+				return this.engine.renderFile(file.path, option, callback);
 			}catch(e){
 				callback(e, null);
 			}
 		}
 
 		render (view, param){
-			var Render = this.compile(view)
+			var Render = this.compile(view);
 			try {
 				//var options = nodefony.extend( {nodefony:this.kernelSettings}, param);
 				return Render(param);
@@ -68,23 +68,20 @@ nodefony.registerTemplate("twig", function(){
 		        	error:(error) => {
 					callback(error, null)
 				}
-			})
+			});
 		}
 
 		extendFunction (){
-			return twig.extendFunction.apply(twig, arguments)
+			return twig.extendFunction.apply(twig, arguments);
 		}
 
 		extendFilter (){
-			return twig.extendFilter.apply(twig, arguments)
+			return twig.extendFilter.apply(twig, arguments);
 		}
 
 	};
-
 	Twig.prototype.extention = "twig";
-
-	return 	Twig ;
-		
+	return 	Twig ;	
 });
 
 

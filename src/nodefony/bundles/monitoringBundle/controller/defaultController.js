@@ -15,8 +15,7 @@ nodefony.registerController("default", function(){
 
 			constructor (container, context){
 				super(container, context);
-			};
-
+			}
 
 			/**
 		 	*
@@ -24,10 +23,10 @@ nodefony.registerController("default", function(){
 		 	*
 		 	*/
 			indexAction (module){
+				var kernel = this.get("kernel") ;
 				if (module){
 					this.getResponse().setHeader('Content-Type' , "application/xml"); 
 					if (module === "app"){
-						var kernel = this.get("kernel");
 						var bundles = function(){
 							var obj = {};
 							for (var bundle in kernel.bundles ){
@@ -35,7 +34,7 @@ nodefony.registerController("default", function(){
 									name:kernel.bundles[bundle].name,
 									version:kernel.bundles[bundle].settings.version,
 									config:this.container.getParameters("bundles."+bundle)
-								}	
+								};	
 							}
 							return obj;
 						}.call(this);
@@ -43,13 +42,13 @@ nodefony.registerController("default", function(){
 						return this.render('monitoringBundle::'+module+'.xml.twig', {
 							bundles:bundles,
 							user:this.context.user
-						})	
+						});
 					}
-					return this.render('monitoringBundle::'+module+'.xml.twig')	
+					return this.render('monitoringBundle::'+module+'.xml.twig');	
 				}else{
-					return this.render('monitoringBundle::index.html.twig')
+					return this.render('monitoringBundle::index.html.twig', {environment:kernel.environment,debug:kernel.debug});
 				}
-			};
+			}
 
 			/**
  			* 
@@ -63,18 +62,16 @@ nodefony.registerController("default", function(){
 				switch( this.getRequest().method ){
 					case "GET" :
 						return this.getResponse("PING");
-					break;
 					case "POST" :
 						return realtime.handleConnection(this.getParameters("query").request, context );	
-					break;
 					case "WEBSOCKET" :
 						if (message){
 							realtime.handleConnection(message.utf8Data, context );
 						}
 					break;
 					default :
-						throw new Error("REALTIME METHOD NOT ALLOWED")
-				};
+						throw new Error("REALTIME METHOD NOT ALLOWED");
+				}
 			}
 
 			/**
@@ -93,9 +90,9 @@ nodefony.registerController("default", function(){
 						}
 					break;
 					default :
-						throw new Error("REALTIME METHOD NOT ALLOWED")
-				};
-			};
+						throw new Error("REALTIME METHOD NOT ALLOWED");
+				}
+			}
 		};
 		
 		return defaultController;

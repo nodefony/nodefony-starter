@@ -6,6 +6,11 @@
 
 {% block title %}Nodefony Monitoring{% endblock %}
 
+{% block body %}
+	<div class="hide environment" value="{{environment}}"></div>
+	<div class="hide debug" value="{{debug}}" >{{debug}}</div>
+{% endblock %}
+
 
 {% block stylesheets %}
 	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>

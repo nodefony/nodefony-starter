@@ -5,8 +5,10 @@
  */
 
 //== Kernel
-appKernel = new stage.appKernel("/nodefony/app", "dev", {
-	debug: true,
+var  environment= $(".environment").attr("value");
+var  debug= $(".debug").attr("value");
+appKernel = new stage.appKernel("/nodefony/app", environment, {
+	debug: debug,
 	location:{
 		html5Mode:false
 	},

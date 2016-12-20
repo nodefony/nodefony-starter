@@ -32,11 +32,12 @@ nodefony.registerService("less", function(){
 				this.settings = container.getParameters("bundles.assetic").less;
 				for (var bundle in this.kernel.bundles ){
 					try {
-						var result = new nodefony.finder({
+						new nodefony.finder({
 							path:this.kernel.bundles[bundle].path+"/Resources/public/",
 							match:regexLess,
 							onFile:(file) => {
 								var parent = path.basename(file.dirName);
+								var url = null ;
 								if (parent === "less"){
 									try{
 										var txt = "public";
@@ -48,7 +49,7 @@ nodefony.registerService("less", function(){
 										var dest = cssDir.path + "/"+file.match[1] + ext ;
 										var indexof = dest.lastIndexOf(txt) ;
 										var pfile = dest.slice(indexof+aj);
-										var url = "/"+bundle+"Bundle"+"/"+pfile;
+										url = "/"+bundle+"Bundle"+"/"+pfile;
 
 										var index = this.filesLess.push(file); 	
 										this.filesLess[url] = {
@@ -56,7 +57,7 @@ nodefony.registerService("less", function(){
 											source:file.path, 
 											dest : dest,
 											checkSum:crypto.createHash('md5').update(file.content()).digest("hex")
-										}
+										};
 									}catch(e){
 										this.logger(e, "ERROR");
 										return;
@@ -65,14 +66,14 @@ nodefony.registerService("less", function(){
 								}
 							},
 							onFinish:() =>{
-								if (this.filesLess.length )
-									this.hasLess = true
+								if (this.filesLess.length ){
+									this.hasLess = true;
+								}
 							}
 						});
 					}catch(e){
-						this.logger("Bundle " + this.kernel.bundles[bundle].name + " NO PUBLIC DIRECTORY ","WARNING")
+						this.logger("Bundle " + this.kernel.bundles[bundle].name + " NO PUBLIC DIRECTORY ","WARNING");
 					}
-					
 				}
 				//console.log(this.filesLess)
 			});
@@ -95,21 +96,21 @@ nodefony.registerService("less", function(){
 
 			this.engine.render(file.content(),settings, (e, css) => {
 					if (e){
-						var str = "IN FILE : " + e.filename +"\n Line : " + e.line + "\n column : " + e.column + "\n message :" +e.message 
-						this.logger(str, "ERROR")
-						if (callback) callback(e, null);
+						var str = "IN FILE : " + e.filename +"\n Line : " + e.line + "\n column : " + e.column + "\n message :" +e.message; 
+						this.logger(str, "ERROR");
+						if (callback) { callback(e, null);}
 					}else{
 						try {
 							if ( dest  ){
-								var res = fs.writeFileSync(dest, css.css);
+								fs.writeFileSync(dest, css.css);
 								this.logger("CREATE LESS FILE: " + dest);
-								if (callback) callback(null, dest);
+								if (callback) { callback(null, css.css);}
 							}else{
-								if (callback) callback(null, css.css);	
+								if (callback) {callback(null, css.css);}
 							}
 						}catch(err){
 							this.logger( err,"ERROR");
-							if (callback) callback(err, null);
+							if (callback) { callback(err, null);}
 						}
 					}
 				}
@@ -124,7 +125,7 @@ nodefony.registerService("less", function(){
 				//cache
 				if (this.settings.cache){
 					var checkSum = crypto.createHash('md5').update(obj.file.content()).digest("hex") ;
-					if ( checkSum === obj.checkSum ) return false;
+					if ( checkSum === obj.checkSum ) { return false;}
 					obj.checkSum =  checkSum ;	
 				}
 				this.parse(obj.file, obj.dest, callback);
@@ -134,7 +135,7 @@ nodefony.registerService("less", function(){
 		}
 
 		filter (file, callback){
-			return this.parse(file, null, callback)
+			return this.parse(file, null, callback);
 		}
 
 		/*Less.prototype.filter = function(file, callback){

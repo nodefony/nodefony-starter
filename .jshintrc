@@ -7,6 +7,7 @@
     "eqeqeq":		true,
     "curly":		true,
     "loopfunc":		true,
+    "multistr":		true,
     "globals": {
       "nodefony":	true,
       "process":	true,
@@ -24,6 +25,7 @@
       "async":		true,
       "crypto":		true,
       "Sequelize":	true,
-      "url":		true
+      "url":		true,
+      "http":		true
     }	
 }

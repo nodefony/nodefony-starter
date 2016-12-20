@@ -53,7 +53,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			try {
 				this.originUrl = url.parse( this.request.headers.origin || this.request.headers.referer ) ;
 			}catch(e){
-				this.originUrl = url.parse( this.url ) 	
+				this.originUrl = url.parse( this.url );
 			}
 			
 			this.validDomain = this.isValidDomain() ;
@@ -70,12 +70,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.remoteAddress = this.request.remoteAddress ; 
 
 			// LISTEN EVENTS KERNEL 
-			this.listen(this, "onView", (result, context, view, param) => {
+			this.listen(this, "onView", (result/*, context, view, param*/) => {
 				this.response.body = result;
 			});
 			this.listen(this, "onResponse", this.send);
 			this.listen( this, "onRequest" , this.handle );
-			this.listen( this, "onTimeout" , function(context){
+			this.listen( this, "onTimeout" , function(/*context*/){
 				this.fire("onError", this.container, {
 					status:408,
 					message:new Error("Timeout :" + this.url)
@@ -95,16 +95,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 					proxyPort	: request.headers["x-forwarded-port"],
 					proxyFor	: request.headers["x-forwarded-for"],
 					proxyHost	: request.headers["x-forwarded-host"],	
-					proxyVia	: request.headers["via"] 
-				}
+					proxyVia	: request.headers.via 
+				};
 				this.logger( "PROXY REQUEST x-forwarded VIA : " + this.proxy.proxyVia , "DEBUG");
 			}
 			this.crossDomain = this.isCrossDomain() ;
-		};
+		}
 
 		isValidDomain (){
 			return   this.kernelHttp.isValidDomain( this );
-		};
+		}
 
 		isCrossDomain (){
 			return  this.kernelHttp.isCrossDomain( this );
@@ -112,30 +112,33 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		getRemoteAddress (){
 			return this.request.getRemoteAddress() ;
-		};
+		}
 
 		getHost (){
 			return this.request.getHost() ;
-		};
+		}
 
 		getHostName (){
 			return this.request.getHostName() ;
-		};
+		}
 
 		getUserAgent (){
 			return this.request.getUserAgent();
-		};
+		}
 
 		getMethod (){
 			return this.request.getMethod() ;
-		};
+		}
 
 		handle (container, request , response, data){
-			var get = this.container.setParameters("query.get", this.request.queryGet );
-			if (this.request.queryPost  )
-				var post = this.container.setParameters("query.post", this.request.queryPost );
-			if (this.request.queryFile  )
-				var post = this.container.setParameters("query.files", this.request.queryFile );
+
+			this.container.setParameters("query.get", this.request.queryGet );
+			if (this.request.queryPost  ){
+				this.container.setParameters("query.post", this.request.queryPost );
+			}
+			if (this.request.queryFile  ){
+				this.container.setParameters("query.files", this.request.queryFile );
+			}
 			this.container.setParameters("query.request", this.request.query );
 
 			/*
@@ -158,7 +161,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 					this.response.response.setTimeout(this.response.timeout, () => {
 						this.timeoutExpired = true ;
 						this.fire("onTimeout", this);
-					})
+					});
 					return ret ;
 				}
 				/*
@@ -186,9 +189,9 @@ nodefony.register.call(nodefony.context, "http", function(){
 			//delete  this.notificationsCenter ;
 			delete  this.session ;
 			delete  this.cookies ;
-			if (this.proxy) delete this.proxy ;
-			if (this.user)  delete this.user
-			if (this.security ) delete this.security ;
+			if (this.proxy) {delete this.proxy ;}
+			if (this.user)  {delete this.user;}
+			if (this.security ) {delete this.security ;}
 			//delete this.container ;
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
@@ -196,11 +199,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		getUser (){
 			return this.user || null ; 	
-		};
+		}
 
 		send (response, context){
-			if (response.response.headersSent )
+			if (response.response.headersSent ){
 				return this.close();
+			}
 			switch (true){
 				case response instanceof  http.ServerResponse :
 					this.response = response;
@@ -228,7 +232,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				return this.close();
 			}
 			this.fire("onSendMonitoring", response, context);
-		};
+		}
 
 		flush (data, encoding){
 			return this.response.flush(data, encoding);	
@@ -239,65 +243,64 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.fire("onClose", this);
 			// END REQUEST
 			return this.response.end();
-		};
+		}
 	
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = this.type + " REQUEST";
+			if (! msgid) {msgid = this.type + " REQUEST";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		getRequest (){
 			return this.request;	
-		};
+		}
 
 		getResponse (){
 			return this.response;	
-		};
+		}
 
 		redirect (Url, status, headers){
 			if (typeof Url === "object"){
-				return this.response.redirect(url.format(Url), status, headers)
+				return this.response.redirect(url.format(Url), status, headers);
 			}else{	
-				return this.response.redirect(Url, status, headers )
+				return this.response.redirect(Url, status, headers );
 			}
-		};
+		}
 
 		redirectHttps ( status, headers){
 			
 			if ( this.session ){
 				this.session.setFlashBag("redirect" , "HTTPS" );
 			}
+			var urlExtend = null ;
 			if( this.proxy ){
-				var urlExtend = {
+				urlExtend = {
 					protocol:	"https",
 					href:		"",
 					host:		""
 				}  ;
 			}else{
-				var urlExtend = {
+				urlExtend = {
 					protocol:	"https",
 					port:		this.kernelHttp.httpsPort || 443 ,	
 					href:		"",
 					host:		""
 				}  ;
 			}
-			var urlChange = nodefony.extend({}, this.request.url , urlExtend )
+			var urlChange = nodefony.extend({}, this.request.url , urlExtend );
 			var newUrl  = url.format(urlChange);
 			return this.redirect( newUrl, status , headers);
-		};
+		}
 
 		setXjson ( xjson){
 			switch ( nodefony.typeOf(xjson) ){
 				case "object":
 					this.response.headers["X-Json"] = JSON.stringify(xjson);
 					return xjson;
-				break;
 				case "string":
 					this.response.headers["X-Json"] = xjson;
 					return JSON.parse(xjson);
-				break;
 				case "Error":
-					if ( typeof xjson.message === "Object" ){
+					if ( typeof xjson.message === "object" ){
 						this.response.headers["X-Json"] = JSON.stringify(xjson.message);
 						return xjson.message;	
 					}else{
@@ -306,7 +309,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 					}
 				break;
 			}
-		};
+		}
 		
 		addCookie (cookie){
 			if ( cookie instanceof nodefony.cookies.cookie ){
@@ -315,14 +318,13 @@ nodefony.register.call(nodefony.context, "http", function(){
 				throw {
 					message:"",
 					error:"Response addCookies not valid cookies"
-				}
+				};
 			}	
-		};
+		}
 
 		parseCookies (){
 			return  nodefony.cookies.cookiesParser(this);
-		};
+		}
 	};
-
-	return Http 
+	return Http; 
 });
