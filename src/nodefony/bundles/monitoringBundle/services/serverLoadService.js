@@ -52,7 +52,6 @@ nodefony.registerService("serverLoad", function(){
 		}
 	}
 
-
 	var averaging = class averaging {
 
 		constructor(){
@@ -132,6 +131,7 @@ nodefony.registerService("serverLoad", function(){
 			this.nbError = 0 ;
 			this.nbSuccess = 0 ;
 			this.concurrence = parseInt( options.concurence ,10 );
+			this.interval = ( this.nbRequest / this.concurrence ) ;
 			this.context = context ;
 			this.options = options ;
 			this.averaging = new averaging() ;
@@ -207,9 +207,11 @@ nodefony.registerService("serverLoad", function(){
 						this.requests( new Date().getTime() );
 					}else{
 						this.running = false ;
+						var avg = this.averaging.average() ;
 						this.context.send( JSON.stringify({
 							message: "END LOAD TEST",
-							average: this.averaging.average(),
+							average: avg ,
+							averageNet: ( avg / this.concurrence ).toFixed(3),  //(avg * this.concurrence).toFixed(2)
 							totalTime: this.averaging.total / 1000,
 							stop: stop,
 							statusCode: this.averaging.statusCode,
@@ -225,10 +227,9 @@ nodefony.registerService("serverLoad", function(){
 				}
 			})
 			.done((ele) => {
-				this.manager.logger( "PROMISE HTTP DONE" , "DEBUG");
+				this.manager.logger( "PROMISE concurrence HTTP DONE" , "DEBUG");
 			})
 		}
-
 
 		HttpRequest (){
 		

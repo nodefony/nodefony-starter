@@ -219,7 +219,7 @@ stage.registerController("testsController", function() {
 				pie(res);
 				$("#startLoad").text("START");
 				if ( res.percentEnd = 100 ){
-					$("#avg").text( res.average );
+					$("#avg").text( res.averageNet );
 					$("#rbs").text( res.requestBySecond);
 					$("#tt").text( res.totalTime);
 					$("#abc").text( res.average);
