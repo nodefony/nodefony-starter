@@ -3,7 +3,6 @@ try {
 }catch(e){
 	console.trace(e);
 }
-var Promise = require('promise');
 
 nodefony.registerController("git", function(){
 

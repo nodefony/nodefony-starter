@@ -4,7 +4,7 @@
   */
 
 var Sequelize =require("sequelize");
-var Promise = require('promise');
+//var Promise = require('promise');
 var Url = require("url");
 
 nodefony.registerCommand("Monitoring",function(){
@@ -50,21 +50,20 @@ nodefony.registerCommand("Monitoring",function(){
 				this.showHelp();
 				this.terminate(0);
 			}
-
-		};
+		}
 		 
 		listen (service, event, callback){
 			
-		};
+		}
 
 		send (data, encodage){
 			this.logger(data, "INFO");	
-		};
+		}
 
 
 		close (code){
 			this.terminate(code);	
-		};
+		}
 	};
 
 	return {

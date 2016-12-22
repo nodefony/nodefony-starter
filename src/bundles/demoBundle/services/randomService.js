@@ -1,6 +1,5 @@
 
 var net = require('net');
-var nodedomain = require('domain');
 var xml = require('xml2js');
 
 

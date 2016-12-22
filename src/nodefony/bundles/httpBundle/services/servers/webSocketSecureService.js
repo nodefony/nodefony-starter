@@ -3,8 +3,8 @@
  */
 
 
-var WebSocketServer = require('websocket');
-var nodedomain = require('domain');
+//var WebSocketServer = require('websocket');
+//var nodedomain = require('domain');
 
 nodefony.registerService("websocketSecure", function(){
 	
@@ -27,16 +27,16 @@ nodefony.registerService("websocketSecure", function(){
 				this.bundle = this.kernel.getBundles("http") ;
 				
 			});
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE WEBSOCKET SECURE ";
+			if (! msgid) {msgid = "SERVICE WEBSOCKET SECURE ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 	
-		createServer (http, settings){
+		createServer (http/*, settings*/){
 
-			this.bundle.listen(this, "onServersReady", function(type, service){
+			this.bundle.listen(this, "onServersReady", function(type){
 				if ( type === "HTTPS"){
 					try {
 						this.settings = this.get("container").getParameters("bundles.http").websocketSecure || {} ;
@@ -49,14 +49,14 @@ nodefony.registerService("websocketSecure", function(){
 							var d = nodedomain.create();
 								d.on('error', (er) => {
 									if ( d.container ){
-										this.httpKernel.onErrorWebsoket( d.container, er.stack)	
+										this.httpKernel.onErrorWebsoket( d.container, er.stack);	
 									}else{
 										this.logger(er.stack, "ERROR");
 									}
 								});
 								d.add(request);
 								d.run( () => {
-									this.fire("onServerRequest", request, null, this.type, d)
+									this.fire("onServerRequest", request, null, this.type, d);
 								});
 						});
 
@@ -79,9 +79,8 @@ nodefony.registerService("websocketSecure", function(){
 						throw e ;	
 					}
 				}
-			})
-		};
+			});
+		}
 	};
-	
 	return websocket;
 });

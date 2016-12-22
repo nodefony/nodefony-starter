@@ -8,7 +8,7 @@
 nodefony.register.call(nodefony.io, "MultipartParser",function(){
 
 	// PHP LIKE
-	var reg = /(.*)[\[][\]]$/
+	//var reg = /(.*)[\[][\]]$/;
 	var regHeaders = / |"/g;
 
 	var multiPartParser = class multiPartParser {
@@ -18,7 +18,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 			this.file = {} ;
 			this.error = null ;
 			this.parse(request);
-		};
+		}
 
 		parse (request){
 		
@@ -26,7 +26,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 				throw new Error('multiPartParser  : Bad content-type header, no multipart boundary');
 
 			}
-			var boundary = '\r\n--' + request.rawContentType.boundary.replace('"',"")
+			var boundary = '\r\n--' + request.rawContentType.boundary.replace('"',"");
 			//console.log(boundary)
 			var isRaw = typeof(request.body) !== 'string';
 
@@ -34,12 +34,12 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 			if ( isRaw ) {
 				s = request.body.toString('binary') ;	
 			} else {
-				s = body;
+				s = request.body;
 			}
 			s = '\r\n' + s;
 
 			var parts = s.split(new RegExp(boundary));
-			var partsByName = {post: {}, file: {}};
+			//var partsByName = {post: {}, file: {}};
 
 			// loop boundaries  
 			for (var i = 1; i < parts.length - 1; i++) {
@@ -51,14 +51,14 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 					this.post[name] = obj ;
 	        		}
 			}
-		};
+		}
 
-		parseBoundary (boundary, isRaw){
+		parseBoundary (boundary){
 			var subparts = boundary.split('\r\n\r\n');
 			var obj = {
 				headers:{},
 				data:null
-			}
+			};
 
 			//HEADERS
 			var header = subparts[0];
@@ -76,7 +76,7 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 			//DATA
 			obj.data = subparts[1] ;
 			return obj ;
-		};
+		}
 
 	 	rawStringToBuffer ( str ) {
 			var idx, len = str.length, arr = new Array( len );
@@ -86,7 +86,5 @@ nodefony.register.call(nodefony.io, "MultipartParser",function(){
 			return new Uint8Array( arr ).buffer;
 		}
 	};
-
 	return multiPartParser ;
-
-})
+});

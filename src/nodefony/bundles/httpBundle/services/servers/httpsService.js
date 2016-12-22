@@ -2,10 +2,8 @@
  * New node file
  */
 
-var https = require('https');
-var nodedomain = require('domain');
-
-const dns = require('dns');
+//var https = require('https');
+//var nodedomain = require('domain');
 
 nodefony.registerService("https", function(){
 
@@ -19,7 +17,7 @@ nodefony.registerService("https", function(){
 		}else{
 			return rootDir+"/"+myPath ;
 		}
-	}
+	};
 
 	var Https = class Https extends nodefony.Service {
 
@@ -43,21 +41,21 @@ nodefony.registerService("https", function(){
 			this.type = "HTTPS";
 			this.listen(this, "onBoot",function(){
 				this.bundle = this.kernel.getBundles("http") ;
-				this.bundle.listen(this, "onServersReady", function(type, service){
+				this.bundle.listen(this, "onServersReady", function(type){
 					if ( type === this.type){
 						dns.lookup(this.domain,(err, addresses, family) => {
 							this.address = addresses ;
 							this.family = family ;
-						})
+						});
 					}
-				})
+				});
 			});
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE HTTPS ";
+			if (! msgid) {msgid = "SERVICE HTTPS ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		getCertificats (){
 			this.settings = this.get("container").getParameters("bundles.http").https || null ;
@@ -82,12 +80,12 @@ nodefony.registerService("https", function(){
 				throw e ;
 			}
 			return opt ;
-		};
+		}
 	
-		createServer (port, domain){
-			
+		createServer (/*port, domain*/){
+			var opt = null ;	
 			try {
-				var opt = this.getCertificats();
+				opt = this.getCertificats();
 				for (var ele in opt ){
 					switch ( ele ){
 						case "keyPath" :
@@ -119,7 +117,7 @@ nodefony.registerService("https", function(){
 						var d = nodedomain.create();
 						d.on('error', (er) => {
 							if ( d.container ){
-								this.httpKernel.onError( d.container, er.stack)	
+								this.httpKernel.onError( d.container, er.stack);
 							}else{
 								this.logger(er.stack , "ERROR", "SERVICE HTTPS");
 							}
@@ -127,14 +125,14 @@ nodefony.registerService("https", function(){
 						d.add(request);
 						d.add(response);
 						d.run( () => {
-							this.fire("onServerRequest", request, response, this.type, d)
+							this.fire("onServerRequest", request, response, this.type, d);
 						});
 					});
 				}else{
 					var d = nodedomain.create();
 					d.on('error', (er) => {
 						if ( d.container ){
-							this.httpKernel.onError( d.container, er.stack)	
+							this.httpKernel.onError( d.container, er.stack);
 						}else{
 							this.logger(er.stack,"ERROR");
 						}
@@ -142,7 +140,7 @@ nodefony.registerService("https", function(){
 					d.add(request);
 					d.add(response);
 					d.run( () => {
-						this.fire("onServerRequest", request, response, this.type, d)
+						this.fire("onServerRequest", request, response, this.type, d);
 					});	
 				}
 			});
@@ -192,8 +190,7 @@ nodefony.registerService("https", function(){
 			});
 
 			return this.server;
-		};
+		}
 	};
-	
 	return Https;
 });

@@ -35,21 +35,22 @@ nodefony.registerService("statics", function(){
 			this.mime = this.connect.static.mime;
 			this.listen(this, "onBoot",() => {
 				this.settings = nodefony.extend({}, defaultStatic ,this.container.getParameters("bundles.http").statics.settings, options);
-				if (this.settings.cache)
+				if (this.settings.cache){
 					this.server.use(this.connect.staticCache());	
-				this.initStaticFiles()
+				}
+				this.initStaticFiles();
 			});
 
 			this.environment = this.kernel.environment ;
 			this.listen(this, "onReady", () => {
 				this.serviceLess = this.container.get("less");
-			})
+			});
 		}
 
 		initStaticFiles (){
 			var settings = this.container.getParameters("bundles.http").statics ;
 			for(var myStatic in settings ){
-				if ( myStatic === "settings" ) continue ;
+				if ( myStatic === "settings" ){ continue ;}
 				var path = this.kernel.rootDir + settings[myStatic].path ;
 				var age = settings[myStatic].maxage;
 				this.logger("Add static route ===> " + path ,"DEBUG");
@@ -60,7 +61,7 @@ nodefony.registerService("statics", function(){
 		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVER STATIC FILE ";
+			if (! msgid) {msgid = "SERVER STATIC FILE ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -78,13 +79,13 @@ nodefony.registerService("statics", function(){
 			// LESS IN THE FLY
 			if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
 				try {
-					var res = this.serviceLess.handle(request, response, type, (err, dest) => {
+					var res = this.serviceLess.handle(request, response, type, (/*err, dest*/) => {
 						this.server.handle(request, response, () => {
 							response.setHeader("Content-Type", "text/html");
 							callback.apply(this, arguments);	
 						});	
 					});
-					if (res) return ; 
+					if (res) {return ;} 
 				}catch(e){
 					this.logger(e, "ERROR");	
 				}
@@ -93,26 +94,12 @@ nodefony.registerService("statics", function(){
 				callback.apply(this, arguments);	
 			});
 		}
-
-		get (name){
-			if (this.container)
-				return this.container.get(name);
-			return null;
-		}
-
-		set (name, obj){
-			if (this.container)
-				return this.container.set(name, obj);
-			return null;
-		}
-
+		
 		handle (request, response, callback){
 			request.path = request.url;
-			this.serve(request, response, callback )
+			this.serve(request, response, callback );
 		}
 	};
-	
 	return Static;
-
-})
+});
 

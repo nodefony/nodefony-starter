@@ -417,7 +417,7 @@ nodefony.registerService("sessions", function(){
 
 		save (user, callback){
 			try {
-				return this.storage.write(this.id, this.serialize(user), this.contextSession,(err, result) => {
+				return this.storage.write(this.id, this.serialize(user), this.contextSession,(err/*, result*/) => {
 					if (err){
 						console.trace(err);
 						this.logger( err ,"ERROR" );

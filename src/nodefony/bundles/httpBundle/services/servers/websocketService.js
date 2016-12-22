@@ -2,9 +2,8 @@
  * New node file
  */
 
-var WebSocketServer = require('websocket');
-var nodedomain = require('domain');
-
+//var WebSocketServer = require('websocket');
+//var nodedomain = require('domain');
 
 nodefony.registerService("websocket", function(){
 	
@@ -23,16 +22,16 @@ nodefony.registerService("websocket", function(){
 			this.kernel = this.httpKernel.kernel ;
 			this.ready = false ;
 			this.type = "WEBSOCKET";
-		};
+		}
 	
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE WEBSOCKET ";
+			if (! msgid) {msgid = "SERVICE WEBSOCKET ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
-		};
+		}
 
 		createServer (http){
 
-			this.bundle.listen(this, "onServersReady", function(type, service){
+			this.bundle.listen(this, "onServersReady", function(type){
 				if ( type === "HTTP"){
 					try {
 						this.settings = this.get("container").getParameters("bundles.http").websocket || {} ;
@@ -46,14 +45,14 @@ nodefony.registerService("websocket", function(){
 							var d = nodedomain.create();
 								d.on('error', (er) => {
 									if ( d.container ){
-										this.httpKernel.onErrorWebsoket( d.container, er.stack)	
+										this.httpKernel.onErrorWebsoket( d.container, er.stack);
 									}else{
 										this.logger(er.stack, "ERROR");
 									}
 								});
 								d.add(request);
 								d.run( () => {
-									this.fire("onServerRequest", request, null, this.type, d)
+									this.fire("onServerRequest", request, null, this.type, d);
 								});
 						} );
 
@@ -75,8 +74,8 @@ nodefony.registerService("websocket", function(){
 						throw e ;	
 					}
 				}
-			})
-		};
+			});
+		}
 	};
 	
 	return websocket;

@@ -6,15 +6,11 @@
  *
  */
 
-
 nodefony.registerService("less", function(){
 
 	//var regexCss =/^(.+)\.css$/;
 	var regexLess =/^(.+)\.less$/;
 	//var regexCssComp =/^(.+)(\.|-)min\.css$|^(.+)\.css$/
-
-
-	//less.logger.addListener(
 
 	var Less = class Less extends nodefony.Service {
 
@@ -75,7 +71,6 @@ nodefony.registerService("less", function(){
 						this.logger("Bundle " + this.kernel.bundles[bundle].name + " NO PUBLIC DIRECTORY ","WARNING");
 					}
 				}
-				//console.log(this.filesLess)
 			});
 		}
 
@@ -236,6 +231,5 @@ nodefony.registerService("less", function(){
 			}
 		}*/
 	};
-
 	return Less ;
 });

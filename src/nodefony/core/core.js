@@ -12,6 +12,12 @@ const cluster = require('cluster');
 const url = require("url");
 const async = require('async');
 const xmlParser = require('xml2js').Parser;
+const dns = require('dns');
+const https = require('https');
+const http = require('http');
+const nodedomain = require('domain');
+const WebSocketServer = require('websocket');
+const Promise = require('promise');
 
 var nodefony = function(){
 

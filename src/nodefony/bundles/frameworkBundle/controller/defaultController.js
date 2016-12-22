@@ -16,54 +16,54 @@ nodefony.registerController("framework", function(){
 
 			constructor (container, context){
 				super( container, context );
-			};
+			}
 
 			indexAction (){
 				return this.render('frameworkBundle::index.html.twig',{title:"WEB nodefony FRAMEWORK"});
-			};
+			}
 			
 			["404Action"] (message){
 				this.getResponse().setStatusCode(404,"Not Found");
 				return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, message) );
-			};
+			}
 
 			["401Action"] (error){
 				var res = nodefony.extend( {url:this.context.url}, error);
 				this.getResponse().setStatusCode(401,"Unauthorized");
 				return this.render('frameworkBundle::401.html.twig', res );
-			};
+			}
 
 			["403Action"] (error){
 				var res = nodefony.extend( {url:this.context.url}, error);
 				return this.render('frameworkBundle::403.html.twig', res );
-			};
+			}
 			
 			exceptionsAction (exp){
 				var ele = {
 					title:"Exception",
 					exception:util.inspect( exp.exception )
-				}
+				};
 				return this.render('frameworkBundle::exception.html.twig', nodefony.extend(ele, exp) );	
-			};
+			}
 
 			timeoutAction (exp){
 				var ele = {
 					title:"Timeout",
 					exception:util.inspect( exp.exception )
-				}
+				};
 				return this.render('frameworkBundle::timeout.html.twig', nodefony.extend(ele, exp) );	
-			};
+			}
 
 
 			systemAction (options){
 				var router = this.get("router");
-				var kernel = this.get("kernel");
-				var injection = this.get("injection");
-				var services = {}
+				//var kernel = this.get("kernel");
+				//var injection = this.get("injection");
+				var services = {};
 				for (var service in nodefony.services){
 					var ele = this.container.getParameters("services."+service);
 					services[service] = {};
-					services[service]["name"] = service;
+					services[service].name = service;
 					if (ele){
 						var inject = "";
 						var i = 0;
@@ -72,15 +72,15 @@ nodefony.registerController("framework", function(){
 							inject += esc+inj;
 							i++;	
 						}
-						services[service]["run"] = "CONFIG"	
-						services[service]["scope"] = ele.scope === "container" ? "Default container" :	ele.scope ;
-						services[service]["calls"] = ele.calls	;
-						services[service]["injections"] = inject;
-						services[service]["properties"] = ele.properties;
-						services[service]["orderInjections"] = ele.orderArguments ? true : false;
+						services[service].run = "CONFIG";
+						services[service].scope = ele.scope === "container" ? "Default container" :	ele.scope ;
+						services[service].calls = ele.calls;
+						services[service].injections = inject;
+						services[service].properties = ele.properties;
+						services[service].orderInjections = ele.orderArguments ? true : false;
 					}else{
-						services[service]["run"] = "KERNEL"	
-						services[service]["scope"] = "KERNEL container"	
+						services[service].run = "KERNEL";	
+						services[service].scope = "KERNEL container";
 					
 					}		
 				}
@@ -105,7 +105,7 @@ nodefony.registerController("framework", function(){
 				}else{
 					return this.render('frameworkBundle::system.html.twig',obj );
 				}
-			};
+			}
 
 			readmeAction (){
 				var kernel = this.container.get("kernel");
@@ -120,7 +120,5 @@ nodefony.registerController("framework", function(){
 					});
 			}
 		};
-
-
 		return frameworkController;
 });

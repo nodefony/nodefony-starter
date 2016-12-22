@@ -22,7 +22,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.fire("onClose", reasonCode, description, this.connection);	
 		}	
 		this.kernel.container.leaveScope(this.container);
-	}
+	};
 
 
 	var websocket = class websocket extends nodefony.Service {
@@ -114,8 +114,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
                                         proxyPort       : this.request.httpRequest.headers["x-forwarded-port"],
                                         proxyFor        : this.request.httpRequest.headers["x-forwarded-for"],
                                         proxyHost       : this.request.httpRequest.headers["x-forwarded-host"],
-                                        proxyVia        : this.request.httpRequest.headers["via"]
-                                }
+                                        proxyVia        : this.request.httpRequest.headers.via
+                                };
                                 this.logger( "PROXY WEBSOCKET REQUEST x-forwarded VIA : " + this.proxy.proxyVia , "DEBUG");
                         }
 			this.crossDomain = this.isCrossDomain() ;
@@ -139,7 +139,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		getHost (){
-			return this.request.httpRequest.headers['host'] ;
+			return this.request.httpRequest.headers.host ;
 		}
 
 		getHostName (){
@@ -166,7 +166,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				throw {
 					message:"",
 					error:"Response addCookies not valid cookies"
-				}
+				};
 			}	
 		}
 
@@ -245,7 +245,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		} 
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "REQUEST "+this.type ;
+			if (! msgid) { msgid = "REQUEST "+this.type ;}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 
 		}
@@ -254,7 +254,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			//console.log(this.response)
 			if ( this.response ){
 				this.fire("onMessage", data, this, "SEND") ;
-				return this.response.send(data || this.response.body, type)
+				return this.response.send(data || this.response.body, type);
 			}
 			return null ;
 		}
@@ -266,5 +266,5 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 	};
 
-	return websocket 
+	return websocket;
 });

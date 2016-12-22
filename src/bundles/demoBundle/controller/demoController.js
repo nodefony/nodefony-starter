@@ -12,7 +12,6 @@
 var spawn = require('child_process').spawn;
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
-var https = require('https');
 
 
 nodefony.registerController("demo", function(){

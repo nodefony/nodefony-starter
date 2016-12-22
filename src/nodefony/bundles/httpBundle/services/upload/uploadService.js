@@ -16,20 +16,21 @@ nodefony.registerService("upload", function(){
 			this.serviceUpload = service ;
 			this.tmpName = tmpName ;
 			this.headers = dataFile.headers ;
-			this.mimeType = this.getMimeType( this.name )
+			this.mimeType = this.getMimeType( this.name );
 			this.raw = dataFile.data ;
 			this.lenght = this.raw.length ;
 			this.name = this.headers.name ;
 			this.filename = this.headers.filename ;
 			this.error = null ;
-		}; 
+		} 
 
 		move (target){
+			var inst = null ;
 			try {
 				if (fs.existsSync(target) ){
 					var newFile = new nodefony.fileClass(target);
 					if ( newFile.isDirectory() ){
-						var inst = super.move(target+"/"+this.headers.filename);
+						inst = super.move(target+"/"+this.headers.filename);
 						//delete this.serviceUpload[this.tmpName];
 						this.serviceUpload.logger("Move tmpFile : "+ this.tmpName +" in path : "+ target+"/"+this.headers.filename, "DEBUG");
 						return inst ;
@@ -37,7 +38,7 @@ nodefony.registerService("upload", function(){
 				}
 				var dirname = path.dirname(target) ; 
 				if ( fs.existsSync(dirname) ){
-					var inst = super.move(target);
+					inst = super.move(target);
 					//delete this.serviceUpload[this.tmpName];
 					this.serviceUpload.logger("Move tmpFile : "+ this.tmpName +" in path : "+ target, "DEBUG");
 					return inst ;
@@ -83,9 +84,9 @@ nodefony.registerService("upload", function(){
 				var res = fs.existsSync(this.path);
 				if (! res ){
 					// create directory 
-					this.logger("create directory FOR UPLOAD FILE " + this.path, "DEBUG")
+					this.logger("create directory FOR UPLOAD FILE " + this.path, "DEBUG");
 					try {
-						var res = fs.mkdirSync(this.path);
+						res = fs.mkdirSync(this.path);
 					}catch(e){
 						throw e ;
 					}
@@ -108,7 +109,7 @@ nodefony.registerService("upload", function(){
 			// create tmp file
 			//var path = this.path + "/" +queryFile.headers.name ;
 			// Generate ID 
-			var id = this.generateId()
+			var id = this.generateId();
 			var name = id +"_"+dataFile.headers.filename ;
 			var myPath =  this.path + "/" + name ;
 			var res = fs.existsSync(myPath);
@@ -121,13 +122,13 @@ nodefony.registerService("upload", function(){
 					throw e ;
 				}
 			}else{
-				throw e ;
+				throw new Error(myPath +' not exist') ;
 			}
 			return new uploadedFile(name , myPath, dataFile, this);
 		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "HTTP UPLOAD";
+			if (! msgid) {msgid = "HTTP UPLOAD";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 

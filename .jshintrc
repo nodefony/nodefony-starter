@@ -26,6 +26,12 @@
       "crypto":		true,
       "Sequelize":	true,
       "url":		true,
-      "http":		true
+      "http":		true,
+      "https":		true,
+      "WebSocketServer":true,
+      "nodedomain":	true,
+      "dns":		true,
+      "Promise":	true,
+      "zone":		true
     }	
 }

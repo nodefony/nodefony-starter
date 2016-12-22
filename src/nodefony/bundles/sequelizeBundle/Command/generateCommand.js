@@ -5,7 +5,6 @@
  */
 
 var Sequelize = require("sequelize");
-var Promise = require('promise');
 
 nodefony.registerCommand("Sequelize",function(){
 

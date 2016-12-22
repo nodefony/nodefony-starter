@@ -31,6 +31,7 @@ nodefony.register("cookies",function(){
 
 	var cookiesParser = function(context){
 		var cookies = null ;
+		var co = null ;
 		switch (context.type){
 			case "HTTP" :
 			case "HTTPS" :
@@ -41,7 +42,7 @@ nodefony.register("cookies",function(){
 				if ( cookies ){
 					var obj = parse(cookies);
 					for (var cookie in obj){
-						var co = new Cookie(cookie, obj[cookie]);
+						co = new Cookie(cookie, obj[cookie]);
 						context.addCookie(co);
 					}
 				}
@@ -53,14 +54,13 @@ nodefony.register("cookies",function(){
 				}	
 				if ( cookies ){
 					for ( var i= 0 ; i < cookies.length; i++){
-						var co = new Cookie(cookies[i].name, cookies[i].value);
+						co = new Cookie(cookies[i].name, cookies[i].value);
 						context.addCookie(co);
 					}
 				}
 			break ;
 		}
-	}
-
+	};
 
 	var Cookie = class Cookie {
 		constructor (name, value, settings){
@@ -78,7 +78,7 @@ nodefony.register("cookies",function(){
 				this.maxAge = name.maxAge;
 			}else{
 				this.settings = nodefony.extend({}, cookieDefaultSettings, settings) ;
-				if (! name ) throw new Error( "cookie must have name");
+				if (! name ) { throw new Error( "cookie must have name");}
 				this.name = name ;
 				this.signed = this.settings.signed ;
  				this.value = this.setValue( value );
@@ -89,39 +89,40 @@ nodefony.register("cookies",function(){
 				this.httpOnly = this.setHttpOnly(this.settings.httpOnly) ;
 				this.secure = this.setSecure(this.settings.secure)  ;
 			}
-		};
+		}
 
 		clearCookie (){
 			this.setExpires(1);
 			this.path = "/";
-		};
+		}
 
 		setValue (value){
 			if (value){
 				value = decode( value ) ;
 			}
-			if (this.signed)
+			if (this.signed){
 				this.value = this.sign(value, this.settings.secret );	
-			else
+			}else{
 				this.value = value ; 
-			return this.value
-		};
+			}
+			return this.value ;
+		}
 
 		setSecure (val){
 			return val;
-		};
+		}
 
-		setDomain (domain){
+		setDomain (){
 			return this.settings.domain;
-		};
+		}
 
 		setHttpOnly (val){
 			return val;
-		};
+		}
 
 		setPath (val){
 			return val;
-		};
+		}
 
 		setExpires (date){
 			if ( date ){
@@ -147,25 +148,24 @@ nodefony.register("cookies",function(){
 			}
 			this.getMaxAge() ;
 			return this.expires;
-		};
+		}
 
 		setOriginalMaxAge (ms){
+			var res =null ;
 			switch (typeof ms){
 				case "number" :
 					return  ms;		
-				break;
 				case "string" :
 					try {
-						var res = eval(ms);
+						res = eval(ms);
 					}catch(e){
-						var res = ms;
+						res = ms;
 					}
 					return  parseInt(res, 10);
-				break;
 				default :
 					throw new Error("cookie class error maxage bad type "+ typeof ms );
 			}
-		};
+		}
 
 		getMaxAge (){
 			if (this.expires && this.expires instanceof  Date){
@@ -174,46 +174,46 @@ nodefony.register("cookies",function(){
 				if (s > 0){
 					this.maxAge = s  ; // en seconde
 				}else{
-					throw new Error("Espires / Max-Age : "+ s + " Error Espires")
+					throw new Error("Espires / Max-Age : "+ s + " Error Espires");
 				}
 			}else{
 				this.maxAge = this.originalMaxAge ;
 			}
 			return 	this.maxAge ;
-		};
+		}
 			
 		toString () {
 			return this.name + "=" + encode(this.value) ;
-		};
+		}
 
 		sign (val, secret){
-			if ('string' != typeof val) throw new TypeError('cookie required');
-			if ('string' != typeof secret) throw new TypeError('secret required');
+			if ('string' !== typeof val) {throw new TypeError('cookie required');}
+			if ('string' !== typeof secret) {throw new TypeError('secret required');}
 			return val + '.' + crypto
 				.createHmac('sha256', secret)
 				.update(val)
 				.digest('base64')
 				.replace(/\=+$/, '');
-		};
+		}
 
 		unsign (val, secret){
-			if ('string' != typeof val) throw new TypeError('cookie required');
-			if ('string' != typeof secret) throw new TypeError('secret required');
+			if ('string' !== typeof val) {throw new TypeError('cookie required');}
+			if ('string' !== typeof secret) {throw new TypeError('secret required');}
 			var str = val.slice(0, val.lastIndexOf('.'));
-			return this.sign(str, secret) == val ? str : false;
-		};
+			return this.sign(str, secret) === val ? str : false;
+		}
 
-		serialize (opt){
+		serialize (){
 			var tab = [];
 			tab.push( this.toString() );
-			if (this.maxAge) tab.push('Max-Age=' + this.maxAge);
-			if (this.domain) tab.push('Domain=' + this.domain);
-			if (this.path) tab.push('Path=' + this.path);
-			if (this.expires) tab.push('Expires=' + this.expires.toUTCString());
-			if (this.httpOnly) tab.push('HttpOnly');
-			if (this.secure) tab.push('Secure');
+			if (this.maxAge) { tab.push('Max-Age=' + this.maxAge);}
+			if (this.domain) {tab.push('Domain=' + this.domain);}
+			if (this.path) {tab.push('Path=' + this.path);}
+			if (this.expires) {tab.push('Expires=' + this.expires.toUTCString());}
+			if (this.httpOnly) {tab.push('HttpOnly');}
+			if (this.secure) {tab.push('Secure');}
 			return tab.join('; ');
-		};
+		}
 	};
 
 	return {
@@ -221,5 +221,5 @@ nodefony.register("cookies",function(){
 		cookiesParser:cookiesParser,
 		parser:parse
 	
-	}
+	};
 });

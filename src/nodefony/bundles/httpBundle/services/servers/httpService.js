@@ -2,8 +2,8 @@
  * New node file
  */
 
-var http = require('http');
-var nodedomain = require('domain');
+//var http = require('http');
+//var nodedomain = require('domain');
 
 nodefony.registerService("http", function(){
 	
@@ -25,19 +25,19 @@ nodefony.registerService("http", function(){
 
 			this.listen(this, "onBoot",function(){
 				this.bundle = this.kernel.getBundles("http") ;
-				this.bundle.listen(this, "onServersReady", function(type, service){
+				this.bundle.listen(this, "onServersReady", function(type){
 					if ( type === this.type){
 						dns.lookup(this.domain, (err, addresses, family) => {
 							this.address = addresses ;
 							this.family = family ;
-						})
+						});
 					}
-				})
+				});
 			});
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE HTTP ";
+			if (! msgid) { msgid = "SERVICE HTTP ";}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -45,9 +45,9 @@ nodefony.registerService("http", function(){
 
 			require("zone").enable();
 			zone.create( () => {
-				this.fire("onServerRequest", request, response, this.type, zone)
+				this.fire("onServerRequest", request, response, this.type, zone);
 			})
-			.then((result) => {
+			.then(() => {
 				// Runs when succesful
 				this.logger("ZONE SUCCES","INFO");
 			})
@@ -56,7 +56,7 @@ nodefony.registerService("http", function(){
 			});
 		}
 	
-		createServer (port, domain){
+		createServer (/*port, domain*/){
 			this.settings = this.get("container").getParameters("bundles.http").http || null ;
 
 			this.server = http.createServer((request, response) => {
@@ -67,7 +67,7 @@ nodefony.registerService("http", function(){
 						var d = nodedomain.create();
 						d.on('error', (er) => {
 							if ( d.container ){
-								this.httpKernel.onError( d.container, er.stack,  "ERROR")	
+								this.httpKernel.onError( d.container, er.stack,  "ERROR");
 							}else{
 								this.logger(er.stack, "ERROR");
 							}
@@ -75,14 +75,14 @@ nodefony.registerService("http", function(){
 						d.add(request);
 						d.add(response);
 						d.run(() => {
-							this.fire("onServerRequest", request, response, this.type, d)
+							this.fire("onServerRequest", request, response, this.type, d);
 						});
 					});
 				}else{
 					var d = nodedomain.create();
 					d.on('error', (er) => {
 						if ( d.container ){
-							this.httpKernel.onError( d.container, er.stack)	
+							this.httpKernel.onError( d.container, er.stack);
 						}else{
 							this.logger(er.stack, "ERROR");
 						}
@@ -90,10 +90,10 @@ nodefony.registerService("http", function(){
 					d.add(request);
 					d.add(response);
 					d.run( () => {
-						this.fire("onServerRequest", request, response, this.type, d)
+						this.fire("onServerRequest", request, response, this.type, d);
 					});	
 				}
-			})
+			});
 			
 			if (this.settings.timeout){
 				this.server.timeout = this.settings.timeout;
@@ -139,8 +139,7 @@ nodefony.registerService("http", function(){
 			});
 
 			return this.server;
-		};
+		}
 	};
-	
 	return Http;
 });

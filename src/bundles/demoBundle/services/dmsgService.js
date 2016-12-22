@@ -7,9 +7,6 @@
  */
 
 var net = require('net');
-var nodedomain = require('domain');
-
-
 
 nodefony.registerService("dmsg", function(){
 

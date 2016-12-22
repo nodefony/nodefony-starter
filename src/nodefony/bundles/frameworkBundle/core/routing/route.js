@@ -104,7 +104,7 @@ nodefony.register("Route", function(){
 				for( let i = 0  ; i< this.variables.length ; i++ ){
 					if (  this.defaults[ this.variables[i] ] ){
 						if (res[i+1] === "" ){
-							res[i+1] = this.defaults[ this.variables[i] ]	
+							res[i+1] = this.defaults[ this.variables[i] ];
 						}	
 					}
 				}	
@@ -123,7 +123,7 @@ nodefony.register("Route", function(){
 		compile (){
 			var pattern = this.path.replace( regRoute, (match, slash, dot, key, capture, opt, offset)  => {
 				var incl = (this.path[match.length+offset] || '/') === '/';
-				var index = this.variables.push(key);
+				this.variables.push(key);
 				if( this.checkDefaultParameters(key) ){
 					return (incl ? '(?:' : '')+(slash ? slash+"?" : '')+(incl ? '' : '(?:')+(dot || '')+'('+(capture || '[^/]*')+'))'+(opt || '');
 				}else{
@@ -173,18 +173,19 @@ nodefony.register("Route", function(){
 					var k = this.variables[i] || 'wildcard';
 					param = param && decode(param);
 					var req = this.getRequirement(k);
+					var result = null ;
 					if ( req ){
 						if ( req instanceof RegExp){
-							var result = req.test(param) ;
+							result = req.test(param) ;
 						}else{
-							var result = new RegExp(req).test(param);
+							result = new RegExp(req).test(param);
 						}
 						if( ! result ){
 							map = false ;
-							throw {BreakException:"Requirement Exception variable : " + k +" ==> " +param +" doesn't match with " + req   }
+							throw {BreakException:"Requirement Exception variable : " + k +" ==> " +param +" doesn't match with " + req};
 						}
 					}
-					var index = map.push( param )
+					var index = map.push( param );
 					map[k] = map[index-1] ;
 				});
 			}catch(e){
@@ -232,7 +233,7 @@ nodefony.register("Route", function(){
 								throw {
 									message:	"Method "+ context.method +" Unauthorized",
 									status:		401	
-								}
+								};
 							}
 						break;
 						case "domain":
@@ -249,14 +250,14 @@ nodefony.register("Route", function(){
 			return true;
 		}
 
-		matchOptions (context){
+		/*matchOptions (context){
 			var testOpt = true ;	
 			for(var i  in this.options ){
 				
 			}
 			return testOpt;
-		}
+		}*/
 	};
 
-	return Route
+	return Route;
 });

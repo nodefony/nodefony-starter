@@ -15,11 +15,12 @@ nodefony.register("Response",function(){
 		constructor (response, container, type){
 			this.container = container ;
 			this.kernel = this.container.get("kernel") ;
-			if (response instanceof  http.ServerResponse)
+			if (response instanceof  http.ServerResponse){
 				this.response =response;
+			}
 			//BODY
 			this.body = "";
-			this.encoding = this.setEncoding('utf8');;
+			this.encoding = this.setEncoding('utf8');
 
 			//cookies
 			this.cookies = {};
@@ -59,7 +60,7 @@ nodefony.register("Response",function(){
 				throw {
 					message:"",
 					error:"Response addCookies not valid cookies"
-				}
+				};
 			}	
 		}
 
@@ -71,7 +72,7 @@ nodefony.register("Response",function(){
 
 		setCookie (cookie){
 			//this.response.on('header', function(){
-				this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG")	
+				this.logger("ADD COOKIE ==> " + cookie.serialize(), "DEBUG");
 				this.setHeader('Set-Cookie', cookie.serialize());
 			//}.bind(this))
 		}
@@ -136,10 +137,10 @@ nodefony.register("Response",function(){
 		}
 
 		write (){
-			if (this.encoding )
+			if (this.encoding ){
 				return this.response.write( this.body + "\n", this.encoding);
-			else
-				return this.response.write( this.body + "\n");
+			}
+			return this.response.write( this.body + "\n");
 		}
 
 		end (data, encoding){

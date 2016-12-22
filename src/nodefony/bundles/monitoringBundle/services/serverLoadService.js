@@ -1,6 +1,4 @@
 var QS = require('qs');
-var https = require('https');
-var http = require('http');
 var shortId = require("shortid");
 var request = require("request");
 var os = require("os");
