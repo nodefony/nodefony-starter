@@ -14,3 +14,10 @@ $ git push origin :refs/tags/release01
 
 // TRACK REMOTE BRANCH 
 $ git branch --track origin/ES6
+
+
+
+// track ignored file
+git ls-files --ignored --exclude-standard
+
+git update-index --assume-unchanged file

@@ -5,12 +5,14 @@ tmp/**
 web/**
 **/assets/**
 
-app/Resources/databases/**
+app/Resources/databases/*
 *.db
 
 node_modules/**
 npm-debug.log
 *.[oa]
+
+config/certificates/**/*
 
 #Ignore vin backup
 *.swp
