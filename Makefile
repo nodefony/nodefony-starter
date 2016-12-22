@@ -1,5 +1,10 @@
 DISTRIB := $(shell uname)
 VERBOSE = 0 
+NODE_VERSION := $(shell node -v)
+
+VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
+#$(error $(VERSION))  
+VERSION := $(shell expr $(VERSION) )
 
 all:  install 
 
@@ -99,12 +104,15 @@ logs:
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
+	@echo "" ;
+	@echo "#######################################################" ;
+	@echo "#            NODE JS  MODULES  INSTALLATION           #" ;
+	@echo "#######################################################" ;
+	@echo "" ;
+
+	@[ $(VERSION) -ge 600 ]  || echo '$(NODE_VERSION) NODEFONY ERROR NODE VERSION must have version >= v6.0.0  See https://nodejs.org/en/download/package-manager for upgrade version ';  
+	
 	@if [  -f package.json  ] ; then \
-		echo "" ;\
-		echo "#######################################################" ; \
-		echo "#            NODE JS  MODULES  INSTALLATION           #" ; \
-		echo "#######################################################" ; \
-		echo "" ;\
 		if [ $(VERBOSE) = 0 ] ; then \
 			echo "npm -s install" ;\
 			npm -s install  ;\
