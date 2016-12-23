@@ -21,3 +21,12 @@ $ git branch --track origin/ES6
 git ls-files --ignored --exclude-standard
 
 git update-index --assume-unchanged file
+
+
+
+
+
+// SSH add key 
+eval "$(ssh-agent -s)"
+
+ssh-add ~/.ssh/my_github_key/id_rsa

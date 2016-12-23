@@ -11,7 +11,7 @@ all:  install
 install:
 	@echo "";
 	@echo "#########################################" ;
-	@echo "#            NODEFONY INSTALL           #" ;
+	@echo "#      NODEFONY INSTALL BUNDLES         #" ;
 	@echo "#########################################" ;
 	@echo "";
 
@@ -106,7 +106,7 @@ logs:
 npm:
 	@echo "" ;
 	@echo "#######################################################" ;
-	@echo "#            NODE JS  MODULES  INSTALLATION           #" ;
+	@echo "#                NODE.JS  INSTALLATION                #" ;
 	@echo "#######################################################" ;
 	@echo "" ;
 

@@ -209,7 +209,7 @@ nodefony.registerService("serverLoad", function(){
 						this.context.send( JSON.stringify({
 							message: "END LOAD TEST",
 							average: avg ,
-							averageNet: ( avg / this.concurrence ).toFixed(3),  //(avg * this.concurrence).toFixed(2)
+							averageNet: ( ( avg / this.concurrence ) * 1000 ).toFixed(2),  // ms
 							totalTime: this.averaging.total / 1000,
 							stop: stop,
 							statusCode: this.averaging.statusCode,

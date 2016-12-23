@@ -128,48 +128,26 @@ $ make build
 
 
 <h2>Configurations : <small>See more  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle })}}">( Nodefony Configurations  documentation ) </a></small></h2>
+<p class="doc2" >
 
-<h3> System :</h3>
-<p class="doc3">
 	By defaut NODEFONY bind all servers on loopback   ( localhost : 127.0.0.1 ) </br>
-	If you want listen network interface with a domain you can change binding.</br>  	
-	To bind server http(s) on network interface  </br>
-	Add domain name in your /etc/hosts example : "nodefony.com"   :
 
-	<pre class="doc3" >
-$ sudo vim /etc/hosts
-
-
-##
-# Host Database
-#
-##
-127.0.0.1       localhost nodefony.com
-
-	</pre>
-	
-</p>
-
-
-	
-	
-<h2>Running NODEFONY : <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
-<div class="doc2">
-	<p >
-		By default NODEFONY BIND SERVERS listen on  :
-		<ul class="doc3">
-			<li>
-				domain : localhost
-			</li>
-			<li>
-				http : 5151
-			</li>
-			<li>
-				https: 5152
-			</li>
-		</ul>
-		If you want change listen port http(s) by defaut or domain  <small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small><br>
-		<pre>
+	<ul class="doc3">
+		<li>
+			domain : localhost
+		</li>
+		<li>
+			http : 5151
+		</li>
+		<li>
+			https: 5152
+		</li>
+	</ul>
+	<p class="doc3" >
+	If you want change listen port http(s) by defaut or domain  <small>  <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Configurations  framework ) </a></small><br>
+	Change config.yml Location : <code>./config/config.yml</code>
+	</p>
+	<pre class="doc3">
 #
 #  NODEFONY FRAMEWORK
 #
@@ -178,20 +156,19 @@ $ sudo vim /etc/hosts
 #
 name:                           "NODEFONY"
 system:
-  version:                      "2.0.0-ES6-beta"
-<strong>  domain:			nodefony.com                    # nodefony can listen only one domain ( no vhost )
-  domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
-  httpPort:                     5151
-  httpsPort:                    5152</strong>
-  statics:                      true
-  security:                     true
-  realtime:                     true
-  monitoring:                   true
+version:                      "2.0.1"
+<strong>  domain:			localhost
+domainAlias:                  "^127.0.0.1$"
+httpPort:                     5151
+httpsPort:                    5152</strong>
 
-		</pre>
-		To check  you can run nodefony in dev mode  
-	</p>
+	</pre>
+</p>
 
+	
+<h2>Running NODEFONY : <small>See more  <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}">( RUN Nodefony documentation ) </a></small> </h2>
+<div class="doc2">
+	
 	<pre >
 
 # Run Appliation in DEV mode
@@ -204,11 +181,9 @@ $ ./nodefony_dev
 <h2>ACCEES NODEFONY APPLICATION :  </h2>
 <div class="doc2">
 <p >
-	Access to App with URL : <strong>http://nodefony.com:5151</strong><br>
+	Access to App with URL : <strong>http://localhost:5151</strong><br>
 
 	By default the nodefony clone come with a demonstration bundle named "demoBundle" 
-
-
 
 </p>
 </div>
