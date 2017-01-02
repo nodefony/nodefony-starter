@@ -20,7 +20,7 @@
 #   YAML Reference Parser: http://yaml.org/ypaste/
 
 
-########## NODEFONY CONFIG BUNDLE  demoBundle  ############
+########## NODEFONY CONFIG BUNDLE  httpBundle  ############
 name :				httpBundle
 version :			"Beta"
 
@@ -39,9 +39,9 @@ https:
   timeout:                      null            # For keep alive spec
   responseTimeout:              30000           # In MS  | 30 seconds by default
   certificats:
-    key:                        "config/certificates/server.key"
-    cert:                       "config/certificates/server.crt"
-    ca:                         ""
+    key:                        "config/certificates/server/privkey.pem"
+    cert:                       "config/certificates/server/fullchain.pem"
+    ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
     options:
       rejectUnauthorized:       false
 

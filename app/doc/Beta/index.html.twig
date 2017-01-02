@@ -4,8 +4,13 @@
 	
 	<div class="alert alert-info" role="alert">
 		<strong>
-		Bundle Application is the entry point of framework</br>
-		we can almost call the NODEFONY KERNEL    
+		Bundle Application is the entry point of framework, is the kernel instance of nodefony</br>
+		App is a special bundle its behavior differs from other bundles<br>
+		This Bunlde is responsible  for : 
+		<ul>
+			<li>Add new bundles in framework</br>
+			<li>Start servers (https,websocket ...) </br>
+			<li>overloading Configurations and Views from other bundles </br>
 		</strong>
 	</div>	
 </div>
@@ -22,7 +27,7 @@
 <h2 name="location" id="location">Location Bundle Application  :</h2>
 <div class="doc2">
 	<p>
-		You can find   bundle repository under rootdir <code>./app</code> directory.
+		You can find bundle repository under rootdir <code>./app</code> directory.
 		
 	</p>
 
@@ -39,15 +44,16 @@ drwxr-xr-x  5 cci  staff   170 11 oct 17:27 doc
 
 app/
 ├── <strong>appKernel.js</strong>
-├── Command
-│   └── runCommand.js
 ├── config
 │   ├── config.yml
+│   ├── parameters.yml
 │   ├── routing.yml
 │   └── security.yml
 ├── doc
 │   ├── Beta
+│   │   └── index.html.twig
 │   └── Default -> Beta
+├── Fixtures
 └── Resources
     ├── databases
     │   └── nodefony.db

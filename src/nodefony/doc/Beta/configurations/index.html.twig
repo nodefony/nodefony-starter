@@ -16,13 +16,19 @@
 			<p>
 			<pre>
 ./config/
-
 ├── certificates
-│   ├── letsCert.pem
-│   ├── letsChain.pem 
-│   ├── letsFullChain.pem 
-│   ├── letsKey.pem 
-├── config.yml 
+│   ├── ca
+│   │   ├── nodefony-root-ca.crt.pem
+│   │   └── nodefony-root-ca.key.pem
+│   ├── client
+│   │   ├── chain.pem
+│   │   └── pubkey.pem
+│   └── server
+│       ├── cert.pem
+│       ├── chain.pem
+│       ├── fullchain.pem
+│       └── privkey.pem
+├── config.yml
 └── pm2.json
 			</pre>
 

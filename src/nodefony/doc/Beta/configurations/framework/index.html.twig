@@ -7,13 +7,19 @@
 <div class="doc2">
 <pre>
 ./config/
-
 ├── certificates
-│   ├── letsCert.pem
-│   ├── letsChain.pem 
-│   ├── letsFullChain.pem 
-│   ├── letsKey.pem 
-├── config.yml 
+│   ├── ca
+│   │   ├── nodefony-root-ca.crt.pem
+│   │   └── nodefony-root-ca.key.pem
+│   ├── client
+│   │   ├── chain.pem
+│   │   └── pubkey.pem
+│   └── server
+│       ├── cert.pem
+│       ├── chain.pem
+│       ├── fullchain.pem
+│       └── privkey.pem
+├── config.yml
 └── pm2.json
 </pre>
 </div>
@@ -208,13 +214,24 @@ log:
 
 <div class="doc2">
 <pre>
-./config/certificates
+ls -l ./config/certificates/
 
-├── certificates
-   ├── letsCert.pem
-   ├── letsChain.pem 
-   ├── letsFullChain.pem 
-   ├── letsKey.pem 
+total 0
+drwxr-xr-x  4 cci  staff  136 15 déc 19:23 ca
+drwxr-xr-x  4 cci  staff  136 15 déc 19:23 client
+drwxr-xr-x  6 cci  staff  204 15 déc 19:23 server
+
+├── ca
+│   ├── nodefony-root-ca.crt.pem
+│   └── nodefony-root-ca.key.pem
+├── client
+│   ├── chain.pem
+│   └── pubkey.pem
+└── server
+    ├── cert.pem
+    ├── chain.pem
+    ├── fullchain.pem
+    └── privkey.pem
 </pre>
 
 	<p>
