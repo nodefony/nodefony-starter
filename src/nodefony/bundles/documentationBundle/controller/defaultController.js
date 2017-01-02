@@ -27,10 +27,25 @@ nodefony.registerController("default", function(){
 		 	*/
 			indexAction (version){
 				var defaultVersion = null ;
+				var force = this.query.force ;
 				if( ! version ){
 					defaultVersion = this.defaultVersion;
 				}else{
 					defaultVersion = version ;
+				}
+				if ( force ){
+					try {
+						var file = new nodefony.fileClass(this.kernel.rootDir+"/README.md");
+						if ( file ){
+						var res = this.htmlMdParser(file.content(file.encoding),{
+							linkify: true,
+							typographer: true	
+						});
+						return this.render("documentationBundle::index.html.twig",{bundle:"nodefony", readme:res, version:defaultVersion});
+					}
+					}catch(e){
+						this.logger(e,"ERROR");	
+					}
 				}
 				var myUrl = this.generateUrl("documentation-version",{
 					bundle:"nodefony",

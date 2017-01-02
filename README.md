@@ -347,6 +347,7 @@ Monitoring in progress !!!
 - [npm](https://www.npmjs.com/)
 - [Framework Symfony](http://symfony.com/)
 - [Twig.js](https://github.com/justjohn/twig.js/wiki)
+- [PM2](https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md)
 
 More informations [Documentation](https://nodefony.net/documentation)
 
@@ -360,4 +361,4 @@ More informations [Documentation](https://nodefony.net/documentation)
 
 ##  <a name="demo"></a>Demo 
 
-[Demo](http://nodefony.net)
+[Demo](https://nodefony.net)

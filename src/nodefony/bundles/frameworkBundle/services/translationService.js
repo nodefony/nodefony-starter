@@ -64,9 +64,8 @@ nodefony.registerService("translation", function(){
 		constructor ( container, type ){
 
 			super("translation", container, container.get("notificationsCenter") );
-
-			//this.container = container;
 			this.kernel = this.get("kernel");
+
 			
 			this.defaultLocale = null ;
 			if (this.has("translation") ){
@@ -99,11 +98,10 @@ nodefony.registerService("translation", function(){
 
 		 	this.listen(this, "onBoot", () => {
 				var dl =  this.getParameters("bundles.App").App.locale;
-				if (dl  ){
-				//if (dl && dl !== this.defaultLocale ){
+				if ( dl ){
 					this.defaultLocale = dl ; 
 				}
-					this.getFileLocale(dl);
+				this.getFileLocale(dl);
 				this.logger("default Local APPLICATION ==> " + this.defaultLocale ,"DEBUG");
 		 	});
 

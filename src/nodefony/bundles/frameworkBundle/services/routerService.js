@@ -294,8 +294,7 @@ nodefony.registerService("router", function(){
 
 		constructor (container){
 
-			super("router", container );
-			//this.container = container ;
+			super("router", container , container.get("notificationsCenter"));
 			this.routes = [];
 			this.reader = function(context){
 				var func = context.container.get("reader").loadPlugin("routing", pluginReader);

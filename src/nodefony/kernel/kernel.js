@@ -190,9 +190,6 @@ nodefony.register("kernel", function(){
 				//this.container.set("syslog",this.syslog);
 			});
 
-			//  manage GLOBAL EVENTS
-			//this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
-			//this.container.set("notificationsCenter", this.notificationsCenter);
 			this.initCluster();
 
 			this.eventReadywait = 0 ;
@@ -328,9 +325,8 @@ nodefony.register("kernel", function(){
 	 	*	@method initializeContainer
          	*/
 		initializeContainer (){
-			//this.container = new nodefony.Container();	
 			this.container.set("kernel", this);	
-			this.container.set("container", this.container);	
+			//this.container.set("container", this.container);	
 		}
 
 		/**

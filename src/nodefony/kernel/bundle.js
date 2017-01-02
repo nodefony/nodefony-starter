@@ -135,10 +135,8 @@ nodefony.register("Bundle", function(){
 			
 			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG","KERNEL");
 			this.kernel = kernel ;
-			//this.notificationsCenter = nodefony.notificationsCenter.create();
 			this.waitBundleReady = false ;
 			this.locale = this.kernel.settings.system.locale ;
-			//this.container = container ;
 			var config = this.container.getParameters("bundles."+this.name) ;
 			if ( ! config ){
 				this.container.setParameters("bundles."+this.name, {});

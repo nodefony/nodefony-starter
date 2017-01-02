@@ -209,7 +209,6 @@ nodefony.register("injection", function(){
 			
 			super("injection",container, container.get("notificationsCenter") );
 
-			//this.container = container;
 			this.kernel = this.container.get('kernel');
 			this.reader = function(context){
 				var func = context.get("reader").loadPlugin("injection", pluginReader);
@@ -269,12 +268,12 @@ nodefony.register("injection", function(){
 		findInjections (injections){
 			var params = {};
 			if(injections instanceof Array){
-				for(var elm=0; elm < injections.length; elm ++){
+				for(let elm=0; elm < injections.length; elm ++){
 					switch(injections[elm][0]){
 						case '@':
 							try{
 								var name = injections[elm].substring(1);
-								var service = this.get(name);
+								let service = this.get(name);
 								params[name] = service;
 							}catch(e) {
 								//this.logger('Instance service (' + name + ') doesn\'t exist !!!');

@@ -22,6 +22,7 @@ nodefony.register("Service", function(){
 					throw new Error ("Service nodefony container not valid must be instance of nodefony.Container");
 				}
 				this.container = new nodefony.Container(); 
+				this.container.set("container", this.container);
 			}
 			this.syslog = this.container.get("syslog");
 			if ( ! this.syslog ){
@@ -40,7 +41,13 @@ nodefony.register("Service", function(){
 					throw new Error ("Service nodefony notificationsCenter not valid must be instance of nodefony.notificationsCenter.notification");
 				}
 				this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
-				this.set("notificationsCenter", this.notificationsCenter);	
+				if (! this.container.get("kernel")){
+					this.set("notificationsCenter", this.notificationsCenter);
+				}else{
+					if ( this.container.get("kernel").container !== this.container ){
+						this.set("notificationsCenter", this.notificationsCenter);
+					}
+				}	
 			}	
 		}
 
