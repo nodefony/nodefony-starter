@@ -12,8 +12,8 @@
 
 var http = require("http");
 var https = require("https");
-var WebSocketClient = require('websocket').client
-var tunnel = require('tunnel');
+var WebSocketClient = require('websocket').client;
+//var tunnel = require('tunnel');
 
 const assert = require('assert');
 
