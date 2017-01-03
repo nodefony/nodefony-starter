@@ -463,11 +463,15 @@ nodefony.register("controller", function(){
 			if (! url ){
 				throw new Error("Redirect error no url !!!");
 			}
-			return this.context.redirect(url, status, headers);
+			try {
+				this.context.redirect(url, status, headers);
+			}catch(e){
+				throw e ;
+			}
 		}
 
 		redirectHttps (status){
-			return this.context.redirectHttps(301 || status) ;
+			return this.context.redirectHttps( status || 301 ) ;
 		}
 
 		forward (name, param){

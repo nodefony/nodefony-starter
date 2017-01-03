@@ -35,7 +35,7 @@ nodefony.registerController("demo", function(){
 				title:"nodefony",
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
-			}
+			};
 			/*return this.render("demoBundle:Default:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
@@ -119,7 +119,7 @@ nodefony.registerController("demo", function(){
 					</div>\
 				</div>\
 				</div>\
-			</div>'
+			</div>';
 			return this.getResponse(html);	
 		}
 
@@ -143,7 +143,7 @@ nodefony.registerController("demo", function(){
 			</nodefony></xml>';
 			return this.renderResponse(content, 200 , {
 				"content-type" :"Application/xml"
-			})
+			});
 		}
 
 		/**
@@ -156,7 +156,8 @@ nodefony.registerController("demo", function(){
 			var settings = kernel.settings ;
 
 			// async CALL
-			var childHost =  exec('hostname', (error, stdout, stderr) => {
+			/*var childHost =*/  
+			exec('hostname', (error, stdout/*, stderr*/) => {
 				var hostname = stdout ;	
 
 				var content = '<xml><nodefony>\
@@ -168,7 +169,7 @@ nodefony.registerController("demo", function(){
 				</nodefony></xml>';
 				return this.renderResponse(content, 200 , {
 					"content-type" :"Application/xml"
-				})
+				});
 			});
 		}
 
@@ -214,7 +215,7 @@ nodefony.registerController("demo", function(){
 					sessions:sessions,
 					users:users,
 				});
-			})
+			});
 		}
 
 		/**
@@ -226,8 +227,7 @@ nodefony.registerController("demo", function(){
 			
 			// here start session for flashbag because action is not on secure area and not autostart session 
 			if ( ! this.context.session ){
-				this.startSession("default", (error, session) => {
-					console.log(error)
+				this.startSession("default", (error/*, session*/) => {
 					if (error){
 						this.setFlashBag("error",error );
 						return this.redirect(this.generateUrl("subscribe"));
@@ -247,7 +247,6 @@ nodefony.registerController("demo", function(){
 					//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
 						
 					var users = null ; 
-					var error = null ;
 					this.userEntity.create({ 
 						username:	query.post.usernameCreate, 
 						email:		query.post.emailCreate, 
@@ -256,7 +255,7 @@ nodefony.registerController("demo", function(){
 						surname:	query.post.surnameCreate,  
 					})
 					.then( (results) => {
-						users = results
+						users = results;
 						this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
 						return this.redirect(this.generateUrl("saslArea"));
 					})
@@ -264,11 +263,10 @@ nodefony.registerController("demo", function(){
 						this.logger(util.inspect(error.errors) );
 						this.setFlashBag("error",error.errors[0].message );
 						return this.redirect(this.generateUrl("subscribe"));
-					})
+					});
 					
 				});
 			}else{
-			
 				var orm = this.getORM() ;
 				this.userEntity = orm.getEntity("user");
 
@@ -283,7 +281,6 @@ nodefony.registerController("demo", function(){
 				//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
 					
 				var users = null ; 
-				var error = null ;
 				this.userEntity.create({ 
 					username:	query.post.usernameCreate, 
 					email:		query.post.emailCreate, 
@@ -292,7 +289,7 @@ nodefony.registerController("demo", function(){
 					surname:	query.post.surnameCreate,  
 				})
 				.then( (results) => {
-					users = results
+					users = results;
 					this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
 					return this.redirect(this.generateUrl("saslArea"));
 				})
@@ -306,10 +303,9 @@ nodefony.registerController("demo", function(){
 						this.setFlashBag("error",error.message );
 						return this.redirect(this.generateUrl("subscribe"));
 					}
-				})
+				});
 			
 			}
-
 		}
 
 		/**
@@ -333,7 +329,7 @@ nodefony.registerController("demo", function(){
 				this.renderAsync('demoBundle:orm:orm.html.twig', {
 					users:users,
 				});
-			})
+			});
 		}
 
 		/**
@@ -353,7 +349,7 @@ nodefony.registerController("demo", function(){
 			.then((result) => {
 				var joins = result[0];
 				for (var i = 0 ; i < joins.length ; i++){
-					joins[i].metaBag = JSON.parse( joins[i].metaBag )
+					joins[i].metaBag = JSON.parse( joins[i].metaBag );
 				}
 				return joins ;
 			})
@@ -361,7 +357,7 @@ nodefony.registerController("demo", function(){
 				this.renderAsync('demoBundle:orm:orm.html.twig', {
 					joins:data,
 				});
-			})
+			});
 		}
 
 		/*
@@ -394,17 +390,16 @@ nodefony.registerController("demo", function(){
 						this.logger(stderr, "ERROR");
 					}
 					return resolve(stdout) ;	
-				})
-			
+				});
 			}));
 
 			
 			// system call  spawn ping  
-			tab.push (new Promise( (resolve, reject) => {
+			tab.push (new Promise( (resolve/*, reject*/) => {
 				var du = spawn('ping', ['-c', "3", "google.com"]);
 				var str = "" ;
 				var err = "" ;
-				var code = "" ;
+				//var code = "" ;
 
 				du.stdout.on('data',function(data){
 					str+= data ;
@@ -446,7 +441,7 @@ nodefony.registerController("demo", function(){
 				code = result[2].code ;
 				err = result[2].err ;
 			})
-			.done( (ele) => {
+			.done( (/*ele*/) => {
 				this.logger( "PROMISE SYSCALL DONE" , "DEBUG");
 				try {
 					this.renderAsync("demoBundle:Default:exec.html.twig", {
@@ -460,7 +455,7 @@ nodefony.registerController("demo", function(){
 				}catch(e){
 					throw e ;
 				}
-			})
+			});
 		}
 
 		/*
@@ -476,9 +471,9 @@ nodefony.registerController("demo", function(){
 			var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
 			var type = this.context.type ;
 			// cookie session 
-			var headers = {}
+			var headers = {};
 			if ( this.context.session ){
-				headers["Cookie"] = this.context.session.name+"="+this.context.session.id ;
+				headers.Cookie = this.context.session.name+"="+this.context.session.id ;
 			}
 			var options = {
   				hostname: this.context.request.url.hostname,
@@ -486,13 +481,14 @@ nodefony.registerController("demo", function(){
 				path:path,
   				method: 'GET',
 				headers:headers
-			}	
+			};
 			var wrapper = http.request ;
+			var keepAliveAgent = null ;
 
 			// https 
 			if (this.context.request.url.protocol === "https:"){
 				// keepalive if multiple request in same socket
-				var keepAliveAgent = new https.Agent({ keepAlive: true });
+				keepAliveAgent = new https.Agent({ keepAlive: true });
 				// certificat
 				var kernel = this.get("kernel");
 				var settings =  this.get("httpsServer").settings ;
@@ -504,10 +500,10 @@ nodefony.registerController("demo", function(){
 					requestCert: true,
 					agent: keepAliveAgent
 				});
-				var wrapper = https.request ;
+				wrapper = https.request ;
 			}else{
 				// keepalive
-				var keepAliveAgent = new http.Agent({ keepAlive: true });
+				keepAliveAgent = new http.Agent({ keepAlive: true });
 				options.agent = keepAliveAgent;	
 			}
 			
@@ -525,8 +521,7 @@ nodefony.registerController("demo", function(){
 						type: type,
 						bodyRaw:bodyRaw,
 					});
-				})
-
+				});
 			});
 
 			req.on('error', (e)  => {
@@ -563,7 +558,7 @@ nodefony.registerController("demo", function(){
 		
 			var files = this.getParameters("query.files");
 			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;	
-			for (var file in files){
+			for (let file in files){
 				if( files[file].error ){
 					throw files[file].error ;
 				}
@@ -580,8 +575,8 @@ nodefony.registerController("demo", function(){
 				var res = {
 					"files": [],
 					"metas": []
-				}
-				for (var file in files){
+				};
+				for (let file in files){
 					var name = files[file].realName();
 					res.files.push(path+"/"+name);
 					var meta = {
@@ -593,10 +588,9 @@ nodefony.registerController("demo", function(){
 						size:files[file].stats.size,
 						size2:files[file].stats.size,
 						type:files[file].getMimeType().split("/")
-					}
+					};
 					res.metas.push(meta);
 				}
-
 				return this.renderResponse(
 					JSON.stringify(res), 
 					200, 
@@ -609,7 +603,7 @@ nodefony.registerController("demo", function(){
  	 	*	 renderView 
  	 	*		
  	 	*/
-		renderviewAction (name){
+		renderviewAction (){
 			var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
 			return this.renderResponse(content);
 		}
@@ -618,7 +612,7 @@ nodefony.registerController("demo", function(){
  	 	*	@see renderResponse() with content html
  	 	*
  	 	*/
-		htmlAction (name){
+		htmlAction (){
 			var name = "nodefony";
 			return this.renderResponse('<html><script>alert("'+name+'")</script></html>');
 		}
@@ -628,7 +622,7 @@ nodefony.registerController("demo", function(){
  	 	*	@see forward
  	 	*/
 		forwardAction (){
-			return this.forward("frameworkBundle:default:index")
+			return this.forward("frameworkBundle:default:index");
 		}
 		
 		/**
@@ -675,7 +669,6 @@ nodefony.registerController("demo", function(){
 			switch( this.getMethod() ){
 				case "GET" :
 					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
-				break;
 				case "WEBSOCKET" :
 					if (message){
 						// MESSAGES CLIENT
@@ -688,7 +681,7 @@ nodefony.registerController("demo", function(){
 							var mess = "I am a  message "+ i +"\n" ;
 							context.send(mess);
 							this.logger( "SEND TO CLIENT :" + mess , "INFO");
-							i++
+							i++;
 						}, 1000);
 
 						setTimeout( () => {
@@ -701,11 +694,11 @@ nodefony.registerController("demo", function(){
 							if (id){
 								clearInterval(id);	
 							}
-						})
+						});
 					}
 				break;
 				default :
-					throw new Error("REALTIME METHOD NOT ALLOWED")
+					throw new Error("REALTIME METHOD NOT ALLOWED");
 			}
 		}
 

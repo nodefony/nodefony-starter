@@ -259,11 +259,13 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		redirect (Url, status, headers){
+			var res = null ;
 			if (typeof Url === "object"){
-				return this.response.redirect(url.format(Url), status, headers);
+				res = this.response.redirect(url.format(Url), status, headers);
 			}else{	
-				return this.response.redirect(Url, status, headers );
+				res = this.response.redirect(Url, status, headers );
 			}
+			this.send(res, this);
 		}
 
 		redirectHttps ( status, headers){

@@ -39,13 +39,7 @@ nodefony.register("kernel", function(){
 		}
 	};
 
-	/*var settingsSyslog = {
-		//rateLimit:100,
-		//burstLimit:10,
-		moduleName:"KERNEL",
-		defaultSeverity:"ERROR"
-	};*/
-
+	
 	var logConsole = function(syslog){
 		var red, blue, green, reset, yellow;
 		red   = '\x1b[31m';
@@ -353,14 +347,6 @@ nodefony.register("kernel", function(){
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
-		/**
-	 	*	get kernel name
-	 	*	@method getName 
-         	*/
-		getName (){
-			this.name = "KERNEL";	
-		}
-		
 		/**
 	 	*	get bundle instance
 	 	*	@method getBundle 
