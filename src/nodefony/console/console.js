@@ -387,26 +387,28 @@ nodefony.register("console", function(){
 						if (cmd in this.commands[bundle]){
 							var worker = this.commands[bundle][cmd];
 							if (worker){
-								worker.prototype.showHelp = this.getopts.showHelp.bind(this.getopts) ;
-								worker.prototype.logger = this.logger.bind(this) ;
 								try {
 									ret = new worker(this.container, this.cli.argv , this.cli.options );
 								}catch(e){
 									this.logger(""+e, "ERROR");
 								}
 							}else{
-								this.getopts.showHelp();
+								this.showHelp();
 							}
 							return ret;
 						}
 					}
 					this.logger(new Error("COMMAND : ")+ cmd +" not exist" );
-					this.getopts.showHelp();
+					this.showHelp();
 				}else{
 					this.logger(new Error("BAD FORMAT ARGV : ") + this.cli.argv );
-					this.getopts.showHelp();
+					this.showHelp();
 				}
 			}
+			return this.showHelp();
+		}
+
+		showHelp (){
 			return this.getopts.showHelp();
 		}
 			

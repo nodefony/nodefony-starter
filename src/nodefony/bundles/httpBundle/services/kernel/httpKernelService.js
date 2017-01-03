@@ -460,20 +460,14 @@ nodefony.registerService("httpKernel", function(){
 						context.fire("onFinish", context, reasonCode, description);
 						delete 	context.extendTwig ;
 						context.clean();
-						//context.destroy() ;
 						context = null ;
 						//if (context.profiling) delete context.profiling ;
-						//request.destroy() ;
 						request = null ;
-						//response.destroy() ;
 						response = null ;
-						//container.destroy() ;
 						container = null ;
-						//translation.destroy() ;
 						translation = null ;
 						if (domain) {
 							delete domain.container ;
-							//domain.destroy() ;
 							domain = null ;
 						}
 					});

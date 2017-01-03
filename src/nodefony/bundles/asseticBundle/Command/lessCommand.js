@@ -9,8 +9,11 @@
 nodefony.registerCommand("less",function(){
 
 
-	var Less = class Less {
-		constructor(container, command, options){
+	var Less = class Less extends nodefony.Worker {
+
+		constructor(container, command/*, options*/){
+			
+			super( "less", container );
 
 			this.engine = require("less");
 			var arg = command[0].split(":");
@@ -19,12 +22,11 @@ nodefony.registerCommand("less",function(){
 				case "render" :
 				break;
 				default:
-					this.logger(new Error(command[0] + " command error"),"ERROR")
+					this.logger(new Error(command[0] + " command error"),"ERROR");
 					this.showHelp();
 			}
-		};
+		}
 	};
-
 
 	return {
 		name:"less",
@@ -33,6 +35,6 @@ nodefony.registerCommand("less",function(){
 			//compile:["less:compile" ,"Less CSS compilateur "],
 		},
 		worker:Less
-	}
+	};
 
 });

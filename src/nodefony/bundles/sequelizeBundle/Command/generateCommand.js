@@ -4,17 +4,17 @@
  *
  */
 
-var Sequelize = require("sequelize");
 
 nodefony.registerCommand("Sequelize",function(){
 
-	var sequelizeCmd = class sequelizeCmd {
+	var sequelizeCmd = class sequelizeCmd  extends nodefony.Worker {
 
-		constructor (container, command, options){
+		constructor (container, command/*, options*/){
+
+			super( "Sequelize", container, container.get("notificationsCenter") );
 
 			var arg = command[0].split(":");
 			this.ormService = this.container.get("sequelize");
-			this.kernel = this.container.get("kernel");
 			switch ( arg[1] ){
 				case "generate" : 
 					switch( arg[2 ]){
@@ -24,8 +24,8 @@ nodefony.registerCommand("Sequelize",function(){
 								force= true ;
 							}
 							var tab =[];
-							this.ormService.listen(this, "onReadyConnection",(connectionName, connection , service) => {
-								this.logger("DATABASE  : "+connection.options.dialect +" CONNECTION : "+connectionName, "INFO");
+							this.ormService.listen(this, "onReadyConnection",(connectionName, connection /*, service*/) => {
+								this.logger("DATABASE  : "+connection.options.dialect +" CONNECTION : "+ connectionName, "INFO");
 								tab.push( new Promise( (resolve, reject) => {
 										this.logger("DATABASE SYNC : "+ connectionName);
 										connection.sync({force: force,logging:this.logger, hooks:true}).then( (db)  => {
@@ -34,19 +34,19 @@ nodefony.registerCommand("Sequelize",function(){
 										}).catch( (error) =>  {
 											this.logger("DATABASE :" + connection.config.database +" CONNECTION : "+connectionName+" : " + error, "ERROR");
 											reject(error);
-										})
+										});
 									})
 								);
 							});
-							this.ormService.listen(this, "onOrmReady",(service) => {
+							this.ormService.listen(this, "onOrmReady",(/*service*/) => {
 								Promise.all(tab)
 								.catch( (e) => {
 									this.logger(e,"ERROR");
+									this.terminate(1);
 								})
 								.done( () => {
 									this.terminate(0);
-								})
-
+								});
 							});
 						break;
 					}
@@ -63,8 +63,8 @@ nodefony.registerCommand("Sequelize",function(){
 										for(var fixture in fixtures){
 											if ( fixtures[fixture].type === "sequelize"){
 												this.logger("LOAD FIXTURES BUNDLE : " + bundles[bundle].name, "INFO");
-												var conn = service.getConnection( fixtures[fixture].connection );
-												var entity = service.getEntity( fixtures[fixture].entity );
+												service.getConnection( fixtures[fixture].connection );
+												service.getEntity( fixtures[fixture].entity );
 												var entityName = fixtures[fixture].entity ;
 												var connectionName = fixtures[fixture].connection ;
 												this.logger("LOAD FIXTURE ENTITY : " + entityName + " CONNECTIONS : "+connectionName , "INFO");
@@ -76,23 +76,24 @@ nodefony.registerCommand("Sequelize",function(){
 
 								}
 							});
-							this.kernel.listen(this, "onPostReady",(service) => {
+							this.kernel.listen(this, "onPostReady",(/*service*/) => {
 
 								var actions = this.tabPromise.map(function(ele){
 									return new Promise(ele);
-								})
+								});
 
 								Promise.all(actions)
 								.catch( (e) => {
 									this.logger(e, "ERROR");	
+									this.terminate(1);
 								})
 								.then( () => {
-									this.logger("LOAD FIXTURE ENTITY :  SUCCESS")		
+									this.logger("LOAD FIXTURE ENTITY :  SUCCESS");
 									this.terminate(0);
 								})
 								.done( () => {
 									this.terminate(1);
-								})
+								});
 							});
 							break;
 						default:
@@ -100,7 +101,7 @@ nodefony.registerCommand("Sequelize",function(){
 					}
 					break;
 				case "query" :
-					this.ormService.listen(this, "onOrmReady",function(service){
+					this.ormService.listen(this, "onOrmReady",function(/*service*/){
 						switch( arg[2 ]){
 							case "sql":
 								var db = command[1];	
@@ -120,11 +121,11 @@ nodefony.registerCommand("Sequelize",function(){
 								.then( (result) => {
 									//console.log(result[0])
 									var ele =  JSON.stringify(result);
-									console.log(ele)
+									console.log(ele);
 								})
 								.done( () => {
 									this.terminate();
-								})
+								});
 							break;
 							default:
 								this.showHelp();
@@ -133,7 +134,7 @@ nodefony.registerCommand("Sequelize",function(){
 					});
 				break;
 				case "entity" :
-					this.ormService.listen(this, "onOrmReady",function(service){
+					this.ormService.listen(this, "onOrmReady",function(/*service*/){
 						switch( arg[2 ]){
 							case "findAll" :
 								var entity = command[1];
@@ -152,12 +153,11 @@ nodefony.registerCommand("Sequelize",function(){
 								.then( (result) => {
 									//var attribute = result[0].$options.attributes ;
 									var ele =  JSON.stringify(result);
-									console.log(ele)
-									
+									console.log(ele);
 								})
 								.done( () => {
 									this.terminate(0);
-								})
+								});
 							break;
 							default:
 								this.showHelp();
@@ -169,7 +169,7 @@ nodefony.registerCommand("Sequelize",function(){
 					this.showHelp();
 					this.terminate(0);
 			}
-		};
+		}
 	};
 
 	return {
@@ -186,7 +186,6 @@ nodefony.registerCommand("Sequelize",function(){
 			entity:["Sequelize:entity:findAll entity " ,"query findAll ENTITY"]
 		},
 		worker:sequelizeCmd
-	
-	} ;
+	};
 });		
 

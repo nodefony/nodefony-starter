@@ -24,6 +24,7 @@ nodefony.register("Service", function(){
 				this.container = new nodefony.Container(); 
 				this.container.set("container", this.container);
 			}
+			this.kernel = this.container.get("kernel");
 			this.syslog = this.container.get("syslog");
 			if ( ! this.syslog ){
 				this.settingsSyslog = nodefony.extend({}, settingsSyslog , {
@@ -59,8 +60,12 @@ nodefony.register("Service", function(){
 		}
 	
 		logger(pci, severity, msgid,  msg){
-			if (! msgid) { msgid = this.name + " "; }
-			return this.syslog.logger(pci, severity, msgid,  msg);	
+			try {
+				if (! msgid) { msgid = this.name + " "; }
+				return this.syslog.logger(pci, severity, msgid,  msg);	
+			}catch(e){
+				console.log(pci);
+			}
 		}
 
 		/**

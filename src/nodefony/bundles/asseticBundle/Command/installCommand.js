@@ -15,14 +15,14 @@ nodefony.registerCommand("assets",function(){
 	var regHidden = /^\./;
 	var isHiddenFile = function(name){
 		return regHidden.test(name);
-	}
+	};
 
+	var Asset = class Asset extends nodefony.Worker {
 
-	var Asset = class Asset {
+		constructor (container, command/*, options*/){
 
-		constructor (container, command, options){
-
-			this.kernel = container.get("kernel");
+			super( "assets", container, container.get("notificationsCenter") );
+				
 			var arg = command[0].split(":");
 			switch( arg[0] ){
 				case "assets" :
@@ -37,7 +37,7 @@ nodefony.registerCommand("assets",function(){
 							);
 
 							this.publicDirectory = this.kernel.rootDir+"/web/";
-							this.createAssetDirectory(this.publicDirectory, (stat) => {
+							this.createAssetDirectory(this.publicDirectory, () => {
 								this.parseBundles();
 							});
 							console.log(this.table.render());
@@ -45,40 +45,41 @@ nodefony.registerCommand("assets",function(){
 						break;
 						case "dump" :
 							this.bundles = this.kernel.getBundles();
-							var serviceTemplate = container.get("templating") ;
+							//var serviceTemplate = container.get("templating") ;
 							this.kernel.listen(this, "onReady", () => {
 								for ( var bundle in this.bundles ){
 									var views = this.bundles[bundle].resourcesFiles.findByNode("views") ;
-									views.getFiles().forEach(function(file, index, array){
-										serviceTemplate.compile( file, (error, template) => {
+									views.getFiles().forEach((file/*, index, array*/) => {
+										this.twig.compile( file, (error/*, template*/) => {
 											if (error){
 												this.logger(error, "ERROR");
+												this.terminate(1);
 												return ;
 											}
-										} )	
-									})
+										} );
+									});
 								}
 								this.terminate(0);
 							});
 						break;
 						default:
-							this.logger(new Error(command[0] + " command error"),"ERROR")
+							this.logger(new Error(command[0] + " command error"),"ERROR");
 							this.showHelp();
 					}
 				break;
 				default:
-					this.logger(new Error(command[0] + " command error"),"ERROR")
+					this.logger(new Error(command[0] + " command error"),"ERROR");
 					this.showHelp();
 					this.terminate(0);
 			}
-			
-		};
+		}
 
 		parseBundles (){
 			this.bundles = this.kernel.getBundles();
+			var result = null ;
 			for ( var bundle in this.bundles ){
 				try {
-					var result = this.bundles[bundle].getPublicDirectory();	
+					result = this.bundles[bundle].getPublicDirectory();	
 				}catch(e){
 					continue ;
 				}
@@ -99,13 +100,14 @@ nodefony.registerCommand("assets",function(){
 					}.bind(this, bundle));
 				}
 			}	
-			this.table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + this.getSizeDirectory( this.publicDirectory )/ 1000 + " ko")
-		};
+			this.table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + this.getSizeDirectory( this.publicDirectory )/ 1000 + " ko");
+		}
 
 		
 		getSizeDirectory (dir){
 			var files = fs.readdirSync(dir);
 			var i, totalSizeBytes= 0;
+			var dirSize = null ;
 			for (i=0; i<files.length; i++) {
 				var path = dir+"/"+files[i] ;
 				var stat = fs.lstatSync(path);
@@ -116,18 +118,18 @@ nodefony.registerCommand("assets",function(){
 						}
 					break;
 					case stat.isDirectory() :
-						var dirSize = this.getSizeDirectory(path);
+						dirSize = this.getSizeDirectory(path);
 						totalSizeBytes += dirSize;
 					break;
 					case stat.isSymbolicLink() :
 						//console.log("isSymbolicLink")
-						var dirSize = this.getSizeDirectory(fs.realpathSync(path));
+						dirSize = this.getSizeDirectory(fs.realpathSync(path));
 						totalSizeBytes += dirSize;
 					break;
 				}	
 			}		
 			return totalSizeBytes ;
-		};
+		}
 
 		createAssetDirectory (Path, callback){
 			try {
@@ -142,35 +144,36 @@ nodefony.registerCommand("assets",function(){
     					}
 				});
 			}
-		};
+		}
 
 		createSymlink (srcpath, dstpath, callback){
+			var res= null ;
 			try {
-				var res = fs.statSync(srcpath);
+				res = fs.statSync(srcpath);
 				//if ( ! res ) this.logger("FILE :"+srcpath +" not exist","ERROR");
 				try{
 					// LINK
 					res = fs.lstatSync(dstpath);
-					if (res ) fs.unlinkSync(dstpath)
+					if (res ){ fs.unlinkSync(dstpath) ;}
 				}catch(e){
 					//console.log("PASS CATCH")
 					//console.log(e ,"ERROR")
 				}			
 				//console.log(srcpath+" : "+ dstpath);
-				var res = fs.symlink(srcpath, dstpath, (e) => {
+				res = fs.symlink(srcpath, dstpath, (e) => {
 					//console.log("PASS symlinkSync");
     					if(!e || (e && e.code === 'EEXIST')){
-						callback(srcpath, dstpath)
+						callback(srcpath, dstpath);
     					} else {
         					this.logger(e,"ERROR");
     					}
 				});
-				callback(srcpath, dstpath)
+				callback(srcpath, dstpath);
 			}catch(e){
 				this.logger("FILE :"+srcpath +" not exist: "+e,"ERROR");
 				//this.logger("Create symlink   : "+ e, "ERROR");
 			}
-		};
+		}
 	};
 
 	return {
@@ -181,6 +184,6 @@ nodefony.registerCommand("assets",function(){
 			//watch:["assetic:watch" ,"Installs bundles web assets under a public web directory "]
 		},
 		worker:Asset
-	}
+	};
 
 });

@@ -17,7 +17,6 @@ nodefony.registerService("sequelize", function(){
 						code: err.code,
 						message: err.message
 					};
-				break;
 				default:
 					return err;
 			}
@@ -53,26 +52,26 @@ nodefony.registerService("sequelize", function(){
 			this.state = "CONNECTED";
 		}
 		
-		getConnection (db){
+		getConnection (){
 			return this.db;
 		}
 		
 		connect (type, config){
 			if ( this.orm.debug ){
-				config.options.logging = function(value){
-					this.logger(value, "DEBUG")
-				}.bind(this.orm);
+				config.options.logging = (value) => {
+					this.logger(value, "DEBUG");
+				};
 			}else{
 				config.options.logging = false;	
 			}
+			var conn = null ;
 			try {
 				switch(type){
 					case "sqlite" :
 						config.options.storage = process.cwd() + config.dbname;
 					break;
-				
 				}
-				var conn = new this.orm.engine(config.dbname, config.username, config.password, config.options );	
+				conn = new this.orm.engine(config.dbname, config.username, config.password, config.options );	
 				this.logger(this.name + " :  CONNECT to database "+ type+" : " +config.dbname, "DEBUG");
 				process.nextTick( ()  => {
 					this.setConnection(conn);
@@ -84,7 +83,7 @@ nodefony.registerService("sequelize", function(){
 		}
 			
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) msgid = "SERVICE sequelize CONNECTION";
+			if (! msgid) {msgid = "SERVICE sequelize CONNECTION";}
 			return this.orm.logger(pci, severity, msgid,  msg);
 		}
 	};
@@ -97,7 +96,7 @@ nodefony.registerService("sequelize", function(){
 	var sequelize = class sequelize extends nodefony.orm {
 
 		constructor (container, kernel, autoLoader){
-			super("sequelize", container, kernel, autoLoader )
+			super("sequelize", container, kernel, autoLoader );
 			this.engine = require('sequelize');
 			this.connections = {};
 			this.boot();
@@ -105,7 +104,7 @@ nodefony.registerService("sequelize", function(){
 
 		boot (){
 			super.boot();	
-			this.kernel.listen(this, 'onBoot', (kernel) => {
+			this.kernel.listen(this, 'onBoot', (/*kernel*/) => {
 				this.settings = this.container.getParameters("bundles.sequelize");
 				this.debug = this.settings.debug ;
 				if ( this.settings.connectors && Object.keys(this.settings.connectors).length ){

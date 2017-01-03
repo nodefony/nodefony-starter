@@ -3,35 +3,40 @@
   *
   */
 
-var Sequelize =require("sequelize");
-//var Promise = require('promise');
 var Url = require("url");
 
 nodefony.registerCommand("Monitoring",function(){
 
-	var monitoring = class monitoring {
+	var monitoring = class monitoring  extends nodefony.Worker {
 
-		constructor (container, command, options){
+		constructor (container, command/*, options*/){
+
+			super( "Monitoring", container, container.get("notificationsCenter") );
+
 			var arg = command[0].split(":");
 			switch ( arg[1] ){
 				case "test":
 					this.serverLoad = this.container.get("serverLoad");
+					var proto = null ;
+					var url = null ;
+					var nb = null ;
+					var concurence = null ;
 					switch( arg[2]){
 						case "load":
 							try {
-								var url = Url.parse( command[1] );
-								var nb = parseInt( command[2] ,10 );
-								var concurence = parseInt( command[3] ,10 );
+								url = Url.parse( command[1] );
+								nb = parseInt( command[2] ,10 );
+								concurence = parseInt( command[3] ,10 );
 							}catch(e){
 								this.showHelp();
 								this.terminate(1);
 							}
 							if ( ! url.protocol ){
-								var proto = "http";
+								proto = "http";
 								url.protocol = "http:";
 								url.href = "http://"+url.href;
 							}else{
-								var proto = url.protocol.replace(":", "");	
+								proto = url.protocol.replace(":", "");	
 							}
 							this.serverLoad.handleConnection({
 								type: proto,
@@ -39,7 +44,7 @@ nodefony.registerCommand("Monitoring",function(){
 								concurence:concurence || 40,
 								url:url.href,
 								method:'GET'
-							},this)
+							},this);
 						break;
 						default:
 							this.showHelp();
@@ -51,18 +56,9 @@ nodefony.registerCommand("Monitoring",function(){
 				this.terminate(0);
 			}
 		}
-		 
-		listen (service, event, callback){
-			
-		}
-
-		send (data, encodage){
+		
+		send (data/*, encodage*/){
 			this.logger(data, "INFO");	
-		}
-
-
-		close (code){
-			this.terminate(code);	
 		}
 	};
 
@@ -72,8 +68,6 @@ nodefony.registerCommand("Monitoring",function(){
 			Test:["Monitoring:test:load URL [nbRequests] [concurence]" ,"load test example ./console Monitoring:test:load http://nodefony.com:5151/demo 10000 100 "],
 		},
 		worker:monitoring
-
-	
-	} ;
+	};
 });		
 

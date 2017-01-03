@@ -21,7 +21,7 @@ nodefony.register("orm", function(){
 	//var connectionNotification = 0;
 	var connectionMonitor = function(name, db, orm){
 		this.connectionNotification ++;
-		if(Object.keys(orm.settings.connectors).length == this.connectionNotification){
+		if(Object.keys(orm.settings.connectors).length === this.connectionNotification){
 			process.nextTick(function () {
 				orm.fire('onOrmReady', orm);
 			});
@@ -32,11 +32,11 @@ nodefony.register("orm", function(){
 
 		constructor (name, container, kernel, autoLoader){
 			
-			super( name, container  );
+			super( name, container );
 
-			this.kernel = kernel;
-			if (( this.kernel.debug === false && this.debug === true) || this.debug === undefined )
+			if (( this.kernel.debug === false && this.debug === true) || this.debug === undefined ){
 				this.debug = this.kernel.debug ;
+			}
 			this.syslog = this.initializeLog();
 			this.container.set("syslog.orm",this.syslog);
 			this.entities = {};
@@ -44,7 +44,6 @@ nodefony.register("orm", function(){
 			this.autoLoader = autoLoader;
 			this.connections = {};
 			this.connectionNotification = 0 ;
-
 		}
 		
 		boot (){
@@ -52,38 +51,40 @@ nodefony.register("orm", function(){
 			this.listen(this, "onReadyConnection", connectionMonitor);
 			this.listen(this, "onErrorConnection", connectionMonitor);		
 			
-			this.kernel.listen(this, 'onBoot', function(kernel){
+			this.kernel.listen(this, 'onBoot', (kernel) => {
+				var callback = null ;
 				for (var bundle in kernel.bundles){
 					if ( Object.keys(kernel.bundles[bundle].entities).length  ){
 						for (var entity in kernel.bundles[bundle].entities ){
 							var ele = kernel.bundles[bundle].entities[entity] ;
-							if (ele.type !== this.name)
+							if (ele.type !== this.name){
 								continue;
+							}
 							if ( !  ( ele.connection in this.definitions ) ){
 								this.definitions[ele.connection] = [];
 							}
-							var callback = (enti, bundle, name) => {
+							callback = (enti, bundle, name) => {
 								var Enti = enti;
 								var Name = name ;
 								var Bundle = bundle ;
 								return (db) => {
 									try {
 										this.entities[Name] = Enti.entity.call(this, db, this);
-										this.logger(this.name+" REGISTER ENTITY : "+Name+" PROVIDE BUNDLE : "+Bundle,"DEBUG")
+										this.logger(this.name+" REGISTER ENTITY : "+Name+" PROVIDE BUNDLE : "+Bundle,"DEBUG");
 										return Enti ;		
 									}catch(e){
 										this.logger(e);
 									}
-								}
+								};
 							};
-							var callback = callback(ele, bundle, entity);
+							callback = callback(ele, bundle, entity);
 							this.definitions[ele.connection].push(callback);
 						}
 					}
 				}
 			});
 
-			this.listen(this, "onConnect" , function(name, db){
+			this.listen(this, "onConnect" , (name, db) => {
 				if (name in this.definitions){
 					for( var i =0 ; i < this.definitions[name].length ; i++){
 						this.definitions[name][i](db);
@@ -120,8 +121,12 @@ nodefony.register("orm", function(){
 				
 			if (this.kernel.environment === "dev"){
 				// INFO DEBUG
-				var data ;
-				this.debug ? data = "INFO,DEBUG" : data = "INFO" ;
+				var data ="";
+				if ( this.debug ) {
+					data = "INFO,DEBUG" ;
+				}else{
+					data = "INFO";
+				}
 				syslog.listenWithConditions(this,{
 					severity:{
 						data:data

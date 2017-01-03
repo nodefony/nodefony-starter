@@ -146,10 +146,12 @@ asset:
 	fi \
 	 
 	@if [ ! -e web/favicon.ico ] ; then \
+		echo " copy favicon.ico " ;\
 		cp app/Resources/public/favicon.ico web/ ;\
 	fi \
 
 	@if [ ! -e web/robots.txt ] ; then  \
+		echo " copy robots.txt " ;\
 		cp app/Resources/public/robots.txt web/ ;\
 	fi \
 

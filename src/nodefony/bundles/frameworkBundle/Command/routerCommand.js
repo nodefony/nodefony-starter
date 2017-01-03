@@ -6,18 +6,17 @@
  *
  *
  */
-
-//var asciitable = require("asciitable");
-
 var AsciiTable = require('ascii-table');
 
 nodefony.registerCommand("router",function(){
 
 
-	var router = class router {
+	var router = class router extends nodefony.Worker {
 
-		constructor(container, command, options ){
+		constructor(container, command/*, options*/ ){
 		
+			super( "router", container, container.get("notificationsCenter") );
+
 			this.router = this.container.get("router");
 
 			//console.log(arguments);
@@ -31,25 +30,26 @@ nodefony.registerCommand("router",function(){
 						break;
 						case "route":
 							if (command[1]){
-								var ret = this.getRoutes(command[1], true);
+								this.getRoutes(command[1], true);
 							}else{
-								this.logger(new Error(command[0] + " must have route name"),"ERROR")
+								this.logger(new Error(command[0] + " must have route name"),"ERROR");
 							}
 						break;
 						default:
-							this.showHelp()
+							this.showHelp();
 					}
 				break;
 				case "match":
 					if ( arg[2] === "url" ){
-						if (command[1])
+						if (command[1]){
 							this.matchRoutes(command[1]);
-						else
-							this.logger(new Error(command[0] + " must have url  to match"),"ERROR")
+						}else{
+							this.logger(new Error(command[0] + " must have url  to match"),"ERROR");
+						}
 					}
 				break;
 				default:
-					this.showHelp()
+					this.showHelp();
 			}
 			this.terminate(0);
 		}
@@ -57,16 +57,17 @@ nodefony.registerCommand("router",function(){
 		getRoutes (name, display){
 			var ele = this.router.getRoutes(name);
 			if (ele && display){
-				if (nodefony.typeOf(ele) === "object")
+				if (nodefony.typeOf(ele) === "object"){
 					ele = [ele];
+				}
 				try {
 					this.displayTable("ROUTES",ele);	
 				}catch(e){
-					console.log(e)
+					console.log(e);
 				}
 			}
 			return ele;
-		};
+		}
 
 		/*router.prototype.displayTable = function(title, ele){
 			if (! ele) return this.logger("route not exist","ERROR");
@@ -109,7 +110,7 @@ nodefony.registerCommand("router",function(){
 			}
 			var table = asciitable(options, tab);
 			this.logger(table)
-		};*/
+		}*/
 
 
 		displayTable (titre, ele, firstMatch){
@@ -149,32 +150,31 @@ nodefony.registerCommand("router",function(){
 			}
 			//table.removeBorder()
 			console.log(table.render());	
-		};
+		}
 
 
 		matchRoutes (Url){
 
-			var myUrl = url.parse(Url)
-			this.logger("URL TO CHECK : "+Url)
+			var myUrl = url.parse(Url);
+			this.logger("URL TO CHECK : "+Url);
 			var routes = this.getRoutes();
 			var tab = [];
 			for (var i = 0 ; i < routes.length ; i++){
 				var pattern = routes[i].pattern ;
 				var res = myUrl.pathname.match(pattern);
 				if (res){
-					tab.push(routes[i])	
+					tab.push(routes[i]);	
 				}	
 			}
 			if (tab.length){
-				tab[0]["firstMatch"] = "*";
+				tab[0].firstMatch = "*";
 				this.displayTable("MATCH URL : "+ Url, tab, true);
 			}else{
-				this.logger("no routes match ","ERROR")
+				this.logger("no routes match ","ERROR");
 				this.displayTable("no routes match GENARATE ALL ROUTE", routes);
 			}
-		};
+		}
 	};
-
 
 	return {
 		name:"router",
@@ -184,6 +184,5 @@ nodefony.registerCommand("router",function(){
 			url:["router:match:url url", "Get route who match url Example : ./console router:match:url /nodefony"]
 		},
 		worker:router
-	}
-
+	};
 });

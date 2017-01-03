@@ -2,12 +2,14 @@
 
 nodefony.registerCommand("unitTest", function(){
 
-	var unitTest = class unitTest {
-		constructor (container, command, options){
+	var unitTest = class unitTest extends nodefony.Worker {
+
+		constructor (container, command/*, options*/){
+
+			super( "unitTest", container, container.get("notificationsCenter") );
 
 			var arg = command[0].split(":");
 			command.shift();
-			this.kernel = this.container.get("kernel")
 			var bundles = this.kernel.bundles;
 
 			this.serviceUnitTest = this.container.get("unitTest");
@@ -15,12 +17,12 @@ nodefony.registerCommand("unitTest", function(){
 					
 			var tests = [];
 
-			if(arg[2] == 'all'){
-				this.serviceUnitTest.getNodefonyTestFiles( null, tests)
+			if(arg[2] === 'all'){
+				this.serviceUnitTest.getNodefonyTestFiles( null, tests);
 				for(var bundle in bundles){
 					this.serviceUnitTest.getBundlesTestFiles( bundle, null, tests);
 				}
-			} else if(arg[2] == 'bundle'){
+			} else if(arg[2] === 'bundle'){
 				var bundleName = command[0];
 				var testName = command[1];
 				bundleName = bundleName.replace('Bundle', '');
@@ -31,7 +33,7 @@ nodefony.registerCommand("unitTest", function(){
 				}
 			}
 
-			this.kernel.listen(this, 'onReady', (kernel) => {
+			this.listen(this, 'onReady', (/*kernel*/) => {
 				switch ( arg[1] ){
 					case "list" :
 						switch( arg[2] ){
@@ -39,7 +41,7 @@ nodefony.registerCommand("unitTest", function(){
 							case "bundle" : 
 								var bundleName = '';
 								for(var i = 0; i < tests.length ; i++){
-									if ( bundleName != tests[i].bundle){
+									if ( bundleName !== tests[i].bundle){
 										bundleName = tests[i].bundle;
 										this.logger("★★★ BUNDLE : " + bundleName + " ★★★\n","INFO");
 									}
@@ -73,9 +75,8 @@ nodefony.registerCommand("unitTest", function(){
 						this.terminate(1);
 				}
 			});
-		};	
+		}
 	};	
-
 	return {
 		name: "unitTest",
 		commands: {
@@ -86,5 +87,4 @@ nodefony.registerCommand("unitTest", function(){
 		},
 		worker: unitTest
 	};
-
 });
