@@ -32,6 +32,8 @@
       "nodedomain":	true,
       "dns":		true,
       "Promise":	true,
-      "zone":		true
+      "zone":		true,
+      "it":		true,
+      "describe":	true
     }	
 }

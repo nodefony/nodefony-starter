@@ -145,15 +145,7 @@ asset:
 		./.console_dev assets:dump ;\
 	fi \
 	 
-	@if [ ! -e web/favicon.ico ] ; then \
-		echo " copy favicon.ico " ;\
-		cp app/Resources/public/favicon.ico web/ ;\
-	fi \
-
-	@if [ ! -e web/robots.txt ] ; then  \
-		echo " copy robots.txt " ;\
-		cp app/Resources/public/robots.txt web/ ;\
-	fi \
+	
 
 framework:
 	@echo "";
@@ -210,6 +202,14 @@ framework:
 		ln -s ../../src/nodefony-stage stage ;\
 		cd ../.. ;\
 	fi
+	@if [ ! -e web/favicon.ico ] ; then \
+		echo " copy favicon.ico " ;\
+		cp app/Resources/public/favicon.ico web/ ;\
+	fi 
+	@if [ ! -e web/robots.txt ] ; then  \
+		echo " copy robots.txt " ;\
+		cp app/Resources/public/robots.txt web/ ;\
+	fi 
 
 sequelize:
 	./console Sequelize:generate:entities

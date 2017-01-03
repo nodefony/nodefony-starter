@@ -12,8 +12,8 @@
 
 var http = require("http");
 var https = require("https");
-var WebSocketClient = require('websocket').client
-var tunnel = require('tunnel');
+var WebSocketClient = require('websocket').client;
+//var tunnel = require('tunnel');
 
 const assert = require('assert');
 
@@ -43,17 +43,18 @@ describe("NODEFONY BUNDLE HTTP", function(){
 				}
 			};
 
-			request(options, (error, res, body) => {
+			request(options, (error, res/*, body*/) => {
 
 				if (error){
 					throw error ;
 				}
+				var ret = null ;
 				switch ( res.statusCode ){
 					case "302" :
-						var ret = 200 ;
+						ret = 200 ;
 					break;
 					default :
-						var ret = res.statusCode ;
+						ret = res.statusCode ;
 				}
 				assert.equal(res.statusCode, ret );
 				assert.equal(res.headers.server, "nodefony");
@@ -77,16 +78,17 @@ describe("NODEFONY BUNDLE HTTP", function(){
 				ca:res.ca,
 			};
 			
-			request(options, (error, res, body) => {
+			request(options, (error, res/*, body*/) => {
 				if (error){
 					throw error ;
 				}
+				var ret = null ;
 				switch ( res.statusCode ){
 					case "302" :
-						var ret = 200 ;
+						ret = 200 ;
 					break;
 					default :
-						var ret = res.statusCode ;
+						ret = res.statusCode ;
 				}
 				assert.equal(res.statusCode, ret );
 				assert.equal(res.headers.server, "nodefony");

@@ -63,9 +63,7 @@ nodefony.registerService("translation", function(){
 
 		constructor ( container, type ){
 
-			super("translation", container, container.get("notificationsCenter") );
-			this.kernel = this.get("kernel");
-
+			super("I18N", container, container.get("notificationsCenter") );
 			
 			this.defaultLocale = null ;
 			if (this.has("translation") ){
@@ -75,8 +73,6 @@ nodefony.registerService("translation", function(){
 			this.engineTemplate = this.get("templating");
 			this.setParameters("translate", translate);
 			this.defaultDomain = "messages"; 
-			//console.log(this.container.parameters.__proto__);
-			//console.log(this.container.getParameters("kernel"));
 			this.reader = reader(this);
 		}
 

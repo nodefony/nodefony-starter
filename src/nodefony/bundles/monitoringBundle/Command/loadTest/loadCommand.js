@@ -60,6 +60,13 @@ nodefony.registerCommand("Monitoring",function(){
 		send (data/*, encodage*/){
 			this.logger(data, "INFO");	
 		}
+
+		close (code){
+			if (code){
+				return this.terminate(code);	
+			}
+			return this.terminate(0);
+		}
 	};
 
 	return {

@@ -251,7 +251,7 @@ nodefony.register("console", function(){
 			npm.load(conf, (error) => {
 				if (error){
 					this.logger(error,"ERROR");
-					this.terminate();
+					this.terminate(1);
 					return ;
 				}
 				npm.commands.ls([], true, (error, data) =>{
@@ -265,7 +265,7 @@ nodefony.register("console", function(){
 						};
 					}
 					displayTable("NPM NODEFONY PACKAGES", ele);
-					this.terminate();
+					this.terminate(0);
 				});
 			});
 		}
@@ -277,14 +277,14 @@ nodefony.register("console", function(){
 				npm.load( config ,(error) => {
 					if (error){
 						this.logger(error, "ERROR");
-						this.terminate();
+						this.terminate(1);
 					}
 					var dependencies = createNpmDependenciesArray(conf.path) ;
 					this.logger("Install Package BUNDLE : "+ name,"INFO");
 					npm.commands.install(dependencies,  (er/*, data*/) => {
 						if (er){
  				       			this.logger(er, "ERROR", "SERVICE NPM BUNDLE " + name);
-							this.terminate();
+							this.terminate(1);
 							return ;
 						}
 						this.loadBundle(file);	
@@ -390,19 +390,20 @@ nodefony.register("console", function(){
 								try {
 									ret = new worker(this.container, this.cli.argv , this.cli.options );
 								}catch(e){
-									this.logger(""+e, "ERROR");
+									throw e ;
 								}
 							}else{
 								this.showHelp();
+								throw new Error("Worker : ")+ cmd +" not exist" ;
 							}
 							return ret;
 						}
 					}
-					this.logger(new Error("COMMAND : ")+ cmd +" not exist" );
 					this.showHelp();
+					throw new Error("COMMAND : ")+ this.cli.argv +" not exist" ;
 				}else{
-					this.logger(new Error("BAD FORMAT ARGV : ") + this.cli.argv );
 					this.showHelp();
+					throw new Error("BAD FORMAT ARGV : ") + this.cli.argv ;
 				}
 			}
 			return this.showHelp();
@@ -432,7 +433,7 @@ nodefony.register("console", function(){
 				this.logger(error);
 				res.showHelp();
 				this.stop = true;
-				this.terminate();
+				this.terminate(1);
 			};
 			return res;
 		}

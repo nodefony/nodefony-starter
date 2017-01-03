@@ -10,6 +10,6 @@
   	],
   	"dependencies": {
 		"mocha": "3.2.0",
-		"tunnel": "0.0.4"
+		"chai": "3.5.0"
   	}
 }
