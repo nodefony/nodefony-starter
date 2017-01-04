@@ -76,6 +76,13 @@ var App = new stage.appKernel( "dev", {
 			this.logger(error, "ERROR" ) ;
 		}
 
+		var adduser = $("#adduser").html();
+		if (adduser) {
+			$("#adduser").remove();
+			this.logger(adduser, "INFO" ) ;
+		}
+
+
 		/* ---------------------------------------------- /*
 		 * Navbar
 		/* ---------------------------------------------- */

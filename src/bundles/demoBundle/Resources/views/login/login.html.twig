@@ -21,6 +21,8 @@
 		<div id="error">{{error}}</div>
 	{% endif %}
 
+	<div class="hide" id="adduser">{{ getFlashBag('adduser') }}</div>
+
 	<!-- begin #page-loader -->
 	<div id="page-loader" class="fade in"><span class="spinner"></span></div>
 	<!-- end #page-loader -->
@@ -207,11 +209,11 @@
 						this.logger(message, "ERROR" ) ;
 					}
 				}
-				var add = $("#adduser");
-				if (add.length) {
-					var message = add.html();
+				
+				var adduser = $("#adduser").html();
+				if (adduser) {
 					$("#adduser").remove();
-					this.logger(message, "ERROR" ) ;
+					this.logger(adduser, "INFO" ) ;
 				}
 
 				switch("{{type}}"){
