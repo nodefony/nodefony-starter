@@ -25,7 +25,7 @@ nodefony.registerService("monitoring", function(){
 
 		constructor( realTime, container, kernel ){
 		
-			super("monitoring", container, kernel.notificationsCenter );
+			super("MONITORING", container, kernel.notificationsCenter );
 
 			this.realTime = realTime ;
 			this.kernel = kernel ;
@@ -173,7 +173,17 @@ nodefony.registerService("monitoring", function(){
  		 	*	EVENT ERROR
  		 	*/
 			this.server.on("error",(error) => {
-				this.logger( "SERVICE MONITORING domain : "+this.domain+" Port : "+this.port +" ==> " + error ,"ERROR");
+				var httpError = error.errno;
+				switch (error.errno){
+					case "EADDRINUSE":
+						this.logger( new Error(httpError + " " +this.domain+" Port : "+this.port +" ==> " + error) ,"CRITIC");
+						setTimeout(() => {
+      							this.server.close();
+    						}, 1000);
+					break;
+					default :
+						this.logger( new Error(httpError) ,"CRITIC");	
+				}
 			})
 
 			/*

@@ -167,7 +167,11 @@ nodefony.registerService("https", function(){
 						this.logger( new Error(httpError+" CHECK DOMAIN IN /etc/hosts unable to connect to : "+this.domain), "CRITIC");
 					break;
 					case "EADDRINUSE":
-						this.logger( new Error(httpError+" port HTTPS in use check other servers : "), "CRITIC");
+						//this.logger( new Error(httpError+" port HTTPS in use check other servers : "), "CRITIC");
+						this.logger( new Error("Domain : " +this.domain+" Port : "+this.port +" ==> " + error) ,"CRITIC");
+						setTimeout(() => {
+      							this.server.close();
+    						}, 1000);
 					break;
 					default :
 						this.logger( new Error(httpError), "CRITIC" );	

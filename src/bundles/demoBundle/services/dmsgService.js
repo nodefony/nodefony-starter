@@ -152,15 +152,23 @@ nodefony.registerService("dmsg", function(){
 				});
 			});
 				
-			this.server.on("error",(error) => {
-				this.logger( error,"ERROR")
-			})
-		
+				
 			/*
  		 	*	EVENT ERROR
  		 	*/
 			this.server.on("error",(error) => {
-				this.logger( "SERVICE DMSG domain : "+this.domain+" Port : "+this.port +" ==> " + error ,"ERROR");
+				//this.logger( "SERVICE DMSG domain : "+this.domain+" Port : "+this.port +" ==> " + error ,"ERROR");
+				var httpError = error.errno;
+				switch (error.errno){
+					case "EADDRINUSE":
+						this.logger( new Error(httpError + " " +this.domain+" Port : "+this.port +" ==> " + error) ,"CRITIC");
+						setTimeout(() => {
+      							this.server.close();
+    						}, 1000);
+					break;
+					default :
+						this.logger( new Error(httpError) ,"CRITIC");	
+				}
 			})
 
 

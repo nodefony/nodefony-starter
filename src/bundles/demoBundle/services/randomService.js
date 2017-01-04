@@ -210,7 +210,18 @@ nodefony.registerService("random", function(){
  		 	*	EVENT ERROR
  		 	*/
 			this.server.on("error",(error) => {
-				this.logger( "SERVICE RANDOM domain : "+this.domain+" Port : "+this.port +" ==> " + error ,"ERROR");
+				//this.logger( "SERVICE RANDOM domain : "+this.domain+" Port : "+this.port +" ==> " + error ,"ERROR");
+				var httpError = error.errno;
+				switch (error.errno){
+					case "EADDRINUSE":
+						this.logger( new Error(httpError + " " +this.domain+" Port : "+this.port +" ==> " + error) ,"CRITIC");
+						setTimeout(() => {
+      							this.server.close();
+    						}, 1000);
+					break;
+					default :
+						this.logger( new Error(httpError) ,"CRITIC");	
+				}
 			})
 
 			/*

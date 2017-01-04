@@ -491,11 +491,12 @@ nodefony.registerController("demo", function(){
 				keepAliveAgent = new https.Agent({ keepAlive: true });
 				// certificat
 				var kernel = this.get("kernel");
-				var settings =  this.get("httpsServer").settings ;
+				var certificats =  this.get("httpsServer").getCertificats() ;
 
 				nodefony.extend(options,{
-					key: fs.readFileSync(kernel.rootDir+"/"+settings.certificats.key),
-					cert:fs.readFileSync(kernel.rootDir+"/"+settings.certificats.cert),
+					key: certificats.key,
+					cert: certificats.cert,
+					ca: certificats.ca,
 					rejectUnauthorized: false,
 					requestCert: true,
 					agent: keepAliveAgent
