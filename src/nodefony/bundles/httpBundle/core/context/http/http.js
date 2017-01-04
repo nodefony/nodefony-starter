@@ -26,6 +26,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.request = new nodefony.Request( request, container, type);
 			this.response = new nodefony.Response( response, container, type);
 			this.session = null;
+			this.isRedirect = false ;
 			this.sessionService = this.get("sessions");
 			this.sessionAutoStart = this.sessionService.settings.start ; 
 			this.cookies = {};
@@ -73,9 +74,10 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.listen(this, "onView", (result/*, context, view, param*/) => {
 				this.response.body = result;
 			});
+			this.listen(this, "onSaveSession");
 			this.listen(this, "onResponse", this.send);
 			this.listen( this, "onRequest" , this.handle );
-			this.listen( this, "onTimeout" , function(/*context*/){
+			this.listen( this, "onTimeout" , (/*context*/) => {
 				this.fire("onError", this.container, {
 					status:408,
 					message:new Error("Timeout :" + this.url)
@@ -202,6 +204,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		send (response, context){
+			//console.log("SEND")
 			if (response.response.headersSent ){
 				return this.close();
 			}
@@ -218,6 +221,25 @@ nodefony.register.call(nodefony.context, "http", function(){
  			* HTTP WRITE HEAD  
  			*/
 			this.response.writeHead();
+
+			if ( this.session ){
+				this.listen(this, "onSaveSession" , ( session ) => {
+					if (  ! context.storage ){
+						if ( context.profiling ){
+							this.fire("onSendMonitoring", response, context);	
+						}
+						/*
+ 	 					* WRITE RESPONSE
+ 	 					*/  
+						this.response.write();
+						// END REQUEST
+						return this.close();
+					}
+					this.fire("onSendMonitoring", response, context);
+				});
+				this.fire("onSend", response, context);
+				return ;
+			}
 
 			this.fire("onSend", response, context);
 			if (  ! context.storage ){
@@ -239,10 +261,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		close (){
-			//console.log("CLOSE CONTEXT")
 			this.fire("onClose", this);
 			// END REQUEST
-			return this.response.end();
+			this.response.end();
+			/*if ( this.session ){
+				this.listen(this, "onSaveSession" , ( session ) => {
+					this.response.end();
+				});
+			}else{
+				return this.response.end();
+			}*/
 		}
 	
 		logger (pci, severity, msgid,  msg){
@@ -265,6 +293,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}else{	
 				res = this.response.redirect(Url, status, headers );
 			}
+			//this.logger("REDIRECT : "+Url,"DEBUG");
+			this.isRedirect = true ;
 			this.send(res, this);
 		}
 

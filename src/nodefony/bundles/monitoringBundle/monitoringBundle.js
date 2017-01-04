@@ -523,11 +523,6 @@ nodefony.registerBundle ("monitoring", function(){
 								}
 							}
 						});
-						
-						/*context.listen(this, "onFinish",function(Context){
-							console.log("PASS");	
-						}.bind(this));*/
-
 					break;
 					case "WEBSOCKET":
 					case "WEBSOCKET SECURE":

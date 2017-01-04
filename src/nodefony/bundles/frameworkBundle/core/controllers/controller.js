@@ -460,6 +460,7 @@ nodefony.register("controller", function(){
 		} 
 
 		redirect (url ,status, headers){
+			this.context.isRedirect = true ;
 			if (! url ){
 				throw new Error("Redirect error no url !!!");
 			}

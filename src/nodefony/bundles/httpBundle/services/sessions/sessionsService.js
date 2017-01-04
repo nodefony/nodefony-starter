@@ -423,9 +423,10 @@ nodefony.registerService("sessions", function(){
 						this.logger( err ,"ERROR" );
 						this.saved = false ; 
 					}else{
+						//this.logger("SAVE SESSION " + this.id, "DEBUG")
 						this.saved = true ;
 					}
-					//this.logger("SAVE SESSION " + this.id, "DEBUG")
+					this.context.fire("onSaveSession", this); 
 					if ( callback ){
 						callback(err, this);	
 					}
@@ -512,11 +513,11 @@ nodefony.registerService("sessions", function(){
 				}
 			}
 			var inst = this.createSession(this.defaultSessionName, this.settings );
-			inst.start(context, sessionContext, (err, session) =>{
+			inst.start(context, sessionContext, (err, session) => {
 				context.session = session ;
 				if ( ! err ){ 
 					session.setMetaBag("url", url.parse(context.url ) );
-					context.listen(session, "onFinish",function(){
+					context.listen(session, "onSend",function(){
 						this.setMetaBag("lastUsed", new Date() );
 						if ( ! this.saved ){
 							this.save(context.user ? context.user.id : null);	

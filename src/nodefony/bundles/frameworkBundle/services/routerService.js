@@ -230,6 +230,9 @@ nodefony.registerService("router", function(){
 		}
 
 		callController (data){
+			if (this.context.isRedirect){
+				return ;
+			}
 			try {
 				var controller = new this.controller( this.container, this.context );
 				this.container.set("controller", controller );
@@ -249,7 +252,7 @@ nodefony.registerService("router", function(){
 					break ;
 					case result instanceof Promise :
 						return result;
-					case nodefony.typeOf(result) === "object":
+					case nodefony.typeOf(result) === "object" :
 						if ( this.defaultView ){
 							result = controller.render(this.defaultView, result );
 							this.notificationsCenter.fire("onResponse", result, this.context);

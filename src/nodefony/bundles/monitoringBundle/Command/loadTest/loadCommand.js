@@ -56,9 +56,17 @@ nodefony.registerCommand("Monitoring",function(){
 				this.terminate(0);
 			}
 		}
+
+		
 		
 		send (data/*, encodage*/){
-			this.logger(data, "INFO");	
+			var message = JSON.parse(data) ;
+			if ( message.message === "END LOAD TEST" ){
+				this.displayTable("NODEFONY LOAD TEST", message  );
+				this.logger(data, "INFO");
+			}else{
+				this.logger(data, "INFO");	
+			}
 		}
 
 		close (code){
@@ -67,6 +75,46 @@ nodefony.registerCommand("Monitoring",function(){
 			}
 			return this.terminate(0);
 		}
+
+		displayTable (titre, ele){
+			var table = new AsciiTable(titre);
+			table.setHeading(
+				"Average By Requests ( ms )", 
+				"Average Requests By Seconde",
+				"Total Time (s)",
+				"Average By Concurences (s)",
+				"Average CPU (%)"
+			);
+			table.setAlignCenter(0);
+			table.setAlignCenter(1);
+			table.setAlignCenter(2);
+			table.setAlignCenter(3);
+			table.setAlignCenter(4);
+			var obj = new Array(5);
+			for ( var val in ele){
+				switch(val){
+					case "average":
+						obj[3] = ele[val];
+					break;
+					case "averageNet":
+						obj[0] = ele[val];
+					break;
+					case "requestBySecond":
+						obj[1] = ele[val];
+					break;
+					case "totalTime":
+						obj[2] = ele[val];
+					break;
+					case "cpu":
+						obj[4] = ele[val].percent;
+
+					break;
+				}
+			}
+			table.addRowMatrix([obj]);
+			console.log(table.render());	
+		}
+
 	};
 
 	return {

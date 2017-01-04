@@ -13,7 +13,7 @@ nodefony.registerService("httpKernel", function(){
 			var router = this.get("router");
 			var resolver = router.resolveName(this, pattern) ;
 
-			var myController = new resolver.controller( this, resolver.context );
+			var control = new resolver.controller( this, resolver.context );
 			if ( data ){
 				Array.prototype.shift.call( arguments );
 				for ( var i = 0 ; i< arguments.length ; i++){
@@ -21,7 +21,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 				//resolver.variables.push(data); 
 			}
-			return resolver.action.apply(myController, resolver.variables);
+			return resolver.action.apply(control, resolver.variables);
 		}catch(e){
 			this.logger(e, "ERROR");
 			//throw e.error
@@ -376,6 +376,7 @@ nodefony.registerService("httpKernel", function(){
 					container.set("context", context);
 					//response events	
 					context.response.response.on("finish",() => {
+						//console.log("FINISH")
 						context.fire("onFinish", context);
 						this.container.leaveScope(container);
 						delete context.extendTwig ;
