@@ -242,11 +242,6 @@ nodefony.registerService("router", function(){
 				var result =  this.action.apply(controller, this.variables);
 				switch (true){
 					case result instanceof nodefony.Response :
-						if ( this.context.nbCallController === 0  ){
-							this.context.nbCallController++ ;
-							this.notificationsCenter.fire("onResponse", result, this.context);
-						}
-					break ;
 					case result instanceof nodefony.wsResponse :
 						this.notificationsCenter.fire("onResponse", result, this.context);
 					break ;
@@ -273,8 +268,6 @@ nodefony.registerService("router", function(){
 			}
 		}
 	};
-
-	
 
 	var generateQueryString = function(obj, name){
 		var size = ( Object.keys(obj).length ) ;
@@ -335,7 +328,24 @@ nodefony.registerService("router", function(){
 					}
 					throw {error:"router generate path route "+ name + " must have variable "+ txt};
 				}
-				for (var ele in variables ){
+				for ( var i = 0 ; i < route.variables.length ; i++){
+					var ele = route.variables[i] ;
+					
+					if ( variables[ ele ]){
+						path = path.replace("{"+ele+"}",  variables[ele]);
+					}else{
+						if ( route.defaults[ ele ] ){
+							path = path.replace("{"+ele+"}",  route.defaults[ ele ] );
+							//console.log(route.variables[i])
+							//console.log("PASS")
+						}else{
+							throw {error:"router generate path route "+ name + " don't  have variable "+ ele};	
+						}
+					}
+					
+				}
+				/*for (var ele in variables ){
+						console.log(ele)
 					if (ele === "_keys") { continue ;}
 					if (ele === "queryString" ){
  				       		queryString = variables[ele] ;
@@ -347,10 +357,10 @@ nodefony.registerService("router", function(){
 					}else{
 						throw {error:"router generate path route "+ name + " don't  have variable "+ ele};
 					}	
-				}	
+				}*/	
 			}
-			if ( queryString ){
-				path += generateQueryString.call(this, queryString, name);
+			if ( variables.queryString ){
+				path += generateQueryString.call(this, variables.queryString, name);
 			}
 			if (host){
 				return host+path ;

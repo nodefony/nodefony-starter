@@ -21,6 +21,7 @@ const assert = require('assert');
 
 describe("BUNDLE DEMO", function(){
 
+
 	before(function(){
 		global.options = {
 			hostname: kernel.settings.system.domain,
@@ -30,98 +31,99 @@ describe("BUNDLE DEMO", function(){
 		};
 	})
 
-	describe('ROUTING DEFAULT_VALUE', function(){
-			
-		it("myroute/", function(done){
-			global.options.path ='/myroute/';  
+	describe('RESPONSE ', function(){
+
+		it("status200", function(done){
+			global.options.path ='/test/unit/response/status/200';  
 			var request = http.request(global.options,function(res) {
 				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"defaultValue"});
-					done();	
-				});
-			})
-			request.end();
-		});
-		it("myroute", function(done){
-			global.options.path ='/myroute';
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"defaultValue"});
+					assert.deepStrictEqual(res.code, 200);
+					assert.deepStrictEqual(res.message, "OK");
 					done();	
 				});
 			})
 			request.end();
 		});
 
-		it("myroute/51", function(done){
-			global.options.path ='/myroute/51';
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"myRouteDefaultValue"});
-					done();	
-				});
-			})
-			request.end();
-		});
-
-		it("myroute/51/", function(done){
-			global.options.path ='/myroute/51/';
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"myRouteDefaultValue"});
-					done();	
-				});
-			})
-			request.end();
-		});
-
-		it("myroute/51/foo", function(done){
-			global.options.path ='/myroute/51/foo';
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"foo"});
-					done();	
-				});
-			})
-			request.end();
-		});
-		it("myroute/51/foo/", function(done){
-			global.options.path ='/myroute/51/foo/';
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res, {page:"51",element:"foo"});
-					done();	
-				});
-			})
-			request.end();
-		});
-	});
-
-	describe('ROUTING REQUIEREMENTS REGEXP', function(){
-		it("<requirement key='page'>^\d\d$</requirement>", function(done){
-			global.options.path ='/myroute/515/foo/';
+		it("status500", function(done){
+			global.options.path ='/test/unit/response/status/500';  
 			var request = http.request(global.options,function(res) {
 				assert.equal(res.statusCode, 500);
+				assert.equal(res.statusMessage, "Internal Server Error");
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.code, 500);
+					assert.deepStrictEqual(res.message, "Internal Server Error");
+					done();	
+				});
+			})
+			request.end();
+		});
+
+		it("status404", function(done){
+			global.options.path ='/test/unit/response/status/404';  
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 404);
+				assert.equal(res.statusMessage, "Not Found");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.code, 404);
+					assert.deepStrictEqual(res.message, "Not Found");
+					done();	
+				});
+			})
+			request.end();
+		});
+
+		it("messageFoo", function(done){
+			global.options.path ='/test/unit/response/status/200/foo';  
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "foo");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.code, 200);
+					assert.deepStrictEqual(res.message, "foo");
+					done();	
+				});
+			})
+			request.end();
+		});
+
+		it("messageNotFound", function(done){
+			global.options.path ='/test/unit/response/status/401/userNotFound';  
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 401);
+				assert.equal(res.statusMessage, "userNotFound");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.code, 401);
+					assert.deepStrictEqual(res.message, "userNotFound");
+					done();	
+				});
+			})
+			request.end();
+		});
+		it("messageNull", function(done){
+			global.options.path ='/test/unit/response/status/404/null';  
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 404);
+				assert.equal(res.statusMessage, "Not Found");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					//console.log(res)
+					assert.deepStrictEqual(res.code, 404);
+					assert.deepStrictEqual(res.message, "Not Found");
+					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/status/404/bar");
 					done();	
 				});
 			})

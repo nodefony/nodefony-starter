@@ -195,19 +195,33 @@ redirect:
   pattern:  /redirect
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
 	
+
+## UNIT TEST
 ### MYROUTE DEFAULT VALUES ###
 myroute:
   pattern:      /myroute
-  defaults:     {"controller": "demoBundle:demo:myroute","page":51,"elements":"defaultValue"}
+  defaults:     {"controller": "demoBundle:test:myroute","page":51,"elements":"defaultValue"}
   requirements:
     method:     GET
     page:       "^\\d\\d$"
 
 myroute2:
   pattern:      /myroute/{page}/{elements}
-  defaults:     {"controller": "demoBundle:demo:myroute","page":13,"elements":"myRouteDefaultValue"}
+  defaults:     {"controller": "demoBundle:test:myroute","page":13,"elements":"myRouteDefaultValue"}
   requirements:
     method:     GET
     page:       "^\\d\\d$"
+
+response-status:
+  pattern:      /test/unit/response/status/{st}
+  defaults:     {"controller": "demoBundle:test:responseStatus"}
+  requirements:
+    method:     GET
+
+response-message:
+  pattern:      /test/unit/response/status/{st}/{message}
+  defaults:     {"controller": "demoBundle:test:responseMessage","message":bar}
+  requirements:
+    method:     GET
 
 

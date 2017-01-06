@@ -201,7 +201,7 @@ nodefony.register("controller", function(){
 				this.logger(e,"ERROR");
 				throw e	;	
 			}
-			return this.renderResponse( data, status || 200 , nodefony.extend( {}, {
+			return this.renderResponse( data, status  , nodefony.extend( {}, {
 				'Content-Type': "text/json ; charset="+ this.context.response.encoding	
 			}, headers ));
 		}
@@ -460,10 +460,10 @@ nodefony.register("controller", function(){
 		} 
 
 		redirect (url ,status, headers){
-			this.context.isRedirect = true ;
 			if (! url ){
 				throw new Error("Redirect error no url !!!");
 			}
+			this.context.isRedirect = true ;
 			try {
 				this.context.redirect(url, status, headers);
 			}catch(e){

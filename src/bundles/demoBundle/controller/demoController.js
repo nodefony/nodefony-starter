@@ -715,14 +715,6 @@ nodefony.registerController("demo", function(){
 				html:res
 			});
 		}
-
-		myrouteAction(page, ele){
-			return this.renderJson({
-				page:page,
-				element:ele
-			});
-		}
-
 	};
 	
 	return demoController;

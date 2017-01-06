@@ -27,6 +27,8 @@ nodefony.register("Response",function(){
 
 			// struct headers
 			this.headers = {};
+			this.statusCode = null ;
+			this.statusMessage = null ;
 
 			this.ended = false ;
 
@@ -97,8 +99,24 @@ nodefony.register("Response",function(){
 		}
 
 		setStatusCode (status, message){
-			this.statusCode = status ;
-			this.response.statusMessage = message || http.STATUS_CODES[this.statusCode] ;
+			this.statusCode = parseInt( status, 10) ;
+			this.statusMessage = message || null ; 
+			this.response.statusMessage = this.statusMessage || http.STATUS_CODES[this.statusCode] ;
+		}
+
+		getStatus (){
+			return {
+				code:this.getStatusCode(),
+				message:this.getStatusMessage()
+			}
+		}
+
+		getStatusCode (){
+			return this.statusCode;
+		}
+
+		getStatusMessage (){
+			return this.statusMessage || this.response.statusMessage ;
 		}
 
 		setBody (ele){
@@ -118,6 +136,7 @@ nodefony.register("Response",function(){
 
 		writeHead (statusCode, headers){
 			if ( ! this.response.headersSent ){
+				this.response.statusMessage = this.statusMessage || http.STATUS_CODES[this.statusCode] ;
 				return this.response.writeHead(
 					statusCode || this.statusCode,
 					headers || this.headers
