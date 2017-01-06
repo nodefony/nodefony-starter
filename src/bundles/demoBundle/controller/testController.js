@@ -42,11 +42,12 @@ nodefony.registerController("test", function(){
 			response.setStatusCode(statusRoute);
 			var status = response.getStatus();
 			//console.log(status)
+			var generate = this.generateUrl("response-status",{st:statusRoute})
 			return this.renderJson({
 				code:status.code,
-				message:status.message
+				message:status.message,
+				generateUrl:generate
 			});
-			
 		}
 
 		/**
@@ -73,7 +74,22 @@ nodefony.registerController("test", function(){
 			});
 			
 		}
-		
+
+		/**
+ 	 	*
+ 	 	*	response  query
+ 	 	*
+ 	 	*/
+		responseQueryAction (){
+			var response = this.getResponse();
+			var generate = this.generateUrl("response-query",{queryString:this.query})
+			var status = response.getStatus();
+			return this.renderJson({
+				generateUrl:generate,
+				query:this.query
+			});
+			
+		}
 	};
 	
 	return testController;

@@ -224,4 +224,10 @@ response-message:
   requirements:
     method:     GET
 
+response-query:
+  pattern:      /test/unit/response/query
+  defaults:     {"controller": "demoBundle:test:responseQuery"}
+  requirements:
+    method:     GET
+
 

@@ -280,8 +280,8 @@ nodefony.registerService("router", function(){
 		var iter = 1 ;
 		for (var ele in obj){
 			if (ele === "_keys") { continue ; }
-			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter+1) >= size     ? "" : "&" )  ;
-			iter+=1 ;
+			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter) >= size  ? "" : "&" )  ;
+			iter++ ;
 		}
 		return   str ; 
 	};
@@ -320,46 +320,28 @@ nodefony.registerService("router", function(){
 				throw {error:"no route to host  "+ name};
 			}
 			var path = route.path;
-			if ( route.variables.length  || queryString  ){
-				if (! variables ){
+			if ( route.variables.length ){
+				/*if (! variables ){
 					var txt = "";
 					for (var i= 0 ; i < route.variables.length ;i++ ){
 						txt += "{"+route.variables[i]+"} ";
 					}
 					throw {error:"router generate path route "+ name + " must have variable "+ txt};
-				}
+				}*/
 				for ( var i = 0 ; i < route.variables.length ; i++){
 					var ele = route.variables[i] ;
-					
 					if ( variables[ ele ]){
 						path = path.replace("{"+ele+"}",  variables[ele]);
 					}else{
 						if ( route.defaults[ ele ] ){
 							path = path.replace("{"+ele+"}",  route.defaults[ ele ] );
-							//console.log(route.variables[i])
-							//console.log("PASS")
 						}else{
 							throw {error:"router generate path route "+ name + " don't  have variable "+ ele};	
 						}
 					}
-					
 				}
-				/*for (var ele in variables ){
-						console.log(ele)
-					if (ele === "_keys") { continue ;}
-					if (ele === "queryString" ){
- 				       		queryString = variables[ele] ;
-						continue ;
-					}
-					var index = route.variables.indexOf(ele);
-					if ( index >= 0 ){
-						path = path.replace("{"+ele+"}",  variables[ele]);
-					}else{
-						throw {error:"router generate path route "+ name + " don't  have variable "+ ele};
-					}	
-				}*/	
 			}
-			if ( variables.queryString ){
+			if ( queryString ){
 				path += generateQueryString.call(this, variables.queryString, name);
 			}
 			if (host){
