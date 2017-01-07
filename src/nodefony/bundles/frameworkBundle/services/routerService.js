@@ -270,6 +270,7 @@ nodefony.registerService("router", function(){
 	};
 
 	var generateQueryString = function(obj, name){
+		if ( obj._keys ){delete obj._keys ;}
 		var size = ( Object.keys(obj).length ) ;
 		if ( ! size ) { return "" ; }
 		var str = "?";
@@ -277,13 +278,15 @@ nodefony.registerService("router", function(){
 			this.logger("BAD arguments queryString in route varaibles :" + name ,"WARNING");
 			return "";
 		}
-		var iter = 1 ;
-		for (var ele in obj){
-			if (ele === "_keys") { continue ; }
-			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] ) + ( (iter) >= size  ? "" : "&" )  ;
+		var iter = 0 ;
+		for (let ele in obj){
 			iter++ ;
+			str += Querystring.escape( ele ) + "=" + Querystring.escape( obj[ele] )   ;
+			if (size > iter ){
+				str += "&";
+			}
 		}
-		return   str ; 
+		return str ; 
 	};
 
 	var Router = class Router extends nodefony.Service { 
@@ -321,13 +324,6 @@ nodefony.registerService("router", function(){
 			}
 			var path = route.path;
 			if ( route.variables.length ){
-				/*if (! variables ){
-					var txt = "";
-					for (var i= 0 ; i < route.variables.length ;i++ ){
-						txt += "{"+route.variables[i]+"} ";
-					}
-					throw {error:"router generate path route "+ name + " must have variable "+ txt};
-				}*/
 				for ( var i = 0 ; i < route.variables.length ; i++){
 					var ele = route.variables[i] ;
 					if ( variables[ ele ]){
@@ -336,7 +332,12 @@ nodefony.registerService("router", function(){
 						if ( route.defaults[ ele ] ){
 							path = path.replace("{"+ele+"}",  route.defaults[ ele ] );
 						}else{
-							throw {error:"router generate path route "+ name + " don't  have variable "+ ele};	
+							var txt = "";
+							for (var i= 0 ; i < route.variables.length ;i++ ){
+								txt += "{"+route.variables[i]+"} ";
+							}
+							throw {error:"router generate path route "+ name + " must have variable "+ txt};
+							//throw {error:"router generate path route "+ name + " don't  have variable "+ ele};	
 						}
 					}
 				}

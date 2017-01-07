@@ -225,8 +225,8 @@ response-message:
     method:     GET
 
 response-query:
-  pattern:      /test/unit/response/query
-  defaults:     {"controller": "demoBundle:test:responseQuery"}
+  pattern:      /test/unit/response/query/{myVariable}/{myVariable2}
+  defaults:     {"controller": "demoBundle:test:responseQuery","myVariable":foo,"myVariable2":bar}
   requirements:
     method:     GET
 

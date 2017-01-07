@@ -80,9 +80,9 @@ nodefony.registerController("test", function(){
  	 	*	response  query
  	 	*
  	 	*/
-		responseQueryAction (){
+		responseQueryAction (ele, ele2){
 			var response = this.getResponse();
-			var generate = this.generateUrl("response-query",{queryString:this.query})
+			var generate = this.generateUrl("response-query",{myVariable:ele,myVariable2:ele2,queryString:this.query})
 			var status = response.getStatus();
 			return this.renderJson({
 				generateUrl:generate,

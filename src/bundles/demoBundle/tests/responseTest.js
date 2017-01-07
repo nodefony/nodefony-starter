@@ -147,7 +147,7 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-		it("messageQuery", function(done){
+		it("queryString-simple", function(done){
 			global.options.path ='/test/unit/response/query?foo=bar';  
 			var request = http.request(global.options,function(res) {
 				assert.equal(res.statusCode, 200);
@@ -156,14 +156,14 @@ describe("BUNDLE DEMO", function(){
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
 					assert.deepStrictEqual(res.query, {foo:"bar"});
-					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/query?foo=bar");
+					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/query/foo/bar?foo=bar");
 					done();	
 				});
 			})
 			request.end();
 		});
 
-		it("messageQuery", function(done){
+		it("queryString-multiple", function(done){
 			global.options.path ='/test/unit/response/query?foo=bar&bar=foo';     
 			var request = http.request(global.options,function(res) {
 				assert.equal(res.statusCode, 200);
@@ -172,7 +172,23 @@ describe("BUNDLE DEMO", function(){
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
 					assert.deepStrictEqual(res.query, {foo:"bar",bar:"foo"});
-					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/query?foo=bar&bar=foo");
+					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/query/foo/bar?foo=bar&bar=foo");
+					done(); 
+				});
+			})
+			request.end();
+		});
+
+		it("queryString-withVariable", function(done){
+			global.options.path ='/test/unit/response/query/myvar1/myvar2?foo=bar&bar=foo&ele=null';     
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.query, {foo:"bar",bar:"foo",ele:'null'});
+					assert.deepStrictEqual(res.generateUrl, "/test/unit/response/query/myvar1/myvar2?foo=bar&bar=foo&ele=null");
 					done(); 
 				});
 			})
