@@ -54,7 +54,7 @@ nodefony.register("Request",function(){
 					default:
 						//console.log(bodyParser(request,null,function(){console.log(arguments)}))
 						this.queryPost = this.body.toString(this.charset);
-						this.logger("you must use a parser for "+this.contentType  +" FORM : " + this.body.length, "WARNING");
+						this.logger("Request content-type : " + this.contentType + " unknown. You must use a parser in controller to read :  "+this.contentType  +" data : " + this.queryPost, "WARNING");
 						//this.queryPost = qs.parse(this.body);
 				}
 			break;

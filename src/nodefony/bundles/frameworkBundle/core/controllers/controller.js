@@ -16,9 +16,9 @@ nodefony.register("controller", function(){
 			this.notificationsCenter = this.container.get("notificationsCenter");
 			this.sessionService = this.container.get("sessions");
 			this.query = context.request.query ;
-			/*this.queryFile = context.request.queryFile;
+			this.queryFile = context.request.queryFile;
 			this.queryGet = context.request.queryGet;
-			this.queryPost = context.request.queryPost;*/
+			this.queryPost = context.request.queryPost;
 			this.serviceTemplating = this.container.get('templating') ;
 		}
 	

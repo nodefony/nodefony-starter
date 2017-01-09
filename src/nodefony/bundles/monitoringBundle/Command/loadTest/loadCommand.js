@@ -120,7 +120,7 @@ nodefony.registerCommand("Monitoring",function(){
 	return {
 		name:"Monitoring",
 		commands:{
-			Test:["Monitoring:test:load URL [nbRequests] [concurence]" ,"load test example ./console Monitoring:test:load http://nodefony.com:5151/demo 10000 100 "],
+			Test:["Monitoring:test:load URL [nbRequests] [concurence]" ,"load test example ./console Monitoring:test:load http://localhost:5151/demo 10000 100 "],
 		},
 		worker:monitoring
 	};

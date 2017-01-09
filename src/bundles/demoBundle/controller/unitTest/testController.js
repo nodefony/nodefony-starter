@@ -12,7 +12,7 @@
 nodefony.registerController("test", function(){
 
 
-	var testController = class loginController extends nodefony.controller {
+	var testController = class testController extends nodefony.controller {
 
 		constructor(container, context){
 			super(container, context);

@@ -230,4 +230,16 @@ response-query:
   requirements:
     method:     GET
 
+redirect-301:
+  pattern:      /test/unit/redirect/{status}
+  defaults:     {"controller": "demoBundle:controllerTest:redirect","status":302}
+  requirements:
+    method:     GET ,POST
+
+request-data:
+  pattern:      /test/unit/request
+  defaults:     {"controller": "demoBundle:controllerTest:request"}
+  requirements:
+    method:     GET ,POST
+
 

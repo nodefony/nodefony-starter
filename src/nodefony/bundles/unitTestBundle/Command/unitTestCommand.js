@@ -82,8 +82,8 @@ nodefony.registerCommand("unitTest", function(){
 		commands: {
 			listAll: ["unitTest:list:all", "List all unit tests"],
 			listBundle: ["unitTest:list:bundle bundleName", "List all bundle unit tests"],
-			launchAll: ["unitTest:launch:all", "Launch all tests"],
-			launchBundle: ["unitTest:launch:bundle bundleName { testfile }", "Launch bundle tests"],
+			launchAll: ["unitTest:launch:all", "Launch all tests Example : ./console unitTest:launch:all"],
+			launchBundle: ["unitTest:launch:bundle bundleName { testfile }", "Launch bundle tests Example: ./console unitTest:launch:bundle demoBundle responseTest.js"],
 		},
 		worker: unitTest
 	};

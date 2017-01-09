@@ -93,7 +93,7 @@ describe("BUNDLE DEMO", function(){
 			var url = 'ws://'+kernel.settings.system.domain+':'+kernel.settings.system.httpPort+'/websoket'
 			client.connect(url, null, "nodefony", null, {});
 			client.on('connect', function(connection) { 
-				console.log( "websoket connection ok on : " + url)	
+				//console.log( "websoket connection ok on : " + url)	
 				connection.on("message", (message) => {
 					//console.log(message)
 					iter++	
