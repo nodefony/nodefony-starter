@@ -276,6 +276,9 @@ nodefony.registerService("httpKernel", function(){
  				return 	;
 			}
 			var resolver= null ;
+			if ( typeof error === "object" && ( !  error.status ) ){
+				error.status = context.response.getStatusCode() ;
+			}
 			switch (error.status){
 				case 404:
 					resolver = container.get("router").resolveName(container, "frameworkBundle:default:404");

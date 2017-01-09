@@ -36,6 +36,7 @@ describe("BUNDLE DEMO", function(){
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.method, "GET");
 					assert.deepStrictEqual(res.query, {foo:"bar",bar:"foo"});
 					done(); 
 				});
@@ -46,7 +47,11 @@ describe("BUNDLE DEMO", function(){
 		it("request-post-x-www-form-urlencoded", function(done){
 			global.options.path ='/test/unit/request';     
 			global.options.method ='POST';   
-			var post_data = querystring.stringify(nodefony);
+			var data = {
+				foo:"bar",
+				bar:"foo"
+			};
+			var post_data = querystring.stringify(data);
 			global.options.headers = {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				'Content-Length': Buffer.byteLength(post_data)
@@ -57,7 +62,10 @@ describe("BUNDLE DEMO", function(){
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var res = JSON.parse(chunk);
-					assert.deepStrictEqual(res.query, nodefony);
+					assert.deepStrictEqual(res.method, "POST");
+					assert.deepStrictEqual(res.query, data);
+					assert.deepStrictEqual(res.queryPost, data);
+					assert.deepStrictEqual(res.queryGet, {});
 					done(); 
 				});
 			})
@@ -65,7 +73,33 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-
-		
+		it("request-post-x-www-form-urlencoded", function(done){
+			global.options.path ='/test/unit/request?nodefony=2.0';     
+			global.options.method ='POST';   
+			var data = {
+				foo:"bar",
+				bar:"foo"
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var res = JSON.parse(chunk);
+					assert.deepStrictEqual(res.method, "POST");
+					assert.deepStrictEqual(res.query, nodefony.extend({},data, {nodefony:"2.0"}));
+					assert.deepStrictEqual(res.queryPost, data);
+					assert.deepStrictEqual(res.queryGet, {nodefony:"2.0"});
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
 	});
 });

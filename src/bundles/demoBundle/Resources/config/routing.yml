@@ -243,3 +243,9 @@ request-data:
     method:     GET ,POST
 
 
+request-promise:
+  pattern:      /test/unit/promise/{action}
+  defaults:     {"controller": "demoBundle:controllerTest:promise", "action":"promise"}
+  requirements:
+    method:     GET ,POST
+

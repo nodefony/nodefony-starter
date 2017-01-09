@@ -181,41 +181,32 @@ nodefony.registerController("demo", function(){
 		sequelizeAction (){
 			var orm = this.getORM() ;
 			
-			
 			this.sessionEntity = orm.getEntity("session");
 			this.userEntity = orm.getEntity("user");
 
-
-			var sessions = null ; 
-			var users = null ; 
-
 			// SIMPLE ORM CALL RENDER WITH SEQUELIZE PROMISE
-			/*this.sessionEntity.findAll()
-			.then( function(results){
-				sessions = results
+			/*return this.sessionEntity.findAll()
+			.then( (results) => {
+				//sessions = results;
+				return this.renderAsync('demoBundle:orm:orm.html.twig', {
+					sessions:results,
+				});
 			})
 			.catch(function(error){
 				throw error ;
 			})
-			.done(() => {
-				return this.renderAsync('demoBundle:orm:orm.html.twig', {
-					sessions:sessions,
-				});
-			})*/
+			return ;*/	
 
 			// MULTIPLE ORM CALL ASYNC RENDER WITH PROMISE 
-			Promise.all([this.sessionEntity.findAll(), this.userEntity.findAll()] )
-			.then(function(result){
-				sessions = result[0];
-				users = result[1];
-			}).catch(function(error){
-				throw error ;
-			}).done(() => {
-				this.renderAsync('demoBundle:orm:orm.html.twig', {
-					sessions:sessions,
-					users:users,
+			return Promise.all([this.sessionEntity.findAll(), this.userEntity.findAll()] )
+			.then((result) => {
+				return this.render('demoBundle:orm:orm.html.twig', {
+					sessions:result[0],
+					users:result[1],
 				});
-			});
+			}).catch((error) => {
+				this.createException(error);
+			})
 		}
 
 		/**
@@ -428,11 +419,7 @@ nodefony.registerController("demo", function(){
 			var pwd = "" ;
 
 			// CALL PROMISE 
-			Promise.all(tab)
-			.catch( (e) => {
-				this.logger(e,"ERROR");
-				throw e ;
-			})
+			return Promise.all(tab)
 			.then((result) => {
 				// format result for pass in renderAsync view   
 				hostname = result[0];
@@ -440,22 +427,20 @@ nodefony.registerController("demo", function(){
 				ping = result[2].ping ;
 				code = result[2].code ;
 				err = result[2].err ;
-			})
-			.done( (/*ele*/) => {
 				this.logger( "PROMISE SYSCALL DONE" , "DEBUG");
-				try {
-					this.renderAsync("demoBundle:Default:exec.html.twig", {
-						hostname:hostname,
-						ping:ping,
-						pwd:pwd,
-						code:code,
-						error:err,
-						date:new Date()
-					});
-				}catch(e){
-					throw e ;
-				}
-			});
+				return this.render("demoBundle:Default:exec.html.twig", {
+					hostname:hostname,
+					ping:ping,
+					pwd:pwd,
+					code:code,
+					error:err,
+					date:new Date()
+				});
+
+			}).catch( (e) => {
+				this.logger(e,"ERROR");
+				this.createException(e);
+			})
 		}
 
 		/*

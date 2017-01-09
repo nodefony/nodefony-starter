@@ -436,27 +436,27 @@ nodefony.register("controller", function(){
 		}
 
 		createNotFoundException (message){
-			var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");
+			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");
 			this.context.response.setStatusCode(404) ;
-			return resolver.callController( {
+			this.notificationsCenter.fire("onError", this.container, message );
+			/*resolver.callController( {
 				message:message || null 
-			} );
+			} );*/
 		}  
 
 		createUnauthorizedException (message){
-			var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:401");
+			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:401");
 			this.context.response.setStatusCode(401) ;
-			return resolver.callController( {
+			this.notificationsCenter.fire("onError", this.container, message );
+			/*resolver.callController( {
 				message:message || null 
-			} );
+			} );*/
 		}  
 
 		createException (message){
-			var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:500");
+			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:500");
 			this.context.response.setStatusCode(500) ;
-			return resolver.callController( {
-				message:message || null 
-			} );
+			this.notificationsCenter.fire("onError", this.container, message );
 		} 
 
 		redirect (url ,status, headers){

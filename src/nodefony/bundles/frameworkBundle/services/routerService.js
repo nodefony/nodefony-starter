@@ -7,11 +7,10 @@
  */
 
 var Querystring = require('querystring');
+var BlueBird = require("bluebird");
+
 
 nodefony.registerService("router", function(){
-
-
-
 	/*
  	 *
  	 *
@@ -65,7 +64,6 @@ nodefony.registerService("router", function(){
 		var normalizeXmlJson = function(routes, callback){
 			for(var route in routes){
 				for(var param in routes[route]){
-
 					if(['pattern', 'host'].indexOf(param) >= 0){
 						routes[route][param] = routes[route][param][0];
 					} else {
@@ -115,6 +113,39 @@ nodefony.registerService("router", function(){
 		};
 	}();
 
+
+	var returnController = function(result, controller){
+		switch (true){
+			case result instanceof nodefony.Response :
+			case result instanceof nodefony.wsResponse :
+				this.notificationsCenter.fire("onResponse", result, this.context);
+			break ;
+			case result instanceof Promise :
+			case result instanceof BlueBird :
+				return result.then( (myResult) => {
+					try {
+						return returnController.call(this, myResult, controller);	
+					}catch(e){
+						throw e ;
+					}
+				});
+			case nodefony.typeOf(result) === "object" :
+				if ( this.defaultView ){
+					var myresult = controller.render(this.defaultView, result );
+					this.notificationsCenter.fire("onResponse", myresult, this.context);
+				}else{
+					throw {
+						status:500,
+						message:"default view not exist"
+					};
+				}
+			break;
+			default:
+				//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
+				// CASE async controller wait fire onResponse by other entity
+		}	
+		return result ;	
+	}
 
 	/*
  	 *
@@ -240,29 +271,8 @@ nodefony.registerService("router", function(){
 					this.variables.push(data); 
 				}
 				var result =  this.action.apply(controller, this.variables);
-				switch (true){
-					case result instanceof nodefony.Response :
-					case result instanceof nodefony.wsResponse :
-						this.notificationsCenter.fire("onResponse", result, this.context);
-					break ;
-					case result instanceof Promise :
-						return result;
-					case nodefony.typeOf(result) === "object" :
-						if ( this.defaultView ){
-							result = controller.render(this.defaultView, result );
-							this.notificationsCenter.fire("onResponse", result, this.context);
-						}else{
-							throw {
-								status:500,
-								message:"default view not exist"
-							};
-						}
-					break;
-					default:
-						//this.logger("WAIT ASYNC RESPONSE FOR ROUTE : "+this.route.name ,"DEBUG")
-						// CASE async controller wait fire onResponse by other entity
-				}
-				return result;
+
+				return returnController.call(this, result, controller);
 			}catch(e){
 				throw e;
 			}

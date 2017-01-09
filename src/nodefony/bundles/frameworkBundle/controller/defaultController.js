@@ -37,7 +37,16 @@ nodefony.registerController("framework", function(){
 				var res = nodefony.extend( {url:this.context.url}, error);
 				return this.render('frameworkBundle::403.html.twig', res );
 			}
-			
+
+			["500Action"] (error){
+				//var res = nodefony.extend( {url:this.context.url}, error);
+				var ele = {
+					title:"Exception",
+					exception: error 
+				};
+				return this.render('frameworkBundle::exception.html.twig', ele );
+			}
+
 			exceptionsAction (exp){
 				var ele = {
 					title:"Exception",
