@@ -263,12 +263,12 @@ nodefony.registerService("httpKernel", function(){
 			}else{
 				if ( error.stack ){
 					myError =  error.stack;
-					this.logger(myError);
+					this.logger(myError, "ERROR");
 					myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
             					
 				}else{
 					myError =  error;
-					this.logger(util.inspect(error));
+					this.logger(util.inspect(error),"ERROR");
 				}
 			}
 			var context = container.get('context');
@@ -276,8 +276,16 @@ nodefony.registerService("httpKernel", function(){
  				return 	;
 			}
 			var resolver= null ;
-			if ( typeof error === "object" && ( !  error.status ) ){
-				error.status = context.response.getStatusCode() ;
+			switch ( nodefony.typeOf(error) ){
+				case "object" :
+					if ( !  error.status ) {
+						error.status = context.response.getStatusCode() ;
+					}
+				break;
+				case "string" :
+					error = new Error(error);
+					error.status = context.response.getStatusCode() ;
+				break;
 			}
 			switch (error.status){
 				case 404:
@@ -294,6 +302,7 @@ nodefony.registerService("httpKernel", function(){
 				break;
 				default:
 					resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
+					error.status = 500 ;
 			}
 			context.response.setStatusCode(error.status || 500 ) ;
 
@@ -494,7 +503,13 @@ nodefony.registerService("httpKernel", function(){
 
 					context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
-					resolver  = this.get("router").resolve(container, context);
+					// FRONT ROUTER 
+					try {
+						resolver  = this.get("router").resolve(container, context);
+					}catch(e){
+						return context.notificationsCenter.fire("onError", container, e );	
+					}
+
 					if (resolver.resolve) {
 						context.resolver = resolver ;	
 					}else{

@@ -249,3 +249,9 @@ request-promise:
   requirements:
     method:     GET ,POST
 
+request-exception:
+  pattern:      /test/unit/exception/{action}
+  defaults:     {"controller": "demoBundle:controllerTest:exception", "action":500}
+  requirements:
+    method:     GET ,POST
+

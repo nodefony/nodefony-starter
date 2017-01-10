@@ -73,7 +73,7 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-		it("request-post-x-www-form-urlencoded", function(done){
+		it("request-post-x-www-form-urlencoded-post", function(done){
 			global.options.path ='/test/unit/request?nodefony=2.0';     
 			global.options.method ='POST';   
 			var data = {

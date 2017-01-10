@@ -235,6 +235,32 @@ nodefony.registerController("controllerTest", function(){
 			});
 		}
 
+		/**
+ 	 	 *
+ 	 	 *	promiseAction 
+ 	 	 *
+ 	 	 */
+		exceptionAction(action){
+			switch( action ){
+				case "500":
+					return  this.createException( new Error("My createException") );
+				break;
+				case "401":
+					return this.createUnauthorizedException(" My not Unauthorized");
+				case "404":
+					return this.createNotFoundException(" My not found");
+				case "408":
+					return this.createException(" My timeout");
+				case "error":
+					varNotExit.defined.value ;
+				case "fire" :
+					return this.notificationsCenter.fire("onError", this.container, new Error("my fire"));
+				default :
+					throw new Error("Action not found")
+			}
+		}
+
+
 	}	
 	return controllerTest;
 });
