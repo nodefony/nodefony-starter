@@ -101,5 +101,103 @@ describe("BUNDLE DEMO", function(){
 			request.write(post_data);
 			request.end();
 		});
+
+		it("request-exception-500", function(done){
+			global.options.path ='/test/unit/exception';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.deepStrictEqual(res.statusMessage, "My create Exception");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-notDefined", function(done){
+			global.options.path ='/test/unit/exception/notDefined';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.deepStrictEqual(res.statusMessage, "Internal Server Error");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-401", function(done){
+			global.options.path ='/test/unit/exception/401';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 401);
+				assert.deepStrictEqual(res.statusMessage, "My Unauthorized Exception");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-404", function(done){
+			global.options.path ='/test/unit/exception/404';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 404);
+				assert.deepStrictEqual(res.statusMessage, "My not found Exception");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-fire", function(done){
+			global.options.path ='/test/unit/exception/fire';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.deepStrictEqual(res.statusMessage, "My Fire Exception");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-error", function(done){
+			global.options.path ='/test/unit/exception/error';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.deepStrictEqual(res.statusMessage, "varNotExit is not defined");
+				done();	
+			})
+			request.end();
+		});
+
+		it("request-exception-timeout", function(done){
+			global.options.path ='/test/unit/exception/408';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 408);
+				assert.deepStrictEqual(res.statusMessage, "My Timeout Exception");
+				done();	
+			})
+			request.end();
+		});
+		it("request-exception-action", function(done){
+			global.options.path ='/test/unit/exception/1001';     
+			global.options.method ='GET';
+			global.options.headers = {};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.deepStrictEqual(res.statusMessage, "Action not found");
+				done();	
+			})
+			request.end();
+		});
+
+
+
 	});
 });

@@ -33,7 +33,7 @@ nodefony.register("Response",function(){
 			this.ended = false ;
 
 			// default http code 
-			this.setStatusCode(200);
+			this.setStatusCode(200, null);
 
 			//timeout default
 			var settings = this.container.getParameters("bundles.http");
@@ -100,8 +100,10 @@ nodefony.register("Response",function(){
 
 		setStatusCode (status, message){
 			this.statusCode = parseInt( status, 10) ;
-			this.statusMessage = message || null ; 
-			this.response.statusMessage = this.statusMessage || http.STATUS_CODES[this.statusCode] ;
+			if (message){
+				this.statusMessage = message ;
+				this.response.statusMessage = this.statusMessage;		
+			}
 		}
 
 		getStatus (){
@@ -116,7 +118,7 @@ nodefony.register("Response",function(){
 		}
 
 		getStatusMessage (){
-			return this.statusMessage || this.response.statusMessage ;
+			return this.statusMessage || this.response.statusMessage || http.STATUS_CODES[this.statusCode] ;
 		}
 
 		setBody (ele){
@@ -137,10 +139,14 @@ nodefony.register("Response",function(){
 		writeHead (statusCode, headers){
 			if ( ! this.response.headersSent ){
 				this.response.statusMessage = this.statusMessage || http.STATUS_CODES[this.statusCode] ;
-				return this.response.writeHead(
-					statusCode || this.statusCode,
-					headers || this.headers
-				);
+				try {
+					return this.response.writeHead(
+						statusCode || this.statusCode,
+						headers || this.headers
+					);
+				}catch(e){
+					throw e;
+				}
 			}else{
 				throw new Error("Headers already sent !!");	
 			}

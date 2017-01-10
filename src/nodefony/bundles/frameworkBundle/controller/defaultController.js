@@ -23,18 +23,21 @@ nodefony.registerController("framework", function(){
 			}
 			
 			["404Action"] (message){
-				this.getResponse().setStatusCode(404,"Not Found");
+				this.getResponse().setStatusCode(404);
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::404.html.twig', nodefony.extend( {url:this.context.url}, message) );
 			}
 
 			["401Action"] (error){
 				var res = nodefony.extend( {url:this.context.url}, error);
-				this.getResponse().setStatusCode(401,"Unauthorized");
+				this.getResponse().setStatusCode(401);
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::401.html.twig', res );
 			}
 
 			["403Action"] (error){
 				var res = nodefony.extend( {url:this.context.url}, error);
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::403.html.twig', res );
 			}
 
@@ -44,6 +47,7 @@ nodefony.registerController("framework", function(){
 					title:"Exception",
 					exception: error 
 				};
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::exception.html.twig', ele );
 			}
 
@@ -52,6 +56,7 @@ nodefony.registerController("framework", function(){
 					title:"Exception",
 					exception:util.inspect( exp.exception )
 				};
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::exception.html.twig', nodefony.extend(ele, exp) );	
 			}
 
@@ -60,6 +65,7 @@ nodefony.registerController("framework", function(){
 					title:"Timeout",
 					exception:util.inspect( exp.exception )
 				};
+				this.context.response.setHeaders({"Content-Type": "text/html; charset=utf-8"});
 				return this.render('frameworkBundle::timeout.html.twig', nodefony.extend(ele, exp) );	
 			}
 

@@ -256,8 +256,8 @@ nodefony.registerService("httpKernel", function(){
 		onError (container, error){
 			var myError = null ;
 			if ( ! error ){
- 		       		error = {status:500,
-					message:"nodefony undefined error "
+ 		       		error = {
+					status:500
 				};
 				console.trace(error);
 			}else{
@@ -304,7 +304,7 @@ nodefony.registerService("httpKernel", function(){
 					resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
 					error.status = 500 ;
 			}
-			context.response.setStatusCode(error.status || 500 ) ;
+			context.response.setStatusCode(error.status || 500, error.message ) ;
 
 			if (error.xjson){
 				if ( context.setXjson ){ 

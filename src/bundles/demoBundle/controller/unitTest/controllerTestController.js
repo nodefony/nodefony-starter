@@ -95,17 +95,19 @@ nodefony.registerController("controllerTest", function(){
  	 	 */
 
 		promise1Action(){
+			var data =null ;
 			var myFunc2 = () => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
-						resolve({status:200, data:"foo"});
-					}, 1000)
+						resolve({status:200, data:data});
+					}, 500)
 				})
 			}
 			var ele = new Promise ( (resolve, reject) =>{
 				setTimeout(() =>{
+					data = {foo:"bar"}
 					resolve( myFunc2() );
-				}, 2000)
+				}, 500)
 			}).then( (...args) => {
 				return this.renderJson(...args);	
 			})
@@ -120,12 +122,12 @@ nodefony.registerController("controllerTest", function(){
 			var ele = new Promise ( (resolve, reject) =>{
 				setTimeout(() =>{
 					resolve( {foo:"bar"} );
-				}, 2000)
+				}, 500)
 			}).then( (ele) => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
 						resolve({status:200, data:ele});
-					}, 1000)
+					}, 500)
 				})	
 			}).then( (ele) => {
 				return this.renderJson(ele);	
@@ -141,16 +143,16 @@ nodefony.registerController("controllerTest", function(){
 			var myFunc = () => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
-						resolve({status:200, time:"1000"});
-					}, 1000)
+						resolve({status:200, time:"200"});
+					}, 200)
 				})
 			}
 
 			var myFunc2 = () => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
-						resolve({status:200, time:"2000"});
-					}, 2000)
+						resolve({status:200, time:"500"});
+					}, 500)
 				})
 			}
 		
@@ -170,16 +172,16 @@ nodefony.registerController("controllerTest", function(){
 			var myFunc = () => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
-						resolve({status:200, time:"1000"});
-					}, 1000)
+						resolve({status:200, time:"200"});
+					}, 200)
 				})
 			}
 
 			var myFunc2 = () => {
 				return new Promise ( (resolve, reject) =>{
 					setTimeout( () =>{
-						resolve({status:200, time:"2000"});
-					}, 2000)
+						resolve({status:200, time:"500"});
+					}, 500)
 				})
 			}
 		
@@ -193,68 +195,27 @@ nodefony.registerController("controllerTest", function(){
 
 		/**
  	 	 *
- 	 	 *	promise 
- 	 	 *
- 	 	 */
-		promise5(){
-			
-			this.getResponse().setHeaders({
-				'Content-Type': "text/json ; charset="+ this.context.response.encoding
-			})
-
-			Promise.chain = function(tab){
-				var ele = tab[0]()
-				var res = null ;
-				for ( var i = 1; i < tab.length; i++){
-					res = ele.then(tab[i])
-				}
-				return res ;
-			}
-
-			var myFunc = () => {
-				return new Promise ( (resolve, reject) =>{
-					setTimeout( () =>{
-						console.log("PASSSSS 1")
-						resolve({status:200, time:"1000"});
-					}, 1000)
-				})
-			}
-
-			var myFunc2 = () => {
-				return new Promise ( (resolve, reject) =>{
-					setTimeout( () =>{
-						console.log("PASSSSS 2")
-						resolve({status:200, time:"2000"});
-					}, 2000)
-				})
-			}
-
-			return Promise.chain([myFunc, myFunc2]).then(function (ele)  {
-				console.log(arguments)
-				return JSON.stringify( ele ) ;
-			});
-		}
-
-		/**
- 	 	 *
  	 	 *	promiseAction 
  	 	 *
  	 	 */
 		exceptionAction(action){
 			switch( action ){
 				case "500":
-					return  this.createException( new Error("My createException") );
+					return  this.createException( new Error("My create Exception") );
 				break;
 				case "401":
-					return this.createUnauthorizedException(" My not Unauthorized");
+					return this.createUnauthorizedException("My Unauthorized Exception");
 				case "404":
-					return this.createNotFoundException(" My not found");
+					return this.createNotFoundException("My not found Exception");
 				case "408":
-					return this.createException(" My timeout");
+					this.getResponse().setStatusCode(408);
+					return this.notificationsCenter.fire("onError", this.container, "My Timeout Exception");
 				case "error":
 					varNotExit.defined.value ;
+				case "notDefined":
+					return this.notificationsCenter.fire("onError", this.container, null);
 				case "fire" :
-					return this.notificationsCenter.fire("onError", this.container, new Error("my fire"));
+					return this.notificationsCenter.fire("onError", this.container, new Error("My Fire Exception"));
 				default :
 					throw new Error("Action not found")
 			}
