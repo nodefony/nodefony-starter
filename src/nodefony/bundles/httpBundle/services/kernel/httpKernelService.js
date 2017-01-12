@@ -30,13 +30,14 @@ nodefony.registerService("httpKernel", function(){
 
 	var render = function(response){
 		switch (true){
+			case response instanceof nodefony.wsResponse :
 			case response instanceof nodefony.Response :
 				return response.body;
-			case response instanceof nodefony.wsResponse :
-				return response.body;
 			case response instanceof Promise :
-				return response;
+			case response instanceof BlueBird :
+				return this.response.body ;
 			case nodefony.typeOf(response) === "object":
+				console.log("PASSSSSS")
 				return nodefony.extend(true , this, response);
 			default:
 				return response ;
@@ -176,7 +177,6 @@ nodefony.registerService("httpKernel", function(){
 				break;
 				case "ws" :
 				case "wss" :
-
 					if ( URL.protocol === "http:" ){
 						protocolOrigin = "ws:" ;
 					}
@@ -210,33 +210,58 @@ nodefony.registerService("httpKernel", function(){
 			return nodefony.templatings[name];
 		}
 
-		getView ( name ){
-			var tab = name.split(":");
-			var bundle = tab[0] ;
-			var controller = tab[1] || ".";
-			var action = tab[2];
-			bundle = this.kernel.getBundle( this.kernel.getBundleName(bundle) );
-			if (! bundle ){
-				throw new Error("BUNDLE :" + bundle +"NOT exist");
+		parseViewPattern( pattern ){
+			if ( pattern && typeof pattern === "string"){
+				var tab = pattern.split(":");
+				if (tab.length !== 3){
+					throw new Error("Not valid Pattern View bundle:directory:filename ==> " + pattern );
+				}
+				return {
+					bundle:	tab[0],
+					directory:tab[1] || ".",
+					file: tab[2]
+				}
 			}
+			throw new Error("Not valid Pattern View bundle:directory:filename ==> " + pattern );
+		}
+
+		getBundleView (objPattern){
 			try {
-				return bundle.getView(controller, action);
+				var myBundle = this.kernel.getBundle( this.kernel.getBundleName(objPattern.bundle) );
+				if (! myBundle ){
+					throw new Error("BUNDLE :" + bundle +"NOT exist");
+				}
+				return myBundle.getView(objPattern.directory, objPattern.file);
+			}catch (e){
+				throw e;	
+			}
+		}
+
+		getBundleTemplate (objPattern){
+			try {
+				var myBundle = this.kernel.getBundle( this.kernel.getBundleName(objPattern.bundle) );
+				if (! myBundle ){
+					throw new Error("BUNDLE :" + bundle +"NOT exist");
+				}
+				return myBundle.getTemplate(objPattern.directory, objPattern.file);
+			}catch (e){
+				throw e;	
+			}
+		}
+
+		getView ( name ){
+			try {
+				var parse = this.parseViewPattern( name );
+				return this.getBundleView(parse);
 			}catch (e){
 				throw e;	
 			}
 		}
 
 		getTemplate ( name ){
-			var tab = name.split(":");
-			var bundle = tab[0] ;
-			var controller = tab[1] || ".";
-			var action = tab[2];
-			bundle = this.kernel.getBundle( this.kernel.getBundleName(bundle) );
-			if (! bundle ){
-				throw new Error("BUNDLE :" + bundle +"NOT exist");
-			}
 			try {
-				return bundle.getTemplate(controller, action);
+				var parse = this.parseViewPattern( name );
+				return this.getBundleTemplate(parse);
 			}catch (e){
 				throw e;	
 			}
@@ -411,7 +436,7 @@ nodefony.registerService("httpKernel", function(){
 							url:context.request.url
 						},
 						getFlashBag:flashTwig.bind(context),
-						render:render,
+						render:render.bind(context),
 						controller:myController.bind(container),
 						trans:translation.trans.bind(translation),
 						getLocale:translation.getLocale.bind(translation),

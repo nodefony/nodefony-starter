@@ -20,6 +20,7 @@ nodefony.register("controller", function(){
 			this.queryGet = context.request.queryGet;
 			this.queryPost = context.request.queryPost;
 			this.serviceTemplating = this.container.get('templating') ;
+			this.httpKernel = this.container.get("httpKernel") ;
 		}
 	
 		logger (pci, severity, msgid,  msg){
@@ -137,7 +138,7 @@ nodefony.register("controller", function(){
 
 			if ( this.serviceTemplating.cache ){
 				try {
-					templ = this.container.get("httpKernel").getTemplate(view);
+					templ = this.httpKernel.getTemplate(view);
 				}catch(e){
 					throw e ;
 				}
@@ -155,7 +156,7 @@ nodefony.register("controller", function(){
 			}
 
 			try {
-				View = this.container.get("httpKernel").getView(view);
+				View = this.httpKernel.getView(view);
 			}catch(e){
 				throw e ;
 			}
@@ -194,7 +195,22 @@ nodefony.register("controller", function(){
 		}
 
 		renderJson ( obj , status , headers){
-			var data = null ;
+			/*try {
+				return this.renderJsonSync(obj , status , headers)	
+			}catch(e){
+				this.logger(e,"ERROR");
+				throw e	;	
+			}*/
+
+			return new Promise ( (resolve, reject) =>{
+				try {
+					resolve( this.renderJsonSync(obj , status , headers) )
+				}catch(e){
+					reject(e);	
+				}
+			});
+
+			/*var data = null ;
 			try {
 				data = JSON.stringify( obj ) ;
 			}catch(e){
@@ -203,24 +219,62 @@ nodefony.register("controller", function(){
 			}
 			return this.renderResponse( data, status  , nodefony.extend( {}, {
 				'Content-Type': "text/json ; charset="+ this.context.response.encoding	
-			}, headers ));
+			}, headers ));*/
 		}
 
 		renderJsonAsync (obj , status , headers){
-			var response = this.renderJson(obj , status , headers);
+			var response = this.renderJsonSync(obj , status , headers);
 			if ( response ){
 				this.notificationsCenter.fire("onResponse", response,  this.context );
 			}
+		}
+
+		renderJsonSync ( obj , status , headers){
+			var data = null ;
+			try {
+				data = JSON.stringify( obj ) ;
+			}catch(e){
+				this.logger(e,"ERROR");
+				throw e	;	
+			}
+			var response = this.getResponse(data);
+			if (! response ){
+				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+				return ;
+			}
+			this.notificationsCenter.fire("onView", data, this.context );
+			response.setHeaders(nodefony.extend( {}, {
+				'Content-Type': "text/json ; charset="+ this.context.response.encoding	
+			}, headers ))
+			if (status){ response.setStatusCode(status);}
+			return response ;
 		}
 
 		renderAsync (view, param){
-			var response = this.render(view, param);
+			var response = this.renderSync(view, param);
 			if ( response ){
 				this.notificationsCenter.fire("onResponse", response,  this.context );
 			}
 		}
 
-		render (view, param){
+		renderSync (view, param){
+			var response = this.getResponse() ;
+			if (! response ){
+				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
+				return ;
+			}
+			try {
+				this.renderView(view, param);
+				
+			}catch(e){
+			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 	return ;
+			}
+			return response ;
+		}
+
+		// TODO ASYNC METHOD
+		/*render (view, param){
 			var response = this.getResponse() ;
 			var res = null ;
 			if (! response ){
@@ -238,6 +292,87 @@ nodefony.register("controller", function(){
 				return response ;
 			}
 			return res ;
+		}*/
+
+		
+		render (view, param){
+			if ( ! this.context.response ){
+				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","ERROR");
+			}
+			try {
+				return this.renderViewAsync(view, param);
+				
+			}catch(e){
+			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			}
+		}
+		/*
+		renderAsync (view, param){
+		
+			var response = this.render(view, param).then(( result )=>{
+				this.notificationsCenter.fire("onResponse", response,  this.context );
+			});
+		}*/
+
+		renderViewAsync (view, param){
+			try {
+				var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+
+				if ( this.serviceTemplating.cache ){
+					var templ = null ;
+					var res = null ;
+					return new Promise ( (resolve, reject) =>{
+						var res = null ;	
+						if ( this.serviceTemplating.cache ){
+							try {
+								templ = this.container.get("httpKernel").getTemplate(view);
+							}catch(e){
+								return reject( e );
+							}
+							try {
+								res = templ.render(extendParam) ;
+								try {
+									this.notificationsCenter.fire("onView", res, this.context, null , param);
+									resolve( res );
+								}catch(e){
+									return reject( e );
+								}
+							}catch(e){
+								return reject( e ) ;
+							}
+						}
+					});
+				}
+				return new Promise ( (resolve, reject) =>{
+					try {
+						var View = this.container.get("httpKernel").getView(view);
+					}catch(e){
+						return reject( e );
+					}
+					try{ 
+						this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
+							//console.log("PASS PROMISE renderFile : "+view)
+							if (error || result === undefined){
+								if ( ! error ){
+									error = new Error("ERROR PARSING TEMPLATE :" + view);
+								}
+								return reject(error) ;
+							}else{
+								try {
+									this.notificationsCenter.fire("onView", result, this.context, View , param);
+									resolve( result );
+								}catch(e){
+									return reject( error );
+								}
+							}
+ 						});
+					}catch(e){
+						reject( e );
+					}
+				});
+			}catch(e){
+				throw e ;
+			}
 		}
 
 		renderFileDownload (file, options, headers){

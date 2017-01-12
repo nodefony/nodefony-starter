@@ -14,9 +14,7 @@ var http = require("http");
 var https = require("https");
 const assert = require('assert');
 
-
 describe("BUNDLE DEMO", function(){
-
 
 	before(function(){
 		global.options = {
@@ -103,6 +101,5 @@ describe("BUNDLE DEMO", function(){
 			})
 			request.end();
 		});
-		
 	});
 });

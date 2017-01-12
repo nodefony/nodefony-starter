@@ -109,7 +109,7 @@ nodefony.registerController("controllerTest", function(){
 					resolve( myFunc2() );
 				}, 500)
 			}).then( (...args) => {
-				return this.renderJson(...args);	
+				return this.renderJsonAsync(...args);	
 			})
 		}
 
@@ -130,7 +130,7 @@ nodefony.registerController("controllerTest", function(){
 					}, 500)
 				})	
 			}).then( (ele) => {
-				return this.renderJson(ele);	
+				return this.renderJsonAsync(ele);	
 			})
 		}
 
@@ -186,9 +186,10 @@ nodefony.registerController("controllerTest", function(){
 			}
 		
 			return Promise.all( [myFunc(), myFunc2()] ).then((data)=>{
-				return this.renderResponse( JSON.stringify( data ) , 200 , {
+				return this.renderJson(data)
+				/*return this.renderResponse( JSON.stringify( data ) , 200 , {
 					'Content-Type': "text/json ; charset="+ this.context.response.encoding
-				} ) ;
+				} ) ;*/
 			});
 		}
 

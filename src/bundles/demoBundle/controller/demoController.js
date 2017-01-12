@@ -188,7 +188,7 @@ nodefony.registerController("demo", function(){
 			/*return this.sessionEntity.findAll()
 			.then( (results) => {
 				//sessions = results;
-				return this.renderAsync('demoBundle:orm:orm.html.twig', {
+				return this.render('demoBundle:orm:orm.html.twig', {
 					sessions:results,
 				});
 			})
@@ -312,15 +312,13 @@ nodefony.registerController("demo", function(){
 			var nodefonyDb = orm.getConnection("nodefony") ;
 
 			var users = null ;
-			nodefonyDb.query('SELECT * FROM users')
+			return nodefonyDb.query('SELECT * FROM users')
 			.then((result) => {
-				users = result[0];
-			})
-			.done( () =>{
-				this.renderAsync('demoBundle:orm:orm.html.twig', {
-					users:users,
+				//users = result[0];
+				return this.render('demoBundle:orm:orm.html.twig', {
+					users:result[0],
 				});
-			});
+			})
 		}
 
 		/**
@@ -336,19 +334,17 @@ nodefony.registerController("demo", function(){
 
 			var nodefonyDb = orm.getConnection("nodefony") ;
 
-			nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+			return nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
 			.then((result) => {
 				var joins = result[0];
 				for (var i = 0 ; i < joins.length ; i++){
 					joins[i].metaBag = JSON.parse( joins[i].metaBag );
 				}
-				return joins ;
-			})
-			.done((data) => {
-				this.renderAsync('demoBundle:orm:orm.html.twig', {
-					joins:data,
+				return this.render('demoBundle:orm:orm.html.twig', {
+					joins:joins,
 				});
-			});
+				//return joins ;
+			})
 		}
 
 		/*

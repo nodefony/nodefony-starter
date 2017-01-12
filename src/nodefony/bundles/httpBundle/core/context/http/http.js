@@ -70,6 +70,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 			
 			this.remoteAddress = this.request.remoteAddress ; 
 
+			this.promise = null ;
+
 			// LISTEN EVENTS KERNEL 
 			this.listen(this, "onView", (result/*, context, view, param*/) => {
 				this.response.body = result;
@@ -184,6 +186,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 
 		clean (){
+			//console.trace("CLEANNNNNNNNNNNN")
 			this.request.clean();
 			delete 	this.request ;
 			this.response.clean();
@@ -194,6 +197,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			if (this.proxy) {delete this.proxy ;}
 			if (this.user)  {delete this.user;}
 			if (this.security ) {delete this.security ;}
+			if (this.promise) {delete this.promise;}
 			//delete this.container ;
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
@@ -204,8 +208,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		send (response, context){
-			//console.log("SEND")
-			if (response.response.headersSent ){
+			//console.trace("SEND")
+			if ( response.response && response.response.headersSent ){
 				return this.close();
 			}
 			switch (true){
@@ -224,6 +228,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			if ( this.session ){
 				this.listen(this, "onSaveSession" , ( session ) => {
+					//console.log("FIRE onSaveSession")
 					if (  ! context.storage ){
 						if ( context.profiling ){
 							this.fire("onSendMonitoring", response, context);	
@@ -261,6 +266,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		close (){
+			//console.trace("CLOSE")
 			this.fire("onClose", this);
 			// END REQUEST
 			this.response.end();
