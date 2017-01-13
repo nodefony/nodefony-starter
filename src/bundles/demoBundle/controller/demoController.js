@@ -272,7 +272,7 @@ nodefony.registerController("demo", function(){
 				//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
 					
 				var users = null ; 
-				this.userEntity.create({ 
+				return this.userEntity.create({ 
 					username:	query.post.usernameCreate, 
 					email:		query.post.emailCreate, 
 					password:	query.post.passwordCreate,
@@ -314,7 +314,6 @@ nodefony.registerController("demo", function(){
 			var users = null ;
 			return nodefonyDb.query('SELECT * FROM users')
 			.then((result) => {
-				//users = result[0];
 				return this.render('demoBundle:orm:orm.html.twig', {
 					users:result[0],
 				});
@@ -343,7 +342,6 @@ nodefony.registerController("demo", function(){
 				return this.render('demoBundle:orm:orm.html.twig', {
 					joins:joins,
 				});
-				//return joins ;
 			})
 		}
 

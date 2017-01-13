@@ -102,7 +102,7 @@ nodefony.registerController("default", function(){
 								this.notificationsCenter.fire("onResponse", this.getResponse() , this.context);
 								return ;
 							}	
-							this.redirect( "/" , null, true);
+							return this.redirect( "/" , null, true);
 							this.notificationsCenter.fire("onResponse", this.getResponse() , this.context);
 						});
 						return ;

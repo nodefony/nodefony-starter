@@ -58,7 +58,7 @@ nodefony.register("controller", function(){
 		}
 
 		getResponse (content){
-			if (content){
+			if (this.context.response && content){
 				this.context.response.setBody( content );
 			}
 			return this.context.response;
@@ -195,13 +195,6 @@ nodefony.register("controller", function(){
 		}
 
 		renderJson ( obj , status , headers){
-			/*try {
-				return this.renderJsonSync(obj , status , headers)	
-			}catch(e){
-				this.logger(e,"ERROR");
-				throw e	;	
-			}*/
-
 			return new Promise ( (resolve, reject) =>{
 				try {
 					resolve( this.renderJsonSync(obj , status , headers) )
@@ -209,21 +202,14 @@ nodefony.register("controller", function(){
 					reject(e);	
 				}
 			});
-
-			/*var data = null ;
-			try {
-				data = JSON.stringify( obj ) ;
-			}catch(e){
-				this.logger(e,"ERROR");
-				throw e	;	
-			}
-			return this.renderResponse( data, status  , nodefony.extend( {}, {
-				'Content-Type': "text/json ; charset="+ this.context.response.encoding	
-			}, headers ));*/
 		}
 
 		renderJsonAsync (obj , status , headers){
-			var response = this.renderJsonSync(obj , status , headers);
+			try {
+				var response = this.renderJsonSync(obj , status , headers);
+			}catch(e){
+				throw e ;
+			}
 			if ( response ){
 				this.notificationsCenter.fire("onResponse", response,  this.context );
 			}

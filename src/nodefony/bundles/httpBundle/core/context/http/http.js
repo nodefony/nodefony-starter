@@ -27,6 +27,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.response = new nodefony.Response( response, container, type);
 			this.session = null;
 			this.isRedirect = false ;
+			this.sended = false ; 
 			this.sessionService = this.get("sessions");
 			this.sessionAutoStart = this.sessionService.settings.start ; 
 			this.cookies = {};
@@ -219,6 +220,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				//case response instanceof nodefony.Response :
 				//break ;
 			}
+			this.sended = true ;
 			// cookies
 			this.response.setCookies();
 			/*

@@ -112,6 +112,102 @@ describe("BUNDLE DEMO", function(){
 			request.write(post_data);
 			request.end();
 		});
+		it("renderJson", function(done){
+			global.options.path ='/test/unit/twig/render';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderJson",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var ret = JSON.parse(chunk);
+					assert.deepStrictEqual(ret.response.data, data);
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
+		it("renderJsonSync", function(done){
+			global.options.path ='/test/unit/twig/render';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderJsonSync",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var ret = JSON.parse(chunk);
+					assert.deepStrictEqual(ret.response.data, data);
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
+		it("renderJsonAsync", function(done){
+			global.options.path ='/test/unit/twig/render';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderJsonAsync",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.statusMessage, "OK");
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var ret = JSON.parse(chunk);
+					assert.deepStrictEqual(ret.response.data, data);
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
+		it("renderJsonAsyncTimeOut", function(done){
+			global.options.path ='/test/unit/twig/render';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderJsonAsyncTimeOut",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 408);
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
+
+
+
 
 
 	});

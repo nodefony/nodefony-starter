@@ -46,6 +46,7 @@
     "cookie":		"0.3.1",
     "markdown-it":	"8.2.2",
     "promise":		"7.1.1",
+    "bluebird":		"3.4.7",
     "pm2":		"2.2.3",
     "jshint":		"2.9.4"
   },

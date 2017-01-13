@@ -68,7 +68,7 @@ var nodefony = function(){
 			var t = typeof value;
 			if (t === 'object'){
 
-				if (value === null ) {return "object";}
+				if (value === null ) {return null;}
 
 				if ( this.isArray( value ) ){
 					return "array";

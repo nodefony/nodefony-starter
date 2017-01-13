@@ -228,7 +228,7 @@ nodefony.registerService("router", function(){
 		}
 
 		callController (data){
-			if (this.context.isRedirect){
+			if (this.context.isRedirect || this.context.sended ){
 				return ;
 			}
 			try {
@@ -262,13 +262,13 @@ nodefony.registerService("router", function(){
 							//return this.returnController(myResult);	
 							this.notificationsCenter.fire("onResponse", this.context.response, this.context);
 						}catch(e){
-							if (this.context.response.response.headersSent ){
+							if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
 								return ;
 							}
 							this.context.notificationsCenter.fire("onError", this.context.container, e);
 						}
 					}).catch((e)=>{
-						if (this.context.response.response.headersSent ){
+						if (this.context.response.response.headersSent || this.context.timeoutExpired ){
 							return ;
 						}
 						this.context.promise = null ;

@@ -340,7 +340,7 @@ nodefony.registerService("httpKernel", function(){
 				exception:myError || error,
 				Controller: container.get("controller") ? container.get("controller").name : null,
 				bundle:container.get("bundle") ? container.get("bundle").name : null
-			} );
+			});
 		}
 
 		onErrorWebsoket (container, error){
