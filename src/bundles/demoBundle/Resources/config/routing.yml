@@ -258,9 +258,14 @@ request-exception:
   requirements:
     method:     GET ,POST
 
-
 twig-render:
   pattern:      /test/unit/twig/render
   defaults:     {"controller": "demoBundle:twig:render"}
+  requirements:
+    method:     GET ,POST
+
+twig-extend:
+  pattern:      /test/unit/twig/extend
+  defaults:     {"controller": "demoBundle:twig:extend"}
   requirements:
     method:     GET ,POST

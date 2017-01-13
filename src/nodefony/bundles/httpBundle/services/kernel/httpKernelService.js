@@ -37,9 +37,12 @@ nodefony.registerService("httpKernel", function(){
 			case response instanceof BlueBird :
 				return this.response.body ;
 			case nodefony.typeOf(response) === "object":
-				console.log("PASSSSSS")
+				console.log("FIXME")
 				return nodefony.extend(true , this, response);
 			default:
+				if ( ! response){
+					throw new Error ("Nodefony can't resolve async call in twig template ")
+				}
 				return response ;
 		}
 	};

@@ -181,30 +181,34 @@ nodefony.registerService("router", function(){
 		}
 
 		parsePathernController (name){
-			var tab = name.split(":");
-			this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
-			if ( this.bundle ){
-				if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
-					this.context.autoloadCache.bundles[this.bundle.name] = {
-						controllers:{}	
-					};
-				}
-				if (this.bundle.name !== "framework"){
-					this.container.set("bundle", this.bundle);
-				}
-				this.controller = this.getController(tab[1]);
-				if ( this.controller ){
-					this.action = this.getAction(tab[2]);
-					if (! this.action ){
-						throw new Error("Resolver "+ name +" :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
+			if ( name && typeof name === "string" ){
+				var tab = name.split(":");
+				this.bundle = this.kernel.getBundle( this.kernel.getBundleName(tab[0]) );
+				if ( this.bundle ){
+					if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name]){
+						this.context.autoloadCache.bundles[this.bundle.name] = {
+							controllers:{}	
+						};
 					}
+					if (this.bundle.name !== "framework"){
+						this.container.set("bundle", this.bundle);
+					}
+					this.controller = this.getController(tab[1]);
+					if ( this.controller ){
+						this.action = this.getAction(tab[2]);
+						if (! this.action ){
+							throw new Error("Resolver "+ name +" :In CONTROLLER: "+ tab[1] +" ACTION  :"+tab[2] + " not exist");
+						}
+					}else{
+						throw new Error("Resolver "+ name +" : controller not exist :"+tab[1] );
+					}
+					this.defaultView = this.getDefaultView(tab[1], tab[2] );
+					this.resolve = true;
 				}else{
-					throw new Error("Resolver "+ name +" : controller not exist :"+tab[1] );
+					throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
 				}
-				this.defaultView = this.getDefaultView(tab[1], tab[2] );
-				this.resolve = true;
 			}else{
-				throw new Error("Resolver "+ name +" :bundle not exist :"+tab[0] );
+				throw new Error("Resolver Pattern Controller "+name+" not valid");	
 			}
 		}
 		
