@@ -196,6 +196,9 @@ redirect:
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
 	
 
+
+
+
 ## UNIT TEST
 ### MYROUTE DEFAULT VALUES ###
 myroute:
@@ -255,3 +258,9 @@ request-exception:
   requirements:
     method:     GET ,POST
 
+
+twig-render:
+  pattern:      /test/unit/twig/render
+  defaults:     {"controller": "demoBundle:twig:render"}
+  requirements:
+    method:     GET ,POST
