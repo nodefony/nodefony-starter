@@ -366,7 +366,7 @@ describe("BUNDLE DEMO", function(){
 			global.options.path ='/test/unit/twig/extend';     
 			global.options.method ='POST';   
 			var data = {
-				type:"renderAsyncToSync",
+				type:"renderAsyncToRender",
 			};
 			var post_data = querystring.stringify(data);
 			global.options.headers = {
@@ -378,7 +378,7 @@ describe("BUNDLE DEMO", function(){
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
 					var ret = JSON.parse(chunk);
-					assert.deepStrictEqual(ret, resultJson("renderSync"));
+					assert.deepStrictEqual(ret, resultJson("render"));
 					done(); 
 				});
 			})
@@ -386,7 +386,7 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-		it("renderSyncToAsync", function(done){
+		/*it("renderSyncToAsync", function(done){
 			global.options.path ='/test/unit/twig/extend';     
 			global.options.method ='POST';   
 			var data = {
@@ -407,7 +407,7 @@ describe("BUNDLE DEMO", function(){
 			})
 			request.write(post_data);
 			request.end();
-		});
+		});*/
 
 	});
 
