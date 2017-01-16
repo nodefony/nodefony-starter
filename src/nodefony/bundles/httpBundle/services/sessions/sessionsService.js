@@ -91,131 +91,154 @@ nodefony.registerService("sessions", function(){
 			return dec;
 		}
 
-		create (lifetime, id, callback){
+		create (lifetime, id){
 			this.id = id || this.setId();
 			setMetasSession.call(this);	
 			this.manager.logger("NEW SESSION CREATE : "+ this.id);
 			this.cookieSession = this.setCookieSession(lifetime) ;
 			this.status = "active" ;
-			if ( callback ){
-				callback(null, this);
-			}
 			return this ;	
 		}
-	
-		start (context, contextSession, callback){
+
+		start (context, contextSession){
 			this.context = context ;
-			
 			if ( contextSession ===  undefined ){
 				contextSession = this.contextSession ;
 			}
-			
 			if (this.settings.use_only_cookies){
 				this.applyTranId = 0;	
 			}else{
 				this.applyTranId = this.settings.use_trans_sid ;	
 			}
+			try {
+				var ret = this.checkStatus() ;
+				switch (ret){
+					case false :
+						return new Promise((resolve, reject)=>{
+							return resolve(this);
+						});
+					case "restart":
+						return this.start(context, contextSession);
+					default :
+						return this.getSession(contextSession);
+				}	
+			}catch(e){
+				return new Promise((resolve, reject)=>{
+					return reject(e);
+				})	
+			}
+		}
+		
+		checkStatus(){
 			switch (this.status){
 				case "active":
 					this.manager.logger("SESSION ALLREADY STARTED ==> "+this.name+" : "+this.id, "WARNING");
-					return this;
+					return false;
 				case  "disabled" :
 					try {
 						this.storage = this.manager.initializeStorage();
 						if ( this.storage ){
 							this.status = "none";
-							return this.start(context, contextSession, callback);
+							return "restart" ;
 						}
 					}catch(e){
 						this.manager.logger("SESSION STORAGE HANDLER NOT FOUND ","ERROR");
+						throw new Error("SESSION STORAGE HANDLER NOT FOUND ");
 					}
 				break;
 				default:
-					if (this.settings.use_cookies){
-						if (context.cookieSession){
-							this.id = this.getId(context.cookieSession.value);
-							this.cookieSession = context.cookieSession;	
-						}
-						this.applyTranId = 0 ;	
-					}
-					if ( (! this.settings.use_only_cookies) && (! this.id) ){
-						if ( this.name in context.request.query ){
-							this.id = this.getId( context.request.query[this.name]);
-						}
-					}
-			}
-
-			if (this.id){
-				// change context session 
-				if ( contextSession && this.contextSession !== contextSession ){
-					switch(this.strategy){
-						case "migrate":
-							this.storage.start(this.id, this.contextSession, (error, result) => {
-								if (error){
-									callback(error, null);	
-									return ;
-								}
-								this.deSerialize(result);
-								
-								if (  ! this.isValidSession(result, context) ){
-									this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-									this.destroy();
-									this.contextSession = contextSession;
-									return this.create( this.lifetime, null, callback);
-								}
-								this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-								this.remove();
-								this.contextSession = contextSession ;
-								return this.create( this.lifetime, null, callback);
-							});
-						break;
-						case "invalidate":
-							this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
-							this.destroy();
-							this.contextSession = contextSession;
-							return this.create( this.lifetime,  null, callback);
-						case "none" :
-							this.strategyNone = true ;
-						break;
-					}
-					if ( ! this.strategyNone ){
-						return this;
-					}
-				}
-
-				if ( contextSession ){
-					this.contextSession = contextSession ;
-				}
-				return this.storage.start(this.id, this.contextSession, (error, result) => {
-					if (error){
-						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
-						if ( ! this.strategyNone ){
-							this.invalidate();
-						}
-						return ;
-					}
-					if ( result &&  Object.keys(result).length ){
-						this.deSerialize(result);
-						if (  ! this.isValidSession(result, context) ){
-							this.manager.logger("SESSION ==> "+this.name + " : "+this.id + "  session invalid ", "ERROR");
-							this.invalidate();
-						}
-					}else{
-						if ( this.settings.use_strict_mode ){
-							if ( ! this.strategyNone ){
-								this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " use_strict_mode ", "ERROR");
-								this.invalidate();
-							}
-						}
-					}
-					this.status = "active" ;
-					return callback(null, this);
-				});
+					return true ;
 				
-			}else{
-				this.clear();
-				return this.create( this.lifetime, null, callback);
 			}
+		}
+
+		getSession (contextSession){
+			if (this.settings.use_cookies){
+				if (this.context.cookieSession){
+					this.id = this.getId(this.context.cookieSession.value);
+					this.cookieSession = this.context.cookieSession;	
+				}
+				this.applyTranId = 0 ;	
+			}
+			if ( (! this.settings.use_only_cookies) && (! this.id) ){
+				if ( this.name in this.context.request.query ){
+					this.id = this.getId( this.context.request.query[this.name]);
+				}
+			}
+			if (this.id){
+				return this.checkChangeContext( contextSession ) ;
+			}else{
+				return new Promise ((resolve, reject)=>{
+					this.clear();
+					return resolve( this.create( this.lifetime, null) );
+				})	
+			}	
+		}
+
+		checkChangeContext(contextSession){
+			// change context session 
+			if ( contextSession && this.contextSession !== contextSession ){
+				switch(this.strategy){
+					case "migrate":
+						return this.storage.start(this.id, this.contextSession).then( (result) => {
+							this.deSerialize(result);
+							if (  ! this.isValidSession(result, this.context) ){
+								this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+								this.destroy();
+								this.contextSession = contextSession;
+								return this.create( this.lifetime, null);
+							}
+							this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+							this.remove();
+							this.contextSession = contextSession ;
+							return this.create( this.lifetime, null);
+						}).catch((error) =>{
+							return error ;
+						});
+					break;
+					case "invalidate":
+						this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
+						this.destroy();
+						this.contextSession = contextSession;
+						return new Promise ( (resolve, reject) => {
+							return resolve(this.create( this.lifetime,  null) );
+						});
+					case "none" :
+						this.strategyNone = true ;
+					break;
+				}
+				if ( ! this.strategyNone ){
+					return new Promise ( (resolve, reject) => {
+						resolve(this);
+					});
+				}
+			}
+			return this.storage.start(this.id, this.contextSession).then( (result) => {
+				if ( result &&  Object.keys(result).length ){
+					this.deSerialize(result);
+					if (  ! this.isValidSession(result, this.context) ){
+						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + "  session invalid ", "ERROR");
+						this.invalidate();
+					}
+				}else{
+					if ( this.settings.use_strict_mode ){
+						if ( ! this.strategyNone ){
+							this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " use_strict_mode ", "ERROR");
+							this.invalidate();
+						}
+					}
+				}
+				this.status = "active";
+				return this;
+			}).catch((error) =>{
+				if (error){
+					this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
+					if ( ! this.strategyNone ){
+						this.invalidate();
+					}
+					return error;
+				}	
+			});
 		}
 
 		isValidSession (data, context){
@@ -416,9 +439,13 @@ nodefony.registerService("sessions", function(){
 						this.saved = false ; 
 					}else{
 						//this.logger("SAVE SESSION " + this.id, "DEBUG")
-						this.saved = true ;
+						if ( ! this.context ){
+							err = new Error ( "SAVE SESSION ERROR context already deleted " );
+						}else{
+							this.saved = true ;
+							this.context.fire("onSaveSession", this); 
+						}
 					}
-					this.context.fire("onSaveSession", this); 
 					if ( callback ){
 						callback(err, this);	
 					}
@@ -497,32 +524,33 @@ nodefony.registerService("sessions", function(){
 			if (! msgid) {msgid = "SERVICE SESSIONS";}
 			return this.syslog.logger(pci, severity || "DEBUG", msgid,  msg);
 		}
-		
-		start (context, sessionContext, callback){
+
+		start (context, sessionContext){
 			if ( context.session ){
 				if ( context.session.status === "active" ){
-					return callback(null, context.session)  ;
-				}
-			}
-			var inst = this.createSession(this.defaultSessionName, this.settings );
-			inst.start(context, sessionContext, (err, session) => {
-				context.session = session ;
-				if ( ! err ){ 
-					session.setMetaBag("url", url.parse(context.url ) );
-					context.listen(session, "onSend",function(){
-						this.setMetaBag("lastUsed", new Date() );
-						if ( ! this.saved ){
-							this.save(context.user ? context.user.id : null);	
-						}
+					this.logger("SESSION ALLREADY STARTED ==> "+context.session.name+" : "+context.session.id, "WARNING");
+					return new Promise((resolve, reject) =>{
+						resolve( context.session );
 					});
 				}
-				callback(err, session);
-			}) ;
-			
+			}
 			if ( this.probaGarbage() ){
 				this.storage.gc(this.settings.gc_maxlifetime, sessionContext);	
 			}
-			return inst; 
+			var inst = this.createSession(this.defaultSessionName, this.settings );
+			return  inst.start(context, sessionContext).then( (session) => {
+				context.session = session ;
+				session.setMetaBag("url", url.parse(context.url ) );
+				context.listen(session, "onSend",function(){
+					this.setMetaBag("lastUsed", new Date() );
+					if ( ! this.saved ){
+						this.save(context.user ? context.user.id : null);	
+					}
+				});
+				return session ;
+			}).catch((err) => {
+				return err ;	
+			});
 		}
 	
 		createSession (name, settings){

@@ -224,7 +224,6 @@ nodefony.registerService("firewall", function(){
 					}	
 				break;	
 			}
-		
 		}
 
 		handle (context){
@@ -400,143 +399,144 @@ nodefony.registerService("firewall", function(){
 			});
 
 			this.listen(this, "onSecurity",(context) => {
-				var request = null; 
-				var response = null; 
 				switch (context.type){
 					case "HTTP" :
 					case "HTTPS" :
-						request = context.request.request ;
-						response = context.response.response ;
-						request.on('end', () => {
-							for ( var area in this.securedAreas ){
-								if ( this.securedAreas[area].match(context.request, context.response) ){
-									//FIXME PRIORITY
-									context.security = this.securedAreas[area];
-									//break;
-								}
-							}
-							if (  context.security ){	
-								context.sessionAutoStart = "firewall" ;	
-								this.sessionService.start(context, context.security.sessionContext, (error, session) => {
-									if (error){
-										return context.security.handleError(context, error);
-									}
-									if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
-										return context.security.redirectHttps(context);
-									}
-									try {
-										return this.handlerHttp(context, request, response, session);
-									}catch(error){
-										return context.notificationsCenter.fire("onError", context.container, error );
-									}
-								});	
-							}else{
-								try {
-									if ( context.sessionAutoStart === "autostart" ){
-					 					this.sessionService.start(context, "default", (error, session) => {
-						 					if (error){
-												throw error ;
-						 					}
-											//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
-											try {
-												return this.handlerHttp(context, request, response, session);
-											}catch(error){
-												return context.notificationsCenter.fire("onError", context.container, error );
-											}
-										});
-									}else{
-										if (context.cookieSession){
-											this.sessionService.start(context, null, (error, session) => {
-												if (error){
-													return context.security.handleError(context, error);
-												}
-												try {
-													var meta = session.getMetaBag("security");
-													if ( meta ){
-														context.user = meta.userFull ; 		
-													}
-													return context.notificationsCenter.fire("onRequest", context.container, request, response);
-												}catch(error){
-													return context.notificationsCenter.fire("onError", context.container, error );
-												}
-											});	
-										}else{
-											return context.notificationsCenter.fire("onRequest", context.container, request, response);	
-										}
-									}
-								}catch(e){
-									return context.notificationsCenter.fire("onError", context.container, e );	
-								}
-							}
-						});
-					break;
+						return this.handleHttp(context) ;
 					case "WEBSOCKET" :
 					case "WEBSOCKET SECURE" :
-						request = context.request ;
-						response = context.response ;
-						for ( var area in this.securedAreas ){
-							if ( this.securedAreas[area].match(context.request, context.response) ){
-								//FIXME PRIORITY
-								context.security = this.securedAreas[area];
-								//break;
-							}
-						}
-						if (  context.security ){
-							context.sessionAutoStart = "firewall" ;
-							this.sessionService.start(context, context.security.sessionContext, (error, session) => {
-								if (error){
-									return context.security.handleError(context, error);
-								}
-								try {
-									return this.handlerHttp(context, request, response, session);
-								}catch(error){
-									context.notificationsCenter.fire("onError", context.container, error );
-								}
-							});	
-						}else{
-							try {
-								if ( context.sessionAutoStart === "autostart" ){
-					 				this.sessionService.start(context, "default", (err, session) => {
-						 				if (err){
-											throw err ;
-						 				}
-										//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
-										try {
-											return this.handlerHttp(context, request, response, session);
-										}catch(error){
-											return context.notificationsCenter.fire("onError", context.container, error );
-										}
-					 				});
-								}else{
-									if (context.cookieSession){
-											this.sessionService.start(context, null, (error, session) => {
-												if (error){
-													return context.security.handleError(context, error);
-												}
-												try {
-													var meta = session.getMetaBag("security");
-													if ( meta ){
-														context.user = meta.userFull ; 		
-													}
-													return context.notificationsCenter.fire("onRequest", context.container, request, response);
-												}catch(error){
-													return context.notificationsCenter.fire("onError", context.container, error );
-												}
-											});	
-										}else{
-											return context.notificationsCenter.fire("onRequest", context.container, request, response);	
-										}
-								}	
-							}catch(e){
-								return context.notificationsCenter.fire("onError", context.container, e );	
-							}
-						}
-					break;
+						return this.handleWebsoket(context) ;
 				}
 			});
 		}
-	
-		handlerHttp ( context, request, response, session){
+
+		handleHttp (context){
+			var request = null; 
+			var response = null;
+			request = context.request.request ;
+			response = context.response.response ;
+			request.on('end', () => {
+				for ( var area in this.securedAreas ){
+					if ( this.securedAreas[area].match(context.request, context.response) ){
+						//FIXME PRIORITY
+						context.security = this.securedAreas[area];
+						//break;
+					}
+				}
+				if (  context.security ){	
+					context.sessionAutoStart = "firewall" ;	
+					this.sessionService.start(context, context.security.sessionContext).then( ( session ) => {
+						if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
+							return context.security.redirectHttps(context);
+						}
+						try {
+							return this.handle(context, request, response, session);
+						}catch(error){
+							return context.notificationsCenter.fire("onError", context.container, error );
+						}
+					}).catch((error)=>{
+						return context.security.handleError(context, error);	
+					});	
+				}else{
+					try {
+						if ( context.sessionAutoStart === "autostart" ){
+							this.sessionService.start(context, "default").then( ( session) => {
+								try {
+									return this.handle(context, request, response, session);
+								}catch(error){
+									return context.notificationsCenter.fire("onError", context.container, error );
+								}
+							}).catch((error)=>{
+								return context.notificationsCenter.fire("onError", context.container, error );	
+							});
+						}else{
+							if (context.cookieSession){
+								this.sessionService.start(context, null).then( ( session) => {
+									try {
+										var meta = session.getMetaBag("security");
+										if ( meta ){
+											context.user = meta.userFull ; 		
+										}
+										return context.notificationsCenter.fire("onRequest", context.container, request, response);
+									}catch(error){
+										return context.notificationsCenter.fire("onError", context.container, error );
+									}
+								}).catch((error)=>{
+									return context.notificationsCenter.fire("onError", context.container, error );	
+								});
+							}else{
+								return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							}
+						}
+					}catch(e){
+						return context.notificationsCenter.fire("onError", context.container, e );	
+					}
+				}
+			});
+		}
+
+		handleWebsoket (context){
+			var request = null; 
+			var response = null;
+			request = context.request ;
+			response = context.response ;
+			for ( var area in this.securedAreas ){
+				if ( this.securedAreas[area].match(context.request, context.response) ){
+					//FIXME PRIORITY
+					context.security = this.securedAreas[area];
+					//break;
+				}
+			}
+			if (  context.security ){
+				context.sessionAutoStart = "firewall" ;
+				this.sessionService.start(context, context.security.sessionContext).then( ( session ) => {
+					try {
+						return this.handle(context, request, response, session);
+					}catch(error){
+						context.notificationsCenter.fire("onError", context.container, error );
+					}
+				}).catch( (error) => {
+					return context.security.handleError(context, error);
+				});	
+			}else{
+				try {
+					if ( context.sessionAutoStart === "autostart" ){
+					 	this.sessionService.start(context, "default").then( ( session ) => {
+							//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+							try {
+								return this.handle(context, request, response, session);
+							}catch(error){
+								return context.notificationsCenter.fire("onError", context.container, error );
+							}
+					 	}).catch( (error) => {
+							return context.notificationsCenter.fire("onError", context.container, error );;
+						});
+					}else{
+						if (context.cookieSession){
+							this.sessionService.start(context, null).then( ( session) => {
+								try {
+									var meta = session.getMetaBag("security");
+									if ( meta ){
+										context.user = meta.userFull ; 		
+									}
+									return context.notificationsCenter.fire("onRequest", context.container, request, response);
+								}catch(error){
+									return context.notificationsCenter.fire("onError", context.container, error );
+								}
+							}).catch( (error) => {
+								return context.notificationsCenter.fire("onError", context.container, error );;
+							});	
+						}else{
+							return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+						}
+					}	
+				}catch(e){
+					return context.notificationsCenter.fire("onError", context.container, e );	
+				}
+			}
+		}
+
+		handle ( context, request, response, session){
 			try {
 				context.crossDomain = context.isCrossDomain() ;
 				//CROSS DOMAIN //FIXME width callback handle for async response  

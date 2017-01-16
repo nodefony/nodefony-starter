@@ -6,12 +6,10 @@
  */
 nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 
-
-
 	var finderGC = function(msMaxlifetime, contextSession){
 		var nbSessionsDelete  = 0 ;
 		var myDate = 	new Date().getTime() - msMaxlifetime ;
-		this.entity.findAll({ 
+		return this.entity.findAll({ 
 			where:{
 				context		:contextSession
 			}
@@ -38,7 +36,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			//this.manager.logger("DB SESSIONS STORAGE context : "+ ( contextSession || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")
 		}).catch((error) => {
 			console.trace(error);
-			return ;
+			return error;
 		});	
 	};
 
@@ -52,15 +50,15 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			})
 			this.gc_maxlifetime = this.manager.settings.gc_maxlifetime ;
 			this.contextSessions = [];
-		};
+		}
 
-		start (id, contextSession, callback){
+		start (id, contextSession){
 			try {
-				return this.read(id, contextSession, callback);
+				return this.read(id, contextSession);
 			}catch(e){
-				callback(e, null) ;
+				throw e ;
 			}
-		};
+		}
 
 		open (contextSession){
 			if( this.orm.kernel.type != "CONSOLE" ){
@@ -69,12 +67,12 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 					this.manager.logger("CONTEXT "+( contextSession ? contextSession : "default" )+" SEQUELIZE SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+sessionCount );
 				})	
 			}
-		};
+		}
 
 		close (){
 			this.gc(this.gc_maxlifetime);
 			return true;	
-		};
+		}
 
 		destroy (id, contextSession){
 			return this.entity.findOne({where:{
@@ -98,13 +96,12 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 					return ;
 				}
 			})
-		};
-
+		}
 		
 		gc (maxlifetime, contextSession){
 			var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
 			if ( contextSession ){
-				finderGC.call(this, msMaxlifetime, contextSession)	
+				finderGC.call(this, msMaxlifetime, contextSession);
 			}else{
 				if (this.contextSessions.length){
 					for (var i = 0 ; i<this.contextSessions.length ; i++){
@@ -112,9 +109,9 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 					}
 				}
 			}
-		};
-
-		read (id, contextSession, callback){
+		}
+		
+		read (id, contextSession){
 			var myWhere = null ;
 			if ( contextSession ){
 				myWhere = {where:{session_id:id,context:(contextSession)}} ;
@@ -124,23 +121,20 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			return this.entity.findOne(myWhere)
 			.then(( result) => {
 				if ( result  ){
-					callback(null,{
+					return {
 						id:result.session_id,
 						flashBag:result.flashBag,
 						metaBag:result.metaBag,
-						Attributes:result.Attributes,		
-					} );
+						Attributes:result.Attributes
+					};
 				}else{
-					callback(null,{});
+					return {};
 				}
 			}).catch((error) => {
-				if (error){
-					this.manager.logger(error,"ERROR");
-					callback(error,null );
-					return ;
-				}
-			})
-		};
+				this.manager.logger(error,"ERROR");
+				return error;
+			});
+		}
 
 		write (id, serialize, contextSession, callback){
 			
@@ -180,9 +174,8 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 					return ;
 				}
 			})
-		};
+		}
 	};
-
 	return dbSessionStorage ;
 });
 

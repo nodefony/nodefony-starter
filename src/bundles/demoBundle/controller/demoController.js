@@ -281,8 +281,10 @@ nodefony.registerController("demo", function(){
 				})
 				.then( (results) => {
 					users = results;
+					this.getSession().invalidate();
 					this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
-					return this.redirect(this.generateUrl("saslArea"));
+					return this.redirect(this.generateUrl("saslArea"));	
+					
 				})
 				.catch( (error) => {
 					if ( error.errors  ){

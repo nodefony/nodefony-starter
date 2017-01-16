@@ -271,7 +271,7 @@ twig-extend:
     method:     GET ,POST
 
 session:
-  pattern:      /test/unit/session
-  defaults:     {"controller": "demoBundle:session:session"}
+  pattern:      /test/unit/session/{type}
+  defaults:     {"controller": "demoBundle:session:session" , "type":"callback"}
   requirements:
     method:     GET ,POST

@@ -120,7 +120,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return null;	
 		}
 
-		
 		isValidDomain (){
 			return   this.kernelHttp.isValidDomain( this );
 		}
@@ -308,6 +307,7 @@ nodefony.register.call(nodefony.context, "http", function(){
  			*/
 			this.response.writeHead();
 
+			this.fire("onSend", response, context);
 			if ( this.session ){
 				this.listen(this, "onSaveSession" , ( session ) => {
 					//console.log("FIRE onSaveSession")
@@ -324,11 +324,11 @@ nodefony.register.call(nodefony.context, "http", function(){
 					}
 					this.fire("onSendMonitoring", response, context);
 				});
-				this.fire("onSend", response, context);
+				//this.fire("onSend", response, context);
 				return ;
 			}
 
-			this.fire("onSend", response, context);
+			//this.fire("onSend", response, context);
 			if (  ! context.storage ){
 				if ( context.profiling ){
 					this.fire("onSendMonitoring", response, context);	
