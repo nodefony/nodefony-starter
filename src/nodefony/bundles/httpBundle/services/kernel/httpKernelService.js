@@ -8,51 +8,7 @@
 
 nodefony.registerService("httpKernel", function(){
 
-	var myController = function(pattern, data){
-		try {
-			var router = this.get("router");
-			var resolver = router.resolveName(this, pattern) ;
-
-			var control = new resolver.controller( this, resolver.context );
-			if ( data ){
-				Array.prototype.shift.call( arguments );
-				for ( var i = 0 ; i< arguments.length ; i++){
-					resolver.variables.push(arguments[i]);	
-				}
-				//resolver.variables.push(data); 
-			}
-			return resolver.action.apply(control, resolver.variables);
-		}catch(e){
-			this.logger(e, "ERROR");
-			//throw e.error
-		}	
-	};
-
-	var render = function(response){
-		switch (true){
-			case response instanceof nodefony.wsResponse :
-			case response instanceof nodefony.Response :
-				return response.body;
-			case response instanceof Promise :
-			case response instanceof BlueBird :
-				return this.response.body ;
-			case nodefony.typeOf(response) === "object":
-				console.log("FIXME")
-				return nodefony.extend(true , this, response);
-			default:
-				if ( ! response){
-					throw new Error ("Nodefony can't resolve async call in twig template ")
-				}
-				return response ;
-		}
-	};
-
-	var flashTwig = function(key){
-		if ( this.session ){
-			return this.session.getFlashBag(key) ;
-		}
-		return null ;
-	};
+	
 
 	/*
  	 *
@@ -208,7 +164,7 @@ nodefony.registerService("httpKernel", function(){
 			}
 			return false ;
 		}
-		
+			
 		getEngineTemplate (name){
 			return nodefony.templatings[name];
 		}
@@ -405,9 +361,7 @@ nodefony.registerService("httpKernel", function(){
 			var container = this.container.enterScope("request");	
 			if ( domain ) { domain.container = container ; }
 
-			//I18n
-			var translation = new nodefony.services.translation( container, type );
-			container.set("translation", translation );
+			
 			
 			switch (type){
 				case "HTTP" :
@@ -426,7 +380,7 @@ nodefony.registerService("httpKernel", function(){
 						request = null ;
 						response = null ;
 						container = null ;
-						translation = null ;
+						//translation = null ;
 						if (domain) {
 							delete domain.container ;
 							domain = null ;
@@ -434,7 +388,7 @@ nodefony.registerService("httpKernel", function(){
 					});
 					
 					//twig extend context
-					context.extendTwig = {
+					/*context.extendTwig = {
 						nodefony:{
 							url:context.request.url
 						},
@@ -447,20 +401,28 @@ nodefony.registerService("httpKernel", function(){
 							translation.trans_default_domain.apply(translation, arguments) ;
 						},
 						getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
-					};
+					};*/
 					
 					//request events	
 					context.notificationsCenter.listen(this, "onError", this.onError);
+
+					// DOMAIN VALID 
+					var next = this.checkValidDomain(context) ;
+					if ( next !== 200){
+						return ;
+					}
 					
 					// FRONT ROUTER 
 					try {
 						resolver  = this.get("router").resolve(container, context);
 					}catch(e){
+						//this.fire("onHttpRequest", container, context, type);
 						return context.notificationsCenter.fire("onError", container, e );	
 					}
 					if (resolver.resolve) {
 						context.resolver = resolver ;	
 					}else{
+						//this.fire("onHttpRequest", container, context, type);
 						return context.notificationsCenter.fire("onError", container, {
 							status:404,
 							error:"URI :" + context.url,
@@ -468,7 +430,7 @@ nodefony.registerService("httpKernel", function(){
 						});
 					}
 
-					this.fire("onHttpRequest", container, context, type);
+					//this.fire("onHttpRequest", container, context, type);
 					
 					if ( ( ! this.firewall ) || resolver.bypassFirewall ){
 						request.on('end', () => {
@@ -506,7 +468,7 @@ nodefony.registerService("httpKernel", function(){
 						request = null ;
 						response = null ;
 						container = null ;
-						translation = null ;
+						//translation = null ;
 						if (domain) {
 							delete domain.container ;
 							domain = null ;
@@ -514,7 +476,7 @@ nodefony.registerService("httpKernel", function(){
 					});
 					
 					//twig extend context
-					context.extendTwig = {
+					/*context.extendTwig = {
 						nodefony:{
 							url:context.originUrl
 						},
@@ -527,9 +489,15 @@ nodefony.registerService("httpKernel", function(){
 							translation.trans_default_domain.apply(translation, arguments) ;
 						},
 						getTransDefaultDomain:translation.getTransDefaultDomain.bind(translation)
-					};
+					};*/
 
 					context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
+
+					// DOMAIN VALID 
+					var next = this.checkValidDomain(context) ;
+					if ( next !== 200){
+						return ;
+					}
 
 					// FRONT ROUTER 
 					try {

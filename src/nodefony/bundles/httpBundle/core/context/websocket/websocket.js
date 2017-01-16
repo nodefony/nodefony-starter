@@ -32,6 +32,10 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			super ("websocketContext", container);
 			this.type = type ;
 			this.protocol = ( type === "WEBSOCKET SECURE" ) ? "wss" : "ws" ;
+
+			//I18n
+			this.translation = new nodefony.services.translation( container, type );
+			this.set("translation", this.translation );
 			
 			//this.container = container;
 			this.kernel = this.container.get("kernel") ;
@@ -69,7 +73,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}
 
 			this.secureArea = null ;
-			this.cookies = {};
 			this.domain =  this.getHostName();
 			this.validDomain = this.isValidDomain() ;
 
@@ -78,12 +81,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				origin:request.origin
 			});
 
+			// session 
 			this.session = null;
 			this.sessionService = this.get("sessions");
 			this.sessionAutoStart = this.sessionService.settings.start ;
 
 			//parse cookies
+			this.cookies = {};
 			this.parseCookies();
+			this.cookieSession = this.getCookieSession( this.sessionService.settings.name );
 
 			this.security = null ;
 			this.user = null ;
@@ -124,6 +130,13 @@ nodefony.register.call(nodefony.context, "websocket", function(){
  		 	* this.connection.on('frame', function(webSocketFrame) {
 				console.log(webSocketFrame.binaryPayload.toString())
 			}.bind(this));*/
+		}
+		
+		getCookieSession ( name){
+			if (this.cookies[name] ){
+				return this.cookies[name];
+			}
+			return null;	
 		}
 
 		isValidDomain (){
@@ -184,7 +197,73 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.notificationsCenter = null ;
 			//delete this.cookies ;
 			this.cookies = null ;
+			if (this.translation ) { delete this.translation; }
+			if (this.cookieSession){ delete this.cookieSession }
 		}
+
+			flashTwig (key){
+			if ( this.session ){
+				return this.session.getFlashBag(key) ;
+			}
+			return null ;
+		}
+
+		extendTwig ( param ){
+		
+			return nodefony.extend( {}, param, {
+				nodefony:{
+					url:this.request.url
+				},
+				getFlashBag:	this.flashTwig.bind(this),
+				render:		this.render.bind(this),
+				controller:	this.controller.bind(this),
+				trans:		this.translation.trans.bind(this.translation),
+				getLocale:	this.translation.getLocale.bind(this.translation),
+				trans_default_domain:function(){
+						this.translation.trans_default_domain.apply(this.translation, arguments) ;
+				}.bind(this),
+				getTransDefaultDomain:this.translation.getTransDefaultDomain.bind(this.translation)	
+			})
+		}
+
+		controller (pattern, data){
+			try {
+				var router = this.get("router");
+				var resolver = router.resolveName(this.container, pattern) ;
+
+				var control = new resolver.controller( this.container, resolver.context );
+				if ( data ){
+					Array.prototype.shift.call( arguments );
+					for ( var i = 0 ; i< arguments.length ; i++){
+						resolver.variables.push(arguments[i]);	
+					}
+				}
+				return resolver.action.apply(control, resolver.variables);
+			}catch(e){
+				this.logger(e, "ERROR");
+				//throw e.error
+			}	
+		}
+
+		render (response){
+			switch (true){
+				case response instanceof nodefony.wsResponse :
+				case response instanceof nodefony.Response :
+					return response.body;
+				case response instanceof Promise :
+				case response instanceof BlueBird :
+					return this.response.body ;
+				case nodefony.typeOf(response) === "object":
+					console.log("FIXME")
+					return nodefony.extend(true , this, response);
+				default:
+					if ( ! response){
+						throw new Error ("Nodefony can't resolve async call in twig template ")
+					}
+					return response ;
+			}
+		}
+
 
 		handleMessage (message){
 			this.response.body = message ;
@@ -213,7 +292,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		handle (container, request, response, data){
-			this.container.get("translation").handle( this );
+			this.translation.handle( this );
 			try {
 				if ( ! this.resolver ){
 					this.resolver  = this.get("router").resolve(this.container,  this);

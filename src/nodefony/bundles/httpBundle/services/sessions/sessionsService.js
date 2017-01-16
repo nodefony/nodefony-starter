@@ -8,13 +8,7 @@ nodefony.registerService("sessions", function(){
 	var algorithm = 'aes-256-ctr';
 	var password = 'd6F3Efeq';
 
-	var cookiesParser = function(context, name){
-		if (context.cookies[name] ){
-			return context.cookies[name];
-		}
-		return null;
-	};
-
+	
 	var checkSecureReferer = function(){
 		var host = null ;
 		switch (this.context.type ){
@@ -53,19 +47,6 @@ nodefony.registerService("sessions", function(){
 		}else{
 			this.setMetaBag("user_agent","Not Defined" );	
 		}
-	};
-
-	var createSession = function(lifetime, id, callback){
-		this.id = id || this.setId();
-		setMetasSession.call(this);	
-		this.manager.logger("NEW SESSION CREATE : "+ this.id);
-		this.cookieSession = this.setCookieSession(lifetime) ;
-		this.status = "active" ;
-		if ( callback ){
-			callback(null, this);
-			//return this.save(this.context.user ? this.context.user.id : null, callback);
-		}
-		return this ;
 	};
 
 	/*
@@ -109,6 +90,18 @@ nodefony.registerService("sessions", function(){
 			dec += decipher.final('utf8');
 			return dec;
 		}
+
+		create (lifetime, id, callback){
+			this.id = id || this.setId();
+			setMetasSession.call(this);	
+			this.manager.logger("NEW SESSION CREATE : "+ this.id);
+			this.cookieSession = this.setCookieSession(lifetime) ;
+			this.status = "active" ;
+			if ( callback ){
+				callback(null, this);
+			}
+			return this ;	
+		}
 	
 		start (context, contextSession, callback){
 			this.context = context ;
@@ -139,10 +132,9 @@ nodefony.registerService("sessions", function(){
 				break;
 				default:
 					if (this.settings.use_cookies){
-						var cookie = cookiesParser(context, this.name) ;
-						if (cookie){
-							this.id = this.getId(cookie.value);
-							this.cookieSession = new nodefony.cookies.cookie(cookie);	
+						if (context.cookieSession){
+							this.id = this.getId(context.cookieSession.value);
+							this.cookieSession = context.cookieSession;	
 						}
 						this.applyTranId = 0 ;	
 					}
@@ -155,7 +147,7 @@ nodefony.registerService("sessions", function(){
 
 			if (this.id){
 				// change context session 
-				if ( this.contextSession !== contextSession ){
+				if ( contextSession && this.contextSession !== contextSession ){
 					switch(this.strategy){
 						case "migrate":
 							this.storage.start(this.id, this.contextSession, (error, result) => {
@@ -169,32 +161,32 @@ nodefony.registerService("sessions", function(){
 									this.manager.logger("INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 									this.destroy();
 									this.contextSession = contextSession;
-									return createSession.call(this, this.lifetime, null, callback);
+									return this.create( this.lifetime, null, callback);
 								}
 								this.manager.logger("STRATEGY MIGRATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 								this.remove();
 								this.contextSession = contextSession ;
-								return createSession.call(this, this.lifetime, null, callback);
+								return this.create( this.lifetime, null, callback);
 							});
 						break;
 						case "invalidate":
 							this.manager.logger("STRATEGY INVALIDATE SESSION ==> "+this.name + " : "+this.id, "DEBUG");
 							this.destroy();
 							this.contextSession = contextSession;
-							return createSession.call(this, this.lifetime,  null, callback);
+							return this.create( this.lifetime,  null, callback);
 						case "none" :
 							this.strategyNone = true ;
 						break;
 					}
 					if ( ! this.strategyNone ){
-						return ;
+						return this;
 					}
 				}
 
 				if ( contextSession ){
 					this.contextSession = contextSession ;
 				}
-				this.storage.start(this.id, this.contextSession, (error, result) => {
+				return this.storage.start(this.id, this.contextSession, (error, result) => {
 					if (error){
 						this.manager.logger("SESSION ==> "+this.name + " : "+this.id + " " +error, "ERROR");	
 						if ( ! this.strategyNone ){
@@ -222,7 +214,7 @@ nodefony.registerService("sessions", function(){
 				
 			}else{
 				this.clear();
-				return createSession.call(this, this.lifetime, null, callback);
+				return this.create( this.lifetime, null, callback);
 			}
 		}
 
@@ -315,7 +307,7 @@ nodefony.registerService("sessions", function(){
 				settings = nodefony.extend( {}, this.settings.cookie);
 				settings.maxAge = leftTime;
 			}else{
-				settings = 	this.settings.cookie ;
+				settings = this.settings.cookie ;
 			}
 			var cookie = new nodefony.cookies.cookie(this.name, this.id, settings);
 			this.context.response.addCookie(cookie);
@@ -377,7 +369,7 @@ nodefony.registerService("sessions", function(){
 			this.manager.logger("INVALIDATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
 			if (! lifetime) {lifetime = this.lifetime ;}
 			this.destroy();
-			return createSession.call(this, lifetime, id, callback);
+			return this.create( lifetime, id, callback);
 		}
 
 		migrate (destroy, lifetime, id, callback){
@@ -386,7 +378,7 @@ nodefony.registerService("sessions", function(){
 			if (destroy){
 				this.remove();
 			}
-			return createSession.call(this, lifetime, id, callback);
+			return this.create( lifetime, id, callback);
 		}
 
 		setId (){

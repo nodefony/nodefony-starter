@@ -313,7 +313,6 @@ nodefony.registerBundle ("monitoring", function(){
 					userAgent:myUserAgent
 				};
 
-				nodefony.extend(context.profiling, context.extendTwig);
 
 				for(var event in context.notificationsCenter.event._events ){
 					if ( event === "onRequest"){
@@ -472,7 +471,7 @@ nodefony.registerBundle ("monitoring", function(){
 										if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
 											var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 											if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-												this.templating.renderFile(View, context.profiling,function(error , result){
+												this.templating.renderFile(View, context.extendTwig(context.profiling),function(error , result){
 													if (error){
 														throw error ;
 													}
@@ -508,7 +507,7 @@ nodefony.registerBundle ("monitoring", function(){
 									if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
 										var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 										if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-											this.templating.renderFile(View, context.profiling,function(error , result){
+											this.templating.renderFile(View, context.extendTwig(context.profiling),function(error , result){
 												if (error){
 													throw error ;
 												}

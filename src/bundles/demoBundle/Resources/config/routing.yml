@@ -269,3 +269,9 @@ twig-extend:
   defaults:     {"controller": "demoBundle:twig:extend"}
   requirements:
     method:     GET ,POST
+
+session:
+  pattern:      /test/unit/session
+  defaults:     {"controller": "demoBundle:session:session"}
+  requirements:
+    method:     GET ,POST

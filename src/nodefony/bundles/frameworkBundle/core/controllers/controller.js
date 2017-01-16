@@ -106,7 +106,8 @@ nodefony.register("controller", function(){
 
 		renderRawView (path, param ){
 			var res = null;
-			var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+			//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+			var extendParam = this.context.extendTwig(param);
 			try{ 
 				this.serviceTemplating.renderFile(path, extendParam, (error, result) => {
 					if (error || result === undefined){
@@ -134,7 +135,8 @@ nodefony.register("controller", function(){
 			var res = null;
 			var templ = null ;
 			var View = null ;
-			var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+			//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+			var extendParam = this.context.extendTwig(param);
 
 			if ( this.serviceTemplating.cache ){
 				try {
@@ -302,7 +304,8 @@ nodefony.register("controller", function(){
 
 		renderViewAsync (view, param){
 			try {
-				var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+				//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
+				var extendParam = this.context.extendTwig(param);
 
 				if ( this.serviceTemplating.cache ){
 					var templ = null ;

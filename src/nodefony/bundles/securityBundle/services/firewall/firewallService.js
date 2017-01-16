@@ -152,7 +152,6 @@ nodefony.registerService("firewall", function(){
 				case "HTTP" :
 				case "HTTPS" :
 					if (this.formLogin) {
-						
 						if (e.message){
 							this.logger(e.message, "DEBUG");
 						}else{
@@ -446,11 +445,24 @@ nodefony.registerService("firewall", function(){
 											}
 										});
 									}else{
-										var next = context.kernelHttp.checkValidDomain( context ) ;
-										if ( next !== 200){
-											return ;
+										if (context.cookieSession){
+											this.sessionService.start(context, null, (error, session) => {
+												if (error){
+													return context.security.handleError(context, error);
+												}
+												try {
+													var meta = session.getMetaBag("security");
+													if ( meta ){
+														context.user = meta.userFull ; 		
+													}
+													return context.notificationsCenter.fire("onRequest", context.container, request, response);
+												}catch(error){
+													return context.notificationsCenter.fire("onError", context.container, error );
+												}
+											});	
+										}else{
+											return context.notificationsCenter.fire("onRequest", context.container, request, response);	
 										}
-										return context.notificationsCenter.fire("onRequest", context.container, request, response);	
 									}
 								}catch(e){
 									return context.notificationsCenter.fire("onError", context.container, e );	
@@ -496,11 +508,24 @@ nodefony.registerService("firewall", function(){
 										}
 					 				});
 								}else{
-									var next = context.kernelHttp.checkValidDomain( context ) ;
-									if ( next !== 200){
-										return ;
-									}
-									return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+									if (context.cookieSession){
+											this.sessionService.start(context, null, (error, session) => {
+												if (error){
+													return context.security.handleError(context, error);
+												}
+												try {
+													var meta = session.getMetaBag("security");
+													if ( meta ){
+														context.user = meta.userFull ; 		
+													}
+													return context.notificationsCenter.fire("onRequest", context.container, request, response);
+												}catch(error){
+													return context.notificationsCenter.fire("onError", context.container, error );
+												}
+											});	
+										}else{
+											return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+										}
 								}	
 							}catch(e){
 								return context.notificationsCenter.fire("onError", context.container, e );	
@@ -512,10 +537,6 @@ nodefony.registerService("firewall", function(){
 		}
 	
 		handlerHttp ( context, request, response, session){
-			var next = context.kernelHttp.checkValidDomain( context ) ;
-			if ( next !== 200){
-				return ;
-			}
 			try {
 				context.crossDomain = context.isCrossDomain() ;
 				//CROSS DOMAIN //FIXME width callback handle for async response  
@@ -537,7 +558,6 @@ nodefony.registerService("firewall", function(){
 					}
 				}
 				var meta = session.getMetaBag("security");
-				//console.log(meta)
 				if ( meta ){
 					context.user = meta.userFull ; 		
 				}

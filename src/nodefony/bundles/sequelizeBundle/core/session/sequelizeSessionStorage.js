@@ -56,7 +56,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 
 		start (id, contextSession, callback){
 			try {
-				this.read(id, contextSession, callback);
+				return this.read(id, contextSession, callback);
 			}catch(e){
 				callback(e, null) ;
 			}
@@ -65,7 +65,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 		open (contextSession){
 			if( this.orm.kernel.type != "CONSOLE" ){
 				this.gc(this.gc_maxlifetime, contextSession);
-				this.entity.count({ where: {"context" : contextSession } }).then((sessionCount) =>  {
+				return this.entity.count({ where: {"context" : contextSession } }).then((sessionCount) =>  {
 					this.manager.logger("CONTEXT "+( contextSession ? contextSession : "default" )+" SEQUELIZE SESSIONS STORAGE  ==>  " + this.manager.settings.handler.toUpperCase() + " COUNT SESSIONS : "+sessionCount );
 				})	
 			}
@@ -77,7 +77,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 		};
 
 		destroy (id, contextSession){
-			this.entity.findOne({where:{
+			return this.entity.findOne({where:{
 				session_id: id,
 				context: contextSession	
 			}})
@@ -115,8 +115,13 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 		};
 
 		read (id, contextSession, callback){
-			
-			this.entity.findOne({where:{session_id:id,context:(contextSession || "default")}})
+			var myWhere = null ;
+			if ( contextSession ){
+				myWhere = {where:{session_id:id,context:(contextSession)}} ;
+			}else{
+				myWhere = {where:{session_id:id}} ;
+			}
+			return this.entity.findOne(myWhere)
 			.then(( result) => {
 				if ( result  ){
 					callback(null,{
@@ -143,7 +148,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 				session_id:id,
 				context:contextSession
 			});
-			this.entity.findOne({where:{
+			return this.entity.findOne({where:{
 				session_id:id,
 				context:(contextSession || "default")
 			}}).then(  (result) =>  {

@@ -20,17 +20,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			super ("httpContext", container);
 			this.type = type;
+			//I18n
+			this.translation = new nodefony.services.translation( container, type );
+			this.set("translation", this.translation );
 			this.protocol = ( type === "HTTPS" ) ? "https" : "http" ;
 			this.resolver = null ;
 			this.nbCallController = 0 ;
 			this.request = new nodefony.Request( request, container, type);
 			this.response = new nodefony.Response( response, container, type);
-			this.session = null;
 			this.isRedirect = false ;
 			this.sended = false ; 
-			this.sessionService = this.get("sessions");
-			this.sessionAutoStart = this.sessionService.settings.start ; 
-			this.cookies = {};
 			this.method = this.request.getMethod() ;
 			this.isAjax = this.request.isAjax() ;
 			this.secureArea = null ;
@@ -63,8 +62,15 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			this.logger( ( this.isAjax ? " AJAX REQUEST " : "REQUEST ") +request.method +" FROM : "+ this.request.remoteAddress +" HOST : "+request.headers.host+" URL :"+request.url, "INFO");
 
+			// session 
+			this.session = null;
+			this.sessionService = this.get("sessions");
+			this.sessionAutoStart = this.sessionService.settings.start ; 
+
 			//parse cookies
+			this.cookies = {};
 			this.parseCookies();
+			this.cookieSession = this.getCookieSession( this.sessionService.settings.name );
 			
 			this.security = null ;
 			this.user = null ;
@@ -107,6 +113,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.crossDomain = this.isCrossDomain() ;
 		}
 
+		getCookieSession ( name){
+			if (this.cookies[name] ){
+				return this.cookies[name];
+			}
+			return null;	
+		}
+
+		
 		isValidDomain (){
 			return   this.kernelHttp.isValidDomain( this );
 		}
@@ -135,6 +149,69 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return this.request.getMethod() ;
 		}
 
+		flashTwig (key){
+			if ( this.session ){
+				return this.session.getFlashBag(key) ;
+			}
+			return null ;
+		}
+
+		extendTwig ( param ){
+		
+			return nodefony.extend( {}, param, {
+				nodefony:{
+					url:this.request.url
+				},
+				getFlashBag:	this.flashTwig.bind(this),
+				render:		this.render.bind(this),
+				controller:	this.controller.bind(this),
+				trans:		this.translation.trans.bind(this.translation),
+				getLocale:	this.translation.getLocale.bind(this.translation),
+				trans_default_domain:function(){
+						this.translation.trans_default_domain.apply(this.translation, arguments) ;
+				}.bind(this),
+				getTransDefaultDomain:this.translation.getTransDefaultDomain.bind(this.translation)	
+			})
+		}
+
+		controller (pattern, data){
+			try {
+				var router = this.get("router");
+				var resolver = router.resolveName(this.container, pattern) ;
+
+				var control = new resolver.controller( this.container, resolver.context );
+				if ( data ){
+					Array.prototype.shift.call( arguments );
+					for ( var i = 0 ; i< arguments.length ; i++){
+						resolver.variables.push(arguments[i]);	
+					}
+				}
+				return resolver.action.apply(control, resolver.variables);
+			}catch(e){
+				this.logger(e, "ERROR");
+				//throw e.error
+			}	
+		}
+
+		render (response){
+			switch (true){
+				case response instanceof nodefony.wsResponse :
+				case response instanceof nodefony.Response :
+					return response.body;
+				case response instanceof Promise :
+				case response instanceof BlueBird :
+					return this.response.body ;
+				case nodefony.typeOf(response) === "object":
+					console.log("FIXME")
+					return nodefony.extend(true , this, response);
+				default:
+					if ( ! response){
+						throw new Error ("Nodefony can't resolve async call in twig template ")
+					}
+					return response ;
+			}
+		}
+
 		handle (container, request , response, data){
 
 			this.container.setParameters("query.get", this.request.queryGet );
@@ -149,7 +226,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			/*
  		 	*	TRANSLATION
  		 	*/
-			this.container.get("translation").handle( this);
+			this.translation.handle( this);
 
 			/*
  		 	*	TRY resolve
@@ -199,6 +276,9 @@ nodefony.register.call(nodefony.context, "http", function(){
 			if (this.user)  {delete this.user;}
 			if (this.security ) {delete this.security ;}
 			if (this.promise) {delete this.promise;}
+			if (this.translation ) { delete this.translation; }
+			this.cookies = null ;
+			if (this.cookieSession){ delete this.cookieSession }
 			//delete this.container ;
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
