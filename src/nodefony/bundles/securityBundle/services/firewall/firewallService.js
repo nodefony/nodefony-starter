@@ -509,7 +509,7 @@ nodefony.registerService("firewall", function(){
 								return context.notificationsCenter.fire("onError", context.container, error );
 							}
 					 	}).catch( (error) => {
-							return context.notificationsCenter.fire("onError", context.container, error );;
+							return context.notificationsCenter.fire("onError", context.container, error );
 						});
 					}else{
 						if (context.cookieSession){
@@ -524,7 +524,7 @@ nodefony.registerService("firewall", function(){
 									return context.notificationsCenter.fire("onError", context.container, error );
 								}
 							}).catch( (error) => {
-								return context.notificationsCenter.fire("onError", context.container, error );;
+								return context.notificationsCenter.fire("onError", context.container, error );
 							});	
 						}else{
 							return context.notificationsCenter.fire("onRequest", context.container, request, response);	
@@ -538,6 +538,7 @@ nodefony.registerService("firewall", function(){
 
 		handle ( context, request, response, session){
 			try {
+				var next = null ;
 				context.crossDomain = context.isCrossDomain() ;
 				//CROSS DOMAIN //FIXME width callback handle for async response  
 				if (  context.security && context.crossDomain ){

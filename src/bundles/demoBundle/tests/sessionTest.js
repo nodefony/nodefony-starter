@@ -11,27 +11,34 @@ describe("BUNDLE DEMO", function(){
 		global.options = {
 			url:"http://"+kernel.settings.system.domain + ":" +  kernel.settings.system.httpPort
 		};
+		
+		var serviceSession = kernel.get("sessions")
+		global.startSesion = serviceSession.settings.start;
 	})
 
 	describe('SESSION START', function(){
 
 		it("SESSION-HTTP-NO-SESSION", function(done){
 				
-			var url =  global.options.url ;	
-			var options = nodefony.extend({}, global.options, {
-				url:url+"/test/unit/session"	
-			})
-			request(options, (error, res, body) => {
-				if (error){
-					throw error ;
-				}
-				if ( res.headers["set-cookie"] ){
-					var id = res.headers["set-cookie"][0].split(";")[0].split("=")[1] ;
-					throw id ;
-				}
+			if ( global.startSesion == false){ 
+				var url =  global.options.url ;	
+				var options = nodefony.extend({}, global.options, {
+					url:url+"/test/unit/session"	
+				})
+				request(options, (error, res, body) => {
+					if (error){
+						throw error ;
+					}
+					if ( res.headers["set-cookie"] ){
+						throw new Error ( "set-cookie exist !!!!" ) ;
+					}
+					done();
+				});
+			}else{
 				done();
-			});
+			}
 		});
+
 		it("SESSION-HTTP-START", function(done){
 			var url =  global.options.url ;	
 			var options = nodefony.extend({}, global.options, {
