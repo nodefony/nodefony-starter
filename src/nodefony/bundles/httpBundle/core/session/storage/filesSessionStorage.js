@@ -22,7 +22,7 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				}
 			}.bind(this),
 			onFinish:function(error, result){
-				this.manager.logger("FILES SESSIONS STORAGE context : "+ ( context || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED")			
+				this.manager.logger("FILES SESSIONS STORAGE context : "+ ( context || "default" ) +" GARBADGE COLLECTOR ==> "+ nbSessionsDelete + " DELETED");	
 			}.bind(this)
 		});
 		return finder;	
@@ -36,21 +36,26 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 			this.contextSessions = [];
 		};
 
-		start (id, contextSession, callback){
+		start (id, contextSession){
 			var fileSession  = null ;	
 			if ( contextSession ){
 				var path = this.path+"/"+contextSession+"/"+id ;	
 			}else{
-				var path = this.path+"/"+id ;
+				var path = this.path+"/default/"+id ;	
 			}
 			try {
 				fileSession = new nodefony.fileClass(path);
-				this.read(fileSession, callback);
-
 			}catch(e){
-				callback(e, null) ;
+				return new Promise ( (resolve, reject ) => {
+					resolve( {} );	
+				})
 			}
-		};
+			try {
+				return this.read(fileSession);
+			}catch(e){
+				throw e ;
+			}
+		}
 
 		open (contextSession){
 			if (contextSession) {
@@ -79,30 +84,39 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 				});
 			}
 			return true;
-		};
+		}
 
 		close (){
 			this.gc(this.gc_maxlifetime);
 			return true;
-		};
+		}
 
 		destroy (id, contextSession){
+
 			var fileDestroy  = null ;
+			var path = null ;
 			if ( contextSession ){
-				var path = this.path+"/"+contextSession+"/"+id ;	
+				path = this.path+"/"+contextSession+"/"+id ;	
 			}else{
-				var path = this.path+"/"+id ;
+				path = this.path+"/default/"+id ;	
 			}
 			try {
 				fileDestroy = new nodefony.fileClass(path);
-				this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION context : "+contextSession +" ID : "+ fileDestroy.name + " DELETED");
-				return fileDestroy.unlink();
-
 			}catch(e){
-				return false ;
+				this.manager.logger("STORAGE FILE :" + path   ,"DEBUG");
+				return new Promise ( (resolve, reject ) => {
+					resolve( id );	
+				})	
 			}
-		};
-
+			return new Promise ( (resolve, reject) => {
+				try {
+					this.manager.logger("FILES SESSIONS STORAGE DESTROY SESSION context : "+contextSession +" ID : "+ fileDestroy.name + " DELETED");
+					return resolve( fileDestroy.unlink() ) ;
+				}catch(e){
+					return reject (id) ;
+				}			
+			});
+		}
 	
 		gc (maxlifetime, contextSession){
 			var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
@@ -117,38 +131,46 @@ nodefony.register.call(nodefony.session.storage, "files",function(){
 					}
 				}
 			}
-		};
+		}
 
-		read (file, callback){
-			var id = file.name;
-			try {
-				var res = fs.readFileSync(file.path, {
-					encoding:'utf8'
-				});
-				//this.manager.logger("FILES SESSIONS STORAGE READ ==> "+ file.name)
-				callback(null, JSON.parse(res) ); 
-			}catch(e){
-				this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
-				callback(e, null );
-			}	
-		};
+		read (file){
+			return new Promise ( (resolve, reject) => {
+				var id = file.name;
+				try {
+					fs.readFile(file.path, "utf8", (err, data) => {
+						if (err){
+							return reject( err );
+						}
+						return resolve( JSON.parse(data ));
+					});
+					 
+				}catch(e){
+					this.manager.logger("FILES SESSIONS STORAGE READ  ==> "+ e,"ERROR")	
+					return reject(e );
+				}	
+			});
+		}
 
-		write (fileName, serialize, contextSession, callback){
+		write (fileName, serialize, contextSession){
 			if ( contextSession ){
 				var path = this.path+"/"+contextSession+"/"+fileName ;	
 			}else{
-				var path = this.path+"/"+fileName ;
+				var path = this.path+"/default/"+fileName ;	
 			}
-			try{
-				fs.writeFileSync(path, JSON.stringify(serialize));
-				//this.manager.logger("FILES SESSIONS STORAGE  WRITE SESSION : " + fileName);
-				callback(null, serialize)
-			}catch(e){
-				this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");
-				callback( e, null );
-			} 
-		};
+			return new Promise ( (resolve, reject) => {
+				try{	
+					fs.writeFile(path, JSON.stringify(serialize), 'utf8', (err) => {
+						if ( err ){
+							return reject (err);
+						}
+						resolve(serialize);
+					});
+				}catch(e){
+					this.manager.logger("FILES SESSIONS STORAGE : "+ e,"ERROR");
+					return reject(e) ;
+				}
+			});
+		}
 	};
-	
 	return fileSessionStorage ;
-})
+});

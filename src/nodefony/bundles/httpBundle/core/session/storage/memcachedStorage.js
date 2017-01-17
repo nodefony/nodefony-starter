@@ -61,7 +61,6 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 		start (id, contextSession){
 			try {
 				return this.read( id, contextSession);
-
 			}catch(e){
 				throw e ;
 			}
