@@ -399,13 +399,22 @@ nodefony.registerService("httpKernel", function(){
 				request.on('end', () => {
 					try {
 						if ( context.sessionAutoStart === "autostart" ){
-					 		this.sessionService.start(context, "default", (err) => {
+					 		/*this.sessionService.start(context, "default", (err) => {
 						 		if (err){
 									throw err ;
 						 		}
 								this.logger("AUTOSTART SESSION","DEBUG");
 								context.notificationsCenter.fire("onRequest",container, request, response );	
-					 		});
+					 		});*/
+							this.sessionService.start(context, "default").then((session) =>{
+								if ( ! session instanceof nodefony.Session ){
+									throw new Error("SESSION START session storage ERROR");
+								}
+								this.logger("AUTOSTART SESSION","DEBUG");
+								context.notificationsCenter.fire("onRequest",container, request, response );
+							}).catch( (error) =>{
+								return error;
+							});
 						}else{
 							context.notificationsCenter.fire("onRequest",container, request, response );	
 						}

@@ -81,20 +81,16 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			}})
 			.then( (result) => {
 				if ( result ){
-					result.destroy({ force: true }).then( ( session) => {
+					return result.destroy({ force: true }).then( ( session) => {
 						this.manager.logger("DB DESTROY SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");
 					}).catch((error) => {
-						if (error){
-							this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
-							return ;
-						}	
+						this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
+						return error ;
 					})
 				}
 			}).catch((error) => {
-				if (error){
-					this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
-					return ;
-				}
+				this.manager.logger("DB DESTROY SESSION context : "+contextSession+" ID : "+ id , "ERROR");
+				return error;
 			})
 		}
 		
@@ -136,7 +132,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			});
 		}
 
-		write (id, serialize, contextSession, callback){
+		write (id, serialize, contextSession){
 			
 			var data = nodefony.extend({}, serialize, {
 				session_id:id,
@@ -147,31 +143,30 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 				context:(contextSession || "default")
 			}}).then(  (result) =>  {
 				if (result){
-					result.update(data, {
+					return result.update(data, {
   						where: {
     							session_id:id,
 							context:(contextSession || "default")
   						}
 					}).then(function(){
-						callback(null, serialize) ;	
+						return 	serialize ;
 					}).catch(function(error){
-						callback(error, null) ;
+						return error ;
 					})
 				}else{
-					this.entity.create(data,{isNewRecord:true})
+					return this.entity.create(data,{isNewRecord:true})
 					.then((session) => {
 						this.manager.logger("ADD SESSION : " + session.session_id +" user-id :" + (session.user_id ?session.user_id : "anonymous")  ,"INFO");
-						callback(null, session) ;
+						return session ; 
 					}).catch((error) => {
 						this.manager.logger(error);
-						callback(error, null) ;	
+						return error ;	
 					})	
 				}
 			}).catch((error) => {
 				if (error){
 					this.manager.logger(error,"ERROR");
-					callback(error,null );
-					return ;
+					return error ;
 				}
 			})
 		}

@@ -111,11 +111,12 @@ session:
   memcached:
     servers:                      
       nodefony: 
-        location:               nodefony.com
+        location:               127.0.0.1
         port:                   11211
         weight:                 1
     options:
       debug:                    false
+      timeout:                  5000
 
 #
 #       UPLOAD SERVICE CONFIG

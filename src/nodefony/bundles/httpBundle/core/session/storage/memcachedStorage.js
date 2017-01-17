@@ -41,7 +41,7 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			this.contextSessions = [];
 			this.settings = manager.settings.memcached;
 			this.options = this.settings.options ;
-			this.servers = new Object();
+			this.servers = {};
 			this.clients = {};
 
 			for (var server in this.settings.servers ){
@@ -50,9 +50,7 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 				var weight = this.settings.servers[server].weight ? this.settings.servers[server].weight : 1 ; 
 				this.servers[ host+":"+port ] = weight ;
 			}
-
 		};
-
 
 		logger (pci, severity, msgid,  msg){
 			var syslog = this.manager ;
@@ -60,14 +58,14 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			return syslog.logger(pci, severity || "DEBUG", msgid,  msg);
 		}
 
-		start (id, contextSession, callback){
+		start (id, contextSession){
 			try {
-				this.read( id, contextSession, callback);
+				return this.read( id, contextSession);
 
 			}catch(e){
-				callback(e, null) ;
+				throw e ;
 			}
-		};
+		}
 
 		open (contextSession){
 			this.clients[contextSession] = 	new Memcached( this.servers, nodefony.extend({}, this.options ,{
@@ -79,7 +77,11 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			}.bind(this));*/
 
 			this.clients[contextSession].on('issue', (details) => {
-				this.logger(details, "INFO");
+				if ( details.failures){
+					this.logger(details.message, "ERROR");
+				}else{
+					this.logger(details.message, "INFO");	
+				}
 			});
 
 			this.clients[contextSession].on('failure', (details) => {
@@ -93,37 +95,40 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 			this.gc(this.gc_maxlifetime, contextSession); 
 
 			return true;
-		};
+		}
 
 		close (){
 			this.gc(this.gc_maxlifetime);
 			return true;
-		};
+		}
 
 		destroy (id, contextSession){
-			try {
-				var client = checkClient.call(this, contextSession);
-			}catch(e){
-				this.logger( e,"ERROR")	;
-				throw e ;
-			}
-
-			client.get( id, (err, data) => {
-				if (err){
-					this.logger(" context : "+contextSession +" ID : "+ id + " DESTROY ERROR", "ERROR");
-					return false ;
+			return new Promise ( ( resolve, reject ) => {
+				var client = null ;
+				try {
+					client = checkClient.call(this, contextSession);
+				}catch(e){
+					this.logger( e,"ERROR")	;
+					return reject (e) ;
 				}
-				
-				client.del(id,  (err) => { 
+
+				client.get( id, (err, data) => {
 					if (err){
 						this.logger(" context : "+contextSession +" ID : "+ id + " DESTROY ERROR", "ERROR");
-						return false ;
+						return reject(err) ;
 					}
-					this.logger(" DESTROY SESSION context : "+contextSession +" ID : "+ id + " DELETED");
-
+					
+					client.del(id,  (err) => { 
+						if (err){
+							this.logger(" context : "+contextSession +" ID : "+ id + " DESTROY ERROR", "ERROR");
+							return reject (err) ;
+						}
+						this.logger(" DESTROY SESSION context : "+contextSession +" ID : "+ id + " DELETED");
+						return resolve(id);
+					});
 				});
 			});
-		};
+		}
 
 		gc (maxlifetime, contextSession){
 			var msMaxlifetime = ( (maxlifetime || this.gc_maxlifetime) * 1000);
@@ -132,78 +137,85 @@ nodefony.register.call(nodefony.session.storage, "memcached",function(){
 					memcacheGC.call(this,this.clients[contextSession], msMaxlifetime );
 			}else{
 				for (var client in this.clients){
-					memcacheGC.call(this, this.clients[client], msMaxlifetime )	
+					memcacheGC.call(this, this.clients[client], msMaxlifetime );
 				}
 			}
-		};
+		}
 
 	
 		read ( id, contextSession , callback){
-			try {
-				var client = checkClient.call(this, contextSession);
-			}catch(e){
-				this.logger( e,"ERROR")	;
-				throw e ;
-			}
-
-			try {
-				client.get( id, function(err, data){
-					if (err){
-						throw  err ;
-					}
-					if (data){
-						callback( null, JSON.parse(data) );
-					}else{
-						callback( null, {} );
-					}
-				});
-			}catch(e){
-				this.logger( e,"ERROR")	
-				throw e ;
-			}	
-		};
+			return new Promise ( (resolve, reject) =>{
+				var client = null ;
+				try {
+					client = checkClient.call(this, contextSession);
+				}catch(e){
+					this.logger( e,"ERROR")	;
+					return reject( e ) ;
+				}
+				try {
+					client.get( id, function(err, data){
+						if (err){
+							return reject ( err ) ;
+						}
+						if (data){
+							return resolve(  JSON.parse(data) );
+						}else{
+							return resolve( {} );
+						}
+					});
+				}catch(e){
+					this.logger( e,"ERROR");	
+					return reject( e );
+				}	
+			} );
+		}
 
 		write (id, serialize, contextSession, callback){
-			try {
-				var client = checkClient.call(this, contextSession);
-			}catch(e){
-				this.logger( e,"ERROR")	;
-				callback (e , null) ;
-				return ;
-			}
-
-			try{
-				client.get( id, (err, data) => {
-					if (err){
-						callback (err , null) ;
-					}
-					if (data){
-						client.replace(id, JSON.stringify(serialize) , this.gc_maxlifetime, function(err, result){
-							if (err){
-								callback(err, null)	
-								return ;
+			return new Promise ( ( resolve, reject ) => {
+				var client = null ; 
+				try {
+					client = checkClient.call(this, contextSession);
+				}catch(e){
+					this.logger( e,"ERROR")	;
+					return reject (e) ;
+				}
+				try{
+					client.get( id, (err, data) => {
+						if (err){
+							return reject (err) ;
+						}
+						if (data){
+							try {
+								client.replace(id, JSON.stringify(serialize) , this.gc_maxlifetime, function(err, result){
+									if (err){
+										return reject(err) ;	
+									}
+									return resolve(serialize);
+								})
+							}catch(e){
+								return reject (e) ;	
 							}
-							callback(null, serialize)	
-						})
-					}else{
-						client.set(id, JSON.stringify(serialize) , this.gc_maxlifetime ,function(err, result){
-							if (err){
-								callback(err, null)	
-								return ;
+						}else{
+							try {
+								client.set(id, JSON.stringify(serialize) , this.gc_maxlifetime ,function(err, result){
+									if (err){
+										return reject(err);	
+									}
+									return resolve(serialize) ;	
+								})
+							}catch(e){
+								return reject (e) ;	
 							}
-							callback(null, serialize)	
-						})
-					}
-				});
-			}catch(e){
-				this.logger( e,"ERROR");
-				callback( e, null );
-			}
-		};
+						}
+					});
+				}catch(e){
+					this.logger( e,"ERROR");
+					return reject( e );
+				}
+			} );
+		}
 	};
-
 	return memcachedSessionStorage ;
-
 });
 
 

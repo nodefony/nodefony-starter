@@ -93,6 +93,13 @@ httpBundle:
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
       maxAge:                     0                              # like cookie_lifetime php  =>seconde 
+    memcached:
+      servers:                      
+        nodefony: 
+          location:               127.0.0.1
+          port:                   11211
+          weight:                 1
+
 
   http:
     responseTimeout:              40000
@@ -140,7 +147,7 @@ sequelizeBundle:
 #      driver:          mysql
 #      dbname:          'nodefony'
 #      username:        'username'
-#      password:        'passwd'
+#      password:        'password'
 #      options:
 #        dialect:       mysql
 #        host:          localhost

@@ -432,24 +432,21 @@ nodefony.registerService("sessions", function(){
 
 		save (user, callback){
 			try {
-				return this.storage.write(this.id, this.serialize(user), this.contextSession,(err/*, result*/) => {
-					if (err){
-						console.trace(err);
-						this.logger( err ,"ERROR" );
-						this.saved = false ; 
+				return this.storage.write(this.id, this.serialize(user) ).then( (result) => {
+					if ( ! this.context ){
+							throw new Error ( "SAVE SESSION ERROR context already deleted " ) ;
 					}else{
-						//this.logger("SAVE SESSION " + this.id, "DEBUG")
-						if ( ! this.context ){
-							err = new Error ( "SAVE SESSION ERROR context already deleted " );
-						}else{
-							this.saved = true ;
-							this.context.fire("onSaveSession", this); 
-						}
+						this.saved = true ;
+						this.context.fire("onSaveSession", this); 
+						return this ;
 					}
-					if ( callback ){
-						callback(err, this);	
-					}
-				});	
+				}).catch( (error) => {
+					console.trace(err);
+					this.logger( err ,"ERROR" );
+					this.saved = false ;
+					return error ;
+				})
+					
 			}catch(e){
 				this.manager.logger(" SESSION ERROR : "+e,"ERROR");
 				this.saved = false ;	
@@ -475,6 +472,7 @@ nodefony.registerService("sessions", function(){
 			return this.context.getRemoteAddress() ; 
 		}
 	};
+	nodefony.Session = Session ; 
 
 	/*
  	 *
@@ -539,6 +537,9 @@ nodefony.registerService("sessions", function(){
 			}
 			var inst = this.createSession(this.defaultSessionName, this.settings );
 			return  inst.start(context, sessionContext).then( (session) => {
+				if ( ! session ){
+					throw new Error( "SESSION START session storage ERROR")
+				}
 				context.session = session ;
 				session.setMetaBag("url", url.parse(context.url ) );
 				context.listen(session, "onSend",function(){

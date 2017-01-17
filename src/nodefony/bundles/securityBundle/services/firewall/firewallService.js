@@ -426,6 +426,9 @@ nodefony.registerService("firewall", function(){
 				if (  context.security ){	
 					context.sessionAutoStart = "firewall" ;	
 					this.sessionService.start(context, context.security.sessionContext).then( ( session ) => {
+						if ( ! session instanceof nodefony.Session ){
+							throw new Error("SESSION START session storage ERROR");
+						}
 						if (  context.type === "HTTP" &&  context.container.get("httpsServer").ready &&  context.security.redirect_Https ){
 							return context.security.redirectHttps(context);
 						}
@@ -441,6 +444,9 @@ nodefony.registerService("firewall", function(){
 					try {
 						if ( context.sessionAutoStart === "autostart" ){
 							this.sessionService.start(context, "default").then( ( session) => {
+								if ( ! session instanceof nodefony.Session ){
+									throw new Error("SESSION START session storage ERROR");
+								}
 								try {
 									return this.handle(context, request, response, session);
 								}catch(error){
@@ -452,6 +458,9 @@ nodefony.registerService("firewall", function(){
 						}else{
 							if (context.cookieSession){
 								this.sessionService.start(context, null).then( ( session) => {
+									if ( ! session instanceof nodefony.Session ){
+										throw new Error("SESSION START session storage ERROR");
+									}
 									try {
 										var meta = session.getMetaBag("security");
 										if ( meta ){
@@ -490,6 +499,9 @@ nodefony.registerService("firewall", function(){
 			if (  context.security ){
 				context.sessionAutoStart = "firewall" ;
 				this.sessionService.start(context, context.security.sessionContext).then( ( session ) => {
+					if ( ! session instanceof nodefony.Session ){
+						throw new Error("SESSION START session storage ERROR");
+					}
 					try {
 						return this.handle(context, request, response, session);
 					}catch(error){
@@ -503,6 +515,9 @@ nodefony.registerService("firewall", function(){
 					if ( context.sessionAutoStart === "autostart" ){
 					 	this.sessionService.start(context, "default").then( ( session ) => {
 							//this.logger("AUTOSTART SESSION NO SECURE AREA","DEBUG");
+							if ( ! session instanceof nodefony.Session ){
+								throw new Error("SESSION START session storage ERROR");
+							}
 							try {
 								return this.handle(context, request, response, session);
 							}catch(error){
@@ -514,6 +529,9 @@ nodefony.registerService("firewall", function(){
 					}else{
 						if (context.cookieSession){
 							this.sessionService.start(context, null).then( ( session) => {
+								if ( ! session instanceof nodefony.Session ){
+									throw new Error("SESSION START session storage ERROR");
+								}
 								try {
 									var meta = session.getMetaBag("security");
 									if ( meta ){
