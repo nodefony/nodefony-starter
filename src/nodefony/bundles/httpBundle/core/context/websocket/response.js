@@ -25,6 +25,8 @@ nodefony.register("wsResponse",function(){
 			//cookies
 			this.cookies = {};
 
+			this.encoding = this.setEncoding('utf8');
+
 			// struct headers
 			this.headers = {};
 			this.type = "utf8" ; 
@@ -34,6 +36,21 @@ nodefony.register("wsResponse",function(){
 			var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = "WEBSOCKET RESPONSE";}
 			return syslog.logger(pci, severity, msgid,  msg);
+		}
+
+		setBody (ele){
+			switch (nodefony.typeOf(ele) ) {
+				case "string" :
+					this.body = ele;
+				break;
+				case "object" :
+				case "array" :
+					this.body = JSON.stringify(ele); 
+				break;
+				default:
+					this.body = ele;
+			}
+			return  ele ;
 		}
 
 		send (data, type){
@@ -64,6 +81,14 @@ nodefony.register("wsResponse",function(){
 					error:"Response addCookies not valid cookies"
 				};
 			}	
+		}
+
+		setEncoding (encoding){
+			return this.encoding = encoding ;
+		}
+
+		setStatusCode (status, message){
+			
 		}
 
 		setCookies (){

@@ -274,4 +274,4 @@ session:
   pattern:      /test/unit/session/{type}
   defaults:     {"controller": "demoBundle:session:session" , "type":"callback"}
   requirements:
-    method:     GET ,POST
+    method:     GET ,POST ,WEBSOCKET

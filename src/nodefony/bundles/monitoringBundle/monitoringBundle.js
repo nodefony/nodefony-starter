@@ -652,7 +652,7 @@ nodefony.registerBundle ("monitoring", function(){
 						return ;
 					case "orm":
 						this.requestEntity.update({
-								data:JSON.stringify(context.profiling),
+								data	: JSON.stringify(context.profiling),
 								state	: context.profiling.response.statusCode
 							}, {
   							where: {

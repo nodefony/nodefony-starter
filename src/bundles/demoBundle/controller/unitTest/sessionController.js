@@ -25,10 +25,14 @@ nodefony.registerController("session", function(){
 		
 		/**
  	 	*
- 	 	*	redirectAction 
+ 	 	*	sessionAction 
  	 	*
  	 	*/
-		sessionAction(type){
+		sessionAction(type, message){
+
+			if ( message ){
+				return this.renderResponse(message.utf8Data);	
+			}
 			switch(type){
 				case "start" :
 					return this.sessionService.start(this.context).then( (session)=>{

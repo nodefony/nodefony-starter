@@ -113,8 +113,6 @@ httpBundle:
 #
 #       OVERRIDE BUNDLE ASSETIC
 #
-#       LESS SERVICE CONFIGURATION
-#
 #       # TO ADD DOMAIN CDN     
 #         CDN:
 #           stylesheets:                  cdn.nodefony.com       
@@ -137,7 +135,7 @@ asseticBundle:
 #       for manage Sessions / User 
 #
 #
-#       here create new databases connectors
+#       here create new databases connectors 
 #
 #
 sequelizeBundle: 

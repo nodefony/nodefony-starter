@@ -76,10 +76,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.domain =  this.getHostName();
 			this.validDomain = this.isValidDomain() ;
 
-			this.logger(' Connection Websocket Connection from : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+request.origin , "INFO", null, {
-				remoteAddress:this.remoteAddress,
-				origin:request.origin
-			});
+			this.logger(  "REQUEST " +request.method +" FROM : "+ this.remoteAddress +" HOST : "+this.domain+" URL : "+this.url, "INFO");
 
 			// session 
 			this.session = null;
@@ -330,10 +327,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		send (data, type){
-			//console.log(this.response)
+			var myData = null ;
 			if ( this.response ){
-				this.fire("onMessage", data, this, "SEND") ;
-				return this.response.send(data || this.response.body, type);
+				if ( data instanceof nodefony.wsResponse ){
+					myData = this.response.body ;
+				}else{
+					myData = data ;
+				}
+				this.fire("onMessage", myData, this, "SEND") ;
+				return this.response.send(myData, type );
 			}
 			return null ;
 		}

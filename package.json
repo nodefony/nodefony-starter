@@ -26,7 +26,7 @@
   "os" : [ "darwin", "linux" ],
   "engines" : { "node" : ">=6" },
   "dependencies": {
-    "npm":		"4.1.1",
+    "npm":		"4.1.2",
     "npmi":		"2.0.1",
     "nodegit":		"0.16.0",
     "sqlite3":		"3.1.8",

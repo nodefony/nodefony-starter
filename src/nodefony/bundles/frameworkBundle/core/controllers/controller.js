@@ -321,7 +321,7 @@ nodefony.register("controller", function(){
 							try {
 								res = templ.render(extendParam) ;
 								try {
-									this.notificationsCenter.fire("onView", res, this.context, null , param);
+									this.notificationsCenter.fire("onView", res, this.context, templ.path , param);
 									resolve( res );
 								}catch(e){
 									return reject( e );

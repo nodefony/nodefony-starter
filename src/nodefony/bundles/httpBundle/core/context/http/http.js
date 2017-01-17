@@ -263,7 +263,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 
 		clean (){
-			//console.trace("CLEANNNNNNNNNNNN")
 			this.request.clean();
 			delete 	this.request ;
 			this.response.clean();
