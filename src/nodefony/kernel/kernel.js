@@ -84,6 +84,10 @@ nodefony.register("kernel", function(){
 		});
 	};
 
+
+	var defaultOptions = {
+		nbListener:40
+	};
 	/**
 	 *	KERKEL class   
 	 *	The class is a **`KERNEL NODEFONY`** .
@@ -100,7 +104,7 @@ nodefony.register("kernel", function(){
 
 		constructor (environment, debug, autoLoader, type, options){
 
-			super( "KERNEL" , null, null , options);
+			super( "KERNEL" , null, null , nodefony.extend( {}, defaultOptions,  options) );
 
 			this.rootDir = process.cwd();
 			this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
@@ -122,6 +126,10 @@ nodefony.register("kernel", function(){
 
 			this.options = options ;
 			this.node_start = options.node_start ;
+
+			this.listen(this, "onReady" , (kernel) =>{
+				this.autoLoader.deleteCache();
+			});
 
 			this.boot(options);
 			

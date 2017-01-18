@@ -40,7 +40,6 @@ module.exports = function(){
 			this.setEnv();
 		}
 
-
 		setEnv (environment){
 			this.environment = environment;
 			switch( this.environment ){
@@ -67,7 +66,6 @@ module.exports = function(){
 	 	*
  	 	*/
 		load (file, force){
-
 			if (file in cache &&  force !== true){
 				this.logger( file, "WARNING","AUTOLOADER ALREADY LOADED ADD FORCE TO RELOAD ");
 				return cache[file].runInThisContext({
@@ -108,6 +106,11 @@ module.exports = function(){
 			}
 		}
 
+		deleteCache (){
+			for ( var ele in cache ){
+				delete cache[ele] ;
+			}
+		}
 
 		/*run (file, force){
 			if (file in cache &&  force !== true){

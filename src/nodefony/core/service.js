@@ -9,11 +9,16 @@ nodefony.register("Service", function(){
 		defaultSeverity:"INFO"
 	};
 
+	var defaultOptions = {
+		nbListener:20
+	};
+
 	const Service = class Service {
 	
 		constructor(name, container, notificationsCenter, options ){
 
 			this.name = name ;
+			options = nodefony.extend( {}, defaultOptions, options) ;
 
 			if ( container instanceof nodefony.Container  ){
 				this.container = container ;
@@ -41,7 +46,7 @@ nodefony.register("Service", function(){
 				if ( notificationsCenter ){
 					throw new Error ("Service nodefony notificationsCenter not valid must be instance of nodefony.notificationsCenter.notification");
 				}
-				this.notificationsCenter = nodefony.notificationsCenter.create(options, this);
+				this.notificationsCenter = nodefony.notificationsCenter.create(options, this, options.nbListener);
 				if (! this.container.get("kernel")){
 					this.set("notificationsCenter", this.notificationsCenter);
 				}else{

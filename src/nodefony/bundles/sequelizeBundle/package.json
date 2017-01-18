@@ -9,7 +9,8 @@
 		"javascript"
 	],
 	"dependencies": {
-		"sequelize":"3.28.0"
+		"sequelize":"3.29.0",
+		"uuid":"3.0.1"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"
