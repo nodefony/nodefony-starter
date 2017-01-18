@@ -205,6 +205,28 @@ describe("BUNDLE DEMO", function(){
 			request.write(post_data);
 			request.end();
 		});
+		it("renderObject", function(done){
+			global.options.path ='/test/unit/twig/render';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderOject",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				assert.equal(res.statusCode, 200);
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					assert.deepStrictEqual(chunk, '"<h1>NODEFONY REQUEST :renderOject </h1>"\n\n');
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
 	});
 
 
@@ -221,8 +243,19 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-
-		var resultJson = function(type){
+		var resultJson = function(type, message){
+			if ( message ){
+				return {
+					response : {
+ 			       			code: 200,
+						reason: { 
+							type: type, 
+							message: message 
+						},
+						data: { type: type } 
+					}
+				}	
+			}
 			return {
 				response : {
  			       		code: 200,
@@ -409,7 +442,34 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});*/
 
+		it("renderToOject", function(done){
+			global.options.path ='/test/unit/twig/extend';     
+			global.options.method ='POST';   
+			var data = {
+				type:"renderToOject",
+			};
+			var post_data = querystring.stringify(data);
+			global.options.headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(post_data)
+			};
+			var request = http.request(global.options,function(res) {
+				//assert.equal(res.statusCode, 200);
+				res.setEncoding('utf8');
+				res.on('data',  (chunk) => {
+					var ret = JSON.parse(chunk);
+					assert.deepStrictEqual(ret, resultJson("renderOject", "<h1>NODEFONY REQUEST :renderOject </h1>"));
+					done(); 
+				});
+			})
+			request.write(post_data);
+			request.end();
+		});
 	});
+
+	describe('TWIG WEBSOCKET', function(){
+
+	})
 
 });
 

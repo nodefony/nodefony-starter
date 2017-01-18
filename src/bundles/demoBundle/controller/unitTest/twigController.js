@@ -21,6 +21,7 @@ nodefony.registerController("twig", function(){
 		renderAction (){
 			var response = this.getResponse();
 			var status = response.getStatus();
+			console.log(this.query.type)
 			switch (this.query.type ){
 				case "render" : 
 					return this.render("demoBundle:unitTest:rest.json.twig", {
@@ -101,6 +102,8 @@ nodefony.registerController("twig", function(){
 						this.renderJsonAsync(str)
 					}, 2000);
 				break;
+				case "renderOject" :
+					return this.query ; 
 				default :
 					this.context.response.setTimeout(1000);
 			}	
@@ -171,10 +174,22 @@ nodefony.registerController("twig", function(){
 						message:"",
 						data:JSON.stringify(this.query)
 					});
+				case "renderToOject":
+					this.query.type = "renderOject"
+					return this.render("demoBundle:unitTest:render.json.twig", {
+						code:status.code,
+						type:this.query.type,
+						message:"",
+						data:JSON.stringify(this.query)
+					});
 				default :
 					throw new Error("extend twig not exist");
 			}
 		}
+
+		websocketAction (){
+		}
+
 	};
 	
 	return twigController;

@@ -65,6 +65,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.url =  url.format( this.request.url ) ; 
 			this.port = this.request.url.port ; 
 			this.domain = this.request.url.hostname ; 
+			this.router = this.get("router");
 			
 			try{
 				this.originUrl = url.parse( request.origin ); 
@@ -206,7 +207,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		extendTwig ( param ){
-		
 			return nodefony.extend( {}, param, {
 				nodefony:{
 					url:this.request.url
@@ -225,17 +225,15 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 		controller (pattern, data){
 			try {
-				var router = this.get("router");
-				var resolver = router.resolveName(this.container, pattern) ;
-
-				var control = new resolver.controller( this.container, resolver.context );
+				this.resolver = this.router.resolveName(this.container, pattern) ;
+				var control = new this.resolver.controller( this.container, this.resolver.context );
 				if ( data ){
 					Array.prototype.shift.call( arguments );
 					for ( var i = 0 ; i< arguments.length ; i++){
-						resolver.variables.push(arguments[i]);	
+						this.resolver.variables.push(arguments[i]);	
 					}
 				}
-				return resolver.action.apply(control, resolver.variables);
+				return this.resolver.action.apply(control, this.resolver.variables);
 			}catch(e){
 				this.logger(e, "ERROR");
 				//throw e.error
@@ -251,8 +249,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				case response instanceof BlueBird :
 					return this.response.body ;
 				case nodefony.typeOf(response) === "object":
-					console.log("FIXME")
-					return nodefony.extend(true , this, response);
+					this.resolver.returnController(response);
+					return this.response.body ;
 				default:
 					if ( ! response){
 						throw new Error ("Nodefony can't resolve async call in twig template ")
@@ -266,7 +264,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.response.body = message ;
 			try {
 				if ( ! this.resolver ){
-					this.resolver = this.get("router").resolve(this.container,  this);
+					this.resolver = this.router.resolve(this.container,  this);
 				}else{
 					try {
 						this.resolver.match(this.resolver.route,  this)	;
@@ -292,7 +290,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			this.translation.handle( this );
 			try {
 				if ( ! this.resolver ){
-					this.resolver  = this.get("router").resolve(this.container,  this);
+					this.resolver  = this.router.resolve(this.container,  this);
 				}else{
 					try {
 						this.resolver.match(this.resolver.route,  this)	;

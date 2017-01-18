@@ -43,6 +43,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}
 			this.kernelHttp = this.container.get("httpKernel");
 			this.domain =  this.getHostName();  
+			this.router = this.get("router");
 		  	
 			this.url =url.format(this.request.url);
 			if ( this.request.url.port ){
@@ -156,7 +157,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 		}
 
 		extendTwig ( param ){
-		
 			return nodefony.extend( {}, param, {
 				nodefony:{
 					url:this.request.url
@@ -175,17 +175,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		controller (pattern, data){
 			try {
-				var router = this.get("router");
-				var resolver = router.resolveName(this.container, pattern) ;
+				this.resolver = this.router.resolveName(this.container, pattern) ;
 
-				var control = new resolver.controller( this.container, resolver.context );
+				var control = new this.resolver.controller( this.container, this.resolver.context );
 				if ( data ){
 					Array.prototype.shift.call( arguments );
 					for ( var i = 0 ; i< arguments.length ; i++){
-						resolver.variables.push(arguments[i]);	
+						this.resolver.variables.push(arguments[i]);	
 					}
 				}
-				return resolver.action.apply(control, resolver.variables);
+				return this.resolver.action.apply(control, this.resolver.variables);
 			}catch(e){
 				this.logger(e, "ERROR");
 				//throw e.error
@@ -201,8 +200,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 				case response instanceof BlueBird :
 					return this.response.body ;
 				case nodefony.typeOf(response) === "object":
-					console.log("FIXME")
-					return nodefony.extend(true , this, response);
+					this.resolver.returnController(response);
+					return this.response.body ;
 				default:
 					if ( ! response){
 						throw new Error ("Nodefony can't resolve async call in twig template ")
@@ -232,7 +231,7 @@ nodefony.register.call(nodefony.context, "http", function(){
  		 	*/
 			try {
 				if (!  this.resolver ){
-					this.resolver = this.get("router").resolve(this.container,  this);
+					this.resolver = this.router.resolve(this.container,  this);
 				}
 				//WARNING EVENT KERNEL
 				this.kernel.fire("onRequest", this, this.resolver);	
