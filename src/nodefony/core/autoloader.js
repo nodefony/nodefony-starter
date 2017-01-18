@@ -82,7 +82,7 @@ module.exports = function(){
 							filename:file,
 							displayErrors:true,
 							timeout:10000,
-							produceCachedData:true,
+							produceCachedData:false
 						});
 					}else{
 						txt = fs.readFileSync(file, {encoding: 'utf8'});
@@ -95,6 +95,7 @@ module.exports = function(){
 					}
 					return cache[file].runInThisContext({
 						filename:file,
+					        timeout:10000,
 						displayErrors:true
 					});
 				}catch(e){

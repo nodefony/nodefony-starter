@@ -9,6 +9,9 @@ VERSION := $(shell expr $(VERSION) )
 all:  install 
 
 install:
+
+	make npm ;
+
 	@echo "";
 	@echo "#########################################" ;
 	@echo "#      NODEFONY INSTALL BUNDLES         #" ;

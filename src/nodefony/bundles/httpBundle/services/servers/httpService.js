@@ -28,6 +28,9 @@ nodefony.registerService("http", function(){
 				this.bundle.listen(this, "onServersReady", function(type){
 					if ( type === this.type){
 						dns.lookup(this.domain, (err, addresses, family) => {
+							if ( err ){
+								throw err ;
+							}
 							this.address = addresses ;
 							this.family = family ;
 						});
@@ -127,7 +130,6 @@ nodefony.registerService("http", function(){
 						this.logger( new Error(httpError) ,"CRITIC", "SERVICE HTTPS");	
 				}	
 			});
-
 
 			this.listen(this, "onTerminate",() => {
 				if (this.server){

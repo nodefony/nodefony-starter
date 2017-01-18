@@ -131,8 +131,10 @@ nodefony.register("Bundle", function(){
 			// Register Entity 
 			this.registerEntities();
 			
-			// Register Entity 
-			this.registerFixtures();
+			// Register Fixtures 
+			if ( this.kernel.type === "CONSOLE" ){
+				this.registerFixtures();
+			}
 
 			if ( this.waitBundleReady === false ){
 				this.fire("onReady",this);

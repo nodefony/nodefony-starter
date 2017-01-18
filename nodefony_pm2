@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-var pm2 = require('pm2');
-var cluster = require('cluster');	
-var AsciiTable = require('ascii-table');
+const pm2 = require('pm2');
+//var cluster = require('cluster');	
+const AsciiTable = require('ascii-table');
 
 
 var instances =  require('os').cpus().length ;

@@ -86,7 +86,7 @@ nodefony.register("kernel", function(){
 
 
 	var defaultOptions = {
-		nbListener:40
+		nbListener:30
 	};
 	/**
 	 *	KERKEL class   
@@ -105,7 +105,6 @@ nodefony.register("kernel", function(){
 		constructor (environment, debug, autoLoader, type, options){
 
 			super( "KERNEL" , null, null , nodefony.extend( {}, defaultOptions,  options) );
-
 			this.rootDir = process.cwd();
 			this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
 			this.appPath = this.rootDir+"/app/";
@@ -127,7 +126,7 @@ nodefony.register("kernel", function(){
 			this.options = options ;
 			this.node_start = options.node_start ;
 
-			this.listen(this, "onReady" , (kernel) =>{
+			this.listen(this, "onReady" , () =>{
 				this.autoLoader.deleteCache();
 			});
 
@@ -157,6 +156,24 @@ nodefony.register("kernel", function(){
 				this.logger("SIGQUIT", "CRITIC");
 				this.fire("onSignal", "SIGQUIT", this);
 				this.terminate(0);
+			});
+
+			/**
+		 	*	@promise
+		 	*
+		 	*	
+		 	*/
+			const unhandledRejections = new Map();
+			process.on('rejectionHandled', (promise) => {
+				this.logger("PROMISE REJECTION EVENT ", "CRITIC");
+				unhandledRejections.delete(promise);
+			});
+			process.on('unhandledRejection', (reason, promise) => {
+				this.logger("WARNING  !!! PROMISE CHAIN BREAKING : "+ reason, "CRITIC");
+				unhandledRejections.set(promise, reason);
+			});
+			process.on('uncaughtException', (err) => {
+				this.logger(err, "CRITIC");
 			});
 		}
 				
@@ -238,7 +255,6 @@ nodefony.register("kernel", function(){
 			}, false);
 		}
 
-		// FIXME CLUSTER MODE
 		initCluster (){
 			this.processId = process.pid ;
 			this.process = process ;
@@ -268,14 +284,10 @@ nodefony.register("kernel", function(){
 	 	*	@method initializeLog
          	*/
 		initializeLog (options){
-			//var syslog =  new nodefony.syslog(settingsSyslog);
 			
 			if ( this.settings.system.log.console ||  this.environment === "dev"){
-			
 				logConsole.call(this, this.syslog);
-
 			}else{
-				//FIXME do service with nodefony.log
 				// PM2
 				if ( this.settings.system.log.active && options.node_start === "PM2" ){
 					logConsole.call(this, this.syslog);
@@ -320,7 +332,6 @@ nodefony.register("kernel", function(){
 					});
 				}
 			}
-			//return syslog;
 		}
 
 		/**
@@ -328,7 +339,6 @@ nodefony.register("kernel", function(){
          	*/
 		initializeContainer (){
 			this.container.set("kernel", this);	
-			//this.container.set("container", this.container);	
 		}
 
 		/**
@@ -398,9 +408,7 @@ nodefony.register("kernel", function(){
 				if (Class) {
 					if (typeof Class === "function" ){
 						Class.prototype.path = file.dirName;
-						//Class.prototype.name = name;
 						Class.prototype.autoLoader = this.autoLoader;
-						//Class.prototype.container = this.container;
 						this.bundles[name] = new Class( name, this, this.container);
 						if ( this.bundles[name].waitBundleReady ){
 							this.eventReadywait += 1 ;

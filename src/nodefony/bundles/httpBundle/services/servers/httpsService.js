@@ -44,6 +44,9 @@ nodefony.registerService("https", function(){
 				this.bundle.listen(this, "onServersReady", function(type){
 					if ( type === this.type){
 						dns.lookup(this.domain,(err, addresses, family) => {
+							if ( err ){
+								throw err ;
+							}
 							this.address = addresses ;
 							this.family = family ;
 						});
