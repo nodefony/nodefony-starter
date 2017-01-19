@@ -91,6 +91,10 @@ nodefony.register("wsResponse",function(){
 			
 		}
 
+		getStatus (){
+			return this.connection.connected ;
+		}
+
 		setCookies (){
 			for (var cook in this.cookies){
 				this.setCookie(this.cookies[cook]);	

@@ -270,6 +270,12 @@ twig-extend:
   requirements:
     method:     GET ,POST
 
+twig-websocket:
+  pattern:      /test/unit/twig/websocket
+  defaults:     {"controller": "demoBundle:twig:websocket"}
+  requirements:
+    method:     GET ,POST ,WEBSOCKET
+
 session:
   pattern:      /test/unit/session/{type}
   defaults:     {"controller": "demoBundle:session:session" , "type":"callback"}

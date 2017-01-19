@@ -21,7 +21,6 @@ nodefony.registerController("twig", function(){
 		renderAction (){
 			var response = this.getResponse();
 			var status = response.getStatus();
-			console.log(this.query.type)
 			switch (this.query.type ){
 				case "render" : 
 					return this.render("demoBundle:unitTest:rest.json.twig", {
@@ -187,9 +186,55 @@ nodefony.registerController("twig", function(){
 			}
 		}
 
-		websocketAction (){
+		websocketAction (message){
+			if ( this.getMethod() === 'WEBSOCKET'){
+				var obj = function(state, message, connection){
+					return {
+						type:state,
+						message:message,
+						connection:connection
+					};
+				};
+				if (! message){
+					var result = obj("START", "CONNECTED",this.context.connection.connected) ;
+					return this.renderResponse(  JSON.stringify (result) );
+				}else{
+					if (message.utf8Data){
+						var res = JSON.parse( message.utf8Data) ;
+					}else{
+						if (typeof message === "string"){
+							var res = JSON.parse(message);	
+						}else{
+							var res = message ;
+						}
+					}
+					switch (res.type){
+						case "START":
+							var result = obj("TWIG-RENDER", null,this.context.connection.connected) ;
+							return this.renderJson(result) ;
+						break;	
+						case "TWIG-RENDER":
+							return this.render("demoBundle:unitTest:websocket.json.twig", {
+								code:this.context.connection.connected,
+								type:"TWIG-RENDER",
+								message:null,
+								data:"null"
+							}).then((result) => {
+								var ret = JSON.parse(result);
+								ret.type = 'STOP' ;
+								return  JSON.stringify(ret) ;
+							});
+						break;
+						case "RENDER":
+							return this.renderJson({type:"RENDER"});
+						case "STOP":
+							return this.context.connection.close()
+						break;
+					}
+				}	
+			}
+			throw new Error("HTTP context not defined WEBSOCKET  ");
 		}
-
 	};
 	
 	return twigController;

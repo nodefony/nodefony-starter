@@ -1,4 +1,4 @@
-#!/usr/bin/env node --throw-deprecation --trace-deprecation
+#!/usr/bin/env node 
 //--debug
 
 //var profiler = require('v8-profiler');
@@ -13,7 +13,7 @@
  *
  */
 // AUTOLOADER
-var autoloader = require("./vendors/nodefony/core/autoloader");
+const autoloader = require("./vendors/nodefony/core/autoloader");
 autoloader.setEnv("dev");
 autoloader.load("./app/appKernel.js");
 

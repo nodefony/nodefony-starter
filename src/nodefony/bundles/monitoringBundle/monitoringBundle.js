@@ -455,7 +455,7 @@ nodefony.registerBundle ("monitoring", function(){
 							context.profiling.response = {
 								statusCode:response.statusCode,
 								message:response.response.statusMessage,
-								size:response.body.length ,
+								size:response.body ? response.body.length : null ,
 								encoding:response.encoding,
 								"content-type":response.response.getHeader('content-type'),
 								headers:response.response._headers	

@@ -200,8 +200,16 @@ nodefony.register.call(nodefony.context, "http", function(){
 				case response instanceof BlueBird :
 					return this.response.body ;
 				case nodefony.typeOf(response) === "object":
-					this.resolver.returnController(response);
-					return this.response.body ;
+					if ( this.resolver.defaultView ){
+						 return this.render( this.resolver.get("controller").render(this.resolver.defaultView, response ) );
+					}else{
+						throw {
+							status:500,
+							message:"default view not exist"
+						};
+					}
+					//this.resolver.returnController(response);
+					//return this.response.body ;
 				default:
 					if ( ! response){
 						throw new Error ("Nodefony can't resolve async call in twig template ")

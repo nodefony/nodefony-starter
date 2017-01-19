@@ -440,7 +440,7 @@ nodefony.registerService("httpKernel", function(){
 				}
 			});
 			
-			context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
+			//context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
 
 			// DOMAIN VALID 
 			var next = this.checkValidDomain(context) ;

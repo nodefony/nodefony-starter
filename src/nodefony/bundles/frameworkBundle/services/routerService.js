@@ -262,8 +262,18 @@ nodefony.registerService("router", function(){
 					}
 					this.context.promise = result ;
 					return this.context.promise.then( (myResult) => {
+						switch (true){
+							case myResult instanceof nodefony.Response :
+							case myResult instanceof nodefony.wsResponse :
+							case myResult instanceof Promise :
+							case myResult instanceof BlueBird :
+							break;
+							default:
+								if ( myResult ){
+									this.context.response.body = myResult;
+								}	
+						}
 						try {
-							//return this.returnController(myResult);	
 							this.notificationsCenter.fire("onResponse", this.context.response, this.context);
 						}catch(e){
 							if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){

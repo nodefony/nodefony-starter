@@ -1,8 +1,8 @@
 #!/usr/bin/env node  
-var asciify = require('asciify');
+const asciify = require('asciify');
 
 //  AUTOLOAD LIBRARY nodefony NODE
-var autoloader = require("./vendors/nodefony/core/autoloader");
+const autoloader = require("./vendors/nodefony/core/autoloader");
 autoloader.load("./app/appKernel.js");
 autoloader.load("./vendors/nodefony/console/console.js");
 

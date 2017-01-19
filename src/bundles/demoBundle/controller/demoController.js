@@ -661,8 +661,9 @@ nodefony.registerController("demo", function(){
 						var i = 0 ;
 						var id = setInterval(() => {
 							var mess = "I am a  message "+ i +"\n" ;
-							context.send(mess);
 							this.logger( "SEND TO CLIENT :" + mess , "INFO");
+							//context.send(mess);
+							this.renderResponse(mess);
 							i++;
 						}, 1000);
 

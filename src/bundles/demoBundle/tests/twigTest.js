@@ -25,7 +25,8 @@ describe("BUNDLE DEMO", function(){
 		global.options = {
 			hostname: kernel.settings.system.domain,
 			port: kernel.settings.system.httpPort,
-			method: 'GET'
+			method: 'GET',
+			urlws:'ws://'+kernel.settings.system.domain+':'+kernel.settings.system.httpPort
 		};
 	})
 
@@ -419,28 +420,28 @@ describe("BUNDLE DEMO", function(){
 			request.end();
 		});
 
-		/*it("renderSyncToAsync", function(done){
-			global.options.path ='/test/unit/twig/extend';     
-			global.options.method ='POST';   
-			var data = {
-				type:"renderSyncToAsync",
-			};
-			var post_data = querystring.stringify(data);
-			global.options.headers = {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'Content-Length': Buffer.byteLength(post_data)
-			};
-			var request = http.request(global.options,function(res) {
-				assert.equal(res.statusCode, 200);
-				res.setEncoding('utf8');
-				res.on('data',  (chunk) => {
-					assert.throws( ()=>{ JSON.parse(chunk)} )
-					done(); 
-				});
-			})
-			request.write(post_data);
-			request.end();
-		});*/
+//		it("renderSyncToAsync", function(done){
+//			global.options.path ='/test/unit/twig/extend';     
+//			global.options.method ='POST';   
+//			var data = {
+//				type:"renderSyncToAsync",
+//			};
+//			var post_data = querystring.stringify(data);
+//			global.options.headers = {
+//				'Content-Type': 'application/x-www-form-urlencoded',
+//				'Content-Length': Buffer.byteLength(post_data)
+//			};
+//			var request = http.request(global.options,function(res) {
+//				assert.equal(res.statusCode, 200);
+//				res.setEncoding('utf8');
+//				res.on('data',  (chunk) => {
+//					assert.throws( ()=>{ JSON.parse(chunk)} )
+//					done(); 
+//				});
+//			})
+//			request.write(post_data);
+//			request.end();
+//		});
 
 		it("renderToOject", function(done){
 			global.options.path ='/test/unit/twig/extend';     
@@ -457,7 +458,9 @@ describe("BUNDLE DEMO", function(){
 				//assert.equal(res.statusCode, 200);
 				res.setEncoding('utf8');
 				res.on('data',  (chunk) => {
+					//console.log(chunk)
 					var ret = JSON.parse(chunk);
+					//console.log(ret)
 					assert.deepStrictEqual(ret, resultJson("renderOject", "<h1>NODEFONY REQUEST :renderOject </h1>"));
 					done(); 
 				});
@@ -468,6 +471,45 @@ describe("BUNDLE DEMO", function(){
 	});
 
 	describe('TWIG WEBSOCKET', function(){
+
+		it("WEBSOCKET", function(done){
+			var url =  global.options.urlws ;	
+			var options = nodefony.extend({}, global.options, {
+				url:url+"/test/unit/twig/websocket"	
+			});
+			var client = new WebSocketClient();
+			client.connect(options.url, null, "nodefony", null, {});
+			client.on('connect', function(connection) { 
+				assert(connection.connected);
+				connection.on("message", (message) => {
+					var res = JSON.parse(message.utf8Data) ;
+					switch ( res.type ){
+						case "START" :
+							assert.deepStrictEqual(res.message, "CONNECTED");	
+							connection.sendUTF( JSON.stringify({
+								type:"TWIG-RENDER"	
+							}) );
+						break;
+						case "TWIG-RENDER" :
+							connection.sendUTF( JSON.stringify({
+								type:"STOP"
+							}) );
+						break;
+						case "STOP" :
+							assert.deepStrictEqual(res.response.reason.message.type, "RENDER");	
+							connection.close();
+						break;
+					}
+				})
+				connection.on('close', (reasonCode, description) =>  {
+					done();
+				});
+			});
+			client.on('connectFailed', function() {
+				throw new Error( "websoket client error")
+			});
+		});
+
 
 	})
 

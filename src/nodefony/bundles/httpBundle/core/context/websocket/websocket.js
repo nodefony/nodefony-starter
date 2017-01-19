@@ -10,7 +10,12 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 
 	var onClose = function(reasonCode, description){
-		this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
+		if ( ! this.request ){
+			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " " +reasonCode +" " + description , "INFO");
+		
+		}else{
+			this.logger( new Date() + ' Connection Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +reasonCode +" " + description , "INFO");
+		}
 		if (this.connection.state !== "closed"){
 			try {
 				this.connection.close();
@@ -249,16 +254,18 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				case response instanceof BlueBird :
 					return this.response.body ;
 				case nodefony.typeOf(response) === "object":
-					this.resolver.returnController(response);
-					return this.response.body ;
-				default:
-					if ( ! response){
-						throw new Error ("Nodefony can't resolve async call in twig template ")
+					if ( this.resolver.defaultView ){
+						 return this.render( this.resolver.get("controller").render(this.resolver.defaultView, response ) );
+					}else{
+						throw {
+							status:500,
+							message:"default view not exist"
+						};
 					}
-					return response ;
+				default:
+					return this.response.body ;
 			}
 		}
-
 
 		handleMessage (message){
 			this.response.body = message ;
