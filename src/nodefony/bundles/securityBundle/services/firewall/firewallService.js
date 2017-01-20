@@ -234,9 +234,9 @@ nodefony.registerService("firewall", function(){
 							return this.handleError(context, error) ;
 						}
 						this.token = token ;
-						if ( ! context.session.strategyNone ){	
-							context.session.migrate(true);
-						}
+						//if ( ! context.session.strategyNone ){	
+							context.session.migrate();
+						//}
 						var userFull = context.user.dataValues ;
 						delete userFull.password ;
 						
@@ -262,8 +262,8 @@ nodefony.registerService("firewall", function(){
 							});
 							return context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
 						}else{
-							this.redirect(context, target);
-							return context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
+							return this.redirect(context, target);
+							//return context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
 						}
 						
 					});	
