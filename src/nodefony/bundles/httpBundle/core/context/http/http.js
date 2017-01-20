@@ -208,8 +208,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 							message:"default view not exist"
 						};
 					}
-					//this.resolver.returnController(response);
-					//return this.response.body ;
 				default:
 					if ( ! response){
 						throw new Error ("Nodefony can't resolve async Call in Twig Template ");
@@ -293,17 +291,10 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return this.user || null ; 	
 		}
 
-		send (response, context){
-			//console.trace("SEND")
-			if ( response.response && response.response.headersSent ){
-				return this.close();
-			}
-			switch (true){
-				case response instanceof  http.ServerResponse :
-					this.response = response;
-				break ;
-				//case response instanceof nodefony.Response :
-				//break ;
+		send (/*response, context*/){
+			
+			if ( this.sended ){
+				return ;
 			}
 			this.sended = true ;
 			// cookies
@@ -313,13 +304,13 @@ nodefony.register.call(nodefony.context, "http", function(){
  			*/
 			this.response.writeHead();
 
-			this.fire("onSend", response, context);
+			this.fire("onSend", this.response, this);
 			if ( this.session ){
 				this.listen(this, "onSaveSession" , ( session ) => {
 					//console.log("FIRE onSaveSession")
-					if (  ! context.storage ){
-						if ( context.profiling ){
-							this.fire("onSendMonitoring", response, context);	
+					if (  ! this.storage ){
+						if ( this.profiling ){
+							this.fire("onSendMonitoring", this.response, this);	
 						}
 						/*
  	 					* WRITE RESPONSE
@@ -328,16 +319,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 						// END REQUEST
 						return this.close();
 					}
-					this.fire("onSendMonitoring", response, context);
+					this.fire("onSendMonitoring", this.response, this);
 				});
-				//this.fire("onSend", response, context);
 				return ;
 			}
 
-			//this.fire("onSend", response, context);
-			if (  ! context.storage ){
-				if ( context.profiling ){
-					this.fire("onSendMonitoring", response, context);	
+			if (  ! this.storage ){
+				if ( this.profiling ){
+					this.fire("onSendMonitoring", this.response, this);	
 				}
 				/*
  	 			* WRITE RESPONSE
@@ -346,7 +335,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				// END REQUEST
 				return this.close();
 			}
-			this.fire("onSendMonitoring", response, context);
+			this.fire("onSendMonitoring", this.response, this);
 		}
 
 		flush (data, encoding){
@@ -358,13 +347,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.fire("onClose", this);
 			// END REQUEST
 			this.response.end();
-			/*if ( this.session ){
-				this.listen(this, "onSaveSession" , ( session ) => {
-					this.response.end();
-				});
-			}else{
-				return this.response.end();
-			}*/
 		}
 	
 		logger (pci, severity, msgid,  msg){
