@@ -441,8 +441,8 @@ nodefony.registerService("sessions", function(){
 						return this ;
 					}
 				}).catch( (error) => {
-					console.trace(err);
-					this.logger( err ,"ERROR" );
+					console.trace(error);
+					this.logger( error ,"ERROR" );
 					this.saved = false ;
 					return error ;
 				})

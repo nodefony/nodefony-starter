@@ -212,7 +212,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 					//return this.response.body ;
 				default:
 					if ( ! response){
-						throw new Error ("Nodefony can't resolve async call in twig template ")
+						throw new Error ("Nodefony can't resolve async Call in Twig Template ");
 					}
 					return response ;
 			}

@@ -104,86 +104,6 @@ nodefony.register("controller", function(){
 			return this.container.get(defaultOrm);
 		}
 
-		renderRawView (path, param ){
-			var res = null;
-			//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
-			var extendParam = this.context.extendTwig(param);
-			try{ 
-				this.serviceTemplating.renderFile(path, extendParam, (error, result) => {
-					if (error || result === undefined){
-						if ( ! error ){
-							error = new Error("ERROR PARSING TEMPLATE :" + path.path);
-						}
-						throw error ;
-					}else{
-						try {
-							this.notificationsCenter.fire("onView", result, this.context, path , param);
-							res = result;
-						}catch(e){
-							throw e ;
-						}
-					}
- 				});
-			}catch(e){
-				throw e ;
-			}
-			return res;
-		}
-
-		renderView (view, param ){
-
-			var res = null;
-			var templ = null ;
-			var View = null ;
-			//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
-			var extendParam = this.context.extendTwig(param);
-
-			if ( this.serviceTemplating.cache ){
-				try {
-					templ = this.httpKernel.getTemplate(view);
-				}catch(e){
-					throw e ;
-				}
-				try {
-					res = templ.render(extendParam) ;
-					try {
-						this.notificationsCenter.fire("onView", res, this.context, null , param);
-					}catch(e){
-						throw e ;
-					}
-				}catch(e){
-					throw e ;
-				}
-				return res ;
-			}
-
-			try {
-				View = this.httpKernel.getView(view);
-			}catch(e){
-				throw e ;
-			}
-			try{ 
-				this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
-					if (error || result === undefined){
-						if ( ! error ){
-							error = new Error("ERROR PARSING TEMPLATE :" + view);
-						}
-						throw error ;
-					}else{
-						try {
-							this.notificationsCenter.fire("onView", result, this.context, View , param);
-							res = result;
-						}catch(e){
-							throw e ;
-						}
-					}
- 				});
-			}catch(e){
-				throw e ;
-			}
-			return res;
-		}
-
 		renderResponse (data, status , headers ){
 			var res = this.getResponse(data);
 			if (! res ){
@@ -207,14 +127,16 @@ nodefony.register("controller", function(){
 		}
 
 		renderJsonAsync (obj , status , headers){
-			try {
-				var response = this.renderJsonSync(obj , status , headers);
-			}catch(e){
-				throw e ;
-			}
-			if ( response ){
-				this.notificationsCenter.fire("onResponse", response,  this.context );
-			}
+			return this.renderJson(obj , status , headers).then( (result) => {
+				this.notificationsCenter.fire("onResponse", this.context.response,  this.context );
+				return result ;
+			}).catch((e)=>{
+				if (this.context.response.response.headersSent || this.context.timeoutExpired ){
+					return ;
+				}
+				this.context.promise = null ;
+				this.context.notificationsCenter.fire("onError", this.context.container, e);
+			});
 		}
 
 		renderJsonSync ( obj , status , headers){
@@ -238,13 +160,55 @@ nodefony.register("controller", function(){
 			return response ;
 		}
 
-		renderAsync (view, param){
-			var response = this.renderSync(view, param);
-			if ( response ){
-				this.notificationsCenter.fire("onResponse", response,  this.context );
+		render (view, param){
+			if ( ! this.context.response ){
+				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","ERROR");
+				return ;
+			}
+			try {
+				return this.renderViewAsync(view, param);
+				
+			}catch(e){
+			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
 			}
 		}
 
+		// 
+		/*render (view, param){
+			if ( ! this.context.response ){
+				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","ERROR");
+				return ;
+			}
+			try {
+				
+				if ( this.context.promise ){
+					this.context.promise.then( this.renderViewAsync(view, param) );
+				}
+				this.context.promise = this.renderViewAsync(view, param).then( (result) => {
+
+					try {
+						this.notificationsCenter.fire("onResponse", this.context.response, this.context);
+					}catch(e){
+						if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
+							return ;
+						}
+						this.context.notificationsCenter.fire("onError", this.context.container, e);
+					}
+					return result ;
+				
+				} ).catch((e)=>{
+					if (this.context.response.response.headersSent || this.context.timeoutExpired ){
+						return ;
+					}
+					this.context.promise = null ;
+					this.context.notificationsCenter.fire("onError", this.context.container, e);
+				});
+				
+			}catch(e){
+			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			}
+		}*/
+		
 		renderSync (view, param){
 			var response = this.getResponse() ;
 			if (! response ){
@@ -261,50 +225,21 @@ nodefony.register("controller", function(){
 			return response ;
 		}
 
-		// TODO ASYNC METHOD
-		/*render (view, param){
-			var response = this.getResponse() ;
-			var res = null ;
-			if (! response ){
-				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
-				return ;
-			}
-			try {
-				res = this.renderView(view, param);
-				
-			}catch(e){
-			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
-			 	return ;
-			}
-			if (res !== null ){
-				return response ;
-			}
-			return res ;
-		}*/
-
-		
-		render (view, param){
-			if ( ! this.context.response ){
-				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","ERROR");
-			}
-			try {
-				return this.renderViewAsync(view, param);
-				
-			}catch(e){
-			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
-			}
-		}
-		/*
 		renderAsync (view, param){
-		
-			var response = this.render(view, param).then(( result )=>{
-				this.notificationsCenter.fire("onResponse", response,  this.context );
+			return this.render(view, param).then( (result) => {
+				this.notificationsCenter.fire("onResponse", this.context.response,  this.context );
+				return result ;
+			}).catch((e)=>{
+				if (this.context.response.response.headersSent || this.context.timeoutExpired ){
+					return ;
+				}
+				this.context.promise = null ;
+				this.context.notificationsCenter.fire("onError", this.context.container, e);
 			});
-		}*/
+		}
 
 		renderViewAsync (view, param){
 			try {
-				//var extendParam = nodefony.extend( {}, param, this.context.extendTwig);
 				var extendParam = this.context.extendTwig(param);
 
 				if ( this.serviceTemplating.cache ){
@@ -340,7 +275,6 @@ nodefony.register("controller", function(){
 					}
 					try{ 
 						this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
-							//console.log("PASS PROMISE renderFile : "+view)
 							if (error || result === undefined){
 								if ( ! error ){
 									error = new Error("ERROR PARSING TEMPLATE :" + view);
@@ -349,19 +283,94 @@ nodefony.register("controller", function(){
 							}else{
 								try {
 									this.notificationsCenter.fire("onView", result, this.context, View , param);
-									resolve( result );
+									return resolve( result );
 								}catch(e){
 									return reject( error );
 								}
 							}
  						});
 					}catch(e){
-						reject( e );
+						return reject( e );
 					}
 				});
 			}catch(e){
 				throw e ;
 			}
+		}
+
+		renderView (view, param ){
+			var res = null;
+			var templ = null ;
+			var View = null ;
+			var extendParam = this.context.extendTwig(param);
+			if ( this.serviceTemplating.cache ){
+				try {
+					templ = this.httpKernel.getTemplate(view);
+				}catch(e){
+					throw e ;
+				}
+				try {
+					res = templ.render(extendParam) ;
+					try {
+						this.notificationsCenter.fire("onView", res, this.context, null , param);
+					}catch(e){
+						throw e ;
+					}
+				}catch(e){
+					throw e ;
+				}
+				return res ;
+			}
+			try {
+				View = this.httpKernel.getView(view);
+			}catch(e){
+				throw e ;
+			}
+			try{ 
+				this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
+					if (error || result === undefined){
+						if ( ! error ){
+							error = new Error("ERROR PARSING TEMPLATE :" + view);
+						}
+						throw error ;
+					}else{
+						try {
+							this.notificationsCenter.fire("onView", result, this.context, View , param);
+							res = result;
+						}catch(e){
+							throw e ;
+						}
+					}
+ 				});
+			}catch(e){
+				throw e ;
+			}
+			return res;
+		}
+
+		renderRawView (path, param ){
+			var res = null;
+			var extendParam = this.context.extendTwig(param);
+			try{ 
+				this.serviceTemplating.renderFile(path, extendParam, (error, result) => {
+					if (error || result === undefined){
+						if ( ! error ){
+							error = new Error("ERROR PARSING TEMPLATE :" + path.path);
+						}
+						throw error ;
+					}else{
+						try {
+							this.notificationsCenter.fire("onView", result, this.context, path , param);
+							res = result;
+						}catch(e){
+							throw e ;
+						}
+					}
+ 				});
+			}catch(e){
+				throw e ;
+			}
+			return res;
 		}
 
 		renderFileDownload (file, options, headers){
@@ -387,7 +396,6 @@ nodefony.register("controller", function(){
 				'Content-Description': 'File Transfer',
 				'Content-Type': File.mimeType
 			}, headers || {});
-
 			var response = this.getResponse();
 			//var request = this.getRequest().request;
 			var fileStream = null ;
@@ -410,7 +418,6 @@ nodefony.register("controller", function(){
 					throw e ;
 				}
 			});
-
 			fileStream.on("end",() => {
 				if (fileStream) {
 					try {
@@ -426,11 +433,9 @@ nodefony.register("controller", function(){
         			}
 				response.end();
 			});
-
 			fileStream.on("close", () => {
 				response.end();
 			});
-
 			response.response.on('close', () => {
 				if (fileStream.fd){
 					fileStream.unpipe(response.response);
@@ -438,7 +443,6 @@ nodefony.register("controller", function(){
 				}
 				response.end();
 			});
-			
 			fileStream.on("error", (error) =>{
 				this.logger(error, "ERROR");
 				response.end();
@@ -510,7 +514,6 @@ nodefony.register("controller", function(){
 				this.logger(e, "ERROR");
 				throw e ;
 			}
-			
 			//console.log(head);
 			fileStream.on("open", () =>{
 				try {
@@ -524,7 +527,6 @@ nodefony.register("controller", function(){
 					throw e ;
 				}
 			});
-
 			fileStream.on("end", () => {
 				if (fileStream) {
 					try {
@@ -539,7 +541,6 @@ nodefony.register("controller", function(){
         			}
 				response.end();
 			});
-
 			fileStream.on("close", () => {
 				response.end();
 			});
@@ -552,7 +553,6 @@ nodefony.register("controller", function(){
 				}
 				response.end();
 		 	});
-
 			fileStream.on("error", (error) =>{
 				this.logger(error,"ERROR");
 				response.end();
@@ -560,25 +560,18 @@ nodefony.register("controller", function(){
 		}
 
 		createNotFoundException (message){
-			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:404");
 			this.context.response.setStatusCode(404) ;
 			this.notificationsCenter.fire("onError", this.container, message );
-			/*resolver.callController( {
-				message:message || null 
-			} );*/
+			
 		}  
 
 		createUnauthorizedException (message){
-			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:401");
 			this.context.response.setStatusCode(401) ;
 			this.notificationsCenter.fire("onError", this.container, message );
-			/*resolver.callController( {
-				message:message || null 
-			} );*/
+			
 		}  
 
 		createException (message){
-			//var resolver = this.container.get("router").resolveName(this.container, "frameworkBundle:default:500");
 			this.context.response.setStatusCode(500) ;
 			this.notificationsCenter.fire("onError", this.container, message );
 		} 
