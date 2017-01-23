@@ -136,7 +136,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 			
 			var data = nodefony.extend({}, serialize, {
 				session_id:id,
-				context:contextSession
+				context:contextSession || "default"
 			});
 			return this.entity.findOne({where:{
 				session_id:id,
