@@ -388,20 +388,20 @@ nodefony.registerService("sessions", function(){
 		}
 
 
-		invalidate (lifetime, id, callback){
+		invalidate (lifetime, id){
 			this.manager.logger("INVALIDATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
 			if (! lifetime) {lifetime = this.lifetime ;}
 			this.destroy();
-			return this.create( lifetime, id, callback);
+			return this.create( lifetime, id);
 		}
 
-		migrate (destroy, lifetime, id, callback){
+		migrate (destroy, lifetime, id){
 			this.manager.logger("MIGRATE SESSION ==>"+this.name + " : "+this.id,"DEBUG");
 			if (! lifetime) {lifetime = this.lifetime ;}
 			if (destroy){
 				this.remove();
 			}
-			return this.create( lifetime, id, callback);
+			return this.create( lifetime, id);
 		}
 
 		setId (){
@@ -430,9 +430,9 @@ nodefony.registerService("sessions", function(){
 			return value ;
 		}
 
-		save (user, callback){
+		save (user, sessionContext){
 			try {
-				return this.storage.write(this.id, this.serialize(user) ).then( (result) => {
+				return this.storage.write(this.id, this.serialize(user), sessionContext ).then( (result) => {
 					if ( ! this.context ){
 							throw new Error ( "SAVE SESSION ERROR context already deleted " ) ;
 					}else{
@@ -545,7 +545,7 @@ nodefony.registerService("sessions", function(){
 				context.listen(session, "onSend",function(){
 					this.setMetaBag("lastUsed", new Date() );
 					if ( ! this.saved ){
-						this.save(context.user ? context.user.id : null);	
+						this.save(context.user ? context.user.id : null, sessionContext);	
 					}
 				});
 				return session ;
