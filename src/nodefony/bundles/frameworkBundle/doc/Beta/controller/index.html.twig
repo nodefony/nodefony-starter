@@ -7,13 +7,11 @@
 		CONTROLLERS Nodefony  </br> 
 		</strong>
 	</div>
-
 	<p>
 		<center>
 			<img src="/documentationBundle/images/controller.png" />
 		</center>
 	</p>
-
 </div>
 
 <h2 > You can see here :</h2>
@@ -23,31 +21,13 @@
 		<li><a href="#location">Location controllers</a></li>
 		<li><a href="#file">File Controller</a></li>
 		<li><a href="#action">Controller Actions</a></li>
+		<li><a href="#data">Rendering Datas</a></li>
 		<li><a href="#context">Request Context</a></li>
 		<li><a href="#service">Services Container</a></li>
 		<li><a href="#requestResponse">Request and Response</a></li>
-		<li><a href="#data">Rendering Datas</a></li>
 		<li><a href="#logger">Controller Logger</a></li>
-		<li>
-			<a href="#examples">Examples</a>
-			<ul>
-				<li><a href="#rawRender">Simple Render html</a></li>
-				<li><a href="#simpleTemplate">Simple Render Template</a></li>
-				<li><a href="#asyncTemplate">Asynchrone Render Template</a></li>
-				<li><a href="#websocket">Websocket</a></li>
-				<li><a href="#renderJson">Rendering JSON</a></li>
-				<li><a href="#download"> Rendering File Download</a></li>
-				<li><a href="#upload"> File Upload</a></li>
-				<li><a href="#mediaStream">Rendering Media Stream</a></li>
-				<li><a href="#redirect">Redirecting</a></li>
-				<li><a href="#forward">Forwarding</a></li>
-				<li><a href="#generateUrl">Generating URL</a></li>
-			</ul>
-		</li>
 	</ul>
 <p>
-
-
 
 <h2 name="location" id="location">Location controllers  :</h2>
 
@@ -107,13 +87,10 @@ total 32
 
 <h3>Interpreter  :</h3>
 <div class="doc3 ">
-
 <p>
 	The core autoloader nodefony interpret the javascript code in an extended global context.<br>
 	You can find namespace nodefony in the global context .
 </p>
-
-
 </div>
 
 
@@ -122,13 +99,11 @@ total 32
 
 <p>
 	Nodefony core has a method <strong>registerController</strong> which must return class as a  Closure. <br>
-	The returned class is auto extending by  core controller. 	
 </p>
 
 
 	<pre>
 nodefony.<strong>registerController</strong>("name", function(){
-
 		/*
 		 *	closure private space 
 		 */
@@ -142,7 +117,6 @@ nodefony.<strong>registerController</strong>("name", function(){
 		 *	 
 		 */ 
 		var <strong>myController</strong> = class myController extends nodefony.controller {
-
 			/*
 			 *	CONSTRUCTOR
 			 */
@@ -161,10 +135,7 @@ nodefony.<strong>registerController</strong>("name", function(){
 				var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
 				return this.renderResponse(html);
 			};
-
 		};
-
-
 		// RETURN  class
 		return <strong>myController;</strong>
 });
@@ -188,28 +159,185 @@ nodefony.<strong>registerController</strong>("name", function(){
 index<strong>Action</strong> (){
 	...
 };
-	
 	</pre>
 	
+</div>
+
+
+<h2 name="data" id="data">Rendering Datas :</h2>
+<div class="doc2 ">
+	
+	There are 2 differents ways to render datas (or templates)  in the actions of the controllers
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Synchronous rendering</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#renderingS" data-toggle="tab">rendering</a></li>
+  				<li role="presentation" ><a data-target="#examples1" data-toggle="tab">Examples</a></li>
+  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="renderingS" class="tab-pane active">
+					<br>
+					<div class="alert alert-warning" role="alert">
+						For Synchrone data rendering ,  The controller's Action  method <strong> must return a Response Class , Promise Class or  Object </strong>
+					</div>
+					<p>
+						The controller give somme tools to render Synchrone data : 
+						<ul>
+							<li> renderResponse </li>
+							<li> render </li>
+							<li> renderJson </li>
+						</ul>
+					</p>
+						
+				</div>
+				<div id="examples1" class="tab-pane">
+					<br>
+					<pre>
+/*
+ *	RENDER RAW DATA WITH renderResponse
+ */
+indexAction (){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+	var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
+	<strong>return this.renderResponse(html);</strong>
+};
+					</pre>
+
+
+					<pre>
+/*
+ *	RENDER TWIG TEMPLATE with render
+ */
+indexAction (){
+	var kernel = this.get("kernel") ;
+	<strong>return this.render("demoBundle:Default:index.html.twig",{
+		settings:kernel.settings	
+	});</strong>
+	
+};
+					</pre>
+
+					<pre>
+/*
+ *	RENDER TWIG TEMPLATE AUTO with object 
+ */
+indexAction (){
+	var kernel = this.get("kernel") ;
+	<strong>return {
+		settings:kernel.settings	
+	}</strong>
+};
+					</pre>
+	
+				</div>
+				<div id="" class="tab-pane ">
+					<br>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Asynchronous rendering</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#renderingA" data-toggle="tab">rendering</a></li>
+  				<li role="presentation" ><a data-target="#examples2" data-toggle="tab">Examples</a></li>
+  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="renderingA" class="tab-pane active">
+					<br>
+					<p>
+						<div class="alert alert-warning" role="alert">
+							For Asynchrone data rendering ,  The controller's Action  method <strong> must  not return a value </strong>
+						</div>
+						The controller give somme tools to render Asynchrone data : 
+							<ul>
+								<li> renderResponse </li>
+								<li> renderAsync </li>
+								<li> renderJsonAsync </li>
+							</ul>
+						The  framework  wait an event of other entity of framework ( orm database , syscall )
+						
+					</p>
+				</div>
+				<div id="examples2" class="tab-pane">
+					<br>
+					
+					<pre>
+/*
+ *	RENDER RAW DATA
+ */
+rawResponseAsyncAction(){
+	var kernel = this.get("kernel") ;
+	var settings = kernel.settings ;
+
+	// SYSCALL async 
+	var childHost =  <strong>exec</strong>('hostname', (error, stdout, stderr) => {
+		var hostname = stdout ;	
+
+		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
+			'&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
+			'&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;'&lt;/server&gt;\
+			'&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;'&lt;/server&gt;\
+			'&lt;hostname&gt;'+hostname+'</hostname>\
+			'&lt;/kernel&gt;\
+			'&lt;/nodefony&gt;'&lt;/xml&gt;';
+
+		<strong>this.renderResponse</strong>(content, 200 , {
+			"content-type" :"Application/xml"
+		})
+	});
+
+	<strong>return null;</strong>
+};
+
+					</pre>
+	
+				</div>
+				<div id="" class="tab-pane ">
+					<br>
+					
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 <h2 name="context" id="context">Request Context  :</h2>
 <div class="doc2 ">
 
-<p>
-	In controller the actions can have  two execution contexts. <br>
-	When a request comes,  the nodefony core instantiates a request context ( http or websocket )
-	 
-</p>
-<pre>
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Nodefony Context</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#context1" data-toggle="tab">CONTEXT</a></li>
+  				<li role="presentation" ><a data-target="#http" data-toggle="tab">HTTP</a></li>
+  				<li role="presentation" ><a data-target="#websoket" data-toggle="tab">WEBSOCKET</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="context1" class="tab-pane active">
+					<br>
+					<p>
+					In controller the actions can have  two execution contexts. <br>
+					When a request comes,  the nodefony core instantiates a  context Class ( http or websocket )	
+					</p>
+					<pre>
 /*
- *	 Detect  request context
- *
- */
+*	 Detect  request type in action
+*
+*/
 indexAction (){
 
-	// two methods to detect the request context
+	// two methods to detect the  request type by context or by method 
 
 	// FIRST with getContext
 	<strong>var context = this.getContext();</strong>
@@ -227,7 +355,7 @@ indexAction (){
 			// WEBSOCKET CONTEXT
 		break;
 		default :
-			throw new Error(" METHOD NOT ALLOWED")
+			throw new Error(" Bad Context")
 	}
 
 	// SECOND with getMethod 
@@ -246,159 +374,173 @@ indexAction (){
 			// WEBSOCKET CONTEXT
 		break;
 		default :
-			throw new Error(" Bad Context")
+			throw new Error(" METHOD NOT ALLOWED")
 	}
 };
+					</pre>	
+				</div>
 
-</pre>
-</div>
+				<div id="http" class="tab-pane">
+					<br>
+					<p>
+					<h3>  CONTEXT  <a>HTTP / HTTPS   :</a></h3>
 
-
-
-<h3>  CONTEXT  <a>HTTP / HTTPS   :</a></h3>
-<div class="doc3 ">
-
-	<p>
- 	
-	</p>
-
-	<pre>
+					</p>
+					<pre>
 //  DUMP HTTPS CONTEXT
 
 var context = this.getContext();
 console.log(context);
 
 <strong>Http {</strong>
-  type: 'HTTPS',
-  container: [Object],
-  notificationsCenter: [Object],
-  resolver: [Object],
-  request: [Object],
-  response: [Object],
-  session: [Object],
-  sessionService: [Object],
-  sessionAutoStart: 'firewall',
-  cookies: [Object],
-  isAjax: false,
-  secureArea: null,
-  showDebugBar: true,
-  kernel: [Object],
-  autoloadCache: [Object],
-  kernelHttp: [Object],
-  domain: 'nodefony.com',
-  validDomain: true,
-  security: [Object],
-  user: [Object],
-  url: 'https://nodefony.com:5152/demo/json',
-  remoteAddress: '192.168.100.71',
-  extendTwig: [Object],
-  profiling: [Object] 
+type: 'HTTPS',
+container: [Object],
+notificationsCenter: [Object],
+resolver: [Object],
+request: [Object],
+response: [Object],
+session: [Object],
+sessionService: [Object],
+sessionAutoStart: 'firewall',
+cookies: [Object],
+isAjax: false,
+secureArea: null,
+showDebugBar: true,
+kernel: [Object],
+autoloadCache: [Object],
+kernelHttp: [Object],
+domain: 'nodefony.com',
+validDomain: true,
+security: [Object],
+user: [Object],
+url: 'https://nodefony.com:5152/demo/json',
+remoteAddress: '192.168.100.71',
+extendTwig: [Object],
+profiling: [Object] 
 <strong>}</strong>
-	</pre>
-
-
-</div>
-
-<h3> CONTEXT  <a>WEBSOCKET / WEBSOCKET SECURE </a> :</h3>
-<div class="doc3 ">
-
-	<p>
- 	
-	</p>
-	<pre>
+					</pre>	
+				</div>
+				<div id="websoket" class="tab-pane ">
+				<br>
+					<p>
+					<h3> CONTEXT  <a>WEBSOCKET / WEBSOCKET SECURE </a> :</h3>
+					</p>
+					<pre>
 // DUMP WEBSOCKET SECURE CONTEXT
 
 var context = this.getContext();
 console.log(context);
 
 <strong>websocket {</strong>
-  type: 'WEBSOCKET SECURE',
-  container: [Object],
-  kernel: [Object],
-  autoloadCache: [Object],
-  kernelHttp: [Object],
-  request: [Object],
-  origin: 'https://nodefony.com:5152',
-  connection: [Object],
-  response: [Object],
-  originUrl: [Object],
-  secureArea: null,
-  cookies: [Object],
-  domain: 'nodefony.com',
-  validDomain: true,
-  session: [Object],
-  sessionService: [Object],
-  sessionAutoStart: 'firewall',
-  security: [Object],
-  user: [Object],
-  url: '/demo/websoket',
-  remoteAdress: '192.168.100.71',
-  resolver: [Object],
-  notificationsCenter: [Object],
-  extendTwig: [Object],
-  profiling: [Object] 
+type: 'WEBSOCKET SECURE',
+container: [Object],
+kernel: [Object],
+autoloadCache: [Object],
+kernelHttp: [Object],
+request: [Object],
+origin: 'https://nodefony.com:5152',
+connection: [Object],
+response: [Object],
+originUrl: [Object],
+secureArea: null,
+cookies: [Object],
+domain: 'nodefony.com',
+validDomain: true,
+session: [Object],
+sessionService: [Object],
+sessionAutoStart: 'firewall',
+security: [Object],
+user: [Object],
+url: '/demo/websoket',
+remoteAdress: '192.168.100.71',
+resolver: [Object],
+notificationsCenter: [Object],
+extendTwig: [Object],
+profiling: [Object] 
 <strong>}</strong>
-	</pre>
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
 
 <h2 name="service" id="service">Services Container  : </h2>
 <div class="doc2 ">
-	<p>
-		<div class="alert alert-warning" role="alert">
-		Nodefony Context Request clone the Kernel Service Container ( scope ) </br>
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Controller Services Container</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#container" data-toggle="tab">Container</a></li>
+  				<li role="presentation" ><a data-target="#services" data-toggle="tab">Services</a></li>
+  				<li role="presentation" ><a data-target="#paramater" data-toggle="tab">Parameters</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="container" class="tab-pane active">
+					<br>
+					<p>
+						<div class="alert alert-warning" role="alert">
+						Nodefony Context  clone the Kernel Service Container ( scope ) </br>
+						</div>
+					</p>
+					<p>
+						You can find all services in controller </br>
+						The Base controller give somme method to manage services container
+						<ul>
+							<li> this.get() </li>
+							<li> this.set() </li>
+							<li> this.getParameters() </li>
+							<li> this.setParameters() </li>
+						</ul>
+					</p>
+						
+				</div>
+				<div id="services" class="tab-pane">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
+// GET SETTINGS services HTTPS SERVER
+var settingsHttps =  <strong>this.get</strong>("httpsServer").settings ;
+
+// GET I18n services 
+var translateService = <strong>this.get</strong>("translation");
+
+// GET sessions services 
+var sessionsService = <strong>this.get</strong>("sessions");	
+					</pre>	
+				</div>
+				<div id="paramater" class="tab-pane ">
+					<br>
+					<p>
+					</p>
+					<pre>
+// get  asseticBundle globals settings
+this.getParameters("bundles.assetic")
+
+// LOG  
+{ 
+	name: 'asseticBundle',
+	locale: 'en_en',
+	version: '1.0',
+	less: { optimization: 0, compress: true, cache: true, async: false },
+	coffescript: null,
+	CDN: { stylesheets: null, javascripts: null } 
+}
+					</pre>
+				</div>
+			</div>
 		</div>
-		You can find all services in controller container  </br>
-		The Base controller give this.get() & this.set() to manage services container  </br>
-	</p>
-</div>
+	</div>
 
 
-<h3  >Get Services  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-	// GET SETTINGS services HTTPS SERVER
-	var settingsHttps =  <strong>this.get</strong>("httpsServer").settings ;
-
-	// GET I18n services 
-	var translateService = <strong>this.get</strong>("translation");
-
-	// GET sessions services 
-	var sessionsService = <strong>this.get</strong>("sessions");
-	</pre>
-
-</div>
-
-<h3  >Get Parameters  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-	// get  asseticBundle globals settings
-	this.getParameters("bundles.assetic")
-
-	// LOG  
-	{ 
-		name: 'asseticBundle',
-		locale: 'en_en',
-		version: '1.0',
-		less: { optimization: 0, compress: true, cache: true, async: false },
-		coffescript: null,
-		CDN: { stylesheets: null, javascripts: null } 
-	}
 	
-	</pre>
-
 </div>
 
 
-<h2 name="requestResponse" id="requestResponse">Request and Response :</h2>
+<h2 name="requestResponse" id="requestResponse">Request and Response Object:</h2>
 <div class="doc2 ">
 
 <p>
@@ -409,11 +551,21 @@ console.log(context);
 <h3> Request :</h3>
 <div class="doc3 ">
 
-	<p>
- 	
-	</p>
-
-	<pre>
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Request</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#request" data-toggle="tab">request</a></li>
+  				<li role="presentation" ><a data-target="#paramater1" data-toggle="tab">Parameters</a></li>
+  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="request" class="tab-pane active">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
 //  DUMP Request 
 
 var resquest = this.getRequest();
@@ -441,81 +593,93 @@ console.log(resquest);
   dataSize: 0,
   body: &lt;Buffer&gt;
 <strong>}</strong>
-	</pre>
+					</pre>	
+				</div>
+				<div id="paramater1" class="tab-pane">
+					<br>
+					<h4>Query String :</h4>
+						<pre>
+// Get query string from container service : 
+var queryString  = this.getParameters("query.get");
 
+// Get query string from Class request 
+var request = this.getRequest();
+var queryString = request.queryGet ;
+						</pre>
+					<h4>Post Data :</h4>
+						<pre>
+// Get Post data from container service :
+var post = this.getParameters("query.post");
 
-</div>
+// Get Post Data from Class request
+var request = this.getRequest();
+var postData = request.queryPost ;
+						</pre>
+					<h4>Files Data : ( upload )</h4> 
+						<pre>
+// Get Files data from container service :
+var queryFile = this.getParameters("query.files");
 
+// Get Files data  from Class request
+var request = this.getRequest();
+var queryFile = request.queryFile ;
+						</pre>
+					<h4>Query Data :</h4>
+						<pre>
+// Get query  from container service :
+// query is extend object with all request datas (get, post, files)
+var query = this.getParameters("query.request");
 
-<h3> Get Request Parameters </h3>
+// Get query  from Class request
+var request = this.getRequest();
+var query = request.query ;
+						</pre>
+					<h4>Request Body  :</h4>
+						<pre>
+// Get body from Class Request 
+var request = this.getRequest();
+var body = request.body ;
+						</pre>
 
-<div class="doc4">
+					<h4>Request Cookies  :</h4>
+						<div class="alert alert-warning" role="alert">
+							You can find Cookies in context !!!  
+						</div>
+						<pre>
+var context = this.getContext();
+var cookies = context.cookies ;
+						</pre>
 	
-	<p>
-	</p>
-<h4>Query String :</h4>
-	<pre>
-	// Get query string from container service : 
-	var queryString  = this.getParameters("query.get");
+				</div>
+				<div id="" class="tab-pane ">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
 
-	// Get query string from Class request 
-	var request = this.getRequest();
-	var queryString = request.queryGet ;
-	</pre>
-<h4>Post Data :</h4>
-	<pre>
-	// Get Post data from container service :
-	var post = this.getParameters("query.post");
-
-	// Get Post Data from Class request
-	var request = this.getRequest();
-	var postData = request.queryPost ;
-	</pre>
-<h4>Files Data : ( upload )</h4> 
-	<pre>
-	// Get Files data from container service :
-	var queryFile = this.getParameters("query.files");
-
-	// Get Files data  from Class request
-	var request = this.getRequest();
-	var queryFile = request.queryFile ;
-	</pre>
-<h4>Query Data :</h4>
-	<pre>
-	// Get query  from container service :
-	// query is extend object with all request datas (get, post, files)
-	var query = this.getParameters("query.request");
-
-	// Get query  from Class request
-	var request = this.getRequest();
-	var query = request.query ;
-	</pre>
-<h4>Request Body  :</h4>
-	<pre>
-	// Get body from Class Request 
-	var request = this.getRequest();
-	var body = request.body ;
-	</pre>
-
-<h4>Request Cookies  :</h4>
-	<div class="alert alert-warning" role="alert">
-		You can find Cookies in context !!!  
+					</pre>
+				</div>
+			</div>
+		</div>
 	</div>
-	<pre>
-	var context = this.getContext();
-	var cookies = context.cookies ;
-	</pre>
-
-</div>
+	
 
 
-<h3>  Response :</h3>
-<div class="doc3 ">
-
-	<p>
- 	
-	</p>
-	<pre>
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Response</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#Response" data-toggle="tab">Response</a></li>
+  				<li role="presentation" ><a data-target="#paramater2" data-toggle="tab">Parameters</a></li>
+  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="Response" class="tab-pane active">
+					<br>
+					<p>
+					</p>
+					<pre>
 // DUMP Response 
 
 var response = this.getResponse();
@@ -533,173 +697,62 @@ console.log(response);
   statusCode: 200,
   timeout: 40000 
 <strong>}</strong>
-	</pre>
-</div>
+					</pre>	
+				</div>
+				<div id="paramater2" class="tab-pane">
+					<br>
+					<h4>Response Set Timeout :</h4>
+					<pre>
+// response Timeout  when the time is up the framework makes the 408 response  
+this.getResponse().<strong>setTimeout</strong>(5000)
+					</pre>
+					<h4>Response Set Headers :</h4>
+					<pre>
 
-<h3>Set Response Parameters</h3>
+// with setHeader	
+this.getResponse().<strong>setHeader</strong>("Content-Type", "text/html; charset=utf-8");
 
-<div class="doc4">
-	
-	<p>
-	</p>
-<h4>Response Set Timeout :</h4>
-	<pre>
-	// response Timeout  when the time is up the framework makes the 408 response  
-	this.getResponse().<strong>setTimeout</strong>(5000)
-	</pre>
-<h4>Response Set Headers :</h4>
-	<pre>
+//or with setHeaders
+this.getResponse().<strong>setHeaders</strong>({
+	"Content-Type" :"text/html; charset=utf-8"	
+})
+					</pre>
+					<h4>Response Set StatusCode :</h4>
+					<pre>
 
-	// with setHeader	
-	this.getResponse().<strong>setHeader</strong>("Content-Type", "text/html; charset=utf-8");
+//
+this.getResponse().<strong>setStatusCode</strong>(200, "OK") ;
+					</pre>
 
-	//or with setHeaders
-	this.getResponse().<strong>setHeaders</strong>({
-		"Content-Type" :"text/html; charset=utf-8"	
-	})
-	</pre>
-<h4>Response Set StatusCode :</h4>
-	<pre>
+					<h4>Response Add cookies :</h4>
+					<pre>
 
-	//
-	this.getResponse().<strong>setStatusCode</strong>(200, "OK") ;
-	</pre>
-
-
-<h4>Response Add cookies :</h4>
-	<pre>
-
-	var cookieDefaultSettings = {
-		maxAge:24*60*60,
-		path:"/",
-		domain:null,
-		secure:false,
-		httpOnly:true,
-	};
-
-	var cookie = new nodefony.cookies.cookie("COOKIE NAME", "cookie value" , cookieDefaultSettings);
-	this.getResponse().<strong>addCookie</strong>(cookie);
-
-	</pre>
-
-
-</div>
-
-
-
-<h2 name="data" id="data">Rendering Datas :</h2>
-<div class="doc2 ">
-<p> 
-		 There are 2 different ways to render datas (templates)  in the actions of the controllers in HTTP context    
-</p>
-</div>
-<h3>Synchronous rendering  :</h3>
-<div class="doc3 ">
-
-	<p>
-		The actions functions must return a Response Class or an object <br>
-
-		The controller give somme tools to render data : 
-		<ul>
-			<li> renderResponse </li>
-			<li> render </li>
-			<li> renderJson </li>
-		</ul>
-	
-	</p>
-
-	<pre>
-/*
- *	RENDER RAW DATA
- */
-indexAction (){
-	var kernel = this.get("kernel") ;
-	var settings = kernel.settings ;
-	var html = '&lt;html&gt;&lt;body&gt;Nodefony version : '+settings.system.version+'&lt;/body&gt;&lt;/html&gt;';
-	<strong>return this.renderResponse(html);</strong>
+var cookieDefaultSettings = {
+	maxAge:24*60*60,
+	path:"/",
+	domain:null,
+	secure:false,
+	httpOnly:true,
 };
-	</pre>
 
-
-	<pre>
-/*
- *	RENDER TEMPLATE 
- */
-indexAction (){
-	var kernel = this.get("kernel") ;
-	<strong>return this.render("demoBundle:Default:index.html.twig",{
-		settings:kernel.settings	
-	});</strong>
+var cookie = new nodefony.cookies.cookie("COOKIE NAME", "cookie value" , cookieDefaultSettings);
+this.getResponse().<strong>addCookie</strong>(cookie);
+					</pre>
 	
-};
-	</pre>
+				</div>
+				<div id="" class="tab-pane ">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
 
-	<pre>
-/*
- *	RENDER TEMPLATE AUTO
- */
-indexAction (){
-	var kernel = this.get("kernel") ;
-	<strong>return {
-		settings:kernel.settings	
-	}</strong>
-};
-	</pre>
-
-
-</div>
-
-<h3> Asynchronous rendering  :</h3>
-<div class="doc3 ">
-
-	<p>
-
-	For Asynchronous rendering the action must not return value <br>	
-	The controller give somme tools to render data : 
-		<ul>
-			<li> renderResponse </li>
-			<li> renderAsync </li>
-			<li> renderJsonAsync </li>
-		</ul>
-	The  framework  wait an event of other entity of framework ( orm database , syscall )
-	<div class="alert alert-warning" role="alert">
-		For Asynchrone data rendering ,  The controller's Action  function must not return a value 
+					</pre>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	</p>
-	<pre>
-/*
- *	RENDER RAW DATA
- */
-rawResponseAsyncAction(){
-	var kernel = this.get("kernel") ;
-	var settings = kernel.settings ;
-
-	// SYSCALL async 
-	var childHost =  <strong>exec</strong>('hostname', (error, stdout, stderr) => {
-		var hostname = stdout ;	
-
-		var content = '&lt;xml&gt;'&lt;nodefony&gt;\
-			'&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
-			'&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;'&lt;/server&gt;\
-			'&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;'&lt;/server&gt;\
-			'&lt;hostname&gt;'+hostname+'</hostname>\
-			'&lt;/kernel&gt;\
-			'&lt;/nodefony&gt;'&lt;/xml&gt;';
-
-		return <strong>this.renderResponse</strong>(content, 200 , {
-			"content-type" :"Application/xml"
-		})
-	});
-
-	<strong>return null;</strong>
-};
-
-	</pre>
 </div>
-
-
-
 
 
 
@@ -721,370 +774,5 @@ Thu Oct 06 2016 15:49:10 <strong>INFO CONTROLER demo</strong>   : Nodefony versi
 
 	</pre>
 </div>
-
-
-
-
-<h2 name="examples" id="examples">Examples  :</h2>
-<div class="doc2 ">
-
-<p>
-	Example of controller actions to different use cases : 
-	<ul>
-		<li><a href="#rawRender">Simple Render html</a></li>
-		<li><a href="#simpleTemplate">Simple Render Template</a></li>
-		<li><a href="#asyncTemplate">Asynchrone Render Template</a></li>
-		<li><a href="#websocket">Websocket</a></li>
-		<li><a href="#renderJson">Rendering JSON</a></li>
-		<li><a href="#download"> Rendering File Download</a></li>
-		<li><a href="#upload"> File Upload</a></li>
-		<li><a href="#mediaStream">Rendering Media Stream</a></li>
-		<li><a href="#redirect">Redirecting</a></li>
-		<li><a href="#forward">Forwarding</a></li>
-		<li><a href="#generateUrl">Generating URL</a></li>
-	</ul>	
-</p>
-
-</div>
-
-
-<h3 name="rawRender" id="rawRender" >Rendering html  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-htmlAction (name){
-	var name = "nodefony";
-	return <strong>this.renderResponse</strong>('&lt;html&gt;&lt;script&gt;console.log("'+name+'")&lt;/script&gt;&lt;/html&gt;');
-};
-
-	</pre>
-
-</div>
-
-
-<h3 name="simpleTemplate" id="simpleTemplate" >Rendering Templates :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-indexAction (){
-	var kernel = this.get("kernel") ;
-	return <strong>this.render</strong>("demoBundle:Default:index.html.twig",{
-		title:"nodefony",
-		user: this.context.user,
-		nodefony:kernel.settings.name + " " + kernel.settings.system.version
-	});
-};
-	</pre>
-</div>
-
-
-
-
-<h3 name="asyncTemplate" id="asyncTemplate">Asynchrone Rendering Templates :</h3>
-<div class="doc3 ">
-
-<p>
-	Example Asynchrone Rendering database query with Promise 
-	<div class="alert alert-warning" role="alert">
-		For Asynchrone data rendering ,  The controller's Action  function must not return a value 
-	</div>
-</p>
-
-	<pre>
-querySqlJoinAction (){
-
-	var orm = this.getORM() ;
-
-	var nodefonyDb = orm.getConnection("nodefony") ;
-
-	nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
-	.then((result) => {
-		var joins = result[0];
-		for (var i = 0 ; i < joins.length ; i++){
-			joins[i].metaBag = JSON.parse( joins[i].metaBag )
-		}
-		return joins ;
-	})
-	.done((data) => {
-		<strong>this.renderAsync</strong>('demoBundle:orm:orm.html.twig', {
-			joins:data,
-		});
-	})
-}
-	</pre>
-
-</div>
-
-<h3 name="websocket" id="websocket" >Rendering Websocket  :</h3>
-<div class="doc3 ">
-
-<p>
-	Controller Action can manage WEBSOCKET Request 
-
-
-	<div class="alert alert-warning" role="alert">
-		To use websocket you must understand Nodefony Request Context  
-	</div>
-</p>
-
-	<pre>
-websoketAction (message){
-	<strong>var context = this.getContext();</strong>
-	switch( this.getMethod() ){
-		case "GET" :
-			return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
-		break;
-		<strong>case "WEBSOCKET" :</strong>
-			if (message){
-				// LOG  MESSAGE CLIENT IN TERMINAL
-				this.logger( message.utf8Data , "INFO");
-			}else{
-				// PREPARE  PUSH MESSAGES SERVER 
-				// SEND MESSAGES TO CLIENTS
-				var i = 0 ;
-				var id = setInterval(() => {
-					var mess = "I am a  message "+ i +"\n" ;
-					<strong>context.send(mess);</strong>
-					// LOG  MESSAGE SENDING IN TERMINAL
-					this.logger( "SEND TO CLIENT :" + mess , "INFO");
-					i++
-				}, 1000);
-
-				setTimeout(function(){
-					clearInterval(id);
-					// close reason , descripton
-					<strong>context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");</strong>
-					id = null ;
-				}, 10000);
-				// Event websocket close by client
-				<strong>this.context.listen</strong>(this, "onClose" , function(){
-					if (id){
-						clearInterval(id);	
-					}
-				})
-			}
-		break;
-		default :
-			throw new Error(" METHOD NOT ALLOWED")
-	}
-};
-
-<strong>/* YOU CAN SHOW LOG IN TERMINAL */</strong>
-
-Thu Oct 06 2016 15:49:09 INFO REQUEST WEBSOCKET SECURE  :  Connection Websocket Connection from : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152
-Thu Oct 06 2016 15:49:09 INFO CONTROLER demo   :  HELLO SERVER I AM A CLIENT : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2879.0 Safari/537.36
-
-Thu Oct 06 2016 15:49:10 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 0
-Thu Oct 06 2016 15:49:11 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 1
-Thu Oct 06 2016 15:49:12 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 2
-Thu Oct 06 2016 15:49:13 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 3
-Thu Oct 06 2016 15:49:14 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 4
-Thu Oct 06 2016 15:49:15 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 5
-Thu Oct 06 2016 15:49:16 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 6
-Thu Oct 06 2016 15:49:17 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 7
-Thu Oct 06 2016 15:49:18 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 8
-
-Thu Oct 06 2016 15:49:19 INFO REQUEST WEBSOCKET SECURE  : Thu Oct 06 2016 15:49:19 GMT+0200 (CEST) Connection Websocket CLOSE : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152 1000 NODEFONY CONTROLLER CLOSE SOCKET
-	</pre>
-
-</div>
-
-
-
-<h3 name="renderJson" id="renderJson">Rendering JSON  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-jsonAction (){
-	return <strong>this.renderJson</strong>({
-		foo:"bar",
-		bar:"foo"
-	});
-};
-	</pre>
-
-</div>
-
-
-<h3 name="download" id="download">Download File   :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-downloadAction (){
-
-	var kernel = this.get('kernel') ;
-
-	var filePath = kernel.rootDir + '/README.md';
-	return <strong>this.renderFileDownload</strong>(filePath); 
-};
-
-	</pre>
-
-</div>
-
-
-
-<h3 name="mediaStream" id="mediaStream">Media Stream Rendering   :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-mediaStreamAction (){
-
-	var kernel = this.get('kernel') ;
-
-	var filePath = kernel.rootDir + '/app/Resources/medias/myAudio.mp3';
-	var file = new nodefony.fileClass(filePath);
-	
-	return <strong>this.renderMediaStream</strong>(file); 
-};
-
-	</pre>
-
-</div>
-
-
-
-
-
-
-<h3 name="upload" id="upload">Upload File   :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-uploadAction (){
-	
-	var files = this.<strong>getParameters</strong>("query.files");
-	var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
-	for (var file in files){
-		if( files[file].error ){
-			throw files[file].error ;
-		}
-		files[file].<strong>move</strong>(path);
-		//console.log( files[file].getExtention() )
-		//console.log( files[file].getMimeType() )
-		//console.log( files[file].realName() )
-	}
-	if ( ! this.isAjax() ){
-		//return this.forward("demoBundle:finder:index");
-		return this.redirect ( this.generateUrl("finder") );
-	}else{
-		var res = {
-			"files": [],
-			"metas": []
-		}
-		for (var file in files){
-			var name = files[file].realName();
-			res.files.push(path+"/"+name);
-			var meta = {
-				date : new Date(),
-				extention:files[file].getExtention(),
-				file:path+"/"+name,
-				name:name,
-				old_name:files[file].name,
-				size:files[file].stats.size,
-				size2:files[file].stats.size,
-				type:files[file].getMimeType().split("/")
-			}
-			res.metas.push(meta);
-		}
-
-		return this.renderResponse(
-			JSON.stringify(res), 
-			200, 
-			{'Content-Type': 'application/json; charset=utf-8'}
-		);
-	}
-};
-	</pre>
-
-</div>
-
-
-
-
-
-
-<h3>Redirecting and Forwarding :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-</div>
-
-
-<h4 name="redirect" id="redirect"> Redirecting </h4>
-<div class="doc4">
-	<pre>
-redirectGoogleAction (){
-	// status 301 or 302
-	return <strong>this.redirect</strong>("http://google.com");
-};
-	</pre>
-
-</div>
-
-
-<h4 name="forward" id="forward"> Forwarding </h4>
-<div class="doc4">
-	<pre>
-
-docAction (){
-	var docBundle = this.get("kernel").getBundles("documentation"); 
-	if (  docBundle ){
-		return <strong>this.forward</strong>("documentationBundle:default:navDoc");
-	}
-	return this.render('demoBundle:Default:navDoc.html.twig');	
-}
-
-
-	</pre>
-
-</div>
-
-
-
-
-<h3 name="generateUrl" id="generateUrl">Generating URL  :</h3>
-<div class="doc3 ">
-
-<p>
-</p>
-
-	<pre>
-
-generateUrlAction (){
-	// absolute
-	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"},true) );	
-
-	// relative
-	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"} );
-};
-
-
-	</pre>
-
-</div>
-
-
-
 
 
