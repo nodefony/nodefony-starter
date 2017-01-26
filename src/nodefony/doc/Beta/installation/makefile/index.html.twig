@@ -16,14 +16,36 @@
 <pre>
 $ make << target >>
 </pre>
+	<h3>NODEFONY </h3>
+	<ul>
+		<li> <strong><a href="#build">make build</a></strong>: <span style="padding-left:80px">Build all sources of NODEFONY framework</span></li>
+		<li> <strong><a href="#make">make</a></strong> : <span style="padding-left:80px">Build all sources of Application </span> </li>
+		<li> <strong><a href="#install">make install</a></strong>: <span style="padding-left:80px">Build all sources of Application same as target make</span></li>
+		<li> <strong><a href="#framework">make framework</a></strong>: <span style="padding-left:80px">Build framework filesystem</span></li>
+		<li> <strong><a href="#npm">make npm</a></strong>: <span style="padding-left:80px">Install npm dependencies</span></li>
+		<li> <strong><a href="#asset">make asset</a></strong>: <span style="padding-left:80px">Intall symlink and compile assetics </span></li>
+		<li> <strong><a href="#clean">make clean</a></strong>: <span style="padding-left:80px">Clean node.js all dependencies</span></li>
+		<li> <strong><a href="#deploy">make deploy</a></strong>: <span style="padding-left:80px">Compile Assetics and start in production mode</span></li>
+		<li> <strong><a href="#sequelize">make sequelize</a></strong>: <span style="padding-left:80px">Build Sequelize Entities and fixtures</span></li>
+		<li> <strong><a href="#test">make test</a></strong>: <span style="padding-left:80px">Launch all tests</span></li>
+		<li> <strong><a href=#certificate"">make certificate</a></strong>  : <span style="padding-left:80px">Genarate and create a self-signed Certificate for https server</span></li>
+	</ul>
+
+	<h3>PRODUCTION MANAGEMENT PM2</h3>
+	<ul>
+		<li> <strong><a href="#pm2">make start</a></strong> : <span style="padding-left:80px">Start Nodefony in production mode</span> </li>
+		<li> <strong><a href="#pm2">make stop</a></strong>: <span style="padding-left:80px">Stop Nodefony production </span></li>
+		<li> <strong><a href="#pm2">make kill</a></strong>: <span style="padding-left:80px">kill PM2 manager</span></li>
+		<li> <strong><a href="#pm2">make status</a></strong>: <span style="padding-left:80px">Get status PM2</span></li>
+		<li> <strong><a href="#pm2">make restart</a></strong>: <span style="padding-left:80px">Restart Nodefony in production mode</span></li>
+	</ul>
+
 </div>
-
-
 
 
 <h2>Targets NODEFONY FRAMEWORK </h2>
 
-<h3>Build</h3>
+<h3 id="build" >Build</h3>
 
 <div class="doc3">
 	<p>
@@ -33,7 +55,6 @@ $ make << target >>
 			<li>Build all sources of NODEFONY framework</li>
 		</ul>
 	</p>
-
 <pre>
 	@echo "";
 	@echo "#########################################" ;
@@ -69,7 +90,7 @@ $ make << target >>
 </div>
 
 
-<h3> All </h3>
+<h3 id="all" > All </h3>
 <div class="doc3">
 	<p>
 		All target just call target install
@@ -80,7 +101,7 @@ all:  install
 </div>
 
 
-<h3> framework </h3>
+<h3 id="framework"> framework </h3>
 <div class="doc3">
 	<p>
 		Must be call the first time   ( generally call by 'build' taget )
@@ -136,7 +157,7 @@ framework:
 
 
 
-<h3>  npm   </h3>
+<h3 id="npm">  npm   </h3>
 <div class="doc3">
 	<p>
 		Must be call when you add dependency in package.json FRAMEWORK
@@ -160,7 +181,7 @@ npm:
 </div>
 
 
-<h3 name="install" id="install">  install </h3>
+<h3 id="install" id="install">  install </h3>
 <div class="doc3">
 	<p>
 		Must be call when you add bundle in appKernel.js <br>
@@ -205,7 +226,7 @@ install:
 </div>
 
 
-<h3 name="asset" id="asset"> asset </h3>
+<h3 id="asset" id="asset"> asset </h3>
 <div class="doc3">
 	<p>
 		Must be call before run nodefony in production mode 
@@ -223,7 +244,7 @@ asset:
 
 
 
-<h3> clean </h3>
+<h3 id="clean"> clean </h3>
 <div class="doc3">
 	<p>
 		Must be call  when you want update nodefony
@@ -254,7 +275,7 @@ clean:
 </div>
 
 
-<h3> sequelize </h3>
+<h3 id="sequelize"> sequelize </h3>
 <div class="doc3">
 	<p>
 		Must be call before run nodefony (developpement or prodution)  </br>
@@ -277,7 +298,7 @@ sequelize:
 
 <h2>Targets PM2 MANAGEMENT PRODUCTION </h2>
 
-<h3>  start </h3>
+<h3 id="start">  start </h3>
 <div class="doc3">
 	<p>
 		RUN NODEFONY IN PRODUTION MODE  </br>
@@ -294,7 +315,7 @@ start:
 </div>
 
 
-<h3>  stop   </h3>
+<h3 id="stop">  stop   </h3>
 <div class="doc3">
 <p>
 		STOP NODEFONY IN PRODUTION MODE  </br>
@@ -311,7 +332,7 @@ stop:
 </div>
 
 
-<h3>  deploy   </h3>
+<h3 id="deploy">  deploy   </h3>
 <div class="doc3">
 <p>
 		DEPLOY  NODEFONY IN PRODUTION MODE  FOR SCRIPTING </br>
@@ -329,7 +350,7 @@ deploy:
 
 
 
-<h3> Targets : kill startup show monit</h3>
+<h3 id="pm2"> Targets : kill startup show monit</h3>
 <div class="doc3">
 	<p>
 		PM2 MANAGEMENT see <a href="http://pm2.keymetrics.io/docs/usage/quick-start/#cheatsheet/">documentation</a>   </br>

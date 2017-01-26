@@ -17,7 +17,9 @@ nodefony.register("Service", function(){
 	
 		constructor(name, container, notificationsCenter, options ){
 
-			this.name = name ;
+			if (name){
+				this.name = name ;
+			}
 			options = nodefony.extend( {}, defaultOptions, options) ;
 
 			if ( container instanceof nodefony.Container  ){
@@ -57,6 +59,10 @@ nodefony.register("Service", function(){
 			}	
 		}
 
+		getName (){
+			return this.name;
+		}
+
 		clean(){
 			delete this.settingsSyslog ;
 			delete this.syslog ;
@@ -91,6 +97,16 @@ nodefony.register("Service", function(){
          	*/
 		listen (){
 			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method once
+	 	*	@param {String} event name 
+	 	*	@param {Arguments} ... arguments to inject  
+         	*/
+		once (){
+			//this.logger(ev, "DEBUG", "EVENT KERNEL")
+			return this.notificationsCenter.once.apply(this.notificationsCenter, arguments);
 		}
 
 		/**

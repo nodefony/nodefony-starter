@@ -9,11 +9,14 @@
 
 nodefony.register("controller", function(){
 
-	var Controller = class Controller {
+	var Controller = class Controller extends nodefony.Service {
 		constructor (container, context) {
+
+			super(null , container, container.get("notificationsCenter") ) ;
+			this.name= "CONTROLER "+this.name ;
 			this.context = context;
-			this.container = container;
-			this.notificationsCenter = this.container.get("notificationsCenter");
+			//this.container = container;
+			//this.notificationsCenter = this.container.get("notificationsCenter");
 			this.sessionService = this.container.get("sessions");
 			this.query = context.request.query ;
 			this.queryFile = context.request.queryFile;
@@ -23,7 +26,7 @@ nodefony.register("controller", function(){
 			this.httpKernel = this.container.get("httpKernel") ;
 		}
 	
-		logger (pci, severity, msgid,  msg){
+		/*logger (pci, severity, msgid,  msg){
 			var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = "CONTROLER "+this.name+" "; }
 			return syslog.logger(pci, severity, msgid,  msg);
@@ -51,7 +54,7 @@ nodefony.register("controller", function(){
 
 		has (name){
 			return this.container.has(name);
-		}
+		}*/
 
 		getRequest (){
 			return this.context.request;
@@ -110,10 +113,11 @@ nodefony.register("controller", function(){
 				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
 				return ;
 			}
-			this.notificationsCenter.fire("onView", data, this.context );
+			this.fire("onView", data, this.context );
 			if (headers && typeof headers === "object" ){ res.setHeaders(headers);}
 			if (status){ res.setStatusCode(status);}
-			this.notificationsCenter.fire("onResponse", res , this.context);
+			this.fire("onResponse", res , this.context);
+			return res ;
 		}
 
 		renderJson ( obj , status , headers){
@@ -128,14 +132,14 @@ nodefony.register("controller", function(){
 
 		renderJsonAsync (obj , status , headers){
 			return this.renderJson(obj , status , headers).then( (result) => {
-				this.notificationsCenter.fire("onResponse", this.context.response,  this.context );
+				this.fire("onResponse", this.context.response,  this.context );
 				return result ;
 			}).catch((e)=>{
 				if (this.context.response.response.headersSent || this.context.timeoutExpired ){
 					return ;
 				}
 				this.context.promise = null ;
-				this.context.notificationsCenter.fire("onError", this.context.container, e);
+				this.fire("onError", this.context.container, e);
 			});
 		}
 
@@ -152,7 +156,7 @@ nodefony.register("controller", function(){
 				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
 				return ;
 			}
-			this.notificationsCenter.fire("onView", data, this.context );
+			this.fire("onView", data, this.context );
 			response.setHeaders(nodefony.extend( {}, {
 				'Content-Type': "text/json ; charset="+ this.context.response.encoding	
 			}, headers ))
@@ -169,7 +173,7 @@ nodefony.register("controller", function(){
 				return this.renderViewAsync(view, param);
 				
 			}catch(e){
-			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 	this.fire("onError", this.context.container, e);
 			}
 		}
 
@@ -187,12 +191,12 @@ nodefony.register("controller", function(){
 				this.context.promise = this.renderViewAsync(view, param).then( (result) => {
 
 					try {
-						this.notificationsCenter.fire("onResponse", this.context.response, this.context);
+						this.fire("onResponse", this.context.response, this.context);
 					}catch(e){
 						if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
 							return ;
 						}
-						this.context.notificationsCenter.fire("onError", this.context.container, e);
+						this.fire("onError", this.context.container, e);
 					}
 					return result ;
 				
@@ -201,11 +205,11 @@ nodefony.register("controller", function(){
 						return ;
 					}
 					this.context.promise = null ;
-					this.context.notificationsCenter.fire("onError", this.context.container, e);
+					this.fire("onError", this.context.container, e);
 				});
 				
 			}catch(e){
-			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 	this.fire("onError", this.context.container, e);
 			}
 		}*/
 		
@@ -219,7 +223,7 @@ nodefony.register("controller", function(){
 				this.renderView(view, param);
 				
 			}catch(e){
-			 	this.context.notificationsCenter.fire("onError", this.context.container, e);
+			 	this.fire("onError", this.context.container, e);
 			 	return ;
 			}
 			return response ;
@@ -227,14 +231,14 @@ nodefony.register("controller", function(){
 
 		renderAsync (view, param){
 			return this.render(view, param).then( (result) => {
-				this.notificationsCenter.fire("onResponse", this.context.response,  this.context );
+				this.fire("onResponse", this.context.response,  this.context );
 				return result ;
 			}).catch((e)=>{
 				if (this.context.response.response.headersSent || this.context.timeoutExpired ){
 					return ;
 				}
 				this.context.promise = null ;
-				this.context.notificationsCenter.fire("onError", this.context.container, e);
+				this.fire("onError", this.context.container, e);
 			});
 		}
 
@@ -256,7 +260,7 @@ nodefony.register("controller", function(){
 							try {
 								res = templ.render(extendParam) ;
 								try {
-									this.notificationsCenter.fire("onView", res, this.context, templ.path , param);
+									this.fire("onView", res, this.context, templ.path , param);
 									resolve( res );
 								}catch(e){
 									return reject( e );
@@ -282,7 +286,7 @@ nodefony.register("controller", function(){
 								return reject(error) ;
 							}else{
 								try {
-									this.notificationsCenter.fire("onView", result, this.context, View , param);
+									this.fire("onView", result, this.context, View , param);
 									return resolve( result );
 								}catch(e){
 									return reject( error );
@@ -312,7 +316,7 @@ nodefony.register("controller", function(){
 				try {
 					res = templ.render(extendParam) ;
 					try {
-						this.notificationsCenter.fire("onView", res, this.context, null , param);
+						this.fire("onView", res, this.context, null , param);
 					}catch(e){
 						throw e ;
 					}
@@ -335,7 +339,7 @@ nodefony.register("controller", function(){
 						throw error ;
 					}else{
 						try {
-							this.notificationsCenter.fire("onView", result, this.context, View , param);
+							this.fire("onView", result, this.context, View , param);
 							res = result;
 						}catch(e){
 							throw e ;
@@ -360,7 +364,7 @@ nodefony.register("controller", function(){
 						throw error ;
 					}else{
 						try {
-							this.notificationsCenter.fire("onView", result, this.context, path , param);
+							this.fire("onView", result, this.context, path , param);
 							res = result;
 						}catch(e){
 							throw e ;
@@ -561,19 +565,19 @@ nodefony.register("controller", function(){
 
 		createNotFoundException (message){
 			this.context.response.setStatusCode(404) ;
-			this.notificationsCenter.fire("onError", this.container, message );
+			this.fire("onError", this.container, message );
 			
 		}  
 
 		createUnauthorizedException (message){
 			this.context.response.setStatusCode(401) ;
-			this.notificationsCenter.fire("onError", this.container, message );
+			this.fire("onError", this.container, message );
 			
 		}  
 
 		createException (message){
 			this.context.response.setStatusCode(500) ;
-			this.notificationsCenter.fire("onError", this.container, message );
+			this.fire("onError", this.container, message );
 		} 
 
 		redirect (url ,status, headers){

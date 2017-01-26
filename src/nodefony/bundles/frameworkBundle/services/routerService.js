@@ -253,7 +253,7 @@ nodefony.registerService("router", function(){
 			switch (true){
 				case result instanceof nodefony.Response :
 				case result instanceof nodefony.wsResponse :
-					return this.notificationsCenter.fire("onResponse", result, this.context);
+					return this.fire("onResponse", result, this.context);
 				break ;
 				case result instanceof Promise :
 				case result instanceof BlueBird :
@@ -274,19 +274,19 @@ nodefony.registerService("router", function(){
 								}	
 						}
 						try {
-							this.notificationsCenter.fire("onResponse", this.context.response, this.context);
+							this.fire("onResponse", this.context.response, this.context);
 						}catch(e){
 							if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
 								return ;
 							}
-							this.context.notificationsCenter.fire("onError", this.context.container, e);
+							this.fire("onError", this.context.container, e);
 						}
 					}).catch((e)=>{
 						if (this.context.response.response.headersSent || this.context.timeoutExpired ){
 							return ;
 						}
 						this.context.promise = null ;
-						this.context.notificationsCenter.fire("onError", this.context.container, e);
+						this.fire("onError", this.context.container, e);
 					});
 				case nodefony.typeOf(result) === "object" :
 					if ( this.defaultView ){

@@ -36,6 +36,9 @@ nodefony.registerService("unitTest", function(){
 		}
 
 		getBundlesTestFiles ( bundleName, testName, tests){
+			if ( ! this.bundles[bundleName] ){
+				throw new Error ( bundleName + " don't exist");
+			}
 			if( this.bundles[bundleName].finder){
 				var finder = this.bundles[bundleName].finder.find({
 					exclude:/^doc$|^public$|^Resources$/,

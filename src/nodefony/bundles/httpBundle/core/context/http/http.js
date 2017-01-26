@@ -85,7 +85,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				this.response.body = result;
 			});
 			this.listen(this, "onSaveSession");
-			this.listen(this, "onResponse", this.send);
+			this.once(this, "onResponse", this.send);
 			this.listen( this, "onRequest" , this.handle );
 			this.listen( this, "onTimeout" , (/*context*/) => {
 				this.fire("onError", this.container, {
@@ -208,11 +208,11 @@ nodefony.register.call(nodefony.context, "http", function(){
 							message:"default view not exist"
 						};
 					}
-				default:
-					if ( ! response){
-						throw new Error ("Nodefony can't resolve async Call in Twig Template ");
-					}
+				case typeof response === "string" :
 					return response ;
+				default:
+					this.logger("nodefony TWIG function render can't resolve async Call in Twig Template ","WARNING");
+					return this.response.body ;
 			}
 		}
 

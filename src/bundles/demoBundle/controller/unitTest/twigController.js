@@ -197,7 +197,8 @@ nodefony.registerController("twig", function(){
 				};
 				if (! message){
 					var result = obj("START", "CONNECTED",this.context.connection.connected) ;
-					return this.renderResponse(  JSON.stringify (result) );
+					this.renderResponse(  JSON.stringify (result) );
+					return ;
 				}else{
 					if (message.utf8Data){
 						var res = JSON.parse( message.utf8Data) ;

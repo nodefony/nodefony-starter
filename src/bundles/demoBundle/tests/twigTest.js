@@ -509,9 +509,6 @@ describe("BUNDLE DEMO", function(){
 				throw new Error( "websoket client error")
 			});
 		});
-
-
 	})
-
 });
 
