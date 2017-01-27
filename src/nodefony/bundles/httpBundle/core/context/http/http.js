@@ -82,12 +82,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			// LISTEN EVENTS KERNEL 
 			this.listen(this, "onView", (result/*, context, view, param*/) => {
-				this.response.body = result;
+				if ( this.response ){
+					this.response.body = result;
+				}
 			});
 			this.listen(this, "onSaveSession");
+			this.once( this, "onRequest" , this.handle );
 			this.once(this, "onResponse", this.send);
-			this.listen( this, "onRequest" , this.handle );
-			this.listen( this, "onTimeout" , (/*context*/) => {
+			this.once( this, "onTimeout" , (/*context*/) => {
 				this.fire("onError", this.container, {
 					status:408,
 					message:new Error("Timeout :" + this.url)
@@ -271,10 +273,9 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		clean (){
 			this.request.clean();
-			delete 	this.request ;
 			this.response.clean();
+			delete 	this.request ;
 			delete 	this.response ;
-			//delete  this.notificationsCenter ;
 			delete  this.session ;
 			delete  this.cookies ;
 			if (this.proxy) {delete this.proxy ;}
@@ -284,7 +285,6 @@ nodefony.register.call(nodefony.context, "http", function(){
 			if (this.translation ) { delete this.translation; }
 			this.cookies = null ;
 			if (this.cookieSession){ delete this.cookieSession }
-			//delete this.container ;
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
 		}

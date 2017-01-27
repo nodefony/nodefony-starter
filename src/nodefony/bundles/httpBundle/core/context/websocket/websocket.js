@@ -102,7 +102,9 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 			// LISTEN EVENTS  
 			this.listen(this, "onView", (result) => {
-				this.response.body = result;
+				if ( this.response ){
+					this.response.body = result;
+				}
 			});
 			this.listen(this, "onResponse", this.send);
 			this.listen(this, "onRequest", this.handle);

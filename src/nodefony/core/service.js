@@ -92,8 +92,8 @@ nodefony.register("Service", function(){
 		/**
 	 	*	@method listen
 	 	*	@param {Oject} context
-	 	*	@param {String} event
-	 	*	@param {Function} callback
+	 	*	@param {String} eventName
+	 	*	@param {Function} listener
          	*/
 		listen (){
 			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
@@ -101,12 +101,38 @@ nodefony.register("Service", function(){
 
 		/**
 	 	*	@method once
-	 	*	@param {String} event name 
-	 	*	@param {Arguments} ... arguments to inject  
+	 	*	@param {Oject} context
+	 	*	@param {String} eventName
+	 	*	@param {Function} listener
+
          	*/
 		once (){
 			//this.logger(ev, "DEBUG", "EVENT KERNEL")
 			return this.notificationsCenter.once.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method setMaxListeners
+	 	*	@param nb   
+	 	*/
+		setMaxListeners (){
+			return this.notificationsCenter.setMaxListeners.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method removeListener
+	 	*	@param {Oject} eventName 
+	 	*	@param {String} listener
+         	*/
+		removeListener (){
+			return this.notificationsCenter.unListen.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method removeAllListeners
+         	*/
+		removeAllListeners (){
+			return this.notificationsCenter.removeAllListeners.apply(this.notificationsCenter, arguments);
 		}
 
 		/**
