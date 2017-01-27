@@ -586,7 +586,7 @@ nodefony.registerController("demo", function(){
  	 	*		
  	 	*/
 		renderviewAction (){
-			var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
+			var content = this.renderView('demoBundle:Default:documentation.html.twig',{name:"render"});
 			return this.renderResponse(content);
 		}
 		
@@ -594,9 +594,9 @@ nodefony.registerController("demo", function(){
  	 	*	@see renderResponse() with content html
  	 	*
  	 	*/
-		htmlAction (){
+		htmlAction (name){
 			var name = "nodefony";
-			return this.renderResponse('<html><script>alert("'+name+'")</script></html>');
+			return this.renderResponse('<h1> renderResponse </h1>');
 		}
 
 		/**

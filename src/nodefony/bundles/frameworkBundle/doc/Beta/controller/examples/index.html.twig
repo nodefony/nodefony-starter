@@ -36,6 +36,7 @@
 			<ul class="nav nav-tabs">
   				<li role="presentation" class="active"><a data-target="#routing" data-toggle="tab">Routing</a></li>
   				<li role="presentation" ><a data-target="#controler" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#result" data-toggle="tab">Result</a></li>
 			</ul>	
 			<div class="tab-content ">
 				<div id="routing" class="tab-pane active">
@@ -81,6 +82,11 @@ nodefony.registerController("demo", function(){
 });
 					</pre>
 				</div>
+
+				<div id="result" class="tab-pane active">
+					{{render( controller( "demoBundle:demo:html") ) }}
+				</div>
+
 			</div>
 		</div>
 	</div>

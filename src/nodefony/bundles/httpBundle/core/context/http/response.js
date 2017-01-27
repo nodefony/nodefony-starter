@@ -87,7 +87,9 @@ nodefony.register("Response",function(){
 
 		//ADD INPLICIT HEADER
 		setHeader (name, value){
-			this.response.setHeader(name, value);
+			if ( this.response ){
+				this.response.setHeader(name, value);
+			}
 		}
 		
 		setHeaders (obj){
@@ -99,10 +101,12 @@ nodefony.register("Response",function(){
 		}
 
 		setStatusCode (status, message){
-			this.statusCode = parseInt( status, 10) ;
-			if (message){
-				this.statusMessage = message ;
-				this.response.statusMessage = this.statusMessage;		
+			if (this.response){
+				this.statusCode = parseInt( status, 10) ;
+				if (message){
+					this.statusMessage = message ;
+					this.response.statusMessage = this.statusMessage;		
+				}
 			}
 		}
 
@@ -118,7 +122,11 @@ nodefony.register("Response",function(){
 		}
 
 		getStatusMessage (){
-			return this.statusMessage || this.response.statusMessage || http.STATUS_CODES[this.statusCode] ;
+			if ( this.response ){
+				return this.statusMessage || this.response.statusMessage || http.STATUS_CODES[this.statusCode] ;
+			}else{
+				return this.statusMessage  || http.STATUS_CODES[this.statusCode];
+			}
 		}
 
 		setBody (ele){
