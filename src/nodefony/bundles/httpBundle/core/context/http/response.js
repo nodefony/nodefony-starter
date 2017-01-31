@@ -14,7 +14,6 @@ nodefony.register("Response",function(){
 
 		constructor (response, container, type){
 			this.container = container ;
-			this.kernel = this.container.get("kernel") ;
 			if (response instanceof  http.ServerResponse){
 				this.response =response;
 			}
@@ -101,10 +100,10 @@ nodefony.register("Response",function(){
 		}
 
 		setStatusCode (status, message){
-			if (this.response){
-				this.statusCode = parseInt( status, 10) ;
-				if (message){
-					this.statusMessage = message ;
+			this.statusCode = parseInt( status, 10) ;
+			if (message){
+				this.statusMessage = message ;
+				if (this.response){
 					this.response.statusMessage = this.statusMessage;		
 				}
 			}

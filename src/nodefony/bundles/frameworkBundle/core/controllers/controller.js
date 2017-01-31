@@ -83,7 +83,7 @@ nodefony.register("controller", function(){
 				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
 				return ;
 			}
-			this.fire("onView", data, this.context );
+			//this.fire("onView", data, this.context );
 			if (headers && typeof headers === "object" ){ res.setHeaders(headers);}
 			if (status){ res.setStatusCode(status);}
 			this.fire("onResponse", res , this.context);
@@ -126,7 +126,7 @@ nodefony.register("controller", function(){
 				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","WARNING");
 				return ;
 			}
-			this.fire("onView", data, this.context );
+			//this.fire("onView", data, this.context );
 			response.setHeaders(nodefony.extend( {}, {
 				'Content-Type': "text/json ; charset="+ this.response.encoding	
 			}, headers ))
@@ -177,7 +177,6 @@ nodefony.register("controller", function(){
 					this.context.promise = null ;
 					this.fire("onError", this.context.container, e);
 				});
-				
 			}catch(e){
 			 	this.fire("onError", this.context.container, e);
 			}
@@ -231,7 +230,7 @@ nodefony.register("controller", function(){
 								res = templ.render(extendParam) ;
 								try {
 									this.fire("onView", res, this.context, templ.path , param);
-									resolve( res );
+									return resolve( res );
 								}catch(e){
 									return reject( e );
 								}

@@ -294,7 +294,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}catch(e){
 				this.fire("onError", this.container, e);	
 			}	
-
 		}
 
 		handle (container, request, response, data){

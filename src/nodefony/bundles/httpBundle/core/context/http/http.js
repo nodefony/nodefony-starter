@@ -35,13 +35,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.secureArea = null ;
 			this.showDebugBar = true ;
 			this.timeoutExpired = false ;
-			this.kernel = this.container.get("kernel") ;
 			if ( this.kernel.environment === "dev" ){
 				this.autoloadCache = {
 					bundles:{}
 				} ;
 			}
-			this.kernelHttp = this.container.get("httpKernel");
+			this.kernelHttp = this.get("httpKernel");
 			this.domain =  this.getHostName();  
 			this.router = this.get("router");
 		  	
@@ -86,7 +85,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 					this.response.body = result;
 				}
 			});
-			this.listen(this, "onSaveSession");
+
 			this.once( this, "onRequest" , this.handle );
 			this.once(this, "onResponse", this.send);
 			this.once( this, "onTimeout" , (/*context*/) => {
@@ -195,8 +194,8 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		render (response){
 			switch (true){
-				case response instanceof nodefony.wsResponse :
 				case response instanceof nodefony.Response :
+				case response instanceof nodefony.wsResponse :
 					return response.body;
 				case response instanceof Promise :
 				case response instanceof BlueBird :
@@ -220,14 +219,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 		handle (container, request , response, data){
 
-			this.container.setParameters("query.get", this.request.queryGet );
+			this.setParameters("query.get", this.request.queryGet );
 			if (this.request.queryPost  ){
-				this.container.setParameters("query.post", this.request.queryPost );
+				this.setParameters("query.post", this.request.queryPost );
 			}
 			if (this.request.queryFile  ){
-				this.container.setParameters("query.files", this.request.queryFile );
+				this.setParameters("query.files", this.request.queryFile );
 			}
-			this.container.setParameters("query.request", this.request.query );
+			this.setParameters("query.request", this.request.query );
 
 			/*
  		 	*	TRANSLATION
@@ -308,7 +307,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			this.fire("onSend", this.response, this);
 			if ( this.session ){
-				this.listen(this, "onSaveSession" , ( session ) => {
+				this.once(this, "onSaveSession" , ( session ) => {
 					//console.log("FIRE onSaveSession")
 					if (  ! this.storage ){
 						if ( this.profiling ){
