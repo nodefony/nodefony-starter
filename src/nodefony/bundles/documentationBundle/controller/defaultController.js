@@ -265,7 +265,6 @@ nodefony.registerController("default", function(){
 				for ( var bundle in bundles ) {
 					directory.push(bundles[bundle]);
 				}
-
 				return this.renderView("documentationBundle::navDocBundle.html.twig",{
 					versions : directory	
 				})

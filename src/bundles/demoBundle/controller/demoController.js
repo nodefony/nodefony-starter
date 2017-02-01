@@ -36,7 +36,7 @@ nodefony.registerController("demo", function(){
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			};
-			/*return this.render("demoBundle:Default:index.html.twig",{
+			/*return this.render("demoBundle:demo:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
@@ -49,7 +49,6 @@ nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		navAction (login){
-			//console.trace("PASS NAV") ;
 			var webrtcBundle = this.get("kernel").getBundles("webRtc"); 
 			return this.render('demoBundle:layouts:navBar.html.twig',{
 				user: this.context.user,

@@ -15,7 +15,9 @@ nodefony.register("Response",function(){
 		constructor (response, container, type){
 			this.container = container ;
 			if (response instanceof  http.ServerResponse){
-				this.response =response;
+				this.response = response;
+			}else{
+				this.container.get("notificationsCenter").listen(this,"onView", this.setBody)
 			}
 			//BODY
 			this.body = "";

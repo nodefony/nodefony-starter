@@ -42,12 +42,12 @@
 				<div id="routing" class="tab-pane active">
 					<br>
 					<p>
-					URL : <code> http://localhost:5151/render/myName </code>
+					URL : <code> http://localhost:5151/doc/demo/html/nodefony </code>
 					</p>
 					<pre>
-home: 
-  pattern:  /render/{name}
-  defaults: {"controller": "demoBundle:demo:html"}
+documentation-demo: 
+  pattern:  /doc/demo/html/{name}
+  defaults: {controller: "documentationBundle:demo:html", "name":"nodefony"}
 					</pre>	
 
 				</div>
@@ -70,11 +70,10 @@ nodefony.registerController("demo", function(){
 			}
 			/*
 		 	*	Action controller
-		 	*	( action render public  ) 
 		 	*
 		 	*/
 			htmlAction (name){
-				return <strong>this.renderResponse</strong>('&lt;html&gt;&lt;script&gt;console.log("'+name+'")&lt;/script&gt;&lt;/html&gt;');
+				return <strong>this.renderResponse</strong>('&lt;h1&gt;'+name+'&lt;/h1&gt;');
 			}
 		};
 		// RETURN  class
@@ -83,8 +82,8 @@ nodefony.registerController("demo", function(){
 					</pre>
 				</div>
 
-				<div id="result" class="tab-pane active">
-					{{render( controller( "demoBundle:demo:html") ) }}
+				<div id="result" class="tab-pane">
+					{{render( controller( "documentationBundle:demo:html", "nodefony") ) }}
 				</div>
 
 			</div>
@@ -102,18 +101,20 @@ nodefony.registerController("demo", function(){
 			<ul class="nav nav-tabs">
   				<li role="presentation" class="active"><a data-target="#routing1" data-toggle="tab">Routing</a></li>
   				<li role="presentation" ><a data-target="#controler1" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#twig1" data-toggle="tab">Twig</a></li>
+  				<li role="presentation" ><a data-target="#result1" data-toggle="tab">Result</a></li>
 			</ul>	
 
 			<div class="tab-content ">
 				<div id="routing1" class="tab-pane active">
 					<br>
 					<p>
-					URL : <code> http://localhost:5151/render/template </code>
+					URL : <code> http://localhost:5151/doc/demo/render/nodefony </code>
 					</p>
 					<pre>
-home: 
-  pattern:  /render/template
-  defaults: {"controller": "demoBundle:demo:index"}
+documentation-demo-render: 
+  pattern:  /doc/demo/render/{name}
+  defaults: {controller: "documentationBundle:demo:render", "name":"nodefony"}
 					</pre>	
 				</div>
 
@@ -135,30 +136,33 @@ nodefony.registerController("demo", function(){
 			}
 			/*
 		 	*	Action controller
-		 	*	( action render public  ) 
 		 	*
 		 	*/
-			indexAction (){
-				var kernel = this.get("kernel") ;
-				return <strong>this.render</strong>("demoBundle:Default:index.html.twig",{
-					title:"nodefony",
-					user: this.context.user,
-					nodefony:kernel.settings.name + " " + kernel.settings.system.version
-				})
+			renderAction (name){
+				return this.render('documentationBundle:demo:index.html.twig', {
+					name:name,
+				});
 			}
-
 		};
 		// RETURN  class
 		return demoController;
 });
 					</pre>
 				</div>
+				<div id="twig1" class="tab-pane">
+					<pre>
+&lt;h1&gt; &#123;&#123;name&#125;&#125; &lt;/h1&gt;
+					</pre>
+				</div>
+
+				<div id="result1" class="tab-pane">
+					{{render( controller( "documentationBundle:demo:render", "nodefony") ) }}
+				</div>
+
 			</div>
 		</div>
 	</div>
 </div>
-
-
 
 
 <h3 name="asyncTemplate" id="asyncTemplate">Rendering database query :</h3>
@@ -169,6 +173,7 @@ nodefony.registerController("demo", function(){
 			<ul class="nav nav-tabs">
   				<li role="presentation" class="active"><a data-target="#routing2" data-toggle="tab">Routing</a></li>
   				<li role="presentation" ><a data-target="#controler2" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#twig2" data-toggle="tab">Twig</a></li>
 			</ul>	
 
 			<div class="tab-content ">
@@ -209,8 +214,6 @@ nodefony.registerController("demo", function(){
 			}
 			/*
 		 	*	Action controller
-		 	*	( action render public  ) 
-		 	*
 		 	*/
 			querySqlJoinAction (){
 				var orm = this.getORM() ;
@@ -233,6 +236,50 @@ nodefony.registerController("demo", function(){
 });
 					</pre>
 				</div>
+				<div id="twig2" class="tab-pane">
+					<pre>
+&#123% if joins %&#125
+	&ltdiv class="container"&gt
+		&ltdiv class="row"&gt
+			&ltdiv class="panel panel-default "&gt
+				&lt!-- Default panel contents --&gt
+				&ltdiv class="panel-heading"&gt&ltstrong&gtSESSION  BY USER   &lt/strong&gt&lt/div&gt
+				&ltdiv class="panel-body"&gt
+
+				&ltdiv class="table-responsive  " &gt
+					&lttable class="table table-striped table-bordered"&gt
+						&ltthead&gt
+							&lttr&gt
+								&ltth&gtUSERNAME&lt/th&gt
+								&ltth&gtREQUEST&lt/th&gt
+								&ltth&gtSESSION TOKEN&lt/th&gt
+								&ltth&gtSESSION CONTEXT&lt/th&gt
+								&ltth&gtREMOTE ADRESS&lt/th&gt
+								&ltth&gtLOCALE&lt/th&gt
+							&lt/tr&gt
+						&lt/thead&gt
+						&lttbody&gt
+							&#123% for data in joins %&#125
+							&lttr&gt
+								&lttd&gt&#123&#123data.username&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.metaBag.request&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.session_id&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.context&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.metaBag.remoteAddress &#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.lang&#125&#125&lt/td&gt
+							&lt/tr&gt
+							&#123% endfor %&#125
+						&lt/tbody&gt
+					&lt/table&gt
+				&lt/div&gt
+				&lt/div&gt
+			&lt/div&gt
+		&lt/div&gt
+	&lt/div&gt
+&#123% endif %&#125
+					</pre>
+				</div>
+	
 			</div>
 		</div>
 	</div>
