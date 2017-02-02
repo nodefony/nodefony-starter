@@ -17,7 +17,7 @@ nodefony.register("Response",function(){
 			if (response instanceof  http.ServerResponse){
 				this.response = response;
 			}else{
-				this.container.get("notificationsCenter").listen(this,"onView", this.setBody)
+				this.container.get("notificationsCenter").listen(this,"onView", this.setBody);
 			}
 			//BODY
 			this.body = "";
@@ -115,7 +115,7 @@ nodefony.register("Response",function(){
 			return {
 				code:this.getStatusCode(),
 				message:this.getStatusMessage()
-			}
+			};
 		}
 
 		getStatusCode (){

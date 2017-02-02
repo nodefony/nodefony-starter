@@ -171,13 +171,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 						this.translation.trans_default_domain.apply(this.translation, arguments) ;
 				}.bind(this),
 				getTransDefaultDomain:this.translation.getTransDefaultDomain.bind(this.translation)	
-			})
+			});
 		}
 
 		controller (pattern, data ){
 			var container = this.kernelHttp.container.enterScope("subRequest");
 			container.set("context", this) ;
 			container.set("translation", this.translation );
+			var control = null ;
 			var resolver = null ;
 			try {
 				resolver = this.router.resolveName(this.container, pattern);
@@ -192,7 +193,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 				});
 			}
 			try {
-				var control = new resolver.controller( container, this );
+				control = new resolver.controller( container, this );
 				control.response = new nodefony.Response( null, container, this.type); 
 				if ( data ){
 					Array.prototype.shift.call( arguments );
@@ -207,12 +208,12 @@ nodefony.register.call(nodefony.context, "http", function(){
 				resolver:resolver,
 				controller:control,	
 				response:resolver.action.apply(control, resolver.variables)
-			}
+			};
 		}
 
 		render (subRequest){
 			this.removeListener("onView", subRequest.controller.response.setBody);
-			this.kernelHttp.container.leaveScope(subRequest.controller.container)
+			this.kernelHttp.container.leaveScope(subRequest.controller.container);
 			switch (true){
 				case subRequest.response instanceof nodefony.Response :
 				case subRequest.response instanceof nodefony.wsResponse :
@@ -242,6 +243,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 							message:"default view not exist"
 						};
 					}
+				break;
 				case typeof subRequest.response === "string" :
 					return subRequest.response ;
 				default:
@@ -316,7 +318,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			if (this.promise) {delete this.promise;}
 			if (this.translation ) { delete this.translation; }
 			this.cookies = null ;
-			if (this.cookieSession){ delete this.cookieSession }
+			if (this.cookieSession){ delete this.cookieSession; }
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
 		}
@@ -340,7 +342,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 
 			this.fire("onSend", this.response, this);
 			if ( this.session ){
-				this.once(this, "onSaveSession" , ( session ) => {
+				this.once(this, "onSaveSession" , ( /*session*/ ) => {
 					//console.log("FIRE onSaveSession")
 					if (  ! this.storage ){
 						if ( this.profiling ){
