@@ -9,7 +9,7 @@
 		"javascript"
 	],
 	"dependencies": {
-		"sequelize":"3.29.0",
+		"sequelize":"3.30.0",
 		"uuid":"3.0.1"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",

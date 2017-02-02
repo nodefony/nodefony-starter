@@ -31,7 +31,9 @@ nodefony.registerTemplate("twig", function(){
 		}
 
 		renderFile (file, option, callback){
-			if (! option) var option = {};
+			if (! option) {
+				option = {};
+			}
 			option.settings = nodefony.extend(true, {}, twigOptions, {
 				views :this.rootDir,
 				'twig options':{
@@ -63,10 +65,10 @@ nodefony.registerTemplate("twig", function(){
 				//precompiled:false,
 		        	name:file.name,
 				load:(template) => {
-					callback(null, template)
+					callback(null, template);
 				},
 		        	error:(error) => {
-					callback(error, null)
+					callback(error, null);
 				}
 			});
 		}

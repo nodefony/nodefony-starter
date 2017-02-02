@@ -36,7 +36,7 @@ nodefony.registerController("demo", function(){
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			};
-			/*return this.render("demoBundle:Default:index.html.twig",{
+			/*return this.render("demoBundle:demo:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
@@ -49,7 +49,6 @@ nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		navAction (login){
-			//console.trace("PASS NAV") ;
 			var webrtcBundle = this.get("kernel").getBundles("webRtc"); 
 			return this.render('demoBundle:layouts:navBar.html.twig',{
 				user: this.context.user,
@@ -586,7 +585,7 @@ nodefony.registerController("demo", function(){
  	 	*		
  	 	*/
 		renderviewAction (){
-			var content = this.renderView('demoBundle:Default:index.html.twig',{name:"render"});
+			var content = this.renderView('demoBundle:Default:documentation.html.twig',{name:"render"});
 			return this.renderResponse(content);
 		}
 		
@@ -594,9 +593,9 @@ nodefony.registerController("demo", function(){
  	 	*	@see renderResponse() with content html
  	 	*
  	 	*/
-		htmlAction (){
+		htmlAction (name){
 			var name = "nodefony";
-			return this.renderResponse('<html><script>alert("'+name+'")</script></html>');
+			return this.renderResponse('<h1> renderResponse </h1>');
 		}
 
 		/**

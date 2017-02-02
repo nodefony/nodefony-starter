@@ -261,8 +261,6 @@
 
 			<ul class="nav navbar-nav navbar-left">
 				{{ render( controller("documentationBundle:default:navDoc" )) }}
-				<!--{{ //render( controller("documentationBundle:default:navDocBundle" )) }}-->
-				
 			</ul>
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">
@@ -365,7 +363,6 @@
 						<span class="label label-success"> {{version }} </span> 
 				</div> 
 				<ul class="nav nav-pills nav-stacked">
-					
 					{{ render( controller("documentationBundle:default:subSection", version, bundle, section  )) }}
 				</ul>
 				{% block section %}

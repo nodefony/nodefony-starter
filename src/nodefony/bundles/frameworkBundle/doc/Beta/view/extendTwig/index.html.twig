@@ -7,24 +7,388 @@
 
 <div class="container-fluid">
 
+		<h2>nodefony extend twig reference </h2>
+		<div class="doc2">
 
+			<div class="doc3" >
+				<h3>built-in tags:</h3>
+				<ul>
+					<li><a href="#javascripts">javascripts</a></li>
+					<li><a href="#stylesheets">stylesheets</a></li>
+				</ul>
+				<h3>built-in filters:</h3>
+				<ul>
+						<li><a href="">trans</a></li>
+				</ul>
+				<h3>built-in functions:</h3>
+				<ul>
+					<li><a href="">path</a></li>
+					<li><a href="">getFlashBag</a></li>
+					<li><a href="">render</a></li>
+					<li><a href="">controller</a></li>
+					<li><a href="">trans</a></li>
+					<li><a href="">getLocale</a></li>
+					<li><a href="">trans_default_domain</a></li>
+					<li><a href="">getTransDefaultDomain</a></li>
+				</ul>
+			</div>
+		</div>
 
-
-
-
-
-	<h2>Nodefony extend Twig Reference </h2>
-	<div class="doc2">
+		<h2 id="tags">nodefony built-in tags </h2>
 
 		<div class="doc3" >
-			<h3>Built-in Tags:</h3>
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Tag javascripts</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+		  				<li role="presentation" class="active"><a data-target="#twig1" data-toggle="tab">TWIG</a></li>
+		  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+		  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="twig1" class="tab-pane active">
+							<br>
+							<pre>
+&#123% block javascripts %&#125
+	<strong>&#123% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'</strong>
+		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
+		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
+		"/vendors/stage/stage.js"
+		"/vendors/stage/function.js"
+		"/vendors/stage/notificationsCenter.js"
+		"/vendors/stage/syslog/syslog.js"
+		"/vendors/stage/io/io.js"
+		"/vendors/stage/xml.js"
+	%&#125
+		&ltscript type="text/javascript" src="&#123&#123 asset_url &#125&#125"&gt&lt/script&gt
+	&#123% endjavascripts %&#125
+&#123% endblock %&#125
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
 
-			<h3>Built-in Filters:</h3>
-		
-			<h3>Built-in Functions:</h3>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="doc3" >
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Tag stylesheets</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+		  				<li role="presentation" class="active"><a data-target="#twig2" data-toggle="tab">TWIG</a></li>
+		  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+		  				<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="twig2" class="tab-pane active">
+							<br>
+							<pre>
+&#123% block stylesheets %&#125
+	<strong>&#123% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss"</strong>
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
+	    "/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
+	    "/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
+	    "/demoBundle/clean/assets/css/style.css"
+	%&#125
+		&ltlink rel="stylesheet" href="&#123&#123 asset_url &#125&#125" /&gt
+	&#123% endstylesheets %&#125
+&#123% endblock %&#125
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h2 id="filters">nodefony built-in filters </h2>
+
+		<div class="doc3" >
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Filter trans</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab">TWIG</a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+&ltdiv class="start"&gt &#123&#123 "welcome"|<strong>trans()</strong> &#125&#125 &#123&#123user.displayName &#125&#125 &lt/div&gt
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<h2 id="functions">nodefony built-in functions </h2>
+
+		<div class="doc3" >
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function path</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#simple-path" data-toggle="tab">Simple Path</a></li>
+						<li role="presentation" ><a data-target="#arg-path" data-toggle="tab">Path with arguments controller</a></li>
+						<li role="presentation" ><a data-target="#query-path" data-toggle="tab">Path with queryString</a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="simple-path" class="tab-pane active">
+							<br>
+							<pre>
+&ltli&gt&lta href="&#123&#123path("finder")&#125&#125"&gtDEMO FINDER&lt/a&gt&lt/li&gt
+							</pre>
+						</div>
+						<div id="arg-path" class="tab-pane">
+							<br>
+							<pre>
+&ltli role="presentation" &gt&lta href="&#123&#123path('documentation-section',&#123section:section, version:version, bundle:bundle &#125)&#125&#125"&gt&#123&#123section | trans() | capitalize()&#125&#125&lt/a&gt&lt/li&gt
+							</pre>
+						</div>
+						<div id="query-path" class="tab-pane ">
+							<br>
+							<pre>
+&ltli role="presentation" class="active"&gt&lta href="&#123&#123path('documentation-section',&#123section:section, version:version, bundle:bundle,queryString:qs &#125)&#125&#125"&gt&#123&#123sec | trans() | capitalize()&#125&#125&lt/a&gt&lt/li&gt
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function getFlashBag</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab">TWIG</a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+&ltdiv class="hide" id="error"&gt&#123&#123 getFlashBag('error') &#125&#125&lt/div&gt
+&ltdiv class="hide" id="adduser"&gt&#123&#123 getFlashBag('adduser') &#125&#125&lt/div&gt
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function render</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function controller</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function trans</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function getLocale</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function trans_default_domain</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div  class="panel panel-info">
+				<div class="panel-heading"><strong>Function getTransDefaultDomain</strong>  </div>
+				<div class="panel-body ">
+					<ul class="nav nav-tabs">
+						<li role="presentation" class="active"><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+						<li role="presentation" ><a data-target="#" data-toggle="tab"></a></li>
+					</ul>
+					<div class="tab-content ">
+						<div id="" class="tab-pane active">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane">
+							<br>
+							<pre>
+							</pre>
+						</div>
+						<div id="" class="tab-pane ">
+							<br>
+							<pre>
+							</pre>
+						</div>
+					</div>
+				</div>
+			</div>
 
 		</div>
 
 	</div>
-</div>
-

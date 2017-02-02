@@ -17,7 +17,9 @@ nodefony.register("Service", function(){
 	
 		constructor(name, container, notificationsCenter, options ){
 
-			this.name = name ;
+			if (name){
+				this.name = name ;
+			}
 			options = nodefony.extend( {}, defaultOptions, options) ;
 
 			if ( container instanceof nodefony.Container  ){
@@ -57,6 +59,10 @@ nodefony.register("Service", function(){
 			}	
 		}
 
+		getName (){
+			return this.name;
+		}
+
 		clean(){
 			delete this.settingsSyslog ;
 			delete this.syslog ;
@@ -86,11 +92,47 @@ nodefony.register("Service", function(){
 		/**
 	 	*	@method listen
 	 	*	@param {Oject} context
-	 	*	@param {String} event
-	 	*	@param {Function} callback
+	 	*	@param {String} eventName
+	 	*	@param {Function} listener
          	*/
 		listen (){
 			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method once
+	 	*	@param {Oject} context
+	 	*	@param {String} eventName
+	 	*	@param {Function} listener
+
+         	*/
+		once (){
+			//this.logger(ev, "DEBUG", "EVENT KERNEL")
+			return this.notificationsCenter.once.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method setMaxListeners
+	 	*	@param nb   
+	 	*/
+		setMaxListeners (){
+			return this.notificationsCenter.setMaxListeners.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method removeListener
+	 	*	@param {Oject} eventName 
+	 	*	@param {String} listener
+         	*/
+		removeListener (){
+			return this.notificationsCenter.unListen.apply(this.notificationsCenter, arguments);
+		}
+
+		/**
+	 	*	@method removeAllListeners
+         	*/
+		removeAllListeners (){
+			return this.notificationsCenter.removeAllListeners.apply(this.notificationsCenter, arguments);
 		}
 
 		/**

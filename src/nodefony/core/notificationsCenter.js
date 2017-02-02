@@ -44,6 +44,24 @@ nodefony.register("notificationsCenter",function(){
 
 		/**
 	 	*
+	 	*	@method once 
+	 	*
+	 	*/ 
+		once (context, eventName, callback){
+			var event = arguments[1];
+			var ContextClosure = this;
+			if ( callback instanceof Function ){
+				this.event.once(eventName, callback.bind(context));
+			}
+			return function() {
+				Array.prototype.unshift.call(arguments, event);
+				return ContextClosure.fire.apply(ContextClosure, arguments);
+			};
+			//return this.event.once.apply(this.event, arguments);	
+		}
+
+		/**
+	 	*
 	 	*	@method fire 
 	 	*
 	 	*/
@@ -64,15 +82,7 @@ nodefony.register("notificationsCenter",function(){
 			return ret;
 		}
 
-		/**
-	 	*
-	 	*	@method once 
-	 	*
-	 	*/ 
-		once (){
-			return this.event.once.apply(this.event, arguments);	
-		}
-
+		
 		/**
 	 	*
 	 	*	@method settingsToListen 

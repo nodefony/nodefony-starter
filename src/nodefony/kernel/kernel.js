@@ -398,7 +398,10 @@ nodefony.register("kernel", function(){
          	*/
 		getBundleName (str){
 			var ret = regBundleName.exec(str);
-			return  ret[1] ;
+			if ( ret){
+				return  ret[1] ;
+			}
+			throw new Error("Bundle Name :" +str +" not exist") ;
 		}
 		
 		loadBundle (file){

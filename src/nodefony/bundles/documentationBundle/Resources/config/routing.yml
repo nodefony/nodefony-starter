@@ -64,3 +64,15 @@ documentation-git-getBranch:
   pattern:  /api/git/getCurrentBranch
   defaults: {"controller": "documentationBundle:git:getCurrentBranch"}
 
+
+#
+# DEMO DOCUMENTATION 
+#
+documentation-demo-html: 
+  pattern:  /doc/demo/html/{name}
+  defaults: {controller: "documentationBundle:demo:html", "name":"nodefony"}
+
+documentation-demo-render: 
+  pattern:  /doc/demo/render/{name}
+  defaults: {controller: "documentationBundle:demo:render", "name":"nodefony"}
+

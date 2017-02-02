@@ -156,7 +156,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 				}else{
 					return this.entity.create(data,{isNewRecord:true})
 					.then((session) => {
-						this.manager.logger("ADD SESSION : " + session.session_id +" user-id :" + (session.user_id ?session.user_id : "anonymous")  ,"INFO");
+						this.manager.logger("ADD SESSION : " + session.session_id +" user-id :" + (session.user_id ?session.user_id : "anonymous")  ,"DEBUG");
 						return session ; 
 					}).catch((error) => {
 						this.manager.logger(error);

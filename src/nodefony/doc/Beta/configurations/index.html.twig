@@ -1,80 +1,8 @@
 {{trans_default_domain("doc")}}
 
+
 <div class="page-header">
-  <h1>{{ "configurations" | trans() | capitalize() }} </h1>
-</div>
-
-
-
-	<h2>Location configurations in File System  </h2>
-
-	<h3> CONFIGURATION FRAMEWORK : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}">( Framework configuration ) </a> </h3>
-		<div class="doc3">
-			<p>
-				 In Root directory you can find a 'config' directory  <br>
-				
-			<p>
-			<pre>
-./config/
-├── certificates
-│   ├── ca
-│   │   ├── nodefony-root-ca.crt.pem
-│   │   └── nodefony-root-ca.key.pem
-│   ├── client
-│   │   ├── chain.pem
-│   │   └── pubkey.pem
-│   └── server
-│       ├── cert.pem
-│       ├── chain.pem
-│       ├── fullchain.pem
-│       └── privkey.pem
-├── config.yml
-└── pm2.json
-			</pre>
-
-		</div>
-
-		<h3> CONFIGURATION BUNDLE APPLICATION : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}">( Application configuration ) </a>  </h3>
-		<div class="doc3">
-
-			<p>
-				 Bundle Application is a special bundle in  app directory you can find a 'config' directory  <br>
-				
-			<p>
-			<pre>
-app/config/
-
-├── config.yml
-├── routing.yml
-└── security.yml
-			</pre>
-		</div>
-
-		<h3> CONFIGURATION OF OTHER BUNDLES : See more <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'bundle'} })}}">( Bundle configuration ) </a> </h3>
-		<div class="doc3">
-			<p>
-				 In Resources directory you can find a 'config' directory  <br>
-				
-			<p>
-			<pre>
-./src/nodefony/bundles/nameBundle/Resources/config/
-
-├── config.yml
-└── routing.yml
-			</pre>		
-
-		</div>	
-
-		<div class="doc3">
-			
-			<div class="alert alert-danger" role="alert">
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="sr-only">Error:</span>
-				In Developement mode :  Nodefony kernel Don't reload config files,You must restart nodefony  !!!
-			</div>
-		</div>
-
-
+	<h1><strong>NODEFONY CONFIGURATION</strong> </h1>
 	<h2>Differents Nodefony configurations Files </h2>
 	<div class="doc2" >
 		Nodefony manage differents config files that you can find throughout your development. 
@@ -84,7 +12,25 @@ app/config/
 	<h3> Routing Configuration  : <code>routing.yml</code> </h3>
 	<h3> Services Configuration  : <code>services.xml</code> </h3>
 	<h3> Firewall Configuration  : <code>security.yml</code> </h3>
+
+
 	
+
+	<div class="doc3">
+			
+		<div class="alert alert-danger" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			In Developement mode :  Nodefony kernel Don't reload config files,You must restart nodefony  !!!
+		</div>
+	</div>
+
+	<a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}"> <button type="button" class="btn btn-primary">Aplication Configuration</button></a>
+	<a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'framework'} })}}"> <button type="button" class="btn btn-primary">Framework Configuration</button></a>
+	<a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'bundle'} })}}"> <button type="button" class="btn btn-primary">Bundles Configuration</button></a>
+
+</div>
+		
 	<h2> Global Configuration  : <code>config.yml</code> </h2>
 
 	<div class="doc2">
@@ -168,67 +114,22 @@ nodefony.registerService("myService", function(){
 });
 					</pre>
 				</li>
-
 			</ul>
-	
 		</div>
-
 	</div>
 	
-	<h2>Override GLOBAL CONFIGURATION from Third-Party Bundles :</h2>
-	<div class="doc2">
-		<p>
-			To override global configuration from Third-Party Bundles you can write in config.yml (root yaml node) the full name of bundle	
-		</p>
-		<div class="alert  alert-info" role="alert">
-			WARNING to the order Registration bundles <br>
-			If you want override a config of Third-Party bundle, this one must be register before the bundle config file  who make the override
-		</div>
-		Example <code>./app/config/config.yml </code>	
-		<pre>
-#./app/config/config.yml
+	
+<h2> Routing Configuration  :  <code>routing.yml</code>   
+	<a href="{{ path('documentation-section',{section:'routing', version:'Default', bundle:'framework' })}}"> <button type="button" class="btn btn-primary">Routing</button></a>
 
-....
+</h2>
+<h2> Security Configuration  :  <code>security.yml</code>
+	<a href="{{ path('documentation-section',{section:'configuration', version:'Default', bundle:'security' })}}"> <button type="button" class="btn btn-primary">Firewall</button></a>
+	
+</h2> 
 
-#
-#       OVERRIDE BUNDLE MONITORING
-#
-#       see MONITORING BUNDLE config for more options
-#
-#
-<strong>monitoringBundle:</strong>
-debugBar:                     true
-#storage:                      false
-
-
-#
-#       OVERRIDE BUNDLE ASSETIC
-#
-#       
-#
-<strong>asseticBundle:</strong>
-less:
- compress:                     true
- cache:                        true
-CDN:
- javascripts:		  cdn.nodefony.com
- stylesheets:		  cdn.nodefony.com
-
-....
-
-
-// STARTED NODEFONY SYSLOG :   
-Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
-Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
-		</pre>	
-		
-	</div>
-
-
-
-
-
-
-
-
+<h2> Service Configuration  :  <code>service.xml</code>
+	<a href="{{ path('documentation-section',{section:'service', version:version, bundle:bundle })}}"> <button type="button" class="btn btn-primary">Services</button></a>
+	
+</h2> 
 

@@ -18,8 +18,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 		if (this.connection.state !== "closed"){
 			try {
-				this.connection.close();
 				this.fire("onClose", reasonCode, description, this.connection);
+				this.connection.close();
 			}catch(e){
 				this.logger( new Date() + ' ERROR  Websocket CLOSE : ' + this.connection.remoteAddress +" PID :" +process.pid + " ORIGIN : "+this.request.origin  +" " +e , "ERROR");
 			}
@@ -102,7 +102,9 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 
 			// LISTEN EVENTS  
 			this.listen(this, "onView", (result) => {
-				this.response.body = result;
+				if ( this.response ){
+					this.response.body = result;
+				}
 			});
 			this.listen(this, "onResponse", this.send);
 			this.listen(this, "onRequest", this.handle);
@@ -204,7 +206,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			if (this.cookieSession){ delete this.cookieSession }
 		}
 
-			flashTwig (key){
+		flashTwig (key){
 			if ( this.session ){
 				return this.session.getFlashBag(key) ;
 			}
@@ -262,6 +264,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 							message:"default view not exist"
 						};
 					}
+				case typeof response === "string" :
+					return response ;
 				default:
 					return this.response.body ;
 			}
@@ -290,7 +294,6 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}catch(e){
 				this.fire("onError", this.container, e);	
 			}	
-
 		}
 
 		handle (container, request, response, data){
@@ -321,8 +324,8 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		handleError (container, error){
-			return 	onClose.call(this, error.status, error.message );
-		
+			this.logger("Message : "+error.message, "ERROR");
+			//return onClose.call(this, error.status, error.message );
 		} 
 
 		logger (pci, severity, msgid,  msg){

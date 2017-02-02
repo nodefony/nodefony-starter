@@ -1,0 +1,813 @@
+{{trans_default_domain("doc")}}
+
+
+
+
+<h2 name="examples" id="examples">Examples  :</h2>
+<div class="doc2 ">
+
+<p>
+	Example of controller actions to different use cases : 
+	<ul>
+		<li><a href="#rawRender">Simple Render html</a></li>
+		<li><a href="#simpleTemplate">Simple Render Template</a></li>
+		<li><a href="#asyncTemplate">Rendering database query</a></li>
+		<li><a href="#websocket">Websocket</a></li>
+		<li><a href="#renderJson">Rendering JSON</a></li>
+		<li><a href="#renderXml">Rendering XML</a></li>
+		<li><a href="#download"> Rendering File Download</a></li>
+		<li><a href="#upload"> File Upload</a></li>
+		<li><a href="#mediaStream">Rendering Media Stream</a></li>
+		<li><a href="#redirect">Redirecting</a></li>
+		<li><a href="#redirect">Forwarding</a></li>
+		<li><a href="#redirect">Generating URL</a></li>
+	</ul>	
+</p>
+
+</div>
+
+
+<h3 name="rawRender" id="rawRender" >Rendering html  :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Simple Render html</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#result" data-toggle="tab">Result</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/doc/demo/html/nodefony </code>
+					</p>
+					<pre>
+documentation-demo: 
+  pattern:  /doc/demo/html/{name}
+  defaults: {controller: "documentationBundle:demo:html", "name":"nodefony"}
+					</pre>	
+
+				</div>
+
+				<div id="controler" class="tab-pane ">
+					<p>
+					</p>
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			htmlAction (name){
+				return <strong>this.renderResponse</strong>('&lt;h1&gt;'+name+'&lt;/h1&gt;');
+			}
+		};
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+
+				<div id="result" class="tab-pane">
+					{{render( controller( "documentationBundle:demo:html", "nodefony") ) }}
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<h3 name="simpleTemplate" id="simpleTemplate" >Rendering Templates :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Rendering Twig Templates</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing1" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler1" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#twig1" data-toggle="tab">Twig</a></li>
+  				<li role="presentation" ><a data-target="#result1" data-toggle="tab">Result</a></li>
+			</ul>	
+
+			<div class="tab-content ">
+				<div id="routing1" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/doc/demo/render/nodefony </code>
+					</p>
+					<pre>
+documentation-demo-render: 
+  pattern:  /doc/demo/render/{name}
+  defaults: {controller: "documentationBundle:demo:render", "name":"nodefony"}
+					</pre>	
+				</div>
+
+				<div id="controler1" class="tab-pane ">
+					<p>
+					</p>
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			renderAction (name){
+				return this.render('documentationBundle:demo:index.html.twig', {
+					name:name,
+				});
+			}
+		};
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+				<div id="twig1" class="tab-pane">
+					<pre>
+&lt;h1&gt; &#123;&#123;name&#125;&#125; &lt;/h1&gt;
+					</pre>
+				</div>
+
+				<div id="result1" class="tab-pane">
+					{{render( controller( "documentationBundle:demo:render", "nodefony") ) }}
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<h3 name="asyncTemplate" id="asyncTemplate">Rendering database query :</h3>
+<div class="doc3 ">
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Rendering database query with Promise</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing2" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler2" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#twig2" data-toggle="tab">Twig</a></li>
+			</ul>	
+
+			<div class="tab-content ">
+				
+				<div id="routing2" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/query/join </code>
+					</p>
+					<pre>
+sqlJoin: 
+  pattern:  /query/join
+  defaults: {"controller": "demoBundle:demo:querySqlJoin"}
+  requirements: 
+    method: GET	
+					</pre>	
+
+				</div>
+
+				<div id="controler2" class="tab-pane ">
+					<p>
+						<div class="alert alert-warning" role="alert">
+						For database data rendering ,  The controller's Action function must return a Promise Object 
+						</div>
+					</p>
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*/
+			querySqlJoinAction (){
+				var orm = this.getORM() ;
+				var nodefonyDb = orm.getConnection("nodefony") ;
+
+				return nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+				.then((result) => {
+					var joins = result[0];
+					for (var i = 0 ; i < joins.length ; i++){
+						joins[i].metaBag = JSON.parse( joins[i].metaBag );
+					}
+					return this.render('demoBundle:orm:orm.html.twig', {
+						joins:joins,
+					});
+				})
+			}
+		};
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+				<div id="twig2" class="tab-pane">
+					<pre>
+&#123% if joins %&#125
+	&ltdiv class="container"&gt
+		&ltdiv class="row"&gt
+			&ltdiv class="panel panel-default "&gt
+				&lt!-- Default panel contents --&gt
+				&ltdiv class="panel-heading"&gt&ltstrong&gtSESSION  BY USER   &lt/strong&gt&lt/div&gt
+				&ltdiv class="panel-body"&gt
+
+				&ltdiv class="table-responsive  " &gt
+					&lttable class="table table-striped table-bordered"&gt
+						&ltthead&gt
+							&lttr&gt
+								&ltth&gtUSERNAME&lt/th&gt
+								&ltth&gtREQUEST&lt/th&gt
+								&ltth&gtSESSION TOKEN&lt/th&gt
+								&ltth&gtSESSION CONTEXT&lt/th&gt
+								&ltth&gtREMOTE ADRESS&lt/th&gt
+								&ltth&gtLOCALE&lt/th&gt
+							&lt/tr&gt
+						&lt/thead&gt
+						&lttbody&gt
+							&#123% for data in joins %&#125
+							&lttr&gt
+								&lttd&gt&#123&#123data.username&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.metaBag.request&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.session_id&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.context&#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.metaBag.remoteAddress &#125&#125&lt/td&gt
+								&lttd&gt&#123&#123data.lang&#125&#125&lt/td&gt
+							&lt/tr&gt
+							&#123% endfor %&#125
+						&lt/tbody&gt
+					&lt/table&gt
+				&lt/div&gt
+				&lt/div&gt
+			&lt/div&gt
+		&lt/div&gt
+	&lt/div&gt
+&#123% endif %&#125
+					</pre>
+				</div>
+	
+			</div>
+		</div>
+	</div>
+</div>
+
+<h3 name="websocket" id="websocket" >Rendering Websocket  :</h3>
+<div class="doc3 ">
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Rendering Websocket</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing3" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler3" data-toggle="tab">Controller</a></li>
+  				<li role="presentation" ><a data-target="#logger3" data-toggle="tab">Logger</a></li>
+			</ul>	
+
+			<div class="tab-content ">
+				
+				<div id="routing3" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> ws://localhost:5151/websoket </code>
+					</p>
+
+					<pre>
+websoket: 
+  pattern:  /websoket
+  defaults: {"controller": "demoBundle:demo:websoket"}
+  requirements:
+    method:     GET,WEBSOCKET
+					</pre>	
+
+				</div>
+
+				<div id="controler3" class="tab-pane ">
+					<p>
+						<div class="alert alert-warning" role="alert">
+						To use websocket you must understand Nodefony Request Context  
+						</div>
+					</p>
+					<pre>
+nodefony.registerController("demo", function(){
+	/*
+	*	Class controller name
+	*	 
+	*/ 
+	var demoController = class demoController extends nodefony.controller {
+		/*
+		*	CONSTRUCTOR
+		*/
+		constructor (container, context){
+			super(container, context);
+		}
+		/*
+		*	Action controller
+		*
+		*/
+		websoketAction (message){
+			<strong>var context = this.getContext();</strong>
+			switch( this.getMethod() ){
+				case "GET" :
+					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+				break;
+				<strong>case "WEBSOCKET" :</strong>
+					if (message){
+						// LOG  MESSAGE CLIENT IN TERMINAL
+						this.logger( message.utf8Data , "INFO");
+					}else{
+						// PREPARE  PUSH MESSAGES SERVER 
+						// SEND MESSAGES TO CLIENTS
+						var i = 0 ;
+						var id = setInterval(() => {
+							var mess = "I am a  message "+ i +"\n" ;
+							<strong> // You can use context to send data 
+							context.send(mess);
+							//  or call controller method ( renderResponse , render , renderJson )
+							this.renderResponse(mess);</strong>
+							// LOG  MESSAGE SENDING IN TERMINAL
+							this.logger( "SEND TO CLIENT :" + mess , "INFO");
+							i++
+						}, 1000);
+
+						setTimeout(function(){
+							clearInterval(id);
+							// close reason , descripton
+							<strong>context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");</strong>
+							id = null ;
+						}, 10000);
+						// Event websocket close by client
+						<strong>context.listen</strong>(this, "onClose" , function(){
+							if (id){
+								clearInterval(id);	
+							}
+						})
+					}
+				break;
+				default :
+					throw new Error(" METHOD NOT ALLOWED")
+			}
+		}
+	};
+	// RETURN  class
+	return demoController;
+});
+					</pre>
+				</div>
+
+				<div id="logger3" class="tab-pane">
+					<br>
+					
+					<pre>
+
+<strong>/* YOU CAN SHOW LOG IN TERMINAL */</strong>
+
+Thu Oct 06 2016 15:49:09 INFO REQUEST WEBSOCKET SECURE  :  Connection Websocket Connection from : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152
+Thu Oct 06 2016 15:49:09 INFO CONTROLER demo   :  HELLO SERVER I AM A CLIENT : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2879.0 Safari/537.36
+
+Thu Oct 06 2016 15:49:10 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 0
+Thu Oct 06 2016 15:49:11 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 1
+Thu Oct 06 2016 15:49:12 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 2
+Thu Oct 06 2016 15:49:13 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 3
+Thu Oct 06 2016 15:49:14 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 4
+Thu Oct 06 2016 15:49:15 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 5
+Thu Oct 06 2016 15:49:16 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 6
+Thu Oct 06 2016 15:49:17 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 7
+Thu Oct 06 2016 15:49:18 INFO CONTROLER demo   : SEND TO CLIENT :I am a  message 8
+
+Thu Oct 06 2016 15:49:19 INFO REQUEST WEBSOCKET SECURE  : Thu Oct 06 2016 15:49:19 GMT+0200 (CEST) Connection Websocket CLOSE : 192.168.100.71 PID :86607 ORIGIN : https://nodefony.com:5152 1000 NODEFONY CONTROLLER CLOSE SOCKET
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<h3 name="renderJson" id="renderJson">Rendering JSON :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Rendering JSON</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing4" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler4" data-toggle="tab">Controller</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing4" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/json </code>
+					</p>
+					<pre>
+json: 
+  pattern:  /json
+  defaults: {"controller": "demoBundle:demo:json"}
+					</pre>	
+				</div>
+				<div id="controler4" class="tab-pane ">
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			jsonAction (){
+				return <strong>this.renderJson</strong>({
+					foo:"bar",
+					bar:"foo"
+				});
+			}
+		};
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<h3 name="renderXml" id="renderXml">Rendering XML :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Rendering XML</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing6" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler6" data-toggle="tab">Controller</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing6" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/xml </code>
+					</p>
+					<pre>
+xmlResponse: 
+  pattern:  /xml
+  defaults: {"controller": "demoBundle:demo:xml"}
+  requirements: 
+    method: GET
+
+					</pre>	
+				</div>
+				<div id="controler6" class="tab-pane ">
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			xmlAction (){
+				var kernel = this.get("kernel") ;
+				var settings = kernel.settings ;
+				var content = '&lt;xml&gt;&lt;nodefony&gt;\
+					&lt;kernel name="'+settings.name+'" version="'+settings.system.version+'"&gt;\
+						&lt;server type="HTTP" port="'+settings.system.httpPort+'"&gt;&lt;/server&gt;\
+						&lt;server type="HTTPS" port="'+settings.system.httpsPort+'"&gt;&lt;/server&gt;\
+					&lt;/kernel&gt;\
+				&lt;/nodefony&gt;&lt;/xml&gt;';
+				return this.renderResponse(content, 200 , {
+					"content-type" :"Application/xml"
+				});
+			}
+		};
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<h3 name="download" id="download">Download File :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Download File</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing5" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler5" data-toggle="tab">Controller</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing5" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/download </code>
+					</p>
+					<pre>
+download: 
+  pattern:  /download
+  defaults: {"controller": "demoBundle:finder:download"}
+  requirements: 
+    method: GET	
+					</pre>	
+				</div>
+				<div id="controler5" class="tab-pane ">
+					<pre>
+nodefony.registerController("finder", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var finderController = class finderController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			downloadAction (){
+				var kernel = this.get('kernel') ;
+
+				var filePath = kernel.rootDir + '/README.md';
+				return <strong>this.renderFileDownload</strong>(filePath); 
+			}
+		};
+		// RETURN  class
+		return finderController;
+});
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h3 name="mediaStream" id="mediaStream">Media Stream Rendering   :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Media Stream Rendering</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing7" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler7" data-toggle="tab">Controller</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing7" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/rendermedia </code>
+					</p>
+					<pre>
+render-media: 
+  pattern:  /rendermedia
+  defaults: {"controller": "demoBundle:demo:mediaStream"}
+  requirements: 
+    method: GET
+
+					</pre>	
+				</div>
+				<div id="controler7" class="tab-pane ">
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			mediaStreamAction (){
+				var kernel = this.get('kernel') ;
+				var filePath = kernel.rootDir + '/app/Resources/medias/myAudio.mp3';
+				var file = new nodefony.fileClass(filePath);
+				return <strong>this.renderMediaStream</strong>(file); 
+			}
+		}
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h3 name="upload" id="upload">File Upload :</h3>
+<div class="doc3 ">
+
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Upload Rendering</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#routing8" data-toggle="tab">Routing</a></li>
+  				<li role="presentation" ><a data-target="#controler8" data-toggle="tab">Controller</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="routing8" class="tab-pane active">
+					<br>
+					<p>
+					URL : <code> http://localhost:5151/fileupload </code>
+					</p>
+					<pre>
+uploadFile: 
+  pattern:  /fileupload
+  defaults: {"controller": "demoBundle:demo:upload"}
+  requirements: 
+    method: POST
+					</pre>	
+				</div>
+				<div id="controler8" class="tab-pane ">
+					<pre>
+nodefony.registerController("demo", function(){
+		/*
+		 *	Class controller name
+		 *	 
+		 */ 
+		var demoController = class demoController extends nodefony.controller {
+			/*
+			 *	CONSTRUCTOR
+			 */
+			constructor (container, context){
+				super(container, context);
+			}
+			/*
+		 	*	Action controller
+		 	*
+		 	*/
+			uploadAction (){
+				var files = this.<strong>getParameters</strong>("query.files");
+				var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images" ;	
+				for (var file in files){
+					if( files[file].error ){
+						throw files[file].error ;
+					}
+					files[file].<strong>move</strong>(path);
+					//console.log( files[file].getExtention() )
+					//console.log( files[file].getMimeType() )
+					//console.log( files[file].realName() )
+				}
+				if ( ! this.isAjax() ){
+					return this.redirect ( this.generateUrl("finder") );
+				}else{
+					var res = {
+						"files": [],
+						"metas": []
+					}
+					for (var file in files){
+						var name = files[file].realName();
+						res.files.push(path+"/"+name);
+						var meta = {
+							date : new Date(),
+							extention:files[file].getExtention(),
+							file:path+"/"+name,
+							name:name,
+							old_name:files[file].name,
+							size:files[file].stats.size,
+							size2:files[file].stats.size,
+							type:files[file].getMimeType().split("/")
+						}
+						res.metas.push(meta);
+					}
+					return this.renderResponse(
+						JSON.stringify(res), 
+						200, 
+						{'Content-Type': 'application/json; charset=utf-8'}
+					);
+				}
+			}	
+		}
+		// RETURN  class
+		return demoController;
+});
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h3>Redirecting and Forwarding :</h3>
+<div id="redirect" class="doc3 ">
+	<div  class="panel panel-info">
+		<div class="panel-heading"><strong>Redirecting and Forwarding</strong>  </div>
+		<div class="panel-body ">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-target="#redirect1" data-toggle="tab">Redirect</a></li>
+  				<li role="presentation" ><a data-target="#forward" data-toggle="tab">Forward</a></li>
+  				<li role="presentation" ><a data-target="#genarate" data-toggle="tab">generateUrl</a></li>
+			</ul>	
+			<div class="tab-content ">
+				<div id="redirect1" class="tab-pane active">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
+redirectGoogleAction (){
+	// status 301 or 302
+	return <strong>this.redirect</strong>("http://google.com");
+};
+					</pre>	
+				</div>
+				<div id="forward" class="tab-pane">
+					<br>
+					<p>
+					
+					</p>
+					<pre>
+forwardAction (){
+	var docBundle = this.get("kernel").getBundles("documentation"); 
+	if (  docBundle ){
+		return <strong>this.forward</strong>("documentationBundle:default:navDoc");
+	}
+	return this.render('demoBundle:Default:navDoc.html.twig');	
+}	
+					</pre>	
+				</div>
+				<div id="genarate" class="tab-pane ">
+					<pre>
+generateUrlAction (){
+	// absolute
+	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"}, true) );	
+
+	// relative
+	return this.redirect ( <strong>this.generateUrl</strong>("user", {name:"cci"} );
+};
+
+					</pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

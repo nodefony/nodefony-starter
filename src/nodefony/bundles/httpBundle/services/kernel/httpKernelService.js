@@ -30,6 +30,7 @@ nodefony.registerService("httpKernel", function(){
 			this.httpsPort = this.kernel.httpsPort;
 
 			this.container.addScope("request");
+			this.container.addScope("subRequest");
 			this.listen(this, "onServerRequest" , (request, response, type, domain) => {
 				try {
 					this.handle(request, response, type, domain);
@@ -40,6 +41,7 @@ nodefony.registerService("httpKernel", function(){
 			this.firewall = null ;
 			this.listen(this, "onReady", () => {
 				this.firewall = this.get("security") ;
+				this.router = this.container.get("router") ;
 			});
 			// listen KERNEL EVENTS
 			this.listen(this, "onBoot",() =>{
@@ -299,19 +301,19 @@ nodefony.registerService("httpKernel", function(){
 			}
 			switch (error.status){
 				case 404:
-					resolver = container.get("router").resolveName(container, "frameworkBundle:default:404");
+					resolver = this.router.resolveName(container, "frameworkBundle:default:404");
 				break;
 				case 401:
-					resolver = container.get("router").resolveName(container, "frameworkBundle:default:401");
+					resolver = this.router.resolveName(container, "frameworkBundle:default:401");
 				break;
 				case 403:
-					resolver = container.get("router").resolveName(container, "frameworkBundle:default:403");
+					resolver = this.router.resolveName(container, "frameworkBundle:default:403");
 				break;
 				case 408:
-					resolver = container.get("router").resolveName(container, "frameworkBundle:default:timeout");
+					resolver = this.router.resolveName(container, "frameworkBundle:default:timeout");
 				break;
 				default:
-					resolver = container.get("router").resolveName(container, "frameworkBundle:default:exceptions");
+					resolver = this.router.resolveName(container, "frameworkBundle:default:exceptions");
 					error.status = 500 ;
 			}
 			context.response.setStatusCode(error.status || 500, error.message ) ;
@@ -344,6 +346,7 @@ nodefony.registerService("httpKernel", function(){
 				break;
 			}
 		}
+
 
 		handleHttp (container, request, response, type, domain){
 			var context = new nodefony.context.http(container, request, response, type);
@@ -379,7 +382,7 @@ nodefony.registerService("httpKernel", function(){
 			var resolver = null ;
 			// FRONT ROUTER 
 			try {
-				resolver  = this.get("router").resolve(container, context);
+				resolver  = this.router.resolve(container, context);
 			}catch(e){
 				return context.notificationsCenter.fire("onError", container, e );	
 			}
@@ -451,7 +454,7 @@ nodefony.registerService("httpKernel", function(){
 			var resolver = null ;
 			// FRONT ROUTER 
 			try {
-				resolver  = this.get("router").resolve(container, context);
+				resolver  = this.router.resolve(container, context);
 			}catch(e){
 				return context.notificationsCenter.fire("onError", container, e );	
 			}
