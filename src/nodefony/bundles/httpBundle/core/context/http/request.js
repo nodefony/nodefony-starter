@@ -151,12 +151,19 @@ nodefony.register("Request",function(){
 		}
 
 		clean (){
+			this.data = null ;
 			delete 	this.data ;
+			this.body = null ;
 			delete  this.body ; 
+			this.queryPost = null ;
 			delete	this.queryPost ;
+			this.queryFile = null;
 			delete	this.queryFile;
+			this.queryGet = null ;
 			delete	this.queryGet;
+			this.query = null ;
 			delete  this.query ;
+			this.request = null ;
 			delete  this.request ;
 		}
 

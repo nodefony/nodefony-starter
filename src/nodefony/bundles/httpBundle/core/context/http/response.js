@@ -45,11 +45,14 @@ nodefony.register("Response",function(){
 		}
 
 		clean (){
-			delete this.response ;	
-			delete this.cookies ;
-			delete this.headers ;
-			delete this.body ;
-		
+			this.response = null  ;	
+			delete this.response ;
+			this.cookies = null  ;
+			delete this.cookies   ;
+			this.headers= null  ;
+			delete this.headers  ;
+			this.body= null  ;
+			delete this.body  ;
 		}
 
 		setTimeout (ms){

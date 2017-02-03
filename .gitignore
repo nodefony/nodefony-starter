@@ -23,6 +23,7 @@ config/certificates/**/*
 # macos
 .DS_Store
 
+.srl
 # Eclipse file
 /.project
 /.settings

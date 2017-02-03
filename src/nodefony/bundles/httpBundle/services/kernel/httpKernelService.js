@@ -356,15 +356,18 @@ nodefony.registerService("httpKernel", function(){
 				//console.log("FINISH")
 				context.fire("onFinish", context);
 				this.container.leaveScope(container);
+				context.extendTwig = null ;
 				delete context.extendTwig ;
-				if (context.proxy) { delete context.proxy ; }
+				context.proxy = null ;
+				delete context.proxy ; 
 				context.clean();
 				context = null ;
 				request = null ;
 				response = null ;
 				container = null ;
-				//translation = null ;
+				type =null ;
 				if (domain) {
+					domain.container = null ;
 					delete domain.container ;
 					domain = null ;
 				}

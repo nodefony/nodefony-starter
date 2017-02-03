@@ -13,8 +13,6 @@ nodefony.register("Bundle", function(){
 	var regService = /^(.+)Service.js$/;
 	var regCommand = /^(.+)Command.js$/;
 	var regEntity = /^(.+)Entity.js$/;
-
-
 	/*
  	 *	BUNDLE CLASS
  	 */
@@ -28,9 +26,9 @@ nodefony.register("Bundle", function(){
 			this.kernel = kernel ;
 			this.waitBundleReady = false ;
 			this.locale = this.kernel.settings.system.locale ;
-			var config = this.container.getParameters("bundles."+this.name) ;
+			var config = this.getParameters("bundles."+this.name) ;
 			if ( ! config ){
-				this.container.setParameters("bundles."+this.name, {});
+				this.setParameters("bundles."+this.name, {});
 			}
 			try {
 				this.finder = new nodefony.finder( {
@@ -46,7 +44,7 @@ nodefony.register("Bundle", function(){
 			this.entities = {};
 			this.fixtures = {};
 
-			this.reader = this.container.get("kernel").reader;
+			this.reader = this.kernel.reader;
 			
 			try {
 				this.resourcesFiles = this.finder.result.findByNode("Resources") ;
@@ -62,7 +60,7 @@ nodefony.register("Bundle", function(){
 			this.kernel.readConfig.call(this, null, this.resourcesFiles.findByNode("config") ,(result) => {
 				this.parseConfig(result);
 			});
-			this.regTemplateExt = new RegExp("^(.+)\."+this.container.get("templating").extention+"$");
+			this.regTemplateExt = new RegExp("^(.+)\."+this.get("templating").extention+"$");
 		}
 	
 		parseConfig (result){
@@ -73,7 +71,7 @@ nodefony.register("Bundle", function(){
 					switch (true){
 						case /^(.*)Bundle$/.test(ele) :
 							var name = /^(.*)Bundle$/.exec(ele);
-							config = this.container.getParameters("bundles."+name[1]);
+							config = this.getParameters("bundles."+name[1]);
 							if ( config ){
 								ext = nodefony.extend(true, {}, config , result[ele]);
 								this.logger("\x1b[32m OVERRIDING\x1b[0m  CONFIG bundle  : "+name[1]  ,"WARNING");
@@ -85,9 +83,9 @@ nodefony.register("Bundle", function(){
 							}
 							if ( this.kernel.bundles[name[1]] ){
 								this.kernel.bundles[name[1]].settings = ext ; 
-								this.container.setParameters("bundles."+name[1], this.kernel.bundles[name[1]].settings); 
+								this.setParameters("bundles."+name[1], this.kernel.bundles[name[1]].settings); 
 							}else{
-								this.container.setParameters("bundles."+name[1], ext || {}); 
+								this.setParameters("bundles."+name[1], ext || {}); 
 							}
 						break;
 						case /^locale$/.test(ele) :
@@ -95,20 +93,19 @@ nodefony.register("Bundle", function(){
 						break;
 					}
 				}
-				config = this.container.getParameters("bundles."+this.name);
+				config = this.getParameters("bundles."+this.name);
  		        	if ( Object.keys(config).length ){
 					this.logger("\x1b[32m BUNDLE IS ALREADY OVERRIDING BY AN OTHERONE  INVERT\x1b[0m  CONFIG  "+ util.inspect(config)  ,"WARNING");
 					this.settings = nodefony.extend(true, {}, result, config ); 
-					this.container.setParameters("bundles."+this.name, this.settings);
+					this.setParameters("bundles."+this.name, this.settings);
 				}else{
 					this.settings = result ;
-					this.container.setParameters("bundles."+this.name, this.settings);	
+					this.setParameters("bundles."+this.name, this.settings);	
 				}	
 			}
 		}
 
 		logger (pci, severity, msgid,  msg){
-			//var syslog = this.container.get("syslog");
 			if (! msgid) { msgid = "BUNDLE "+this.name.toUpperCase(); }
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
@@ -371,7 +368,7 @@ nodefony.register("Bundle", function(){
 				reg = new RegExp("^(.*)\.("+defaultLocale+")\.(.*)$"); 
 				files = i18nFiles.match(reg);
 				if ( ! files.length() ){
-					var bundleLocal = this.container.getParameters("bundles."+this.name+".locale") ;
+					var bundleLocal = this.getParameters("bundles."+this.name+".locale") ;
 					if ( bundleLocal ){
 						defaultLocale = bundleLocal ; 	
 					}

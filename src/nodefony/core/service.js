@@ -64,10 +64,10 @@ nodefony.register("Service", function(){
 		}
 
 		clean(){
-			delete this.settingsSyslog ;
-			delete this.syslog ;
-			delete this.notificationsCenter;
-			delete this.container;
+			this.settingsSyslog = null ;
+			this.syslog = null  ;
+			this.notificationsCenter = null ;
+			this.container = null ;
 		}
 	
 		logger(pci, severity, msgid,  msg){

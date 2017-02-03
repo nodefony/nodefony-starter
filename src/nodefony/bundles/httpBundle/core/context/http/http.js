@@ -308,17 +308,20 @@ nodefony.register.call(nodefony.context, "http", function(){
 		clean (){
 			this.request.clean();
 			this.response.clean();
-			delete 	this.request ;
-			delete 	this.response ;
-			delete  this.session ;
-			delete  this.cookies ;
-			if (this.proxy) {delete this.proxy ;}
-			if (this.user)  {delete this.user;}
-			if (this.security ) {delete this.security ;}
-			if (this.promise) {delete this.promise;}
-			if (this.translation ) { delete this.translation; }
+			this.request = null  ;
+			this.response = null  ;
+			delete this.response ;
+			delete this.request ;
+			this.session= null  ;
+			this.proxy = null;
+			this.user = null ;
+			this.security= null ;
+			this.promise = null ;
+			this.translation = null ; 
+			delete this.translation ;
 			this.cookies = null ;
-			if (this.cookieSession){ delete this.cookieSession; }
+			this.cookieSession = null ; 
+			delete this.cookieSession ;
 			super.clean();
 			//if (this.profiling) delete context.profiling ;
 		}
