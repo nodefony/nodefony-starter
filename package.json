@@ -50,7 +50,8 @@
     "pm2":		"2.3.0",
     "jshint":		"2.9.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "author": "cci <christophe.camensuli@gmail.com>",
   "readmeFilename": "README.md",
   "contributors": [

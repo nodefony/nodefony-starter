@@ -1,7 +1,6 @@
-#!/usr/bin/env node --no-warnings --no-deprecation --expose-gc
+#!/usr/bin/env node 
 
 const cluster = require('cluster');	
-
 
 // AUTOLOADER 
 const autoloader = require("./vendors/nodefony/core/autoloader");

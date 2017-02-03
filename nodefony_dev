@@ -1,12 +1,14 @@
-#!/usr/bin/env node  --expose-gc
-//--expose-gc
+#!/usr/bin/env node
+
+// --expose-gc --trace-gc --log-gc --trace-gc-verbose
 //--debug
 
-//var profiler = require('v8-profiler');
-//var heapdump = require('heapdump');
-//heapdump.writeSnapshot(process.cwd()+'/tmp/' + Date.now() + '.heapsnapshot', function(err, filename) {
-//	console.log('heapdump written to', filename);
-//});
+
+/*var profiler = require('v8-profiler');
+var heapdump = require('heapdump');
+heapdump.writeSnapshot(process.cwd()+'/tmp/' + Date.now() + '.heapsnapshot', function(err, filename) {
+	console.log('heapdump written to', filename);
+});*/
 
 /*
  *
@@ -19,7 +21,6 @@
 const autoloader = require("./vendors/nodefony/core/autoloader");
 autoloader.setEnv("dev");
 autoloader.load("./app/appKernel.js");
-
 
 process.env["MODE_START"] = "NODEFONY_DEV" ;
 

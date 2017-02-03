@@ -31,18 +31,36 @@ nodefony.register("kernel", function(){
 					this.ready = true ;
 					this.fire("onPostReady", this);
 					this.logger("\x1B[33m EVENT KERNEL POST READY\x1b[0m", "DEBUG");
-					if ( this.type === "SERVER" && global && global.gc){
-						this.logger("MEMORY POST READY :"+process.memoryUsage().heapUsed, "INFO");
-						setTimeout(()=>{
-							global.gc();
-							this.logger("EXPOSE GARBADGE COLLECTOR ON START ==> MEMORY :"+process.memoryUsage().heapUsed, "INFO");
-						},5000)
+					if ( this.type === "SERVER" ){
+						if (  global && global.gc ){
+							this.logger("MEMORY POST READY :", "INFO");
+							this.memoryUsage() ;
+							setTimeout(()=>{
+								global.gc();
+								this.logger("EXPOSE GARBADGE COLLECTOR ON START ==> MEMORY :", "INFO");
+								this.memoryUsage() ;
+							},5000)
+						}else{
+							this.logger("MEMORY POST READY :", "INFO");
+							this.memoryUsage() ;	
+						}
 					}
 				}catch(e){
 					this.logger(e, "ERROR");
 				}
 			});
 		}
+	};
+
+	var niceBytes = function (x){
+  		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+    		    n = parseInt(x, 10) || 0, 
+    		    l = 0;        
+  		while(n >= 1024){
+      			n = n/1024;
+      			l++;
+  		}
+  		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
 	};
 
 	
@@ -608,6 +626,26 @@ nodefony.register("kernel", function(){
 							break;
 					}
 				});
+			}
+		}
+
+		memoryUsage (){
+			var memory =  process.memoryUsage() ;
+			for ( var ele in memory ){
+				switch (ele ){
+					case "rss" :
+						this.logger(ele + " ( Resident Set Size ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;		
+					break;
+					case "heapTotal" :
+						this.logger(ele + " ( Total Size of the Heap ) : " + niceBytes( memory[ele] ) , "INFO","MEMORY " + ele) ;		
+					break;
+					case "heapUsed" :
+						this.logger(ele + " ( Heap actually Used ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;		
+					break;
+					case "external" :
+						this.logger(ele + " : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;		
+					break;
+				}
 			}
 		}
 

@@ -13,7 +13,6 @@ services:
   - mysql
   - memcached
   - elasticsearch
-  - nodejs-legacy
   
 env:
   - DB=sqlite
