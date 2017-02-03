@@ -31,7 +31,7 @@ nodefony.register("kernel", function(){
 					this.ready = true ;
 					this.fire("onPostReady", this);
 					this.logger("\x1B[33m EVENT KERNEL POST READY\x1b[0m", "DEBUG");
-					if ( global ){
+					if ( this.type === "SERVER" && global && global.gc){
 						this.logger("MEMORY POST READY :"+process.memoryUsage().heapUsed, "INFO");
 						setTimeout(()=>{
 							global.gc();

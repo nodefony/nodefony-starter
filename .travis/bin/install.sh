@@ -13,6 +13,9 @@ fi
 #configuring the system
 make build
 
+#configuring the system
+ln -s /usr/bin/nodejs /usr/bin/node
+
 if [ "$DB" = "mysql" ]
 then
 	make deploy & 
