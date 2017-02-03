@@ -1,9 +1,12 @@
-#!/usr/bin/env node 
+#!/usr/bin/env node  --expose-gc
+//--expose-gc
 //--debug
 
 //var profiler = require('v8-profiler');
 //var heapdump = require('heapdump');
-//heapdump.writeSnapshot();
+//heapdump.writeSnapshot(process.cwd()+'/tmp/' + Date.now() + '.heapsnapshot', function(err, filename) {
+//	console.log('heapdump written to', filename);
+//});
 
 /*
  *

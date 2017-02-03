@@ -31,7 +31,13 @@ nodefony.register("kernel", function(){
 					this.ready = true ;
 					this.fire("onPostReady", this);
 					this.logger("\x1B[33m EVENT KERNEL POST READY\x1b[0m", "DEBUG");
-
+					if ( global ){
+						this.logger("MEMORY POST READY :"+process.memoryUsage().heapUsed, "INFO");
+						setTimeout(()=>{
+							global.gc();
+							this.logger("EXPOSE GARBADGE COLLECTOR ON START ==> MEMORY :"+process.memoryUsage().heapUsed, "INFO");
+						},5000)
+					}
 				}catch(e){
 					this.logger(e, "ERROR");
 				}
