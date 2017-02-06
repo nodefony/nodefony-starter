@@ -80,11 +80,11 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.promise = null ;
 
 			// LISTEN EVENTS KERNEL 
-			this.listen(this, "onView", (result/*, context, view, param*/) => {
-				if ( this.response ){
-					this.response.body = result;
-				}
-			});
+			//this.listen(this, "onView", (result/*, context, view, param*/) => {
+			//	if ( this.response ){
+			//		this.response.body = result;
+			//	}
+			//});
 
 			this.once( this, "onRequest" , this.handle );
 			this.once(this, "onResponse", this.send);
@@ -304,12 +304,11 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}
 		}
 
-
 		clean (){
 			this.request.clean();
 			this.response.clean();
-			this.request = null  ;
-			this.response = null  ;
+			this.request = null ;
+			this.response = null ;
 			delete this.response ;
 			delete this.request ;
 			this.session = null  ;

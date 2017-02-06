@@ -16,9 +16,8 @@ nodefony.register("Response",function(){
 			this.container = container ;
 			if (response instanceof  http.ServerResponse){
 				this.response = response;
-			}else{
-				this.container.get("notificationsCenter").listen(this,"onView", this.setBody);
 			}
+			this.container.get("notificationsCenter").listen(this,"onView", this.setBody);
 			//BODY
 			this.body = "";
 			this.encoding = this.setEncoding('utf8');

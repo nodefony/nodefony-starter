@@ -68,6 +68,7 @@ nodefony.register("Service", function(){
 			delete this.settingsSyslog ;
 			this.syslog = null  ;
 			delete this.syslog ;
+			this.removeAllListeners();
 			this.notificationsCenter = null ;
 			delete this.notificationsCenter ;
 			this.container = null ;
