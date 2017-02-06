@@ -152,7 +152,7 @@ nodefony.register("Request",function(){
 
 		clean (){
 			this.data = null ;
-			delete 	this.data ;
+			delete this.data ;
 			this.body = null ;
 			delete  this.body ; 
 			this.queryPost = null ;
@@ -165,6 +165,8 @@ nodefony.register("Request",function(){
 			delete  this.query ;
 			this.request = null ;
 			delete  this.request ;
+			this.container = null ;
+			delete this.container ;
 		}
 
 		/*acceptLanguage (request){

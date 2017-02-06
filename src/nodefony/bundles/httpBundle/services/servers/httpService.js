@@ -60,14 +60,14 @@ nodefony.registerService("http", function(){
 		}
 	
 		createServer (/*port, domain*/){
-			this.settings = this.get("container").getParameters("bundles.http").http || null ;
+			this.settings = this.getParameters("bundles.http").http || null ;
 
 			this.server = http.createServer((request, response) => {
 				response.setHeader("Server", "nodefony");
 				if ( this.kernel.settings.system.statics ){
 					this.httpKernel.serverStatic.handle(request, response , () => {
 						//this.createZone(request, response);
-						var d = nodedomain.create();
+						/*var d = nodedomain.create();
 						d.on('error', (er) => {
 							if ( d.container ){
 								this.httpKernel.onError( d.container, er.stack,  "ERROR");
@@ -79,10 +79,11 @@ nodefony.registerService("http", function(){
 						d.add(response);
 						d.run(() => {
 							this.fire("onServerRequest", request, response, this.type, d);
-						});
+						});*/
+						this.fire("onServerRequest", request, response, this.type);
 					});
 				}else{
-					var d = nodedomain.create();
+					/*var d = nodedomain.create();
 					d.on('error', (er) => {
 						if ( d.container ){
 							this.httpKernel.onError( d.container, er.stack);
@@ -94,7 +95,8 @@ nodefony.registerService("http", function(){
 					d.add(response);
 					d.run( () => {
 						this.fire("onServerRequest", request, response, this.type, d);
-					});	
+					});*/	
+					this.fire("onServerRequest", request, response, this.type);
 				}
 			});
 			

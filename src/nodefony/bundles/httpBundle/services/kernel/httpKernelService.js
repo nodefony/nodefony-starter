@@ -348,41 +348,35 @@ nodefony.registerService("httpKernel", function(){
 		}
 
 
-		handleHttp (container, request, response, type, domain){
+		handleHttp (container, request, response, type){
 			var context = new nodefony.context.http(container, request, response, type);
+			var resolver = null ;
+			var next = null ;
 			container.set("context", context);
 			//response events	
 			context.response.response.on("finish",() => {
 				//console.log("FINISH")
 				context.fire("onFinish", context);
 				this.container.leaveScope(container);
-				context.extendTwig = null ;
-				delete context.extendTwig ;
-				context.proxy = null ;
-				delete context.proxy ; 
 				context.clean();
 				context = null ;
 				request = null ;
 				response = null ;
 				container = null ;
-				type =null ;
-				if (domain) {
-					domain.container = null ;
-					delete domain.container ;
-					domain = null ;
-				}
+				resolver = null ;
+				type = null ;
+				next = null ;
 			});
 			
 			//request events	
 			context.notificationsCenter.listen(this, "onError", this.onError);
 
 			// DOMAIN VALID 
-			var next = this.checkValidDomain(context) ;
+			next = this.checkValidDomain(context) ;
 			if ( next !== 200){
 				return ;
 			}
 			
-			var resolver = null ;
 			// FRONT ROUTER 
 			try {
 				resolver  = this.router.resolve(container, context);
@@ -410,12 +404,12 @@ nodefony.registerService("httpKernel", function(){
 									throw new Error("SESSION START session storage ERROR");
 								}
 								this.logger("AUTOSTART SESSION","DEBUG");
-								context.notificationsCenter.fire("onRequest",container, request, response );
+								context.notificationsCenter.fire("onRequest");
 							}).catch( (error) =>{
 								return error;
 							});
 						}else{
-							context.notificationsCenter.fire("onRequest",container, request, response );	
+							context.notificationsCenter.fire("onRequest");	
 						}
 					}catch(e){
 						context.notificationsCenter.fire("onError", container, e );	
@@ -426,24 +420,22 @@ nodefony.registerService("httpKernel", function(){
 			this.fire("onSecurity", context);	
 		}
 
-		handleWebsocket (container, request, response, type, domain){
+		handleWebsocket (container, request, response, type){
 			var context = new nodefony.context.websocket(container, request, response, type);
 			container.set("context", context);
+			var resolver = null ;
+			var next = null ;
 
 			context.listen(this,"onClose" , (reasonCode, description) => {
 				context.fire("onFinish", context, reasonCode, description);
-				delete 	context.extendTwig ;
 				context.clean();
 				context = null ;
-				//if (context.profiling) delete context.profiling ;
 				request = null ;
 				response = null ;
 				container = null ;
-				//translation = null ;
-				if (domain) {
-					delete domain.container ;
-					domain = null ;
-				}
+				type = null ;
+				next = null ;
+				resolver = null ;
 			});
 			
 			//context.notificationsCenter.listen(this, "onError", this.onErrorWebsoket);	
@@ -454,7 +446,6 @@ nodefony.registerService("httpKernel", function(){
 				return ;
 			}
 
-			var resolver = null ;
 			// FRONT ROUTER 
 			try {
 				resolver  = this.router.resolve(container, context);
@@ -482,12 +473,12 @@ nodefony.registerService("httpKernel", function(){
 								throw new Error("SESSION START session storage ERROR");
 							}
 							this.logger("AUTOSTART SESSION","DEBUG");
-							context.notificationsCenter.fire("onRequest",container, request, response );
+							context.notificationsCenter.fire("onRequest");
 						}).catch( (error) =>{
 							return error;
 						});
 					}else{
-						context.notificationsCenter.fire("onRequest",container, request, response );	
+						context.notificationsCenter.fire("onRequest");	
 					}
 				}catch(e){
 					context.notificationsCenter.fire("onError", container, e );	

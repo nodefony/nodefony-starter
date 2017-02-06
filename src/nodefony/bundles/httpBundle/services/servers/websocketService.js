@@ -34,7 +34,7 @@ nodefony.registerService("websocket", function(){
 			this.bundle.listen(this, "onServersReady", function(type){
 				if ( type === "HTTP"){
 					try {
-						this.settings = this.get("container").getParameters("bundles.http").websocket || {} ;
+						this.settings = this.getParameters("bundles.http").websocket || {} ;
 
 						this.websocketServer =  new WebSocketServer.server(nodefony.extend({}, this.settings, {
 							httpServer: http
@@ -42,18 +42,19 @@ nodefony.registerService("websocket", function(){
 
 											
 						this.websocketServer.on('request', (request) => {
-							var d = nodedomain.create();
-								d.on('error', (er) => {
-									if ( d.container ){
-										this.httpKernel.onErrorWebsoket( d.container, er.stack);
-									}else{
-										this.logger(er.stack, "ERROR");
-									}
-								});
-								d.add(request);
-								d.run( () => {
-									this.fire("onServerRequest", request, null, this.type, d);
-								});
+							/*var d = nodedomain.create();
+							d.on('error', (er) => {
+								if ( d.container ){
+									this.httpKernel.onErrorWebsoket( d.container, er.stack);
+								}else{
+									this.logger(er.stack, "ERROR");
+								}
+							});
+							d.add(request);
+							d.run( () => {
+								this.fire("onServerRequest", request, null, this.type, d);
+							});*/
+							this.fire("onServerRequest", request, null, this.type);
 						} );
 
 						this.kernel.listen(this, "onTerminate",() => {

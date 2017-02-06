@@ -49,10 +49,10 @@ nodefony.register("Service", function(){
 					throw new Error ("Service nodefony notificationsCenter not valid must be instance of nodefony.notificationsCenter.notification");
 				}
 				this.notificationsCenter = nodefony.notificationsCenter.create(options, this, options.nbListener);
-				if (! this.container.get("kernel")){
+				if (! this.kernel ){
 					this.set("notificationsCenter", this.notificationsCenter);
 				}else{
-					if ( this.container.get("kernel").container !== this.container ){
+					if ( this.kernel.container !== this.container ){
 						this.set("notificationsCenter", this.notificationsCenter);
 					}
 				}	
@@ -65,9 +65,15 @@ nodefony.register("Service", function(){
 
 		clean(){
 			this.settingsSyslog = null ;
+			delete this.settingsSyslog ;
 			this.syslog = null  ;
+			delete this.syslog ;
 			this.notificationsCenter = null ;
+			delete this.notificationsCenter ;
 			this.container = null ;
+			delete this.container ;
+			this.kernel = null ;
+			delete this.kernel ;
 		}
 	
 		logger(pci, severity, msgid,  msg){

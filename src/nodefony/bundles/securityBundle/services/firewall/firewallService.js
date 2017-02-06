@@ -193,7 +193,7 @@ nodefony.registerService("firewall", function(){
 						}else{
 							context.setXjson(e);
 						}
-						context.notificationsCenter.fire("onRequest",context.container, context.request, context.response );
+						context.notificationsCenter.fire("onRequest");
 					}else{
 						if (e.status){
 							context.notificationsCenter.fire("onError",context.container, {
@@ -260,10 +260,9 @@ nodefony.registerService("firewall", function(){
 								message:"OK",
 								status:200,
 							});
-							return context.notificationsCenter.fire("onRequest",context.container, context.request, context.response, obj );
+							return context.notificationsCenter.fire("onRequest", obj );
 						}else{
 							return this.redirect(context, target);
-							//return context.notificationsCenter.fire("onRequest", context.container, context.request, context.response);
 						}
 						
 					});	
@@ -466,7 +465,7 @@ nodefony.registerService("firewall", function(){
 										if ( meta ){
 											context.user = meta.userFull ; 		
 										}
-										return context.notificationsCenter.fire("onRequest", context.container, request, response);
+										return context.notificationsCenter.fire("onRequest");
 									}catch(error){
 										return context.notificationsCenter.fire("onError", context.container, error );
 									}
@@ -474,7 +473,7 @@ nodefony.registerService("firewall", function(){
 									return context.notificationsCenter.fire("onError", context.container, error );	
 								});
 							}else{
-								return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+								return context.notificationsCenter.fire("onRequest");	
 							}
 						}
 					}catch(e){
@@ -537,7 +536,7 @@ nodefony.registerService("firewall", function(){
 									if ( meta ){
 										context.user = meta.userFull ; 		
 									}
-									return context.notificationsCenter.fire("onRequest", context.container, request, response);
+									return context.notificationsCenter.fire("onRequest");
 								}catch(error){
 									return context.notificationsCenter.fire("onError", context.container, error );
 								}
@@ -545,7 +544,7 @@ nodefony.registerService("firewall", function(){
 								return context.notificationsCenter.fire("onError", context.container, error );
 							});	
 						}else{
-							return context.notificationsCenter.fire("onRequest", context.container, request, response);	
+							return context.notificationsCenter.fire("onRequest");	
 						}
 					}	
 				}catch(e){
@@ -596,7 +595,7 @@ nodefony.registerService("firewall", function(){
 						}
 					}.bind(this)) ;*/
 				}
-				return context.notificationsCenter.fire("onRequest", context.container, request, response);
+				return context.notificationsCenter.fire("onRequest");
 
 			}catch(e){
 				if ( context.security ){
