@@ -1,0 +1,86 @@
+
+
+{% extends "src/bundles/demoBundle/Resources/views/layouts/layout.html.twig" %}
+
+
+{% block title %} WEB AUDIO API ( MIX ){% endblock %}
+
+{% block stylesheets %}
+
+	{{ parent() }}
+	
+	{% stylesheets  output="/demoBundle/assets/css/audio.css" filter="?uglifycss" 
+		"/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
+	    	"/frameworkBundle/vendors/bootstrap/css/bootstrap-theme.css"
+        	"/frameworkBundle/vendors/font-awesome/css/font-awesome.min.css"
+	    	"/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
+        	"/demoBundle/webaudio/css/clean/style.css"
+		"/demoBundle/webaudio/css/bootstrap-slider.css"
+		"/demoBundle/webaudio/css/wai.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	{% javascripts output='/demoBundle/assets/js/audio.js' filter='?uglifyjs2'
+		"/frameworkBundle/vendors/twig/twig.js"
+		"/vendors/stage/crypto/base64.js"
+		"/vendors/stage/crypto/md5.js"
+		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"
+		"/vendors/stage/io/authentication/sasl/sasl.js"
+		"/vendors/stage/io/transports/socket.js"
+		"/vendors/stage/io/protocols/bayeux/bayeux.js"
+		"/vendors/stage/io/realtime/realtime.js"
+		"/vendors/stage/kernel/autoload.js"
+		"/vendors/stage/kernel/kernel.js"
+		"/vendors/stage/kernel/appKernel.js"
+		"/vendors/stage/kernel/container.js"
+		"/vendors/stage/kernel/routerService.js"
+		"/vendors/stage/kernel/controller.js"
+		"/vendors/stage/kernel/module.js"
+		"/vendors/stage/kernel/translationService.js"
+		"/vendors/stage/kernel/locationService.js"
+		"/vendors/stage/media/adapter.js"
+		"/vendors/stage/media/media2.js"
+		"/demoBundle/webaudio/js/excanvas.js"
+		"/demoBundle/webaudio/js/jquery.knob.js"
+		"/demoBundle/webaudio/js/bootstrap-slider.js"
+		"/demoBundle/webaudio/js/mix2.js"
+	%}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+
+	<script type="text/javascript">
+		var App = new stage.appKernel(null, "dev", {
+			debug: true,
+			location: {
+				html5Mode: false
+			},
+			onLoad: function(kernel){
+			},
+			onReady: function(kernel){
+			},
+			
+			onBoot: function(kernel){
+			},
+			onDomLoad: function(kernel){		
+				var mix = new stage.mix2();
+				mix.build($('.centered'));		
+				mix.start();	
+			}
+		});
+	</script>
+	
+{% endblock %}
+
+{% block body %}
+	{{ parent() }}
+	<div class="centered"></div>
+{% endblock %}

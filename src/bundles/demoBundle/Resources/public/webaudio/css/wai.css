@@ -1,0 +1,239 @@
+@CHARSET "UTF-8";
+
+body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: auto;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /*transform: translate(-50%, -50%);*/
+  width: 800px;
+  height: 645px;
+  margin-left: -400px;
+  margin-top: -322px;
+  padding: 20px;
+}
+
+.table {
+	margin: 0;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.full-width-height {
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.auto-scroll {
+	overflow: auto;
+}
+
+.b-l {
+	border-left: 10px #CECECE solid;
+}
+
+.mix-table {
+	min-width: 700px;
+	max-width: 100%;
+	min-height: 500px;
+	max-height: 100%;
+	border: 1px #CECECE solid;
+	border-radius: 5px;
+	display: table;
+}
+
+.table {
+	display: table;
+}
+
+.table-row {
+	display: table-row;
+	width: 100%;
+	height: 100%;
+}
+
+.table-cell {
+	display: table-cell;
+	text-align: center;
+	/*vertical-align: top;
+	position: relative;*/
+}
+
+.w-70 {
+	width: 70px;
+}
+
+.w-80 {
+	width: 80px;
+}
+
+.h-50 {
+	height: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+}
+
+.m-t-10 {
+	margin-top: 10px;
+}
+.m-b-10 {
+	margin-bottom: 10px;
+}
+
+.relative {
+	position: relative;
+}
+
+.tracks {
+	border-right: 1px #CECECE solid;
+	overflow-x: scroll;
+}
+
+.tracks .table {
+	border-right: 5px #CECECE solid;
+}
+
+.title .table-cell, .spectrum .table-cell, .pitch .table-cell, .mediaType .table-cell, .play .table-cell  {
+	border-bottom: 1px #CECECE solid;
+	height: 50px;
+	text-align: center;
+	line-height: 70px;
+	vertical-align: middle;
+}
+
+.title .table-cell {
+	line-height: 15px;
+	max-height: 50px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding: 5px;
+}
+
+.volume {
+	height: 240px;
+}
+
+.spectrum canvas {
+	width: 40px;
+	height: 40px;
+	border-radius: 3px;
+	border: 1px #CECECE solid;
+	margin-top: 5px;
+}
+
+/** SWITCH **/
+
+.switch {
+  margin: auto;
+  position: relative;
+}
+
+.switch label {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+}
+
+.switch input {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.switch {
+  width: 35px;
+  height: 35px;
+}
+
+.switch label {
+  border-radius: 50%;
+  background: #eaeaea;
+  box-shadow:
+      0 3px 5px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.3),
+      inset 0 -5px 5px rgba(100,100,100,0.1),
+      inset 0 5px 5px rgba(255,255,255,0.3);
+}
+
+.switch label:after {
+  content: "";
+  position: absolute;
+  top: -8%; right: -8%; bottom: -8%; left: -8%;
+  z-index: -1;
+  border-radius: inherit;
+  background: #ddd;
+  background: -moz-linear-gradient(#ccc, #fff);
+  background: -ms-linear-gradient(#ccc, #fff);
+  background: -o-linear-gradient(#ccc, #fff);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#ccc), to(#fff));
+  background: -webkit-linear-gradient(#ccc, #fff);
+  background: linear-gradient(#ccc, #fff);
+  box-shadow:
+    inset 0 2px 1px rgba(0,0,0,0.15),
+    0 2px 5px rgba(200,200,200,0.1);
+}
+
+.switch label:before {
+  content: "";
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  border-radius: inherit;
+  left: 40%;
+  top: 40%;
+  background: #969696;
+  background: radial-gradient(40% 35%, #ccc, #969696 60%);
+  box-shadow:
+      inset 0 2px 4px 1px rgba(0,0,0,0.3),
+      0 1px 0 rgba(255,255,255,1),
+      inset 0 1px 0 white;
+}
+
+.switch input:checked ~ label {
+  background: #dedede;
+  background: -moz-linear-gradient(#dedede, #fdfdfd);
+  background: -ms-linear-gradient(#dedede, #fdfdfd);
+  background: -o-linear-gradient(#dedede, #fdfdfd);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#dedede), to(#fdfdfd));
+  background: -webkit-linear-gradient(#dedede, #fdfdfd);
+  background: linear-gradient(#dedede, #fdfdfd);
+}
+
+.switch input:checked ~ label:before {
+  background: #25d025;
+  background: radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+  box-shadow:
+      inset 0 3px 5px 1px rgba(0,0,0,0.1),
+      0 1px 0 rgba(255,255,255,0.4),
+      0 0 10px 2px rgba(0, 210, 0, 0.5);
+}
+
+.spectrum video, .mediaType video{
+	width: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
+	border: 1px #CECECE solid;
+	border-radius: 2px;    
+}

@@ -196,6 +196,11 @@ redirect:
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
 	
 
+### WEB AUDIO ###
+webAudioApi: 
+  pattern:  /webAudioApi
+  defaults: {controller: "demoBundle:webAudio:mix"}
+
 
 
 
