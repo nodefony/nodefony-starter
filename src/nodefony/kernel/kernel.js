@@ -249,6 +249,7 @@ nodefony.register("kernel", function(){
 			bundles.push("./vendors/nodefony/bundles/frameworkBundle");
 			bundles.push("./vendors/nodefony/bundles/asseticBundle");
 
+			
 			// FIREWALL 
 			if (this.settings.system.security){
 				bundles.push("./vendors/nodefony/bundles/securityBundle");
@@ -267,7 +268,7 @@ nodefony.register("kernel", function(){
 			// ORM MANAGEMENT
 			switch ( this.settings.orm ){
 				case "sequelize" :
-					bundles.push("./vendors/nodefony/bundles/sequelizeBundle");
+					//bundles.push("./vendors/nodefony/bundles/sequelizeBundle");
  				break;
 				default :
 					throw new Error ("nodefony can't load ORM : " + this.settings.orm );

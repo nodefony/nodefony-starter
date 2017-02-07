@@ -22,6 +22,7 @@ nodefony.register("appKernel",function(){
 	 		*	Bundles to register in Application
 	 		*/
 			this.registerBundles([
+				"./src/nodefony/bundles/sequelizeBundle",
 				"./src/nodefony/bundles/documentationBundle",
 				"./src/nodefony/bundles/unitTestBundle",
 				"./src/bundles/demoBundle"
