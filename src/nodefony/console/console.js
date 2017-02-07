@@ -163,7 +163,7 @@ nodefony.register("console", function(){
 				return ;
 			}
 			// MANAGE CLI OPTIONS
-			this.listen(this, "onBoot",function(){
+			this.listen(this, "onPostRegister",function(){
 				try {
 					var ret = this.loadCommand();
 					if (ret){

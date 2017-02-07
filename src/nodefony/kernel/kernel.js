@@ -151,8 +151,6 @@ nodefony.register("kernel", function(){
 				this.autoLoader.deleteCache();
 			});
 
-			this.boot(options);
-			
 			/**
 		 	*	@signals
 		 	*
@@ -196,6 +194,8 @@ nodefony.register("kernel", function(){
 			process.on('uncaughtException', (err) => {
 				this.logger(err, "CRITIC");
 			});
+
+			this.boot(options);
 		}
 				
 		/**
@@ -255,6 +255,15 @@ nodefony.register("kernel", function(){
 				bundles.push("./vendors/nodefony/bundles/securityBundle");
 			}
 
+			// ORM MANAGEMENT
+			switch ( this.settings.orm ){
+				case "sequelize" :
+					bundles.push("./vendors/nodefony/bundles/sequelizeBundle");
+ 				break;
+				default :
+					throw new Error ("nodefony can't load ORM : " + this.settings.orm );
+			}
+
 			// REALTIME
 			if ( this.settings.system.realtime) {
 				bundles.push("./vendors/nodefony/bundles/realTimeBundle");
@@ -265,14 +274,7 @@ nodefony.register("kernel", function(){
 				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			}
 
-			// ORM MANAGEMENT
-			switch ( this.settings.orm ){
-				case "sequelize" :
-					//bundles.push("./vendors/nodefony/bundles/sequelizeBundle");
- 				break;
-				default :
-					throw new Error ("nodefony can't load ORM : " + this.settings.orm );
-			}
+			
 
 			try {
 				this.fire("onPreRegister", this );
