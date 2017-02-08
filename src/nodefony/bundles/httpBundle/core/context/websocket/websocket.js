@@ -296,7 +296,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 			}	
 		}
 
-		handle (container, request, response, data){
+		handle (data){
 			this.translation.handle( this );
 			try {
 				if ( ! this.resolver ){
@@ -316,7 +316,7 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 				if (this.resolver.resolve) {
 					return this.resolver.callController(data || null);
 				}else{
-					request.reject();
+					this.request.reject();
 				}
 			}catch(e){
 				this.fire("onError", this.container, e);	

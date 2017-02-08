@@ -42,15 +42,14 @@ documentation:
   pattern:  /documentation
   defaults: {"controller": "demoBundle:demo:readme"}
 
-### MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE ###
-subscribe: 
-  pattern:  /subscribe
-  defaults: {"controller": "usersBundle:default:login"}
-
 ### MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  ###
 loginAll: 
   pattern:  /login/{type}
   defaults: {"controller": "demoBundle:login:login"}
+
+subscribe: 
+  pattern:  /subscribe
+  defaults: {"controller": "demoBundle:login:subscribe"}
 	
 ### MANAGE SECURE FOR AJAX CHALENGE AND FORM VALID ###
 demoSecure: 
@@ -65,7 +64,7 @@ adduser:
 
 demoLogout: 
   pattern:  /logout
-  defaults: {"controller": "usersBundle:default:logout"}
+  defaults: {"controller": "securityBundle:logout:logout"}
 
 ### ROUTE SECURE  FIRWALL AREA ###
 saslArea: 
@@ -195,6 +194,11 @@ redirect:
   pattern:  /redirect
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
 	
+
+### WEB AUDIO ###
+webAudioApi: 
+  pattern:  /webAudioApi
+  defaults: {controller: "demoBundle:webAudio:mix"}
 
 
 

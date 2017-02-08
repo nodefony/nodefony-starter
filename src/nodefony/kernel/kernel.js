@@ -31,12 +31,33 @@ nodefony.register("kernel", function(){
 					this.ready = true ;
 					this.fire("onPostReady", this);
 					this.logger("\x1B[33m EVENT KERNEL POST READY\x1b[0m", "DEBUG");
-
+					if ( this.type === "SERVER" ){
+						if (  global && global.gc ){
+							this.memoryUsage("MEMORY POST READY ") ;
+							setTimeout(()=>{
+								global.gc();
+								this.memoryUsage("EXPOSE GARBADGE COLLECTOR ON START") ;
+							},5000)
+						}else{
+							this.memoryUsage("MEMORY POST READY ") ;
+						}
+					}
 				}catch(e){
 					this.logger(e, "ERROR");
 				}
 			});
 		}
+	};
+
+	var niceBytes = function (x){
+  		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+    		    n = parseInt(x, 10) || 0, 
+    		    l = 0;        
+  		while(n >= 1024){
+      			n = n/1024;
+      			l++;
+  		}
+  		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
 	};
 
 	
@@ -130,8 +151,6 @@ nodefony.register("kernel", function(){
 				this.autoLoader.deleteCache();
 			});
 
-			this.boot(options);
-			
 			/**
 		 	*	@signals
 		 	*
@@ -175,6 +194,8 @@ nodefony.register("kernel", function(){
 			process.on('uncaughtException', (err) => {
 				this.logger(err, "CRITIC");
 			});
+
+			this.boot(options);
 		}
 				
 		/**
@@ -186,13 +207,13 @@ nodefony.register("kernel", function(){
 			
 			// Manage Reader
 			this.reader = new nodefony.Reader(this.container);
-			this.container.set("reader",this.reader);
-			this.container.set("autoLoader",this.autoLoader);
+			this.set("reader",this.reader);
+			this.set("autoLoader",this.autoLoader);
 
 			this.reader.readConfig(this.configPath, (result) => {
 				this.settings = result;
 				this.settings.environment = this.environment ;
-				this.container.setParameters("kernel", this.settings);
+				this.setParameters("kernel", this.settings);
 				this.httpPort = result.system.httpPort || null;
 				this.httpsPort = result.system.httpsPort || null;
 				this.domain = result.system.domain || null;
@@ -218,7 +239,7 @@ nodefony.register("kernel", function(){
 
 			// Manage Injections
 			this.injection = new nodefony.injection(this.container);
-			this.container.set("injection", this.injection);
+			this.set("injection", this.injection);
 
 			/*
  		 	*	BUNDLES
@@ -228,9 +249,19 @@ nodefony.register("kernel", function(){
 			bundles.push("./vendors/nodefony/bundles/frameworkBundle");
 			bundles.push("./vendors/nodefony/bundles/asseticBundle");
 
+			
 			// FIREWALL 
 			if (this.settings.system.security){
 				bundles.push("./vendors/nodefony/bundles/securityBundle");
+			}
+
+			// ORM MANAGEMENT
+			switch ( this.settings.orm ){
+				case "sequelize" :
+					bundles.push("./vendors/nodefony/bundles/sequelizeBundle");
+ 				break;
+				default :
+					throw new Error ("nodefony can't load ORM : " + this.settings.orm );
 			}
 
 			// REALTIME
@@ -242,6 +273,8 @@ nodefony.register("kernel", function(){
 			if ( this.settings.system.monitoring) {
 				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			}
+
+			
 
 			try {
 				this.fire("onPreRegister", this );
@@ -338,7 +371,7 @@ nodefony.register("kernel", function(){
 	 	*	@method initializeContainer
          	*/
 		initializeContainer (){
-			this.container.set("kernel", this);	
+			this.set("kernel", this);	
 		}
 
 		/**
@@ -473,12 +506,8 @@ nodefony.register("kernel", function(){
 				}
 			};
 			App.prototype.path = this.appPath ;
-			//App.prototype.name = "App";
 			App.prototype.autoLoader = this.autoLoader;
-			//App.prototype.container = this.container;
-			//var func = App.herite(nodefony.Bundle);
 			this.bundles.App = new App("App", this, this.container);
-			//this.logger("\033[32m INITIALIZE APPLICATION   \033[0m","DEBUG");
 			this.readConfigDirectory(this.appPath+"config", (result) => {
 				if (result){
 					this.bundles.App.parseConfig(result);
@@ -567,7 +596,7 @@ nodefony.register("kernel", function(){
 							// ROUTING
 							try {
 								this.logger("ROUTER LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
-								var router = this.container.get("router") ;
+								var router = this.get("router") ;
 								if ( router ){
 									router.reader(ele.path);
 								}else{
@@ -581,7 +610,7 @@ nodefony.register("kernel", function(){
 							try {
 								this.logger("SERVICE LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
 								//this.kernel.listen(this, "onBoot", function(){
-									this.container.get("injection").reader(ele.path);
+									this.get("injection").reader(ele.path);
 								//});
 							}catch(e){
 								this.logger(util.inspect(e),"ERROR","BUNDLE "+this.name.toUpperCase()+" CONFIG SERVICE :"+ele.name);
@@ -589,7 +618,7 @@ nodefony.register("kernel", function(){
 							break;
 						case /^security\..*$/.test(ele.name) :
 							try {
-								var firewall = this.container.get("security") ;
+								var firewall = this.get("security") ;
 								if ( firewall ){
 									this.logger("SECURITY LOAD FILE :"+ele.path ,"DEBUG", "SERVICE KERNEL READER");
 									firewall.reader(ele.path);
@@ -602,6 +631,26 @@ nodefony.register("kernel", function(){
 							break;
 					}
 				});
+			}
+		}
+
+		memoryUsage (message){
+			var memory =  process.memoryUsage() ;
+			for ( var ele in memory ){
+				switch (ele ){
+					case "rss" :
+						this.logger( (message || ele )  + " ( Resident Set Size ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+					break;
+					case "heapTotal" :
+						this.logger( (message || ele ) + " ( Total Size of the Heap ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO","MEMORY " + ele) ;
+					break;
+					case "heapUsed" :
+						this.logger( (message || ele ) + " ( Heap actually Used ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+					break;
+					case "external" :
+						this.logger( (message || ele ) + " PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+					break;
+				}
 			}
 		}
 

@@ -98,6 +98,23 @@ log:
  services:                   "/tmp/servicesNodefony.log"
  #TODO
  rotate:                     false
+
+#
+# ENGINE TEMPLATE
+#
+#       TWIG
+#       https://github.com/justjohn/twig.js
+#
+templating:                     twig
+
+#
+# ENGINE ORM
+#
+#       SEQUELIZE
+#	https://github.com/sequelize/sequelize
+#
+#
+orm:                            sequelize
 	  </pre>
   </div>
 
@@ -216,6 +233,19 @@ log:
 		  <td>String</td>
 		  <td><span class="badge">/tmp/servicesNodefony.log</span></td>
 	  </tr>
+	   <tr> 
+		  <td class="config-parameters">templating</td>
+		  <td>Template Engine  ( only twig for the moment)</td>
+		  <td>String</td>
+		  <td><span class="badge">twig</span></td>
+	  </tr>
+	   <tr> 
+		  <td class="config-parameters">orm</td>
+		  <td>ORM Engine (only Sequelize for the moment)</td>
+		  <td>String</td>
+		  <td><span class="badge">sequelize</span></td>
+	  </tr>
+
 
 
 	  </tbody>  

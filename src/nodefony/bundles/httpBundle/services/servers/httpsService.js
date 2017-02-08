@@ -61,7 +61,7 @@ nodefony.registerService("https", function(){
 		}
 
 		getCertificats (){
-			this.settings = this.get("container").getParameters("bundles.http").https || null ;
+			this.settings = this.getParameters("bundles.http").https || null ;
 			var opt = {
 				keyPath:checkPath(this.settings.certificats.key, this.kernel.rootDir ),
 				certPath:checkPath(this.settings.certificats.cert, this.kernel.rootDir),
@@ -117,7 +117,7 @@ nodefony.registerService("https", function(){
 				response.setHeader("Server", "nodefony");
 				if (  this.kernel.settings.system.statics ){
 					this.httpKernel.serverStatic.handle(request, response , () => {
-						var d = nodedomain.create();
+						/*var d = nodedomain.create();
 						d.on('error', (er) => {
 							if ( d.container ){
 								this.httpKernel.onError( d.container, er.stack);
@@ -129,10 +129,11 @@ nodefony.registerService("https", function(){
 						d.add(response);
 						d.run( () => {
 							this.fire("onServerRequest", request, response, this.type, d);
-						});
+						});*/
+						this.fire("onServerRequest", request, response, this.type);
 					});
 				}else{
-					var d = nodedomain.create();
+					/*var d = nodedomain.create();
 					d.on('error', (er) => {
 						if ( d.container ){
 							this.httpKernel.onError( d.container, er.stack);
@@ -144,7 +145,8 @@ nodefony.registerService("https", function(){
 					d.add(response);
 					d.run( () => {
 						this.fire("onServerRequest", request, response, this.type, d);
-					});	
+					});*/	
+					this.fire("onServerRequest", request, response, this.type);
 				}
 			});
 

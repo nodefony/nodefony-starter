@@ -80,11 +80,11 @@ nodefony.register.call(nodefony.context, "http", function(){
 			this.promise = null ;
 
 			// LISTEN EVENTS KERNEL 
-			this.listen(this, "onView", (result/*, context, view, param*/) => {
-				if ( this.response ){
-					this.response.body = result;
-				}
-			});
+			//this.listen(this, "onView", (result/*, context, view, param*/) => {
+			//	if ( this.response ){
+			//		this.response.body = result;
+			//	}
+			//});
 
 			this.once( this, "onRequest" , this.handle );
 			this.once(this, "onResponse", this.send);
@@ -217,7 +217,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			switch (true){
 				case subRequest.response instanceof nodefony.Response :
 				case subRequest.response instanceof nodefony.wsResponse :
-					return  subRequest.response.body;
+					return subRequest.response.body;
 				case subRequest.response instanceof Promise :
 				case subRequest.response instanceof BlueBird :
 					if ( subRequest.controller.response.body === ""){
@@ -252,7 +252,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}
 		}
 
-		handle (container, request , response, data){
+		handle (data){
 
 			this.setParameters("query.get", this.request.queryGet );
 			if (this.request.queryPost  ){
@@ -293,7 +293,7 @@ nodefony.register.call(nodefony.context, "http", function(){
  			 	*/
 				this.fire("onError", this.container, {
 					status:404,
-					error:"URI :" + request.url,
+					error:"URI :" + this.request.url,
 					message:"not Found"
 				});
 			}catch(e){
@@ -304,23 +304,38 @@ nodefony.register.call(nodefony.context, "http", function(){
 			}
 		}
 
-
 		clean (){
 			this.request.clean();
 			this.response.clean();
-			delete 	this.request ;
-			delete 	this.response ;
-			delete  this.session ;
-			delete  this.cookies ;
-			if (this.proxy) {delete this.proxy ;}
-			if (this.user)  {delete this.user;}
-			if (this.security ) {delete this.security ;}
-			if (this.promise) {delete this.promise;}
-			if (this.translation ) { delete this.translation; }
+			this.request = null ;
+			this.response = null ;
+			delete this.response ;
+			delete this.request ;
+			this.session = null  ;
+			delete this.session ;
+			this.proxy = null;
+			delete this.proxy ;
+			this.user = null ;
+			delete this.user ;
+			this.security= null ;
+			delete this.security ;
+			this.promise = null ;
+			delete this.promise ;
+			this.translation = null ; 
+			delete this.translation ;
 			this.cookies = null ;
-			if (this.cookieSession){ delete this.cookieSession; }
+			delete this.cookies ;
+			this.cookieSession = null ; 
+			delete this.cookieSession ;
+			this.resolver = null ;
+			delete this.resolver ;
+			this.kernelHttp = null ;
+			delete this.kernelHttp ;
+			this.router = null ;
+			delete this.router ;
+			this.autoloadCache = null ;
+			delete this.autoloadCache ;
 			super.clean();
-			//if (this.profiling) delete context.profiling ;
 		}
 
 		getUser (){

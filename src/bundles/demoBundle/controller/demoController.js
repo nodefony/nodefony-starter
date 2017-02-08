@@ -119,7 +119,7 @@ nodefony.registerController("demo", function(){
 				</div>\
 				</div>\
 			</div>';
-			return this.getResponse(html);	
+			return this.renderResponse(html);
 		}
 
 		/**

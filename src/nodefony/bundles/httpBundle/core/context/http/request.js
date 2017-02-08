@@ -151,13 +151,22 @@ nodefony.register("Request",function(){
 		}
 
 		clean (){
-			delete 	this.data ;
+			this.data = null ;
+			delete this.data ;
+			this.body = null ;
 			delete  this.body ; 
+			this.queryPost = null ;
 			delete	this.queryPost ;
+			this.queryFile = null;
 			delete	this.queryFile;
+			this.queryGet = null ;
 			delete	this.queryGet;
+			this.query = null ;
 			delete  this.query ;
+			this.request = null ;
 			delete  this.request ;
+			this.container = null ;
+			delete this.container ;
 		}
 
 		/*acceptLanguage (request){

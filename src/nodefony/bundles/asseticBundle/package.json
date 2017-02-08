@@ -9,8 +9,8 @@
 		"javascript"
 	],
 	"dependencies": {
-		"less": "2.7.1",
-		"uglify-js": "2.7.4",
+		"less": "2.7.2",
+		"uglify-js": "2.7.5",
 		"uglifycss" :"0.0.25"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",

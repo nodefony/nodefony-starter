@@ -16,9 +16,8 @@ nodefony.register("Response",function(){
 			this.container = container ;
 			if (response instanceof  http.ServerResponse){
 				this.response = response;
-			}else{
-				this.container.get("notificationsCenter").listen(this,"onView", this.setBody);
 			}
+			this.container.get("notificationsCenter").listen(this,"onView", this.setBody);
 			//BODY
 			this.body = "";
 			this.encoding = this.setEncoding('utf8');
@@ -45,11 +44,14 @@ nodefony.register("Response",function(){
 		}
 
 		clean (){
-			delete this.response ;	
-			delete this.cookies ;
-			delete this.headers ;
-			delete this.body ;
-		
+			this.response = null  ;	
+			delete this.response ;
+			this.cookies = null  ;
+			delete this.cookies   ;
+			this.headers= null  ;
+			delete this.headers  ;
+			this.body= null  ;
+			delete this.body  ;
 		}
 
 		setTimeout (ms){

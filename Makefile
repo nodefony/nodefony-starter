@@ -79,6 +79,7 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
+	./node_modules/pm2/bin/pm2 update
 	./nodefony_pm2 &
 
 stop:

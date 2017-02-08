@@ -170,7 +170,7 @@ nodefony.registerService("translation", function(){
 					if ( queryGetlang ){
 						Lang  = queryGetlang ;
 					}else{
-						Lang  = context.user.lang;
+						Lang  = context.session.get("lang") || context.user.lang;
 					}
 				}else{
 					Lang =  queryGetlang || context.session.get("lang");

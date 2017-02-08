@@ -10,7 +10,7 @@
 	],
 	"dependencies": {
 		"request": "2.79.0",
-		"useragent": "2.1.9"
+		"useragent": "2.1.12"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"

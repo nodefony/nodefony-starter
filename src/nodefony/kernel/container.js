@@ -124,6 +124,7 @@ nodefony.register("Container", function(){
 			if ( this.scope[scope.name] ){
 				var sc = this.scope[scope.name][scope.id];
 				if (sc){
+					sc.clean();
 					//console.log("pass leaveScope "+ scope.id)
 					delete this.scope[scope.name][scope.id];
 					sc= null ;
@@ -192,6 +193,13 @@ nodefony.register("Container", function(){
     			return super.set(name, obj);
 		}
 
+		clean (){
+			this.services = null ; 
+			delete this.services ;
+			this.parameters = null ;
+			delete this.parameters ;
+		}
+
 		setParameters (name, str){
 			if ( parseParameterString.call(this.parameters, name, str) === str ){
 				return super.setParameters(name, str);
@@ -224,6 +232,16 @@ nodefony.register("Container", function(){
 			this.protoParameters = function(){};
 			this.protoParameters.prototype = nodefony.extend({},this.parent.protoParameters.prototype) ;
 		}
+
+		clean (){
+			this.services = null ; 
+			delete this.services ;
+			this.parameters = null ;
+			delete this.parameters ;
+			this.protoService = null ;
+			this.protoParameters = null ;
+		}
+
 
 		set (name, obj){
     			this.services[name] = obj ;
