@@ -38,6 +38,14 @@
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
+	<script>
+		/* ---------------------------------------------- /*
+		 * LANG IN URL CHANGE
+		/* ---------------------------------------------- */
+		$("#langs").bind("change",function(){
+			window.location.href = "?lang="+$(this).val();
+		})
+	</script>
 {% endblock %}
 
 
