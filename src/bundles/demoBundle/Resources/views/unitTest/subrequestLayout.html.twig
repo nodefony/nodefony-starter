@@ -1,0 +1,22 @@
+{% extends "/app/Resources/views/base.html.twig" %}
+
+
+{% block title %} {{ title }} {% endblock %}
+
+
+{% block body %}
+	
+	{{ render( controller("demoBundle:subRequest:sub" )) }}
+	{{ render( controller("demoBundle:subRequest:sub2" )) }}
+	{{ render( controller("demoBundle:subRequest:sub" )) }}
+	{{ render( controller("demoBundle:subRequest:sub2" )) }}
+	{{ render( controller("demoBundle:subRequest:sub" )) }}
+	{{ render( controller("demoBundle:subRequest:sub2" )) }}
+	{{ render( controller("demoBundle:subRequest:sub" )) }}
+	{{ render( controller("demoBundle:subRequest:sub2" )) }}
+	{{ render( controller("demoBundle:subRequest:sub" )) }}
+	{{ render( controller("demoBundle:subRequest:sub2" )) }}
+	{{ render( controller("demoBundle:subRequest:sub3" )) }}
+
+{% endblock %}
+
