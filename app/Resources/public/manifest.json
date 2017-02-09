@@ -2,7 +2,7 @@
   "name": "Nodefony Framework",
   "short_name": "Nodefony",
   "start_url": ".",
-  "description": "Framework node.js",
+  "description": "Node.js full-stack web framework Symfony Like",
   "launch_path": "/",
   "default_locale": "fr",
   "icons": [{
@@ -11,7 +11,7 @@
     "type": "image/png"
   }],
   "developer": {
-    "name": "CAMENSULI Christophe",
+    "name": "cci",
     "url": "https://nodefony.fr"
   }
 }
