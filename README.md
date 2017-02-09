@@ -9,8 +9,8 @@ The Nodefony project is inspired by the PHP Symfony framework, a developer can f
 
 Nodefony is not an exhaustive port of symfony, nodefony add services like:
 - Web servers (websocket(s), http(s)).
-- Notion of real-time context in the controller.
-- Notion of synchronous or asynchronous execution. 
+- Notion of real-time context in Action Controller (Websocket).
+- Notion of synchronous or asynchronous execution in Action Controller (Promise). 
 
 Now in this version Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
@@ -20,7 +20,7 @@ Evolution priorities up to the stable version will focus on robustness, unit tes
 
 You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nodefony](https://travis-ci.org/nodefony/nodefony)**
 
-##  **Framework Node.js  Symfony Like**
+##  **Resources for Newcomers**
 
 ####-  **[Nodefony Demo](https://nodefony.net)**  
 ####-  **[Nodefony Documentation](https://nodefony.net/documentation)**  
@@ -120,7 +120,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 	#
 	name:                         "NODEFONY"
 	system:                         
-  		version:                      "2.0.1-beta"
+  		version:                      "2.0.2-beta"
 		domain:                       127.0.0.1                    # nodefony can listen only one domain ( no vhost )
 		domainAlias:                  "^localhost$"                # domainAlias string only <<regexp>> the separator is space
   		httpPort:                     5151
@@ -254,7 +254,6 @@ nodefony.register("appKernel",function(){
 			...	
 		};
 	};
-
 	return appKernel;
 })
 ```
@@ -262,6 +261,9 @@ nodefony.register("appKernel",function(){
 ```bash
 $ make 
 $ ./nodefony_dev
+
+# TO STOP
+$ <ctrl-c> 
 ```
 
 Access to bundle route with URL : http://localhost:5151/hello
@@ -291,52 +293,53 @@ Monitoring in progress !!!
 #### NPM : *Will be automatically installed by Makefile*
 
 ```bash
-.-------------------------------------------------------------------------------------------------------------------------------------------------------.
-|                                               NPM NODEFONY PACKAGES                                                                                   |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-|         NAME          | VERSION |					DESCRIPTION                                                                     |
-|-----------------------|---------|---------------------------------------------------------------------------------------------------------------------|
-| chai                  | 3.5.0   | BDD/TDD assertion library for node.js and the browser. Test framework agnostic.                                     |
-| cheerio               | 0.22.0  | Tiny, fast, and elegant implementation of core jQuery designed specifically for the server                          |
-| elasticsearch         | 12.1.0  | The official low-level Elasticsearch client for Node.js and the browser.                                            |
-| less                  | 2.7.1   | Leaner CSS                                                                                                          |
-| memcached             | 2.2.2   | A fully featured Memcached API client, supporting both single and clustered ...					|
-| mocha                 | 3.1.2   | simple, flexible, fun test framework                                                                                |
-| passport              | 0.3.2   | Simple, unobtrusive authentication for Node.js.                                                                     |
-| passport-github2      | 0.1.10  | GitHub authentication strategy for Passport.                                                                        |
-| passport-google-oauth | 1.0.0   | Google (OAuth) authentication strategies for Passport.                                                              |
-| passport-http         | 0.3.0   | HTTP Basic and Digest authentication strategies for Passport.                                                       |
-| passport-ldapauth     | 0.6.0   | LDAP authentication strategy for Passport                                                                           |
-| passport-local        | 1.0.0   | Local username and password authentication strategy for Passport.                                                   |
-| passport-nodefony     | 1.0.6   | Passport strategy wrapper for nodefony framework                                                                    |
-| redis                 | 2.6.3   | Redis client library                                                                                                |
-| sequelize             | 3.27.0  | Multi dialect ORM for Node.JS/io.js                                                                                 |
-| uglify-js             | 2.7.4   | JavaScript parser, mangler/compressor and beautifier toolkit                                                        |
-| uglifycss             | 0.0.25  | Port of YUI CSS Compressor to NodeJS                                                                                |
-| useragent             | 2.1.9   | Fastest, most accurate & effecient user agent string parser, uses Browserscope's research for parsing               |
-| webrtc-adapter        | 2.0.8   | A shim to insulate apps from WebRTC spec changes and browser prefix differences                                     |
-| ascii-table           | 0.0.9   | Easy tables for your console data                                                                                   |
-| asciify               | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                           |
-| connect               | 2.30.2  | High performance middleware framework                                                                               |
-| cookie                | 0.3.1   | HTTP server cookie parsing and serialization                                                                        |
-| js-yaml               | 3.7.0   | YAML 1.2 parser and serializer                                                                                      |
-| markdown-it           | 8.1.0   | Markdown-it - modern pluggable markdown parser.                                                                     |
-| mime                  | 1.3.4   | A comprehensive library for mime-type mapping                                                                       |
-| mkdirp                | 0.5.1   | Recursively mkdir, like `mkdir -p`                                                                                  |
-| mysql                 | 2.12.0  | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed.      |
-| node-getopt           | 0.2.3   | featured command line args parser                                                                                   |
-| node-pre-gyp          | 0.6.31  | Node.js native addon binary install tool                                                                            |
-| nodegit               | 0.16.0  | Node.js libgit2 asynchronous native bindings                                                                        |
-| npm                   | 3.10.9  | a package manager for JavaScript                                                                                    |
-| npmi                  | 2.0.1   | Gives a simplier API to npm install (programatically installs stuffs)                                               |
-| pm2                   | 2.1.5   | Production process manager for Node.JS applications with a built-in load balancer.                                  |
-| promise               | 7.1.1   | Bare bones Promises/A+ implementation                                                                               |
-| shortid               | 2.2.6   | Amazingly short non-sequential url-friendly unique id generator.                                                    |
-| sqlite3               | 3.1.8   | Asynchronous, non-blocking SQLite3 bindings                                                                         |
-| twig                  | 0.10.0  | JS port of the Twig templating language.                                                                            |
-| websocket             | 1.0.23  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                     |
-| xml2js                | 0.4.17  | Simple XML to JavaScript object converter.                                                                          |
-'-------------------------------------------------------------------------------------------------------------------------------------------------------'
+.------------------------------------------------------------------------------------------------------------------------------------------------------.
+|                                                                NPM NODEFONY PACKAGES                                                                 |
+|------------------------------------------------------------------------------------------------------------------------------------------------------|
+|         NAME          | VERSION |                                                    DESCRIPTION                                                     |
+|-----------------------|---------|--------------------------------------------------------------------------------------------------------------------|
+| chai                  | 3.5.0   | BDD/TDD assertion library for node.js and the browser. Test framework agnostic.                                    |
+| cheerio               | 0.22.0  | Tiny, fast, and elegant implementation of core jQuery designed specifically for the server                         |
+| elasticsearch         | 12.1.3  | The official low-level Elasticsearch client for Node.js and the browser.                                           |
+| less                  | 2.7.2   | Leaner CSS                                                                                                         |
+| memcached             | 2.2.2   | A fully featured Memcached API client, supporting both single and clustered Memcached servers through consiste ... |
+| passport              | 0.3.2   | Simple, unobtrusive authentication for Node.js.                                                                    |
+| passport-github2      | 0.1.10  | GitHub authentication strategy for Passport.                                                                       |
+| passport-google-oauth | 1.0.0   | Google (OAuth) authentication strategies for Passport.                                                             |
+| passport-http         | 0.3.0   | HTTP Basic and Digest authentication strategies for Passport.                                                      |
+| passport-ldapauth     | 0.6.0   | LDAP authentication strategy for Passport                                                                          |
+| passport-local        | 1.0.0   | Local username and password authentication strategy for Passport.                                                  |
+| passport-nodefony     | 2.0.2   | Passport strategy wrapper for nodefony framework                                                                   |
+| qs                    | 6.3.0   | A querystring parser that supports nesting and arrays, with a depth limit                                          |
+| sequelize             | 3.30.1  | Multi dialect ORM for Node.JS/io.js                                                                                |
+| uglify-js             | 2.7.5   | JavaScript parser, mangler/compressor and beautifier toolkit                                                       |
+| uglifycss             | 0.0.25  | Port of YUI CSS Compressor to NodeJS                                                                               |
+| useragent             | 2.1.12  | Fastest, most accurate & effecient user agent string parser, uses Browserscope's research for parsing              |
+| yallist               | 2.0.0   | Yet Another Linked List                                                                                            |
+| ascii-table           | 0.0.9   | Easy tables for your console data                                                                                  |
+| asciify               | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                          |
+| bluebird              | 3.4.7   | Full featured Promises/A+ implementation with exceptionally good performance                                       |
+| connect               | 2.30.2  | High performance middleware framework                                                                              |
+| cookie                | 0.3.1   | HTTP server cookie parsing and serialization                                                                       |
+| js-yaml               | 3.8.1   | YAML 1.2 parser and serializer                                                                                     |
+| jshint                | 2.9.4   | Static analysis tool for JavaScript                                                                                |
+| markdown-it           | 8.2.2   | Markdown-it - modern pluggable markdown parser.                                                                    |
+| mime                  | 1.3.4   | A comprehensive library for mime-type mapping                                                                      |
+| mkdirp                | 0.5.1   | Recursively mkdir, like `mkdir -p`                                                                                 |
+| mysql                 | 2.13.0  | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed.     |
+| node-getopt           | 0.2.3   | featured command line args parser                                                                                  |
+| node-pre-gyp          | 0.6.33  | Node.js native addon binary install tool                                                                           |
+| nodegit               | 0.17.0  | Node.js libgit2 asynchronous native bindings                                                                       |
+| npm                   | 4.1.2   | a package manager for JavaScript                                                                                   |
+| npmi                  | 2.0.1   | Gives a simplier API to npm install (programatically installs stuffs)                                              |
+| pm2                   | 2.4.0   | Production process manager for Node.JS applications with a built-in load balancer.                                 |
+| promise               | 7.1.1   | Bare bones Promises/A+ implementation                                                                              |
+| shortid               | 2.2.6   | Amazingly short non-sequential url-friendly unique id generator.                                                   |
+| sqlite3               | 3.1.8   | Asynchronous, non-blocking SQLite3 bindings                                                                        |
+| twig                  | 0.10.3  | JS port of the Twig templating language.                                                                           |
+| websocket             | 1.0.24  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                    |
+| xml2js                | 0.4.17  | Simple XML to JavaScript object converter.                                                                         |
+'------------------------------------------------------------------------------------------------------------------------------------------------------'
 ```
 
 **Big thanks:**

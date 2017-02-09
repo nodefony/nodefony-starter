@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+	{% block head %} {% endblock %}
 	{% block meta %}
 		<meta charset="utf-8">
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -10,17 +11,15 @@
 		<meta name="keywords" content="web,Framework,realtime,node.js,symfony,javascript,npm,linux">
 		<link rel="manifest" href="/app/manifest.json">
 	{% endblock %}
-
-	{% block description %}<meta name="description" content="web Framework realtime node.js symfony like">{% endblock %}
-
+	{% block description %}
+		<meta name="description" content="Node.js full-stack web framework Symfony Like">
+	{% endblock %}
         <title>{% block title %}NODEFONY{% endblock %}</title>
-
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
 	{% block body %}{% endblock %}
 	{% block footer %}{% endblock %}
         {% block javascripts %}{% endblock %}
-	{% block head %} {% endblock %}
     </body>
 </html>

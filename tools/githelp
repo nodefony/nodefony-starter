@@ -23,7 +23,20 @@ $ eval "$(ssh-agent -s)"
 $ ssh-add ~/.ssh/my_github_key/id_rsa
 
 
-// clone git bare on new server git
+/*
+ *	CLONE GIT BARE
+ *	on new server git
+ */
 $ git clone --bare git@olddomain:~/projet.git
 $ git config remote.origin.url git@newdomain:~/projet.git
 
+
+/*
+ *	DELETE branch
+ */
+//local
+git branch -d myBranch
+//remote
+git push origin --delete <branch_name>
+//or 
+git push origin :<branch_name>

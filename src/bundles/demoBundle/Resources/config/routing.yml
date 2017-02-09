@@ -285,3 +285,10 @@ session:
   defaults:     {"controller": "demoBundle:session:session" , "type":"callback"}
   requirements:
     method:     GET ,POST ,WEBSOCKET
+
+
+subrequest:
+  pattern:      /test/unit/subrequest
+  defaults:     {"controller": "demoBundle:subRequest:index" }
+  requirements:
+    method:     GET
