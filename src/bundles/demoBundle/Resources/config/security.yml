@@ -16,11 +16,11 @@ security:
             crossDomain: 
                 allow-origin:           "*"
                 Access-Control:         
-                  access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
-                  access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
-                  access-control-Allow-Credentials:     true
-                  access-control-expose-headers:        "WWW-Authenticate ,X-Json"
-                  access-control-max-age":              10
+                  Access-Control-Allow-Methods:         "GET, POST, PUT, DELETE, OPTIONS"
+                  Access-Control-Allow-Headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+                  Access-Control-Allow-Credentials:     true
+                  Access-Control-Expose-Headers:        "WWW-Authenticate ,X-Json"
+                  Access-Control-Max-Age:               10
             remember_me:                false           #TODO
             logout:                     /logout
             anonymous:                  ~
@@ -90,11 +90,12 @@ security:
         #        allow-origin:          
         #          google:               accounts.google.com
         #        Access-Control:         
-        #          access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
-        #          access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
-        #          access-control-Allow-Credentials:     true
-        #          access-control-expose-headers:        "WWW-Authenticate ,X-Json"
-        #          access-control-max-age:               10
+        #          Access-Control-Allow-Methods:         "GET, POST, PUT, DELETE, OPTIONS"
+        #          Access-Control-Allow-Headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+        #          Access-Control-Allow-Credentials:     true
+        #          Access-Control-Expose-Headers:        "WWW-Authenticate ,X-Json"
+        #          Access-Control-Max-Age:               10
+
 
         # passport-github2  DEMO SECURITY AREA 
         #  Management credentials :  https://console.developers.google.com/apis
@@ -117,11 +118,12 @@ security:
         #        allow-origin:          
         #          github:               github.com
         #        Access-Control:
-        #          access-control-allow-methods:         "GET, POST, PUT, DELETE, OPTIONS"
-        #          access-control-allow-headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
-        #          access-control-Allow-Credentials:     true
-        #          access-control-expose-headers:        "WWW-Authenticate ,X-Json"
-        #          access-control-max-age:               10
+        #          Access-Control-Allow-Methods:         "GET, POST, PUT, DELETE, OPTIONS"
+        #          Access-Control-Allow-Headers:         "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date"
+        #          Access-Control-Allow-Credentials:     true
+        #          Access-Control-Expose-Headers:        "WWW-Authenticate ,X-Json"
+        #          Access-Control-Max-Age:               10
+
 
         # passport-ldapauth  LDAP DEMO SECURITY AREA
         #   CHECK ./node_modules/.bin/ldapjs-search   -u ldap://ldap-server.com -b "dc=object,dc=com" "uid=user"

@@ -64,6 +64,9 @@
 				{% block documentation %}
 					{{ render( controller("demoBundle:demo:doc" )) }}
 				{% endblock %}
+				<li class="dropdown"> 
+					<a href="{{path("monitoring-index")}}" role="button" aria-haspopup="true" aria-expanded="false">MONITORING</a>
+				</li>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right ">

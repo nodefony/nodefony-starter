@@ -1,0 +1,43 @@
+
+
+
+
+
+# RUN IMAGE
+# Deamon  mode
+docker run -d nodefony
+
+# Interactif mode
+docker run -ti nodefony
+
+
+#enter with exec for container who was alredy started
+docker exec -ti <container id> /bin/bash
+
+
+# show images
+docker images
+
+
+# Delete all containers (docker rm)
+docker rm $(docker ps -a -q)
+
+
+
+# Delete all images (docker rmi)
+docker rmi $(docker images -q)
+
+
+# build IMAGE
+docker build -t nodefony .
+
+
+
+
+# COMPOSE 
+
+docker-compose up
+
+docker-compose stop
+
+docker-compose rm

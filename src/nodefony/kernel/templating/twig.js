@@ -14,6 +14,7 @@ nodefony.registerTemplate("twig", function(){
 		},
 		views:null
 	};
+
 	
 	var Twig = class Twig extends nodefony.templates {
 
@@ -24,7 +25,7 @@ nodefony.registerTemplate("twig", function(){
 			this.kernelSettings = this.container.getParameters("kernel");
 			this.cache = ( this.kernelSettings.environment === "dev"  ) ?  false : true ; 
 			twig.cache( this.cache );
-			this.rootDir = container.get("kernel").rootDir ;
+			this.rootDir = this.kernel.rootDir ;
 			container.set("Twig" , this);
 			this.version = twig.VERSION ;
 			this.name = "Twig" ;

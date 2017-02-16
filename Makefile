@@ -258,5 +258,20 @@ certificates:
 	@echo "";
 	./bin/generateCertificates.sh;
 
+docker-build:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#         NODEFONY DOCKER BUILD         #" ;
+	@echo "#########################################" ;
+	@echo "";
+
+	make clean ;
+
+	make npm ;
+	
+	make install ;
+
+	make certificates ;
+
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc

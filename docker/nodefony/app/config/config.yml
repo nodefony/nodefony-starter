@@ -1,0 +1,152 @@
+#
+#        nodefony APP CONFIG YAML FILE 
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+#
+#  FRAMEWORK NODEFONY
+#
+#     APP CONFIG  
+name :                          AppBundle
+locale :                        en_en
+version :                       "Beta"
+App:
+  projectName:                  "nodefony" 
+  projectYear:                  2016 
+  locale:                       "en_en"
+  authorName:                   "admin"
+  authorMail:                   "admin@nodefony.com"
+
+
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  storage:
+    active:                     true                      
+    requests:                   orm
+  
+#
+#       OVERRIDE BUNDLE REALTIME 
+#
+#       see REALTIME BUNDLE config for more options
+#
+#
+realTimeBundle:
+  services:
+    monitoring:
+      type:                       tcp
+      port:                       1318
+      domain:                     docker.nodefony 
+
+#
+#       OVERRIDE BUNDLE HTTP 
+#
+#       see HTTP BUNDLE config for more options
+#       
+#       // SERVICES
+#       statics files
+#       session
+#       http server
+#       https server
+#       upload 
+#       websocket server 
+#       websocket secure server 
+#
+#
+httpBundle:
+  statics:
+    settings:
+      cache :                     false	
+      maxAge:                     0 
+    web:
+      path:                       "/web/"
+      maxage:                     0                     #30*24*60*60*1000
+
+  upload:
+    tmp_dir:                      "tmp/upload"
+    #max_filesize:                 100000               #in Bytes
+
+  session:
+    start:                        false                          # autostart || false 
+    handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
+    #save_path:                    "./tmp/sessions"              # for session.storage.files only
+    cookie:
+      maxAge:                     0                              # like cookie_lifetime php  =>seconde 
+    memcached:
+      servers:                      
+        nodefony: 
+          location:               docker.nodefony.memcached
+          port:                   11211
+          weight:                 1
+
+
+  http:
+    responseTimeout:              40000
+  https:
+    responseTimeout:              40000
+    certificats:
+      key:                        "config/certificates/server/privkey.pem"
+      cert:                       "config/certificates/server/fullchain.pem"
+      ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
+
+#
+#       OVERRIDE BUNDLE ASSETIC
+#
+#       # TO ADD DOMAIN CDN     
+#         CDN:
+#           stylesheets:                  cdn.nodefony.com       
+#           javascripts:                  cdn.nodefony.com
+#           images:                       // not implemted
+#
+asseticBundle:
+  less:
+    compress:                     false
+    cache:                        false 
+
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors 
+#
+#
+sequelizeBundle: 
+  debug:        false
+  connectors:                    
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'root'
+      password:        'nodefony'
+      options:
+        dialect:       mysql
+        host:          docker.nodefony.db
+        port:          '3306'

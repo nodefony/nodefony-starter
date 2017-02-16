@@ -13,11 +13,11 @@ nodefony.register.call( nodefony.io, "cors", function(){
 
 
 	var headersCorsDefaults = {
-		"access-control-allow-methods":			"GET",
-		"access-control-allow-headers":			"ETag, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-		"access-control-expose-headers":		"WWW-Authenticate, X-Json, X-Requested-With",
-		"access-control-max-age":			10,
-		"access-control-Allow-Credentials":		true		
+		"Access-Control-Allow-Methods":			"GET",
+		"Access-Control-Allow-Headers":			"ETag, Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
+		"Access-Control-Expose-Headers":		"WWW-Authenticate, X-Json, X-Requested-With",
+		"Access-Control-Max-Age":			10,
+		"Access-Control-Allow-Credentials":		true		
 	};
 
 	var cors = class cors {

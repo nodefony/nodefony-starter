@@ -1,0 +1,67 @@
+#
+#        NODEFONY FRAMEWORK CONFIG YAML FILE
+#
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+#
+#  NODEFONY FRAMEWORK
+#
+#       KERNEL CONFIG
+#
+#
+name:                           "NODEFONY"
+system:
+  version:                      "2.1.0-beta"
+  domain:                       docker.nodefony         # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                  "^localhost$"           # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+  httpPort:                     5151
+  httpsPort:                    5152
+  statics:                      false
+  security:                     true
+  realtime:                     true
+  monitoring:                   true
+
+  locale:                       "en_en"
+
+  log:
+    active:                     true
+    console:                    false
+    file:                       false
+    messages:                   "/tmp/nodefony.log"
+    error:                      "/tmp/errorNodefony.log"
+    services:                   "/tmp/servicesNodefony.log"
+    #TODO
+    rotate:                     false
+
+#
+# ENGINE TEMPLATE
+#
+#       TWIG
+#       https://github.com/justjohn/twig.js
+#
+templating:                     twig
+
+#
+# ENGINE ORM
+#
+#       SEQUELIZE
+#
+#
+orm:                            sequelize
