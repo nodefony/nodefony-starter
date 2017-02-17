@@ -3,29 +3,24 @@ version: '2.1'
 services:
   nodefony:
     container_name: nodefony
-    build: "./docker/nodefony"
+    build: "./2.0.3"
     volumes:
-      - "./docker/nodefony:/docker:rw"
-      - "statics-files:/nodefony/web:rw"
+      - "./nodefony:/docker:rw"
       - "certificates:/nodefony/config/certificates:rw"
       - "nodefony:/nodefony"
     networks:
       nodefony:
         aliases:
          - docker.nodefony
-    ports:
-      - 5151 
-      - 5152
     working_dir: "/nodefony"
     depends_on:
       db:
-        condition: service_started
-      nginx:
-        condition: service_started
-    entrypoint:  "/docker/entrypoint.sh"
+        condition: service_healthy
+    #entrypoint:  "/nodefony/entrypoint.sh"
     links:
       - "db:docker.nodefony.db"
-      - "nginx:docker.nodefony.nginx"
+    environment:
+      - "NODEFONY_ENVIRONMENT=dev"
 
 # DATABASE
   db:
@@ -34,6 +29,7 @@ services:
     command: mysqld --innodb-buffer-pool-size=20M
     volumes:
       - "db:/var/lib/mysql:rw"
+      - "./compose/database:/docker:rw"
     networks:
       nodefony:
         aliases:
@@ -43,30 +39,35 @@ services:
       - "MYSQL_USER=nodefony"
       - "MYSQL_PASSWORD=nodefony"
       - "MYSQL_ROOT_PASSWORD=nodefony"
-    ports:
-      - "3351:3306"
-
+    #ports:
+    #  - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "/docker/wait.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    
 # NGINX
   nginx:
     container_name: nginx
     image: nginx
     volumes:
-      - "./docker/nginx/nodefony.conf:/etc/nginx/conf.d/default.conf"
-      - "statics-files:/web"
+      - "./compose/nginx/nodefony.conf:/etc/nginx/conf.d/default.conf"
       - "certificates:/certificates"
       - "nodefony:/nodefony"
     networks:
        nodefony:
         aliases:
          - docker.nodefony.nginx
+    depends_on:
+      nodefony:
+        condition: service_started
     ports:
-      - "8181:80"
-      - "8282:443"
+      - "5151:80"
+      - "5152:443"
 
 # VOLUMES 
 volumes:
-  statics-files: 
-    driver: local
   certificates:
     driver: local
   nodefony:

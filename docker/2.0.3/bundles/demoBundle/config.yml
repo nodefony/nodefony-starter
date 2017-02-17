@@ -1,0 +1,46 @@
+#
+#        nodefony BUILDER YAML FILE 
+#
+#
+# This file is YAML  FILE
+# ---
+# YAML: YAML Ain't Markup Language
+#
+# What It Is: YAML is a human friendly data serialization
+#   standard for all programming languages.
+#
+# YAML Resources:
+#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
+#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
+#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
+#   YAML Trac Wiki: http://trac.yaml.org/
+#   YAML Mailing List: yaml-core@lists.sourceforge.net
+#   YAML IRC Channel: "#yaml on irc.freenode.net"
+#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
+#   YAML Reference Parser: http://yaml.org/ypaste/
+
+
+########## NODEFONY CONFIG BUNDLE  demoBundle  ############
+name :				demoBundle
+locale :			en_en
+version :                       "1.0"
+
+#
+#  OVERRIDE BUNDLE REALTIME 
+#
+realTimeBundle:
+  system:
+    reconnect:
+      handshake:                  true
+      connect:                    true
+  services:
+    random:
+      type:                       tcp
+      port:                       1315
+      domain:                     docker.nodefony
+    dmsg:
+      type:                       tcp
+      port:                       1316
+      domain:                     docker.nodefony
+
+

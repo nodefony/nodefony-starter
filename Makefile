@@ -148,8 +148,6 @@ asset:
 		echo "./.console_dev assets:dump" ;\
 		./.console_dev assets:dump ;\
 	fi \
-	 
-	
 
 framework:
 	@echo "";
@@ -264,8 +262,6 @@ docker-build:
 	@echo "#         NODEFONY DOCKER BUILD         #" ;
 	@echo "#########################################" ;
 	@echo "";
-
-	make clean ;
 
 	make npm ;
 	

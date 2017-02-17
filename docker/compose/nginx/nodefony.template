@@ -1,0 +1,146 @@
+map $http_upgrade $connection_upgrade {
+	default upgrade;
+	''      close;
+}
+
+server {
+    return 404;
+}
+
+server {
+  listen       ${NGINX_PORT_HTTP} ;
+  listen       ${NGINX_PORT_HTTPS} ssl;
+  server_name  static.nodefony;
+
+  ssl_certificate  /certificates/server/fullchain.pem;
+  ssl_certificate_key /certificates/server/privkey.pem;
+  ssl_trusted_certificate /certificates/server/fullchain.pem;
+
+  location ~* \.(gif|jpg|jpeg|png|wmv|avi|mpg|mpeg|mp4|webm|htm|html|js|css|mp3|swf|ico|flv|woff.?|ttf)$ {
+	access_log off;
+        root /web;
+        expires 7d;
+	add_header access-control-allow-origin  *;
+  }
+
+  # Rule for legitimate ACME Challenge requests (like /.well-known/acme-challenge/xxxxxxxxx)
+  # We use ^~ here, so that we don't check other regexes (for speed-up). We actually MUST cancel
+  # other regex checks, because in our other config files have regex rule that denies access to files with dotted names.
+
+  location ^~ /.well-known/acme-challenge/ {
+
+	# Set correct content type. According to this:
+	# https://community.letsencrypt.org/t/using-the-webroot-domain-verification-method/1445/29
+	# Current specification requires "text/plain" or no content header at all.
+	# It seems that "text/plain" is a safe option.
+
+	default_type "text/plain";
+	try_files $uri /$1;
+
+	# This directory must be the same as in /etc/letsencrypt/cli.ini
+	# as "webroot-path" parameter. Also don't forget to set "authenticator" parameter
+	# there to "webroot".
+	# Do NOT use alias, use root! Target directory is located here:
+	# /var/www/common/letsencrypt/.well-known/acme-challenge/
+
+        root /web;
+  }
+
+  # Hide /acme-challenge subdirectory and return 404 on all requests.
+  # It is somewhat more secure than letting Nginx return 403.
+  # Ending slash is important!
+  location = /.well-known/acme-challenge/ {
+	return 404;
+  }
+}
+
+server {
+    listen              ${NGINX_PORT_HTTP};
+    listen              ${NGINX_PORT_HTTPS} ssl;
+    server_name  	www.nodefony;
+
+    ssl_certificate  /certificates/server/fullchain.pem;
+    ssl_certificate_key /certificates/server/privkey.pem;
+    ssl_trusted_certificate /certificates/server/fullchain.pem;
+
+    return 301 $scheme://localhost$request_uri;
+}
+
+
+server {
+	listen ${NGINX_PORT_HTTP};
+
+	server_name ${NGINX_HOST};
+
+	set  $via  "NGINX";
+	if ($http_via) {
+		set $via  "$http_via, $via";
+	}
+
+	location / {
+		root /web ;
+		proxy_pass http://nodefony:5151;
+		proxy_http_version 1.1;
+		proxy_pass_header Server;
+
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_set_header X-Forwarded-Port $server_port;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Server $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         	proxy_set_header  Via  $via;
+
+		proxy_cache_bypass $http_upgrade;
+	}
+
+	location ~ \.(js|css|png|ico|jpg|jpeg|gif|ttf|font|map|woff.?|twig|txt|html|xml|json|mp3|wav|wmv|avi|mpg|mpeg|mp4|webm|swf|flv)$ {
+		access_log off;
+		root /web;
+		expires 7d;
+	}
+}
+
+server {
+	listen	${NGINX_PORT_HTTPS} ssl;
+
+	server_name ${NGINX_HOST};
+
+	ssl_certificate  /certificates/server/fullchain.pem;
+        ssl_certificate_key /certificates/server/privkey.pem;
+        ssl_trusted_certificate /certificates/server/fullchain.pem;
+
+	set  $via  "NGINX";
+        if ($http_via) {
+                set $via  "$http_via, $via";
+        }
+
+	location / {
+		root /web ;
+		proxy_pass https://nodefony:5152;
+		proxy_http_version 1.1;
+		proxy_pass_header Server;
+
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection $connection_upgrade;
+
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_set_header X-Forwarded-Port $server_port ;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Server $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header  Via  $via;
+
+		proxy_cache_bypass $http_upgrade;
+	}
+
+	location ~ \.(js|css|png|ico|jpg|jpeg|gif|ttf|font|map|woff.?|twig|txt|html|xml|json|mp3|wav|wmv|avi|mpg|mpeg|mp4|webm|swf|flv)$ {
+		root /web;
+		expires 7d;
+		access_log off;
+	}
+
+}
