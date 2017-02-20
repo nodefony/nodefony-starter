@@ -3,9 +3,9 @@ version: '2.1'
 services:
   nodefony:
     container_name: nodefony
-    build: "./2.0.3"
+    image: nodefony/docker-nodefony
+    #build: "./2.0.3"
     volumes:
-      - "./nodefony:/docker:rw"
       - "certificates:/nodefony/config/certificates:rw"
       - "nodefony:/nodefony"
     networks:
@@ -16,11 +16,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    #entrypoint:  "/nodefony/entrypoint.sh"
     links:
       - "db:docker.nodefony.db"
     environment:
-      - "NODEFONY_ENVIRONMENT=dev"
+      - "NODEFONY_ENVIRONMENT=prod"
+      - "NODEFONY_DOCKER_ENVIRONMENT=compose"
 
 # DATABASE
   db:
@@ -39,8 +39,8 @@ services:
       - "MYSQL_USER=nodefony"
       - "MYSQL_PASSWORD=nodefony"
       - "MYSQL_ROOT_PASSWORD=nodefony"
-    #ports:
-    #  - "3306:3306"
+#    ports:
+#      - "5106:3306"
     healthcheck:
       test: ["CMD-SHELL", "/docker/wait.sh"]
       interval: 10s

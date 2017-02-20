@@ -6,8 +6,12 @@ VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
 #$(error $(VERSION))  
 VERSION := $(shell expr $(VERSION) )
 
-all:  compose-up 
+NODEFONY_VERSION = 2.0.3
 
+all:  compose 
+
+install:
+	docker pull nodefony/docker-nodefony
 
 image:
 	@echo "";
@@ -15,41 +19,20 @@ image:
 	@echo "#         IMAGE DOCKER NODEFONY         #" ;
 	@echo "#########################################" ;
 	@echo "";
-	docker build  -t nodefony ./2.0.3/
+	docker build  -t nodefony/docker-nodefony ./$(NODEFONY_VERSION)/
 
 run:
-	docker run -it -p 127.0.0.1:5151:5151 --name=nodefony nodefony
+	## WARNING ON MACOS docker host is actually on a VM  for binding  you could use virtualbox's port forwarding feature
+	docker run  --rm -it --publish 127.0.0.1:5151:5151  --publish 127.0.0.1:5152:5152  -p 1318:1318 -p 1315:1315 -p 1316:1316 --name=nodefony nodefony/docker-nodefony
 
 stop:
-	docker stop nodefony 
+	-@docker stop nodefony 
 
 rm: 
-	docker rm -f nodefony 
+	-@docker rm -f nodefony 
 
 port:
 	docker port nodefony 
-
-compose-up:
-	@echo "";
-	@echo "#########################################" ;
-	@echo "#           DOCKER NODEFONY             #" ;
-	@echo "#########################################" ;
-	@echo "";
-	@docker-compose up;
-
-compose-build:
-	@echo "";
-	@echo "#########################################" ;
-	@echo "#         DOCKER NODEFONY BUILD         #" ;
-	@echo "#########################################" ;
-	@echo "";
-	docker-compose build ;
-
-compose-start:
-	docker-compose up;
-
-compose-stop:
-	docker-compose -f stop ;
 
 ps:
 	docker ps -a;
@@ -66,10 +49,48 @@ volume:
 volume-clean:
 	docker  volume prune ;
 
-get-ip:
+inspect:
+	@docker inspect nodefony
+
+clean-all:	clean-container clean  clean-images
+
+clean:		rm network-clean volume-clean
+
+clean-container:
+	-@$(shell docker rm $(shell docker ps -a -q) )
+
+clean-images:
+	-@$(shell docker rmi $(shell docker images -q) )
+
+
+# COMPOSER 
+
+compose:
 	@echo "";
 	@echo "#########################################" ;
-	@echo "#         DOCKER CONTAINR NODEFONY      #" ;
+	@echo "#       DOCKER COMPOSER NODEFONY        #" ;
+	@echo "#########################################" ;
+	@echo "";
+	docker-compose up;
+
+compose-build:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#         DOCKER COMPOSER BUILD         #" ;
+	@echo "#########################################" ;
+	@echo "";
+	docker-compose build ;
+
+compose-start:
+	docker-compose up;
+
+compose-stop:
+	docker-compose -f stop ;
+
+compose-ip:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#         DOCKER CONTAINER NODEFONY     #" ;
 	@echo "#########################################" ;
 	@echo "";
 	@docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nodefony
@@ -77,19 +98,11 @@ get-ip:
 
 	@echo "";
 	@echo "#########################################" ;
-	@echo "#         DOCKER CONTAINR NGINX         #" ;
+	@echo "#         DOCKER CONTAINER NGINX        #" ;
 	@echo "#########################################" ;
 	@echo "";
 	@docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx
 	@echo "";
 
-inspect:
-	@docker inspect nodefony
-
-clean:
-	make network-clean ;
-	make volume-clean ;
-
-
 .EXPORT_ALL_VARIABLES:
-.PHONY: vendors doc
+.PHONY: compose
