@@ -10,7 +10,7 @@
 	],
 	"dependencies": {
 		"memcached"	: "2.2.2",
-		"qs"		: "6.3.0"
+		"qs"		: "6.3.1"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
 	"license": "CECILL-B"
