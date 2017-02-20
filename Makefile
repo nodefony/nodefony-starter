@@ -263,6 +263,8 @@ docker-build:
 	@echo "#########################################" ;
 	@echo "";
 
+	make framework ;
+
 	make npm ;
 	
 	make install ;
