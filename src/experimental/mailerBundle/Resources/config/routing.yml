@@ -1,4 +1,0 @@
-
-email_test: 
-  pattern:  /email/test
-  defaults: {controller: "mailerBundle:mailer:email"}

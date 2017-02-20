@@ -1,8 +1,0 @@
-
-## MOCHA UNIT TESTING CONFIGURATION
-
-setup: 
-  interface: bdd #bdd, tdd, exports
-  assert: chai.assert
-  checkLeaks: true
-  globals: "['jQuery']"

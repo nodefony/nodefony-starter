@@ -1,4 +1,0 @@
-Default:
-  pattern:  /unit-tests
-  defaults: 
-    controller: mochaUnitBundle:mochaUnit:index
