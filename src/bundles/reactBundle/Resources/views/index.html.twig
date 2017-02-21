@@ -1,0 +1,25 @@
+{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
+
+
+{% block title %}Welcome {{ title }}! {% endblock %}
+
+
+{% block stylesheets %}
+
+	{% stylesheets  output="/demoBundle/assets/css/vendor.css" filter="?uglifycss" 
+	    "/reactBundle/css/app.css"
+        %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+	
+
+{% endblock %}
+
+
+
+{% block bodyContent %}
+	{{readme}}	
+{% endblock %}
+
+
+
