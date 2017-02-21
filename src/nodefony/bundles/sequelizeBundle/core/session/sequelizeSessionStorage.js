@@ -22,7 +22,7 @@ nodefony.register.call(nodefony.session.storage, "sequelize",function(){
 				}
 				if ( date > myDate)
 					continue ;
-				results[i].destroy({ force: true }).then(( session ) => {
+				return results[i].destroy({ force: true }).then(( session ) => {
 					
 					nbSessionsDelete++ ;
 					this.manager.logger("DB SESSIONS STORAGE GARBADGE COLLECTOR SESSION context : "+session.context+" ID : "+ session.session_id + " DELETED");

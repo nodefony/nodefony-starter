@@ -59,7 +59,7 @@ nodefony.registerService("react", function(){
 				}
 				if ( this.engineOptions.transformViews ){
 					this.core = this.babelCore.transform("code", this.engineOptions.babel ) ;
-					console.log(this.core)
+					//console.log(this.core)
 				}
 				for (var bundle in bundles){
 					if (bundles[bundle].views.react){
