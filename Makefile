@@ -271,5 +271,8 @@ docker-build:
 
 	make certificates ;
 
+docker-compose:
+	$(MAKE) -C docker
+
 .EXPORT_ALL_VARIABLES:
 .PHONY: vendors doc

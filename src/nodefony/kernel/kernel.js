@@ -106,6 +106,13 @@ nodefony.register("kernel", function(){
 	};
 
 
+	var defaultEnvEnable = {
+		dev:		true,
+		development:	true,	
+		prod:		true,
+		production:	true,	
+	};
+
 	var defaultOptions = {
 		nbListener:30
 	};
@@ -133,7 +140,22 @@ nodefony.register("kernel", function(){
 			this.platform = process.platform ;
 			this.type = type;
 			this.bundles = {};
-			this.environment = environment;
+			
+			if ( environment in defaultEnvEnable ){
+				switch ( environment ){
+					case "dev" :
+					case "development" :
+						this.environment = "dev";
+						process.env.NODE_ENV = "development";
+					break;
+					case "prod" :
+					case "production" :
+						this.environment = "prod";
+						process.env.NODE_ENV = "production";
+					break;
+				}
+			}
+			
 			this.debug = debug || false;
 			if (this.debug){
 				//this.preboot = true;
