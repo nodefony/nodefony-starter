@@ -6,10 +6,15 @@
 
     	<parameters>
         	<parameter key="react">react</parameter>
+        	<parameter key="webpack">webpack</parameter>
     	</parameters>
 
     	<services>
 		<service id="react" class="{{react}}">
+            		<argument type="service" id="container" />
+            		<argument type="service" id="kernel" />
+        	</service>
+		<service id="webpack" class="{{webpack}}">
             		<argument type="service" id="container" />
             		<argument type="service" id="kernel" />
         	</service>
