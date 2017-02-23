@@ -53,7 +53,7 @@ nodefony.registerBundle ("monitoring", function(){
 				this.templating = this.get("templating");
 
 				this.infoKernel.events = {} ;
-				for(var event in kernel.notificationsCenter.event._events ){
+				for(let event in kernel.notificationsCenter.event._events ){
 					switch (event){
 						case "onPreBoot":
 							this.infoKernel.events[event] = {
@@ -68,11 +68,10 @@ nodefony.registerBundle ("monitoring", function(){
 								nb:0,
 								listeners:kernel.notificationsCenter.event._events[event].length
 							} ;
-							kernel.listen(kernel ,event, function(){
-								var ele =  arguments[0]  ;
-								this.infoKernel.events[ele].fire= true;
-								this.infoKernel.events[ele].nb = ++this.infoKernel.events[ele].nb;
-							}.bind(this, event ) );
+							kernel.listen(this ,event, () => {
+								this.infoKernel.events[event].fire= true;
+								this.infoKernel.events[event].nb = ++this.infoKernel.events[event].nb;
+							} );
 					}
 				}
 			});
@@ -314,7 +313,7 @@ nodefony.registerBundle ("monitoring", function(){
 				},
 				userAgent:myUserAgent
 			};
-			for(var event in context.notificationsCenter.event._events ){
+			for(let event in context.notificationsCenter.event._events ){
 				if ( event === "onRequest"){
 					context.profiling.events[event] = {
 						fire:true,
@@ -328,12 +327,13 @@ nodefony.registerBundle ("monitoring", function(){
 						listeners:context.notificationsCenter.event._events[event].length
 					} ;
 				}
-				//console.log(event)
-				context.listen(context ,event, function(){
-					var ele =  arguments[ 0]  ;
-					this.profiling.events[ele].fire= true;
-					this.profiling.events[ele].nb = ++this.profiling.events[ele].nb;
-				}.bind(context, event ) );
+				context.listen(context ,event, () =>{
+					if ( context.profiling ){
+						var ele =  arguments[ 0]  ;
+						context.profiling.events[event].fire= true;
+						context.profiling.events[event].nb = ++context.profiling.events[event].nb;
+					}
+				} );
 			}
 			var secu = null ;
 			if ( context.security ){
