@@ -16,37 +16,48 @@ nodefony.registerService("webpack", function(){
 
 		constructor(container){
 			super ("webpack", container);
+			this.production = true;
+			this.UglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
+				compress: this.production // compress only in production build
+			});
 
 			try {
 				this.compiler = webpack({
   					// Configuration Object
 					context: this.kernel.rootDir ,
 					devtool: this.kernel.debug ? "inline-sourcemap" : null,
-					entry: ".web/js/scripts.js",
+					entry: "./app/appKernel.js",
 					output: {
 						path: this.kernel.rootDir + "/web/assets",
-						filename: "scripts.min.js"
-					}
-				}, (err, stats) => {
-					console.log(stats.toString({
-  						// ...
-  						// Add console colors
-  						colors: true
-					}) )
-  					//console.log(stats)
+						//filename: "appKernel.min.js"
+						filename: "[name].min.js",
+					},
+					plugins: [this.UglifyJsPlugin]
 				});
 			}catch(e){
-				console.log(e)
 				throw e;
 			}
 
-			console.log( this.compiler );
+			this.compiler.run( (err, stats) => {
+				if (err){
+					throw err
+				}
+				const info = stats.toJson();
+				var error = stats.hasErrors()
+				if ( error ) {
+					this.logger(info.errors ,"ERROR")
+				}else{
+					this.logger( stats.toString({
+  						// Add console colors
+  						colors: true
+					}), "DEBUG");
+					if (stats.hasWarnings()) {
+						this.logger(info.warnings ,"WARNING")
+					}
+				}
+			})
 		}
-
 	}
 
-
-
 	return  webpackService ;
-
 });
