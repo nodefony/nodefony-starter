@@ -12,7 +12,7 @@ node_modules/**
 npm-debug.log
 *.[oa]
 
-#config/certificates/**/*
+config/certificates/**/*
 
 #Ignore vin backup
 *.swp
