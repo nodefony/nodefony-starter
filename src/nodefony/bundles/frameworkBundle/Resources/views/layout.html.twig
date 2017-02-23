@@ -1,18 +1,10 @@
 {% extends "/app/Resources/views/base.html.twig" %}
-
-
 {% block title %} {{title}} {% endblock %}
-
-
-
 {% block stylesheets %}
 	<link href="/frameworkBundle/css/style.css" rel="stylesheet" media="screen">
 
 {% endblock %}
-
-
 {% block body %}
-		
 	{% block content %}
 		<div class="container">
 			<div class="row">
@@ -24,10 +16,7 @@
 		</div>
 	{% endblock %}
 {% endblock %}
-
-
 {% block javascripts %}
-
 	{% javascripts output='/frameworkBundle/assets/js/nodefony.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/jquery/jquery-1.12.0.js"
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
@@ -38,8 +27,6 @@
 	%}
 		<script type="text/javascript"  src="{{ asset_url }}"></script>
 	{% endjavascripts %}
-
-
 {% endblock %}
 
 

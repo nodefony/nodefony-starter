@@ -1,13 +1,5 @@
-{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/layout.html.twig" %}
-
-
-
-
-
-
- {% block bodyContent %}
-
-
+{% extends "./layout.html.twig" %}
+{% block bodyContent %}
 	<div class="col-lg-12">
 		<div class="jumbotron bg-danger m-t-xxl">
 			 
@@ -21,7 +13,4 @@
 			<p><pre>{{ url }} {{ status}} {{ message }}</pre></p>			
 		</div>
 	</div>
-
-
 {% endblock %}
-

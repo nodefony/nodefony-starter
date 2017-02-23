@@ -24,9 +24,6 @@ autoloader.load("./app/appKernel.js");
 
 
 var environment = "dev" ;
-if ( process.env["NODEFONY_ENVIRONMENT"] ){
-	environment =  process.env["NODEFONY_ENVIRONMENT"] ;
-}
 var debug = true ;
 if ( process.env["NODEFONY_DEBUG"] ){
 	debug = process.env["NODEFONY_DEBUG"] ;
