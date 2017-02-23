@@ -280,6 +280,23 @@ $ make kill
 
 ```
 
+#### Nodefony HTTPS Access :
+By default nodefony listen secure port in 5152 
+
+During the installation process all the openssl parts were generated ( self-signed localhost certificate ).
+
+You must Add a Trusted CA in your browser : nodefony-root-ca.crt.pem
+
+You can find certificate authority (ca) here: 
+
+```
+./config/certificates/ca/nodefony-root-ca.crt.pem 
+
+```
+Access  with URL : https://localhost:5152/hello
+
+
+
 #### Monitoring FRAMEWORK in PRODUCTION CLUSTER MODE:
 
 Access to monitoring route with URL : http://localhost:5151/nodefony
