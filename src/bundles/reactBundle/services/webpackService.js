@@ -38,7 +38,7 @@ nodefony.registerService("webpack", function(){
 				throw e;
 			}
 
-			this.compiler.run( (err, stats) => {
+			/*this.compiler.run( (err, stats) => {
 				if (err){
 					throw err
 				}
@@ -55,7 +55,7 @@ nodefony.registerService("webpack", function(){
 						this.logger(info.warnings ,"WARNING")
 					}
 				}
-			})
+			});*/
 		}
 	}
 
