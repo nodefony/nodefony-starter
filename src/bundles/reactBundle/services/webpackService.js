@@ -15,17 +15,20 @@ nodefony.registerService("webpack", function(){
 	var webpackService = class webpackService extends nodefony.Service {
 
 		constructor(container){
-			super ("webpack", container);
+			super ("WEBPACK", container);
 			this.production = true;
-			this.UglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
-				compress: this.production // compress only in production build
-			});
-
+			try {
+				this.UglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
+					compress: this.production // compress only in production build
+				});
+			}catch(e){
+				throw e;
+			}
 			try {
 				this.compiler = webpack({
   					// Configuration Object
 					context: this.kernel.rootDir ,
-					devtool: this.kernel.debug ? "inline-sourcemap" : null,
+					devtool: this.kernel.debug ? "inline-sourcemap" : false,
 					entry: "./app/appKernel.js",
 					output: {
 						path: this.kernel.rootDir + "/web/assets",
@@ -38,7 +41,7 @@ nodefony.registerService("webpack", function(){
 				throw e;
 			}
 
-			/*this.compiler.run( (err, stats) => {
+			this.compiler.run( (err, stats) => {
 				if (err){
 					throw err
 				}
@@ -55,7 +58,7 @@ nodefony.registerService("webpack", function(){
 						this.logger(info.warnings ,"WARNING")
 					}
 				}
-			});*/
+			});
 		}
 	}
 

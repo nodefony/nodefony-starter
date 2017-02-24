@@ -185,7 +185,7 @@ nodefony.register("injection", function(){
 				try {
 					return new (Function.prototype.bind.apply(Class, tab));
 				}catch(e){
-					console.log("ERRROR SERVICE CLASS " + Class.name) ;
+					console.log("ERRROR SERVICE CLASS " + Class.name + " " + e.message, "ERROR") ;
 					throw e ;
 				}
    	        	},

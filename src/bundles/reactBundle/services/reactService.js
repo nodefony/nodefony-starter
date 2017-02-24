@@ -26,7 +26,7 @@ nodefony.registerService("react", function(){
 	var reactService = class reactService extends nodefony.Service {
 
 		constructor(container){
-			super ("React", container);
+			super ("REACT", container);
 			this.registered = false;
 			this.moduleDetectRegEx;
 

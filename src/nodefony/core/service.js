@@ -79,7 +79,7 @@ nodefony.register("Service", function(){
 	
 		logger(pci, severity, msgid,  msg){
 			try {
-				if (! msgid) { msgid = this.name + " "; }
+				if (! msgid) { msgid = "SERVICE " + this.name + " "; }
 				return this.syslog.logger(pci, severity, msgid,  msg);	
 			}catch(e){
 				console.log(pci);

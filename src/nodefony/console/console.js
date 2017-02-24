@@ -6,15 +6,15 @@
  *
  *
  */
-var Getopt = require('node-getopt');
+const Getopt = require('node-getopt');
+const npm = require("npm");
+const npmi = require('npmi');
 var AsciiTable = require('ascii-table');
-var npm = require("npm");
-var npmi = require('npmi');
 
 
 nodefony.register("console", function(){
 
-	var createNpmDependenciesArray = function (packageFilePath) {
+	/*var createNpmDependenciesArray = function (packageFilePath) {
     		var p = require(packageFilePath);
     		if (!p.dependencies) { return []; }
 
@@ -23,7 +23,7 @@ nodefony.register("console", function(){
         		deps.push(mod + "@" + p.dependencies[mod]);
     		}
     		return deps;
-	};
+	};*/
 
 	var createNpmiDependenciesArray = function (packageFilePath, opt) {
     		var p = require(packageFilePath);
@@ -270,7 +270,7 @@ nodefony.register("console", function(){
 			});
 		}
 		
-		installPackage (name, file){
+		/*installPackage (name, file){
 			try {
 				var conf = new nodefony.fileClass(file.dirName+"/package.json");
 				var config = require(conf.path);
@@ -281,7 +281,7 @@ nodefony.register("console", function(){
 					}
 					var dependencies = createNpmDependenciesArray(conf.path) ;
 					this.logger("Install Package BUNDLE : "+ name,"INFO");
-					npm.commands.install(dependencies,  (er/*, data*/) => {
+					npm.commands.install(dependencies,  (er, data) => {
 						if (er){
  				       			this.logger(er, "ERROR", "SERVICE NPM BUNDLE " + name);
 							this.terminate(1);
@@ -296,7 +296,7 @@ nodefony.register("console", function(){
 					throw e ;
 				}
 			}
-		}
+		}*/
 
 		InstallPackage (name, file){
 			try {
@@ -315,10 +315,11 @@ nodefony.register("console", function(){
 				var dependencies = createNpmiDependenciesArray(conf.path, options) ;
 
 
+				this.logger("NPMI USE NPM VERSION : " + npmi.NPM_VERSION);
 				for (var i= 0 ; i < dependencies.length ; i++){
-					var nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
-					this.logger("INSTALL BUNDLE " + name +" dependence : " + nodeDep);	
-					npmi(dependencies[i],  function (nodeDep, err/*, result*/) {
+					let nodeDep =  dependencies[i].name + "@" + dependencies[i].version ;
+					this.logger("LOAD BUNDLE " + name +" dependence : " + nodeDep);	
+					npmi( dependencies[i], ( err, result) => {
     						if (err) {
         						if (err.code === npmi.LOAD_ERR){
 								this.logger(err.message, "ERROR", "NMPI load error");
@@ -330,8 +331,12 @@ nodefony.register("console", function(){
 							//this.terminate();
     						}
 						// installed
-						this.logger(nodeDep+' installed successfully in nodefony');
-					}.bind(this, nodeDep));
+						if ( ! result ){
+							this.logger(nodeDep+' Already installed  in nodefony');
+						}else{
+							this.logger(nodeDep+' installed successfully in nodefony');
+						}
+					});
 				}
 				//this.terminate();
 
