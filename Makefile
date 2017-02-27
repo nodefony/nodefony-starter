@@ -271,8 +271,17 @@ docker-build:
 
 	make certificates ;
 
-docker-compose:
-	$(MAKE) -C docker
+docker-compose: docker-compose-stop 
+	$(MAKE) -C docker compose-start
+
+docker-compose-stop:
+	$(MAKE) -C docker compose-stop
+
+docker-compose-rm: docker-compose-stop
+	$(MAKE) -C docker compose-rm
+
+docker-compose-clean:
+	$(MAKE) -C docker clean
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: vendors doc
+.PHONY: vendors doc compose

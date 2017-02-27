@@ -1,0 +1,273 @@
+{{trans_default_domain("doc")}}
+
+
+
+<div class="page-header">
+  <h1><strong>Nodefony DOCKER</strong> </h1>
+	<div class="alert alert-info" role="alert">
+		<strong>
+		Docker is a software containerization platform  </br> 
+		</strong>
+		You can use Nodefony in Docker Container 
+	</div>
+	<p>
+		<center>
+			<a href="https://hub.docker.com/r/nodefony/docker-nodefony/" ><img src="http://dockeri.co/image/nodefony/docker-nodefony" /></a>
+		</center>
+	</p>
+	<h1>DOCKER </h1>
+	<div class="doc1">
+		<p>
+		<ul>
+			<li><a href="https://docs.docker.com/">Docker platform documentation</a></li>
+			<li><a href="https://docs.docker.com/engine/installation/">Docker platform Installation</a></li>
+			<li><a href="#composer">How to use Nodefony Framework with Docker composer</a></li>
+			<li><a href="#image">How to use image nodefony Docker</a></li>
+		</ul>
+		<p>
+
+	</div>
+
+</div>
+
+
+<h1 id="composer"> How to use Nodefony Framework with Docker composer :</h1>
+<div class="doc3">
+	<h2><strong>Build composer</strong> </h2>
+
+	<div class="alert alert-info" role="alert">
+		<strong>
+		Nodefony Docker Composer  </br> 
+		</strong>
+		With this mode nodefony run with  : 
+		<ul>
+			<li>	Mariadb container  </li>  
+			<li>	Nginx container in front </li>  
+		</ul>
+	</div>
+
+	<pre>
+$  make docker-compose 
+	</pre>
+
+	<pre>
+make docker-compose
+
+#########################################
+#       DOCKER COMPOSER NODEFONY        #
+#########################################
+
+docker-compose up;
+Creating network "dockernodefony_nodefony" with driver "bridge"
+Creating volume "dockernodefony_certificates" with local driver
+Creating volume "dockernodefony_db" with local driver
+Creating volume "dockernodefony_nodefony" with local driver
+Pulling db (mariadb:latest)...
+latest: Pulling from library/mariadb
+...
+Digest: sha256:ed04792bb13c111cbd1743c2921ea6cf777051a7f7f51f7b134efec9af7afdad
+Status: Downloaded newer image for mariadb:latest
+Pulling nodefony (nodefony/docker-nodefony:latest)...
+latest: Pulling from nodefony/docker-nodefony
+...
+Digest: sha256:e2786e71509df51eeb5959b8d3b465f3c6aa7672311928076ca803643542d924
+Status: Downloaded newer image for nodefony/docker-nodefony:latest
+Pulling nginx (nginx:latest)...
+latest: Pulling from library/nginx
+...
+Digest: sha256:4296639ebdf92f035abf95fee1330449e65990223c899838283c9844b1aaac4c
+Status: Downloaded newer image for nginx:latest
+Creating mariadb
+Creating nodefony
+Creating nginx
+Attaching to mariadb, nodefony, nginx
+...
+	</pre>
+</div>
+
+<div class="doc3">
+<h2 >  docker-compose.yml :</h2>
+
+	<p>
+		You can change  network  port expose  in this file 	
+	</p>
+
+	<code>./docker/docker-compose.yml</code>
+	<pre>
+version: '2.1'
+
+services:
+  nodefony:
+    container_name: nodefony
+    image: nodefony/docker-nodefony
+    volumes:
+      - "certificates:/nodefony/config/certificates:rw"
+      - "nodefony:/nodefony"
+    networks:
+      nodefony:
+        aliases:
+         - docker.nodefony
+    working_dir: "/nodefony"
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - "db:docker.nodefony.db"
+    environment:
+      - "NODEFONY_ENVIRONMENT=prod"
+      - "NODEFONY_DOCKER_ENVIRONMENT=compose"
+
+# DATABASE
+  db:
+    container_name: mariadb
+    image: mariadb
+    command: mysqld --innodb-buffer-pool-size=20M
+    volumes:
+      - "db:/var/lib/mysql:rw"
+      - "./compose/database:/docker:rw"
+    networks:
+      nodefony:
+        aliases:
+         - docker.nodefony.db
+    environment:
+      - "MYSQL_DATABASE=nodefony"
+      - "MYSQL_USER=nodefony"
+      - "MYSQL_PASSWORD=nodefony"
+      - "MYSQL_ROOT_PASSWORD=nodefony"
+    healthcheck:
+      test: ["CMD-SHELL", "/docker/wait.sh", "docker.nodefony.db:3306"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    
+# NGINX
+  nginx:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - "./compose/nginx/nodefony.conf:/etc/nginx/conf.d/default.conf"
+      - "certificates:/certificates"
+      - "nodefony:/nodefony"
+    networks:
+       nodefony:
+        aliases:
+         - docker.nodefony.nginx
+    depends_on:
+      nodefony:
+        condition: service_started
+    ports:
+      - "5151:80"
+      - "5152:443"
+
+# VOLUMES 
+volumes:
+  certificates:
+    driver: local
+  nodefony:
+    driver: local
+  db: 
+    driver: local
+
+# NETWORK
+networks:
+  nodefony: 
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.51.51.0/24
+	</pre>
+
+<h2 >  Network  / Volumes :</h2>
+<div class="doc3">
+	<h3> Network</h3>
+
+	<p>
+		composer create sub network on 172.51.51.0/24 (driver bridge )
+	</p>	
+	
+	<pre>
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+0f64809847ec        bridge              bridge              local
+a850c6af6f6b        docker_nodefony     bridge              local
+70f61fc0b2f5        host                host                local
+783e02f89fdb        none                null                local
+	</pre>
+
+	<pre>	
+$ docker network inspect docker_nodefony
+		</pre>
+
+		<pre>
+[
+    {
+        "Name": "docker_nodefony",
+        "Id": "a850c6af6f6b1b682eb99499b532b936abe8f49643d9332e85fe1c3fe68f2dcd",
+        "Created": "2017-02-27T15:40:34.165795441Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.51.51.0/24"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": true,
+        "Containers": {
+            "1bb4a03665b1a4114f3970e1092fa13e493987bb89dcca7aff1d2faae0047a04": {
+                "Name": "nginx",
+                "EndpointID": "d6a9b24e4c50c12459edfc14dd192df74361e0559ba6e527f8d4d54b3b9a0079",
+                "MacAddress": "02:42:ac:33:33:04",
+                "IPv4Address": "172.51.51.4/24",
+                "IPv6Address": ""
+            },
+            "66e0daab9e46226b319a3e6aa1dccd4648b5f01cd3ac4502a105bf4275460d60": {
+                "Name": "nodefony",
+                "EndpointID": "cacb6c9d2011c28a8418572f6bbc0c3752389265b75227ed7c1f6830c94e92aa",
+                "MacAddress": "02:42:ac:33:33:03",
+                "IPv4Address": "172.51.51.3/24",
+                "IPv6Address": ""
+            },
+            "d9bceab08eb9686c3d8780543aa82427916f14c16a1ef322fe9e263a9bbcba33": {
+                "Name": "mariadb",
+                "EndpointID": "a904d834db8a150a1be42780e0e4d2f059434300ee64b9a712a7aac3b5455336",
+                "MacAddress": "02:42:ac:33:33:02",
+                "IPv4Address": "172.51.51.2/24",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {
+            "com.docker.compose.network": "nodefony",
+            "com.docker.compose.project": "docker"
+        }
+    }
+]
+		</pre>
+
+	<h3> Volumes</h3>
+		<pre>
+$ docker volume  ls
+DRIVER              VOLUME NAME
+local               docker_certificates
+local               docker_db
+local               docker_nodefony
+
+		</pre>
+	
+</div>
+
+
+
+
+</div>
+
+
+
+

@@ -28,7 +28,7 @@ $ make << target >>
 		<li> <strong><a href="#deploy">make deploy</a></strong>: <span style="padding-left:80px">Compile Assetics and start in production mode</span></li>
 		<li> <strong><a href="#sequelize">make sequelize</a></strong>: <span style="padding-left:80px">Build Sequelize Entities and fixtures</span></li>
 		<li> <strong><a href="#test">make test</a></strong>: <span style="padding-left:80px">Launch all tests</span></li>
-		<li> <strong><a href=#certificate"">make certificate</a></strong>  : <span style="padding-left:80px">Genarate and create a self-signed Certificate for https server</span></li>
+		<li> <strong><a href="#certificate">make certificate</a></strong>  : <span style="padding-left:80px">Genarate and create a self-signed Certificate for https server</span></li>
 	</ul>
 
 	<h3>PRODUCTION MANAGEMENT PM2</h3>
@@ -39,6 +39,12 @@ $ make << target >>
 		<li> <strong><a href="#pm2">make status</a></strong>: <span style="padding-left:80px">Get status PM2</span></li>
 		<li> <strong><a href="#pm2">make restart</a></strong>: <span style="padding-left:80px">Restart Nodefony in production mode</span></li>
 	</ul>
+
+	<h3>DOCKER MANAGEMENT</h3>
+	<ul>
+		<li> <strong><a href="#docker">make docker-compose</a></strong>: <span style="padding-left:80px">Nodefony in Docker</span></li>
+	</ul>
+
 
 </div>
 
@@ -379,4 +385,75 @@ restart:
 
 	</pre>
 </div>
+
+
+
+<h2 >Targets Certificates </h2>
+<h3 id="certificate">Generate Certificates</h3>
+<div class="doc3">
+	<p>
+		This Target is called during the build of framework</br>
+		A script generate self-signed SSL Certificate  (on localhost)
+	</p>
+
+	<pre>
+certificates:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#         NODEFONY CERTIFICATES         #" ;
+	@echo "#########################################" ;
+	@echo "";
+	./bin/generateCertificates.sh;
+	</pre>
+
+</div>
+
+
+<h2 >Targets DOCKER MANAGEMENT </h2>
+<h3 id="docker">   docker-compose</h3>
+<div class="doc3">
+	<p>
+		This Target Build Nodefony Docker with composer ( mariadb , nginx in front ) </br>
+		DOCKER COMPOSE see <a href="https://docs.docker.com/compose/">Docker documentation</a>   </br>
+		DOCKER COMPOSE see <a href="{{ path('documentation-section',{section:'installation', version:version, bundle:bundle, queryString:{'subsection':'docker'} })}}">Nodefony documentation</a>   </br>
+		These targets call targets in Makefile docker directory   
+	</p>
+	<code>Makefile </code>	
+	<pre>
+docker-compose: docker-compose-stop 
+	$(MAKE) -C docker compose-start
+
+docker-compose-stop:
+	$(MAKE) -C docker compose-stop
+
+docker-compose-rm: docker-compose-stop
+	$(MAKE) -C docker compose-rm
+
+docker-compose-clean:
+	$(MAKE) -C docker clean
+	</pre>
+
+	<pre>
+#TO START
+$ make docker-compose
+
+#TO STOP
+$ make docker-compose-stop
+
+#TO REMOVE COMPOSER
+$ make docker-compose-rm
+	</pre>
+	
+</div>
+
+
+<h3 > docker-build</h3>
+<div class="doc3">
+	<p>
+		NODEFONY DOCKER BUILD  see <a href="">documentation</a>   </br>
+		this target an internal use for building a docker realease   
+	</p>	
+	
+</div>
+
 

@@ -82,10 +82,28 @@ compose-build:
 	docker-compose build ;
 
 compose-start:
-	docker-compose up;
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#    DOCKER COMPOSER NODEFONY START     #" ;
+	@echo "#########################################" ;
+	@echo "";
+	docker-compose up -d;
 
 compose-stop:
-	docker-compose -f stop ;
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#    DOCKER COMPOSER NODEFONY STOP      #" ;
+	@echo "#########################################" ;
+	@echo "";
+	docker-compose stop ;
+
+compose-rm:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#    DOCKER COMPOSER NODEFONY REMOVE    #" ;
+	@echo "#########################################" ;
+	@echo "";
+	docker-compose rm ;
 
 compose-ip:
 	@echo "";
