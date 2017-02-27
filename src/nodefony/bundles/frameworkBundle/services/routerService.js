@@ -271,19 +271,19 @@ nodefony.registerService("router", function(){
 								}	
 						}
 						try {
-							this.fire("onResponse", this.context.response, this.context);
+							return this.fire("onResponse", this.context.response, this.context);
 						}catch(e){
 							if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
 								return ;
 							}
-							this.fire("onError", this.context.container, e);
+							return this.fire("onError", this.context.container, e);
 						}
 					}).catch((e)=>{
 						if (this.context.response.response.headersSent || this.context.timeoutExpired ){
 							return ;
 						}
 						this.context.promise = null ;
-						this.fire("onError", this.context.container, e);
+						return this.fire("onError", this.context.container, e);
 					});
 				case nodefony.typeOf(result) === "object" :
 					if ( this.defaultView ){
