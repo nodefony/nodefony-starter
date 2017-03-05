@@ -9,7 +9,7 @@
 		"javascript"
 	],
 	"dependencies": {
-		"request": "2.79.0",
+		"request": "2.80.0",
 		"useragent": "2.1.12"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",
