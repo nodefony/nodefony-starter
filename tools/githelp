@@ -9,6 +9,9 @@ $ git tag -d release01
 $ git push origin :refs/tags/release01
 
 
+// ADD REMOTE BRANCH
+git push -u origin <branch_name>
+
 // TRACK REMOTE BRANCH 
 $ git branch --track origin/ES6
 

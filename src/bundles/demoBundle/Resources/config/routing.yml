@@ -201,6 +201,14 @@ webAudioApi:
   defaults: {controller: "demoBundle:webAudio:mix"}
 
 
+### WEBRTC ###
+webrtc-config: 
+  pattern:  /webrtc/config
+  defaults: {controller: "demoBundle:webrtc:config"}
+
+webrtc: 
+  pattern:  /webrtc/diag
+  defaults: {controller: "demoBundle:webrtc:diag"}
 
 
 ## UNIT TEST

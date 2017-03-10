@@ -60,6 +60,15 @@
 						{% endif %}
                                         </ul>
                                 </li>
+				<li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MEDIAS<span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                                <li><a href="{{path("webAudioApi")}}">WEB AUDIO API MIXER</a></li>
+                                                <li role="separator" class="divider"></li>
+						<li><a href="{{ path("webrtc-config") }}">CONFIG WEBRTC</a></li>
+						<li><a href="{{ path("webrtc") }}">DEMO WEBRTC</a></li>
+                                        </ul>
+                                </li>
 				{% endif %}
 				{% block documentation %}
 					{{ render( controller("demoBundle:demo:doc" )) }}

@@ -1,8 +1,6 @@
 {% extends "/app/Resources/views/base.html.twig" %}
 
-
 {% block title %} {{ title }} {% endblock %}
-
 
 {% block stylesheets %}
 	
@@ -21,19 +19,12 @@
 
 {% block javascripts %}
 
-	
+	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>	
 
 	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
-		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
 		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
-		"/vendors/stage/stage.js" 
-		"/vendors/stage/function.js" 
-		"/vendors/stage/notificationsCenter.js" 
-		"/vendors/stage/syslog/syslog.js" 
-		"/vendors/stage/io/io.js" 
-		"/vendors/stage/xml.js" 
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}

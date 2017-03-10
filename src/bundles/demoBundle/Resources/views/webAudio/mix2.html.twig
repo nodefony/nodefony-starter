@@ -20,7 +20,6 @@
         {% endstylesheets %}
 
 
-
 {% endblock %}
 
 {% block javascripts %}
@@ -28,25 +27,6 @@
 	{{ parent() }}
 
 	{% javascripts output='/demoBundle/assets/js/audio.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/twig/twig.js"
-		"/vendors/stage/crypto/base64.js"
-		"/vendors/stage/crypto/md5.js"
-		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"
-		"/vendors/stage/io/authentication/sasl/sasl.js"
-		"/vendors/stage/io/transports/socket.js"
-		"/vendors/stage/io/protocols/bayeux/bayeux.js"
-		"/vendors/stage/io/realtime/realtime.js"
-		"/vendors/stage/kernel/autoload.js"
-		"/vendors/stage/kernel/kernel.js"
-		"/vendors/stage/kernel/appKernel.js"
-		"/vendors/stage/kernel/container.js"
-		"/vendors/stage/kernel/routerService.js"
-		"/vendors/stage/kernel/controller.js"
-		"/vendors/stage/kernel/module.js"
-		"/vendors/stage/kernel/translationService.js"
-		"/vendors/stage/kernel/locationService.js"
-		"/vendors/stage/media/adapter.js"
-		"/vendors/stage/media/media2.js"
 		"/demoBundle/webaudio/js/excanvas.js"
 		"/demoBundle/webaudio/js/jquery.knob.js"
 		"/demoBundle/webaudio/js/bootstrap-slider.js"
@@ -69,13 +49,12 @@
 			onBoot: function(kernel){
 			},
 			onDomLoad: function(kernel){		
-				var mix = new stage.mix2();
+				var mix = new stage.webmixer();
 				mix.build($('.centered'));		
 				mix.start();	
 			}
 		});
 	</script>
-	
 {% endblock %}
 
 {% block body %}

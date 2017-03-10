@@ -2,6 +2,9 @@ DISTRIB := $(shell uname)
 VERBOSE = 0 
 NODE_VERSION := $(shell node -v)
 
+PWD := $(shell pwd)
+PWD_STAGE := $(shell pwd)/src/nodefony-stage
+
 VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
 #$(error $(VERSION))  
 VERSION := $(shell expr $(VERSION) )
@@ -158,6 +161,18 @@ framework:
 
 	git submodule sync;
 	git submodule update --init --recursive
+
+	@echo "";
+	@echo "#######################################" ;
+	@echo "#    GIT CHECKOUT NODEFONY-STAGE      #" ;
+	@echo "#######################################" ;
+	@echo "";
+	#cd $(PWD_STAGE); \
+	#BRANCH=git branch | sed -n '/\* /s///p' :\
+	#git checkout --track -b webpack origin/webpack ; \
+	#cd $(PWD); \
+
+	
 
 	@echo "";
 	@echo "####################################################" ;

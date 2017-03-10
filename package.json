@@ -47,7 +47,7 @@
     "node-getopt":		"0.2.3",
     "node-pre-gyp":		"0.6.33",
     "nodegit":			"0.18.0",
-    "npm":			"4.3.0",
+    "npm":			"4.4.1",
     "npmi":			"2.0.1",
     "promise":			"7.1.1",
     "shortid":			"2.2.8",

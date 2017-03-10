@@ -15,12 +15,7 @@
 {% block stylesheets %}
 	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
 
-	{% stylesheets  output="/monitoringBundle/assets/css/style.css" filter="?less"
-            "/monitoringBundle/less/style.less"
-        %}
-            <!--link rel="stylesheet" href="{{ asset_url }}" /-->
-        {% endstylesheets %}
-
+	
 	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" filter="?uglifycss"
             "/monitoringBundle/css/json-view/jquery.jsonview.css"
 	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
@@ -32,41 +27,15 @@
 
 {% block javascripts %}
 
+	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>
+
 	{% javascripts output='/monitoringBundle/assets/js/app.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js"
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-	{% javascripts output='/monitoringBundle/assets/js/stage.js' filter='?uglifyjs2'
-		"/vendors/stage/stage.js"
-		"/vendors/stage/function.js"
-		"/vendors/stage/notificationsCenter.js"
-		"/vendors/stage/syslog/syslog.js"
-		"/vendors/stage/xml.js"
-		"/vendors/stage/io/io.js"	
-		"/vendors/stage/crypto/base64.js"
-		"/vendors/stage/crypto/md5.js"
-		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js"
-		"/vendors/stage/io/authentication/sasl/sasl.js"
-		"/vendors/stage/io/transports/socket.js"
-		"/vendors/stage/io/protocols/bayeux/bayeux.js"
-		"/vendors/stage/io/realtime/realtime.js"
-		"/vendors/stage/kernel/autoload.js"
-		"/vendors/stage/kernel/kernel.js"
-		"/vendors/stage/kernel/twig/twig.js"
-		"/vendors/stage/kernel/appKernel.js"
-		"/vendors/stage/kernel/container.js"
-		"/vendors/stage/kernel/routerService.js"
-		"/vendors/stage/kernel/controller.js"
-		"/vendors/stage/kernel/module.js"
-		"/vendors/stage/kernel/translationService.js"
-		"/vendors/stage/kernel/locationService.js"
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
+	
 	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
@@ -82,8 +51,8 @@
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-
 	<script type="text/javascript" src="/monitoringBundle/js/appKernel.js"></script>
+
 
 
 {% endblock %}

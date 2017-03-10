@@ -1,27 +1,10 @@
 
 stage.registerController("testsController", function() {
-	/**
-	 * 
-	 */
-	var controller = function(container, module) {
-		this.mother = this.$super;
-		this.mother.constructor();
-		
-		this.config = this.module.config;
-		this.router = container.get("router");
-
-			// ROUTES 
-		this.router.createRoute("tests", "/tests", {
-			controller:"appModule:tests:index"
-		});
-		
-		this.loadSocket = null ;
-
-	}
 
 
 	var updateLegendTimeout = null;
 	var latestPosition = null;
+
 	var updateLegend= function() {
 
 		updateLegendTimeout = null;
@@ -63,9 +46,8 @@ stage.registerController("testsController", function() {
 
 			legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2)));
 		}
-	}
+	};
 
-	
 	var colors = {
 		primary: "#7266ba",
 		success: "#27c24c",
@@ -84,7 +66,7 @@ stage.registerController("testsController", function() {
 	var addPlot = function(res){
 		data.push([res.percentEnd, res.requestBySecond ]);
 		data2.push([res.percentEnd, res.cpu.percent  ]);
-	}
+	};
 
 	var plotDisplay = function(res){
 
@@ -134,10 +116,8 @@ stage.registerController("testsController", function() {
 		});
 
 		legends = $("#placeholder .legendLabel");
-
 	
-	
-	}
+	};
 
 	var dataPie = [];
 	var pie = function(res){
@@ -165,7 +145,7 @@ stage.registerController("testsController", function() {
         			}
     			}
 		});
-	}
+	};
 
 	var cleanResult = function(ele){
 		data.length = 0 ;
@@ -174,10 +154,11 @@ stage.registerController("testsController", function() {
 		//$("#result").empty();
 		$('#progress-http').css('width', '0%').attr('aria-valuenow', 1).html("0%");
 		$('#progress-http').addClass("active");
-	}
+	};
 
 
 	var connect = function(sid){
+
 		var location = window.location ;
 		var protocol = location.protocol ;
 		switch (protocol){
@@ -188,7 +169,8 @@ stage.registerController("testsController", function() {
 				this.loadSocket = new WebSocket("ws://"+location.host+"/nodefony/test/load");
 			break;
 		}	
-		this.loadSocket.onopen = function (event) {
+
+		this.loadSocket.onopen =  (event) =>  {
 			cleanResult("http")
 			
 			this.close = false;
@@ -201,12 +183,13 @@ stage.registerController("testsController", function() {
 
 			this.canvas.attr("width", this.canvas.parent().css("width"));
 			
-		}.bind(this);
+		};
 		
-		this.loadSocket.onerror = function(error){
+		this.loadSocket.onerror = (error) => {
 			$("#result").append('WEBSOCKET SOCKET ERROR : '+error);
 		};
-		this.loadSocket.onmessage = function(message){
+
+		this.loadSocket.onmessage = (message) => {
 			//console.log(message.data)
 			//$("#result").append( message.data + "</br>")
 			var res = JSON.parse( message.data) ;
@@ -234,8 +217,9 @@ stage.registerController("testsController", function() {
 				addPlot(res);
 				//pie(res);
 			}
-		}.bind(this);
-		this.loadSocket.onclose = function(event){
+		};
+
+		this.loadSocket.onclose = (event) => {
 			
 			$('#progress-http').removeClass("active");
 			$("#result").append("WEBSOCKET SERVER CLOSE : "+event.reason);
@@ -246,62 +230,83 @@ stage.registerController("testsController", function() {
 			}
 			$("#startLoad").text("START");
 			this.close = null ;
-		}.bind(this);	
-	
-	}
+		};	
+	};
 
 
-	controller.prototype.indexAction = function(){
-	
-		var navView = this.renderDefaultContent("appModule:tests:tests", {});
 
-		this.close = null ;
-		$("#startLoad").click(function(event){
+
+	/**
+	 * 
+	 */
+
+	var controller = class controller  extends stage.Controller {
+
+		constructor(name, container, module) {
+
+			super(name, container, module);
 			
-			if (  this.close === false ){
-				this.close = true ;
-				this.loadSocket.send(JSON.stringify({
-					type:"action",
-					action:"stop",
-					message:"STOP BY USER",
-					sid : this.sid 
-				}));
-				$("#result").append('STOP TEST : </br>');
-				$(event.currentTarget).text("START");
-				return ;
-			}
+			this.config = this.module.config;
+			this.router = container.get("router");
 
-			this.canvas = $("#http-canvas-rbs") ;
-			$(event.currentTarget).text("STOP");
-			var smoothie = new SmoothieChart({
-				millisPerPixel:100,
-				minValue:0,
-				maxValue:500,
-				labels:{
-					fillStyle:'#ff7e10'
+				// ROUTES 
+			this.router.createRoute("tests", "/tests", {
+				controller:"appModule:tests:index"
+			});
+			
+			this.loadSocket = null ;
+
+		}
+
+		indexAction (){
+		
+			var navView = this.renderDefaultContent("appModule:tests:tests", {});
+
+			this.close = null ;
+			$("#startLoad").click((event) => {
+				
+				if (  this.close === false ){
+					this.close = true ;
+					this.loadSocket.send(JSON.stringify({
+						type:"action",
+						action:"stop",
+						message:"STOP BY USER",
+						sid : this.sid 
+					}));
+					$("#result").append('STOP TEST : </br>');
+					$(event.currentTarget).text("START");
+					return ;
 				}
+
+				this.canvas = $("#http-canvas-rbs") ;
+				$(event.currentTarget).text("STOP");
+				var smoothie = new SmoothieChart({
+					millisPerPixel:100,
+					minValue:0,
+					maxValue:500,
+					labels:{
+						fillStyle:'#ff7e10'
+					}
+				});
+				smoothie.streamTo(this.canvas.get(0), 2000);
+				this.lineRBS = new TimeSeries() ;
+				smoothie.addTimeSeries(this.lineRBS, {
+					lineWidth:3,
+					strokeStyle:'#ff0810'
+				});	
+
+				this.lineCPU = new TimeSeries() ;
+				smoothie.addTimeSeries(this.lineCPU, {
+					lineWidth:3,
+					strokeStyle:'#1008FF'
+				});
+
+				connect.call(this) ;
+				
 			});
-			smoothie.streamTo(this.canvas.get(0), 2000);
-			this.lineRBS = new TimeSeries() ;
-			smoothie.addTimeSeries(this.lineRBS, {
-				lineWidth:3,
-				strokeStyle:'#ff0810'
-			});	
-
-			this.lineCPU = new TimeSeries() ;
-			smoothie.addTimeSeries(this.lineCPU, {
-				lineWidth:3,
-				strokeStyle:'#1008FF'
-			});
-
-			connect.call(this) ;
-			
-		}.bind(this));
-
-		return navView ;
-
-	}
+			return navView ;
+		}
+	};
 
 	return controller ;
-
 });

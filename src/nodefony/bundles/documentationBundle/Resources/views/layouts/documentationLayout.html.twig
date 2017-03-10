@@ -2,6 +2,11 @@
 
 {{trans_default_domain("doc")}}
 
+{% block description %} 
+	<meta name="description" content="Nodefony Documentation {{ version }}">
+{% endblock %}
+
+
 {% block title %}
 
 	{% if subsection %}
@@ -27,8 +32,6 @@
 
 {% block stylesheets %}
 	
-	{{ parent() }}
-
 
 	{% stylesheets  output="/documentationBundle/assets/css/layout.css" filter="?uglifycss" 
 	    "/frameworkBundle/vendors/bootstrap/css/bootstrap.css"
@@ -45,19 +48,12 @@
 
 {% block javascripts %}
 
-	{{ parent() }}
+	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>	
 
 	{% javascripts output='/documentationBundle/assets/js/layout.js' filter='?uglifyjs2'
-		'/frameworkBundle/vendors/jquery/jquery-2.1.4.min.js'
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
 		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
-		"/vendors/stage/stage.js" 
-		"/vendors/stage/function.js" 
-		"/vendors/stage/notificationsCenter.js" 
-		"/vendors/stage/syslog/syslog.js" 
-		"/vendors/stage/io/io.js" 
-		"/vendors/stage/xml.js" 
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}

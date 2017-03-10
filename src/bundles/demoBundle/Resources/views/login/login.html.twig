@@ -101,23 +101,11 @@
 {% block javascripts %}
 	{{ parent() }}
 
+	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>	
+		 
 	<!-- ================== BEGIN BASE JS ================== -->
 	{% javascripts output='/demoBundle/assets/js/login.js' filter='?uglifyjs2'
 		"/demoBundle/plugins/gritter/js/jquery.gritter.js"
-		"/vendors/stage/crypto/base64.js"
-		"/vendors/stage/crypto/md5.js" 
-		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js" 
-		"/vendors/stage/io/authentication/sasl/sasl.js" 
-		"/vendors/stage/kernel/kernel.js" 
-		"/vendors/stage/kernel/twig/twig.js" 
-		"/vendors/stage/kernel/autoload.js" 
-		"/vendors/stage/kernel/locationService.js" 
-		"/vendors/stage/kernel/routerService.js" 
-		"/vendors/stage/kernel/container.js" 
-		"/vendors/stage/kernel/translationService.js" 
-		"/vendors/stage/kernel/controller.js" 
-		"/vendors/stage/kernel/module.js"
-		"/vendors/stage/kernel/appKernel.js" 
 		"/securityBundle/js/login.js"
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
@@ -149,9 +137,8 @@
 		};
 		
 		stage.appKernel.prototype.initializeLog = function(settings){
-			var syslog =  new stage.syslog(settings);
 			
-			syslog.listenWithConditions(this,{
+			this.syslog.listenWithConditions(this,{
 				severity:{
 					data:"ERROR,INFO"
 				}		
@@ -166,7 +153,7 @@
 				}
 			});
 
-			syslog.listenWithConditions(this,{
+			this.syslog.listenWithConditions(this,{
 				severity:{
 					data:"CRITIC,WARNING,DEBUG "
 				}		
@@ -184,7 +171,7 @@
 				}
 			});
 
-			return syslog ;
+			return this.syslog ;
 		}
 		var kernel = new stage.appKernel("dev", {
 			debug: true,

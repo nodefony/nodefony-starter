@@ -10,7 +10,7 @@
 	],
 	"dependencies": {
 		"less": "2.7.2",
-		"uglify-js": "2.8.7",
+		"uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
 		"uglifycss" :"0.0.25"
 	},
 	"author": "cci <christophe.camensuli@gmail.com>",

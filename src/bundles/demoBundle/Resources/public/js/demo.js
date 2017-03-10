@@ -6,9 +6,8 @@
 
 //== Kernel
 stage.appKernel.prototype.initializeLog = function(settings){
-	var syslog =  new stage.syslog(settings);
 	
-	syslog.listenWithConditions(this,{
+	this.syslog.listenWithConditions(this,{
 		severity:{
 			data:"ERROR,INFO"
 		}		
@@ -26,7 +25,7 @@ stage.appKernel.prototype.initializeLog = function(settings){
 		}
 	});
 
-	syslog.listenWithConditions(this,{
+	this.syslog.listenWithConditions(this,{
 		severity:{
 			data:"CRITIC,WARNING,DEBUG "
 		}		
@@ -44,7 +43,7 @@ stage.appKernel.prototype.initializeLog = function(settings){
 		}
 	});
 
-	return syslog ;
+	return this.syslog ;
 }
 
 var App = new stage.appKernel( "dev", {
@@ -101,14 +100,14 @@ var App = new stage.appKernel( "dev", {
 		 * Smooth scroll / Scroll To Top
 		/* ---------------------------------------------- */
 
-		$('a[href*=#]').bind("click", function(e){
+		/*$('a[href*=#]').bind("click", function(e){
            
 			var anchor = $(this);
 			$('html, body').stop().animate({
 				scrollTop: $(anchor.attr('href')).offset().top
 			}, 1000);
 			e.preventDefault();
-		});
+		});*/
 
 		$(window).scroll(function() {
 			if ($(this).scrollTop() > 100) {

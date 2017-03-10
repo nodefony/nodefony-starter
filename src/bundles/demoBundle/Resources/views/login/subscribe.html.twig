@@ -107,16 +107,6 @@
 
 	{{ parent() }}
 
-	<!-- LOGIN -->
-	{% javascripts output='/assets/js/login.js' filter='?uglifyjs2'
-		"/vendors/stage/crypto/base64.js" 
-		"/vendors/stage/crypto/md5.js" 
-		"/vendors/stage/io/authentication/mechanisms/digest-md5/digestMd5.js" 
-		"/vendors/stage/io/authentication/sasl/sasl.js" 
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
 
 	<!-- LIBRARY DESIGN-->
 	{% javascripts output='/assets/js/vendor.js' filter='?uglifyjs2'
@@ -128,22 +118,7 @@
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-	<!-- KERNEL STAGE-->
-	{% javascripts output='/assets/js/stage.js' filter='?uglifyjs2'
-		"/vendors/stage/kernel/twig/twig.js" 
-		"/vendors/stage/kernel/autoload.js" 
-		"/vendors/stage/kernel/kernel.js" 
-		"/vendors/stage/kernel/appKernel.js" 
-		"/vendors/stage/kernel/container.js" 
-		"/vendors/stage/kernel/routerService.js" 
-		"/vendors/stage/kernel/controller.js" 
-		"/vendors/stage/kernel/module.js" 
-		"/vendors/stage/kernel/translationService.js" 
-		"/vendors/stage/kernel/locationService.js" 
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
+	
 	<script src="/demoBundle/js/demo.js"></script>
 
 {% endblock %}

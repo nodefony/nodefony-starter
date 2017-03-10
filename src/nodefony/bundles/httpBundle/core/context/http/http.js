@@ -160,7 +160,9 @@ nodefony.register.call(nodefony.context, "http", function(){
 		extendTwig ( param ){
 			return nodefony.extend( {}, param, {
 				nodefony:{
-					url:this.request.url
+					url:		this.request.url,
+					environment:	this.kernel.environment,
+					debug:		this.kernel.debug
 				},
 				getFlashBag:	this.flashTwig.bind(this),
 				render:		this.render.bind(this),

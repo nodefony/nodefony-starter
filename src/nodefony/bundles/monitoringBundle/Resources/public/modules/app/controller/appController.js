@@ -51,12 +51,8 @@ stage.registerController("appController", function() {
 	};
 
 
-
-
-
 	var maximum =  200;
 	var ringStack = function(){
-
 
 		var coor = [];
 		for (var i= 0 ; i < maximum ; i++){
@@ -156,11 +152,8 @@ stage.registerController("appController", function() {
 			//console.log("FRAGMENTE")
 			this.fragment = true ;
 			return ;
-
 		}	
-	}
-
-
+	};
 
 	var parseMessage = function(message){
 		//console.log(message)
@@ -190,7 +183,7 @@ stage.registerController("appController", function() {
 		}catch(e){
 			this.logger(e,"ERROR");	
 		}
-	}
+	};
 
 	var serverMessages = function(service, message){
 		if (service === "monitoring" ){
@@ -200,7 +193,7 @@ stage.registerController("appController", function() {
 				this.logger(e,"ERROR");
 			}
 		}
-	}
+	};
 
 
 	var onConnect = function(message, realtime){
@@ -219,199 +212,200 @@ stage.registerController("appController", function() {
 				break
 			}
 		}
-	
-	}
+	};
 
 	/**
 	 * 
 	 */
-	var controller = function(container, module) {
-		this.mother = this.$super;
-		this.mother.constructor();
+	var controller = class controller  extends stage.Controller {
 
-		this.config = this.module.config;
-		this.kernel.listen(this, "onReady", function(){
-			this.realtime = this.get("realtime") ;
-			this.serverSyslog = this.get("serverSyslog");	
-			this.realtime.listen(this, "onConnect", onConnect );
-			this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
-				if (service === "monitoring"){
-					this.realtime.listen(this, "onMessage", serverMessages );
-				}
-			})
+		constructor(name, container, module) {
 
-			this.realtime.listen(this, "onUnSubscribe", function(service, message, realtime){
-				this.realtime.unListen("onMessage" , serverMessages) ;
-				console.log("onUnSubscribe service : " + service)
-			})
-		});
+			super(name, container, module);
 
-		this.kernel.listen(this, "onRouteChange",function(newRoute ,lastRoute){
-			switch(lastRoute.id){
-				case "developer" :
-					if (lastRoute.args.length ){
-						switch(lastRoute.args[0]){
-							case "graph" :
-							case "realTime" :
-								this.realtime.unSubscribe("random");
-							break;
-						}
+			this.config = this.module.config;
+			this.kernel.listen(this, "onReady", function(){
+				this.realtime = this.get("realtime") ;
+				this.serverSyslog = this.get("serverSyslog");	
+				this.realtime.listen(this, "onConnect", onConnect );
+				this.realtime.listen(this, "onSubscribe", function(service, message, realtime){
+					if (service === "monitoring"){
+						this.realtime.listen(this, "onMessage", serverMessages );
 					}
-				break;
-				case "dashboard" :
-					this.realtime.unSubscribe("monitoring");
-				break;
+				})
+
+				this.realtime.listen(this, "onUnSubscribe", function(service, message, realtime){
+					this.realtime.unListen("onMessage" , serverMessages) ;
+					console.log("onUnSubscribe service : " + service)
+				})
+			});
+
+			this.kernel.listen(this, "onRouteChange",(newRoute ,lastRoute) => {
+				switch(lastRoute.id){
+					case "developer" :
+						if (lastRoute.args.length ){
+							switch(lastRoute.args[0]){
+								case "graph" :
+								case "realTime" :
+									this.realtime.unSubscribe("random");
+								break;
+							}
+						}
+					break;
+					case "dashboard" :
+						this.realtime.unSubscribe("monitoring");
+					break;
+				}
+			});
+
+			/******** AJAX SETUP *************/
+			$.ajaxSetup({
+				statusCode : {
+					401: function() {
+					 	window.location = "/";
+					}
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					if (textStatus === "error"){
+						switch (errorThrown){
+							case "Unauthorized" :
+								window.location = "/";
+							break;
+							default:
+								App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
+						}
+						return ;
+					}
+					//App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
+				}
+			});
+		}
+	
+		/**
+	 	* 
+	 	*/
+		indexAction () {		
+			this.render( this.kernel.uiContainer , this.renderPartial("appModule::index", {config: this.config}), "prepend") ;
+
+			// section elements definition
+			var section = {};
+			section.header 	= $(".app-header");
+			section.aside 	= $(".app-aside");
+			section.content = $(".app-content");
+			section.footer 	= $(".app-footer");		
+			this.kernel.set("section", section);
+
+			// load the nav menu
+			this.module.controllers.navController.indexAction();
+		
+			// rewind initial route
+			var location = this.get("location");
+			var browser = this.get("browser");
+			location.url(location.initialUrl);
+			if (location.hash() === "" || location.hash() ==="/") {
+				this.redirect(this.router.generateUrl("dashboard"));
+			} else {
+				browser.url(location.initialUrl);	
+			}
+		}
+
+		/**
+	 	* 
+	 	*/
+		["404Action"] () {		
+			this.renderDefaultContent("appModule::404", {
+				"product": this.kernel.product,
+				"version": this.kernel.version
+			}, {
+				"hideHeader": true,
+				"hideAside" : true,
+				"hideFooter": true
+			});
+		};
+		
+		/**
+	 	* 
+	 	*/
+		["500Action"] (error) {		
+			if (!$(".app-content").length) {
+				var view = this.renderPartial("appModule::500", { error: error });
+				$("body").html(view);
+				return ;
 			}
 			
-		}.bind(this))
-
-		/******** AJAX SETUP *************/
-		$.ajaxSetup({
-			statusCode : {
-				401: function() {
-					 window.location = "/";
-				}
-			},
-			error: function(jqXHR, textStatus, errorThrown){
-				if (textStatus === "error"){
-					switch (errorThrown){
-						case "Unauthorized" :
-							window.location = "/";
-						break;
-						default:
-							App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
-					}
-					return ;
-				}
-				//App.logger("Error: " + textStatus + ": " + errorThrown, "ERROR");	
-			}.bind(this)
-		});
-	};
-	
-	/**
-	 * 
-	 */
-	controller.prototype.indexAction = function() {		
-		this.render( this.kernel.uiContainer , this.renderPartial("appModule::index", {config: this.config}), "prepend") ;
-
-		// section elements definition
-		var section = {};
-		section.header 	= $(".app-header");
-		section.aside 	= $(".app-aside");
-		section.content = $(".app-content");
-		section.footer 	= $(".app-footer");		
-		this.kernel.set("section", section);
-
-		// load the nav menu
-		this.module.controllers.navController.indexAction();
-	
-		// rewind initial route
-		var location = this.get("location");
-		var browser = this.get("browser");
-		location.url(location.initialUrl);
-		if (location.hash() === "" || location.hash() ==="/") {
-			this.redirect(this.router.generateUrl("dashboard"));
-		} else {
-			browser.url(location.initialUrl);	
+			this.renderDefaultContent("appModule::500", {
+				"error": error,
+				"product": this.kernel.product,
+				"version": this.kernel.version
+			}, {
+				"hideHeader": true,
+				"hideAside" : true,
+				"hideFooter": true
+			});
 		}
-	};
 
-	/**
-	 * 
-	 */
-	controller.prototype["404Action"] = function() {		
-		this.renderDefaultContent("appModule::404", {
-			"product": this.kernel.product,
-			"version": this.kernel.version
-		}, {
-			"hideHeader": true,
-			"hideAside" : true,
-			"hideFooter": true
-		});
-	};
-	
-	/**
-	 * 
-	 */
-	controller.prototype["500Action"] = function(error) {		
-		if (!$(".app-content").length) {
-			var view = this.renderPartial("appModule::500", { error: error });
-			$("body").html(view);
-			return ;
-		}
-		
-		this.renderDefaultContent("appModule::500", {
-			"error": error,
-			"product": this.kernel.product,
-			"version": this.kernel.version
-		}, {
-			"hideHeader": true,
-			"hideAside" : true,
-			"hideFooter": true
-		});
-	};
+		/**
+	 	* 
+	 	*/
+		developerAction (ele) {		
+			this.renderDefaultContent("appModule:developer:" + ele);
+			switch (ele){
+				case "realTime":
+					$('.chart').easyPieChart({
+						//your configuration goes here
+						animate: 1000,
+						size:200,
+						lineWidth:7
+					});
+					if (!  this.realtime.subscribedService["random"] ){
+						this.realtime.subscribe("random");
+					} 
+				break;
+				case "graph":
 
-	/**
-	 * 
-	 */
-	controller.prototype.developerAction = function(ele) {		
-		this.renderDefaultContent("appModule:developer:" + ele);
-		switch (ele){
-			case "realTime":
-				$('.chart').easyPieChart({
-					//your configuration goes here
-					animate: 1000,
-					size:200,
-					lineWidth:7
-				});
-				if (!  this.realtime.subscribedService["random"] ){
-					this.realtime.subscribe("random");
-				} 
-			break;
-			case "graph":
+					plot = $.plot('.graphs .realTime .graph', ringStack(0), {
+						colors: [colors['primary']],
+			    			//points: { show: true, radius: 1},
+			    			//series: { shadowSize: 3 }, 
+			    			grid: {
+				    			show: true,
+							hoverable: true,
+							borderWidth: 0,
+							color: '#a1a7ac',
+							markings: [ 
+								{ xaxis: { from: 0, to: 500 }, yaxis: { from: 0, to: 0 }, color: colors['muted'] },
+								{ xaxis: { from: 0, to: 0 }, yaxis: { from: 0, to: 110 }, color: colors['muted'] }
+							]
+			    			},
+			    			xaxis:{
+				    			show: true,
+							tickLength: 0
+			    			},
+			    			yaxis:{
+				    			show: true,
+							tickLength: 0,
+							tickSize: 10,
+							tickFormatter: function(val){return Math.round(val)},
+							max:110,
+							min: 0
+			    			},
+			    			tooltip: true,
+			    			tooltipOpts: {
+				    			content: 'Visits of %x.1 is %y.1',
+				    			defaultTheme: false,
+				    			shifts: {
+					    			x: 10,
+					    			y: -25
+				    			}
+						}
+					});
 
-				plot = $.plot('.graphs .realTime .graph', ringStack(0), {
-					colors: [colors['primary']],
-			    		//points: { show: true, radius: 1},
-			    		//series: { shadowSize: 3 }, 
-			    		grid: {
-				    		show: true,
-						hoverable: true,
-						borderWidth: 0,
-						color: '#a1a7ac',
-						markings: [ 
-							{ xaxis: { from: 0, to: 500 }, yaxis: { from: 0, to: 0 }, color: colors['muted'] },
-							{ xaxis: { from: 0, to: 0 }, yaxis: { from: 0, to: 110 }, color: colors['muted'] }
-						]
-			    		},
-			    		xaxis:{
-				    		show: true,
-						tickLength: 0
-			    		},
-			    		yaxis:{
-				    		show: true,
-						tickLength: 0,
-						tickSize: 10,
-						tickFormatter: function(val){return Math.round(val)},
-						max:110,
-						min: 0
-			    		},
-			    		tooltip: true,
-			    		tooltipOpts: {
-				    		content: 'Visits of %x.1 is %y.1',
-				    		defaultTheme: false,
-				    		shifts: {
-					    		x: 10,
-					    		y: -25
-				    		}
+					if (!  this.realtime.subscribedService["random"] ){
+						this.realtime.subscribe("random");
 					}
-				});
-
-				if (!  this.realtime.subscribedService["random"] ){
-					this.realtime.subscribe("random");
-				}
-			break;
-		
+				break;
+			
+			}
 		}
 	};
 

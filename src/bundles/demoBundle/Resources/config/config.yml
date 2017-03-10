@@ -43,4 +43,29 @@ realTimeBundle:
       port:                       1316
       domain:                     localhost
 
-
+webrtc:
+  server:                       "kamailio"
+  config:
+    protocol:                   "SIP"
+    disableVideo:               false
+    ICEServers:
+      - "url:stun:stun.l.google.com:19302"
+    maxBandwidth:               "{ audio:64, video:512 }"
+    videoSize:                  "{ minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }"
+  serversSip:
+    nodefony:
+      ServerUrl:                "/secure/realtime"
+      sipTransport:             "TCP"
+      SIPProxyUrl:              "nodefony.net"
+      DTMF:                     "DTMF-OFF"
+      publicAdress:             109.7.203.160
+      sipPort:                  5060,
+    kamailio:
+      ServerUrl:                "wss://192.168.0.1:10443"
+      sipTransport:             "WSS"
+      SIPProxyUrl:              "nodefony.net"
+      DTMF:                     "DTMF-OFF"
+  user:
+    displayName:                1000
+    publicIdentity:             1000
+    realm:                      nodefony.net 
