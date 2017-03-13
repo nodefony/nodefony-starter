@@ -275,6 +275,7 @@ nodefony.registerService("httpKernel", function(){
 			}else{
 				if ( error.stack ){
 					myError =  error.stack;
+					this.logger(error.message, "ERROR");
 					this.logger(myError, "ERROR");
 					myError = myError.split('\n').map(function(v){ return ' -- ' + v +"</br>"; }).join('');
             					
@@ -295,6 +296,7 @@ nodefony.registerService("httpKernel", function(){
 					}
 				break;
 				case "string" :
+					console.trace(error);
 					error = new Error(error);
 					error.status = context.response.getStatusCode() ;
 				break;

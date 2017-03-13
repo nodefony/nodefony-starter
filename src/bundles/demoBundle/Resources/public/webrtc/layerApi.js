@@ -98,7 +98,7 @@ stage.register("webrtcApi", function(){
 
 			switch (this.settings.server){
 				case "kamailio" :
-					this.transport = nativeTransport(this.settings.sip.ServerUrl, {
+					this.transport = nativeTransport(this.settings.sip.serverUrl, {
 						//websocket protocol 
 						protocol:"sip"
 					});
@@ -117,7 +117,7 @@ stage.register("webrtcApi", function(){
 				break;
 				case "nodefony" :
 
-					this.transport = NODEFONYTranport.call(this, this.settings.sip.ServerUrl, {
+					this.transport = NODEFONYTranport.call(this, this.settings.sip.serverUrl, {
 						// fire when 401 http code
 		    				onUnauthorized:(authenticate, realtime) => {
 							//this.logger(" REAL TIME  WEBRTC Unauthorized")
@@ -207,7 +207,7 @@ stage.register("webrtcApi", function(){
 
 		initWebrtc (transport){
 			this.webrtc = null ;
-			this.webrtc = new stage.media.webrtc(this.settings.sip.SIPProxyUrl, transport, {
+			this.webrtc = new stage.media.webrtc(this.settings.sip.sipProxyUrl, transport, {
 				protocol	: this.settings.webrtc.protocol ,
 				sipTransport	: this.settings.sip.sipTransport,
 				sipPort		: this.settings.sip.sipPort,

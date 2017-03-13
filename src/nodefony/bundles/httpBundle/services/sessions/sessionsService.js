@@ -76,6 +76,12 @@ nodefony.registerService("sessions", function(){
 			this.saved = false ;
 			this.flashBag = {};
 		}
+
+		set (name, object){
+			//console.log(name)
+			//console.log(object)
+			super.set(name, object);	
+		} 
 	
 		encrypt  (text){
 			var cipher = crypto.createCipher(algorithm, password);

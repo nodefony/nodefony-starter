@@ -258,6 +258,10 @@ clean:
 		echo ""; \
 		rm -rf web/* ; \
 	fi
+
+	$(MAKE) -C ./src/nodefony-stage clean
+
+	
 	make framework ;
 
 test:

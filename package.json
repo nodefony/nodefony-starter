@@ -55,7 +55,13 @@
     "sqlite3":			"3.1.8",
     "twig":			"1.10.4",
     "pm2":			"2.4.2",
-    "xml2js":			"0.4.17"
+    "xml2js":			"0.4.17",
+    "webpack":			"fulls1z3/webpack#v2.2.1-harmony",
+    "webpack-merge":		"4.0.0",
+    "babel-register":		"6.23.0",
+    "babel-preset-es2015":	"6.22.0",
+    "babel-cli":		"6.23.0"
+
   },
   "devDependencies": {
     "bithound":			"1.7.0"

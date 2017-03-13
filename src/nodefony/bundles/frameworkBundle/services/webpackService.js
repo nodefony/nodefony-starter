@@ -34,7 +34,9 @@ nodefony.registerService("webpack", function(){
 			target:		"web",
 			watch:		true,
 			devtool:	this.production ? false : 'source-map',
-			output:		{},
+			output:		{
+				path:	this.kernel.rootDir+"/web"
+			},
 			externals:	{},
 			resolve:	{},
 			plugins:	[],
@@ -51,17 +53,7 @@ nodefony.registerService("webpack", function(){
 			super ("WEBPACK", container);
 			this.production = true;
 			this.defaultConfig = defaultConfig.call(this);
-		
-			this.logger("webpack APP", "INFO");
-			this.compiler = this.loadConfig({
-				output: {
-					library: 'app',
-					libraryTarget: 'umd',
-					filename: this.production ? "./app/Resources/public/assets/js/app.min.js" : "./app/Resources/public/assets/js/app.js",
-				},
-				entry: "./app/Resources/public/js/app.js",		
-			});
-			
+						
 			/*this.compiler.run( (err, stats) => {
 				this.loggerStat(err, stats);	
 			});*/
@@ -87,8 +79,14 @@ nodefony.registerService("webpack", function(){
 				}
 		}
 
-		loadConfig( config ){
+		loadConfig( config , path ){
+						
 			var myConf = webpackMerge( this.defaultConfig, config ) ;
+			if ( path ){
+				myConf.context = path ;
+				myConf.output.path = path ;
+			}
+			this.logger( "LOAD CONFIG entry :" + myConf.entry.main , "DEBUG" )
 
 			try {
 				var compiler =  webpack( myConf );
@@ -103,14 +101,12 @@ nodefony.registerService("webpack", function(){
 				});
 				this.kernel.listen(this ,"onTerminate", ( ) => {
 					watching.close(() => {
-						this.logger("Watching Ended.", "INFO");
+						this.logger("Watching Ended :" + myConf.context +"/"+myConf.entry.main , "INFO");
 					});
 				});
 			}
 			return compiler ;
 		}
-
-
 
 		getUglifyJsPlugin( config ){
 			try {

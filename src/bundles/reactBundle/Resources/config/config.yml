@@ -42,7 +42,6 @@ webpack:
   watch:                        true
   devtool:                      "source-map"
   output:
-    path:                       "./Resources/public/assets/js"
     filename:                   "./Resources/public/assets/js/react.js"
     library:                    "react"
     libraryTarget:              "umd"

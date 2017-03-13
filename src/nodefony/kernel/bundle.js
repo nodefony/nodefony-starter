@@ -45,7 +45,8 @@ nodefony.register("Bundle", function(){
 			this.fixtures = {};
 
 			this.reader = this.kernel.reader;
-			
+
+						
 			try {
 				this.resourcesFiles = this.finder.result.findByNode("Resources") ;
 			}catch(e){
@@ -56,10 +57,14 @@ nodefony.register("Bundle", function(){
 			// Register Service
 			this.registerServices();
 
+			// WEBPACK SERVICE
+			this.webpackService = this.get("webpack");
+
 			// read config files
 			this.kernel.readConfig.call(this, null, this.resourcesFiles.findByNode("config") ,(result) => {
 				this.parseConfig(result);
 			});
+
 			this.regTemplateExt = new RegExp("^(.+)\."+this.get("templating").extention+"$");
 		}
 	
@@ -90,6 +95,15 @@ nodefony.register("Bundle", function(){
 						break;
 						case /^locale$/.test(ele) :
 							this.locale = result[ele] ;
+						break;
+						case /^webpack$/.test(ele) :
+							try {
+								if ( result[ele] ){
+									this.webpackService.loadConfig( result[ele] ,this.path);	
+								}
+							}catch(e){
+							
+							}
 						break;
 					}
 				}

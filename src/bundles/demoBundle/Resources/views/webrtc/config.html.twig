@@ -15,6 +15,12 @@
 {% block javascripts %}
 	{{ parent() }}
 
+	<script>
+		$("#server").on("change", function(){
+			console.log("change")
+			$("#changeApi").submit();
+		});
+	</script>
 {% endblock %}
 
 {% block body %}
@@ -25,146 +31,142 @@
 
           	<h1 class="block text-info text-center" style ="padding-top:20px"> CONFIGURATIONS</h1>
 
-          	<ul class="nav nav-tabs m-t-xl"  style ="padding-top:20px" role="tablist">
-          		<li role="presentation" class="{% if not tab %}active{% endif %}"><a href="#api" aria-controls="api" role="tab" data-toggle="tab">API</a></li>
-          		<li role="presentation" class="{% if tab == 'user' %}active{% endif %}"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">USER</a></li>
+		<form  id="changeApi" class="tab-content"  action="{{ path("webrtc-config") }}" method="POST" >
+			<input type="hidden" name="changeApi" value="true" />
+			<div role="tabpanel" style ="padding-top:30px"  id="api">
+          			<h4 class="wrapper strong  text-info text-center m-t-xl"> Transport Layer Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
+		        	<div class="account-wall m-t-xxl">
+		        		<div class="form-group has-info">
+						<label class="control-label col-sm-4" for="api">API</label>
+						<div class="col-sm-8">
+					      		<select  id="server" name="server" class="form-control no-b">
+					      			<option value="kamailio"{% if api.server == 'kamailio' %} selected="selected"{% endif %}>KAMAILIO</option>
+					      			<option value="nodefony"{% if api.server == 'nodefony' %} selected="selected"{% endif %}>NODEFONY REALTIME </option>
+					      		</select>
+						</div>
+					</div>
+		        	</div>
+			</div>
+		</form>
+
+          	<ul class="nav nav-tabs m-t-xl"  style ="padding-top:60px" role="tablist">
+          		<li role="presentation" class="{% if not tab %}active{% endif %}"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">USER</a></li>
           		<li role="presentation" class="{% if tab == 'webrtc' %}active{% endif %}"><a href="#webrtc" aria-controls="webrtc" role="tab" data-toggle="tab">WEBRTC</a></li>
           		<li role="presentation" class="{% if tab == 'sip' %}active{% endif %}"><a href="#sip" aria-controls="sip" role="tab" data-toggle="tab">SIP</a></li>
           		<li role="presentation" class="{% if tab == 'audio' %}active{% endif %}"><a href="#audio" aria-controls="audio" role="tab" data-toggle="tab">AUDIO</a></li>
           	</ul>
 
-          	<div class="tab-content">
-          		<div role="tabpanel" class="tab-pane{% if not tab %} active{% endif %}" id="api">
-          			<h4 class="wrapper strong  text-info text-center m-t-xl"> Transport Layer Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
-		        	<div class="account-wall m-t-xxl">
-		        		<div class="form-group has-info">
-						<label class="control-label col-sm-4" for="api">API</label>
-					    	<div class="col-sm-8">
-					      		<select id="api" name="api" class="form-control no-b">
-					      			<option value="WEBSOCKET"{% if api.server == 'kamailio' %} selected="selected"{% endif %}>KAMAILIO</option>
-					      			<option value="REALTIME"{% if api.server == 'nodefony' %} selected="selected"{% endif %}>NODEFONY REALTIME </option>
-					      		</select>
-					    	</div>
-					</div>
-		        	</div>
-		    	</div>
+          	<div class="tab-content" >
+			
+		        <form  class="tab-content"  action="{{ path("webrtc-config") }}" method="POST" >
+          			
+				<input type="hidden" name="server" value="{{api.server}}" />
 
-          		<div role="tabpanel" class="tab-pane{% if tab == 'user' %} active{% endif %}" id="user">
-          			<h4 class="wrapper strong  text-info text-center m-t-xl"> User Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
-		            	<div class="account-wall m-t-xxl">
-		                	<form id="" class="form-horizontal"  action="" method="POST" >
-		                		<input type="hidden" name="type" value="user" />
+          			<div role="tabpanel" class="tab-pane{% if not tab %} active{% endif %}" id="user">
+          				<h4 class="wrapper strong  text-info text-center m-t-xl"> User Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
+		            		<div class="account-wall m-t-xxl">
 		                		<div class="form-group has-info">
 							<label class="control-label col-sm-4" for="displayName">Display Name</label>
 							<div class="col-sm-8">
-								<input type="text" id="displayName" name="displayName"  value="{{ api.user.displayName }}"  class="form-control no-b" placeholder="e.g. John Doe" />
+								<input type="text"  name="user[displayName]"  value="{{ api.user.displayName }}"  class="form-control no-b" placeholder="e.g. John Doe" />
 							</div>
 						</div>
 			        		<div class="form-group has-info m-t-lg">
 							<label class="control-label col-sm-4" for="publicIdentity">Public Identity</label>
 							<div class="col-sm-8">
-								<input type="text" id="publicIdentity" name="publicIdentity"  value="{{ api.user.publicIdentity }}"  class="form-control no-b" placeholder="" />
+								<input type="text"  name="user[publicIdentity]"  value="{{ api.user.publicIdentity }}"  class="form-control no-b" placeholder="" />
 							</div>
 						</div>
 		                		<div class="form-group has-info m-t-lg">
 							<label class="control-label col-sm-4" for="realm">Realm</label>
 							<div class="col-sm-8">
-							      	<input type="text" id="realm" name="realm"  value="{{ api.user.realm }}"  class="form-control no-b" placeholder="nodefony.net" />
+								<input type="text" name="user[realm]"  value="{{ api.user.realm }}"  class="form-control no-b" placeholder="nodefony.net" />
 							</div>
 						</div>
+					</div>
+          			</div>
 
-						<div class="row m-t-lg">
-			        			<div class="col-xs-offset-3 col-xs-6">
-			        				<button id="valid" class="btn btn-xl btn-info btn-block m-b-lg"> validation </button>
-			        			</div>
-			        		</div>
-					</form>
-				</div>
-          		</div>
-
-	          	<div role="tabpanel" class="tab-pane{% if tab == 'webrtc' %} active{% endif %}" id="webrtc">
-			    	<h4 class="wrapper strong  text-info text-center m-t-xl">Webrtc Stack Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
-		            	<div class="account-wall m-t-xxl">
-		                	<form id="" class="form-horizontal"  action="" method="POST" >
-		                		<input type="hidden" name="type" value="webrtc" />
+	          		<div role="tabpanel" class="tab-pane{% if tab == 'webrtc' %} active{% endif %}" id="webrtc">
+			    		<h4 class="wrapper strong  text-info text-center m-t-xl">Webrtc Stack Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
+		            		<div class="account-wall m-t-xxl">
 
 						<div class="form-group has-info">
 							<label class="control-label col-sm-4" for="ICEServers">Serveurs ICE</label>
 							<div class="col-sm-8">
-							      	<input type="text" id="ICEServers" name="ICEServers"  value="{{ api.webrtc.ICEServers }}"  class="form-control no-b" placeholder="" />
+								<input type="text" id="ICEServers" name="webrtc[ICEServers]"  value="{{ api.webrtc.ICEServers }}"  class="form-control no-b" placeholder="" />
 							</div>
 						</div>
 		                		<div class="form-group has-info">
 							<label class="control-label col-sm-4" for="maxBandwidth">BANDE PASSANTE MAX (kbps)</label>
 							<div class="col-sm-8">
-							      	<input type="text" id="maxBandwidth" name="maxBandwidth"  value="{{ api.webrtc.maxBandwidth }}"  class="form-control no-b" placeholder="{ audio:64, video:512 }" />
+								<input type="text"  name="webrtc[maxBandwidth]"  value="{{ api.webrtc.maxBandwidth }}"  class="form-control no-b" placeholder="{ audio:64, video:512 }" />
 							</div>
 						</div>
 						<div class="form-group has-info">
-							<label class="control-label col-sm-4" for="disableVideo">Video enable</label>
+							<label class="control-label col-sm-4" for="enableVideo">Video enable</label>
 							<div class="col-sm-8 text-center">
-								<input type="checkbox" id="disableVideo" name="disableVideo" value="1"{% if api.webrtc.disableVideo|number_format == 1 %} checked="checked"{% endif %} />
+								<input type="checkbox"  name="webrtc[enableVideo]" {% if api.webrtc.enableVideo %} checked="checked"{% endif %} />
 							</div>
 						</div>
 
 						<div class="form-group has-info">
 							<label class="control-label col-sm-4" for="maxBandwidth">Taille de la vidéo</label>
 							<div class="col-sm-8">
-							      	<input type="text" id="VideoSize" name="VideoSize"  value="{{ api.webrtc.VideoSize }}"  class="form-control no-b" placeholder=" { minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }" />
+								<input type="text"  name="webrtc[VideoSize]"  value="{{ api.webrtc.VideoSize }}"  class="form-control no-b" placeholder=" { minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }" />
 							</div>
 						</div>
-			        		<div class="row m-t-lg">
-			        			<div class="col-xs-offset-3 col-xs-6">
-			        				<button id="valid" class="btn btn-xl btn-info btn-block m-b-lg"> validation </button>
-			        			</div>
-			        		</div>
-		                	</form>
-		            	</div>
-	            	</div>
-			
-			<div role="tabpanel" class="tab-pane{% if tab == 'sip' %} active{% endif %}" id="sip">
-				<h4 class="wrapper strong  text-info text-center m-t-xl">SIP Stack Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
-				<div class="account-wall m-t-xxl">
-					<form id="" class="form-horizontal"  action="" method="POST" >
+		            		</div>
+	            		</div>
+
+				<div role="tabpanel" class="tab-pane{% if tab == 'sip' %} active{% endif %}" id="sip">
+					<h4 class="wrapper strong  text-info text-center m-t-xl">SIP Stack Configurations <a href="#" class="pull-right text-primary text-xl"><i class="glyphicon glyphicon-question-sign"></i></a></h4> 
+					<div class="account-wall m-t-xxl">
 						<div class="form-group has-info">
 							<label class="control-label col-sm-4" for="DTMF">DTMF</label>
 							<div class="col-sm-8">
-								<select id="DTMF" name="DTMF" class="form-control no-b">
+								<select id="DTMF" name="sip[DTMF]" class="form-control no-b">
 									<option value="SIP-INFO"{% if api.sip.DTMF == 'SIP-INFO' %} selected="selected"{% endif %}>SIP-INFO</option>
 									<option value="RTP-EVENT"{% if api.sip.DTMF == 'RTP-EVENT' %} selected="selected"{% endif %}>RTP-EVENT</option>
 									<option value="DTMF-OFF"{% if api.sip.DTMF == 'DTMF-OFF' %} selected="selected"{% endif %}>OFF</option>
 								</select>
 							</div>
 						</div>
-		                		
+
 						{% if api.sip.publicAdress is not empty %}
 						<div class="form-group has-info">
-							<label class="control-label col-sm-4" for="WebSockServerUrl">IP Public</label>
+							<label class="control-label col-sm-4" for="publicAdress">IP Public</label>
 							<div class="col-sm-8">
-								<input type="text" id="publicAdress" name="publicAdress"  value="{{ api.sip.publicAdress }}" class="form-control no-b" placeholder=" 109.7.203.160" />
+								<input type="text"  name="sip[publicAdress]"  value="{{ api.sip.publicAdress }}" class="form-control no-b" placeholder="" />
 							</div>
 						</div>
 						{% endif %}
 		                		<div class="form-group has-info">
-							<label class="control-label col-sm-4" for="WebSockServerUrl">URL Serveur WebSocket</label>
+							<label class="control-label col-sm-4" for="serverUrl">URL Serveur WebSocket</label>
 							<div class="col-sm-8">
-								<input type="text" id="WebSockServerUrl" name="WebSockServerUrl"  value="{{ api.sip.WebSockServerUrl }}"  class="form-control no-b" placeholder="" />
+								<input type="text"  name="sip[serverUrl]"  value="{{ api.sip.serverUrl }}"  class="form-control no-b" placeholder="" />
 							</div>
 						</div>
 						<div class="form-group has-info">
-							<label class="control-label col-sm-4" for="SIPProxyUrl">URL PROXY SIP outbound</label>
+							<label class="control-label col-sm-4" for="sipProxyUrl">URL PROXY SIP outbound</label>
 							<div class="col-sm-8">
-								<input type="text" id="SIPProxyUrl" name="SIPProxyUrl"  value="{{ api.sip.SIPProxyUrl }}"  class="form-control no-b" placeholder="" />
+								<input type="text"  name="sip[sipProxyUrl]"  value="{{ api.sip.sipProxyUrl }}"  class="form-control no-b" placeholder="" />
 							</div>
 						</div>
-					</form>
-				</div>
-	            	</div>
+					</div>
+	            		</div>
 
-			<div role="tabpanel" class="tab-pane{% if tab == 'audio' %} active{% endif %}" id="audio">
-	            	</div>
+				<div role="tabpanel" class="tab-pane{% if tab == 'audio' %} active{% endif %}" id="audio">
+	            		</div>
+
+				<div class="row m-t-lg" style ="padding-top:30px" >
+					<div class="col-xs-offset-3 col-xs-6">
+						<button id="valid" class="btn btn-xl btn-info btn-block m-b-lg"> validation </button>
+			        	</div>
+				</div>
+			</form>
             	</div>
-        </div>
+
+	</div>
 
 {% endblock %}
 

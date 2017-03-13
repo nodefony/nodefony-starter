@@ -5,7 +5,6 @@ stage.register("App", function(){
 	// closure private
 
 
-
 	return function( urlConfig, environment, debug ){
 
 		// KERNEL 

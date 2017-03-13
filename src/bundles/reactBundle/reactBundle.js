@@ -56,29 +56,22 @@ nodefony.registerBundle ("react", function(){
 			// Mother Class constructor 
 			super( name, kernel, container );
 
-			// Load core bundle library 
-			this.autoLoader.loadDirectory(this.path+"/core");
+			/*
+		 	 *	Load core bundle library
+		 	 */
+			//this.autoLoader.loadDirectory(this.path+"/core");
 
+		       	/*
+		 	 *	If you want kernel wait reactBundle event <<onReady>> 
+		 	 */	
+			//this.waitBundleReady = true ;
 
-		       /*
-		 	*	If you want kernel wait reactBundle event <<onReady>> 
-		 	*
-		 	*      this.waitBundleReady = true ; 
-		 	*/	
-
+			/*
+		 	 *	OVERLOAD WEBPACK CONFIG 
+		 	 */	
 			if ( this.settings.webpack ){
-				this.serviceWebpack = this.get("webpack") ;
-				try {
-					console.log( this.settings.webpack )
-					this.serviceWebpack.loadConfig( this.settings.webpack );
-				}catch(e){
-					this.logger(e.message, "ERROR")
-					this.logger(e, "ERROR");	
-				}
+
 			}
-			//console.log( this.settings.webpack )
-			//console.log ( this.getParameters('bundles.react') );
-			
 		}
 	};
 	return react;
