@@ -65,6 +65,19 @@ nodefony.registerBundle ("react", function(){
 		 	*
 		 	*      this.waitBundleReady = true ; 
 		 	*/	
+
+			if ( this.settings.webpack ){
+				this.serviceWebpack = this.get("webpack") ;
+				try {
+					console.log( this.settings.webpack )
+					this.serviceWebpack.loadConfig( this.settings.webpack );
+				}catch(e){
+					this.logger(e.message, "ERROR")
+					this.logger(e, "ERROR");	
+				}
+			}
+			//console.log( this.settings.webpack )
+			//console.log ( this.getParameters('bundles.react') );
 			
 		}
 	};

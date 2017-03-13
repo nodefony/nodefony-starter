@@ -9,6 +9,7 @@ module.exports = function(){
 	self.require = require;
 	self.module = module ;
 	self.exports = exports ;
+	self.__dirname = __dirname ;
 
 	/**
 	 *  Nodefony autoloader

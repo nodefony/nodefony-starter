@@ -1,0 +1,7 @@
+{
+  "presets": ["es2015", "react"],
+  "parserOpts": {
+    "plugins": ["jsx", "flow"]
+  },
+  "plugins": ["transform-react-jsx"]
+}
