@@ -23,7 +23,7 @@ nodefony.register("Bundle", function(){
 			super( name, container );
 			
 			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG","KERNEL");
-			this.kernel = kernel ;
+			this.environment = this.kernel.environment;
 			this.waitBundleReady = false ;
 			this.locale = this.kernel.settings.system.locale ;
 			var config = this.getParameters("bundles."+this.name) ;
@@ -97,12 +97,14 @@ nodefony.register("Bundle", function(){
 							this.locale = result[ele] ;
 						break;
 						case /^webpack$/.test(ele) :
-							try {
-								if ( result[ele] ){
-									this.webpackService.loadConfig( result[ele] ,this.path);	
+							if ( this.environment === "dev"){
+								try {
+									if ( result[ele] ){
+										this.webpackService.loadConfig( result[ele] ,this.path);	
+									}
+								}catch(e){
+								
 								}
-							}catch(e){
-							
 							}
 						break;
 					}

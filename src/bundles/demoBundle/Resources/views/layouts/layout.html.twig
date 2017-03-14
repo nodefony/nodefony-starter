@@ -18,8 +18,8 @@
 
 
 {% block javascripts %}
-
-	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>	
+	
+	{{ parent() }}
 
 	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"

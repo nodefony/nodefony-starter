@@ -44,4 +44,4 @@ webpack:
   output:
     filename:                   "./Resources/public/assets/js/react.js"
     library:                    "react"
-    libraryTarget:              "umd"
+    libraryTarget:              "window"

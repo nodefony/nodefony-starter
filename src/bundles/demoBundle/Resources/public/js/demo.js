@@ -46,7 +46,7 @@ stage.appKernel.prototype.initializeLog = function(settings){
 	return this.syslog ;
 }
 
-var App = new stage.appKernel( "dev", {
+var appKernel  = new stage.appKernel( "dev", {
 	debug: true,
 	location:{
 		html5Mode:false

@@ -42,7 +42,7 @@ webpack:
   output:
     filename:                   "./Resources/public/assets/js/App.js"
     library:                    "App"
-    libraryTarget:              "umd"
+    libraryTarget:              "window"
 
 #
 #       OVERRIDE BUNDLE MONITORING
