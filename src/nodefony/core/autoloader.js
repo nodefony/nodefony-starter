@@ -39,6 +39,7 @@ module.exports = function(){
 			this.loadDirectory("vendors/nodefony/kernel");
 			this.syslog = null ;
 			this.setEnv();
+			this.watchers = {};
 		}
 
 		setEnv (environment){
@@ -66,7 +67,7 @@ module.exports = function(){
 	 	* @param {String} file Path to file
 	 	*
  	 	*/
-		load (file, force){
+		load (file, force, watch ){
 			if (file in cache &&  force !== true){
 				this.logger( file, "WARNING","AUTOLOADER ALREADY LOADED ADD FORCE TO RELOAD ");
 				return cache[file].runInThisContext({
@@ -75,6 +76,19 @@ module.exports = function(){
 				});
 			}
 			if(fs.existsSync(file)){
+				if ( false ){
+					try {
+						var wt = new nodefony.watcher(file, {
+							onChange:function(){
+								console.log("change")
+							}
+						});
+						this.watchers[file] = wt ;
+						wt.watch();
+					}catch(e){
+						throw e ;
+					}
+				}
 				try {
 					var txt = null ; 
 					if ( vm.Script ){
@@ -111,6 +125,13 @@ module.exports = function(){
 		deleteCache (){
 			for ( var ele in cache ){
 				delete cache[ele] ;
+			}
+		}
+
+		close(){
+			for (var watcher in this.watchers){
+				this.logger("Watching Ended : " + watcher, "INFO");
+				this.watchers[watcher].close();	
 			}
 		}
 
@@ -198,6 +219,9 @@ module.exports = function(){
 
 		setKernel (kernel){
 			self.kernel = kernel;
+			kernel.listen(this, "onTerminate", () => {
+				this.close();	
+			});
 		}
 
 	};

@@ -126,8 +126,8 @@ nodefony.register("Bundle", function(){
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
-		loadFile (path, force){
-			return this.autoLoader.load(path, force);
+		loadFile (path, force, watch){
+			return this.autoLoader.load(path, force, watch);
 		}
 
 		boot (){
@@ -188,7 +188,7 @@ nodefony.register("Bundle", function(){
 				var res = regController.exec( ele.name );
 				if ( res ){
 					var name = res[1] ;
-					var Class = this.loadFile( ele.path);
+					var Class = this.loadFile( ele.path, false, true);
 					if (typeof Class === "function" ){
 						Class.prototype.name = name;
 						Class.prototype.bundle = this;
