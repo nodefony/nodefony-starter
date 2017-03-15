@@ -100,12 +100,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
-
-	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>	
 		 
 	<!-- ================== BEGIN BASE JS ================== -->
 	{% javascripts output='/demoBundle/assets/js/login.js' filter='?uglifyjs2'
-		"/demoBundle/plugins/gritter/js/jquery.gritter.js"
 		"/securityBundle/js/login.js"
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>

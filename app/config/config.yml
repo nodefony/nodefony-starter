@@ -42,7 +42,36 @@ webpack:
   output:
     filename:                   "./assets/js/App.js"
     library:                    "App"
-    libraryTarget:              "window"
+    libraryTarget:              "umd"
+
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors 
+#
+#
+sequelizeBundle: 
+  debug:        false
+#  connectors:                    
+#    nodefony:
+#      driver:          mysql
+#      dbname:          'nodefony'
+#      username:        'username'
+#      password:        'password'
+#      options:
+#        dialect:       mysql
+#        host:          localhost
+#        port:          '3306'
+
+
 
 #
 #       OVERRIDE BUNDLE MONITORING
@@ -134,29 +163,4 @@ asseticBundle:
     compress:                     false
     cache:                        false 
 
-#
-#       OVERRIDE  BUNDLE SEQUELIZE  
-#       
-#       see SEQUELIZE BUNDLE config for more options
-#
-#       Nodefony Database Management
-#
-#       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / User 
-#
-#
-#       here create new databases connectors 
-#
-#
-sequelizeBundle: 
-  debug:        false
-#  connectors:                    
-#    nodefony:
-#      driver:          mysql
-#      dbname:          'nodefony'
-#      username:        'username'
-#      password:        'password'
-#      options:
-#        dialect:       mysql
-#        host:          localhost
-#        port:          '3306'
+

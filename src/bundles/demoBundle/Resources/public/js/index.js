@@ -1,15 +1,15 @@
 
 
 require("../plugins/gritter/js/jquery.gritter.js");
-require("../clean/assets/js/jquery.parallax-1.1.3.js");
-require("../clean/assets/js/jquery.sticky.js");
-require("../clean/assets/js/smoothscroll.js");
-const WOW = require("../clean/assets/js/wow.min.js").WOW;
+require("../clean/js/jquery.parallax-1.1.3.js");
+require("../clean/js/jquery.sticky.js");
+require("../clean/js/smoothscroll.js");
+const WOW = require("../clean/js/wow.min.js").WOW;
 
 
 require( '../plugins/gritter/css/jquery.gritter.css');
-require( '../clean/assets/css/simple-line-icons.css');
-require ('../clean/assets/css/animate.css');
+require( '../clean/css/simple-line-icons.css');
+require ('../clean/css/animate.css');
 
 /**
  * * * * *
