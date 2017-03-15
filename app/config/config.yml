@@ -36,11 +36,11 @@ App:
 
 webpack:
   entry:
-    main:                       "./Resources/public/js/App.js"
+    main:                       "./js/App.js"
   watch:                        true
   devtool:                      "source-map"
   output:
-    filename:                   "./Resources/public/assets/js/App.js"
+    filename:                   "./assets/js/App.js"
     library:                    "App"
     libraryTarget:              "window"
 

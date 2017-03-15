@@ -7,43 +7,69 @@
  */
 const webpack = require("webpack");
 const webpackMerge = require('webpack-merge'); // used to merge webpack configs
+const ExtractTextPluginCss = require('extract-text-webpack-plugin');
 
 
 
 nodefony.registerService("webpack", function(){
 
-	var myRule = {
-        	test: /\.jsx?$/,
-        	include: [
-			path.resolve(__dirname, "app")
-        	],
-        	exclude: [],
 
-        	loader: "babel-loader",
+	var cssRule  = function(basename){
+		return {
+			test: /\.css$/,
+			use: ExtractTextPluginCss.extract({
+				use: 'css-loader'
+			})
+		};
+	};
 
-        	options: {
-          		presets: ["es2015"]
-        	}
-      	};
+	/*
+ 	 * File loader for supporting fonts, for example, in CSS files.
+         */
+	var fontsRule = function(basename){
+		return {
+			test: /\.(eot|woff2?|svg|ttf)([\?]?.*)$/,
+			use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/fonts/&outputPath=/assets/fonts/',
+		};
+        };
 
+	/* 
+         * File loader for supporting images, for example, in CSS files.
+         */
+	var imagesRule = function(basename){ 
+		return {
+			test: /\.(jpg|png|gif)$/,
+          		use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/images/&outputPath=/assets/images/'
+		};
+        };
 
-	var defaultConfig = function(){
+	var defaultConfig = function(name, Path){
+		if ( Path ){
+			var basename = path.basename(Path); 
+		}else{
+			var basename ="assets";	
+		}
+		var public = Path + "/Resources/public";
 		return {
 			// Configuration Object
-			context:	this.kernel.rootDir,
+			context:	public,
 			target:		"web",
 			watch:		true,
 			devtool:	this.production ? false : 'source-map',
 			output:		{
-				path:	this.kernel.rootDir+"/web"
+				path:	public 
 			},
 			externals:	{},
 			resolve:	{},
-			plugins:	[],
 			module: {
-				rules:	[]
-			}
-		}
+				rules: [cssRule(basename), fontsRule(basename), imagesRule(basename)]
+			},
+			plugins: [
+				new ExtractTextPluginCss( {
+					 filename:"./assets/css/"+ name +".css", 
+				})
+			]
+		};
 	};
 	
 	//https://webpack.js.org/api/node/
@@ -65,27 +91,26 @@ nodefony.registerService("webpack", function(){
 				throw err
 			}
 			const info = stats.toJson();
-			var error = stats.hasErrors()
-				if ( error ) {
-					this.logger(info.errors ,"ERROR")
-				}else{
-					this.logger( stats.toString({
-  						// Add console colors
-  						colors: true
-					}), "DEBUG");
-					if (stats.hasWarnings()) {
-						this.logger(info.warnings ,"WARNING")
-					}
+			var error = stats.hasErrors();
+			if ( error ) {
+				this.logger(info.errors ,"ERROR")
+			}else{
+				this.logger( stats.toString({
+  					// Add console colors
+  					colors: true
+				}), "DEBUG");
+				if (stats.hasWarnings()) {
+					this.logger(info.warnings ,"WARNING")
 				}
+			}
 		}
 
-		loadConfig( config , path ){
+		loadConfig( config , Path ){
+
+			var name = config.output ? config.output.library : "index" ;
 						
-			var myConf = webpackMerge( this.defaultConfig, config ) ;
-			if ( path ){
-				myConf.context = path ;
-				myConf.output.path = path ;
-			}
+			var myConf = webpackMerge( defaultConfig.call(this, name, Path), config ) ;
+			
 			this.logger( "LOAD CONFIG entry :" + myConf.entry.main , "DEBUG" )
 
 			try {
@@ -93,7 +118,7 @@ nodefony.registerService("webpack", function(){
 			}catch(e){
 				throw e ;
 			}
-			if ( 	myConf.watch ){
+			if ( myConf.watch ){
 				var watching = compiler.watch({
 					/* watchOptions */
 				}, (err, stats) => {

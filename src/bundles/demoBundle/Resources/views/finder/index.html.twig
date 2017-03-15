@@ -1,28 +1,30 @@
 {% extends "../layouts/layout.html.twig" %}
 
 {% block stylesheets %}
-	{{parent()}}
 
-        <link rel="stylesheet" href="/demoBundle/css/flickity.min.css" media="screen">
-	<link rel="stylesheet" href="/demoBundle/css/jquery.fancybox.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="/demoBundle/js/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
+	{{ parent() }}
 
-        <link rel="stylesheet" href="/demoBundle/css/style.css" media="screen">
+        <link rel="stylesheet" href="/demoBundle/css/finder/flickity.min.css" media="screen">
+	<link rel="stylesheet" href="/demoBundle/css/finder/jquery.fancybox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/demoBundle/js/finder/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="/demoBundle/css/finder/style.css" media="screen">
 
 {% endblock %}
 
 {% block javascripts %}
-	{{parent()}}
 
-	<script src="/demoBundle/js/flickity.pkgd.min.js"></script>
+	{{ parent() }}
 
-	<script type="text/javascript" src="/demoBundle/js/jquery.fancybox.pack.js"></script>
+	<script type="text/javascript" src="/demoBundle/js/finder/flickity.pkgd.min.js"></script>
+	<script type="text/javascript" src="/demoBundle/js/finder/jquery.fancybox.pack.js"></script>
         
         <!-- Optionally add helpers - button, thumbnail and/or media -->
-        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-buttons.js"></script>
-        <script type="text/javascript" src="/demoBundle/js/helpers/jquery.fancybox-media.js"></script>
+        <script type="text/javascript" src="/demoBundle/js/finder/helpers/jquery.fancybox-buttons.js"></script>
+        <script type="text/javascript" src="/demoBundle/js/finder/helpers/jquery.fancybox-media.js"></script>
 
-        <script src="/demoBundle/js/finder.js"></script>
+	<script> 
+		demo.finder();
+	</script>
 
 
 {% endblock %}

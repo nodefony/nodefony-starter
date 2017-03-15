@@ -5,33 +5,17 @@
 {% block stylesheets %}
 	{{ parent() }}
 
-	{% stylesheets  output="/demoBundle/assets/css/vendor.css" filter="?uglifycss" 
-	    "/demoBundle/plugins/gritter/css/jquery.gritter.css"
-            "/demoBundle/clean/assets/css/simple-line-icons.css"
-            "/demoBundle/clean/assets/css/animate.css"
-        %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
 
 {% endblock %}
 
 {% block javascripts %}
+
 	{{ parent() }}
 
-	<!-- LIBRARY DESIGN-->
-	{% javascripts output='/demoBundle/assets/js/vendor.js' filter='?uglifyjs2'
-		"/demoBundle/plugins/gritter/js/jquery.gritter.js"
-		"/demoBundle/clean/assets/js/jquery.parallax-1.1.3.js" 
-		"/demoBundle/clean/assets/js/jquery.sticky.js" 
-		"/demoBundle/clean/assets/js/smoothscroll.js" 
-		"/demoBundle/clean/assets/js/wow.min.js" 
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-	
+	<script> 
+		demo.index();
+	</script>
 
-	<!-- ENTRY POINT -->
-	<script src="/demoBundle/js/demo.js"></script>
 
 {% endblock %}
 

@@ -59,6 +59,7 @@ nodefony.register("Bundle", function(){
 
 			// WEBPACK SERVICE
 			this.webpackService = this.get("webpack");
+			this.webpackCompiler = null ;
 
 			// read config files
 			this.kernel.readConfig.call(this, null, this.resourcesFiles.findByNode("config") ,(result) => {
@@ -100,10 +101,10 @@ nodefony.register("Bundle", function(){
 							if ( this.environment === "dev"){
 								try {
 									if ( result[ele] ){
-										this.webpackService.loadConfig( result[ele] ,this.path);	
+										this.webpackCompiler = this.webpackService.loadConfig( result[ele] ,this.path);	
 									}
 								}catch(e){
-								
+									throw  e ;	
 								}
 							}
 						break;
