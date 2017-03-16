@@ -4,6 +4,9 @@
 
 {% block stylesheets %}
 	
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
 	<link rel="stylesheet" href="/demoBundle/assets/css/demo.css" />
 
 	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss" 

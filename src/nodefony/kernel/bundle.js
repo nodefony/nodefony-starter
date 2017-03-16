@@ -98,7 +98,7 @@ nodefony.register("Bundle", function(){
 							this.locale = result[ele] ;
 						break;
 						case /^webpack$/.test(ele) :
-							if ( this.environment === "dev"){
+							if ( this.webpackService ){
 								try {
 									if ( result[ele] ){
 										this.webpackCompiler = this.webpackService.loadConfig( result[ele] ,this.path);	
@@ -162,6 +162,16 @@ nodefony.register("Bundle", function(){
 
 		getController (name){
 			return this.controllers[name];
+		}
+
+		compileWebpack (){
+			if ( this.webpackCompiler ){
+				try {
+					return this.webpackService.runCompiler( this.webpackCompiler, this.name);	
+				}catch(e){
+					throw e ;
+				}
+			}
 		}
 		
 		registerServices (){

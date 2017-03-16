@@ -10,9 +10,7 @@ const webpackMerge = require('webpack-merge'); // used to merge webpack configs
 const ExtractTextPluginCss = require('extract-text-webpack-plugin');
 
 
-
 nodefony.registerService("webpack", function(){
-
 
 	var cssRule  = function(basename){
 		return {
@@ -77,16 +75,11 @@ nodefony.registerService("webpack", function(){
 
 		constructor(container){
 			super ("WEBPACK", container);
-			this.production = true;
+			this.production = ( this.kernel.environment === "prod" ) ?  true :  false ;
 			this.defaultConfig = defaultConfig.call(this);
-						
-			/*this.compiler.run( (err, stats) => {
-				this.loggerStat(err, stats);	
-			});*/
 		}
 
-		loggerStat (err, stats){
-
+		loggerStat (err, stats, bundle , watcher){
 			if (err){
 				throw err
 			}
@@ -95,10 +88,17 @@ nodefony.registerService("webpack", function(){
 			if ( error ) {
 				this.logger(info.errors ,"ERROR")
 			}else{
+				if (bundle){
+					if ( watcher ){
+						this.logger( "WATCH WEBPACK BUNDLE : " + bundle,"INFO"); 
+					}else{
+						this.logger( "COMPILE WEBPACK BUNDLE : " + bundle,"INFO");	
+					}
+				}
 				this.logger( stats.toString({
   					// Add console colors
   					colors: true
-				}), "DEBUG");
+				}), "INFO");
 				if (stats.hasWarnings()) {
 					this.logger(info.warnings ,"WARNING")
 				}
@@ -107,6 +107,10 @@ nodefony.registerService("webpack", function(){
 
 		loadConfig( config , Path ){
 
+			if ( this.production  && ( this.kernel.type !== "CONSOLE" ) ) {
+				return null ;
+			}
+			var basename = path.basename(Path);
 			var name = config.output ? config.output.library : "index" ;
 						
 			var myConf = webpackMerge( defaultConfig.call(this, name, Path), config ) ;
@@ -115,22 +119,34 @@ nodefony.registerService("webpack", function(){
 
 			try {
 				var compiler =  webpack( myConf );
+				if ( this.kernel.type === "CONSOLE" ){
+					return  compiler;
+				}
 			}catch(e){
 				throw e ;
 			}
+			
 			if ( myConf.watch ){
 				var watching = compiler.watch({
 					/* watchOptions */
 				}, (err, stats) => {
-					this.loggerStat(err, stats);
+					this.loggerStat(err, stats, basename, true);
 				});
 				this.kernel.listen(this ,"onTerminate", ( ) => {
 					watching.close(() => {
 						this.logger("Watching Ended :" + myConf.context +"/"+myConf.entry.main , "INFO");
 					});
 				});
+			}else{
+				this.runCompiler(compiler, basename);	
 			}
 			return compiler ;
+		}
+
+		runCompiler (compiler, bundle){
+			return compiler.run( (err, stats) => {
+				this.loggerStat(err, stats,  bundle);	
+			});
 		}
 
 		getUglifyJsPlugin( config ){

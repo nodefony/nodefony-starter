@@ -11,16 +11,24 @@
 		<meta name="keywords" content="web,Framework,realtime,node.js,symfony,javascript,npm,linux">
 		<link rel="manifest" href="/app/manifest.json">
 	{% endblock %}
+
 	{% block description %}
 		<meta name="description" content="Node.js full-stack web framework Symfony Like">
 	{% endblock %}
+
         <title>{% block title %}NODEFONY{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+
+        {% block stylesheets %}
+		<!-- WEBPACK BUNDLE -->
+		<link rel="stylesheet" href="/app/assets/css/App.css" />
+	{% endblock %}
+
     </head>
     <body>
 	{% block body %}{% endblock %}
 	{% block footer %}{% endblock %}
         {% block javascripts %}
+		<!-- WEBPACK BUNDLE -->
 		<script type="text/javascript" src="/app/assets/js/App.js"></script>
 	{% endblock %}
     </body>

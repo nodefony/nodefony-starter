@@ -524,6 +524,7 @@ nodefony.registerCommand("generate",function(){
 		generateService (){
 		
 		}
+
 	};
 
 
@@ -532,7 +533,7 @@ nodefony.registerCommand("generate",function(){
 		commands:{
 			bundle:["generate:bundle nameBundle path" ,"Generate a Bundle directory in path directory Example : ./console generate:bundle myprojectBundle ./src/bundles"],
 			controller:["generate:controller  nameController path" ,"Generate a controller js file in bundle path Example : ./console generate:controller myController src/nodefony/bundles/myBundle"],
-			command:["generate:command nameCommand path" ,"Generate a command js file in bundle path"]
+			command:["generate:command nameCommand path" ,"Generate a command js file in bundle path"],
 			//service:["generate:service nameService path" ,"Generate a service js file in bundle path"]
 		},
 		worker:generate

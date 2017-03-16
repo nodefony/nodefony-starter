@@ -133,7 +133,15 @@ deploy:
 	make asset ;
 	make start &
 
-asset:
+webpack:
+	@echo "";
+	@echo "#########################################" ;
+	@echo "#     NODEFONY WEBPACK COMPILE          #" ;
+	@echo "#########################################" ;
+	@echo "";
+	./console webpack:dump ;\
+
+asset:	webpack
 	@echo "";
 	@echo "#########################################" ;
 	@echo "#            NODEFONY ASSETS            #" ;
@@ -167,11 +175,18 @@ framework:
 	@echo "#    GIT CHECKOUT NODEFONY-STAGE      #" ;
 	@echo "#######################################" ;
 	@echo "";
+
 	#cd $(PWD_STAGE); \
 	#BRANCH=git branch | sed -n '/\* /s///p' :\
 	#git checkout --track -b webpack origin/webpack ; \
 	#cd $(PWD); \
 
+	@if [ ! -d app/Resources/public/js/stage ] ; then \
+		mkdir app/Resources/public/js/stage ;\
+		if [  -d src/nodefony-stage/dist ] ; then \
+			cp -r src/nodefony-stage/dist/* app/Resources/public/js/stage/ ;\
+		fi \
+	fi
 	
 
 	@echo "";

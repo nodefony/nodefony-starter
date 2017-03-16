@@ -1,21 +1,28 @@
-/**
- * 
- * BUNDLE DEMO 
- *  
+/*
+ *
+ *	ENTRY POINT WEBPACK DEMO BUNLDE
+ *
  */
-window.stage = require("../../../../../../vendors/stage/dist/stage6.js");
-
-require("bootstrap");
-require('bootstrap/dist/css/bootstrap.css');
-
 require('../clean/css/style.css');
 
 var index = require("./index.js") 
 var finder = require("./finder/finder.js") 
 
 module.exports = function (){ 
-	return {
-		index:index,
-		finder:finder
-	}
+
+	/*
+ 	 *
+ 	 *	Class demoBundle client side  
+ 	 *
+ 	 *
+ 	 */
+	var demo = class demo {
+	
+		constructor(myindex, myfinder) {
+			this.index = myindex ;
+			this.finder = myfinder ;
+		}
+	};
+
+	return new demo(index, finder);
 }();

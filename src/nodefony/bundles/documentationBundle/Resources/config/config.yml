@@ -34,6 +34,19 @@ name :				documentationBundle
 version:			"Beta"
 locale :			en_en
 
+webpack:
+  entry:
+    main:                       "./js/documentation.js"
+  watch:                        false
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/documentation.js"
+    library:                    "documentation"
+    libraryTarget:              "umd"
+
+
+
+
 #elasticSearch:
 #  host:                         "127.0.0.1:9200"
 
