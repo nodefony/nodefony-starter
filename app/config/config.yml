@@ -37,11 +37,11 @@ App:
 # webpack assets root path is ./Resources/public
 webpack:
   entry:
-    main:                       "./js/App.js"
+    main:                       "./js/app.js"
   watch:                        true
   devtool:                      "source-map"
   output:
-    filename:                   "./assets/js/App.js"
+    filename:                   "./assets/js/app.js"
     library:                    "App"
     libraryTarget:              "umd"
 

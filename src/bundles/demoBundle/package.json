@@ -9,7 +9,7 @@
   		],
   	"dependencies": {
 		"bootstrap":			"*",
-		"font-awesome":			"*",
+		"font-awesome":			"*"
     	},
   	"devDependencies": {},
   	"author": "cci <christophe.camensuli@gmail.com>",
