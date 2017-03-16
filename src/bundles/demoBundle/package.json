@@ -8,8 +8,6 @@
     		"nodefony"
   		],
   	"dependencies": {
-		"bootstrap":			"*",
-		"font-awesome":			"*"
     	},
   	"devDependencies": {},
   	"author": "cci <christophe.camensuli@gmail.com>",

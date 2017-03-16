@@ -90,9 +90,9 @@ nodefony.registerService("webpack", function(){
 			}else{
 				if (bundle){
 					if ( watcher ){
-						this.logger( "WATCH WEBPACK BUNDLE : " + bundle,"INFO"); 
+						this.logger( "WATCHING BUNDLE : " + bundle,"INFO"); 
 					}else{
-						this.logger( "COMPILE WEBPACK BUNDLE : " + bundle,"INFO");	
+						this.logger( "COMPILE BUNDLE : " + bundle,"INFO");	
 					}
 				}
 				this.logger( stats.toString({
