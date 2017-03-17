@@ -25,10 +25,19 @@ name :				monitoringBundle
 version:			"Beta"
 locale :			en_en
 debugBar:                       true
-
 storage:
   active:                     true                      
   requests:                   orm           # syslog    
+
+webpack:
+  entry:
+    main:                       "./js/monitoring.js"
+  watch:                        false
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/monitoring.js"
+    library:                    "monitoring"
+    libraryTarget:              "umd"
 
 realTimeBundle:
   services:

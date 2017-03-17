@@ -13,6 +13,21 @@ const ExtractTextPluginCss = require('extract-text-webpack-plugin');
 nodefony.registerService("webpack", function(){
 
 
+	var babelRule  = function(basename){
+		return {
+                    	test: /\.es6$/,
+			exclude: /node_modules/,
+			use: [
+				{
+					loader: 'babel-loader',
+					options: {
+						presets: ['es2015']
+					}
+				}
+			]
+		};
+	};
+
 	var cssRule  = function(basename){
 		return {
 			test: /\.css$/,
@@ -22,21 +37,49 @@ nodefony.registerService("webpack", function(){
 		};
 	};
 
+	var sassRule  = function(basename){
+		return {
+                    test: /.scss$/,
+                    use: [
+                        {
+                            loader: 'style-loader'
+                        }, {
+                            loader: 'css-loader'
+                        }, {
+                            loader: 'sass-loader'
+                        }
+                    ]
+                };
+	};
 
 	var lessRule  = function(basename){
 		return {
 			test: /\.less$/,
 			use: ExtractTextPluginCss.extract({
-				use: ['style-loader', 'css-loader' ,{
-					loader:	'less-loader',
-					options: {
-						strictMath: true,
-						noIeCompat: true
-					}
+				use: [
+					//'style-loader',
+					//'css-loader' ,
+					"raw-loader",
+					{
+						loader:	'less-loader',
+						options: {
+							//strictMath: true,
+							//noIeCompat: true
+						}
 				}]
 			})
 		};
 	};
+
+
+	/*var bootstrapRule  = function(basename){
+		return {
+			test:	/bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/, 
+			loader: 'imports-loader?jQuery=jquery'	
+		};
+	};*/
+
+
 
 	/*
  	 * File loader for supporting fonts, for example, in CSS files.
@@ -74,10 +117,12 @@ nodefony.registerService("webpack", function(){
 			output:		{
 				path:	public 
 			},
-			externals:	{},
+			externals:	{
+				"jquery": "jQuery"
+			},
 			resolve:	{},
 			module: {
-				rules: [cssRule(basename), fontsRule(basename), imagesRule(basename), lessRule(basename)]
+				rules: [babelRule(basename), cssRule(basename), fontsRule(basename), imagesRule(basename), sassRule(basename),  lessRule(basename)]
 			},
 			plugins: [
 				new ExtractTextPluginCss( {
@@ -112,10 +157,12 @@ nodefony.registerService("webpack", function(){
 						this.logger( "COMPILE BUNDLE : " + bundle,"INFO");	
 					}
 				}
-				this.logger( stats.toString({
-  					// Add console colors
-  					colors: true
-				}), "INFO");
+				if ( watcher ){
+					this.logger( stats.toString({
+  						// Add console colors
+  						colors: true
+					}), "INFO");
+				}
 				if (stats.hasWarnings()) {
 					this.logger(info.warnings ,"WARNING")
 				}

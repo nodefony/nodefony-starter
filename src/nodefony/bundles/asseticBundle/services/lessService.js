@@ -24,7 +24,7 @@ nodefony.registerService("less", function(){
 			this.filesLess = [];
 			this.hasLess = false ;
 
-			this.listen(this, "onBoot", () => {
+			/*this.listen(this, "onBoot", () => {
 				this.settings = container.getParameters("bundles.assetic").less;
 				for (var bundle in this.kernel.bundles ){
 					try {
@@ -71,7 +71,7 @@ nodefony.registerService("less", function(){
 						this.logger("Bundle " + this.kernel.bundles[bundle].name + " NO PUBLIC DIRECTORY ","WARNING");
 					}
 				}
-			});
+			});*/
 		}
 
 		logger (pci, severity, msgid,  msg){

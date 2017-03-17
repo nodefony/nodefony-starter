@@ -42,7 +42,7 @@ webpack:
   devtool:                      "source-map"
   output:
     filename:                   "./assets/js/app.js"
-    library:                    "App"
+    library:                    "app"
     libraryTarget:              "umd"
 
 #

@@ -38,10 +38,10 @@ engineOptions:                  {}
 
 webpack:
   entry:
-    main:                       "./Resources/public/js/react.js"
+    main:                       "./js/react.js"
   watch:                        true
   devtool:                      "source-map"
   output:
-    filename:                   "./Resources/public/assets/js/react.js"
+    filename:                   "./assets/js/react.js"
     library:                    "react"
-    libraryTarget:              "window"
+    libraryTarget:              "umd"

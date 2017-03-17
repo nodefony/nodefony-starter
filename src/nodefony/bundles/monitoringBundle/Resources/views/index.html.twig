@@ -13,11 +13,10 @@
 
 
 {% block stylesheets %}
-	<link href="/monitoringBundle/css/style.css" rel="stylesheet"/>
+	<link href="/monitoringBundle/assets/css/monitoring.css" rel="stylesheet"/>
 
 	
 	{% stylesheets  output="/monitoringBundle/assets/css/vendor.css" filter="?uglifycss"
-            "/monitoringBundle/css/json-view/jquery.jsonview.css"
 	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
@@ -28,30 +27,16 @@
 {% block javascripts %}
 
 	{{ parent() }}
-
-	{% javascripts output='/monitoringBundle/assets/js/app.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
+	
 	
 	{% javascripts output='/monitoringBundle/assets/js/vendors.js' filter='?uglifyjs2'
 		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
 		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
-		"/monitoringBundle/vendors/jquery.timeago/jquery.timeago.js"
-		"/monitoringBundle/js/json-view/jquery.jsonview.js"
-		"/monitoringBundle/js/smoothie/smoothie.js"
-		"/monitoringBundle/js/flot/jquery.flot.js"
-		"/monitoringBundle/js/flot/jquery.flot.categories.js"
-		"/monitoringBundle/js/flot/jquery.flot.pie.js"
-		"/monitoringBundle/js/flot/jquery.flot.resize.js"
-		"/monitoringBundle/js/flot/jquery.flot.crosshair.js"
 	%}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-	<script type="text/javascript" src="/monitoringBundle/js/appKernel.js"></script>
+	<script type="text/javascript" src="/monitoringBundle/assets/js/monitoring.js"></script>
 
 
 

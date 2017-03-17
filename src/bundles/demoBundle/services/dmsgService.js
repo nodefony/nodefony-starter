@@ -61,26 +61,29 @@ nodefony.registerService("dmsg", function(){
 				}
 
 			});
-		};
+		}
 
 		logger (pci, severity, msgid,  msg){
 			if (! msgid) msgid = "SERVICE DMSG ";
 			return this.realTime.logger(pci, severity,"SERVICE DMSG");
-		};
+		}
 
 		createWatcher (){
 
 			var fileDmsg = this.kernel.platform === "darwin" ? "/var/log/system.log" : "/var/log/message" ;
  	
 
-			this.watcher = new nodefony.watcher(fileDmsg);
+			try {
+				this.watcher = new nodefony.watcher(fileDmsg);
+				
+				this.watcher.listen(this, 'onError',(error) => {
+					this.realTime.logger(error, "ERROR");
+				});
+			}catch(e){
+				this.logger(e, "ERROR"); 
+			}
 			
-			this.watcher.listen(this, 'onError',(error) => {
-				this.realTime.logger(error, "ERROR");
-			});
-		
-			
-		};
+		}
 
 		createServer (){
 			this.server = net.createServer({
@@ -105,7 +108,7 @@ nodefony.registerService("dmsg", function(){
 							conn.write(lastLine);
 							//conn.write(stat.size);
 						}catch(e){
-							this.logger(e,"ERROR")	
+							this.logger(e,"ERROR");
 						}
 					};
 
@@ -192,7 +195,7 @@ nodefony.registerService("dmsg", function(){
 				this.stopServer();
 			})
 
-		};
+		}
 		
 		stopServer (){
 			for (var i = 0 ; i < this.connections.length ; i++){
@@ -205,10 +208,10 @@ nodefony.registerService("dmsg", function(){
 				try {
 					this.server.close();
 				}catch(e){
-					this.logger(e, "ERROR")
+					this.logger(e, "ERROR");
 				}
 			}
-		};
+		}
 	};
 
 	return dmsg; 

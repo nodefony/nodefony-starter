@@ -3,7 +3,8 @@
  *   ENTRY POINT WEBPACK FRAMEWORK
  * 
  */
-//require("../less/style.less");
+require("bootstrap");
+require("../less/style.less");
 
 module.exports = function (){ 
 	return null;

@@ -77,9 +77,9 @@ nodefony.registerService("statics", function(){
 			var type  = this.mime.lookup(request.url);
 			response.setHeader("Content-Type", type);
 			// LESS IN THE FLY
-			if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
+			/*if ( this.environment === "dev" && this.serviceLess && this.serviceLess.hasLess && type === "text/css"  ){
 				try {
-					var res = this.serviceLess.handle(request, response, type, (/*err, dest*/) => {
+					var res = this.serviceLess.handle(request, response, type, (err, dest) => {
 						this.server.handle(request, response, () => {
 							response.setHeader("Content-Type", "text/html");
 							callback.apply(this, arguments);	
@@ -89,7 +89,7 @@ nodefony.registerService("statics", function(){
 				}catch(e){
 					this.logger(e, "ERROR");	
 				}
-			}
+			}*/
 			this.server.handle(request, response, () => {
 				callback.apply(this, arguments);	
 			});

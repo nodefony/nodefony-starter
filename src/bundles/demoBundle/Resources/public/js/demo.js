@@ -3,8 +3,8 @@
  *	ENTRY POINT WEBPACK DEMO BUNLDE
  *
  */
-require('../clean/css/style.css');
 
+require('../clean/css/style.css');
 var index = require("./index.js") 
 var finder = require("./finder/finder.js") 
 

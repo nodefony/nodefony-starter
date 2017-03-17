@@ -9,12 +9,7 @@
 	<!-- WEBPACK BUNDLE -->
 	<link rel="stylesheet" href="/demoBundle/assets/css/demo.css" />
 
-	{% stylesheets  output="/demoBundle/assets/css/layout.css" filter="?uglifycss" 
-	    "/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css"
-        %}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-
+	
 {% endblock %}
 
 {% block javascripts %}
@@ -24,12 +19,6 @@
 	<!-- WEBPACK BUNDLE -->
 	<script src="/demoBundle/assets/js/demo.js"></script>
 
-	{% javascripts output='/demoBundle/assets/js/layout.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"
-		"/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"
-	%}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
 	
 	<script>
 		/* ---------------------------------------------- /*

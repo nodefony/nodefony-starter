@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import logo from '../../public/images/logo.svg';
 
-console.log(logo )
-console.log("PAs" )
 class App extends Component {
   render() {
     return (
