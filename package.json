@@ -60,6 +60,7 @@
     "webpack-merge":			"4.0.0",
     "extract-text-webpack-plugin":	"2.1.0",
     "css-loader":			"0.27.3",
+    "less-loader":			"3.0.0",
     "file-loader":			"0.10.1",
     "url-loader":			"0.5.8",
     "style-loader":			"0.14.0",

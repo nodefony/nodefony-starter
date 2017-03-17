@@ -57,16 +57,20 @@ nodefony.register("Bundle", function(){
 			// Register Service
 			this.registerServices();
 
-			// WEBPACK SERVICE
-			this.webpackService = this.get("webpack");
-			this.webpackCompiler = null ;
-
+			this.webPackConfig = null ;
+			
 			// read config files
 			this.kernel.readConfig.call(this, null, this.resourcesFiles.findByNode("config") ,(result) => {
 				this.parseConfig(result);
 			});
 
+			// WEBPACK SERVICE
+			this.webpackService = this.get("webpack");
+			this.webpackCompiler = null ;
+
+
 			this.regTemplateExt = new RegExp("^(.+)\."+this.get("templating").extention+"$");
+			this.fire( "onRegister", this);
 		}
 	
 		parseConfig (result){
@@ -98,15 +102,18 @@ nodefony.register("Bundle", function(){
 							this.locale = result[ele] ;
 						break;
 						case /^webpack$/.test(ele) :
-							if ( this.webpackService ){
 								try {
-									if ( result[ele] ){
-										this.webpackCompiler = this.webpackService.loadConfig( result[ele] ,this.path);	
+									this.webPackConfig = result[ele] || null ;
+									if ( this.webPackConfig ){
+										this.listen(this, "onReady", () => {
+											if ( this.webpackService ){
+												this.webpackCompiler = this.webpackService.loadConfig( this.webPackConfig ,this.path);	
+											}
+										});
 									}
 								}catch(e){
 									throw  e ;	
 								}
-							}
 						break;
 					}
 				}

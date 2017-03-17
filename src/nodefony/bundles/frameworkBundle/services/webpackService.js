@@ -12,11 +12,28 @@ const ExtractTextPluginCss = require('extract-text-webpack-plugin');
 
 nodefony.registerService("webpack", function(){
 
+
 	var cssRule  = function(basename){
 		return {
 			test: /\.css$/,
 			use: ExtractTextPluginCss.extract({
 				use: 'css-loader'
+			})
+		};
+	};
+
+
+	var lessRule  = function(basename){
+		return {
+			test: /\.less$/,
+			use: ExtractTextPluginCss.extract({
+				use: ['style-loader', 'css-loader' ,{
+					loader:	'less-loader',
+					options: {
+						strictMath: true,
+						noIeCompat: true
+					}
+				}]
 			})
 		};
 	};
@@ -60,12 +77,12 @@ nodefony.registerService("webpack", function(){
 			externals:	{},
 			resolve:	{},
 			module: {
-				rules: [cssRule(basename), fontsRule(basename), imagesRule(basename)]
+				rules: [cssRule(basename), fontsRule(basename), imagesRule(basename), lessRule(basename)]
 			},
 			plugins: [
 				new ExtractTextPluginCss( {
 					 filename:"./assets/css/"+ name +".css", 
-				})
+				}),
 			]
 		};
 	};

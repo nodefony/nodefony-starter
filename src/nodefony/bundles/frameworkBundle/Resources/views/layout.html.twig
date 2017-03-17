@@ -1,8 +1,7 @@
 {% extends "/app/Resources/views/base.html.twig" %}
 {% block title %} {{title}} {% endblock %}
 {% block stylesheets %}
-	<link href="/frameworkBundle/css/style.css" rel="stylesheet" media="screen">
-
+	<link href="/frameworkBundle/assets/css/framework.css" rel="stylesheet" media="screen">
 {% endblock %}
 {% block body %}
 	{% block content %}
@@ -17,14 +16,7 @@
 	{% endblock %}
 {% endblock %}
 {% block javascripts %}
-	
-	<script type="text/javascript" src="/vendors/stage/dist/stage6.js"></script>
-	
-	{% javascripts output='/frameworkBundle/assets/js/nodefony.js' filter='?uglifyjs2'
-		"/frameworkBundle/vendors/bootstrap/js/bootstrap.js"
-	%}
-		<script type="text/javascript"  src="{{ asset_url }}"></script>
-	{% endjavascripts %}
+		<script type="text/javascript"  src="/frameworkBundle/assets/js/framework.js"></script>
 {% endblock %}
 
 
