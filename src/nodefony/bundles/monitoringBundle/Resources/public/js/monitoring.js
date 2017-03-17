@@ -9,6 +9,12 @@ require("../less/style.less");
 require('font-awesome/css/font-awesome.css');
 require("../vendors/jquery.timeago/jquery.timeago.js");
 require("./json-view/jquery.jsonview.js");
+require("./flot/jquery.flot.js");
+require("./flot/jquery.flot.categories.js");
+require("./flot/jquery.flot.pie.js");
+require("./flot/jquery.flot.resize.js");
+require("./flot/jquery.flot.crosshair.js");
+
 const smoothie = require("./smoothie/smoothie.js");
 
 require("../css/json-view/jquery.jsonview.css");
