@@ -132,7 +132,7 @@ nodefony.registerCommand("generate",function(){
 					routing.call(this, param, type)
 				]
 			},
-			public.call(this),
+			public.call(this, param),
 			translations,
 			views.call(this, "views", "index.html.twig", param)
 			]
@@ -157,7 +157,7 @@ nodefony.registerCommand("generate",function(){
 		var file = [{
 			name:name,
 			type:"file",
-			parse:false,
+			parse:true,
 			skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/bundleView.skeleton",
 			params:	params || {}
 		}]; 
@@ -252,7 +252,7 @@ nodefony.registerCommand("generate",function(){
 		}]
 	};
 
-	var public = function(){
+	var public = function(param){
 		return {
 			name:"public",
 			type:"directory",
@@ -260,15 +260,19 @@ nodefony.registerCommand("generate",function(){
 				name:"js",
 				type:"directory",
 				childs:[{
-					name:".gitignore",
-					type:"file"
+					name:param.name+".js",
+					type:"file",
+					skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/webpackEntryPoint.skeleton",
+					params:param
 				}]
 			},{
 				name:"css",
 				type:"directory",
 				childs:[{
-					name:".gitignore",
-					type:"file"
+					name:param.name+".css",
+					type:"file",
+					skeleton:"vendors/nodefony/bundles/frameworkBundle/Command/skeletons/webpackCss.skeleton",
+					params:param
 				}]
 			},{
 				name:"images",
@@ -289,6 +293,13 @@ nodefony.registerCommand("generate",function(){
 					}]
 				},{
 					name:"css",
+					type:"directory",
+					childs:[{
+						name:".gitignore",
+						type:"file"
+					}]
+				},{
+					name:"fonts",
 					type:"directory",
 					childs:[{
 						name:".gitignore",
@@ -401,9 +412,10 @@ nodefony.registerCommand("generate",function(){
 		var bundleDirectoryController = new nodefony.fileClass(bundlePath.path+"/controller");
 		var bundleDirectoryview = new nodefony.fileClass(bundlePath.path+"/Resources/views");
 		//var bundleDirectoryConfig = new nodefony.fileClass(bundlePath.path+"/Resources/config");
+		var name = /^(.*)Bundle$/.exec(bundleName)[1];
 		try {
 			this.build(controller.call(this, bundlePath.name, directory, controllerName, directory), bundleDirectoryController );
-			this.build(views.call(this, directory, "index.html.twig") ,bundleDirectoryview );
+			this.build(views.call(this, directory, "index.html.twig",{name:name,bundleName:bundleName}) ,bundleDirectoryview );
 			var route = new nodefony.Route(realName) ;
 			route.addDefault("controller", bundleName+":"+realName+":index");
 			//console.log(route)

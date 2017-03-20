@@ -23,6 +23,7 @@
 ########## NODEFONY CONFIG BUNDLE  httpBundle  ############
 name :				httpBundle
 version :			"Beta"
+watch:                          false
 
 
 #       

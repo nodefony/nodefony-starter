@@ -59,6 +59,7 @@ nodefony.register("kernel", function(){
   		}
   		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
 	};
+	nodefony.niceBytes = niceBytes ;
 
 	
 	var logConsole = function(syslog){
@@ -467,7 +468,13 @@ nodefony.register("kernel", function(){
 					if (typeof Class === "function" ){
 						Class.prototype.path = file.dirName;
 						Class.prototype.autoLoader = this.autoLoader;
-						this.bundles[name] = new Class( name, this, this.container);
+						try {
+							this.bundles[name] = new Class( name, this, this.container);
+						}catch(e){
+							this.logger(e, "ERROR");
+							console.trace(e);
+							throw e ;
+						}
 						if ( this.bundles[name].waitBundleReady ){
 							this.eventReadywait += 1 ;
 							this.bundles[name].listen(this,"onReady", waitingBundle);
@@ -529,6 +536,7 @@ nodefony.register("kernel", function(){
 			};
 			App.prototype.path = this.appPath ;
 			App.prototype.autoLoader = this.autoLoader;
+			App.prototype.settings = this.settings;
 			this.bundles.App = new App("App", this, this.container);
 			this.readConfigDirectory(this.appPath+"config", (result) => {
 				if (result){
@@ -571,7 +579,8 @@ nodefony.register("kernel", function(){
 				try {
 					this.bundles[name].boot();
 				}catch (e){
-					this.logger("BUNDLE :"+name+" "+ e);
+					this.logger("BUNDLE :"+name+" "+ e, "ERROR");
+					console.trace(e);
 					continue ;
 				}
 			}

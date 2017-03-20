@@ -34,5 +34,32 @@ name :				{{ bundleName }}
 version:			"1.0"
 locale :			{{ local }}
 
+#
+#  WATCHERS
+#       
+#    For watch all composants 
+# 
+#      watch:                true
+#
+#    Or 
+#      watch:
+#        controller:        true
+#        views:             true
+#
+watch:				true
+
+#
+#  WEBPACK CONFIG       
+#
+webpack:
+  entry:
+    main:                       "./js/{{ name }}.js"
+  watch:                        true
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/{{ name }}.js"
+    library:                    "{{ name }}"
+    libraryTarget:              "umd"
+
 
 

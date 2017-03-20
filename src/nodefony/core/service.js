@@ -105,6 +105,10 @@ nodefony.register("Service", function(){
 		listen (){
 			return this.notificationsCenter.listen.apply(this.notificationsCenter, arguments);
 		}
+		on (){
+			return this.notificationsCenter.on.apply(this.notificationsCenter, arguments);
+		}
+
 
 		/**
 	 	*	@method once

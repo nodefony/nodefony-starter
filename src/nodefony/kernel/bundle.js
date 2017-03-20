@@ -13,6 +13,178 @@ nodefony.register("Bundle", function(){
 	var regService = /^(.+)Service.js$/;
 	var regCommand = /^(.+)Command.js$/;
 	var regEntity = /^(.+)Entity.js$/;
+
+		
+	/*
+	 *
+	 *	WATCHER 
+	 *
+	 */
+	var defaultWatcherSettings  = {
+		persistent: true,
+  		followSymlinks: true,
+  		alwaysStat: false,
+  		depth: 50,
+		//usePolling: true,
+  		//interval: 100,
+  		//binaryInterval: 300,
+  		atomic: true // or a custom 'atomicity delay', in milliseconds (default 100)
+	};
+	
+	var Watcher = class Watcher extends nodefony.watcher {
+		constructor (Path , settings, bundle){
+		
+			super( Path , nodefony.extend(true, {}, defaultWatcherSettings, settings), bundle.container );
+
+			if ( bundle ){
+				this.bundle = bundle ;
+				this.cwd = bundle.path ; 
+			}
+		}
+
+		logger (  payload, severity, msgid, msg  ){
+			if ( typeof payload  === "string"){
+				var txt = "\x1b[36m"; 
+				if ( this.bundle ){
+					txt += "BUNDLE "+ this.bundle.name + "\x1b[0m ";
+				}
+				txt +=  payload ;
+				msgid = "\x1b[36mWATCHER EVENT "+msgid+"\x1b[0m";
+				payload = txt ;
+			}
+			return super.logger( payload, severity, msgid, msg );
+		}
+		
+		listenWatcherController(){
+			this.on('all', (event, Path) => {
+				switch(event){
+					case "addDir" :
+						this.logger( Path, "WARNING", event );
+					break;
+					case "add" :
+					case "change" :
+						this.logger( Path, "INFO", event );
+						try {
+							var basename = path.basename(Path) ;
+							var res = regController.exec( basename );
+							var name = res[1] ;
+							var file = this.cwd + "/" + Path ;
+							this.bundle.reloadWatcherControleur( name, file);
+						}catch(e){
+							this.logger(e, "ERROR");
+						}
+					break;
+					case "error" :
+						this.logger( Path, "ERROR", event );
+					break;
+					case "unlinkDir" :
+						this.logger( Path, "WARNING", event );
+					break;
+					case "unlink" :
+						this.logger( Path, "WARNING", event );
+						var basename = path.basename(Path) ;
+						var res = regController.exec( basename );
+						var name = res[1] ;
+						if ( this.bundle.controllers[name] ){
+							this.logger( "REMOVE CONTROLLER : " +  Path, "INFO", event );
+							delete this.bundle.controllers[name] ;
+							this.bundle.controllers[name] = null ;
+						}
+					break;
+				}
+				this.fire(event, this.watcher , Path);
+			});	
+		}
+
+		listenWatcherView(){
+			this.on('all', (event, Path) => {
+				switch( event ){
+					case "addDir" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "add" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "change" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "error" :
+						this.logger( Path, "ERROR", event );
+					break;
+					case "unlinkDir" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "unlink" :
+						this.logger( Path, "INFO", event );
+					break;
+				}
+				this.fire(event, this.watcher , Path);
+			});	
+		}
+	};
+
+	var defaultWatcherViews = function (){
+		return {
+			ignoreInitial: true,
+			ignored: [
+				 (string)  => {
+					var file = null;
+					var basename = path.basename(string) ;
+					try{
+						file = new nodefony.fileClass(string);
+					}catch(e){
+						if ( basename.match(/^\./) ){
+							return true ;
+						}
+						return false ;
+					}
+					if ( basename.match(/^\./) ){
+						return true ;
+					}
+					if ( file.type === "Directory" ){
+						return false ;
+					}
+					if ( this.regTemplateExt.test(basename) ){
+						return false ;
+					}
+					return true ;
+				}
+			],
+			cwd:this.path
+		} ;
+	};
+
+	var defaultWatcherControllers  = function() {
+		return {
+			ignoreInitial: true,
+			ignored: [
+				 (string) => {
+				 	var file = null ;
+					var basename = path.basename(string);
+				 	try{
+						file = new nodefony.fileClass(string);
+					}catch(e){
+						if ( basename.match(/^\./) ){
+							return true ;
+						}
+						return false ;
+					}
+					if ( basename.match(/^\./) ){
+						return true ;
+					}
+					if ( file.type === "Directory" ){
+						return false ;
+					}
+					if ( regController.test(basename) ){
+						return false ;
+					}
+					return true ;
+				}
+			],
+			cwd:this.path
+		};
+	};
+
 	/*
  	 *	BUNDLE CLASS
  	 */
@@ -38,15 +210,32 @@ nodefony.register("Bundle", function(){
 			}catch(e){
 				this.logger(e, "ERROR");	
 			}
+
+			this.serviceTemplate = this.get("templating") ;
+			this.regTemplateExt = new RegExp("^(.+)\."+this.serviceTemplate.extention+"$");
+
+			this.reader = this.kernel.reader;
+			 
+			// assets 
+			this.webPackConfig = null ;
+
+			// controllers
+			this.controllersPath = this.path+"/controller" ; 
+			this.controllerFiles = this.findControllerFiles(this.finder.result);
 			this.controllers = {};
+			this.watcherController = null ;
+
+			// views
+			this.viewsPath = this.path+"/Resources/views" ; 
+			this.viewFiles = this.findViewFiles(this.finder.result);
 			this.views = {};
 			this.views["."] = {};
+			this.watcherView = null ;
+
+			// 
 			this.entities = {};
 			this.fixtures = {};
 
-			this.reader = this.kernel.reader;
-
-						
 			try {
 				this.resourcesFiles = this.finder.result.findByNode("Resources") ;
 			}catch(e){
@@ -56,23 +245,39 @@ nodefony.register("Bundle", function(){
 
 			// Register Service
 			this.registerServices();
-
-			this.webPackConfig = null ;
 			
 			// read config files
 			this.kernel.readConfig.call(this, null, this.resourcesFiles.findByNode("config") ,(result) => {
 				this.parseConfig(result);
 			});
 
+			// WATCHERS
+			if ( this.kernel.environment === "dev" && this.settings.watch ){
+				try {
+					// controllers
+					this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
+					this.watcherController.listenWatcherController();
+					this.kernel.on("onTerminate", () => {
+						this.watcherController.close();
+					});
+					// views
+					this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
+					this.watcherView.listenWatcherView();
+					this.kernel.on("onTerminate", () => {
+						this.watcherView.close();
+					});
+				}catch(e){
+					throw e ;
+				}
+			}
+
 			// WEBPACK SERVICE
 			this.webpackService = this.get("webpack");
 			this.webpackCompiler = null ;
 
-
-			this.regTemplateExt = new RegExp("^(.+)\."+this.get("templating").extention+"$");
 			this.fire( "onRegister", this);
 		}
-	
+			
 		parseConfig (result){
 			if (result){
 				var config = null ;
@@ -140,21 +345,25 @@ nodefony.register("Bundle", function(){
 
 		boot (){
 			this.fire("onBoot",this);
-			// Register Controller
-			this.registerControllers();
+			try { 
+				// Register Controller
+				this.registerControllers();
 
-			// Register Views
-			this.registerViews();
+				// Register Views
+				this.registerViews();
 
-			// Register internationalisation 
-			this.registerI18n(this.locale);
+				// Register internationalisation 
+				this.registerI18n(this.locale);
 
-			// Register Entity 
-			this.registerEntities();
-			
-			// Register Fixtures 
-			if ( this.kernel.type === "CONSOLE" ){
-				this.registerFixtures();
+				// Register Entity 
+				this.registerEntities();
+				
+				// Register Fixtures 
+				if ( this.kernel.type === "CONSOLE" ){
+					this.registerFixtures();
+				}
+			}catch(e){
+				throw e ;
 			}
 
 			if ( this.waitBundleReady === false ){
@@ -199,10 +408,28 @@ nodefony.register("Bundle", function(){
 			});
 		}
 
-		registerControllers (){
-			// find  controler files 
-			var controller = this.finder.result.findByNode("controller");
-			controller.forEach((ele) => {
+		findControllerFiles ( result ){
+			if ( ! result ){
+				try {
+					this.controllerFiles = new nodefony.finder( {
+						path:this.controllersPath,
+					}).result;
+				}catch(e){
+					this.logger("Bundle " + this.name +" controller directory not found", "WARNING");
+				}
+			}else{
+				// find  views files 
+				this.controllerFiles = result.findByNode("controller") ;
+			}
+			return this.controllerFiles ;	
+		}
+
+		registerControllers ( result ){
+			if ( result ){
+				this.findControllerFiles(result);	
+			}	
+			
+			this.controllerFiles.forEach((ele) => {
 				var res = regController.exec( ele.name );
 				if ( res ){
 					var name = res[1] ;
@@ -214,9 +441,29 @@ nodefony.register("Bundle", function(){
 						this.logger("Bundle "+this.name+" Register Controller : "+name , "DEBUG");
 					}else{
 						this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
+						console.trace("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format");
 					}
 				}
 			});
+		}
+
+		reloadWatcherControleur ( name, Path){
+			try { 
+				if ( this.controllers[name] ){
+					delete this.controllers[name] ;
+					this.controllers[name] = null ;
+				}
+				var Class = this.loadFile( Path, true);
+				if (typeof Class === "function" ){
+					Class.prototype.name = name;
+					Class.prototype.bundle = this;
+					this.controllers[name] = Class ;
+				}else{
+					throw new Error("Register Controller : "+name +"  error Controller closure bad format ");
+				}
+			}catch(e){
+				throw e ;
+			}
 		}
 
 		reloadController ( nameC ){
@@ -226,17 +473,8 @@ nodefony.register("Bundle", function(){
 				controller.forEach((ele) => {
 					var res = regController.exec( ele.name );
 					if ( res &&  res[1] === nameC ){
-						delete this.controllers[name] ;
-						this.controllers[name] = null ;
 						var name = res[1] ;
-						var Class = this.loadFile( ele.path, true);
-						if (typeof Class === "function" ){
-							Class.prototype.name = name;
-							Class.prototype.bundle = this;
-							this.controllers[name] = Class ;
-						}else{
-							this.logger("Register Controller : "+name +"  error Controller closure bad format ");
-						}
+						this.reloadWatcherControleur( name , ele.path );
 						throw "BREAK" ;
 					}
 				});
@@ -246,15 +484,12 @@ nodefony.register("Bundle", function(){
 			}	
 		}
 
-		registerViews (result){
-			
-			var serviceTemplate = this.get("templating") ;
+		findViewFiles(result){
 			var views = null ;
-
 			if ( ! result ){
 				try {
 					views = new nodefony.finder( {
-						path:this.path+"/Resources/views",
+						path:this.viewsPath,
 					}).result;
 				}catch(e){
 					this.logger("Bundle " + this.name +" views directory not found", "WARNING");
@@ -264,8 +499,16 @@ nodefony.register("Bundle", function(){
 				// find  views files 
 				views = result.findByNode("views") ;
 			}
+			return views ;
+		}
 
-			if ( ! views ) { return ; }
+		registerViews (result){
+			var views = null ;
+			if ( result ){
+				views = this.findViewFiles(result);	
+			}else{
+				views = this.viewFiles ;
+			}
 			
 			views.getFiles().forEach((file) => {
 				var basename = path.basename(file.dirName);
@@ -286,7 +529,7 @@ nodefony.register("Bundle", function(){
 						};
 						this.logger("Register Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
 						if (this.kernel.type !== "CONSOLE" ){
-							serviceTemplate.compile( file, (error, template) => {
+							this.serviceTemplate.compile( file, (error, template) => {
 								if (error){
 									this.logger(error, "ERROR");
 									return ;
@@ -296,7 +539,7 @@ nodefony.register("Bundle", function(){
 							});
 						}else{
 							/*if ( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
-								serviceTemplate.compile( file, function(error, template){
+								this.serviceTemplate.compile( file, function(error, template){
 									if (error){
 										this.logger(error, "ERROR");
 										return ;
@@ -319,7 +562,7 @@ nodefony.register("Bundle", function(){
 						};
 						this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
 						if (this.kernel.type !== "CONSOLE"){
-							serviceTemplate.compile( file, (error, template) => {
+							this.serviceTemplate.compile( file, (error, template) => {
 								if (error){
 									this.logger(error, "ERROR");
 									return ;
@@ -329,7 +572,7 @@ nodefony.register("Bundle", function(){
 							});
 						}else{
 							/*if( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
-								serviceTemplate.compile( file, function(error, template){
+								this.serviceTemplate.compile( file, function(error, template){
 									if (error){
 										this.logger(error, "ERROR");
 										return ;

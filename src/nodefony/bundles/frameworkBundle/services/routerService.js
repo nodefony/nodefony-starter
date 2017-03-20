@@ -216,10 +216,12 @@ nodefony.registerService("router", function(){
 		}
 		
 		getController (name){
+			/* DELETE By WATCHER SPECIFICATION
 			if (this.kernel.environment === "dev" && ! this.context.autoloadCache.bundles[this.bundle.name].controllers[name]){
 				this.context.autoloadCache.bundles[this.bundle.name].controllers[name] = true ;
 				this.bundle.reloadController(name, this.container);
 			}
+			*/
 			return this.bundle.controllers[name];
 		}
 

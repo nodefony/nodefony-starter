@@ -25,11 +25,27 @@ name :				demoBundle
 locale :			en_en
 version :                       "1.0"
 
+#
+#  WATCHERS
+#       
+#    For watch all composants 
+# 
+#      watch:                true
+#
+#    Or 
+#      watch:
+#        controller:        true
+#        views:             true
+#
+watch:                          false
 
+#
+#  WEBPACK CONFIG       
+#
 webpack:
   entry:
     main:                       "./js/demo.js"
-  watch:                        true
+  watch:                        false
   devtool:                      "source-map"
   output:
     filename:                   "./assets/js/demo.js"

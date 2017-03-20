@@ -52,6 +52,8 @@ nodefony.registerService("dmsg", function(){
 			this.port = 1316;
 			this.nbConnections = 0;
 
+			this.fileDmsg = this.kernel.platform === "darwin" ? "/var/log/system.log" : "/var/log/message" ;
+
 			this.kernel.listen(this, "onReady" ,() => {
 				if ( this.kernel.type === "SERVER" ) {
 					this.port = this.container.getParameters("bundles.realTime.services.dmsg.port") || 1316;
@@ -70,14 +72,20 @@ nodefony.registerService("dmsg", function(){
 
 		createWatcher (){
 
-			var fileDmsg = this.kernel.platform === "darwin" ? "/var/log/system.log" : "/var/log/message" ;
- 	
-
 			try {
-				this.watcher = new nodefony.watcher(fileDmsg);
+				this.watcher = new nodefony.watcher(null , {
+					persistent:		true,
+					followSymlinks:		false,	
+					usePolling:		true,
+					interval:		60,
+					binaryInterval:		300
+				}, this.container);
 				
 				this.watcher.listen(this, 'onError',(error) => {
 					this.realTime.logger(error, "ERROR");
+				});
+				this.watcher.listen(this, 'onClose',(path) => {
+					this.realTime.logger(path);
 				});
 			}catch(e){
 				this.logger(e, "ERROR"); 
@@ -87,15 +95,13 @@ nodefony.registerService("dmsg", function(){
 
 		createServer (){
 			this.server = net.createServer({
-				allowHalfOpen : true
+				//allowHalfOpen : true
 			}, (socket) => {
 				
 					var conn = new connection(socket);
-					this.connections.push(conn) ;
-					this.connections[conn.fd] = this.connections[this.connections.length-1];
+					this.connections[conn.fd] = conn;
 					
 					var callback = (path, stat) => {
-						
 						try {
 							//this.realTime.logger(stat.size, "DEBUG","SEVICE DMSG");
 							var file = new nodefony.fileClass(path);
@@ -111,21 +117,20 @@ nodefony.registerService("dmsg", function(){
 							this.logger(e,"ERROR");
 						}
 					};
-
 					this.watcher.listen(this, 'onChange', callback);
 
 					socket.on('end',() => {
+						delete this.connections[conn.fd];
+						this.watcher.removeListener("onChange", callback);
+						conn = null ;
 						this.logger("CLOSE CONNECTION TO SERVICE DMSG FROM : "+socket.remoteAddress + " ID :" +conn.id, "INFO");
-
 						this.nbConnections-- ;
 						if (this.nbConnections === 0 ){
-							this.watcher.unWatch();
+							this.watcher.close();
 						}
-						this.watcher.unListen("onChange", callback);
 						socket.end();
-					})
-
-					conn.write("READY");
+					});
+					conn.write("WATCHER READY : " + this.fileDmsg );
 			});
 
 			this.server.on("connection",(socket) => {
@@ -134,7 +139,7 @@ nodefony.registerService("dmsg", function(){
 				socket.on("data",(buffer) => {
 					try {
 						if (this.nbConnections === 0 ){
-							this.watcher.watch();		
+							this.watcher.watch(this.fileDmsg);		
 						}
 						this.nbConnections ++ ;
 						/*this.protocol.parser(buffer.toString(),(error, ele) => {
@@ -198,10 +203,9 @@ nodefony.registerService("dmsg", function(){
 		}
 		
 		stopServer (){
-			for (var i = 0 ; i < this.connections.length ; i++){
-				this.connections[i].socket.end();	
-				var id = this.connections[i].id
-				delete this.connections[id];
+			for ( var connection in this.connections ){
+				this.connections[connection].socket.end();
+				delete this.connections[connection]
 			}
 			this.connections.length = 0 ;
 			if (this.server){

@@ -11,6 +11,26 @@
 
 	{% extends "/vendors/nodefony/bundles/frameworkBundle/Resources/views/system.html.twig" %}
 
+	{% block stylesheets %}
+	
+		{{ parent() }}
+
+		<!-- WEBPACK BUNDLE -->
+		<link rel="stylesheet" href="/{{ bundleName }}/assets/css/{{name}}.css" />
+	
+	{% endblock %}
+
+
+	{% block javascripts %}
+	
+		{{ parent() }}
+
+		<!-- WEBPACK BUNDLE -->
+		<script src="/{{ bundleName }}/assets/js/{{name}}.js"></script>
+
+	{% endblock %}
+
+	
 
 	{% block title %}Welcome {{kernel.name}}! {% endblock %}
 

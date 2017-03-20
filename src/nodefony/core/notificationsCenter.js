@@ -42,6 +42,19 @@ nodefony.register("notificationsCenter",function(){
 			};
 		}
 
+		on (eventName, callback) {
+			var event = arguments[1];
+			var ContextClosure = this;
+			if ( callback instanceof Function ){
+				this.event.addListener(eventName, callback);
+				return function() {
+					Array.prototype.unshift.call(arguments, event);
+					return ContextClosure.fire.apply(ContextClosure, arguments);
+				};
+			}
+			throw new Error("notificationsCenter  callback must be a function"); 
+		}
+
 		/**
 	 	*
 	 	*	@method once 
