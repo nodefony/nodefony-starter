@@ -34,10 +34,12 @@ version :                       "1.0"
 #
 #    Or 
 #      watch:
-#        controller:        true
+#        controllers:        true
 #        views:             true
 #
-watch:                          false
+watch:
+  controllers:                  true
+  views:                        true
 
 #
 #  WEBPACK CONFIG       

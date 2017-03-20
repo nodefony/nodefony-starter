@@ -157,7 +157,7 @@ nodefony.register.call(nodefony.context, "http", function(){
 			return null ;
 		}
 
-		extendTwig ( param ){
+		extendTwig ( param , context ){
 			return nodefony.extend( {}, param, {
 				nodefony:{
 					url:		this.request.url,
@@ -172,7 +172,14 @@ nodefony.register.call(nodefony.context, "http", function(){
 				trans_default_domain:function(){
 						this.translation.trans_default_domain.apply(this.translation, arguments) ;
 				}.bind(this),
-				getTransDefaultDomain:this.translation.getTransDefaultDomain.bind(this.translation)	
+				getTransDefaultDomain:this.translation.getTransDefaultDomain.bind(this.translation),
+				CDN:function(type, nb){
+					var cdn = this.kernelHttp.getCDN.call(this.kernelHttp, type, nb);
+					if ( cdn ){
+						return context.request.url.protocol+"//"+cdn ; 
+					}
+					return "";
+				}.bind(this)
 			});
 		}
 

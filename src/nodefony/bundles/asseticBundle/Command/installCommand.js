@@ -94,13 +94,13 @@ nodefony.registerCommand("assets",function(){
 							bundle,
 							dstpath,
 							this.publicDirectory+"/"+srcpath,
-							this.getSizeDirectory(dstpath) / 1000 + " ko"	
+							nodefony.niceBytes(this.getSizeDirectory(dstpath))
 						);
 
 					}.bind(this, bundle));
 				}
 			}	
-			this.table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + this.getSizeDirectory( this.publicDirectory )/ 1000 + " ko");
+			this.table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + nodefony.niceBytes( this.getSizeDirectory( this.publicDirectory )) );
 		}
 
 		

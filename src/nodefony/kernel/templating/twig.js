@@ -51,7 +51,6 @@ nodefony.registerTemplate("twig", function(){
 		render (view, param){
 			var Render = this.compile(view);
 			try {
-				//var options = nodefony.extend( {nodefony:this.kernelSettings}, param);
 				return Render(param);
 			}catch(e){
 				throw e ;

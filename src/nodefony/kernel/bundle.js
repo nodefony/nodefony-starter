@@ -103,10 +103,20 @@ nodefony.register("Bundle", function(){
 						this.logger( Path, "INFO", event );
 					break;
 					case "add" :
-						this.logger( Path, "INFO", event );
-					break;
 					case "change" :
 						this.logger( Path, "INFO", event );
+						var file = this.cwd + "/" + Path ;
+						try{ 
+							var fileClass = new nodefony.fileClass(file);
+							var ele = this.bundle.recompileTemplate(fileClass);
+							if ( ele.basename === "."){
+								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+""+":"+ele.name + "'", "INFO", event);
+							}else{
+								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+ele.basename+":"+ele.name + "'", "INFO",event );
+							}
+						}catch(e){
+							this.logger(e, "ERROR", event);
+						}
 					break;
 					case "error" :
 						this.logger( Path, "ERROR", event );
@@ -116,6 +126,25 @@ nodefony.register("Bundle", function(){
 					break;
 					case "unlink" :
 						this.logger( Path, "INFO", event );
+						var file = this.cwd + "/" + Path ;
+						var parse = path.parse(file)  ;
+						if ( parse.ext === "."+this.bundle.serviceTemplate.extention ){
+							var name = parse.name ;
+							var directory = path.basename(parse.dir);
+							if (directory !== "views"){
+								if ( this.bundle.views[directory]){
+									if ( this.bundle.views[directory][name] ){
+										delete	this.bundle.views[directory][name];
+										this.logger( "REMOVE TEMPLATE : " +  file, "INFO", event );
+									}
+								}
+							}else{
+								if ( this.bundle.views["."][name] ){
+									delete this.bundle.views["."][name] ;
+									this.logger( "REMOVE TEMPLATE : " +  file, "INFO", event );
+								}	
+							}
+						}
 					break;
 				}
 				this.fire(event, this.watcher , Path);
@@ -253,19 +282,39 @@ nodefony.register("Bundle", function(){
 
 			// WATCHERS
 			if ( this.kernel.environment === "dev" && this.settings.watch ){
-				try {
+				var controllers = false ;
+				var views = false ;
+				try { 
+					switch ( typeof this.settings.watch   ){
+						case "object":
+							controllers = this.settings.watch.controllers ;
+							views = this.settings.watch.views ;
+						break;
+						case "boolean":
+							controllers = true ;	
+							views = true ;	
+						break;
+						default:
+							throw new Error ("Bad Config watcher ");
+					}
 					// controllers
-					this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
-					this.watcherController.listenWatcherController();
-					this.kernel.on("onTerminate", () => {
-						this.watcherController.close();
-					});
+					if ( controllers ){
+						this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
+						this.watcherController.listenWatcherController();
+						this.kernel.on("onTerminate", () => {
+							this.logger("Watching Ended : " + this.watcherController.path, "INFO");
+							this.watcherController.close();
+						});
+					}
 					// views
-					this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
-					this.watcherView.listenWatcherView();
-					this.kernel.on("onTerminate", () => {
-						this.watcherView.close();
-					});
+					if ( views ){
+						this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
+						this.watcherView.listenWatcherView();
+						this.kernel.on("onTerminate", () => {
+							this.logger("Watching Ended : " + this.watcherView.path, "INFO");
+							this.watcherView.close();
+						});
+					}
 				}catch(e){
 					throw e ;
 				}
@@ -502,6 +551,68 @@ nodefony.register("Bundle", function(){
 			return views ;
 		}
 
+		compileTemplate (file, basename, name){
+			this.serviceTemplate.compile( file, (error, template) => {
+				if (error){
+					this.logger(error, "ERROR");
+					return ;
+				}
+				this.views[basename][name].template = template ;
+			});	
+		}
+		
+		setView(file){
+			var basename = path.basename(file.dirName);
+			var res = null ;
+			var name = null ;
+			if (basename !== "views"){
+				if ( ! this.views[basename] ){
+					this.views[basename] = {};
+				}
+				res = this.regTemplateExt.exec( file.name );
+				if (res){
+					name = res[1];
+					if ( this.views[basename][name] ){
+						delete this.views[basename][name] ;
+					}
+					return this.views[basename][name] = {
+						name:name,
+						basename:basename,
+						file:file,
+						template:null
+					};
+				}
+			}else{
+				basename = ".";
+				res = this.regTemplateExt.exec( file.name );
+				if (res){
+					name = res[1];
+					if ( this.views[basename][name] ){
+						delete this.views[basename][name] ;
+					}
+					return this.views[basename][name]= {
+						name:name,
+						basename:basename,
+						file:file,
+						template:null
+					};
+				}
+			}		
+			return null ;
+		}
+
+		recompileTemplate (file){
+			try {
+				var ele = this.setView(file) ;
+				if ( ele && this.kernel.type !== "CONSOLE" ){
+					this.compileTemplate(ele.file, ele.basename, ele.name);
+				}
+				return ele ;
+			}catch(e){
+				throw e ;
+			}
+		}
+
 		registerViews (result){
 			var views = null ;
 			if ( result ){
@@ -509,80 +620,18 @@ nodefony.register("Bundle", function(){
 			}else{
 				views = this.viewFiles ;
 			}
-			
-			views.getFiles().forEach((file) => {
-				var basename = path.basename(file.dirName);
-				var res = null ;
-				var name = null ;
-				if (basename !== "views"){
-					// directory 
-					//console.log(basename)
-					if ( ! this.views[basename] ){
-						this.views[basename] = {};
-					}
-					res = this.regTemplateExt.exec( file.name );
-					if (res){
-						name = res[1];
-						this.views[basename][name] = {
-							file:file,
-							template:null
-						};
-						this.logger("Register Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
-						if (this.kernel.type !== "CONSOLE" ){
-							this.serviceTemplate.compile( file, (error, template) => {
-								if (error){
-									this.logger(error, "ERROR");
-									return ;
-								}
-								this.views[basename][name].template = template ;
-								this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
-							});
+			return views.getFiles().forEach((file) => {
+				try {
+					var ele = this.recompileTemplate(file) ;
+					if ( ele ){
+						if ( ele.basename === "."){
+							this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+ele.name + "'", "DEBUG");
 						}else{
-							/*if ( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
-								this.serviceTemplate.compile( file, function(error, template){
-									if (error){
-										this.logger(error, "ERROR");
-										return ;
-									}
-									this.views[basename][name]["template"] = template ;
-									this.logger("COMPILE Template : '"+this.name+"Bundle:"+basename+":"+name +"'", "DEBUG");
-								}.bind(this) )	
-							}*/
+							this.logger("Register Template : '"+this.name+"Bundle:"+ele.basename+":"+ele.name + "'", "DEBUG");
 						}
 					}
-				}else{
-					// racine
-					basename = ".";
-					res = this.regTemplateExt.exec( file.name );
-					if (res){
-						name = res[1];
-						this.views[basename][name]= {
-							file:file,
-							template:null
-						};
-						this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
-						if (this.kernel.type !== "CONSOLE"){
-							this.serviceTemplate.compile( file, (error, template) => {
-								if (error){
-									this.logger(error, "ERROR");
-									return ;
-								}
-								this.views[basename][name].template = template ;
-								this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
-							});
-						}else{
-							/*if( this.kernel.getopts.parsedOption.argv[0] == "assets:dump" ){
-								this.serviceTemplate.compile( file, function(error, template){
-									if (error){
-										this.logger(error, "ERROR");
-										return ;
-									}
-									this.views[basename][name]["template"] = template ;
-									this.logger("COMPILE Template : '"+this.name+"Bundle:"+""+":"+name + "'", "DEBUG");
-								}.bind(this) )
-							}*/
-						}
-					}
+				}catch(e){
+					throw e ;	
 				}
 			});
 		}

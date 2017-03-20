@@ -33,8 +33,11 @@ App:
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
 
-
-# webpack assets root path is ./Resources/public
+#
+#  WEBPACK
+#
+# Assets root path is ./Resources/public
+#
 webpack:
   entry:
     main:                       "./js/app.js"
@@ -83,7 +86,7 @@ sequelizeBundle:
 monitoringBundle:
   debugBar:                     true
   storage:
-    active:                     true                      
+    active:                     false                      
     requests:                   orm
   
 #
@@ -122,11 +125,9 @@ httpBundle:
     web:
       path:                       "/web/"
       maxage:                     0                     #30*24*60*60*1000
-
   upload:
     tmp_dir:                      "tmp/upload"
     #max_filesize:                 100000               #in Bytes
-
   session:
     start:                        false                          # autostart || false 
     handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
@@ -139,8 +140,6 @@ httpBundle:
           location:               127.0.0.1
           port:                   11211
           weight:                 1
-
-
   http:
     responseTimeout:              40000
   https:
@@ -159,9 +158,10 @@ httpBundle:
 #           javascripts:                  cdn.nodefony.com
 #           images:                       // not implemted
 #
-asseticBundle:
-  less:
-    compress:                     false
-    cache:                        false 
+
+#asseticBundle:
+#  CDN:
+#    stylesheets:                  cdn.nodefony.com       
+#    javascripts:                  cdn.nodefony.com
 
 

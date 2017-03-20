@@ -16,7 +16,7 @@
 		{{ parent() }}
 
 		<!-- WEBPACK BUNDLE -->
-		<link rel="stylesheet" href="/{{ bundleName }}/assets/css/{{name}}.css" />
+		<link rel="stylesheet" href="{{CDN('stylesheet')}}/{{ bundleName }}/assets/css/{{name}}.css" />
 	
 	{% endblock %}
 
@@ -26,7 +26,7 @@
 		{{ parent() }}
 
 		<!-- WEBPACK BUNDLE -->
-		<script src="/{{ bundleName }}/assets/js/{{name}}.js"></script>
+		<script src="{{CDN('javascript')}}/{{ bundleName }}/assets/js/{{name}}.js"></script>
 
 	{% endblock %}
 

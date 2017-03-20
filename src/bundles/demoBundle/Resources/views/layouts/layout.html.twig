@@ -7,8 +7,7 @@
 	{{ parent() }}
 
 	<!-- WEBPACK BUNDLE -->
-	<link rel="stylesheet" href="/demoBundle/assets/css/demo.css" />
-
+	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/demo.css" />
 	
 {% endblock %}
 
@@ -17,7 +16,7 @@
 	{{ parent() }}
 
 	<!-- WEBPACK BUNDLE -->
-	<script src="/demoBundle/assets/js/demo.js"></script>
+	<script src="{{CDN('javascript')}}/demoBundle/assets/js/demo.js"></script>
 
 	
 	<script>
@@ -31,11 +30,9 @@
 {% endblock %}
 
 {% block body %}
-	
 	<header class="header">
 		{{ render( controller("demoBundle:demo:nav", login )) }}
 	</header>
-
 {% endblock %}
 
 {% block footer %}

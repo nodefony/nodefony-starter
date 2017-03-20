@@ -146,41 +146,6 @@ nodefony.register("controller", function(){
 			 	this.fire("onError", this.context.container, e);
 			}
 		}
-
-		// 
-		/*render (view, param){
-			if ( ! this.context.response ){
-				this.logger("WARNING ASYNC !!  RESPONSE ALREADY SENT BY EXPCEPTION FRAMEWORK","ERROR");
-				return ;
-			}
-			try {
-				
-				if ( this.context.promise ){
-					this.context.promise.then( this.renderViewAsync(view, param) );
-				}
-				this.context.promise = this.renderViewAsync(view, param).then( (result) => {
-
-					try {
-						this.fire("onResponse", this.context.response, this.context);
-					}catch(e){
-						if (this.context.response.response.headersSent ||  this.context.timeoutExpired ){
-							return ;
-						}
-						this.fire("onError", this.context.container, e);
-					}
-					return result ;
-				
-				} ).catch((e)=>{
-					if (this.context.response.response.headersSent || this.context.timeoutExpired ){
-						return ;
-					}
-					this.context.promise = null ;
-					this.fire("onError", this.context.container, e);
-				});
-			}catch(e){
-			 	this.fire("onError", this.context.container, e);
-			}
-		}*/
 		
 		renderSync (view, param){
 			var response = this.getResponse() ;
@@ -213,57 +178,25 @@ nodefony.register("controller", function(){
 
 		renderViewAsync (view, param){
 			try {
-				var extendParam = this.context.extendTwig(param);
-
-				if ( this.serviceTemplating.cache ){
+				var extendParam = this.context.extendTwig(param, this.context );
+				return new Promise ( (resolve, reject) =>{
 					var templ = null ;
 					var res = null ;
-					return new Promise ( (resolve, reject) =>{
-						var res = null ;	
-						if ( this.serviceTemplating.cache ){
-							try {
-								templ = this.httpKernel.getTemplate(view);
-							}catch(e){
-								return reject( e );
-							}
-							try {
-								res = templ.render(extendParam) ;
-								try {
-									this.fire("onView", res, this.context, templ.path , param);
-									return resolve( res );
-								}catch(e){
-									return reject( e );
-								}
-							}catch(e){
-								return reject( e ) ;
-							}
-						}
-					});
-				}
-				return new Promise ( (resolve, reject) =>{
 					try {
-						var View = this.httpKernel.getView(view);
+						templ = this.httpKernel.getTemplate(view);
 					}catch(e){
 						return reject( e );
 					}
-					try{ 
-						this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
-							if (error || result === undefined){
-								if ( ! error ){
-									error = new Error("ERROR PARSING TEMPLATE :" + view);
-								}
-								return reject(error) ;
-							}else{
-								try {
-									this.fire("onView", result, this.context, View , param);
-									return resolve( result );
-								}catch(e){
-									return reject( error );
-								}
-							}
- 						});
+					try {
+						res = templ.render(extendParam) ;
+						try {
+							this.fire("onView", res, this.context, templ.path , param);
+							return resolve( res );
+						}catch(e){
+							return reject( e );
+						}
 					}catch(e){
-						return reject( e );
+						return reject( e ) ;
 					}
 				});
 			}catch(e){
@@ -275,55 +208,28 @@ nodefony.register("controller", function(){
 			var res = null;
 			var templ = null ;
 			var View = null ;
-			var extendParam = this.context.extendTwig(param);
-			if ( this.serviceTemplating.cache ){
-				try {
-					templ = this.httpKernel.getTemplate(view);
-				}catch(e){
-					throw e ;
-				}
-				try {
-					res = templ.render(extendParam) ;
-					try {
-						this.fire("onView", res, this.context, null , param);
-					}catch(e){
-						throw e ;
-					}
-				}catch(e){
-					throw e ;
-				}
-				return res ;
+			var extendParam = this.context.extendTwig(param, this.context);
+			try {
+				templ = this.httpKernel.getTemplate(view);
+			}catch(e){
+				throw e ;
 			}
 			try {
-				View = this.httpKernel.getView(view);
+				res = templ.render(extendParam) ;
+				try {
+					this.fire("onView", res, this.context, null , param);
+				}catch(e){
+					throw e ;
+				}
 			}catch(e){
 				throw e ;
 			}
-			try{ 
-				this.serviceTemplating.renderFile(View, extendParam, (error, result) => {
-					if (error || result === undefined){
-						if ( ! error ){
-							error = new Error("ERROR PARSING TEMPLATE :" + view);
-						}
-						throw error ;
-					}else{
-						try {
-							this.fire("onView", result, this.context, View , param);
-							res = result;
-						}catch(e){
-							throw e ;
-						}
-					}
- 				});
-			}catch(e){
-				throw e ;
-			}
-			return res;
+			return res ;
 		}
 
 		renderRawView (path, param ){
 			var res = null;
-			var extendParam = this.context.extendTwig(param);
+			var extendParam = this.context.extendTwig(param, this.context);
 			try{ 
 				this.serviceTemplating.renderFile(path, extendParam, (error, result) => {
 					if (error || result === undefined){

@@ -27,6 +27,7 @@ nodefony.registerBundle ("assetic", function(){
 			this.environment = this.kernel.environment ;
 			this.debug = this.kernel.debug ;
 			this.kernelType  =  kernel.type ;
+			this.kernelHttp = this.get("httpKernel");
 		}
 
 
@@ -345,7 +346,7 @@ nodefony.registerBundle ("assetic", function(){
             					return token;
         				},
         				parse:  function (token, context, chain)  {
-						var cdn = that.settings.CDN.javascripts;
+						var cdn =  that.kernelHttp.getCDN("javascript") || that.settings.CDN.javascripts;
 						if (cdn){
 							context.asset_url = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{
@@ -410,7 +411,7 @@ nodefony.registerBundle ("assetic", function(){
             					return token;
         				},
         				parse:  function (token, context, chain)  {
-						var cdn = that.settings.CDN.stylesheets ;
+						var cdn = that.kernelHttp.getCDN("stylesheet") || that.settings.CDN.stylesheets ;
 						if (cdn){
 							context.asset_url = context.nodefony.url.protocol+"//"+cdn+token.assetic.output ;
 						}else{

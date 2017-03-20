@@ -42,6 +42,7 @@ nodefony.registerService("httpKernel", function(){
 			this.listen(this, "onReady", () => {
 				this.firewall = this.get("security") ;
 				this.router = this.container.get("router") ;
+				this.cdn = this.setCDN();
 			});
 			// listen KERNEL EVENTS
 			this.listen(this, "onBoot",() =>{
@@ -52,6 +53,8 @@ nodefony.registerService("httpKernel", function(){
 			this.listen(this, "onClientError", (e) => {
 				this.logger(e, "ERROR", "HTTP KERNEL SOCKET CLIENT ERROR");
 			});
+
+			
 		}
 
 		boot (){
@@ -507,6 +510,49 @@ nodefony.registerService("httpKernel", function(){
 					myError =  error;
 					this.logger(util.inspect(error));
 				}
+			}
+		}
+
+		setCDN(){
+			return  this.kernel.settings.CDN ;	
+		}
+		getCDN(type, nb){
+			var wish = 0 ;
+			if ( nb ){
+				try {
+					wish = parseInt(wish,10);
+				}catch(e){
+					this.logger("CDN CONFIG ERROR  : ", "ERROR");
+					this.logger(e, "ERROR");
+				}
+			}
+			switch ( typeof this.cdn ){
+				case "object":
+					if ( ! this.cdn ){
+						return "";
+					} 
+					if (this.cdn.global ){
+						return this.cdn.global ;
+					}
+					if ( ! type ){
+						var txt = "CDN ERROR getCDN bad argument type  ";
+						this.logger(txt, "ERROR");
+						throw new Error (txt);	
+					}
+					if (type in this.cdn ) {
+						if ( this.cdn[type][wish] ){
+							return this.cdn[type][wish]; 
+						}
+					}
+					return "";
+				case "string":
+					return this.cdn || "" ;
+				break;
+				default:
+					var txt = "CDN CONFIG ERROR ";
+					this.logger(txt, "ERROR");
+					throw new Error (txt);
+
 			}
 		}
 	};

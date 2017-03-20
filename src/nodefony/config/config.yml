@@ -37,9 +37,7 @@ system:
   security:                     true
   realtime:                     true
   monitoring:                   true
-
   locale:                       "en_en"
-
   log:
     active:                     true
     console:                    false
@@ -49,6 +47,36 @@ system:
     services:                   "/tmp/servicesNodefony.log"
     #TODO
     rotate:                     false
+
+#
+#       ASSETS CDN
+#
+#
+#       YOU CAN set with string
+#
+#       CDN :   cdn.nodefony.com
+#
+#       or 
+#
+#       CDN:
+#          global: cdn.nodefony.com
+#       
+#       or
+#
+#       CDN:
+#         global: ~
+#         stylesheet:                  
+#           - cdn.nodefony.com       
+#         javascript:                  
+#           - cdn.nodefony.com
+#         image:
+#           - cdn.nodefony.com
+#           - cdn.nodefony.fr
+#         font:
+#           - cdn.nodefony.com
+#
+
+CDN:                            ~
 
 #
 # ENGINE TEMPLATE

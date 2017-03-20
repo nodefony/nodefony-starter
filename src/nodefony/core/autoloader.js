@@ -92,7 +92,7 @@ module.exports = function(){
 					if ( force ){
 						if (this.syslog) {this.logger(file, "WARNING","AUTOLOADER RELOAD FORCE");}
 					}else{
-						if (this.syslog){ this.logger(file, "DEBUG","AUTOLOADER LOAD");}	
+						//if (this.syslog){ this.logger(file, "DEBUG","AUTOLOADER LOAD");}	
 					}
 					return cache[file].runInThisContext({
 						filename:file,
