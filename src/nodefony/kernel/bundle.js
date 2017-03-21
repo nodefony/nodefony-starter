@@ -109,7 +109,7 @@ nodefony.register("Bundle", function(){
 						try{ 
 							var fileClass = new nodefony.fileClass(file);
 							var ele = this.bundle.recompileTemplate(fileClass);
-							if ( ele.basename === "."){
+							if ( ele.basename === "." ){
 								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+""+":"+ele.name + "'", "INFO", event);
 							}else{
 								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+ele.basename+":"+ele.name + "'", "INFO",event );
@@ -150,6 +150,36 @@ nodefony.register("Bundle", function(){
 				this.fire(event, this.watcher , Path);
 			});	
 		}
+
+		listenWatcherI18n(){
+			this.on('all', (event, Path) => {
+				switch( event ){
+					case "addDir" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "add" :
+					case "change" :
+						this.logger( Path, "INFO", event );
+						console.log(Path);
+						var file = this.cwd + "/" + Path ;
+						try{ 
+							var fileClass = new nodefony.fileClass(file);
+						}catch(e){
+							this.logger(e, "ERROR", event);
+						}
+					break;
+					case "error" :
+						this.logger( Path, "ERROR", event );
+					break;
+					case "unlinkDir" :
+						this.logger( Path, "INFO", event );
+					break;
+					case "unlink" :
+						this.logger( Path, "INFO", event );
+					break;
+				}
+			});
+		}
 	};
 
 	var defaultWatcherViews = function (){
@@ -181,6 +211,37 @@ nodefony.register("Bundle", function(){
 			],
 			cwd:this.path
 		} ;
+	};
+
+	var defaultWatcherI18n = function (){
+		return {
+			ignoreInitial: true,
+			ignored: [
+				 (string)  => {
+					var file = null;
+					var basename = path.basename(string) ;
+					try{
+						file = new nodefony.fileClass(string);
+					}catch(e){
+						if ( basename.match(/^\./) ){
+							return true ;
+						}
+						return false ;
+					}
+					if ( basename.match(/^\./) ){
+						return true ;
+					}
+					if ( file.type === "Directory" ){
+						return false ;
+					}
+					if ( basename.match(/.*\.yml$/) ){
+						return false ;
+					}
+					return true ;
+				}
+			],
+			cwd:this.path
+		};
 	};
 
 	var defaultWatcherControllers  = function() {
@@ -243,6 +304,7 @@ nodefony.register("Bundle", function(){
 			this.serviceTemplate = this.get("templating") ;
 			this.regTemplateExt = new RegExp("^(.+)\."+this.serviceTemplate.extention+"$");
 
+			this.translation = this.get("translation");
 			this.reader = this.kernel.reader;
 			 
 			// assets 
@@ -261,7 +323,8 @@ nodefony.register("Bundle", function(){
 			this.views["."] = {};
 			this.watcherView = null ;
 
-			// 
+			
+			// others
 			this.entities = {};
 			this.fixtures = {};
 
@@ -271,6 +334,12 @@ nodefony.register("Bundle", function(){
 				console.trace(e);
 				this.logger("Bundle " + this.name +" Resources directory not found", "WARNING");
 			}
+
+			// I18n
+			this.i18nPath = this.path+"/Resources/translations" ;
+			this.i18nFiles = this.findI18nFiles( this.resourcesFiles); //.findByNode("translations");
+			this.watcherI18n = null ;
+
 
 			// Register Service
 			this.registerServices();
@@ -282,42 +351,7 @@ nodefony.register("Bundle", function(){
 
 			// WATCHERS
 			if ( this.kernel.environment === "dev" && this.settings.watch ){
-				var controllers = false ;
-				var views = false ;
-				try { 
-					switch ( typeof this.settings.watch   ){
-						case "object":
-							controllers = this.settings.watch.controllers ;
-							views = this.settings.watch.views ;
-						break;
-						case "boolean":
-							controllers = true ;	
-							views = true ;	
-						break;
-						default:
-							throw new Error ("Bad Config watcher ");
-					}
-					// controllers
-					if ( controllers ){
-						this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
-						this.watcherController.listenWatcherController();
-						this.kernel.on("onTerminate", () => {
-							this.logger("Watching Ended : " + this.watcherController.path, "INFO");
-							this.watcherController.close();
-						});
-					}
-					// views
-					if ( views ){
-						this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
-						this.watcherView.listenWatcherView();
-						this.kernel.on("onTerminate", () => {
-							this.logger("Watching Ended : " + this.watcherView.path, "INFO");
-							this.watcherView.close();
-						});
-					}
-				}catch(e){
-					throw e ;
-				}
+				this.initWatchers();	
 			}
 
 			// WEBPACK SERVICE
@@ -325,6 +359,57 @@ nodefony.register("Bundle", function(){
 			this.webpackCompiler = null ;
 
 			this.fire( "onRegister", this);
+		}
+
+		initWatchers(){
+			var controllers = false ;
+			var views = false ;
+			var i18n = false ;
+			try { 
+				switch ( typeof this.settings.watch   ){
+					case "object":
+						controllers = this.settings.watch.controllers ;
+						views = this.settings.watch.views ;
+						i18n = this.settings.watch.translations ;
+					break;
+					case "boolean":
+						controllers = true ;	
+						views = true ;
+						i18n = true ;
+					break;
+					default:
+						throw new Error ("Bad Config watcher ");
+				}
+				// controllers
+				if ( controllers ){
+					this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
+					this.watcherController.listenWatcherController();
+					this.kernel.on("onTerminate", () => {
+						this.logger("Watching Ended : " + this.watcherController.path, "INFO");
+						this.watcherController.close();
+					});
+				}
+				// views
+				if ( views ){
+					this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
+					this.watcherView.listenWatcherView();
+					this.kernel.on("onTerminate", () => {
+						this.logger("Watching Ended : " + this.watcherView.path, "INFO");
+						this.watcherView.close();
+					});
+				}
+				//I18n
+				if ( i18n ){
+					this.watcherI18n = new Watcher( this.i18nPath, defaultWatcherI18n.call(this), this);
+					this.watcherI18n.listenWatcherI18n();
+					this.kernel.on("onTerminate", () => {
+						this.logger("Watching Ended : " + this.watcherI18n.path, "INFO");
+						this.watcherI18n.close();
+					});
+				}
+			}catch(e){
+				throw e ;
+			}	
 		}
 			
 		parseConfig (result){
@@ -353,7 +438,9 @@ nodefony.register("Bundle", function(){
 							}
 						break;
 						case /^locale$/.test(ele) :
-							this.locale = result[ele] ;
+							if ( result[ele] ){
+								this.locale = result[ele] ;
+							}
 						break;
 						case /^webpack$/.test(ele) :
 								try {
@@ -449,7 +536,7 @@ nodefony.register("Bundle", function(){
 					var Class = this.loadFile( ele.path );
 					if (typeof Class === "function" ){
 						Class.prototype.bundle = this ;
-						this.logger("Bundle "+this.name+" Register Service : "+res[0] , "DEBUG");
+						this.logger("Register Service : "+res[0] , "DEBUG");
 					}else{
 						this.logger("Register Service : "+name +"  error Service bad format");
 					}
@@ -487,7 +574,7 @@ nodefony.register("Bundle", function(){
 						Class.prototype.name = name;
 						Class.prototype.bundle = this;
 						this.controllers[name] = Class ;
-						this.logger("Bundle "+this.name+" Register Controller : "+name , "DEBUG");
+						this.logger("Register Controller : '"+name+"'" , "DEBUG");
 					}else{
 						this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
 						console.trace("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format");
@@ -625,9 +712,9 @@ nodefony.register("Bundle", function(){
 					var ele = this.recompileTemplate(file) ;
 					if ( ele ){
 						if ( ele.basename === "."){
-							this.logger("Register Template : '"+this.name+"Bundle:"+""+":"+ele.name + "'", "DEBUG");
+							this.logger("Register Template   : '"+this.name+"Bundle:"+""+":"+ele.name + "'", "DEBUG");
 						}else{
-							this.logger("Register Template : '"+this.name+"Bundle:"+ele.basename+":"+ele.name + "'", "DEBUG");
+							this.logger("Register Template   : '"+this.name+"Bundle:"+ele.basename+":"+ele.name + "'", "DEBUG");
 						}
 					}
 				}catch(e){
@@ -670,36 +757,44 @@ nodefony.register("Bundle", function(){
 			}
 		}
 
-		registerI18n (locale, result){
-			var translation = this.get("translation");
-			if (! translation ) { return ; }
-			// find i18n files
-			var i18nFiles = null ;
-			var defaultLocale = null ;
-			var reg = null ;
-			var files = null ;
-			if (result){
-				i18nFiles = result.findByNode("translations");
+		findI18nFiles( result ){
+			var i18n = null ;
+			if ( ! result ){
+				try {
+					i18n = new nodefony.finder( {
+						path:this.i18nPath,
+					}).result;
+				}catch(e){
+					this.logger("Bundle " + this.name +" I18n directory not found", "WARNING");
+				}
+		
 			}else{
-				i18nFiles = this.resourcesFiles.findByNode("translations");
+				// find  i18n files 
+				i18n = result.findByNode("translations");
 			}
-			if (! i18nFiles.length() ) { return ; }
+			return i18n ;	
+		}
+
+		getfilesByLocal(locale){
+			var reg = new RegExp("^(.*)\.("+locale+")\.(.*)$"); 
+			return this.i18nFiles.match(reg);
+		}
+		
+		registerI18n (locale, result){
+			if (! this.translation ) { return ; }
+			if (result){
+				this.i18nFiles = this.findI18nFiles(result) ;
+			}
+			if (! this.i18nFiles.length() ) { return ; }
+
+			var files = null ;
 			if (locale){
-				defaultLocale =  locale;	
-				reg = new RegExp("^(.*)\.("+defaultLocale+")\.(.*)$"); 
-				files = i18nFiles.match(reg);
+				files =this.getfilesByLocal(locale);
 			}else{
-				defaultLocale =  translation.defaultLocale  ;
-				if (! defaultLocale ) { return ; }
-				reg = new RegExp("^(.*)\.("+defaultLocale+")\.(.*)$"); 
-				files = i18nFiles.match(reg);
+				files = this.getfilesByLocal( this.translation.defaultLocale );
 				if ( ! files.length() ){
 					var bundleLocal = this.getParameters("bundles."+this.name+".locale") ;
-					if ( bundleLocal ){
-						defaultLocale = bundleLocal ; 	
-					}
-					reg = new RegExp("^(.*)\.("+defaultLocale+")\.(.*)$"); 
-					files = i18nFiles.match(reg);
+					files = this.getfilesByLocal( bundleLocal || this.translation.defaultLocale );
 					if ( bundleLocal  && ! files.length() ){
 						throw new Error("Error Translation file locale: "+defaultLocale+" don't exist");
 					}
@@ -711,7 +806,7 @@ nodefony.register("Bundle", function(){
 				var Locale = file.match[2] ;
 				//console.log(file.path)
 				//console.log(file.match)
-				translation.reader(file.path, Locale, domain);
+				this.translation.reader(file.path, Locale, domain);
 			});
 		}
 

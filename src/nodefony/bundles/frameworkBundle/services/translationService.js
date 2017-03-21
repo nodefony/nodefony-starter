@@ -66,9 +66,6 @@ nodefony.registerService("translation", function(){
 			super("I18N", container, container.get("notificationsCenter") );
 			
 			this.defaultLocale = null ;
-			if (this.has("translation") ){
-				this.defaultLocale = this.get("translation").defaultLocale ;
-			}
 			this.requestType = type; 
 			this.engineTemplate = this.get("templating");
 			this.setParameters("translate", translate);
