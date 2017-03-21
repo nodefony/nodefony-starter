@@ -11,6 +11,8 @@ Nodefony is not an exhaustive port of symfony, nodefony add services like:
 - Web servers (websocket(s), http(s)).
 - Notion of real-time context in Action Controller (Websocket).
 - Notion of synchronous or asynchronous execution in Action Controller (Promise). 
+- WEBPACK integration for assets management.
+- WATCHER node.js for auto reload-files in developement mode .
 
 Now in this version Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
