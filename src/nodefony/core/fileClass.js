@@ -70,12 +70,15 @@ nodefony.register("fileClass", function(){
 				}else{
 					this.path = this.getRealpath(Path) ;	
 				}
-				this.name = path.basename(this.path);
+				this.parse = path.parse(this.path);
+				this.name = this.parse.name+this.parse.ext;
+				this.ext = this.parse.ext;
+				this.shortName = this.parse.name ;
 				if (this.type === "File"){
 					this.mimeType = this.getMimeType(this.name);
 					this.encoding = this.getCharset();
 				}
-				this.dirName = this.dirname();
+				this.dirName = this.parse.dir;
 				this.match = null;
 			}else{
 				throw new Error("error fileClass : "+ Path);

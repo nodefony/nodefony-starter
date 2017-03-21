@@ -13,6 +13,7 @@ nodefony.register("Bundle", function(){
 	var regService = /^(.+)Service.js$/;
 	var regCommand = /^(.+)Command.js$/;
 	var regEntity = /^(.+)Entity.js$/;
+	var regI18nFile =/^(.*)\.(.._..)\.(.*)$/;
 
 		
 	/*
@@ -160,10 +161,13 @@ nodefony.register("Bundle", function(){
 					case "add" :
 					case "change" :
 						this.logger( Path, "INFO", event );
-						console.log(Path);
 						var file = this.cwd + "/" + Path ;
 						try{ 
 							var fileClass = new nodefony.fileClass(file);
+							fileClass.matchName(regI18nFile);	
+							var domain = fileClass.match[1] ;
+							var Locale = fileClass.match[2] ;
+							this.bundle.translation.reader(fileClass.path, Locale, domain);
 						}catch(e){
 							this.logger(e, "ERROR", event);
 						}
@@ -234,7 +238,7 @@ nodefony.register("Bundle", function(){
 					if ( file.type === "Directory" ){
 						return false ;
 					}
-					if ( basename.match(/.*\.yml$/) ){
+					if ( basename.match(regI18nFile) ){
 						return false ;
 					}
 					return true ;
