@@ -31,10 +31,7 @@ version :                       "1.0"
 #        views:			true
 #        translations:          true
 #
-watch:
-  controllers:                  true
-  views:                        true
-  translations:                 true
+watch:                          ~
 
 #
 #  WEBPACK CONFIG
