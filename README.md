@@ -22,9 +22,9 @@ You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nod
 
 ##  **Resources for Newcomers**
 
-####-  **[Nodefony Demo](https://nodefony.net)**  
-####-  **[Nodefony Documentation](https://nodefony.net/documentation)**  
-####-  **[Nodefony Monitoring](https://nodefony.net/nodefony)**
+#### -  **[Nodefony Demo](https://nodefony.net)**  
+#### -  **[Nodefony Documentation](https://nodefony.net/documentation)**  
+#### -  **[Nodefony Monitoring](https://nodefony.net/nodefony)**
 
 
 #### Documentation in progress !!
