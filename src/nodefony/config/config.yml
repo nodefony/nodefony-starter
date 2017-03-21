@@ -75,9 +75,8 @@ system:
 #         font:
 #           - cdn.nodefony.com
 #
-
 CDN:                            ~
-
+    
 #
 # ENGINE TEMPLATE
 #

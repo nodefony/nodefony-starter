@@ -17,7 +17,7 @@
 							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
 						{% else %}
 							{% for key, value in kernelSettings.system %}
-								{% if key != "log" %}
+								{% if key != "log"  %}
 									<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
 								{% endif %}
 							{% endfor %}
@@ -25,10 +25,8 @@
 					{% endfor %}
 					<li><label>Debug</label><span class="label label-success">{{debug}}</span></li>	
 					<li><label>Git Branch</label><span class="label label-success">{{git.currentBranch}}</span></li>	
-					
 				</ul>
 			</div>
-
 		</li>
 
 		<li class="separator"></li>
@@ -66,17 +64,34 @@
 					<li><label style="color:#999">BUNDLES</label></li>
 					{% for key, value in bundles %}
 						{% if key != "App"  %}
-						<li><label><a style="color:#2f2f2f"  target="blank" href='{{path("monitoring-index")}}#/config/{{key}}'>{{ key | capitalize }}</a></label><span class="label label-success">{{value.version}}</span></li>
+							<li><label><a style="color:#2f2f2f"  target="blank" href='{{path("monitoring-index")}}#/config/{{key}}'>{{ key | capitalize }}</a></label><span class="label label-success">{{value.version}}</span></li>
 						{% endif %}
 					{% endfor %}
 					<li class="separator"> </li>
 					<li><label style="color:#999">ENVIRONMENT</label></li>
 					<li><label>PWD</label><span class="label label-success">{{pwd}}</span></li>
 					<li class="separator"> </li>
-					<li><label title="content delivery network" style="color:#999">DOMAIN ASSETICS CDN </label></li>
-					<li><label>Javascripts Domain</label><span class="label label-success">{% if cdn.javascripts %} {{cdn.javascripts}} {% else %} Inactive {% endif %} </span></li>
-					<li><label>Stylesheets Domain</label><span class="label label-success">{% if cdn.stylesheets %} {{cdn.stylesheets}} {% else %} Inactive {% endif %}</span></li>
+					<li><label title="content delivery network" style="color:#999">DOMAIN CDN</label></li>
+					{% if cdn  %}
+						{% if cdn.global %}
+							<li><label>Javascript </label><span class="label label-success"> {{cdn.global}} </span></li>
+							<li><label>Stylesheet </label><span class="label label-success"> {{cdn.global}}</span></li>
+							<li><label>Image </label><span class="label label-success"> {{cdn.global}} </span></li>
+							<li><label>font </label><span class="label label-success"> {{cdn.global}} </span></li>
 						
+						{% else %}	
+							<li><label>Javascript </label><span class="label label-success">{% if cdn.javascript %} {{cdn.javascript}} {% else %} Inactive {% endif %} </span></li>
+							<li><label>Stylesheet </label><span class="label label-success">{% if cdn.stylesheet %} {{cdn.stylesheet}} {% else %} Inactive {% endif %}</span></li>
+							<li><label>Image </label><span class="label label-success">{% if cdn.image %} {{cdn.image}} {% else %} Inactive {% endif %}</span></li>
+							<li><label>Font </label><span class="label label-success">{% if cdn.font %} {{cdn.font}} {% else %} Inactive {% endif %}</span></li>
+
+						{% endif %}	
+					{% else %}
+						<li><label>Javascript </label><span class="label label-success"> Inactive  </span></li>
+						<li><label>Stylesheet </label><span class="label label-success"> Inactive </span></li>
+						<li><label>Image </label><span class="label label-success"> Inactive </span></li>
+						<li><label>font </label><span class="label label-success"> Inactive </span></li>
+					{% endif %}	
 				</ul>
 			</div>
 

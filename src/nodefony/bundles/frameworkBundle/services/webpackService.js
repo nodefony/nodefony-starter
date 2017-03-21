@@ -107,10 +107,10 @@ nodefony.registerService("webpack", function(){
 		}else{
 			var basename ="assets";	
 		}
-		var public = Path + "/Resources/public";
+		var public = Path ? Path + "/Resources/public" : null;
 		return {
 			// Configuration Object
-			context:	public,
+			context:	public ,
 			target:		"web",
 			watch:		true,
 			devtool:	this.production ? false : 'source-map',
@@ -138,7 +138,7 @@ nodefony.registerService("webpack", function(){
 		constructor(container){
 			super ("WEBPACK", container);
 			this.production = ( this.kernel.environment === "prod" ) ?  true :  false ;
-			this.defaultConfig = defaultConfig.call(this);
+			this.defaultConfig = defaultConfig.call(this,"nodefony");
 		}
 
 		loggerStat (err, stats, bundle , watcher){

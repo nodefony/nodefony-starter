@@ -8,15 +8,7 @@
 # What It Is: YAML is a human friendly data serialization
 #   standard for all programming languages.
 #
-# YAML Resources:
-#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
-#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
-#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
-#   YAML Trac Wiki: http://trac.yaml.org/
-#   YAML Mailing List: yaml-core@lists.sourceforge.net
-#   YAML IRC Channel: "#yaml on irc.freenode.net"
-#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
-#   YAML Reference Parser: http://yaml.org/ypaste/
+
 
 
 
@@ -25,10 +17,29 @@ name :				monitoringBundle
 version:			"Beta"
 locale :			en_en
 debugBar:                       true
-storage:
-  active:                     true                      
-  requests:                   orm           # syslog    
 
+#
+#  WATCHERS
+#    
+#    watchers Listen to changes, deletion, renaming of files and directories 
+#    of different components
+#       
+#    For watch all components 
+# 
+#      watch:			true
+#    or 
+#      watch:
+#        controller:		true
+#        views:			true
+#        translations:          true
+#
+watch:                          ~ 
+
+#
+#  WEBPACK
+#
+# Assets root path is ./Resources/public
+#
 webpack:
   entry:
     main:                       "./js/monitoring.js"
@@ -42,8 +53,13 @@ webpack:
 realTimeBundle:
   services:
     monitoring:
-      type:                       tcp
-      port:                       1318
-      domain:                     localhost
+      type:                     tcp
+      port:                     1318
+      domain:                   localhost
+
+
+storage:
+  active:                     true                      
+  requests:                   orm           # syslog    
 
 

@@ -34,6 +34,8 @@ nodefony.registerBundle ("monitoring", function(){
 			
 			this.infoKernel = {};
 			this.infoBundles = {};
+
+			this.webpackService = this.get("webpack");
 			
 			// MANAGE GIT
 			this.gitInfo = {} ;
@@ -89,10 +91,12 @@ nodefony.registerBundle ("monitoring", function(){
 				this.orm = this.get(ormName);
 				this.requestEntity = this.orm.getEntity("requests"); 
 
-				this.kernelSetting = nodefony.extend(true, {},this.kernel.settings, {
+				this.kernelSetting = nodefony.extend(true, {}, this.kernel.settings, {
 					templating: this.kernel.settings.templating + " " + this.templating.version,
-					orm:this.orm ? this.kernel.settings.orm +" "+this.orm.engine.version : ""
+					orm: this.orm ? this.kernel.settings.orm +" "+this.orm.engine.version : "",
+					CDN: this.kernel.settings.CDN ? true : false 
 				});
+				this.cdn = this.kernel.settings.CDN  ;
 				
 				for(var bund in kernel.bundles ){
 					this.infoBundles[bund] = {} ;
@@ -274,15 +278,14 @@ nodefony.registerBundle ("monitoring", function(){
 				};
 			}
 
-			var settingsAssetic = context.container.getParameters("bundles.assetic") ;
+			//var settingsAssetic = context.container.getParameters("bundles.assetic") ;
 
 			var trans = context.get("translation");
-			
 			context.profiling = {
 				id:null,
 				bundle:context.resolver.bundle.name,
 				bundles:this.bundles,
-				cdn:settingsAssetic.CDN || null ,
+				cdn:this.cdn ,
 				pwd:process.env.PWD,
 				node:this.node,
 				services:this.service,
