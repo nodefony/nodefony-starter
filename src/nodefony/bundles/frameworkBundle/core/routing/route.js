@@ -44,6 +44,13 @@ nodefony.register("Route", function(){
 			this.pattern = null;
 			this.bypassFirewall = false ;
 			this.defaultLang = null ;
+			this.hash = null ;
+		}
+
+		generateId(){
+			//console.log(  "GENERATE : " + JSON.stringify(this) );
+			this.hash = crypto.createHash("md5").update(JSON.stringify(this)).digest("hex") ;	
+			return this.hash ;
 		}
 
 		setName (name){

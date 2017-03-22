@@ -11,11 +11,6 @@ nodefony.registerService("translation", function(){
 
 	var translate = {};
 	
-	var translateDispo = {
-		fr_fr:"français",
-		en_en:"english"
-	};
-
 	/*
  	 *
  	 *
@@ -59,13 +54,16 @@ nodefony.registerService("translation", function(){
 
 	var reg = /^(..){1}_?(..)?$/;
 
+	var langs = [];	
+
 	var i18n = class i18n extends nodefony.Service {
 
 		constructor ( container, type ){
 
 			super("I18N", container, container.get("notificationsCenter") );
 			
-			this.defaultLocale = null ;
+			this.defaultLocale = this.getParameters("kernel.system.locale") ;
+			this.langs = langs;
 			this.requestType = type; 
 			this.engineTemplate = this.get("templating");
 			this.setParameters("translate", translate);
@@ -73,21 +71,20 @@ nodefony.registerService("translation", function(){
 			this.reader = reader(this);
 		}
 
-		getLangs (){
-
-			var obj = [];
-			for ( var ele in translateDispo){
-				obj.push({
-					name:translateDispo[ele],
+		getConfigLangs( config){
+			for ( var ele in config){
+				langs.push({
+					name:config[ele],
 					value:ele
 				});	
 			}
-			return obj;
+			return langs;
+		}
+		getLangs (){
+			return this.langs ;
 		}
 
 		boot (){
-			this.defaultLocale = this.getParameters("kernel.system.locale"); 
-			this.engineTemplate.extendFunction("getLangs", this.getLangs.bind(this));
 
 		 	this.listen(this, "onBoot", () => {
 				var dl =  this.getParameters("bundles.App").App.locale;
@@ -96,6 +93,9 @@ nodefony.registerService("translation", function(){
 				}
 				this.getFileLocale(dl);
 				this.logger("default Local APPLICATION ==> " + this.defaultLocale ,"DEBUG");
+
+				this.engineTemplate.extendFunction("getLangs", this.getLangs.bind(this));
+				this.getConfigLangs( this.getParameters("bundles.App.lang") );
 		 	});
 
 			translate[this.defaultLocale] = {};

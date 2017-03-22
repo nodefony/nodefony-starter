@@ -335,7 +335,7 @@ nodefony.registerService("router", function(){
 			this.reader = function(context){
 				var func = context.container.get("reader").loadPlugin("routing", pluginReader);
 				return function(result){
-					return func(result, context.nodeReader.bind(context));
+					return func(result, context.nodeReader.bind(context, result));
 				};
 			}(this);
 			this.engineTemplate = this.get("templating");
@@ -414,13 +414,39 @@ nodefony.registerService("router", function(){
 			}else{
 				myroute = this.createRoute(route);
 			}
-			var index = this.routes.push(myroute);
-			//var index = this.routes.unshift(myroute);
-			if (this.routes[name]){
-				this.logger("WARNING ROUTES HAS SAME NAME : "+myroute.path + "   ===> "+myroute.defaults.controller, "WARNING");
+			var hash = myroute.generateId();
+			var index = null ;
+			var same = false ;
+			if ( this.routes[name] ){
+				index = this.routes[name].index ;
+				if ( this.routes[name].hash ===  hash){
+					same = true ;
+				}else{
+					if ( this.routes[name].filePath !== myroute.filePath ){
+						same = true;
+					}
+					//console.log("index old route : " + index )
+					this.logger("ROUTE HAS SAME NAME : "+ name + " path : "+myroute.path + " controller : "+myroute.defaults.controller, "WARNING");
+				}
 			}
-			this.routes[name] = this.routes[index-1];
-			this.logger("ADD Route : "+myroute.path + "   ===> "+myroute.defaults.controller, "DEBUG");
+			if ( index === null ){
+				index = this.routes.push(myroute);
+				myroute.index = index ; 
+				this.routes[name] = this.routes[index-1];
+				this.logger("ADD ROUTE : "+ name+ " path :"  + myroute.path + " controller "+ myroute.defaults.controller, "DEBUG");
+			}else{
+				if ( ! same ){
+					myroute.index = index ;
+					//console.log("new Index " + myroute.index )
+					delete this.routes[index-1] ;
+					this.routes[index-1] = myroute ;
+					delete this.routes[name] ;
+					this.routes[name] = this.routes[index-1];
+					this.logger("REPLACE ROUTE : "+ name+" path : " + myroute.path + " controller "+ myroute.defaults.controller, "WARNING");	
+				}else{
+					myroute.index = index ;	
+				}
+			}
 		}
 
 		getRoutes (name){
@@ -465,11 +491,25 @@ nodefony.registerService("router", function(){
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
-		nodeReader (obj){
+		removeRoutes( filePath ){
+			for (var i = 0; i<this.routes.length; i++){
+				//console.log( this.routes[i].name +" : "+this.routes[i].filePath)
+				if ( this.routes[i].filePath === filePath ){
+					this.logger( "DELETE ROUTE : " + this.routes[i].name )
+					var index = this.routes[i].index ;
+					var name = this.routes[i].name ;
+					delete this.routes[index-1] ;
+					delete this.routes[name] ;
+				}
+			}	
+		}
+
+		nodeReader (filePath , obj){
 			//console.log(require('util').inspect(obj, {depth: null}));
 			for (var route in obj){
 				var name = route ;
 				var newRoute = new nodefony.Route(route);
+				newRoute.filePath = filePath ;
 				for ( var ele in obj[route] ){
 					var arg = obj[route][ele];
 					switch ( ele ){

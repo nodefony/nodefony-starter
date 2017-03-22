@@ -7,8 +7,6 @@
  */
 nodefony.register("kernelWatcher", function(){
 
-	var regRoutingFile = /^routing\..*$/;
-
 	/*
 	 *
 	 *	WATCHER 
@@ -34,6 +32,7 @@ nodefony.register("kernelWatcher", function(){
 				this.bundle = bundle ;
 				this.cwd = bundle.path ; 
 			}
+			this.router = this.get("router") ;
 		}
 
 		logger (  payload, severity, msgid, msg  ){
@@ -179,6 +178,7 @@ nodefony.register("kernelWatcher", function(){
 		}
 		listenWatcherConfig(){
 			this.on('all', (event, Path) => {
+				//console.log(Path)
 				switch( event ){
 					case "addDir" :
 						this.logger( Path, "INFO", event );
@@ -189,6 +189,7 @@ nodefony.register("kernelWatcher", function(){
 						var file = this.cwd + "/" + Path ;
 						try{ 
 							var fileClass = new nodefony.fileClass(file);
+							this.router.reader(fileClass.path);
 						}catch(e){
 							this.logger(e, "ERROR", event);
 						}
@@ -201,12 +202,20 @@ nodefony.register("kernelWatcher", function(){
 					break;
 					case "unlink" :
 						this.logger( Path, "INFO", event );
+						var file = this.cwd + "/" + Path ;
+						try{ 
+							var fileClass = new nodefony.fileClass(file);
+							this.router.removeRoutes(fileClass.path);
+						}catch(e){
+							this.logger(e, "ERROR", event);
+						}
+
+						
 					break;
 				}
 			});	
 		}
 	};
-
 
 	return Watcher ;
 

@@ -8,6 +8,7 @@
 
 nodefony.register("Bundle", function(){
 	
+	var regBundle = /^(.*)Bundle$/;
 	var regFixtures = /^(.+)Fixtures.js$/;
 	var regController = /^(.+)Controller.js$/;
 	var regService = /^(.+)Service.js$/;
@@ -35,7 +36,7 @@ nodefony.register("Bundle", function(){
 		return false;
 	};
 
-	var defaultWatcher = function ( reg ){
+	var defaultWatcher = function ( reg , settings){
 		return {
 			ignoreInitial: true,
 			ignored: [
@@ -217,8 +218,8 @@ nodefony.register("Bundle", function(){
 				for (var ele in result){
 					var ext = null ;
 					switch (true){
-						case /^(.*)Bundle$/.test(ele) :
-							var name = /^(.*)Bundle$/.exec(ele);
+						case regBundle.test(ele) :
+							var name = regBundle.exec(ele);
 							config = this.getParameters("bundles."+name[1]);
 							if ( config ){
 								ext = nodefony.extend(true, {}, config , result[ele]);
@@ -286,6 +287,9 @@ nodefony.register("Bundle", function(){
 				this.registerViews();
 
 				// Register internationalisation 
+				if ( this.translation ){
+					this.locale = this.translation.defaultLocal;
+				}
 				this.registerI18n(this.locale);
 
 				// Register Entity 

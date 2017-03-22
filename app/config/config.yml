@@ -18,12 +18,17 @@
 name :                          AppBundle
 locale :                        en_en
 version :                       "Beta"
+
 App:
   projectName:                  "nodefony" 
   projectYear:                  2016 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
+
+lang:
+  en_en:                        "english"
+  fr_fr:                        "français"
 
 #
 #  WEBPACK

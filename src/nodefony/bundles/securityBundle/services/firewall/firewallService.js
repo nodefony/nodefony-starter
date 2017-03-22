@@ -248,6 +248,9 @@ nodefony.registerService("firewall", function(){
 							tokenName:this.token.name
 						});
 						var target_path =  context.session.getFlashBag("default_target_path") ;
+						if ( context.user.lang ){
+							context.session.set("lang",context.user.lang );
+						}
 						var target = null ;
 						if ( target_path ){
 							target = target_path;
