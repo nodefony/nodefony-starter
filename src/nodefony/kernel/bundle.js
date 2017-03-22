@@ -14,200 +14,41 @@ nodefony.register("Bundle", function(){
 	var regCommand = /^(.+)Command.js$/;
 	var regEntity = /^(.+)Entity.js$/;
 	var regI18nFile =/^(.*)\.(.._..)\.(.*)$/;
+	var regConfigFile = /^routing\..*$/; 
 
-		
-	/*
-	 *
-	 *	WATCHER 
-	 *
-	 */
-	var defaultWatcherSettings  = {
-		persistent: true,
-  		followSymlinks: true,
-  		alwaysStat: false,
-  		depth: 50,
-		//usePolling: true,
-  		//interval: 100,
-  		//binaryInterval: 300,
-  		atomic: true // or a custom 'atomicity delay', in milliseconds (default 100)
-	};
-	
-	var Watcher = class Watcher extends nodefony.watcher {
-		constructor (Path , settings, bundle){
-		
-			super( Path , nodefony.extend(true, {}, defaultWatcherSettings, settings), bundle.container );
-
-			if ( bundle ){
-				this.bundle = bundle ;
-				this.cwd = bundle.path ; 
+	var checkIngnoreFile = function(string, basename){
+		var file = null;
+		try{
+			file = new nodefony.fileClass(string);
+		}catch(e){
+			if ( basename.match(/^\./) ){
+				return true ;
 			}
+			return false ;
 		}
-
-		logger (  payload, severity, msgid, msg  ){
-			if ( typeof payload  === "string"){
-				var txt = "\x1b[36m"; 
-				if ( this.bundle ){
-					txt += "BUNDLE "+ this.bundle.name + "\x1b[0m ";
-				}
-				txt +=  payload ;
-				msgid = "\x1b[36mWATCHER EVENT "+msgid+"\x1b[0m";
-				payload = txt ;
-			}
-			return super.logger( payload, severity, msgid, msg );
+		if ( basename.match(/^\./) ){
+			return true ;
 		}
-		
-		listenWatcherController(){
-			this.on('all', (event, Path) => {
-				switch(event){
-					case "addDir" :
-						this.logger( Path, "WARNING", event );
-					break;
-					case "add" :
-					case "change" :
-						this.logger( Path, "INFO", event );
-						try {
-							var basename = path.basename(Path) ;
-							var res = regController.exec( basename );
-							var name = res[1] ;
-							var file = this.cwd + "/" + Path ;
-							this.bundle.reloadWatcherControleur( name, file);
-						}catch(e){
-							this.logger(e, "ERROR");
-						}
-					break;
-					case "error" :
-						this.logger( Path, "ERROR", event );
-					break;
-					case "unlinkDir" :
-						this.logger( Path, "WARNING", event );
-					break;
-					case "unlink" :
-						this.logger( Path, "WARNING", event );
-						var basename = path.basename(Path) ;
-						var res = regController.exec( basename );
-						var name = res[1] ;
-						if ( this.bundle.controllers[name] ){
-							this.logger( "REMOVE CONTROLLER : " +  Path, "INFO", event );
-							delete this.bundle.controllers[name] ;
-							this.bundle.controllers[name] = null ;
-						}
-					break;
-				}
-				this.fire(event, this.watcher , Path);
-			});	
+		if ( file.type === "Directory" ){
+			return "Directory" ;
 		}
-
-		listenWatcherView(){
-			this.on('all', (event, Path) => {
-				switch( event ){
-					case "addDir" :
-						this.logger( Path, "INFO", event );
-					break;
-					case "add" :
-					case "change" :
-						this.logger( Path, "INFO", event );
-						var file = this.cwd + "/" + Path ;
-						try{ 
-							var fileClass = new nodefony.fileClass(file);
-							var ele = this.bundle.recompileTemplate(fileClass);
-							if ( ele.basename === "." ){
-								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+""+":"+ele.name + "'", "INFO", event);
-							}else{
-								this.logger("RECOMPILE Template : '"+this.bundle.name+"Bundle:"+ele.basename+":"+ele.name + "'", "INFO",event );
-							}
-						}catch(e){
-							this.logger(e, "ERROR", event);
-						}
-					break;
-					case "error" :
-						this.logger( Path, "ERROR", event );
-					break;
-					case "unlinkDir" :
-						this.logger( Path, "INFO", event );
-					break;
-					case "unlink" :
-						this.logger( Path, "INFO", event );
-						var file = this.cwd + "/" + Path ;
-						var parse = path.parse(file)  ;
-						if ( parse.ext === "."+this.bundle.serviceTemplate.extention ){
-							var name = parse.name ;
-							var directory = path.basename(parse.dir);
-							if (directory !== "views"){
-								if ( this.bundle.views[directory]){
-									if ( this.bundle.views[directory][name] ){
-										delete	this.bundle.views[directory][name];
-										this.logger( "REMOVE TEMPLATE : " +  file, "INFO", event );
-									}
-								}
-							}else{
-								if ( this.bundle.views["."][name] ){
-									delete this.bundle.views["."][name] ;
-									this.logger( "REMOVE TEMPLATE : " +  file, "INFO", event );
-								}	
-							}
-						}
-					break;
-				}
-				this.fire(event, this.watcher , Path);
-			});	
-		}
-
-		listenWatcherI18n(){
-			this.on('all', (event, Path) => {
-				switch( event ){
-					case "addDir" :
-						this.logger( Path, "INFO", event );
-					break;
-					case "add" :
-					case "change" :
-						this.logger( Path, "INFO", event );
-						var file = this.cwd + "/" + Path ;
-						try{ 
-							var fileClass = new nodefony.fileClass(file);
-							fileClass.matchName(regI18nFile);	
-							var domain = fileClass.match[1] ;
-							var Locale = fileClass.match[2] ;
-							this.bundle.translation.reader(fileClass.path, Locale, domain);
-						}catch(e){
-							this.logger(e, "ERROR", event);
-						}
-					break;
-					case "error" :
-						this.logger( Path, "ERROR", event );
-					break;
-					case "unlinkDir" :
-						this.logger( Path, "INFO", event );
-					break;
-					case "unlink" :
-						this.logger( Path, "INFO", event );
-					break;
-				}
-			});
-		}
+		return false;
 	};
 
-	var defaultWatcherViews = function (){
+	var defaultWatcher = function ( reg ){
 		return {
 			ignoreInitial: true,
 			ignored: [
 				 (string)  => {
-					var file = null;
 					var basename = path.basename(string) ;
-					try{
-						file = new nodefony.fileClass(string);
-					}catch(e){
-						if ( basename.match(/^\./) ){
-							return true ;
-						}
-						return false ;
-					}
-					if ( basename.match(/^\./) ){
+					var file = checkIngnoreFile( string , basename);
+					if ( file === true  ){
 						return true ;
 					}
-					if ( file.type === "Directory" ){
+					if ( file === "Directory" ){
 						return false ;
 					}
-					if ( this.regTemplateExt.test(basename) ){
+					if ( basename.match(reg) ){
 						return false ;
 					}
 					return true ;
@@ -216,69 +57,7 @@ nodefony.register("Bundle", function(){
 			cwd:this.path
 		} ;
 	};
-
-	var defaultWatcherI18n = function (){
-		return {
-			ignoreInitial: true,
-			ignored: [
-				 (string)  => {
-					var file = null;
-					var basename = path.basename(string) ;
-					try{
-						file = new nodefony.fileClass(string);
-					}catch(e){
-						if ( basename.match(/^\./) ){
-							return true ;
-						}
-						return false ;
-					}
-					if ( basename.match(/^\./) ){
-						return true ;
-					}
-					if ( file.type === "Directory" ){
-						return false ;
-					}
-					if ( basename.match(regI18nFile) ){
-						return false ;
-					}
-					return true ;
-				}
-			],
-			cwd:this.path
-		};
-	};
-
-	var defaultWatcherControllers  = function() {
-		return {
-			ignoreInitial: true,
-			ignored: [
-				 (string) => {
-				 	var file = null ;
-					var basename = path.basename(string);
-				 	try{
-						file = new nodefony.fileClass(string);
-					}catch(e){
-						if ( basename.match(/^\./) ){
-							return true ;
-						}
-						return false ;
-					}
-					if ( basename.match(/^\./) ){
-						return true ;
-					}
-					if ( file.type === "Directory" ){
-						return false ;
-					}
-					if ( regController.test(basename) ){
-						return false ;
-					}
-					return true ;
-				}
-			],
-			cwd:this.path
-		};
-	};
-
+	
 	/*
  	 *	BUNDLE CLASS
  	 */
@@ -305,12 +84,10 @@ nodefony.register("Bundle", function(){
 				this.logger(e, "ERROR");	
 			}
 
-			this.serviceTemplate = this.get("templating") ;
-			this.regTemplateExt = new RegExp("^(.+)\."+this.serviceTemplate.extention+"$");
-
+			
 			this.translation = this.get("translation");
 			this.reader = this.kernel.reader;
-			 
+
 			// assets 
 			this.webPackConfig = null ;
 
@@ -319,19 +96,25 @@ nodefony.register("Bundle", function(){
 			this.controllerFiles = this.findControllerFiles(this.finder.result);
 			this.controllers = {};
 			this.watcherController = null ;
+			this.regController = regController;
 
 			// views
+			this.serviceTemplate = this.get("templating") ;
+			this.regTemplateExt = new RegExp("^(.+)\."+this.serviceTemplate.extention+"$");
 			this.viewsPath = this.path+"/Resources/views" ; 
 			this.viewFiles = this.findViewFiles(this.finder.result);
 			this.views = {};
 			this.views["."] = {};
 			this.watcherView = null ;
 
-			
+			// config
+			this.regConfigFile = regConfigFile ;
+			this.configPath = this.path+"/Resources/config";
+
 			// others
 			this.entities = {};
 			this.fixtures = {};
-
+			
 			try {
 				this.resourcesFiles = this.finder.result.findByNode("Resources") ;
 			}catch(e){
@@ -340,10 +123,10 @@ nodefony.register("Bundle", function(){
 			}
 
 			// I18n
-			this.i18nPath = this.path+"/Resources/translations" ;
-			this.i18nFiles = this.findI18nFiles( this.resourcesFiles); //.findByNode("translations");
-			this.watcherI18n = null ;
-
+			this.i18nPath = this.path+"/Resources/translations";
+			this.i18nFiles = this.findI18nFiles( this.resourcesFiles);
+			this.watcherI18n = null;
+			this.regI18nFile = regI18nFile;
 
 			// Register Service
 			this.registerServices();
@@ -369,24 +152,27 @@ nodefony.register("Bundle", function(){
 			var controllers = false ;
 			var views = false ;
 			var i18n = false ;
+			var config = false ;
 			try { 
 				switch ( typeof this.settings.watch   ){
 					case "object":
 						controllers = this.settings.watch.controllers ;
 						views = this.settings.watch.views ;
 						i18n = this.settings.watch.translations ;
+						config = this.settings.watch.config ;
 					break;
 					case "boolean":
 						controllers = true ;	
 						views = true ;
 						i18n = true ;
+						config = true ;
 					break;
 					default:
 						throw new Error ("Bad Config watcher ");
 				}
 				// controllers
 				if ( controllers ){
-					this.watcherController = new Watcher(this.controllersPath, defaultWatcherControllers.call(this), this);
+					this.watcherController = new nodefony.kernelWatcher(this.controllersPath, defaultWatcher.call(this, regController), this);
 					this.watcherController.listenWatcherController();
 					this.kernel.on("onTerminate", () => {
 						this.logger("Watching Ended : " + this.watcherController.path, "INFO");
@@ -395,20 +181,29 @@ nodefony.register("Bundle", function(){
 				}
 				// views
 				if ( views ){
-					this.watcherView = new Watcher( this.viewsPath, defaultWatcherViews.call(this), this);
+					this.watcherView = new nodefony.kernelWatcher( this.viewsPath, defaultWatcher.call(this, this.regTemplateExt), this);
 					this.watcherView.listenWatcherView();
 					this.kernel.on("onTerminate", () => {
 						this.logger("Watching Ended : " + this.watcherView.path, "INFO");
 						this.watcherView.close();
 					});
 				}
-				//I18n
+				// I18n
 				if ( i18n ){
-					this.watcherI18n = new Watcher( this.i18nPath, defaultWatcherI18n.call(this), this);
+					this.watcherI18n = new nodefony.kernelWatcher( this.i18nPath, defaultWatcher.call(this, regI18nFile), this);
 					this.watcherI18n.listenWatcherI18n();
 					this.kernel.on("onTerminate", () => {
 						this.logger("Watching Ended : " + this.watcherI18n.path, "INFO");
 						this.watcherI18n.close();
+					});
+				}
+				// config
+				if ( config ){
+					this.watcherConfig = new nodefony.kernelWatcher( this.configPath, defaultWatcher.call(this, regConfigFile), this);
+					this.watcherConfig.listenWatcherConfig();
+					this.kernel.on("onTerminate", () => {
+						this.logger("Watching Ended : " + this.watcherConfig.path, "INFO");
+						this.watcherConfig.close();
 					});
 				}
 			}catch(e){
@@ -428,11 +223,9 @@ nodefony.register("Bundle", function(){
 							if ( config ){
 								ext = nodefony.extend(true, {}, config , result[ele]);
 								this.logger("\x1b[32m OVERRIDING\x1b[0m  CONFIG bundle  : "+name[1]  ,"WARNING");
-								//this.container.setParameters("bundles."+name[1], ext);	
 							}else{
 								ext = result[ele] ;
 								this.logger("\x1b[32m OVERRIDING\x1b[0m  CONFIG bundle  : "+name[1] + " BUT BUNDLE "+ name[1] +" NOT YET REGISTERED "  ,"WARNING");
-								//this.container.setParameters("bundles."+name[1], result[ele]);	
 							}
 							if ( this.kernel.bundles[name[1]] ){
 								this.kernel.bundles[name[1]].settings = ext ; 
@@ -570,7 +363,7 @@ nodefony.register("Bundle", function(){
 			}	
 			
 			this.controllerFiles.forEach((ele) => {
-				var res = regController.exec( ele.name );
+				var res = this.regController.exec( ele.name );
 				if ( res ){
 					var name = res[1] ;
 					var Class = this.loadFile( ele.path, false, true);
@@ -611,7 +404,7 @@ nodefony.register("Bundle", function(){
 			var controller = this.finder.result.findByNode("controller");
 			try {
 				controller.forEach((ele) => {
-					var res = regController.exec( ele.name );
+					var res = this.regController.exec( ele.name );
 					if ( res &&  res[1] === nameC ){
 						var name = res[1] ;
 						this.reloadWatcherControleur( name , ele.path );
@@ -805,11 +598,8 @@ nodefony.register("Bundle", function(){
 				}
 			}
 			files.getFiles().forEach( (file) => {
-				//var basename = path.basename(file.dirName)
 				var domain = file.match[1] ;
 				var Locale = file.match[2] ;
-				//console.log(file.path)
-				//console.log(file.match)
 				this.translation.reader(file.path, Locale, domain);
 			});
 		}

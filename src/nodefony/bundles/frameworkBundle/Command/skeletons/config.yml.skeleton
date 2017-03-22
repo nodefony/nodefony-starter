@@ -39,6 +39,7 @@ locale :			{{ local }}
 #    or 
 #      watch:
 #        controller:		true
+#        config:                true
 #        views:			true
 #        translations:          true
 #
