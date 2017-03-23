@@ -268,13 +268,32 @@ nodefony.registerController("api", function(){
 		*	@method syslogAction
 		*
 		*/
-		syslogAction (){
-			return this.renderRest({
-				code:200,
-			        type:"SUCCESS",
-			        message:"OK",
-				data:JSON.stringify(this.get("syslog").ringStack)
-			});
+		syslogAction (message){
+			switch ( this.request.method ){
+			
+				case "WEBSOCKET" :
+					if (message){
+						// MESSAGES 
+						this.logger( message.utf8Data , "INFO");
+					}else{
+						var callback = function( pdu ){
+							this.renderResponse( JSON.stringify(pdu) );
+						};
+						this.kernel.syslog.listen(this,"onLog", callback);
+
+						this.context.listen(this, "onClose" , () => {
+							this.kernel.syslog.unListen("onLog", callback);
+						});
+					}	
+				break;
+				default:
+					return this.renderRest({
+						code:200,
+			        		type:"SUCCESS",
+			        		message:"OK",
+						data:JSON.stringify(this.get("syslog").ringStack)
+					});
+			}
 		}
 
 		/**
