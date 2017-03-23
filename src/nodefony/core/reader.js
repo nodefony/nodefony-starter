@@ -117,10 +117,10 @@ nodefony.register("Reader", function(){
 				if (parser){
 					file = this.render(file, parser.data, parser.options);	
 				}
-				this.xmlParser.parseString(file, function(error, node){
+				this.xmlParser.parseString(file, (error, node) => {
 					if(error) {throw(error);}
 					if( callback ) {callback( this.xmlToJson(node) );}	
-				}.bind(this));
+				});
 			};
 			return {
 				xml:xml,

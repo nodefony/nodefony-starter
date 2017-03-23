@@ -141,10 +141,7 @@ httpBundle:
     responseTimeout:              40000
   https:
     responseTimeout:              40000
-    certificats:
-      key:                        "config/certificates/server/privkey.pem"
-      cert:                       "config/certificates/server/fullchain.pem"
-      ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
+    
 
 #
 #       OVERRIDE BUNDLE ASSETIC

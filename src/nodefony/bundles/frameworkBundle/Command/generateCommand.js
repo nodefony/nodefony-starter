@@ -528,6 +528,41 @@ nodefony.registerCommand("generate",function(){
 						}
 					}else{
 						this.showHelp();
+						this.terminate(1);
+					}
+
+					try {
+						var name = command[1].match(regBundle)[1];
+						var json = this.kernel.readGeneratedConfig();
+						if (json){
+							if ( json.system && json.system.bundles ){
+								json.system.bundles[ name ]= command[2]+"/"+command[1] ;
+							}else{
+								if ( json.system ){
+									json.system.bundles = {};
+								}else{
+									json.system ={
+										bundles:{}	
+									};	
+								}
+								json.system.bundles[ name ] = command[2]+"/"+command[1] ;
+							}
+						}else{
+							var json = {
+								system:{
+									bundles:{}
+								}
+							} ;
+							json.system.bundles[ name ] = command[2] ;
+						}
+						fs.writeFileSync(this.kernel.generateConfigPath, yaml.safeDump(json),{encoding:'utf8'} )
+						var file = new nodefony.fileClass( command[2]+"/"+command[1]+"/"+command[1]+".js" );
+						this.kernel.loadBundle(file);
+						this.assetInstall();
+					}catch(e){
+						this.logger(e, "ERROR");
+						this.terminate(1);
+						return ;
 					}
 				break;
 				case "controller" : 

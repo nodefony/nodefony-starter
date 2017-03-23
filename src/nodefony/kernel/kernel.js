@@ -138,6 +138,7 @@ nodefony.register("kernel", function(){
 			this.nodefonyPath = this.rootDir+"/vendors/nodefony/";
 			this.appPath = this.rootDir+"/app/";
 			this.configPath = this.rootDir+"/vendors/nodefony/config/config.yml" ;
+			this.generateConfigPath = this.rootDir+"/config/generatedConfig.yml" ;
 			this.platform = process.platform ;
 			this.type = type;
 			this.bundles = {};
@@ -250,8 +251,14 @@ nodefony.register("kernel", function(){
 				}
 				this.initializeLog(options);
 				this.autoLoader.syslog = this.syslog;
-				//this.container.set("syslog",this.syslog);
 			});
+
+			try {
+				this.settings = nodefony.extend(true, this.settings, this.readGeneratedConfig() );
+			}catch(e){
+				this.logger(e, "ERROR");
+				throw e ;
+			}
 
 			this.initCluster();
 
@@ -264,9 +271,15 @@ nodefony.register("kernel", function(){
 			this.injection = new nodefony.injection(this.container);
 			this.set("injection", this.injection);
 
+			// SERVERS 
+			this.initServers();
+
 			/*
  		 	*	BUNDLES
  		 	*/
+			 
+			this.configBundle = this.getConfigBunbles() ;
+
 			var bundles = [];
 			bundles.push("./vendors/nodefony/bundles/httpBundle");
 			bundles.push("./vendors/nodefony/bundles/frameworkBundle");
@@ -297,18 +310,88 @@ nodefony.register("kernel", function(){
 				bundles.push("./vendors/nodefony/bundles/monitoringBundle");
 			}
 
-			
-
 			try {
 				this.fire("onPreRegister", this );
 			}catch(e){
 				this.logger(e);
 			}
-			this.registerBundles(bundles, () => {
-				this.preboot = true ;
-				this.logger("\x1B[33m EVENT KERNEL onPreBoot\x1b[0m", "DEBUG");
-				this.fire("onPreBoot", this );
-			}, false);
+			try {
+				this.registerBundles(bundles, () => {
+					this.preboot = true ;
+					this.logger("\x1B[33m EVENT KERNEL onPreBoot\x1b[0m", "DEBUG");
+					this.fire("onPreBoot", this );
+					this.registerBundles( this.configBundle );
+				}, false);
+
+			}catch(e){
+				this.logger(e, "ERROR");
+			}
+		}
+
+		checkPath (myPath){
+			if ( ! myPath ){
+				return null ;
+			}
+			var abs = path.isAbsolute( myPath ) ;
+			if ( abs ){
+				return myPath ;
+			}else{
+				return this.rootDir+"/"+myPath ;
+			}
+		}
+
+		getConfigBunbles (){
+			var config = [] ;
+			try {
+				for ( var bundle in this.settings.system.bundles){
+					config.push(this.settings.system.bundles[bundle]);	
+				}
+			}catch(e){
+				throw e ;
+			}
+			return config ;
+		}
+
+		readGeneratedConfig (){
+			try {
+				var exist = fs.existsSync(this.generateConfigPath);
+				if (exist){
+					return yaml.load(fs.readFileSync(this.generateConfigPath, 'utf8' ) ); 
+				}else{
+					return null ;	
+				}	
+			}catch(e){
+				this.logger(e, "ERROR");
+			}
+		}
+
+		initServers (){
+			if (this.type === "SERVER"){
+				this.listen(this,"onPostReady", () => {
+					// create HTTP server 
+					try {
+						if ( this.settings.system.servers.http ){
+							var http = this.get("httpServer").createServer();
+						}
+						// create HTTPS server
+						if ( this.settings.system.servers.https ){
+							var https = this.get("httpsServer").createServer();
+						}
+						// create WEBSOCKET server
+						if ( this.settings.system.servers.ws ){
+							this.get("websocketServer").createServer(http);
+						}
+						// create WEBSOCKET SECURE server
+						if ( this.settings.system.servers.wss ){
+							this.get("websocketServerSecure").createServer(https);
+						}
+					}catch(e){
+						this.logger(e, "ERROR");
+						console.error(e);
+						throw e ;
+					}
+				});
+			}
 		}
 
 		initCluster (){
@@ -501,7 +584,7 @@ nodefony.register("kernel", function(){
 						onFile:(file) => {
 							if (file.matchName(this.regBundle) ){
 								try {
-									this.logger("registerBundles in appkernel.js : " + file.name ,"DEBUG","APP KERNEL");
+									this.logger("registerBundles : " + file.name ,"DEBUG","APP KERNEL");
 									this.loadBundle(file);
 								}catch(e){
 									this.logger(e);
@@ -512,15 +595,26 @@ nodefony.register("kernel", function(){
 					});
 				}catch(e){
 					for( let i=0 ; i < path.length ; i++){
-						this.logger("registerBundles in appkernel.js : " + path[i] ,"DEBUG");
+						this.logger("registerBundles : " + path[i] ,"DEBUG");
 					}
-					this.logger(e, "ERROR");
+					throw e ;
+					
 				}
 			};
 			if ( nextick === undefined ){
-				process.nextTick( func.bind(this) );	
+				process.nextTick( () => {
+					try {
+						func.call(this);
+					}catch(e){
+						this.logger(e, "ERROR");	
+					}
+ 				});	
 			}else{
-				func.apply(this);
+				try {
+					func.apply(this);
+				}catch(e){
+					this.logger(e, "ERROR");	
+				}
 			}
 		}
 

@@ -6,13 +6,22 @@
  *
  */
 
+var AsciiTable = require('ascii-table');
+
 nodefony.register("Worker", function(){
+
+
+	var regHidden = /^\./;
+	var isHiddenFile = function(name){
+		return regHidden.test(name);
+	};
 
 	var Worker = class Worker extends nodefony.Service {
 
 		constructor (name, container, notificationsCenter){
 			super( name, container, notificationsCenter);
 			this.twig = this.kernel.templating ; //this.container.get("templating");
+			this.publicDirectory = this.kernel.rootDir+"/web/";
 		}
 
 		showHelp (){
@@ -36,6 +45,124 @@ nodefony.register("Worker", function(){
 				throw e ;
 			}
 		}
+
+		createSymlink (srcpath, dstpath, callback){
+			var res= null ;
+			try {
+				res = fs.statSync(srcpath);
+				//if ( ! res ) this.logger("FILE :"+srcpath +" not exist","ERROR");
+				try{
+					// LINK
+					res = fs.lstatSync(dstpath);
+					if (res ){ fs.unlinkSync(dstpath) ;}
+				}catch(e){
+					//console.log("PASS CATCH")
+					//console.log(e ,"ERROR")
+				}			
+				//console.log(srcpath+" : "+ dstpath);
+				res = fs.symlink(srcpath, dstpath, (e) => {
+					//console.log("PASS symlinkSync");
+    					if(!e || (e && e.code === 'EEXIST')){
+						callback(srcpath, dstpath);
+    					} else {
+        					this.logger(e,"ERROR");
+    					}
+				});
+				callback(srcpath, dstpath);
+			}catch(e){
+				this.logger("FILE :"+srcpath +" not exist: "+e,"ERROR");
+				//this.logger("Create symlink   : "+ e, "ERROR");
+			}
+		}
+
+		getSizeDirectory (dir){
+			var files = fs.readdirSync(dir);
+			var i, totalSizeBytes= 0;
+			var dirSize = null ;
+			for (i=0; i<files.length; i++) {
+				var path = dir+"/"+files[i] ;
+				var stat = fs.lstatSync(path);
+				switch (true){
+					case stat.isFile() :
+						if (!  isHiddenFile(files[i] ) ){
+							totalSizeBytes += stat.size;
+						}
+					break;
+					case stat.isDirectory() :
+						dirSize = this.getSizeDirectory(path);
+						totalSizeBytes += dirSize;
+					break;
+					case stat.isSymbolicLink() :
+						//console.log("isSymbolicLink")
+						dirSize = this.getSizeDirectory(fs.realpathSync(path));
+						totalSizeBytes += dirSize;
+					break;
+				}	
+			}		
+			return totalSizeBytes ;
+		}
+
+		// ASSETS LINK
+		assetInstall (){
+			var table = new AsciiTable("INSTALL LINK IN PUBLIC DIRECTORY : ./web");	
+			table.setHeading(
+				"BUNDLE",
+				"DESTINATION PATH",
+				"SOURCE PATH",
+				"SIZE"
+			);
+			
+			this.createAssetDirectory(this.publicDirectory, () => {
+				this.parseAssetsBundles(table);
+			});
+			console.log(table.render());	
+		}
+
+		createAssetDirectory (Path, callback){
+			try {
+				return callback( fs.statSync(Path));
+			}catch(e){
+				this.logger("Create directory : "+ Path);
+				fs.mkdir(Path, (e) => {
+    					if(!e || (e && e.code === 'EEXIST')){
+        					callback( fs.statSync(Path) );
+    					} else {
+        					this.logger(e,"ERROR");
+    					}
+				});
+			}
+		}
+
+		parseAssetsBundles (table){
+			var bundles = this.kernel.getBundles();
+			var result = null ;
+			for ( var bundle in bundles ){
+				try {
+					result = bundles[bundle].getPublicDirectory();	
+				}catch(e){
+					continue ;
+				}
+				if ( result.length() ){
+					var name = path.basename(bundles[bundle].path) ;
+					var srcpath = bundles[bundle].path+"/Resources/public";
+					
+					this.createSymlink(srcpath, this.publicDirectory+'/'+name,function(srcpath, dstpath){
+						table.addRow(
+							bundle,
+							dstpath,
+							this.publicDirectory+"/"+srcpath,
+							nodefony.niceBytes(this.getSizeDirectory(dstpath))
+						);
+
+					}.bind(this, bundle));
+				}
+			}	
+			table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + nodefony.niceBytes( this.getSizeDirectory( this.publicDirectory )) );
+		}
+
+		
+
+		
 
 		createFile (path, skeleton, parse, params, callback){
 			if ( skeleton ){

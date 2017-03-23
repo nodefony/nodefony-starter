@@ -7,18 +7,6 @@
 
 nodefony.registerService("https", function(){
 
-	var checkPath = function(myPath, rootDir){
-		if ( ! myPath ){
-			return null ;
-		}
-		var abs = path.isAbsolute( myPath ) ;
-		if ( abs ){
-			return myPath ;
-		}else{
-			return rootDir+"/"+myPath ;
-		}
-	};
-
 	var Https = class Https extends nodefony.Service {
 
 		constructor (httpKernel , security, options){
@@ -29,8 +17,8 @@ nodefony.registerService("https", function(){
 			this.port = this.httpKernel.kernel.httpsPort ;
 			this.domain = this.httpKernel.kernel.settings.system.domain ;
 			this.firewall =  security ;
-			this.kernel = this.httpKernel.kernel ;
 			this.ready = false ;
+			this.settings = this.kernel.settings.system.servers || null ;
 
 			this.key = null ;
 			this.cert = null ;
@@ -61,15 +49,15 @@ nodefony.registerService("https", function(){
 		}
 
 		getCertificats (){
-			this.settings = this.getParameters("bundles.http").https || null ;
-			var opt = {
-				keyPath:checkPath(this.settings.certificats.key, this.kernel.rootDir ),
-				certPath:checkPath(this.settings.certificats.cert, this.kernel.rootDir),
-				caPath:checkPath(this.settings.certificats.ca, this.kernel.rootDir),
-				key:null,
-				cert:null,
-				ca:null
-			};
+			var bundleOptions = this.getParameters("bundles.http").https.certificats || null ;
+			var opt = nodefony.extend( true, {
+				keyPath: this.kernel.checkPath(this.settings.certificats.key),
+				certPath: this.kernel.checkPath(this.settings.certificats.cert),
+				caPath: this.kernel.checkPath(this.settings.certificats.ca),
+				key: null,
+				cert: null,
+				ca: null
+			},bundleOptions ) ;
 			try {
 				this.key = fs.readFileSync(opt.keyPath) ;
 				opt.key = this.key ;
@@ -86,22 +74,21 @@ nodefony.registerService("https", function(){
 		}
 	
 		createServer (/*port, domain*/){
-			var opt = null ;	
 			try {
-				opt = this.getCertificats();
-				for (var ele in opt ){
+				this.options = this.getCertificats();
+				for (var ele in this.options ){
 					switch ( ele ){
 						case "keyPath" :
-							this.logger( " READ CERTIFICATE KEY : "+opt[ele], "DEBUG"); 
+							this.logger( " READ CERTIFICATE KEY : "+this.options[ele], "DEBUG"); 
 						break;
 						case "certPath" :
-							this.logger( " READ CERTIFICATE CERT : "+opt[ele], "DEBUG"); 
+							this.logger( " READ CERTIFICATE CERT : "+this.options[ele], "DEBUG"); 
 						break;
 						case "caPath" :
-							if ( opt[ele] ){
-								this.logger( " READ CERTIFICATE CA : "+opt[ele], "DEBUG"); 
+							if ( this.options[ele] ){
+								this.logger( " READ CERTIFICATE CA : "+this.options[ele], "DEBUG"); 
 							}else{
-								this.logger( " NO CERTIFICATE CA : "+opt[ele], "WARNING");	
+								this.logger( " NO CERTIFICATE CA : "+this.options[ele], "WARNING");	
 							}
 						break;
 					}
@@ -111,7 +98,7 @@ nodefony.registerService("https", function(){
 				throw e ;	
 			}
 
-			this.options = nodefony.extend(opt, this.settings.certificats.options);
+			this.options = nodefony.extend(this.options, this.settings.certificats.options);
 
 			this.server = https.createServer(this.options, (request, response) => {
 				response.setHeader("Server", "nodefony");
@@ -187,8 +174,6 @@ nodefony.registerService("https", function(){
 				this.fire("onClientError", e, socket);
 				socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
 			});
-
-
 
 			this.listen(this, "onTerminate", () => {
 				if (this.server){

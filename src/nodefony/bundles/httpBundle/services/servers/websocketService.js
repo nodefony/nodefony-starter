@@ -19,7 +19,6 @@ nodefony.registerService("websocket", function(){
 			this.port = this.httpKernel.kernel.httpPort ;
 			this.domain = this.httpKernel.kernel.settings.system.domain ;
 			this.firewall =  security ;
-			this.kernel = this.httpKernel.kernel ;
 			this.ready = false ;
 			this.type = "WEBSOCKET";
 		}

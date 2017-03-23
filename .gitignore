@@ -4,6 +4,7 @@ docs/**
 tmp/**
 web/**
 **/assets/**
+config/generatedConfig.yml
 
 app/Resources/databases/*
 *.db

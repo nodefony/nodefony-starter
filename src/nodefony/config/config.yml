@@ -9,23 +9,15 @@
 # What It Is: YAML is a human friendly data serialization
 #   standard for all programming languages.
 #
-# YAML Resources:
-#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
-#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
-#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
-#   YAML Trac Wiki: http://trac.yaml.org/
-#   YAML Mailing List: yaml-core@lists.sourceforge.net
-#   YAML IRC Channel: "#yaml on irc.freenode.net"
-#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
-#   YAML Reference Parser: http://yaml.org/ypaste/
-
-
+#
+#########################################################
 #
 #  NODEFONY FRAMEWORK
 #
 #       KERNEL CONFIG
 #
 #
+
 name:                           "NODEFONY"
 system:
   version:                      "2.0.3-beta"
@@ -38,6 +30,24 @@ system:
   realtime:                     true
   monitoring:                   true
   locale:                       "en_en"
+
+  servers:
+    http:                       true
+    https:			true	
+    ws:			        true	
+    wss:			true
+    certificats:
+      key:                      "config/certificates/server/privkey.pem"
+      cert:                     "config/certificates/server/fullchain.pem"
+      ca:                       "config/certificates/ca/nodefony-root-ca.crt.pem"
+      options:
+        rejectUnauthorized:       false
+
+  bundles:
+    documentation 	        : "./src/nodefony/bundles/documentationBundle"
+    test		        : "./src/nodefony/bundles/unitTestBundle"
+    demo			: "./src/bundles/demoBundle"
+
   log:
     active:                     true
     console:                    false

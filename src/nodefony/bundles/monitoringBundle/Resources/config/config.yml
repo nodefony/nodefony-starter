@@ -10,8 +10,6 @@
 #
 
 
-
-
 ########## NODEFONY CONFIG BUNDLE  monitoringBundle  ############
 name :				monitoringBundle
 version:			"Beta"
@@ -45,6 +43,8 @@ webpack:
     main:                       "./js/monitoring.js"
   watch:                        false
   devtool:                      "source-map"
+  externals:
+    jquery:                     "jQuery"
   output:
     filename:                   "./assets/js/monitoring.js"
     library:                    "monitoring"
