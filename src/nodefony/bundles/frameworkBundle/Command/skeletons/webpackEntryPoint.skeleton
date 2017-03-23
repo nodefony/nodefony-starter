@@ -9,7 +9,6 @@
  *  require('../css/mycss.css')
  *
  */
-require('jquery');
 require("../css/{{ name }}.css");
 
 module.exports = function (){ 

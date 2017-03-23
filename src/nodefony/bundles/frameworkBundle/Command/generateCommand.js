@@ -149,11 +149,89 @@ nodefony.registerCommand("generate",function(){
 	};
 
 		
+
+	var viewString = function(param){ 
+		
+		return   "{% if readme %}\n\
+	{% extends '/app/Resources/views/base.html.twig' %}\n\
+\n\
+	{% block title %}Welcome {{kernel.name}}! {% endblock %}\n\
+\n\
+	{% block stylesheets %}\n\
+\n\
+		{{ parent() }}\n\
+\n\
+		<!-- WEBPACK BUNDLE -->\n\
+		<link rel='stylesheet' href='"+param.CDN_stylesheet+"/"+ param.bundleName +"/assets/css/"+param.name+".css' />\n\
+\n\
+	{% endblock %}\n\
+\n\
+	{% block body %}\n\
+		<div class='container'>\n\
+			<div class='row'>\n\
+				{{readme}}\n\
+			</div>\n\
+		</div>\n\
+	{% endblock %}\n\
+\n\
+	{% block javascripts %}\n\
+\n\
+		{{ parent() }}\n\
+\n\
+		<!-- WEBPACK BUNDLE -->\n\
+		<script src='"+param.CDN_javascript+"/"+param.bundleName+"/assets/js/"+param.name+".js'></script>\n\
+\n\
+	{% endblock %}\n\
+\n\
+{% else %}\n\
+\n\
+	{% extends '/vendors/nodefony/bundles/frameworkBundle/Resources/views/system.html.twig' %}\n\
+\n\
+	{% block stylesheets %}\n\
+\n\
+		{{ parent() }}\n\
+\n\
+		<!-- WEBPACK BUNDLE -->\n\
+		<link rel='stylesheet' href='"+param.CDN_stylesheet+"/"+ param.bundleName +"/assets/css/"+param.name+".css' />\n\
+\n\
+	{% endblock %}\n\
+\n\
+	{% block javascripts %}\n\
+\n\
+		{{ parent() }}\n\
+\n\
+		<!-- WEBPACK BUNDLE -->\n\
+		<script src='"+param.CDN_javascript+"/"+param.bundleName+"/assets/js/"+param.name+".js'></script>\n\
+\n\
+	{% endblock %}\n\
+\n\
+	{% block title %}Welcome {{kernel.name}}! {% endblock %} \n\
+\n\
+	{% block navBar %}\n\
+		<div class='navbar navbar-default navbar-fixed-top'>\n\
+			<div class='container'>\n\
+		 		<div class='navbar-header'>\n\
+		 			<div class='logo'></div>\n\
+					<a class='navbar-brand' href='../'>  {{bundle.name|upper}}  :</a>\n\
+					<div class='navbar-brand' >  Version : {{bundle.version|upper}} </div>\n\
+					<div class='navbar-brand' >  Culture : {{bundle.locale|upper}} </div>\n\
+				</div>\n\
+			</div>\n\
+		</div>\n\
+	{% endblock %}\n\
+{% endif %}";
+
+	};
+		
 	var views = function(directory, name, params){
 		var obj = {
 			name:directory,
 			type:"directory"
 		};
+		params["CDN_stylesheet"] = '{{CDN("stylesheet")}}';
+		params["CDN_javascript"] = '{{CDN("javascript")}}';
+
+		params["myview"] = viewString(params);
 		var file = [{
 			name:name,
 			type:"file",

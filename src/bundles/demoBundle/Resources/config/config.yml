@@ -44,6 +44,8 @@ webpack:
     main:                       "./js/demo.js"
   watch:                        false
   devtool:                      "source-map"
+  externals:
+    jquery:                     "jQuery"
   output:
     filename:                   "./assets/js/demo.js"
     library:                    "demo"
