@@ -48,6 +48,20 @@ system:
     test		        : "./src/nodefony/bundles/unitTestBundle"
     demo			: "./src/bundles/demoBundle"
 
+  PM2:
+    script		        : "nodefony"
+    name			: "nodefony"
+    exec_mode		        : "cluster"
+    max_memory_restart	        : "1024M"
+    autorestart		        : true
+    max_restarts		: 10
+    watch			: false
+    error_file                  : null 
+    out_file                    : null
+    env:
+      NODE_ENV:               "production"
+      MODE_START:             "PM2"
+  
   log:
     active:                     true
     console:                    false

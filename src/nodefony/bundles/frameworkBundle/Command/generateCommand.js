@@ -553,7 +553,7 @@ nodefony.registerCommand("generate",function(){
 									bundles:{}
 								}
 							} ;
-							json.system.bundles[ name ] = command[2] ;
+							json.system.bundles[ name ] = command[2]+"/"+command[1] ;
 						}
 						fs.writeFileSync(this.kernel.generateConfigPath, yaml.safeDump(json),{encoding:'utf8'} )
 						var file = new nodefony.fileClass( command[2]+"/"+command[1]+"/"+command[1]+".js" );

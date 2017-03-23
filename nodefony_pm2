@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-const pm2 = require('pm2');
-//var cluster = require('cluster');	
-const AsciiTable = require('ascii-table');
 
+const pm2 = require('pm2');
+const AsciiTable = require('ascii-table');
+const yaml = require('js-yaml');
+const fs = require("fs");
 
 var instances =  require('os').cpus().length ;
 
 require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	console.log('\n');
 	console.log('\033[31m'+res+'\033[0m');
-
 
 	var table = new AsciiTable("NODEFONY LAUNCHER PROD PM2 START ");	
 	table.setHeading(
@@ -23,7 +23,30 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 		//"OUTPUT FILE LOG"
 	);
 
-	var config = require("./config/pm2.json");
+	var nodefonyConfig = null ; 
+	try {
+		var exist = fs.existsSync("./config/config.yml");
+		if (exist){
+			nodefonyConfig =  yaml.load( fs.readFileSync("./config/config.yml", 'utf8' ) ); 
+		}
+	}catch(e){
+		throw e ;
+	}
+
+	var config = null ;
+	try {
+		var exist = fs.existsSync("./config/pm2.json");
+		if (exist){
+			config = require("./config/pm2.json"); 
+		}
+	}catch(e){
+		throw e ;
+	}
+
+	if ( ! config ){
+		config = nodefonyConfig.system.PM2 ;		
+	}
+	
 	config.instances = instances ;
 	config.cwd = process.cwd(); 
 

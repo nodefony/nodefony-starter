@@ -143,19 +143,3 @@ httpBundle:
     responseTimeout:              40000
     
 
-#
-#       OVERRIDE BUNDLE ASSETIC
-#
-#       # TO ADD DOMAIN CDN     
-#         CDN:
-#           stylesheets:                  cdn.nodefony.com       
-#           javascripts:                  cdn.nodefony.com
-#           images:                       // not implemted
-#
-
-#asseticBundle:
-#  CDN:
-#    stylesheets:                  cdn.nodefony.com       
-#    javascripts:                  cdn.nodefony.com
-
-
