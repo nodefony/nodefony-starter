@@ -534,9 +534,11 @@ nodefony.registerCommand("generate",function(){
 					try {
 						var name = command[1].match(regBundle)[1];
 						var json = this.kernel.readGeneratedConfig();
+						var bundleFile =  command[2]+"/"+command[1]+"/"+command[1]+".js" ;
+						var bundlePath = command[2]+"/"+command[1] ;
 						if (json){
 							if ( json.system && json.system.bundles ){
-								json.system.bundles[ name ]= command[2]+"/"+command[1] ;
+								json.system.bundles[ name ]= bundlePath ;
 							}else{
 								if ( json.system ){
 									json.system.bundles = {};
@@ -545,7 +547,7 @@ nodefony.registerCommand("generate",function(){
 										bundles:{}	
 									};	
 								}
-								json.system.bundles[ name ] = command[2]+"/"+command[1] ;
+								json.system.bundles[ name ] = bundlePath ;
 							}
 						}else{
 							var json = {
@@ -553,10 +555,10 @@ nodefony.registerCommand("generate",function(){
 									bundles:{}
 								}
 							} ;
-							json.system.bundles[ name ] = command[2]+"/"+command[1] ;
+							json.system.bundles[ name ] = bundlePath ;
 						}
-						fs.writeFileSync(this.kernel.generateConfigPath, yaml.safeDump(json),{encoding:'utf8'} )
-						var file = new nodefony.fileClass( command[2]+"/"+command[1]+"/"+command[1]+".js" );
+						fs.writeFileSync( this.kernel.generateConfigPath, yaml.safeDump(json),{encoding:'utf8'} )
+						var file = new nodefony.fileClass( bundleFile );
 						this.kernel.loadBundle(file);
 						this.assetInstall();
 					}catch(e){

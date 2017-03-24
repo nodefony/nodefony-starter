@@ -117,9 +117,7 @@ nodefony.registerService("webpack", function(){
 			output:		{
 				path:	public 
 			},
-			externals:	{
-				//"jquery": "jQuery"
-			},
+			externals:	{},
 			resolve:	{},
 			module: {
 				rules: [babelRule(basename), cssRule(basename), fontsRule(basename), imagesRule(basename), sassRule(basename),  lessRule(basename)]

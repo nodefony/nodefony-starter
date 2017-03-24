@@ -1,28 +1,32 @@
 #!/usr/bin/env node
 
 const pm2 = require('pm2');
-const AsciiTable = require('ascii-table');
+const Table = require('cli-table');
 const yaml = require('js-yaml');
 const fs = require("fs");
-
-var instances =  require('os').cpus().length ;
+const path = require('path');
+const instances =  require('os').cpus().length ;
 
 require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	console.log('\n');
 	console.log('\033[31m'+res+'\033[0m');
 
-	var table = new AsciiTable("NODEFONY LAUNCHER PROD PM2 START ");	
-	table.setHeading(
+	var head = [
 		"NAME",
 		"EXEC MODE",
 		"INSTANCES",
 		"MAX MEMORY RESTART",
 		"AUTO RESTART",
-		"MAX RESTART"
-		//"ERROR FILE LOG",
-		//"OUTPUT FILE LOG"
-	);
+		"MAX RESTART",
+		"ERROR FILE LOG",
+		"OUTPUT FILE LOG"
+	];
+	var table = new Table({
+		head: head,
+		colWidths: [20, 15, 15, 20, 15, 15,40, 40]
+	});
 
+	
 	var nodefonyConfig = null ; 
 	try {
 		var exist = fs.existsSync("./config/config.yml");
@@ -30,6 +34,7 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 			nodefonyConfig =  yaml.load( fs.readFileSync("./config/config.yml", 'utf8' ) ); 
 		}
 	}catch(e){
+		console.trace(e)
 		throw e ;
 	}
 
@@ -40,38 +45,54 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 			config = require("./config/pm2.json"); 
 		}
 	}catch(e){
+		console.trace(e)
 		throw e ;
 	}
 
 	if ( ! config ){
 		config = nodefonyConfig.system.PM2 ;		
 	}
-	
-	config.instances = instances ;
-	config.cwd = process.cwd(); 
+	if ( ! config.instances ){
+		config.instances = instances ;
+	}
+	if ( ! config.cwd ){
+		config.cwd = process.cwd(); 
+	}
 
 	// LOG
-	config.error_file = process.cwd()+"/tmp/error.log"; 
-	config.out_file = process.cwd()+"/tmp/nodefony.log"; 
-	config.merge_logs= true;
-
-	table.addRow(
-		config.name,
-		config.exec_mode,
-		config.instances,
-		config.max_memory_restart,
-		config.autorestart,
-		config.max_restarts
-		//config.error_file,
-		//config.out_file
-	);
+	var abs = null ;
+	if ( config.error_file ){
+		abs = path.isAbsolute(config.error_file);
+		if ( ! abs ){
+			config.error_file = config.cwd+"/"+config.error_file;
+		}
+	}
+	if ( config.out_file ){
+		abs = path.isAbsolute(config.out_file);
+		if ( ! abs ){
+			config.out_file = config.cwd+"/"+config.out_file;
+		}
+	}
 
 	pm2.connect(true, function() {
-  		pm2.start(config, function(err) {
-    			if (err) return console.error('Error while launching applications', err.stack || err);
-			console.log(table.render());
+  		pm2.start(config, (err) =>  {
+    			if (err){
+ 			       	console.trace('Error while launching applications', err.stack || err);
+				throw err ;
+			}
+			table.push([
+				config.name,
+				config.exec_mode,
+				config.instances,
+				config.max_memory_restart,
+				config.autorestart,
+				config.max_restarts,
+				config.error_file,
+				config.out_file	
+			]);
+			console.log(table.toString());
     			// Display logs in standard output 
-    			pm2.launchBus(function(err, bus) {
+    			pm2.launchBus((err, bus) =>  {
 				//bus.on('process:msg',function(packet) {
 				//	console.log( packet.process )
 				//	console.log( packet )

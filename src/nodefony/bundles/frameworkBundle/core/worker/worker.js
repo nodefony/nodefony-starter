@@ -20,7 +20,7 @@ nodefony.register("Worker", function(){
 
 		constructor (name, container, notificationsCenter){
 			super( name, container, notificationsCenter);
-			this.twig = this.kernel.templating ; //this.container.get("templating");
+			this.twig = this.kernel.templating ; 
 			this.publicDirectory = this.kernel.rootDir+"/web/";
 		}
 
@@ -150,7 +150,7 @@ nodefony.register("Worker", function(){
 						table.addRow(
 							bundle,
 							dstpath,
-							this.publicDirectory+"/"+srcpath,
+							this.publicDirectory+srcpath,
 							nodefony.niceBytes(this.getSizeDirectory(dstpath))
 						);
 
@@ -159,10 +159,6 @@ nodefony.register("Worker", function(){
 			}	
 			table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + nodefony.niceBytes( this.getSizeDirectory( this.publicDirectory )) );
 		}
-
-		
-
-		
 
 		createFile (path, skeleton, parse, params, callback){
 			if ( skeleton ){

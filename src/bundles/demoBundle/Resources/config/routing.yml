@@ -182,7 +182,9 @@ websoket:
   pattern:  /websoket
   defaults: {"controller": "demoBundle:demo:websoket"}
   requirements:
-    method:     GET,WEBSOCKET
+    method:
+      - GET
+      - WEBSOCKET
 
 ### JSON ###
 json: 
@@ -249,51 +251,67 @@ redirect-301:
   pattern:      /test/unit/redirect/{status}
   defaults:     {"controller": "demoBundle:controllerTest:redirect","status":302}
   requirements:
-    method:     GET ,POST
+    method:
+      - GET
+      - POST
 
 request-data:
   pattern:      /test/unit/request
   defaults:     {"controller": "demoBundle:controllerTest:request"}
   requirements:
-    method:     GET ,POST
-
+    method:
+      - GET
+      - POST
 
 request-promise:
   pattern:      /test/unit/promise/{action}
   defaults:     {"controller": "demoBundle:controllerTest:promise", "action":"promise"}
   requirements:
-    method:     GET ,POST
+    method:
+      - GET
+      - POST
 
 request-exception:
   pattern:      /test/unit/exception/{action}
   defaults:     {"controller": "demoBundle:controllerTest:exception", "action":500}
   requirements:
-    method:     GET ,POST
+    method:
+      - GET
+      - POST
 
 twig-render:
   pattern:      /test/unit/twig/render
   defaults:     {"controller": "demoBundle:twig:render"}
   requirements:
-    method:     GET ,POST
+    method:
+      - GET
+      - POST
 
 twig-extend:
   pattern:      /test/unit/twig/extend
   defaults:     {"controller": "demoBundle:twig:extend"}
   requirements:
-    method:     GET ,POST
+    method:
+      - GET
+      - POST
 
 twig-websocket:
   pattern:      /test/unit/twig/websocket
   defaults:     {"controller": "demoBundle:twig:websocket"}
   requirements:
-    method:     GET ,POST ,WEBSOCKET
+    method:
+      - GET
+      - POST
+      - WEBSOCKET
 
 session:
   pattern:      /test/unit/session/{type}
   defaults:     {"controller": "demoBundle:session:session" , "type":"callback"}
   requirements:
-    method:     GET ,POST ,WEBSOCKET
-
+    method:
+      - GET
+      - POST
+      - WEBSOCKET
 
 subrequest:
   pattern:      /test/unit/subrequest

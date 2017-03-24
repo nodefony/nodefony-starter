@@ -75,31 +75,6 @@ sequelizeBundle:
 
 
 #
-#       OVERRIDE BUNDLE MONITORING
-#
-#       see MONITORING BUNDLE config for more options
-#
-#
-monitoringBundle:
-  debugBar:                     true
-  storage:
-    active:                     false                      
-    requests:                   orm
-  
-#
-#       OVERRIDE BUNDLE REALTIME 
-#
-#       see REALTIME BUNDLE config for more options
-#
-#
-realTimeBundle:
-  services:
-    monitoring:
-      type:                       tcp
-      port:                       1318
-      domain:                     localhost 
-
-#
 #       OVERRIDE BUNDLE HTTP 
 #
 #       see HTTP BUNDLE config for more options
@@ -142,4 +117,27 @@ httpBundle:
   https:
     responseTimeout:              40000
     
-
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  storage:
+    active:                     false                      
+    requests:                   orm
+  
+#
+#       OVERRIDE BUNDLE REALTIME 
+#
+#       see REALTIME BUNDLE config for more options
+#
+#
+realTimeBundle:
+  services:
+    monitoring:
+      type:                       tcp
+      port:                       1318
+      domain:                     localhost 

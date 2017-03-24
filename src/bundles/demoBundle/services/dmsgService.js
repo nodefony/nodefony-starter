@@ -22,11 +22,11 @@ nodefony.registerService("dmsg", function(){
 			this.id = socket._handle.fd+"_"+socket.server._connectionKey;
 			this.readable = socket.readable ;
 			this.writable = socket.writable;
-		};
+		}
 
 		write (data){
 			this.socket.write(data+"");
-		};
+		}
 	};
 	
 	/*
@@ -61,7 +61,6 @@ nodefony.registerService("dmsg", function(){
 					this.server = null;	
 					this.createServer();
 				}
-
 			});
 		}
 
@@ -71,7 +70,6 @@ nodefony.registerService("dmsg", function(){
 		}
 
 		createWatcher (){
-
 			try {
 				this.watcher = new nodefony.watcher(null , {
 					persistent:		true,
@@ -97,33 +95,32 @@ nodefony.registerService("dmsg", function(){
 			this.server = net.createServer({
 				//allowHalfOpen : true
 			}, (socket) => {
-				
 					var conn = new connection(socket);
 					this.connections[conn.fd] = conn;
-					
 					var callback = (path, stat) => {
 						try {
 							//this.realTime.logger(stat.size, "DEBUG","SEVICE DMSG");
-							var file = new nodefony.fileClass(path);
-							if (file){
-								var content  = file.content();
-								//console.log(content)
-								var lines = content.trim().split('\n');
-								var lastLine = lines.slice(-1)[0];
+							if ( conn ){
+								var file = new nodefony.fileClass(path);
+								if (file){
+									var content  = file.content();
+									//console.log(content)
+									var lines = content.trim().split('\n');
+									var lastLine = lines.slice(-1)[0];
+								}
+								conn.write(lastLine);
+								//conn.write(stat.size);
 							}
-							conn.write(lastLine);
-							//conn.write(stat.size);
 						}catch(e){
 							this.logger(e,"ERROR");
 						}
 					};
 					this.watcher.listen(this, 'onChange', callback);
-
 					socket.on('end',() => {
+						this.logger("CLOSE CONNECTION TO SERVICE DMSG FROM : "+socket.remoteAddress + " ID :" +conn.id, "INFO");
 						delete this.connections[conn.fd];
 						this.watcher.removeListener("onChange", callback);
 						conn = null ;
-						this.logger("CLOSE CONNECTION TO SERVICE DMSG FROM : "+socket.remoteAddress + " ID :" +conn.id, "INFO");
 						this.nbConnections-- ;
 						if (this.nbConnections === 0 ){
 							this.watcher.close();
@@ -135,25 +132,12 @@ nodefony.registerService("dmsg", function(){
 
 			this.server.on("connection",(socket) => {
 				this.logger("CONNECT TO SERVICE DMSG FROM : "+socket.remoteAddress, "INFO");
-				
 				socket.on("data",(buffer) => {
 					try {
 						if (this.nbConnections === 0 ){
 							this.watcher.watch(this.fileDmsg);		
 						}
 						this.nbConnections ++ ;
-						/*this.protocol.parser(buffer.toString(),(error, ele) => {
-							if (error)
-								throw error;
-							switch (ele.action){
-								case "START":
-									if (this.nbConnections === 0 ){
-										this.watcher.watch();		
-									}
-									this.nbConnections ++ ;
-								break;
-							}
-						});*/
 					}catch(e){
 						this.realTime.logger(e, "ERROR");
 					}
@@ -177,8 +161,7 @@ nodefony.registerService("dmsg", function(){
 					default :
 						this.logger( new Error(httpError) ,"CRITIC");	
 				}
-			})
-
+			});
 
 			/*
  		 	*	EVENT CLOSE
@@ -196,16 +179,15 @@ nodefony.registerService("dmsg", function(){
 			});	
 
 			this.kernel.listen(this, "onTerminate", () => {
-				//FIXME ERROR IN CONSOLE and ctrl c
 				this.stopServer();
-			})
+			});
 
 		}
 		
 		stopServer (){
 			for ( var connection in this.connections ){
 				this.connections[connection].socket.end();
-				delete this.connections[connection]
+				delete this.connections[connection];
 			}
 			this.connections.length = 0 ;
 			if (this.server){

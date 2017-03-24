@@ -202,8 +202,10 @@ module.exports = function(){
 
 		setKernel (kernel){
 			self.kernel = kernel;
-			kernel.listen(this, "onTerminate", () => {
-				this.close();	
+			kernel.listen(this, "onReady", () => {
+				if (kernel.environment === "prod"){
+					this.close();
+				}
 			});
 		}
 

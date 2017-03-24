@@ -42,6 +42,7 @@
     "bootstrap": "3.3.7",
     "bootstrap-loader": "2.0.0",
     "chokidar": "^1.6.1",
+    "cli-table": "^0.3.1",
     "connect": ">= 2.8 < 3",
     "cookie": "0.3.1",
     "css-loader": "0.27.3",

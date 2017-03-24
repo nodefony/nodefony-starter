@@ -235,13 +235,30 @@ nodefony.register("Route", function(){
 				for(var i  in this.requirements ){
 					switch (i){
 						case "method":
-							var req = this.requirements[i].replace(" ","").toUpperCase();
-							if (req.split(",").lastIndexOf(context.method) < 0){
-								throw {
-									message:	"Method "+ context.method +" Unauthorized",
-									status:		401	
-								};
-							}
+							switch ( typeof this.requirements[i] ){
+								case "string" :
+									var req = this.requirements[i].replace(/\s/g,"").toUpperCase();
+									if (req.split(",").lastIndexOf(context.method) < 0){
+										throw {
+											message:	"Method "+ context.method +" Unauthorized",
+											status:		401	
+										};
+									}
+								break ;
+								case "object" :
+									if (  this.requirements[i].indexOf(context.method) < 0 ){
+										if ( this.requirements[i].indexOf( context.method.toLowerCase() ) < 0  ){
+											throw {
+												message:	"Method "+ context.method +" Unauthorized",
+												status:		401	
+											};
+										}
+									}
+								break;
+								default:
+									throw new Error ("Bad config route method : " + this.requirements[i] );	
+							}	
+							
 						break;
 						case "domain":
 							if (context.domain !== this.requirements[i]){

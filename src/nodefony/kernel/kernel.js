@@ -7,6 +7,11 @@
 
 nodefony.register("kernel", function(){
 	
+	const red   = '\x1b[31m';
+	const blue  = '\x1b[34m';
+	const green = '\x1b[32m';
+	const yellow = '\x1B[33m';
+	const reset = '\x1b[0m';
 	/**
 	 *	@event onTerminate
 	 *
@@ -63,24 +68,14 @@ nodefony.register("kernel", function(){
 
 	
 	var logConsole = function(syslog){
-		var red, blue, green, reset, yellow;
-		red   = '\x1b[31m';
-		blue  = '\x1b[34m';
-		green = '\x1b[32m';
-		yellow = '\x1B[33m';
-		reset = '\x1b[0m';
-
 		// CRITIC ERROR
 		syslog.listenWithConditions(this,{
 			severity:{
 				data:"CRITIC,ERROR"
 			}		
 		},(pdu) => {
-			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
-			var date = new Date(pdu.timeStamp) ;
-			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+			this.normalizeLog.call(this, pdu);
 		});
-
 		// INFO DEBUG
 		var data ;
 		if ( this.debug ){
@@ -93,19 +88,13 @@ nodefony.register("kernel", function(){
 				data:data
 			}		
 		},(pdu) => {
-			//console.log(this.node_start)
-			//console.log(pdu)
 			if ( pdu.msgid === "SERVER WELCOME"){
-				console.log(   blue + "              "+reset + " "+ pdu.payload);	
+				console.log(   '\x1b[34m' + "              \x1b[0m "+ pdu.payload);	
 				return ;
 			}
-			//if ( this.preboot ){
-				var date = new Date(pdu.timeStamp) ;
-				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
-			//}
+			this.normalizeLog.call(this, pdu);
 		});
 	};
-
 
 	var defaultEnvEnable = {
 		dev:		true,
@@ -234,27 +223,31 @@ nodefony.register("kernel", function(){
 			this.set("reader",this.reader);
 			this.set("autoLoader",this.autoLoader);
 
-			this.reader.readConfig(this.configPath, (result) => {
-				this.settings = result;
-				this.settings.environment = this.environment ;
-				this.setParameters("kernel", this.settings);
-				this.httpPort = result.system.httpPort || null;
-				this.httpsPort = result.system.httpsPort || null;
-				this.domain = result.system.domain || null;
-				this.hostname = result.system.domain || null ;
-				this.hostHttp = this.hostname +":"+this.httpPort ;
-				this.hostHttps = this.hostname +":"+this.httpsPort ;
-				this.domainAlias = result.system.domainAlias ;
-				// manage LOG
-				if (this.environment === "prod"){
-					this.environment = result.system.debug ? "dev" : "prod" ;
-				}
-				this.initializeLog(options);
-				this.autoLoader.syslog = this.syslog;
-			});
-
 			try {
-				this.settings = nodefony.extend(true, this.settings, this.readGeneratedConfig() );
+				this.reader.readConfig(this.configPath, (result) => {
+					this.settings = result;
+					this.settings.environment = this.environment ;
+					this.setParameters("kernel", this.settings);
+					this.httpPort = result.system.httpPort || null;
+					this.httpsPort = result.system.httpsPort || null;
+					this.domain = result.system.domain || null;
+					this.hostname = result.system.domain || null ;
+					this.hostHttp = this.hostname +":"+this.httpPort ;
+					this.hostHttps = this.hostname +":"+this.httpsPort ;
+					this.domainAlias = result.system.domainAlias ;
+					// manage LOG
+					if (this.environment === "prod"){
+						this.environment = result.system.debug ? "dev" : "prod" ;
+					}
+					this.initializeLog(options);
+					this.autoLoader.syslog = this.syslog;
+				});
+				var gconf = this.readGeneratedConfig() ;
+				if ( gconf ){
+					if ( gconf.system && gconf.system.bundles ){
+						this.settings = nodefony.extend(true, gconf, this.settings );
+					}
+				}
 			}catch(e){
 				this.logger(e, "ERROR");
 				throw e ;
@@ -328,6 +321,27 @@ nodefony.register("kernel", function(){
 			}
 		}
 
+		normalizeLog  (pdu){
+			var date = new Date(pdu.timeStamp) ;
+
+			if ( ! pdu.payload ){
+				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ "logger message empty !!!!");
+				console.trace(pdu);
+				return 	;	
+			}
+			var message = pdu.payload;
+			switch( typeof message ){
+				case "object" :
+					switch (true){
+						default:
+							message = util.inspect(message)
+					}
+				break;
+				default:
+			}
+			console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ message);
+		}
+
 		checkPath (myPath){
 			if ( ! myPath ){
 				return null ;
@@ -361,6 +375,7 @@ nodefony.register("kernel", function(){
 					return null ;	
 				}	
 			}catch(e){
+				console.trace(e);
 				this.logger(e, "ERROR");
 			}
 		}
@@ -418,7 +433,7 @@ nodefony.register("kernel", function(){
 				data : message
 			});
 		}
-			
+		
 		/**
 	 	*	@method initializeLog
          	*/
@@ -584,7 +599,7 @@ nodefony.register("kernel", function(){
 						onFile:(file) => {
 							if (file.matchName(this.regBundle) ){
 								try {
-									this.logger("registerBundles : " + file.name ,"DEBUG","APP KERNEL");
+									this.logger("registerBundles : " + file.name ,"DEBUG");
 									this.loadBundle(file);
 								}catch(e){
 									this.logger(e);
@@ -594,11 +609,14 @@ nodefony.register("kernel", function(){
 						onFinish:callbackFinish || this.initializeBundles.bind(this)
 					});
 				}catch(e){
-					for( let i=0 ; i < path.length ; i++){
-						this.logger("registerBundles : " + path[i] ,"DEBUG");
+					this.logger(e, "ERROR")
+					this.logger("GLOBAL CONFIG REGISTER : ","INFO");
+					this.logger(this.configBundle,"INFO");
+					var gene = this.readGeneratedConfig();
+					if ( gene ){
+						this.logger("GENERATED CONFIG REGISTER file ./config/GeneratedConfig.yml : ","INFO");
+						this.logger( gene  , "INFO" );
 					}
-					throw e ;
-					
 				}
 			};
 			if ( nextick === undefined ){

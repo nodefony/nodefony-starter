@@ -69,21 +69,43 @@ nodefony.registerService("httpKernel", function(){
 			}
 			try {
 				var alias = [] ;
-				if (  typeof this.kernel.domainAlias === "string" ){
-					alias = this.kernel.domainAlias.split(" ");
-					Array.prototype.unshift.call(alias,  "^"+this.kernel.domain+"$" );
-					for ( var i = 0 ; i <alias.length ;i++ ){
-						if (i === 0){ 
-							str = alias[i];
-						}else{
-							str += "|"+ alias[i] ;
+				switch ( nodefony.typeOf( this.kernel.domainAlias ) ){
+					case "string" :
+						alias = this.kernel.domainAlias.split(" ");
+						Array.prototype.unshift.call(alias,  "^"+this.kernel.domain+"$" );
+						for ( var i = 0 ; i <alias.length ;i++ ){
+							if (i === 0){ 
+								str = alias[i];
+							}else{
+								str += "|"+ alias[i] ;
+							}
 						}
-					}
-					if (str){
-						this.regAlias = new RegExp(str);
-					}
+					break;
+					case "object" :
+						var first = true;
+						for ( var myAlias in this.kernel.domainAlias ){
+							if ( first ){
+								var first = false;
+								str = this.kernel.domainAlias[myAlias] ;
+							}else{
+								str += "|"+ this.kernel.domainAlias[myAlias] ;	
+							}
+						}
+					break;
+					case "array" :
+						str = "^"+this.kernel.domain+"$" ;
+						for ( var i = 0 ; i < this.kernel.domainAlias.length ;i++ ){
+							str += "|"+ this.kernel.domainAlias[i] ;
+						}
+					break;
+					default:
+						throw new Error ("Config file bad format for domain alias must be a string ");
+				}
+				if (str){
+					this.regAlias = new RegExp(str);
 				}else{
-					throw new Error ("Config file bad format for domain alias must be a string ");
+					str = "^"+this.kernel.domain+"$" ;
+					this.regAlias = new RegExp(str);	
 				}
 			}catch(e){
 				throw e ;

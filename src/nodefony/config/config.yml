@@ -18,30 +18,32 @@
 #
 #
 
-name:                           "NODEFONY"
+name                            : "NODEFONY"
 system:
-  version:                      "2.0.3-beta"
-  domain:                       localhost                               # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
-  domainAlias:                  "^127.0.0.1$ ^docker.nodefony$"         # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
-  httpPort:                     5151
-  httpsPort:                    5152
-  statics:                      true
-  security:                     true
-  realtime:                     true
-  monitoring:                   true
-  locale:                       "en_en"
+  version                       : "2.0.3-beta"
+  domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+    - "^127.0.0.1$" 
+    - "^docker.nodefony$"
+  httpPort                      : 5151
+  httpsPort                     : 5152
+  statics                       : true
+  security                      : true
+  realtime                      : true
+  monitoring                    : true
+  locale                        : "en_en"
 
   servers:
-    http:                       true
-    https:			true	
-    ws:			        true	
-    wss:			true
+    http                        : true
+    https	                : true	
+    ws			        : true	
+    wss			        : true
     certificats:
-      key:                      "config/certificates/server/privkey.pem"
-      cert:                     "config/certificates/server/fullchain.pem"
-      ca:                       "config/certificates/ca/nodefony-root-ca.crt.pem"
+      key                       : "config/certificates/server/privkey.pem"
+      cert                      : "config/certificates/server/fullchain.pem"
+      ca                        : "config/certificates/ca/nodefony-root-ca.crt.pem"
       options:
-        rejectUnauthorized:       false
+        rejectUnauthorized      : false
 
   bundles:
     documentation 	        : "./src/nodefony/bundles/documentationBundle"
@@ -56,39 +58,32 @@ system:
     autorestart		        : true
     max_restarts		: 10
     watch			: false
-    error_file                  : null 
-    out_file                    : null
+    error_file                  : "tmp/nodefony.log" 
+    out_file                    : "tmp/nodefony.error.log"
+    merge_logs                  : true
     env:
-      NODE_ENV:               "production"
-      MODE_START:             "PM2"
+      NODE_ENV                  : "production"
+      MODE_START                : "PM2"
   
   log:
-    active:                     true
-    console:                    false
-    file:                       false
-    messages:                   "/tmp/nodefony.log"
-    error:                      "/tmp/errorNodefony.log"
-    services:                   "/tmp/servicesNodefony.log"
+    active                      : true
+    console                     : false
+    file                        : false
+    messages                    : "/tmp/nodefony.log"
+    error                       : "/tmp/errorNodefony.log"
     #TODO
-    rotate:                     false
+    rotate                      : false
 
 #
 #       ASSETS CDN
 #
-#
-#       YOU CAN set with string
-#
+#       You set cdn with string
 #       CDN :   cdn.nodefony.com
-#
 #       or 
-#
 #       CDN:
 #          global: cdn.nodefony.com
-#       
 #       or
-#
 #       CDN:
-#         global: ~
 #         stylesheet:                  
 #           - cdn.nodefony.com       
 #         javascript:                  
@@ -99,7 +94,7 @@ system:
 #         font:
 #           - cdn.nodefony.com
 #
-CDN:                            ~
+CDN                             : ~
     
 #
 # ENGINE TEMPLATE
@@ -107,7 +102,7 @@ CDN:                            ~
 #       TWIG
 #       https://github.com/justjohn/twig.js
 #
-templating:                     twig
+templating                      : twig
 
 #
 # ENGINE ORM
@@ -115,4 +110,4 @@ templating:                     twig
 #       SEQUELIZE
 #
 #
-orm:                            sequelize
+orm                             : sequelize

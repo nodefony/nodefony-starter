@@ -8,15 +8,7 @@
 # What It Is: YAML is a human friendly data serialization
 #   standard for all programming languages.
 #
-# YAML Resources:
-#   YAML 1.2 (3rd Edition): http://yaml.org/spec/1.2/spec.html
-#   YAML 1.1 (2nd Edition): http://yaml.org/spec/1.1/
-#   YAML 1.0 (1st Edition): http://yaml.org/spec/1.0/
-#   YAML Trac Wiki: http://trac.yaml.org/
-#   YAML Mailing List: yaml-core@lists.sourceforge.net
-#   YAML IRC Channel: "#yaml on irc.freenode.net"
-#   YAML Cookbook (Ruby): http://yaml4r.sourceforge.net/cookbook/ (local)
-#   YAML Reference Parser: http://yaml.org/ypaste/
+
 
 
 #
@@ -26,12 +18,60 @@
 name :                          AppBundle
 locale :                        en_en
 version :                       "Beta"
+
 App:
   projectName:                  "nodefony" 
-  projectYear:                  2015 
+  projectYear:                  2016 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
+
+lang:
+  en_en:                        "english"
+  fr_fr:                        "français"
+
+#
+#  WEBPACK
+#
+# Assets root path is ./Resources/public
+#
+webpack:
+  entry:
+    main:                       "./js/app.js"
+  watch:                        false
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/app.js"
+    library:                    "app"
+    libraryTarget:              "umd"
+
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors 
+#
+#
+sequelizeBundle:
+  debug:        false
+  connectors:
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'travis'
+      password:        ''
+      options:
+        dialect:       mysql
+        host:          127.0.0.1
+        port:          '3306'
+
 
 
 #
@@ -42,9 +82,10 @@ App:
 #
 monitoringBundle:
   debugBar:                     true
-  #storage:                      false
+  storage:
+    active:                     false                      
+    requests:                   orm
   
-
 #
 #       OVERRIDE BUNDLE REALTIME 
 #
@@ -56,7 +97,7 @@ realTimeBundle:
     monitoring:
       type:                       tcp
       port:                       1318
-      domain:                     nodefony.com
+      domain:                     localhost 
 
 #
 #       OVERRIDE BUNDLE HTTP 
@@ -81,67 +122,24 @@ httpBundle:
     web:
       path:                       "/web/"
       maxage:                     0                     #30*24*60*60*1000
-
   upload:
     tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000               #en Bytes
-
+    #max_filesize:                 100000               #in Bytes
   session:
-    start:                        autostart                      # false 
+    start:                        false                          # autostart || false 
     handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
     #save_path:                    "./tmp/sessions"              # for session.storage.files only
     cookie:
-      maxAge:                     0   
-
+      maxAge:                     0                              # like cookie_lifetime php  =>seconde 
+    memcached:
+      servers:                      
+        nodefony: 
+          location:               127.0.0.1
+          port:                   11211
+          weight:                 1
   http:
     responseTimeout:              40000
   https:
     responseTimeout:              40000
-    certificats:
-      key:                        "config/certificates/server/privkey.pem"
-      cert:                       "config/certificates/server/fullchain.pem"
-      ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
+    
 
-
-#
-#       OVERRIDE BUNDLE ASSETIC
-#
-#       LESS SERVICE CONFIGURATION
-#
-#       # TO ADD DOMAIN CDN     
-#         CDN:
-#           stylesheets:                  cdn.nodefony.com       
-#           javascripts:                  cdn.nodefony.com
-#           images:                       // not implemted
-#
-asseticBundle:
-  less:
-    compress:                     false
-    cache:                        false 
-
-#
-#       OVERRIDE  BUNDLE SEQUELIZE  
-#       
-#       see SEQUELIZE BUNDLE config for more options
-#
-#       Nodefony Database Management
-#
-#       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / User 
-#
-#
-#       here create new databases connectors
-#
-#
-sequelizeBundle: 
-  debug:        false
-  connectors:                    
-    nodefony:
-      driver:          mysql
-      dbname:          'nodefony'
-      username:        'travis'
-      password:        ''
-      options:
-        dialect:       mysql
-        host:          127.0.0.1
-        port:          '3306'

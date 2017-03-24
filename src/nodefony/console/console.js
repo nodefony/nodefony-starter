@@ -116,9 +116,10 @@ nodefony.register("console", function(){
 				data:"CRITIC,ERROR"
 			}		
 		},(pdu) => {
-			var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
-			var date = new Date(pdu.timeStamp) ;
-			console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
+			this.normalizeLog.call(this, pdu);
+			//var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
+			//var date = new Date(pdu.timeStamp) ;
+			//console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
 		});
 
 		// INFO DEBUG
@@ -137,8 +138,9 @@ nodefony.register("console", function(){
 				console.log(   blue + "              "+reset + " "+ pdu.payload);	
 				return ;
 			}
-			var date = new Date(pdu.timeStamp) ;
-			console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
+			this.normalizeLog.call(this, pdu);
+			//var date = new Date(pdu.timeStamp) ;
+			//console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
 		});
 	};
 
@@ -228,10 +230,14 @@ nodefony.register("console", function(){
 						onFinish:callbackFinish || this.initializeBundles.bind(this)
 					});
 				}catch(e){
-					for( let i=0 ; i < path.length ; i++){
-						this.logger("registerBundles in appkernel.js : " + path[i] ,"INFO");
+					this.logger(e, "ERROR")
+					this.logger("GLOBAL CONFIG REGISTER : ","INFO");
+					this.logger(this.configBundle,"INFO");
+					var gene = this.readGeneratedConfig();
+					if ( gene ){
+						this.logger("GENERATED CONFIG REGISTER file ./config/GeneratedConfig.yml : ","INFO");
+						this.logger( gene  , "INFO" );
 					}
-					this.logger(e, "ERROR");
 				}
 			};
 			
