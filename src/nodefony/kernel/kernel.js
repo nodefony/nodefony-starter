@@ -162,6 +162,9 @@ nodefony.register("kernel", function(){
 
 			this.listen(this, "onReady" , () =>{
 				this.autoLoader.deleteCache();
+				if (this.cli && this.type === "SERVER" ){
+					this.cli.assetInstall()
+				}
 			});
 
 			/**
@@ -313,6 +316,7 @@ nodefony.register("kernel", function(){
 					this.preboot = true ;
 					this.logger("\x1B[33m EVENT KERNEL onPreBoot\x1b[0m", "DEBUG");
 					this.fire("onPreBoot", this );
+					this.cli = new nodefony.Worker("CLI", this.container, this.notificationsCenter);
 					this.registerBundles( this.configBundle );
 				}, false);
 

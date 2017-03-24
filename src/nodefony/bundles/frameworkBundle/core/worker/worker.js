@@ -81,7 +81,11 @@ nodefony.register("Worker", function(){
 			var dirSize = null ;
 			for (i=0; i<files.length; i++) {
 				var path = dir+"/"+files[i] ;
-				var stat = fs.lstatSync(path);
+				try {
+					var stat = fs.lstatSync(path);
+				}catch(e){
+					return 	totalSizeBytes ;
+				}
 				switch (true){
 					case stat.isFile() :
 						if (!  isHiddenFile(files[i] ) ){
@@ -94,8 +98,8 @@ nodefony.register("Worker", function(){
 					break;
 					case stat.isSymbolicLink() :
 						//console.log("isSymbolicLink")
-						dirSize = this.getSizeDirectory(fs.realpathSync(path));
-						totalSizeBytes += dirSize;
+						//dirSize = this.getSizeDirectory(fs.realpathSync(path));
+						//totalSizeBytes += dirSize;
 					break;
 				}	
 			}		
@@ -119,8 +123,12 @@ nodefony.register("Worker", function(){
 		}
 
 		createAssetDirectory (Path, callback){
+			this.logger("Create Assets Link in public web directory  : "+ Path);
 			try {
-				return callback( fs.statSync(Path));
+				if ( fs.existsSync(Path) ){
+					return callback( fs.statSync(Path) );
+				}
+				throw new Error( Path +" don' exist") ;	
 			}catch(e){
 				this.logger("Create directory : "+ Path);
 				fs.mkdir(Path, (e) => {
@@ -136,25 +144,34 @@ nodefony.register("Worker", function(){
 		parseAssetsBundles (table){
 			var bundles = this.kernel.getBundles();
 			var result = null ;
-			for ( var bundle in bundles ){
+			let name =null; 
+			let srcpath =null; 
+			for ( let bundle in bundles ){
 				try {
 					result = bundles[bundle].getPublicDirectory();	
 				}catch(e){
 					continue ;
 				}
 				if ( result.length() ){
-					var name = path.basename(bundles[bundle].path) ;
-					var srcpath = bundles[bundle].path+"/Resources/public";
-					
-					this.createSymlink(srcpath, this.publicDirectory+'/'+name,function(srcpath, dstpath){
+					name = path.basename(bundles[bundle].path) ;
+					srcpath = bundles[bundle].path+"/Resources/public";
+					//console.log( "BUndle :" +bundle +" srcpath" + srcpath +" dstpath : " +  this.publicDirectory+name );
+					this.createSymlink(srcpath, this.publicDirectory+name, function(Srcpath, dstpath) {
+						//console.log(arguments)
+						var size = "not Defined";
+						try {
+							size = nodefony.niceBytes( this.getSizeDirectory(dstpath) ) ;
+
+						}catch(e){
+							//this.logger(e);	
+						}
 						table.addRow(
 							bundle,
 							dstpath,
-							this.publicDirectory+srcpath,
-							nodefony.niceBytes(this.getSizeDirectory(dstpath))
+							Srcpath,
+							size 
 						);
-
-					}.bind(this, bundle));
+					}.bind(this));
 				}
 			}	
 			table.setTitle("INSTALL LINK IN /web TOTAL SIZE : " + nodefony.niceBytes( this.getSizeDirectory( this.publicDirectory )) );

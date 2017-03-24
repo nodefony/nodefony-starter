@@ -169,8 +169,6 @@ system:
     env:
       NODE_ENV                  : "production"
       MODE_START                : "PM2"
-	
-
 ```
 
 ## <a name="cli"></a>Command Line Interface
@@ -286,7 +284,7 @@ Fri Mar 24 2017 16:05:02 INFO SERVICE generate   : Create directory : /Users/cci
 | hello         | /Users/cci/repository/nodefony/src/bundles/helloBundle/Resources/public                  | /Users/cci/repository/nodefony/web/hello         | 399 bytes |
 '-------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
 ```
-#### Now helleBundle is auto insert in framework with watcher active on (controllers, views, routing )  and an webpack bundle auto config  :
+#### Now helleBundle is auto-insert in framework with watcher active on (controllers, views, routing )  and an webpack bundle auto-config  :
 You can see helleBundle config   : vim  ./src/bundles/helloBundle/Resources/config/config.yml
 ```yml
 ########## nodefony CONFIG BUNDLE  helloBundle  ############
