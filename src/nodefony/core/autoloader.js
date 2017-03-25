@@ -36,6 +36,7 @@ module.exports = function(){
 			this.load("vendors/nodefony/core/log.js");
 			this.load("vendors/nodefony/core/protocol.js");
 			this.load("vendors/nodefony/core/watcher.js");
+			this.load("vendors/nodefony/core/cliWorker.js");
 			this.loadDirectory("vendors/nodefony/kernel");
 			this.syslog = null ;
 			this.setEnv();

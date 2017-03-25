@@ -6,7 +6,7 @@
 nodefony.registerCommand("webpack",function(){
 
 
-	var webpack = class webpack extends nodefony.Worker {
+	var webpack = class webpack extends nodefony.cliWorker {
 
 		constructor(container, command/*, options*/){
 			

@@ -508,7 +508,7 @@ nodefony.registerCommand("generate",function(){
 	/*
  	 *
  	 */
-	var generate = class generate extends nodefony.Worker {
+	var generate = class generate extends nodefony.cliWorker {
 
 		constructor(container, command/*, options*/){
 			

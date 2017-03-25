@@ -7,7 +7,7 @@
 
 nodefony.registerCommand("Sequelize",function(){
 
-	var sequelizeCmd = class sequelizeCmd  extends nodefony.Worker {
+	var sequelizeCmd = class sequelizeCmd  extends nodefony.cliWorker {
 
 		constructor (container, command/*, options*/){
 

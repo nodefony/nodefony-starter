@@ -60,39 +60,7 @@ nodefony.register("console", function(){
 		return str;
 	};
 
-	var displayTable = function(titre, ele){
-		var table = new AsciiTable(titre);
-		table.setHeading(
-			"NAME", 
-			"VERSION",
-			"DESCRIPTION"
-		);
-		table.setAlignCenter(3);
-		table.setAlignCenter(11);
-		
-		var lgt = null ;
-		var desc = null ;
-		for (var pack in ele){
-			if ( ele[pack].desc ){
-				lgt = ele[pack].desc.length > 110 ? " ..." : "" ;
-			}else{
-				lgt = "" ;
-			}
-			if (  ele[pack].desc ) {
-				desc = ele[pack].desc.substring(0,110) + lgt ;
-			}else{
-				desc = "" ; 	
-			}
-			table.addRow(
-				ele[pack].name,
-				ele[pack].version,
-				desc
-			);	
-		}
-		//table.removeBorder()
-		console.log(table.render());	
-	};
-
+	
 
 	var settingsSysLog = {
 		//rateLimit:100,
@@ -100,50 +68,6 @@ nodefony.register("console", function(){
 		moduleName:"CONSOLE",
 		defaultSeverity:"INFO"
 	};
-	
-	var logConsoleNodefony = function(syslog){
-		
-		var red, blue, green, reset, yellow;
-		red   = '\x1b[31m';
-		blue  = '\x1b[34m';
-		green = '\x1b[32m';
-		yellow = '\x1B[33m';
-		reset = '\x1b[0m';
-
-		// CRITIC ERROR
-		syslog.listenWithConditions(this,{
-			severity:{
-				data:"CRITIC,ERROR"
-			}		
-		},(pdu) => {
-			this.normalizeLog.call(this, pdu);
-			//var pay = pdu.payload ? (pdu.payload.stack || pdu.payload) : "Error undefined" ; 
-			//var date = new Date(pdu.timeStamp) ;
-			//console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);	
-		});
-
-		// INFO DEBUG
-		var data  = null ;
-		if ( this.debug ) {
-			data = "INFO,DEBUG,WARNING";
-		}else{
-			data = "INFO";	
-		} 
-		syslog.listenWithConditions(this, {
-			severity:{
-				data:data
-			}		
-		},(pdu) => {
-			if ( pdu.msgid === "SERVER WELCOME"){
-				console.log(   blue + "              "+reset + " "+ pdu.payload);	
-				return ;
-			}
-			this.normalizeLog.call(this, pdu);
-			//var date = new Date(pdu.timeStamp) ;
-			//console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pdu.payload);	
-		});
-	};
-
 
 	var Console = class Console extends nodefony.appKernel {
 
@@ -177,7 +101,7 @@ nodefony.register("console", function(){
 					return ;
 				}
 				process.nextTick( ()=> {
-					try {
+					try {	
 						this.matchCommand();
 					}catch(e){
 						this.logger(e,  "ERROR");
@@ -188,7 +112,7 @@ nodefony.register("console", function(){
 		}
 
 		initializeLog ( settings ) {
-			logConsoleNodefony.call(this, this.syslog, settings);	
+			this.cli.listenSyslog(this.syslog, this.debug);
 		}
 
 		/**
@@ -261,16 +185,25 @@ nodefony.register("console", function(){
 					return ;
 				}
 				npm.commands.ls([], true, (error, data) =>{
-					var ele = {};
+					var ele = [];
 					for (var pack in data.dependencies){
-						//this.kernel.logger(data.dependencies[pack].name + " : " + data.dependencies[pack].version + " description : " + data.dependencies[pack].description , "INFO");	
-						ele[pack] = {
-							name:data.dependencies[pack].name,
-							version:data.dependencies[pack].version,
-							desc:data.dependencies[pack].description
-						};
+						//this.kernel.logger(data.dependencies[pack].name + " : " + data.dependencies[pack].version + " description : " + data.dependencies[pack].description , "INFO");
+						ele.push([
+							data.dependencies[pack].name,
+							data.dependencies[pack].version,
+							data.dependencies[pack].description
+						]);
 					}
-					displayTable("NPM NODEFONY PACKAGES", ele);
+					this.logger( "NPM NODEFONY PACKAGES", "INFO")
+					var headers = [
+						"NAME", 
+						"VERSION",
+						"DESCRIPTION"
+					];
+					this.cli.displayTable(ele, {
+						head: headers, 
+						colWidths :[30,10,100]
+					});
 					this.terminate(0);
 				});
 			});
@@ -388,10 +321,10 @@ nodefony.register("console", function(){
 		}
 		
 		matchCommand (){
-			this.cli = this.getopts.parseSystem();
+			this.cliParse = this.getopts.parseSystem();
 			var ret = null;
-			if (this.cli.argv.length){
-				var ele = this.cli.argv[0].split(":");
+			if (this.cliParse.argv.length){
+				var ele = this.cliParse.argv[0].split(":");
 				if (ele.length){
 					var cmd = ele[0];
 					for (var bundle in this.commands  ){
@@ -399,7 +332,7 @@ nodefony.register("console", function(){
 							var worker = this.commands[bundle][cmd];
 							if (worker){
 								try {
-									ret = new worker(this.container, this.cli.argv , this.cli.options );
+									ret = new worker(this.container, this.cliParse.argv , this.cliParse.options );
 								}catch(e){
 									throw e ;
 								}
@@ -411,10 +344,10 @@ nodefony.register("console", function(){
 						}
 					}
 					this.showHelp();
-					throw new Error("COMMAND : ")+ this.cli.argv +" not exist" ;
+					throw new Error("COMMAND : ")+ this.cliParse.argv +" not exist" ;
 				}else{
 					this.showHelp();
-					throw new Error("BAD FORMAT ARGV : ") + this.cli.argv ;
+					throw new Error("BAD FORMAT ARGV : ") + this.cliParse.argv ;
 				}
 			}
 			return this.showHelp();

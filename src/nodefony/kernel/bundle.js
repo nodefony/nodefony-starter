@@ -654,7 +654,7 @@ nodefony.register("Bundle", function(){
 			try {
 				res  = new nodefony.finder( {
 					path:this.path+"/Resources/public",
-					exclude:/^docs$|^tests$/
+					exclude:/^docs$|^tests|^node_modules|^assets$/
 				});
 			}catch(e){
 				this.logger(e,"ERROR");

@@ -11,7 +11,7 @@ var AsciiTable = require('ascii-table');
 nodefony.registerCommand("router",function(){
 
 
-	var router = class router extends nodefony.Worker {
+	var router = class router extends nodefony.cliWorker {
 
 		constructor(container, command/*, options*/ ){
 		

@@ -3,7 +3,7 @@
  *	TWIG WRAPPER
  *
  */
-var twig = require("twig");
+const twig = require("twig");
 
 nodefony.registerTemplate("twig", function(){
 

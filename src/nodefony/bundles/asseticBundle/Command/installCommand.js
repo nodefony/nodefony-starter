@@ -10,7 +10,7 @@ nodefony.registerCommand("assets",function(){
 
 	
 	
-	var Asset = class Asset extends nodefony.Worker {
+	var Asset = class Asset extends nodefony.cliWorker {
 
 		constructor (container, command/*, options*/){
 

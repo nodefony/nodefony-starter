@@ -9,7 +9,7 @@
 nodefony.registerCommand("less",function(){
 
 
-	var Less = class Less extends nodefony.Worker {
+	var Less = class Less extends nodefony.cliWorker {
 
 		constructor(container, command/*, options*/){
 			

@@ -7,7 +7,7 @@ var Url = require("url");
 
 nodefony.registerCommand("Monitoring",function(){
 
-	var monitoring = class monitoring  extends nodefony.Worker {
+	var monitoring = class monitoring  extends nodefony.cliWorker {
 
 		constructor (container, command/*, options*/){
 
@@ -62,7 +62,7 @@ nodefony.registerCommand("Monitoring",function(){
 		send (data/*, encodage*/){
 			var message = JSON.parse(data) ;
 			if ( message.message === "END LOAD TEST" ){
-				this.displayTable("NODEFONY LOAD TEST", message  );
+				this.displayTable( message  );
 				this.logger(data, "INFO");
 			}else{
 				this.logger(data, "INFO");	
@@ -76,20 +76,7 @@ nodefony.registerCommand("Monitoring",function(){
 			return this.terminate(0);
 		}
 
-		displayTable (titre, ele){
-			var table = new AsciiTable(titre);
-			table.setHeading(
-				"Average By Requests ( ms )", 
-				"Average Requests By Seconde",
-				"Total Time (s)",
-				"Average By Concurences (s)",
-				"Average CPU (%)"
-			);
-			table.setAlignCenter(0);
-			table.setAlignCenter(1);
-			table.setAlignCenter(2);
-			table.setAlignCenter(3);
-			table.setAlignCenter(4);
+		displayTable ( ele){
 			var obj = new Array(5);
 			for ( var val in ele){
 				switch(val){
@@ -111,8 +98,17 @@ nodefony.registerCommand("Monitoring",function(){
 					break;
 				}
 			}
-			table.addRowMatrix([obj]);
-			console.log(table.render());	
+			var head = [
+				"Average By Requests ( ms )", 
+				"Average Requests By Seconde",
+				"Total Time (s)",
+				"Average By Concurences (s)",
+				"Average CPU (%)"	
+			];
+			super.displayTable([obj], {
+				head:head,
+				align:["center","center","center","center","center"]
+			})
 		}
 
 	};

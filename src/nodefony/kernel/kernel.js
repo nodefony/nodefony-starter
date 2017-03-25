@@ -7,11 +7,6 @@
 
 nodefony.register("kernel", function(){
 	
-	const red   = '\x1b[31m';
-	const blue  = '\x1b[34m';
-	const green = '\x1b[32m';
-	const yellow = '\x1B[33m';
-	const reset = '\x1b[0m';
 	/**
 	 *	@event onTerminate
 	 *
@@ -54,47 +49,6 @@ nodefony.register("kernel", function(){
 		}
 	};
 
-	var niceBytes = function (x){
-  		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-    		    n = parseInt(x, 10) || 0, 
-    		    l = 0;        
-  		while(n >= 1024){
-      			n = n/1024;
-      			l++;
-  		}
-  		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
-	};
-	nodefony.niceBytes = niceBytes ;
-
-	
-	var logConsole = function(syslog){
-		// CRITIC ERROR
-		syslog.listenWithConditions(this,{
-			severity:{
-				data:"CRITIC,ERROR"
-			}		
-		},(pdu) => {
-			this.normalizeLog.call(this, pdu);
-		});
-		// INFO DEBUG
-		var data ;
-		if ( this.debug ){
-			data = "INFO,DEBUG,WARNING" ;
-		}else{
-			data = "INFO" ;
-		}
-		syslog.listenWithConditions(this, {
-			severity:{
-				data:data
-			}		
-		},(pdu) => {
-			if ( pdu.msgid === "SERVER WELCOME"){
-				console.log(   '\x1b[34m' + "              \x1b[0m "+ pdu.payload);	
-				return ;
-			}
-			this.normalizeLog.call(this, pdu);
-		});
-	};
 
 	var defaultEnvEnable = {
 		dev:		true,
@@ -148,9 +102,6 @@ nodefony.register("kernel", function(){
 			}
 			
 			this.debug = debug || false;
-			if (this.debug){
-				//this.preboot = true;
-			}
 			this.booted = false;
 			this.ready = false;
 			this.autoLoader = autoLoader;
@@ -160,9 +111,14 @@ nodefony.register("kernel", function(){
 			this.options = options ;
 			this.node_start = options.node_start ;
 
+			// Manage Container
+			this.initializeContainer();
+
+			// cli worker
+			this.cli = new nodefony.cliWorker("CLI", this.container, this.notificationsCenter);
 			this.listen(this, "onReady" , () =>{
 				this.autoLoader.deleteCache();
-				if (this.cli && this.type === "SERVER" ){
+				if ( this.type === "SERVER" ){
 					this.cli.assetInstall()
 				}
 			});
@@ -218,8 +174,6 @@ nodefony.register("kernel", function(){
 	 	*	@method boot
          	*/
 		boot (options){	
-			// Manage Container
-			this.initializeContainer();
 			
 			// Manage Reader
 			this.reader = new nodefony.Reader(this.container);
@@ -244,6 +198,8 @@ nodefony.register("kernel", function(){
 					}
 					this.initializeLog(options);
 					this.autoLoader.syslog = this.syslog;
+					// Manage Template engine
+					this.initTemplate();
 				});
 				var gconf = this.readGeneratedConfig() ;
 				if ( gconf ){
@@ -259,10 +215,7 @@ nodefony.register("kernel", function(){
 			this.initCluster();
 
 			this.eventReadywait = 0 ;
-
-			// Manage Template engine
-			this.initTemplate();	
-
+			
 			// Manage Injections
 			this.injection = new nodefony.injection(this.container);
 			this.set("injection", this.injection);
@@ -316,7 +269,6 @@ nodefony.register("kernel", function(){
 					this.preboot = true ;
 					this.logger("\x1B[33m EVENT KERNEL onPreBoot\x1b[0m", "DEBUG");
 					this.fire("onPreBoot", this );
-					this.cli = new nodefony.Worker("CLI", this.container, this.notificationsCenter);
 					this.registerBundles( this.configBundle );
 				}, false);
 
@@ -325,26 +277,7 @@ nodefony.register("kernel", function(){
 			}
 		}
 
-		normalizeLog  (pdu){
-			var date = new Date(pdu.timeStamp) ;
-
-			if ( ! pdu.payload ){
-				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ "logger message empty !!!!");
-				console.trace(pdu);
-				return 	;	
-			}
-			var message = pdu.payload;
-			switch( typeof message ){
-				case "object" :
-					switch (true){
-						default:
-							message = util.inspect(message)
-					}
-				break;
-				default:
-			}
-			console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ message);
-		}
+		
 
 		checkPath (myPath){
 			if ( ! myPath ){
@@ -444,11 +377,13 @@ nodefony.register("kernel", function(){
 		initializeLog (options){
 			
 			if ( this.settings.system.log.console ||  this.environment === "dev"){
-				logConsole.call(this, this.syslog);
+				this.cli.listenSyslog( this.syslog , this.debug);
+				//logConsole.call(this, this.syslog);
 			}else{
 				// PM2
 				if ( this.settings.system.log.active && options.node_start === "PM2" ){
-					logConsole.call(this, this.syslog);
+					this.cli.listenSyslog( this.syslog , this.debug );
+					//logConsole.call(this, this.syslog);
 				}
 
 				if ( this.settings.system.log.file ){
@@ -786,16 +721,16 @@ nodefony.register("kernel", function(){
 			for ( var ele in memory ){
 				switch (ele ){
 					case "rss" :
-						this.logger( (message || ele )  + " ( Resident Set Size ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+						this.logger( (message || ele )  + " ( Resident Set Size ) PID ( "+this.processId+" ) : " + this.cli.niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
 					break;
 					case "heapTotal" :
-						this.logger( (message || ele ) + " ( Total Size of the Heap ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO","MEMORY " + ele) ;
+						this.logger( (message || ele ) + " ( Total Size of the Heap ) PID ( "+this.processId+" ) : " + this.cli.niceBytes( memory[ele] ) , "INFO","MEMORY " + ele) ;
 					break;
 					case "heapUsed" :
-						this.logger( (message || ele ) + " ( Heap actually Used ) PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+						this.logger( (message || ele ) + " ( Heap actually Used ) PID ( "+this.processId+" ) : " + this.cli.niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
 					break;
 					case "external" :
-						this.logger( (message || ele ) + " PID ( "+this.processId+" ) : " + niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
+						this.logger( (message || ele ) + " PID ( "+this.processId+" ) : " + this.cli.niceBytes( memory[ele] ) , "INFO", "MEMORY " + ele) ;
 					break;
 				}
 			}
@@ -806,8 +741,11 @@ nodefony.register("kernel", function(){
 	 	*	@method terminate 
          	*/
 		terminate (code){
+			if ( code === undefined ){
+				code = 0 ;
+			}
 			try {
-				this.fire("onTerminate", this);
+				this.fire("onTerminate", this, code);
 			}catch(e){
 				console.trace(e);
 				code = 1;

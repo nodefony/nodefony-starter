@@ -8,7 +8,7 @@
 
 nodefony.registerCommand("encoders",function(){
 
-	var encoders = class encoders extends nodefony.Worker {
+	var encoders = class encoders extends nodefony.cliWorker {
 
 		constructor(container, command/*, options*/){
 		

@@ -2,7 +2,7 @@
 
 nodefony.registerCommand("unitTest", function(){
 
-	var unitTest = class unitTest extends nodefony.Worker {
+	var unitTest = class unitTest extends nodefony.cliWorker {
 
 		constructor (container, command/*, options*/){
 
