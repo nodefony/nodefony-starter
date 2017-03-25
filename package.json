@@ -32,7 +32,6 @@
     "node": ">=6"
   },
   "dependencies": {
-    "ascii-table": "0.0.9",
     "asciify": "1.3.5",
     "babel-cli": "6.23.0",
     "babel-loader": "6.4.1",

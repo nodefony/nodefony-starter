@@ -6,7 +6,6 @@
  *
  *
  */
-var AsciiTable = require('ascii-table');
 
 nodefony.registerCommand("router",function(){
 
@@ -69,53 +68,8 @@ nodefony.registerCommand("router",function(){
 			return ele;
 		}
 
-		/*router.prototype.displayTable = function(title, ele){
-			if (! ele) return this.logger("route not exist","ERROR");
-			var options = {
-				skinny: true,
-				//intersectionCharacter: "+",
-				columns: [
-					{field: "nb",  name: "NB"},
-					{field: "name", name: "\033[34mROUTE\033[0m"},
-					{field: "path",  name: "PATH"},
-					{field: "variables", name: "VARIABLES"},
-					{field: "host",  name: "HOST"},
-					{field: "bundle",  name: "BUNDLE"},
-					{field: "controller",  name: "CONTROLLER"},
-					{field: "action",  name: "ACTION"},
-					{field: "options", name: "OPTIONS"},
-					{field: "schemes", name: "SCHEMES"},
-					{field: "pattern", name: "PATTERN"},
-					{field: "firstMatch", name: "FIRST MATCH"}
-				],
-			};
-			var tab = [];
-			for (var i=0 ; i < ele.length ;i++){
-				var detail =  ele[i].defaults.controller.split(":")
-				
-				tab.push( {
-					nb:i+1,
-					name: "\033[34m"+ele[i].name+"\033[0m",
-					path:ele[i].path,
-					variables:ele[i].variables,
-					host:ele[i].host|| "",
-					bundle:detail[0],
-					controller:detail[1],
-					action:detail[2],
-					options:util.inspect( ele[i].options),
-					schemes:ele[i].schemes|| "",
-					pattern:ele[i].pattern,
-					firstMatch:ele[i].firstMatch || ""
-				});
-			}
-			var table = asciitable(options, tab);
-			this.logger(table)
-		}*/
-
-
 		displayTable (titre, ele, firstMatch){
-			var table = new AsciiTable(titre);
-			table.setHeading(
+			var head = [
 				"NB", 
 				"ROUTE",
 				"PATH",
@@ -123,17 +77,20 @@ nodefony.registerCommand("router",function(){
 				//"HOST",
 				"BUNDLE",
 				"CONTROLLER",
-				"ACTION",
+				"ACTION"
 				//"OPTIONS"
 				//"SCHEMES",
 				//"PATTERN",
-				firstMatch ? "FIRST MATCH" :" " 		
-			);
-			table.setAlignCenter(3);
-			table.setAlignCenter(11);
+			];
+			if ( firstMatch ){
+				head.push("FIRST MATCH")
+			}
+			var table = super.displayTable(null ,{
+				head:head
+			})
 			for (var i=0 ; i < ele.length ;i++){
 				var detail =  ele[i].defaults.controller.split(":");
-				table.addRow(
+				var tab = [
 					i+1,
 					ele[i].name,
 					ele[i].path,
@@ -141,15 +98,18 @@ nodefony.registerCommand("router",function(){
 					//ele[i].host|| "",
 					detail[0],
 					detail[1],
-					detail[2],
+					detail[2]
 					//util.inspect( ele[i].options)
 					//ele[i].schemes|| "",
 					//ele[i].pattern,
-					firstMatch ? ele[i].firstMatch || "" : " "
-				);
+				];
+				if ( firstMatch ){
+					tab.push( ele[i].firstMatch)
+				}
+				table.push(tab);
 			}
-			//table.removeBorder()
-			console.log(table.render());	
+			console.log(table.toString());	
+			return table;
 		}
 
 

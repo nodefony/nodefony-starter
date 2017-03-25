@@ -30,7 +30,6 @@ nodefony.registerCommand("assets",function(){
 						break;
 						case "dump" :
 							this.bundles = this.kernel.getBundles();
-							//var serviceTemplate = container.get("templating") ;
 							this.kernel.listen(this, "onReady", () => {
 								for ( var bundle in this.bundles ){
 									var views = this.bundles[bundle].resourcesFiles.findByNode("views") ;
@@ -43,9 +42,6 @@ nodefony.registerCommand("assets",function(){
 											error:(error) => {
 												this.logger(error, "ERROR");
 												this.terminate(1);
-											},
-											load:(template) => {
-												//this.logger(template.path,"INFO")
 											}
 										});
 									});

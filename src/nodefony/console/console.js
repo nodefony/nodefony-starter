@@ -9,8 +9,6 @@
 const Getopt = require('node-getopt');
 const npm = require("npm");
 const npmi = require('npmi');
-var AsciiTable = require('ascii-table');
-
 
 nodefony.register("console", function(){
 
