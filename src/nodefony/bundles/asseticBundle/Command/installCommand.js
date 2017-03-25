@@ -35,13 +35,19 @@ nodefony.registerCommand("assets",function(){
 								for ( var bundle in this.bundles ){
 									var views = this.bundles[bundle].resourcesFiles.findByNode("views") ;
 									views.getFiles().forEach((file/*, index, array*/) => {
-										this.twig.compile( file, (error/*, template*/) => {
-											if (error){
+										this.twig.twig( {
+											path:file.path,
+											name:file.name,
+											async:false,
+											base:this.kernel.rootDir,
+											error:(error) => {
 												this.logger(error, "ERROR");
 												this.terminate(1);
-												return ;
+											},
+											load:(template) => {
+												//this.logger(template.path,"INFO")
 											}
-										} );
+										});
 									});
 								}
 								this.terminate(0);
