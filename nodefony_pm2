@@ -23,7 +23,7 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	];
 	var table = new Table({
 		head: head,
-		colWidths: [20, 15, 15, 20, 15, 15,40, 40]
+		colWidths: [20, 15, 15, 20, 15, 15, 30, 30]
 	});
 
 	
@@ -87,8 +87,8 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 				config.max_memory_restart,
 				config.autorestart,
 				config.max_restarts,
-				config.error_file,
-				config.out_file	
+				config.error_file.replace(config.cwd,"."),
+				config.out_file.replace(config.cwd,".")	
 			]);
 			console.log(table.toString());
     			// Display logs in standard output 

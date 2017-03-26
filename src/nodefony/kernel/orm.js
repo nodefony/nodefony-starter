@@ -114,9 +114,7 @@ nodefony.register("orm", function(){
 					data:"CRITIC,ERROR"
 				}		
 			},(pdu) => {
-				var pay = pdu.payload.stack || pdu.payload;
-				var date = new Date(pdu.timeStamp) ;
-				console.error(date.toDateString() + " " +date.toLocaleTimeString()+ " " + red + pdu.severityName +" "+ reset + green  + pdu.msgid + reset  + " : "+ pay);
+				this.kernel.cli.normalizeLog(pdu);
 			});
 				
 			if (this.kernel.environment === "dev"){
@@ -132,10 +130,7 @@ nodefony.register("orm", function(){
 						data:data
 					}		
 				},(pdu) =>{
-					var pay = pdu.payload.stack || pdu.payload;
-					var date = new Date(pdu.timeStamp) ;
-					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pay);
-
+					this.kernel.cli.normalizeLog(pdu);
 				});
 			}else{
 				syslog.listenWithConditions(this,{
@@ -143,10 +138,7 @@ nodefony.register("orm", function(){
 						data:"INFO"
 					}		
 				},(pdu) =>{
-					var pay = pdu.payload.stack || pdu.payload;
-					var date = new Date(pdu.timeStamp) ;
-					console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ pay);
-
+					this.kernel.cli.normalizeLog(pdu);
 				});
 			}
 			return syslog;

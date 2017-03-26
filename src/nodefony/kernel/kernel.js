@@ -82,6 +82,7 @@ nodefony.register("kernel", function(){
 			this.appPath = this.rootDir+"/app/";
 			this.configPath = this.rootDir+"/vendors/nodefony/config/config.yml" ;
 			this.generateConfigPath = this.rootDir+"/config/generatedConfig.yml" ;
+			this.publicPath = this.rootDir+"/web";
 			this.platform = process.platform ;
 			this.type = type;
 			this.bundles = {};
@@ -277,8 +278,6 @@ nodefony.register("kernel", function(){
 			}
 		}
 
-		
-
 		checkPath (myPath){
 			if ( ! myPath ){
 				return null ;
@@ -293,9 +292,11 @@ nodefony.register("kernel", function(){
 
 		getConfigBunbles (){
 			var config = [] ;
+			this.checkBundlesExist( this.settings, "Kernel Config" , this.configPath );
 			try {
 				for ( var bundle in this.settings.system.bundles){
-					config.push(this.settings.system.bundles[bundle]);	
+					var name = this.settings.system.bundles[bundle].replace("\.\/","").replace(/\/\//,"/") ;
+					config.push(name);	
 				}
 			}catch(e){
 				throw e ;
@@ -303,11 +304,57 @@ nodefony.register("kernel", function(){
 			return config ;
 		}
 
+		checkBundlesExist (yml, nameConfig, pathConfig, remove){
+			var exist = null ;
+			if (yml.system && yml.system.bundles ){
+				for ( var bundle in yml.system.bundles ){
+					exist = fs.existsSync(this.rootDir+"/"+yml.system.bundles[bundle] );
+					if ( ! exist){
+						delete yml.system.bundles[bundle];
+						if ( remove ){
+							try{
+								fs.writeFileSync( pathConfig, yaml.safeDump(yml),{encoding:'utf8'} )
+								this.logger( nameConfig+" : " + bundle +" Bundle dont't exit", "WARNING" );
+								this.logger("Update Config  : " + pathConfig)
+							}catch(e){
+								this.logger(e, "ERROR");
+							}
+						}else{
+							var error = new Error(nameConfig+" : " + bundle +" Bundle dont't exit") ;
+							this.logger( error, "ERROR" );
+							this.logger( "Config file : " + pathConfig );
+							this.logger( yml.system.bundles );
+						}
+						try {
+							var link = this.publicPath+"/"+bundle+"Bundle" ;
+							var stat = fs.lstatSync(link) ;
+							if ( stat ){
+								exist = fs.existsSync( fs.readlinkSync(link) ) ;
+								if ( ! exist ){
+									fs.unlinkSync(link);
+									this.logger("REMOVE LINK : " + link);
+								}
+							}
+						}catch(e){
+						}
+					}else{
+						/*if (this.type === "SERVER"){
+							var name = this.rootDir+"/"+yml.system.bundles[bundle].replace("\.\/","").replace(/\/\//,"/");
+							this.logger( "BUNDLE TO LOAD : " +  name );
+						}*/
+					}
+				}
+			}	
+		}
+
 		readGeneratedConfig (){
+			var exist = null ;
 			try {
-				var exist = fs.existsSync(this.generateConfigPath);
+				exist = fs.existsSync(this.generateConfigPath);
 				if (exist){
-					return yaml.load(fs.readFileSync(this.generateConfigPath, 'utf8' ) ); 
+					var yml = yaml.load( fs.readFileSync(this.generateConfigPath, 'utf8' ) ); 
+					this.checkBundlesExist( yml, "Generated Config", this.generateConfigPath, true);
+					return yml ;
 				}else{
 					return null ;	
 				}	
@@ -454,7 +501,7 @@ nodefony.register("kernel", function(){
 	 	*	@method logger
          	*/
 		logger (pci, severity, msgid,  msg){
-			if (! msgid) { msgid = "KERNEL ";}
+			if (! msgid) { msgid = this.cli.clc.magenta("KERNEL ");}
 			return this.syslog.logger(pci, severity, msgid,  msg);
 		}
 
@@ -532,16 +579,16 @@ nodefony.register("kernel", function(){
 		registerBundles (path, callbackFinish, nextick){
 			var func = function(){
 				try{
-					 new nodefony.finder( {
+					 return new nodefony.finder( {
 						path:path,
 						recurse:false,
 						onFile:(file) => {
-							if (file.matchName(this.regBundle) ){
+							if ( file.matchName(this.regBundle) ){
 								try {
-									this.logger("registerBundles : " + file.name ,"DEBUG");
+									//this.logger("registerBundles : " + file.name ,"DEBUG");
 									this.loadBundle(file);
 								}catch(e){
-									this.logger(e);
+									this.logger(e, "ERROR");
 								}	
 							}
 						},
@@ -549,26 +596,19 @@ nodefony.register("kernel", function(){
 					});
 				}catch(e){
 					this.logger(e, "ERROR")
-					this.logger("GLOBAL CONFIG REGISTER : ","INFO");
-					this.logger(this.configBundle,"INFO");
-					var gene = this.readGeneratedConfig();
-					if ( gene ){
-						this.logger("GENERATED CONFIG REGISTER file ./config/GeneratedConfig.yml : ","INFO");
-						this.logger( gene  , "INFO" );
-					}
 				}
 			};
 			if ( nextick === undefined ){
 				process.nextTick( () => {
 					try {
-						func.call(this);
+						return func.call(this);
 					}catch(e){
 						this.logger(e, "ERROR");	
 					}
  				});	
 			}else{
 				try {
-					func.apply(this);
+					return func.apply(this);
 				}catch(e){
 					this.logger(e, "ERROR");	
 				}
@@ -646,9 +686,9 @@ nodefony.register("kernel", function(){
 	 	*	 
 	 	*	@method readConfigDirectory 
          	*/	
-		readConfigDirectory (path, callbackConfig){
+		readConfigDirectory (Path, callbackConfig){
 			var finder = new nodefony.finder({
-				path:path,
+				path:Path,
 				onFinish:(error, result) => {
 					this.readConfig.call(this, error, result, callbackConfig);
 				}

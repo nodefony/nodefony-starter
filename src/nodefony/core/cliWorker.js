@@ -6,21 +6,40 @@
  *
  */
 var Table = require('cli-table');
+const clc = require('cli-color');
 
 nodefony.register("cliWorker", function(){
 
-	const red   = '\x1b[31m';
-	const blue  = '\x1b[34m';
-	const green = '\x1b[32m';
-	const yellow = '\x1B[33m';
+	const red   = clc.red.bold;
+	const cyan   = clc.cyan.bold;
+	const blue  = clc.blueBright.bold;
+	const green = clc.green;
+	const yellow = clc.yellow.bold;
 	const reset = '\x1b[0m';
+	var logSeverity = function(severity) {
+		switch(severity){
+			case "DEBUG":
+				return cyan(severity);
+			case "INFO":
+				return blue(severity);
+			case "NOTICE" :
+				return red(severity);
+			case "WARNING" :
+				return yellow(severity);
+			case "ERROR" :
+			case "CRITIC":
+			case "ALERT":
+			case "EMERGENCY":
+				return red(severity);
+			default:
+				return cyan(severity);
+		}
+	};
 
 	const regHidden = /^\./;
 	var isHiddenFile = function(name){
 		return regHidden.test(name);
 	};
-
-
 
 	var createFile = function (Path, skeleton, parse, params, callback){
 		if ( skeleton ){
@@ -49,7 +68,7 @@ nodefony.register("cliWorker", function(){
 				throw e	;
 			}
 		}
-	}
+	};
 
 	var buildSkeleton = function(skeleton, parse, obj, callback){
 		var skelete = null ;
@@ -71,7 +90,7 @@ nodefony.register("cliWorker", function(){
 			this.logger(e, "ERROR");
 		}
 		return skelete;
-	}
+	};
 
 
 
@@ -92,14 +111,17 @@ nodefony.register("cliWorker", function(){
     				}
 			});
 		}
-	}
+	};
 
-	var parseAssetsBundles = function (table){
+	var parseAssetsBundles = function (table, Name){
 		var bundles = this.kernel.getBundles();
 		var result = null ;
 		let name =null; 
 		let srcpath =null; 
 		for ( let bundle in bundles ){
+			if (Name && Name !== bundle){
+				continue;
+			}
 			try {
 				result = bundles[bundle].getPublicDirectory();	
 			}catch(e){
@@ -117,8 +139,8 @@ nodefony.register("cliWorker", function(){
 					}
 					table.push([
 						bundle,
-						dstpath,
-						Srcpath,
+						dstpath.replace(this.kernel.rootDir,"."),
+						Srcpath.replace(this.kernel.rootDir,"."),
 						size 
 					]);
 				});
@@ -129,7 +151,7 @@ nodefony.register("cliWorker", function(){
 		}catch(e){
 			this.logger(e, "WARNING");		
 		}
-	}
+	};
 
 	var niceBytes = function (x){
   		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
@@ -158,6 +180,7 @@ nodefony.register("cliWorker", function(){
 			super( name, container, notificationsCenter);
 			this.publicDirectory = this.kernel.rootDir+"/web/";
 			this.twig = twig ;
+			this.clc = clc ;
 			this.twigOptions = {
 				views :this.kernel.rootDir,
 				'twig options':{
@@ -165,6 +188,10 @@ nodefony.register("cliWorker", function(){
 					cache: false 
 				}
 			};
+		}
+
+		reset (){
+			process.stdout.write(this.clc.reset);
 		}
 
 		showHelp (){
@@ -206,7 +233,7 @@ nodefony.register("cliWorker", function(){
 			var date = new Date(pdu.timeStamp) ;
 
 			if ( ! pdu.payload ){
-				console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ "logger message empty !!!!");
+				console.log( date.toDateString() + " " + date.toLocaleTimeString() + " " + logSeverity( pdu.severityName ) + " " + green( pdu.msgid) + " " + " : " + "logger message empty !!!!");
 				console.trace(pdu);
 				return 	;	
 			}
@@ -220,7 +247,7 @@ nodefony.register("cliWorker", function(){
 				break;
 				default:
 			}
-			console.log( date.toDateString() + " " +date.toLocaleTimeString()+ " " + blue + pdu.severityName +" "+ reset + green  + pdu.msgid + reset +" "+ " : "+ message);
+			console.log( date.toDateString() + " " + date.toLocaleTimeString() + " " + logSeverity( pdu.severityName ) + " " + green(pdu.msgid) + " " + " : " + message);
 		}
 
 		listenSyslog (syslog, debug){
@@ -336,7 +363,7 @@ nodefony.register("cliWorker", function(){
 		}
 
 		// ASSETS LINK
-		assetInstall (){
+		assetInstall (name){
 			var table = this.displayTable(null, {
 				head:[
 					"BUNDLES",
@@ -346,12 +373,10 @@ nodefony.register("cliWorker", function(){
 				]
 			})
 			createAssetDirectory.call(this, this.publicDirectory, () => {
-				parseAssetsBundles.call(this, table);
+				parseAssetsBundles.call(this, table, name);
 				console.log(table.toString());	
 			});
 		}
-
-		
 		
 		build (obj, parent){
 			var child = null;

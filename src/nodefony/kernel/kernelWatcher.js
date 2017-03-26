@@ -202,15 +202,13 @@ nodefony.register("kernelWatcher", function(){
 					break;
 					case "unlink" :
 						this.logger( Path, "INFO", event );
-						var file = this.cwd + "/" + Path ;
+						/*var file = this.cwd + "/" + Path ;
 						try{ 
 							var fileClass = new nodefony.fileClass(file);
 							this.router.removeRoutes(fileClass.path);
 						}catch(e){
 							this.logger(e, "ERROR", event);
-						}
-
-						
+						}*/
 					break;
 				}
 			});	

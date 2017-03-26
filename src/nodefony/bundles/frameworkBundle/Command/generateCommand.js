@@ -560,7 +560,7 @@ nodefony.registerCommand("generate",function(){
 						fs.writeFileSync( this.kernel.generateConfigPath, yaml.safeDump(json),{encoding:'utf8'} )
 						var file = new nodefony.fileClass( bundleFile );
 						this.kernel.loadBundle(file);
-						this.assetInstall();
+						this.assetInstall(name);
 					}catch(e){
 						this.logger(e, "ERROR");
 						this.terminate(1);

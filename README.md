@@ -81,14 +81,12 @@ $ git clone https://github.com/nodefony/nodefony.git
 $ cd nodefony
 
 $ make build
-
 ```
 
 ## <a name="start"></a>Start
 
 Start the server to check:
 ```bash
-
 # TO START NODEFONY IN DEVELOPMENT NODE
 
 $ ./nodefony_dev
@@ -105,8 +103,6 @@ $ make stop
 
 # TO KILL ALL
 $ make kill
-
-
 ```
 
 Access to App with URL : http://localhost:5151
@@ -268,21 +264,6 @@ Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :core
 Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :Entity
 Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :helloBundle.js
 Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :package.json
-Fri Mar 24 2017 16:05:02 INFO SERVICE generate   : Create directory : /Users/cci/repository/nodefony/web/
-.-------------------------------------------------------------------------------------------------------------------------------------------------------------------------.
-|                                                                INSTALL LINK IN PUBLIC DIRECTORY : ./web                                                                 |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    BUNDLE     |                                     DESTINATION PATH                                     |                   SOURCE PATH                    |   SIZE    |
-|---------------|------------------------------------------------------------------------------------------|--------------------------------------------------|-----------|
-| framework     | /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public     | /Users/cci/repository/nodefony/web/framework     | 6.2 MB    |
-| security      | /Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/public      | /Users/cci/repository/nodefony/web/security      | 1.9 KB    |
-| monitoring    | /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public    | /Users/cci/repository/nodefony/web/monitoring    | 2.9 MB    |
-| documentation | /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/public | /Users/cci/repository/nodefony/web/documentation | 1.4 MB    |
-| unitTest      | /Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/public      | /Users/cci/repository/nodefony/web/unitTest      | 0 bytes   |
-| demo          | /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/public                   | /Users/cci/repository/nodefony/web/demo          | 27 MB     |
-| App           | /Users/cci/repository/nodefony/app//Resources/public                                     | /Users/cci/repository/nodefony/web/App           | 9.1 MB    |
-| hello         | /Users/cci/repository/nodefony/src/bundles/helloBundle/Resources/public                  | /Users/cci/repository/nodefony/web/hello         | 399 bytes |
-'-------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
 ```
 #### Now helleBundle is auto-insert in framework with watcher active on (controllers, views, routing )  and an webpack bundle auto-config  :
 You can see helleBundle config   : vim  ./src/bundles/helloBundle/Resources/config/config.yml
@@ -376,58 +357,99 @@ Monitoring in progress !!!
 ## <a name="references--thanks"></a>References / Thanks
 #### NPM : *Will be automatically installed by Makefile*
 
-```bash
-.------------------------------------------------------------------------------------------------------------------------------------------------------------.
-|                                                                   NPM NODEFONY PACKAGES                                                                    |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|            NAME             | VERSION |                                                    DESCRIPTION                                                     |
-|-----------------------------|---------|--------------------------------------------------------------------------------------------------------------------|
-| ascii-table                 | 0.0.9   | Easy tables for your console data                                                                                  |
-| asciify                     | 1.3.5   | Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.                          |
-| babel-cli                   | 6.23.0  | Babel command line.                                                                                                |
-| babel-loader                | 6.4.1   | babel module loader for webpack                                                                                    |
-| babel-preset-es2015         | 6.22.0  | Babel preset for all es2015 plugins.                                                                               |
-| babel-register              | 6.23.0  | babel require hook                                                                                                 |
-| bluebird                    | 3.5.0   | Full featured Promises/A+ implementation with exceptionally good performance                                       |
-| bootstrap                   | 3.3.7   | The most popular front-end framework for developing responsive, mobile first projects on the web.                  |
-| bootstrap-loader            | 2.0.0   | Boostrap for Webpack                                                                                               |
-| chokidar                    | 1.6.1   | A neat wrapper around node.js fs.watch / fs.watchFile / fsevents.                                                  |
-| cli-table                   | 0.3.1   | Pretty unicode tables for the CLI                                                                                  |
-| connect                     | 2.30.2  | High performance middleware framework                                                                              |
-| cookie                      | 0.3.1   | HTTP server cookie parsing and serialization                                                                       |
-| css-loader                  | 0.27.3  | css loader module for webpack                                                                                      |
-| extract-text-webpack-plugin | 2.1.0   | Extract text from bundle into a file.                                                                              |
-| file-loader                 | 0.10.1  | file loader module for webpack                                                                                     |
-| font-awesome                | 4.7.0   | The iconic font and CSS framework                                                                                  |
-| jquery                      | 3.2.1   | JavaScript library for DOM operations                                                                              |
-| js-yaml                     | 3.8.2   | YAML 1.2 parser and serializer                                                                                     |
-| jshint                      | 2.9.4   | Static analysis tool for JavaScript                                                                                |
-| less-loader                 | 3.0.0   | Less loader for webpack. Compiles Less to CSS.                                                                     |
-| markdown-it                 | 8.3.1   | Markdown-it - modern pluggable markdown parser.                                                                    |
-| mime                        | 1.3.4   | A comprehensive library for mime-type mapping                                                                      |
-| mkdirp                      | 0.5.1   | Recursively mkdir, like `mkdir -p`                                                                                 |
-| mysql                       | 2.13.0  | A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% MIT licensed.     |
-| node-getopt                 | 0.2.3   | featured command line args parser                                                                                  |
-| node-pre-gyp                | 0.6.33  | Node.js native addon binary install tool                                                                           |
-| node-sass                   | 4.5.0   | Wrapper around libsass                                                                                             |
-| nodegit                     | 0.18.0  | Node.js libgit2 asynchronous native bindings                                                                       |
-| npm                         | 4.4.1   | a package manager for JavaScript                                                                                   |
-| npmi                        | 2.0.1   | Gives a simplier API to npm install (programatically installs stuffs)                                              |
-| pm2                         | 2.4.2   | Production process manager for Node.JS applications with a built-in load balancer.                                 |
-| promise                     | 7.1.1   | Bare bones Promises/A+ implementation                                                                              |
-| raw-loader                  | 0.5.1   | raw loader module for webpack                                                                                      |
-| resolve-url-loader          | 2.0.2   | Webpack loader that resolves relative paths in url() statements based on the original source file                  |
-| sass-loader                 | 6.0.3   | Sass loader for webpack                                                                                            |
-| shortid                     | 2.2.8   | Amazingly short non-sequential url-friendly unique id generator.                                                   |
-| sqlite3                     | 3.1.8   | Asynchronous, non-blocking SQLite3 bindings                                                                        |
-| style-loader                | 0.14.0  | style loader module for webpack                                                                                    |
-| twig                        | 1.10.4  | JS port of the Twig templating language.                                                                           |
-| url-loader                  | 0.5.8   | url loader module for webpack                                                                                      |
-| webpack                     | 2.2.1   | Packs CommonJs/AMD modules for the browser. Allows to split your codebase into multiple bundles, which can be  ... |
-| webpack-merge               | 4.0.0   | Variant of merge that's useful for webpack configuration                                                           |
-| websocket                   | 1.0.24  | Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.                    |
-| xml2js                      | 0.4.17  | Simple XML to JavaScript object converter.                                                                         |
-'------------------------------------------------------------------------------------------------------------------------------------------------------------'
+```
+Sat Mar 25 2017 18:23:44 INFO CONSOLE   : NPM NODEFONY PACKAGES
+┌──────────────────────────────┬──────────┬────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ NAME                         │ VERSION  │ DESCRIPTION                                                                                        │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ asciify                      │ 1.3.5    │ Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.          │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ babel-cli                    │ 6.23.0   │ Babel command line.                                                                                │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ babel-loader                 │ 6.4.1    │ babel module loader for webpack                                                                    │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ babel-preset-es2015          │ 6.22.0   │ Babel preset for all es2015 plugins.                                                               │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ babel-register               │ 6.23.0   │ babel require hook                                                                                 │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ bluebird                     │ 3.5.0    │ Full featured Promises/A+ implementation with exceptionally good performance                       │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ bootstrap                    │ 3.3.7    │ The most popular front-end framework for developing responsive, mobile first projects on the web.  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ bootstrap-loader             │ 2.0.0    │ Boostrap for Webpack                                                                               │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ chokidar                     │ 1.6.1    │ A neat wrapper around node.js fs.watch / fs.watchFile / fsevents.                                  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ cli-table                    │ 0.3.1    │ Pretty unicode tables for the CLI                                                                  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ connect                      │ 2.30.2   │ High performance middleware framework                                                              │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ cookie                       │ 0.3.1    │ HTTP server cookie parsing and serialization                                                       │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ css-loader                   │ 0.27.3   │ css loader module for webpack                                                                      │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ extract-text-webpack-plugin  │ 2.1.0    │ Extract text from bundle into a file.                                                              │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ file-loader                  │ 0.10.1   │ file loader module for webpack                                                                     │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ font-awesome                 │ 4.7.0    │ The iconic font and CSS framework                                                                  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ jquery                       │ 3.2.1    │ JavaScript library for DOM operations                                                              │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ js-yaml                      │ 3.8.2    │ YAML 1.2 parser and serializer                                                                     │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ jshint                       │ 2.9.4    │ Static analysis tool for JavaScript                                                                │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ less-loader                  │ 3.0.0    │ Less loader for webpack. Compiles Less to CSS.                                                     │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ markdown-it                  │ 8.3.1    │ Markdown-it - modern pluggable markdown parser.                                                    │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ mime                         │ 1.3.4    │ A comprehensive library for mime-type mapping                                                      │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ mkdirp                       │ 0.5.1    │ Recursively mkdir, like `mkdir -p`                                                                 │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ mysql                        │ 2.13.0   │ A node.js driver for mysql. It is written in JavaScript, does not require compiling, and is 100% … │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ node-getopt                  │ 0.2.3    │ featured command line args parser                                                                  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ node-pre-gyp                 │ 0.6.33   │ Node.js native addon binary install tool                                                           │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ node-sass                    │ 4.5.0    │ Wrapper around libsass                                                                             │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ nodegit                      │ 0.18.0   │ Node.js libgit2 asynchronous native bindings                                                       │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ npm                          │ 4.5.0    │ a package manager for JavaScript                                                                   │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ npmi                         │ 2.0.1    │ Gives a simplier API to npm install (programatically installs stuffs)                              │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ pm2                          │ 2.4.2    │ Production process manager for Node.JS applications with a built-in load balancer.                 │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ promise                      │ 7.1.1    │ Bare bones Promises/A+ implementation                                                              │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ raw-loader                   │ 0.5.1    │ raw loader module for webpack                                                                      │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ resolve-url-loader           │ 2.0.2    │ Webpack loader that resolves relative paths in url() statements based on the original source file  │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ sass-loader                  │ 6.0.3    │ Sass loader for webpack                                                                            │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ shortid                      │ 2.2.8    │ Amazingly short non-sequential url-friendly unique id generator.                                   │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ sqlite3                      │ 3.1.8    │ Asynchronous, non-blocking SQLite3 bindings                                                        │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ style-loader                 │ 0.14.0   │ style loader module for webpack                                                                    │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ twig                         │ 1.10.4   │ JS port of the Twig templating language.                                                           │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ url-loader                   │ 0.5.8    │ url loader module for webpack                                                                      │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ webpack                      │ 2.2.1    │ Packs CommonJs/AMD modules for the browser. Allows to split your codebase into multiple bundles, … │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ webpack-merge                │ 4.0.0    │ Variant of merge that's useful for webpack configuration                                           │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ websocket                    │ 1.0.24   │ Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.    │
+├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ xml2js                       │ 0.4.17   │ Simple XML to JavaScript object converter.                                                         │
+└──────────────────────────────┴──────────┴────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Big thanks:**

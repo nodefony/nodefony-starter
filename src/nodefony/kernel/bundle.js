@@ -68,7 +68,7 @@ nodefony.register("Bundle", function(){
 
 			super( name, container );
 			
-			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG","KERNEL");
+			this.logger("\x1b[36m REGISTER BUNDLE : "+this.name+"   \x1b[0m","DEBUG",this.kernel.cli.clc.magenta("KERNEL") );
 			this.environment = this.kernel.environment;
 			this.waitBundleReady = false ;
 			this.locale = this.kernel.settings.system.locale ;
