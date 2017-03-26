@@ -486,9 +486,13 @@ describe("BUNDLE DEMO", function(){
 					switch ( res.type ){
 						case "START" :
 							assert.deepStrictEqual(res.message, "CONNECTED");	
-							connection.sendUTF( JSON.stringify({
-								type:"TWIG-RENDER"	
-							}) );
+							try {
+								connection.sendUTF( JSON.stringify({
+									type:"TWIG-RENDER"	
+								}));
+							}catch(e){
+								this.logger(e,"ERROR");
+							}
 						break;
 						case "TWIG-RENDER" :
 							connection.sendUTF( JSON.stringify({
@@ -500,8 +504,8 @@ describe("BUNDLE DEMO", function(){
 							connection.close();
 						break;
 					}
-				})
-				connection.on('close', (reasonCode, description) =>  {
+				});
+				connection.on('close', (reasonCode, description) => {
 					done();
 				});
 			});

@@ -200,14 +200,19 @@ nodefony.registerController("twig", function(){
 					this.renderResponse(  JSON.stringify (result) );
 					return ;
 				}else{
-					if (message.utf8Data){
-						var res = JSON.parse( message.utf8Data) ;
-					}else{
-						if (typeof message === "string"){
-							var res = JSON.parse(message);	
+					var res = null ;
+					try {
+						if (message.utf8Data){
+							res = JSON.parse( message.utf8Data) ;
 						}else{
-							var res = message ;
+							if (typeof message === "string"){
+								res = JSON.parse(message);	
+							}else{
+								res = message ;
+							}
 						}
+					}catch(e){
+						throw e ;	
 					}
 					switch (res.type){
 						case "START":

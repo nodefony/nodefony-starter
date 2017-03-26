@@ -231,44 +231,82 @@ nodefony.register.call(nodefony.context, "websocket", function(){
 		}
 
 		controller (pattern, data){
+			var container = this.kernelHttp.container.enterScope("subRequest");
+			container.set("context", this) ;
+			container.set("translation", this.translation );
+			var control = null ;
+			var resolver = null ;
 			try {
-				this.resolver = this.router.resolveName(this.container, pattern) ;
-				var control = new this.resolver.controller( this.container, this.resolver.context );
+				resolver = this.router.resolveName(this.container, pattern);
+			}catch(e){
+				return this.notificationsCenter.fire("onError", this.container, e );	
+			}
+			if ( ! resolver.resolve) {
+				return this.notificationsCenter.fire("onError", this.container, {
+					status:404,
+					error:"PATTERN : " + pattern,
+					message:"not Found"
+				});
+			}
+			try {
+				control = new resolver.controller( container, this );
+				control.response = new nodefony.Response( null, container, this.type); 
 				if ( data ){
 					Array.prototype.shift.call( arguments );
 					for ( var i = 0 ; i< arguments.length ; i++){
-						this.resolver.variables.push(arguments[i]);	
+						resolver.variables.push(arguments[i]);	
 					}
 				}
-				return this.resolver.action.apply(control, this.resolver.variables);
 			}catch(e){
-				this.logger(e, "ERROR");
-				//throw e.error
-			}	
+				return this.notificationsCenter.fire("onError", this.container, e );	
+			}
+			return {
+				resolver:resolver,
+				controller:control,	
+				response:resolver.action.apply(control, resolver.variables)
+			};	
 		}
 
-		render (response){
+		render (subRequest){
+			this.removeListener("onView", subRequest.controller.response.setBody);
+			this.kernelHttp.container.leaveScope(subRequest.controller.container);
 			switch (true){
-				case response instanceof nodefony.wsResponse :
-				case response instanceof nodefony.Response :
-					return response.body;
-				case response instanceof Promise :
-				case response instanceof BlueBird :
-					return this.response.body ;
-				case nodefony.typeOf(response) === "object":
-					if ( this.resolver.defaultView ){
-						 return this.render( this.resolver.get("controller").render(this.resolver.defaultView, response ) );
+				case subRequest.response instanceof nodefony.Response :
+				case subRequest.response instanceof nodefony.wsResponse :
+					return subRequest.response.body;
+				case subRequest.response instanceof Promise :
+				case subRequest.response instanceof BlueBird :
+					if ( subRequest.controller.response.body === ""){
+						var txt = "nodefony TWIG function render can't resolve async Call in Twig Template " ;
+						this.logger(txt,"ERROR");
+						return txt;
+					}
+					/*subRequest.response.then((result) =>{
+						console.log(result)
+						subRequest.controller.response.body = result ;
+					});*/
+					return subRequest.controller.response.body;
+				case nodefony.typeOf(subRequest.response) === "object":
+					if ( subRequest.resolver.defaultView ){
+						 return this.render( {
+							resolver:subRequest.resolver,
+							controller:subRequest.controller,
+							response:subRequest.controller.render(subRequest.resolver.defaultView, subRequest.response )
+						 } );
 					}else{
 						throw {
 							status:500,
 							message:"default view not exist"
 						};
 					}
-				case typeof response === "string" :
-					return response ;
+				break;
+				case typeof subRequest.response === "string" :
+					return subRequest.response ;
 				default:
+					this.logger("nodefony TWIG function render can't resolve async Call in Twig Template ","WARNING");
 					return this.response.body ;
 			}
+
 		}
 
 		handleMessage (message){
