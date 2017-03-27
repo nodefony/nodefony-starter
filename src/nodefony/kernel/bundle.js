@@ -79,12 +79,11 @@ nodefony.register("Bundle", function(){
 			try {
 				this.finder = new nodefony.finder( {
 					path:this.path,
-					exclude:/^docs$|^tests$|^public$|^doc$/,
+					exclude:/^docs$|^tests$|^public$|^doc|^node_modules$/,
 				});
 			}catch(e){
 				this.logger(e, "ERROR");	
 			}
-
 			
 			this.translation = this.get("translation");
 			this.reader = this.kernel.reader;
@@ -244,7 +243,8 @@ nodefony.register("Bundle", function(){
 								try {
 									this.webPackConfig = result[ele] || null ;
 									if ( this.webPackConfig ){
-										this.listen(this, "onReady", () => {
+										this.kernel.listen(this, "onPostRegister", () => {
+											this.logger("WEBPACK BUNDLE RUN COMPILER WATCHING : "+ this.webPackConfig.watch )
 											if ( this.webpackService ){
 												this.webpackCompiler = this.webpackService.loadConfig( this.webPackConfig ,this.path);	
 											}
@@ -582,7 +582,14 @@ nodefony.register("Bundle", function(){
 		}
 		
 		registerI18n (locale, result){
-			if (! this.translation ) { return ; }
+			if (! this.translation ) { 
+				this.translation = this.get("translation"); 
+				if ( this.translation ){
+					this.locale = this.translation.defaultLocal;
+				}else{
+					return ;
+ 				}	
+			}
 			if (result){
 				this.i18nFiles = this.findI18nFiles(result) ;
 			}
@@ -597,7 +604,7 @@ nodefony.register("Bundle", function(){
 					var bundleLocal = this.getParameters("bundles."+this.name+".locale") ;
 					files = this.getfilesByLocal( bundleLocal || this.translation.defaultLocale );
 					if ( bundleLocal  && ! files.length() ){
-						throw new Error("Error Translation file locale: "+defaultLocale+" don't exist");
+						this.logger( Error("Error Translation file locale: "+bundleLocal+" don't exist"), "WARNING" )
 					}
 				}
 			}

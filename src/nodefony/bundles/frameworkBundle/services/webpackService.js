@@ -177,7 +177,7 @@ nodefony.registerService("webpack", function(){
 						
 			var myConf = webpackMerge( defaultConfig.call(this, name, Path), config ) ;
 			
-			this.logger( "LOAD CONFIG entry :" + myConf.entry.main , "DEBUG" )
+			this.logger( "LOAD WEBPACK BUNDLE ENTRY POINT :" + myConf.entry.main , "DEBUG" )
 
 			try {
 				var compiler =  webpack( myConf );

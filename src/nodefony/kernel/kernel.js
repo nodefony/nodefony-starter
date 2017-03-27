@@ -127,7 +127,6 @@ nodefony.register("kernel", function(){
 				}
 			});
 
-
 			/**
 		 	*	@signals
 		 	*
