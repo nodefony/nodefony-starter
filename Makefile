@@ -129,7 +129,7 @@ npm:
 		fi \
 	fi
 
-deploy:
+deploy: webpack
 	make asset ;
 	make start &
 
@@ -141,7 +141,7 @@ webpack:
 	@echo "";
 	./console webpack:dump ;\
 
-asset:	webpack
+asset:
 	@echo "";
 	@echo "#########################################" ;
 	@echo "#            NODEFONY ASSETS            #" ;
@@ -169,12 +169,6 @@ framework:
 
 	git submodule sync;
 	git submodule update --init --recursive
-
-	@echo "";
-	@echo "#######################################" ;
-	@echo "#    GIT CHECKOUT NODEFONY-STAGE      #" ;
-	@echo "#######################################" ;
-	@echo "";
 	
 	@echo "";
 	@echo "####################################################" ;
