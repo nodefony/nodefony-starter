@@ -119,10 +119,14 @@ nodefony.register("kernel", function(){
 			this.cli = new nodefony.cliWorker("CLI", this.container, this.notificationsCenter);
 			this.listen(this, "onReady" , () =>{
 				this.autoLoader.deleteCache();
+			});
+
+			this.listen(this, "onPostRegister" , () =>{
 				if ( this.type === "SERVER" ){
 					this.cli.assetInstall();
 				}
 			});
+
 
 			/**
 		 	*	@signals

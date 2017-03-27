@@ -175,20 +175,7 @@ framework:
 	@echo "#    GIT CHECKOUT NODEFONY-STAGE      #" ;
 	@echo "#######################################" ;
 	@echo "";
-
-	#cd $(PWD_STAGE); \
-	#BRANCH=git branch | sed -n '/\* /s///p' :\
-	#git checkout --track -b webpack origin/webpack ; \
-	#cd $(PWD); \
-
-	@if [ ! -d app/Resources/public/js/stage ] ; then \
-		mkdir app/Resources/public/js/stage ;\
-		if [  -d src/nodefony-stage/dist ] ; then \
-			cp -r src/nodefony-stage/dist/* app/Resources/public/js/stage/ ;\
-		fi \
-	fi
 	
-
 	@echo "";
 	@echo "####################################################" ;
 	@echo "#            CREATE FRAMEWORK REPOSITORY           #" ;
@@ -227,12 +214,6 @@ framework:
 	fi
 	@if [ ! -d web/assets/images ] ; then  \
 		mkdir web/assets/images ;\
-	fi
-	@if [ ! -d web/vendors ] ; then  \
-		mkdir web/vendors ;\
-		cd web/vendors ;\
-		ln -s ../../src/nodefony-stage stage ;\
-		cd ../.. ;\
 	fi
 	@if [ ! -e web/favicon.ico ] ; then \
 		echo " copy favicon.ico " ;\

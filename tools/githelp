@@ -26,6 +26,20 @@ $ eval "$(ssh-agent -s)"
 $ ssh-add ~/.ssh/my_github_key/id_rsa
 
 
+// submodules
+
+  // add submodules
+git submodule add https://github.com/nodefony/nodefony-stage.git ./src/stage
+
+  // rm submodules
+git submodule deinit
+git rm --cached src/stage
+// rm in .gitmodules 
+submodule "src/stage"]
+        path = src/stage
+        url = https://github.com/nodefony/nodefony-stage.git
+
+
 /*
  *	CLONE GIT BARE
  *	on new server git
