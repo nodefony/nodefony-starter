@@ -306,7 +306,7 @@ nodefony.register("kernel", function(){
 
 		checkBundlesExist (yml, nameConfig, pathConfig, remove){
 			var exist = null ;
-			if (yml.system && yml.system.bundles ){
+			if (yml && yml.system && yml.system.bundles ){
 				for ( var bundle in yml.system.bundles ){
 					exist = fs.existsSync(this.rootDir+"/"+yml.system.bundles[bundle] );
 					if ( ! exist){
@@ -352,9 +352,13 @@ nodefony.register("kernel", function(){
 			try {
 				exist = fs.existsSync(this.generateConfigPath);
 				if (exist){
-					var yml = yaml.load( fs.readFileSync(this.generateConfigPath, 'utf8' ) ); 
-					this.checkBundlesExist( yml, "Generated Config", this.generateConfigPath, true);
-					return yml ;
+					try {
+						var yml = yaml.load( fs.readFileSync(this.generateConfigPath, 'utf8' ) ); 
+						this.checkBundlesExist( yml, "Generated Config", this.generateConfigPath, true);
+						return yml ;
+					}catch(e){
+						throw e;
+					}
 				}else{
 					return null ;	
 				}	
