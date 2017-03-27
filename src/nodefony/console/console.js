@@ -40,15 +40,15 @@ nodefony.register("console", function(){
 
 	
 	var generateHelp = function(obj, str){
-		str+= "\x1B[32mnodefony\x1B[0m\n";
-		str +=  "\t\x1B[32m"+ "npm:list"+"\x1B[0m							 List all installed packages \n";
-		str +=  "\t\x1B[32m"+ "npm:install"+"\x1B[0m							 Install all framework packages\n";
+		str += this.cli.clc.cyan("nodefony")+" \n";
+		str += this.cli.clc.green("\tnpm:list")+"							 List all installed packages \n";
+		str += this.cli.clc.green("\tnpm:install")+"							 Install all framework packages\n";
 		for (var ele in obj){
 			if (obj[ele].name ){
-				str += "\x1B[32m"+ obj[ele].name+"\x1B[0m"; 
+				str +=  obj[ele].name; 
 			}
 			for (var cmd in obj[ele].task ){
-				str +=  "\t\x1B[32m"+ obj[ele].task[cmd][0]+"\x1B[0m";
+				str +=  this.cli.clc.green("\t"+ obj[ele].task[cmd][0]);
 				var length =  obj[ele].task[cmd][0].length;
 				var size = 65 - length ;
 				for (var i = 0 ; i< size ; i++) { str +=" "; }
@@ -57,8 +57,6 @@ nodefony.register("console", function(){
 		}
 		return str;
 	};
-
-	
 
 	var settingsSysLog = {
 		//rateLimit:100,
@@ -299,9 +297,10 @@ nodefony.register("console", function(){
 			var bundles = {};
 			for ( let bundle in this.commands ){
 				if ( ! bundles[bundle] ){
+					var name = this.cli.clc.cyan(bundle)+" \n" ;
 					bundles[bundle] = { 
-						name :"\x1B[32m"+bundle+"\n\x1B[0m",
-						task:[]
+						name : name,
+						task: []
 					};
 				}
 
@@ -313,7 +312,7 @@ nodefony.register("console", function(){
 					}
 				}
 			}
-			this.getopts.setHelp( generateHelp(bundles, this.helpString) );
+			this.getopts.setHelp( generateHelp.call(this, bundles, this.helpString) );
 			//this.getopts.setHelp(this.helpString);
 			return this.stop;
 		}

@@ -31,10 +31,14 @@ nodefony.registerBundle ("monitoring", function(){
 		 	*
 		 	*      this.waitBundleReady = true ; 
 		 	*/	
-			
+			if (this.kernel.type === "CONSOLE"){
+				return ;
+			}
+
 			this.infoKernel = {};
 			this.infoBundles = {};
 
+			this.httpKernel = this.container.get("httpKernel");
 			this.webpackService = this.get("webpack");
 			
 			// MANAGE GIT
@@ -80,6 +84,8 @@ nodefony.registerBundle ("monitoring", function(){
 
 
 			this.kernel.listen(this, "onPostReady", (kernel) => {
+
+				this.debugView = this.httpKernel.getTemplate("monitoringBundle::debugBar.html.twig");
 
 				if ( this.settings.storage.active ){
 					this.storageProfiling = this.settings.storage.requests ;
@@ -583,14 +589,13 @@ nodefony.registerBundle ("monitoring", function(){
 					if ( ! context.timeoutExpired  ){
 
 						if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
-							var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 							if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-								this.templating.renderFile(View, context.extendTwig(context.profiling),function(error , result){
-									if (error){
-										throw error ;
-									}
+								try {
+									var result = this.debugView.render( context.extendTwig(context.profiling) );
 									response.body = response.body.replace("</body>",result+"\n </body>") ;
-								});
+								}catch(e){
+									throw e ;	
+								}
 							}else{
 								//context.setXjson(context.profiling);
 							}
@@ -619,14 +624,13 @@ nodefony.registerBundle ("monitoring", function(){
 			}else{
 				if ( ! context.timeoutExpired  ){
 					if( ! context.isAjax && context.showDebugBar /*&& context.profiling.route.name !== "monitoring"*/ ){
-						var View = this.container.get("httpKernel").getView("monitoringBundle::debugBar.html.twig");
 						if (response && typeof response.body === "string" && response.body.indexOf("</body>") > 0 ){
-							this.templating.renderFile(View, context.extendTwig(context.profiling),function(error , result){
-								if (error){
-									throw error ;
-								}
+							try {
+								var result = this.debugView.render( context.extendTwig(context.profiling) );
 								response.body = response.body.replace("</body>",result+"\n </body>") ;
-							});
+							}catch(e){
+								throw e ;	
+							}
 						}else{
 							//context.setXjson(context.profiling);
 						}

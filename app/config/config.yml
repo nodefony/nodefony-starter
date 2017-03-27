@@ -9,8 +9,7 @@
 #   standard for all programming languages.
 #
 
-
-
+#####################
 #
 #  FRAMEWORK NODEFONY
 #
@@ -30,6 +29,8 @@ lang:
   en_en:                        "english"
   fr_fr:                        "français"
 
+
+##########
 #
 #  WEBPACK
 #
@@ -45,6 +46,22 @@ webpack:
     library:                    "app"
     libraryTarget:              "umd"
 
+
+##################################
+#
+#       OVERRIDE BUNDLE MONITORING
+#
+#       see MONITORING BUNDLE config for more options
+#
+#
+monitoringBundle:
+  debugBar:                     true
+  storage:
+    active:                     true                      
+    requests:                   orm
+
+
+##################################
 #
 #       OVERRIDE  BUNDLE SEQUELIZE  
 #       
@@ -72,6 +89,8 @@ sequelizeBundle:
 #        host:          localhost
 #        port:          '3306'
 
+
+############################
 #
 #       OVERRIDE BUNDLE HTTP 
 #
@@ -94,16 +113,16 @@ httpBundle:
       maxAge:                     0 
     web:
       path:                       "/web/"
-      maxage:                     0                     #30*24*60*60*1000
+      maxage:                     0                             #30*24*60*60*1000
   upload:
     tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000               #in Bytes
+    #max_filesize:                 100000                       #in Bytes
   session:
-    start:                        false                          # autostart || false 
-    handler:                      session.storage.sequelize      # session.storage.files | session.storage.sequelize | session.storage.memcached
-    #save_path:                    "./tmp/sessions"              # for session.storage.files only
+    start:                        false                         # autostart || false 
+    handler:                      session.storage.sequelize     # session.storage.files | session.storage.sequelize | session.storage.memcached
+    #save_path:                    "./tmp/sessions"             # for session.storage.files only
     cookie:
-      maxAge:                     0                              # like cookie_lifetime php  =>seconde 
+      maxAge:                     0                             # like cookie_lifetime php  =>seconde 
     memcached:
       servers:                      
         nodefony: 
@@ -114,19 +133,9 @@ httpBundle:
     responseTimeout:              40000
   https:
     responseTimeout:              40000
-    
-#
-#       OVERRIDE BUNDLE MONITORING
-#
-#       see MONITORING BUNDLE config for more options
-#
-#
-monitoringBundle:
-  debugBar:                     true
-  storage:
-    active:                     false                      
-    requests:                   orm
-  
+ 
+
+################################
 #
 #       OVERRIDE BUNDLE REALTIME 
 #
