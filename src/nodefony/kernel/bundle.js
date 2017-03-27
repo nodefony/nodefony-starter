@@ -245,7 +245,9 @@ nodefony.register("Bundle", function(){
 									if ( this.webPackConfig ){
 										this.kernel.listen(this, "onPostRegister", () => {
 											if (  this.webpackService ){
-												this.logger("WEBPACK BUNDLE RUN COMPILER WATCHING : "+ this.webPackConfig.watch )
+												if ( this.kernel.environment === "dev" ){
+													this.logger("WEBPACK BUNDLE RUN COMPILER WATCHING : "+ this.webPackConfig.watch )
+												}
 												this.webpackCompiler = this.webpackService.loadConfig( this.webPackConfig ,this.path);	
 											}
 										});

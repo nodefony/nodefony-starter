@@ -81,7 +81,7 @@ build:
 startup:
 	./node_modules/pm2/bin/pm2 startup
 
-start: asset
+start:
 	./node_modules/pm2/bin/pm2 update
 	./nodefony_pm2 &
 
@@ -129,9 +129,7 @@ npm:
 		fi \
 	fi
 
-deploy: webpack
-	make asset ;
-	make start &
+deploy: webpack asset start
 
 webpack:
 	@echo "";
