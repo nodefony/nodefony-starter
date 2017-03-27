@@ -37,9 +37,9 @@ nodefony.register("kernel", function(){
 							setTimeout(()=>{
 								global.gc();
 								this.memoryUsage("EXPOSE GARBADGE COLLECTOR ON START") ;
-							},5000)
+							},5000);
 						}else{
-							this.memoryUsage("MEMORY POST READY ") ;
+							this.memoryUsage("MEMORY POST READY ");
 						}
 					}
 				}catch(e){
@@ -120,7 +120,7 @@ nodefony.register("kernel", function(){
 			this.listen(this, "onReady" , () =>{
 				this.autoLoader.deleteCache();
 				if ( this.type === "SERVER" ){
-					this.cli.assetInstall()
+					this.cli.assetInstall();
 				}
 			});
 
@@ -313,9 +313,9 @@ nodefony.register("kernel", function(){
 						delete yml.system.bundles[bundle];
 						if ( remove ){
 							try{
-								fs.writeFileSync( pathConfig, yaml.safeDump(yml),{encoding:'utf8'} )
+								fs.writeFileSync( pathConfig, yaml.safeDump(yml),{encoding:'utf8'} );
 								this.logger( nameConfig+" : " + bundle +" Bundle dont't exit", "WARNING" );
-								this.logger("Update Config  : " + pathConfig)
+								this.logger("Update Config  : " + pathConfig);
 							}catch(e){
 								this.logger(e, "ERROR");
 							}
@@ -368,13 +368,15 @@ nodefony.register("kernel", function(){
 			if (this.type === "SERVER"){
 				this.listen(this,"onPostReady", () => {
 					// create HTTP server 
+					var http =null ;
+					var https =null ;
 					try {
 						if ( this.settings.system.servers.http ){
-							var http = this.get("httpServer").createServer();
+							http = this.get("httpServer").createServer();
 						}
 						// create HTTPS server
 						if ( this.settings.system.servers.https ){
-							var https = this.get("httpsServer").createServer();
+							https = this.get("httpsServer").createServer();
 						}
 						// create WEBSOCKET server
 						if ( this.settings.system.servers.ws ){
@@ -595,7 +597,7 @@ nodefony.register("kernel", function(){
 						onFinish:callbackFinish || this.initializeBundles.bind(this)
 					});
 				}catch(e){
-					this.logger(e, "ERROR")
+					this.logger(e, "ERROR");
 				}
 			};
 			if ( nextick === undefined ){
@@ -643,7 +645,6 @@ nodefony.register("kernel", function(){
 						try {
 							this.logger("\x1b[32m APP OVERRIDING\x1b[0m views for bundle : "+bundle, "DEBUG");
 							this.bundles[bundle].registerViews(result);
-							//FIXME LOCALE
 							this.bundles[bundle].registerI18n(null, result);
 						}catch(e){
 							this.logger(e);
