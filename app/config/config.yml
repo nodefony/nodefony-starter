@@ -57,7 +57,7 @@ webpack:
 monitoringBundle:
   debugBar:                     true
   storage:
-    active:                     true                      
+    active:                     false                      
     requests:                   orm
 
 
