@@ -94,9 +94,19 @@ nodefony.registerBundle ("monitoring", function(){
 				this.kernelSetting = nodefony.extend(true, {}, this.kernel.settings, {
 					templating: this.kernel.settings.templating + " " + this.templating.version,
 					orm: this.orm ? this.kernel.settings.orm +" "+this.orm.engine.version : "",
-					CDN: this.kernel.settings.CDN ? true : false 
+					CDN: this.kernel.settings.CDN ? true : false ,
+					node_start: this.kernel.node_start
 				});
 				this.cdn = this.kernel.settings.CDN  ;
+				delete this.kernelSetting.system.PM2 ;
+				delete this.kernelSetting.system.bundles;
+				this.kernelSetting.servers = {
+					http:this.kernelSetting.system.servers.http,
+					https:this.kernelSetting.system.servers.https,
+					ws:this.kernelSetting.system.servers.ws,
+					wss:this.kernelSetting.system.servers.wss
+				};
+				delete this.kernelSetting.system.servers;
 				
 				for(var bund in kernel.bundles ){
 					this.infoBundles[bund] = {} ;
@@ -127,7 +137,7 @@ nodefony.registerBundle ("monitoring", function(){
 
 
 				if ( this.settings.debugBar ) {
-					this.logger("ADD DEBUG BAR MONITORING", "WARNING");
+					this.logger("ADD DEBUG BAR MONITORING", "INFO");
 					this.bundles = function(){
 						var obj = {};
 						for (var bundle in this.kernel.bundles ){
@@ -152,6 +162,8 @@ nodefony.registerBundle ("monitoring", function(){
 					this.domain =  this.translation.defaultDomain ;
 					this.nbServices = Object.keys(nodefony.services).length ;
 
+
+
 					//ORM
 					var ORM = {} ;
 					if (this.orm){
@@ -161,7 +173,7 @@ nodefony.registerBundle ("monitoring", function(){
 							connections:{}
 						};
 					}
-					//ORM
+					// TEMPLATING
 					var templating = {} ;
 					if ( this.templating ){
 						templating = {

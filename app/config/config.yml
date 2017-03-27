@@ -72,8 +72,6 @@ sequelizeBundle:
 #        host:          localhost
 #        port:          '3306'
 
-
-
 #
 #       OVERRIDE BUNDLE HTTP 
 #

@@ -81,7 +81,7 @@ build:
 startup:
 	./node_modules/pm2/bin/pm2 startup
 
-start:
+start: asset
 	./node_modules/pm2/bin/pm2 update
 	./nodefony_pm2 &
 

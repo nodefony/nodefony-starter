@@ -12,19 +12,28 @@
 		<li> <label class="label"> <a target="blank"  href='{{path("monitoring-index")}}'>NODEFONY </label><label class="label label-default" >{{kernelSettings.system.version}}</label> </a>
 			<div class="details">
 				<ul>
+					<li><label style="color:#999">CONFIG</label></li>
 					{% for key, value in kernelSettings %}
-						{% if key != "system" %}
+						{% if (key != "system") and  (key != "servers") %}
 							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
-						{% else %}
-							{% for key, value in kernelSettings.system %}
-								{% if key != "log"  %}
-									<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
-								{% endif %}
-							{% endfor %}
 						{% endif %}
 					{% endfor %}
 					<li><label>Debug</label><span class="label label-success">{{debug}}</span></li>	
-					<li><label>Git Branch</label><span class="label label-success">{{git.currentBranch}}</span></li>	
+					<li><label>Git Branch</label><span class="label label-success">{{git.currentBranch}}</span></li>
+
+					<li class="separator"> </li>
+					<li><label style="color:#999">CONFIG SYSTEM</label></li>
+					{% for key, value in kernelSettings.system %}
+						{% if key != "log"  %}
+							<li><label>{{ key | capitalize }}</label><span class="label label-success">{{value}}</span></li>
+						{% endif %}
+					{% endfor %}
+					<li class="separator"> </li>
+					<li><label style="color:#999">SERVERS</label></li>
+					{% for key, value in kernelSettings.servers %}
+						<li><label>{{ key  }}</label><span class="label label-success">{{value}}</span></li>
+					{% endfor %}	
+						
 				</ul>
 			</div>
 		</li>

@@ -406,11 +406,11 @@ nodefony.register("kernel", function(){
 			this.processId = process.pid ;
 			this.process = process ;
 			if (cluster.isMaster) {
-				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER MASTER \x1b[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId+"\n");
+				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER MASTER \x1b[0mVersion : "+ this.settings.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId+"\n");
 				this.fire("onCluster", "MASTER", this,  process);
 
 			}else if (cluster.isWorker) {
-				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER WORKER \x1b[0mVersion : "+ this.settings.system.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId);
+				console.log("		      \x1b[34mNODEFONY "+this.type+" CLUSTER WORKER \x1b[0mVersion : "+ this.settings.version +" PLATFORM : "+this.platform+"  PROCESS PID : "+this.processId);
 				this.workerId = cluster.worker.id ;
 				this.worker = cluster.worker ;
 				this.fire("onCluster", "WORKER",  this, process);

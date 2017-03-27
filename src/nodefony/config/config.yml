@@ -19,8 +19,8 @@
 #
 
 name                            : "NODEFONY"
+version                         : "2.0.3-beta"
 system:
-  version                       : "2.0.3-beta"
   domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$" 
