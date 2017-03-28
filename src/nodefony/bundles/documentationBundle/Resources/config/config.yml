@@ -34,6 +34,26 @@ name :				documentationBundle
 version:			"Beta"
 locale :			en_en
 
+#
+#  WATCHERS
+#    
+#    watchers Listen to changes, deletion, renaming of files and directories 
+#    of different components
+#       
+#    For watch all components 
+# 
+#      watch:			true
+#    or 
+#      watch:
+#        controller:		true
+#        config:                true
+#        views:			true
+#        translations:          true
+#
+watch:                          ~
+
+
+
 webpack:
   entry:
     main:                       "./js/documentation.js"

@@ -306,7 +306,7 @@ nodefony.registerService("serverLoad", function(){
 			super( "serverLoad", container, container.get("notificationsCenter") )
 			this.kernel = kernel ;
 			this.connections = {} ;
-			this.userAgent = "nodefony/"+ this.kernel.settings.system.version +" ("+process.platform+";"+process.arch+") V8/" +process.versions.v8 +" node/"+process.versions.node;
+			this.userAgent = "nodefony/"+ this.kernel.settings.version +" ("+process.platform+";"+process.arch+") V8/" +process.versions.v8 +" node/"+process.versions.node;
 		};
 
 		logger (pci, severity, msgid,  msg){

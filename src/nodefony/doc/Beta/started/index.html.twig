@@ -61,14 +61,13 @@ Change in Location : <code>./config/config.yml</code>   :
 #       KERNEL CONFIG
 #
 #
-
-name:                           "NODEFONY"
 system:
- version:                      "Beta"
- domain:                       mydomain.com                    
- domainAlias:                  "^www\\.mydomain\\.com$"        
- httpPort:                     5151
- httpsPort:                    5152
+  domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                                                          # domainAlias string only regex  example .*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$
+    - "^127.0.0.1$" 
+    - "^docker.nodefony$"
+  httpPort                      : 5151
+  httpsPort                     : 5152
  
 	</pre>
 
@@ -104,391 +103,346 @@ $ ./nodefony_dev
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
                                                                             
 
-		      NODEFONY SERVER CLUSTER MASTER Version : 2.0.2-beta PLATFORM : darwin  PROCESS PID : 47096
+		      NODEFONY SERVER CLUSTER MASTER Version : 2.0.3-beta PLATFORM : darwin  PROCESS PID : 92661
 
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : httpBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/httpBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG KERNEL  :  REGISTER BUNDLE : http   
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/kernel/httpKernelService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : httpKernelService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : httpService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/httpsService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : httpsService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/webSocketSecureService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : webSocketSecureService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/servers/websocketService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : websocketService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/sessions/sessionsService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : sessionsService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/staticFiles/staticService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : staticService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/services/upload/uploadService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE HTTP  : Bundle http Register Service : uploadService.js
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : frameworkBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/frameworkBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG KERNEL  :  REGISTER BUNDLE : framework   
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/services/routerService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE FRAMEWORK  : Bundle framework Register Service : routerService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/services/translationService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE FRAMEWORK  : Bundle framework Register Service : translationService.js
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE router( container )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE translation( container,type )
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : asseticBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/asseticBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG KERNEL  :  REGISTER BUNDLE : assetic   
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/cssrewriteService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE ASSETIC  : Bundle assetic Register Service : cssrewriteService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/lessService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE ASSETIC  : Bundle assetic Register Service : lessService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/uglifycssService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE ASSETIC  : Bundle assetic Register Service : uglifycssService.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/services/uglifyjs2Service.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE ASSETIC  : Bundle assetic Register Service : uglifyjs2Service.js
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE less( kernel,container )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE uglifyjs2( kernel,container )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE uglifycss( kernel,container )
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE cssrewrite( kernel,container )
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : securityBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/securityBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG KERNEL  :  REGISTER BUNDLE : security   
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/services/firewall/firewallService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE SECURITY  : Bundle security Register Service : firewallService.js
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE security( container,kernel )
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : realTimeBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/realTimeBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG KERNEL  :  REGISTER BUNDLE : realTime   
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/services/realTimeService.js
-Fri Dec 23 2016 17:49:14 DEBUG BUNDLE REALTIME  : Bundle realTime Register Service : realTimeService.js
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:14 WARNING BUNDLE REALTIME  :  OVERRIDING  CONFIG bundle  : http
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE ROUTER  : ADD Route : /secure/realtime   ===> realTimeBundle:default:index
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE ROUTER  : ADD Route : /realtime   ===> realTimeBundle:default:index
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:14 DEBUG SERVICE INJECTION  : START SERVICE realTime( container,kernel )
-Fri Dec 23 2016 17:49:14 DEBUG APP KERNEL  : registerBundles in appkernel.js : monitoringBundle.js
-Fri Dec 23 2016 17:49:14 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/monitoringBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG KERNEL  :  REGISTER BUNDLE : monitoring   
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/services/monitoringService.js
-Fri Dec 23 2016 17:49:15 DEBUG BUNDLE MONITORING  : Bundle monitoring Register Service : monitoringService.js
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/services/serverLoadService.js
-Fri Dec 23 2016 17:49:15 DEBUG BUNDLE MONITORING  : Bundle monitoring Register Service : serverLoadService.js
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:15 WARNING BUNDLE MONITORING  :  OVERRIDING  CONFIG bundle  : realTime
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony   ===> monitoringBundle:default:index
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/{module}   ===> monitoringBundle:default:index
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/monitoring/realtime   ===> monitoringBundle:default:realTime
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/routes   ===> monitoringBundle:api:routes
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/route/{name}   ===> monitoringBundle:api:routes
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/services   ===> monitoringBundle:api:services
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/service/{name}   ===> monitoringBundle:api:services
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/syslog   ===> monitoringBundle:api:syslog
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/requests   ===> monitoringBundle:api:requests
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/request/{uid}   ===> monitoringBundle:api:request
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/config   ===> monitoringBundle:api:config
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/config/{bundleName}   ===> monitoringBundle:api:bundle
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/realtime/{name}   ===> monitoringBundle:api:realtime
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/users   ===> monitoringBundle:api:users
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/sessions   ===> monitoringBundle:api:sessions
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/pm2/{action}   ===> monitoringBundle:api:pm2
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/api/security   ===> monitoringBundle:api:security
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /nodefony/test/load   ===> monitoringBundle:default:testLoad
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/security.yml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE INJECTION  : START SERVICE monitoring( realTime,container,kernel )
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE INJECTION  : START SERVICE serverLoad( container,kernel )
-Fri Dec 23 2016 17:49:15 DEBUG KERNEL   :  EVENT KERNEL onPreBoot
-Fri Dec 23 2016 17:49:15 DEBUG APP KERNEL  : registerBundles in appkernel.js : sequelizeBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/sequelizeBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG KERNEL  :  REGISTER BUNDLE : sequelize   
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/services/sequelizeService.js
-Fri Dec 23 2016 17:49:15 DEBUG BUNDLE SEQUELIZE  : Bundle sequelize Register Service : sequelizeService.js
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE INJECTION  : START SERVICE sequelize( container,kernel,autoLoader )
-Fri Dec 23 2016 17:49:15 DEBUG APP KERNEL  : registerBundles in appkernel.js : usersBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/usersBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG KERNEL  :  REGISTER BUNDLE : users   
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:15 DEBUG SERVICE ROUTER  : ADD Route : /logout   ===> usersBundle:default:logout
-Fri Dec 23 2016 17:49:15 DEBUG APP KERNEL  : registerBundles in appkernel.js : documentationBundle.js
-Fri Dec 23 2016 17:49:15 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/documentationBundle.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL  :  REGISTER BUNDLE : documentation   
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/services/webCrawlerService.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Bundle documentation Register Service : webCrawlerService.js
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> documentationBundle:default:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation/search   ===> documentationBundle:default:search
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}   ===> documentationBundle:default:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}   ===> documentationBundle:default:version
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation/{version}/{bundle}/{section}   ===> documentationBundle:default:version
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getMostRecentCommit   ===> documentationBundle:git:getMostRecentCommit
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getStatus   ===> documentationBundle:git:getStatus
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /api/git/getCurrentBranch   ===> documentationBundle:git:getCurrentBranch
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE INJECTION  : START SERVICE webCrawler( container,kernel )
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE DOCUMENTATION  : ELASTIC SEARCH DISABLED : webcrawler search in memory !!  try to install elastic server  
-Fri Dec 23 2016 17:49:16 DEBUG APP KERNEL  : registerBundles in appkernel.js : unitTestBundle.js
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/unitTestBundle.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL  :  REGISTER BUNDLE : unitTest   
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/services/unitTestService.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE UNITTEST  : Bundle unitTest Register Service : unitTestService.js
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /unitTest   ===> unitTestBundle:default:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE INJECTION  : START SERVICE unitTest( kernel,options )
-Fri Dec 23 2016 17:49:16 DEBUG APP KERNEL  : registerBundles in appkernel.js : demoBundle.js
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/demoBundle.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL  :  REGISTER BUNDLE : demo   
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/services/dmsgService.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Bundle demo Register Service : dmsgService.js
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/services/randomService.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Bundle demo Register Service : randomService.js
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/config.yml
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE DEMO  :  OVERRIDING  CONFIG bundle  : realTime
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.xml.example
-Fri Dec 23 2016 17:49:16 WARNING READER   : DROP FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.xml.example NO PLUGIN FIND
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /   ===> demoBundle:demo:index
-Fri Dec 23 2016 17:49:16 WARNING SERVICE ROUTER  : WARNING ROUTES HAS SAME NAME : /documentation   ===> demoBundle:demo:readme
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /documentation   ===> demoBundle:demo:readme
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /subscribe   ===> usersBundle:default:login
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /login/{type}   ===> demoBundle:login:login
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /demo/secure   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /adduser   ===> demoBundle:demo:addUser
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /logout   ===> usersBundle:default:logout
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /demo   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /local   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /basic   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /digest   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /auth/google   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /auth/google/callback   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /auth/github   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /auth/github/callback   ===> frameworkBundle:default:401
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /upload   ===> demoBundle:demo:indexUpload
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /fileupload   ===> demoBundle:demo:upload
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /sequelize   ===> demoBundle:demo:sequelize
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /query/sql   ===> demoBundle:demo:querySql
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /query/join   ===> demoBundle:demo:querySqlJoin
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /syscall   ===> demoBundle:demo:syscall
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /httpRequest   ===> demoBundle:demo:httpRequest
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /xmlResponse   ===> demoBundle:demo:rawResponseSync
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /xmlAsyncResponse   ===> demoBundle:demo:rawResponseAsync
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /demo/realtime   ===> demoBundle:demo:indexRealTime
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /finder   ===> demoBundle:finder:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /download   ===> demoBundle:finder:download
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /websoket   ===> demoBundle:demo:websoket
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /json   ===> demoBundle:demo:json
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /redirect   ===> demoBundle:demo:redirectGoogle
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /myroute   ===> demoBundle:demo:myroute
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /myroute/{page}/{elements}   ===> demoBundle:demo:myroute
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/security.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : demo_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY demo_area   : FACTORY sasl registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : basic_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY basic_area   : FACTORY passport-basic registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : digest_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY digest_area   : FACTORY passport-digest registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : local_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY local_area   : FACTORY passport-local registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : google_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY google_area   : FACTORY passport-google-oauth20 registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : ADD security context : github_area
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY github_area   : FACTORY passport-github2 registered 
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/services.xml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE INJECTION  : START SERVICE dmsg( realTime,container,kernel )
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE INJECTION  : START SERVICE random( realTime,container,kernel )
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL  :  REGISTER BUNDLE : App   
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/app/config/config.yml
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : realTime
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : http
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : sequelize
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/app/config/routing.yml
-Fri Dec 23 2016 17:49:16 WARNING SERVICE ROUTER  : WARNING ROUTES HAS SAME NAME : /   ===> documentationBundle:default:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE ROUTER  : ADD Route : /   ===> documentationBundle:default:index
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/app/config/security.yml
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  :  Register Provider  : in_memory API in_memory
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  EVENT KERNEL onPostRegister
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  HTTP
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  FRAMEWORK
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Bundle framework Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::401.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::401.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::403.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::403.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::404.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::404.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::exception.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::exception.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::md.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::md.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::system.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::system.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : Register Template : 'frameworkBundle::timeout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE FRAMEWORK  : COMPILE Template : 'frameworkBundle::timeout.html'
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  ASSETIC
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  SECURITY
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  REALTIME
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE REALTIME  : Bundle realTime Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  MONITORING
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/controller/api/apiController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Bundle monitoring Register Controller : api
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Bundle monitoring Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle:api:api.json'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle:api:api.json'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle:api:api.xml'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle:api:api.xml'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::app.xml'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::app.xml'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::debugBar.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::debugBar.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : Register Template : 'monitoringBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : COMPILE Template : 'monitoringBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Entity/requestsEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE MONITORING  : LOAD ENTITY : requestsEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  SEQUELIZE
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Entity/sessionEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE SEQUELIZE  : LOAD ENTITY : sessionEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  USERS
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : Bundle users Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::connect.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::connect.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Entity/userEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : LOAD ENTITY : userEntity.js
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/usersBundle/Fixtures/usersFixtures.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : LOAD FIXTURE : usersFixtures.js
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  DOCUMENTATION
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Bundle documentation Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller/gitController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Bundle documentation Register Controller : git
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle:layouts:documentationLayout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle:layouts:documentationLayout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle:layouts:navSection.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle:layouts:navSection.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::navDoc.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::navDoc.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : Register Template : 'documentationBundle::navDocBundle.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DOCUMENTATION  : COMPILE Template : 'documentationBundle::navDocBundle.html'
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  UNITTEST
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/controller/defaultController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE UNITTEST  : Bundle unitTest Register Controller : default
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE UNITTEST  : Register Template : 'unitTestBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE UNITTEST  : COMPILE Template : 'unitTestBundle::index.html'
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  DEMO
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/controller/demoController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Bundle demo Register Controller : demo
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/controller/finderController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Bundle demo Register Controller : finder
-Fri Dec 23 2016 17:49:16 DEBUG AUTOLOADER LOAD  : /Users/cci/repository/nodefony/src/bundles/demoBundle/controller/loginController.js
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Bundle demo Register Controller : login
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:documentation.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:documentation.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:exec.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:exec.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:httpRequest.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:httpRequest.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:navDoc.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:navDoc.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:Default:websocket.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:Default:websocket.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:demo:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:demo:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:demo:upload.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:demo:upload.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:demo:upload2.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:demo:upload2.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:finder:files.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:finder:files.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:finder:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:finder:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:layouts:layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:layouts:layout.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:layouts:navBar.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:layouts:navBar.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:login:login.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:login:login.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:orm:orm.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:orm:orm.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : Register Template : 'demoBundle:realTime:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE DEMO  : COMPILE Template : 'demoBundle:realTime:index.html'
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  INITIALIZE Bundle :  APP
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE APP  : Register Template : 'AppBundle::base.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE APP  : COMPILE Template : 'AppBundle::base.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE APP  : Register Template : 'AppBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE APP  : COMPILE Template : 'AppBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  EVENT KERNEL BOOT
-Fri Dec 23 2016 17:49:16 DEBUG SERVER STATIC FILE   : Add static route ===> /Users/cci/repository/nodefony/web/
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE sequelize CONNECTION  : nodefony :  CONNECT to database mysql : nodefony
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  : Set Session Strategy  : migrate
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  APP OVERRIDING views for bundle : users
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : Register Template : 'usersBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG BUNDLE USERS  : COMPILE Template : 'usersBundle::login.html'
-Fri Dec 23 2016 17:49:16 DEBUG sequelize   : sequelize REGISTER ENTITY : requests PROVIDE BUNDLE : monitoring
-Fri Dec 23 2016 17:49:16 DEBUG sequelize   : sequelize REGISTER ENTITY : session PROVIDE BUNDLE : sequelize
-Fri Dec 23 2016 17:49:16 DEBUG sequelize   : sequelize REGISTER ENTITY : user PROVIDE BUNDLE : users
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE FIREWALL  :  Register Provider  : nodefony ENTITY user
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  EVENT KERNEL READY
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY demo_area   :  FACTORY : sasl PROVIDER : user PATTERN : /^\/demo/
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY basic_area   :  FACTORY : passport-basic PROVIDER : user PATTERN : /^\/basic/
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY digest_area   :  FACTORY : passport-digest PROVIDER : user PATTERN : /^\/digest/
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY local_area   :  FACTORY : passport-local PROVIDER : user PATTERN : /^\/local/
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY google_area   :  FACTORY : passport-google-oauth20 PROVIDER : user PATTERN : /^\/auth\/google/
-Fri Dec 23 2016 17:49:16 DEBUG CONTEXT SECURITY github_area   :  FACTORY : passport-github2 PROVIDER : user PATTERN : /^\/auth\/github/
-Fri Dec 23 2016 17:49:16 WARNING BUNDLE MONITORING  : ADD DEBUG BAR MONITORING
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE HTTPS   :  READ CERTIFICATE KEY : /Users/cci/repository/nodefony/config/certificates/server/privkey.pem
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE HTTPS   :  READ CERTIFICATE CERT : /Users/cci/repository/nodefony/config/certificates/server/fullchain.pem
-Fri Dec 23 2016 17:49:16 DEBUG SERVICE HTTPS   :  READ CERTIFICATE CA : /Users/cci/repository/nodefony/config/certificates/ca/nodefony-root-ca.crt.pem
-Fri Dec 23 2016 17:49:16 DEBUG KERNEL   :  EVENT KERNEL POST READY
-Fri Dec 23 2016 17:49:17 INFO SERVICE MONITORING   : Create server MONITORING listen on Domain : localhost Port : 1318
-Fri Dec 23 2016 17:49:17 INFO SERVICE REALTIME  : Create server DMSG listen on Domain : localhost Port : 1316
-Fri Dec 23 2016 17:49:17 INFO SERVICE REALTIME  : Create server RANDOM listen on Domain : localhost Port : 1315
-Fri Dec 23 2016 17:49:17 INFO SERVICE HTTP   : HTTP  Server is listening on DOMAIN : http://localhost:5151
-Fri Dec 23 2016 17:49:17 INFO SERVICE WEBSOCKET   :  Server is listening on DOMAIN : ws://localhost:5151
-Fri Dec 23 2016 17:49:17 INFO SERVICE HTTPS   : HTTPS  Server is listening on DOMAIN : https://localhost:5152
-Fri Dec 23 2016 17:49:17 INFO SERVICE WEBSOCKET SECURE   :  Server  is listening on DOMAIN : wss://localhost:5152
-Fri Dec 23 2016 17:49:17 DEBUG SERVICE SESSIONS  : CONTEXT default SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 1
-Fri Dec 23 2016 17:49:17 DEBUG SERVICE SESSIONS  : CONTEXT google SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 0
-Fri Dec 23 2016 17:49:17 DEBUG SERVICE SESSIONS  : CONTEXT github SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 0
-Fri Dec 23 2016 17:49:18 DEBUG SERVICE LESS  : CREATE LESS FILE: /Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/public/css/style.css
-Fri Dec 23 2016 17:49:18 DEBUG SERVICE LESS  : CREATE LESS FILE: /Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/public/css/style.css
+Tue Mar 28 2017 11:19:58 DEBUG KERNEL  :  REGISTER BUNDLE : http   
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : httpKernelService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : httpService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : httpsService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : webSocketSecureService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : websocketService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : sessionsService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : staticService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE HTTP  : Register Service : uploadService.js
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/httpBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE serverStatic( container,options )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE httpKernel( container,serverStatic )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE httpServer( httpKernel,security,options )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE httpsServer( httpKernel,security,options )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE websocketServer( httpKernel,security,options )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE websocketServerSecure( httpKernel,security,options )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE sessions( security,httpKernel )
+Tue Mar 28 2017 11:19:58 DEBUG SERVICE INJECTION  : START SERVICE upload( httpKernel )
+Tue Mar 28 2017 11:19:58 DEBUG KERNEL  :  REGISTER BUNDLE : framework   
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE FRAMEWORK  : Register Service : routerService.js
+Tue Mar 28 2017 11:19:58 DEBUG BUNDLE FRAMEWORK  : Register Service : translationService.js
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE FRAMEWORK  : Register Service : webpackService.js
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/frameworkBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE router( container )
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE translation( container,type )
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE webpack( container )
+Tue Mar 28 2017 11:19:59 DEBUG KERNEL  :  REGISTER BUNDLE : assetic   
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE ASSETIC  : Register Service : cssrewriteService.js
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE ASSETIC  : Register Service : lessService.js
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE ASSETIC  : Register Service : uglifycssService.js
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE ASSETIC  : Register Service : uglifyjs2Service.js
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/asseticBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE less( kernel,container )
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE uglifyjs2( kernel,container )
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE uglifycss( kernel,container )
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE cssrewrite( kernel,container )
+Tue Mar 28 2017 11:19:59 DEBUG KERNEL  :  REGISTER BUNDLE : security   
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE SECURITY  : Register Service : firewallService.js
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/securityBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE INJECTION  : START SERVICE security( container,kernel )
+Tue Mar 28 2017 11:19:59 DEBUG KERNEL  :  REGISTER BUNDLE : sequelize   
+Tue Mar 28 2017 11:19:59 DEBUG BUNDLE SEQUELIZE  : Register Service : sequelizeService.js
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/security.yml
+Tue Mar 28 2017 11:19:59 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/sequelizeBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE INJECTION  : START SERVICE sequelize( container,kernel,autoLoader )
+Tue Mar 28 2017 11:20:00 DEBUG KERNEL  :  REGISTER BUNDLE : realTime   
+Tue Mar 28 2017 11:20:00 DEBUG BUNDLE REALTIME  : Register Service : realTimeService.js
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:20:00 WARNING BUNDLE REALTIME  :  OVERRIDING  CONFIG bundle  : http
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/routing.yml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : realSecure path :/secure/realtime controller realTimeBundle:default:index
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : real path :/realtime controller realTimeBundle:default:index
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/realTimeBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE INJECTION  : START SERVICE realTime( container,kernel )
+Tue Mar 28 2017 11:20:00 DEBUG KERNEL  :  REGISTER BUNDLE : monitoring   
+Tue Mar 28 2017 11:20:00 DEBUG BUNDLE MONITORING  : Register Service : monitoringService.js
+Tue Mar 28 2017 11:20:00 DEBUG BUNDLE MONITORING  : Register Service : serverLoadService.js
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:20:00 WARNING BUNDLE MONITORING  :  OVERRIDING  CONFIG bundle  : realTime
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/routing.yml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-index path :/nodefony controller monitoringBundle:default:index
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-module path :/nodefony/{module} controller monitoringBundle:default:index
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-realtime path :/nodefony/monitoring/realtime controller monitoringBundle:default:realTime
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-routes path :/nodefony/api/routes controller monitoringBundle:api:routes
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-route path :/nodefony/api/route/{name} controller monitoringBundle:api:routes
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-services path :/nodefony/api/services controller monitoringBundle:api:services
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-service path :/nodefony/api/service/{name} controller monitoringBundle:api:services
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-syslog path :/nodefony/api/syslog controller monitoringBundle:api:syslog
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-requests path :/nodefony/api/requests controller monitoringBundle:api:requests
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-request path :/nodefony/api/request/{uid} controller monitoringBundle:api:request
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-config path :/nodefony/api/config controller monitoringBundle:api:config
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-bundle path :/nodefony/api/config/{bundleName} controller monitoringBundle:api:bundle
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-real path :/nodefony/api/realtime/{name} controller monitoringBundle:api:realtime
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-users path :/nodefony/api/users controller monitoringBundle:api:users
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-sessions path :/nodefony/api/sessions controller monitoringBundle:api:sessions
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-pm2 path :/nodefony/api/pm2/{action} controller monitoringBundle:api:pm2
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-security path :/nodefony/api/security controller monitoringBundle:api:security
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE ROUTER  : ADD ROUTE : monitoring-test-load path :/nodefony/test/load controller monitoringBundle:default:testLoad
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/security.yml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/monitoringBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE INJECTION  : START SERVICE monitoring( realTime,container,kernel )
+Tue Mar 28 2017 11:20:00 DEBUG SERVICE INJECTION  : START SERVICE serverLoad( container,kernel )
+Tue Mar 28 2017 11:20:00 DEBUG KERNEL   :  EVENT KERNEL onPreBoot
+Tue Mar 28 2017 11:20:00 DEBUG KERNEL  :  REGISTER BUNDLE : documentation   
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Service : webCrawlerService.js
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/routing.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation path :/documentation controller documentationBundle:default:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-search path :/documentation/search controller documentationBundle:default:search
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-default path :/documentation/{version} controller documentationBundle:default:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-version path :/documentation/{version}/{bundle} controller documentationBundle:default:version
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-section path :/documentation/{version}/{bundle}/{section} controller documentationBundle:default:version
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-git-getMostRecentCommit path :/api/git/getMostRecentCommit controller documentationBundle:git:getMostRecentCommit
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-git-getStatus path :/api/git/getStatus controller documentationBundle:git:getStatus
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-git-getBranch path :/api/git/getCurrentBranch controller documentationBundle:git:getCurrentBranch
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-demo-html path :/doc/demo/html/{name} controller documentationBundle:demo:html
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : documentation-demo-render path :/doc/demo/render/{name} controller documentationBundle:demo:render
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE INJECTION  : START SERVICE webCrawler( container,kernel )
+Tue Mar 28 2017 11:20:01 INFO SERVICE WATCHER   : INITIALISE WATCHING  PATH : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/controller
+Tue Mar 28 2017 11:20:01 INFO SERVICE WATCHER   : INITIALISE WATCHING  PATH : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/views
+Tue Mar 28 2017 11:20:01 INFO SERVICE WATCHER   : INITIALISE WATCHING  PATH : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/translations
+Tue Mar 28 2017 11:20:01 INFO SERVICE WATCHER   : INITIALISE WATCHING  PATH : /Users/cci/repository/nodefony/src/nodefony/bundles/documentationBundle/Resources/config
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE DOCUMENTATION  : ELASTIC SEARCH DISABLED : webcrawler search in memory !!  try to install elastic server  
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL  :  REGISTER BUNDLE : unitTest   
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE UNITTEST  : Register Service : unitTestService.js
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/routing.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : unitTest path :/unitTest controller unitTestBundle:default:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/nodefony/bundles/unitTestBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE INJECTION  : START SERVICE unitTest( kernel,options )
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL  :  REGISTER BUNDLE : demo   
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DEMO  : Register Service : dmsgService.js
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DEMO  : Register Service : randomService.js
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/config.yml
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE DEMO  :  OVERRIDING  CONFIG bundle  : realTime
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.xml.example
+Tue Mar 28 2017 11:20:01 WARNING READER   : DROP FILE : /Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.xml.example NO PLUGIN FIND
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/routing.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : home path :/ controller demoBundle:demo:index
+Tue Mar 28 2017 11:20:01 WARNING SERVICE ROUTER  : ROUTE HAS SAME NAME : documentation path : /documentation controller : demoBundle:demo:readme
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : loginAll path :/login/{type} controller demoBundle:login:login
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : subscribe path :/subscribe controller demoBundle:login:subscribe
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : demoSecure path :/demo/secure controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : adduser path :/adduser controller demoBundle:demo:addUser
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : demoLogout path :/logout controller securityBundle:logout:logout
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : saslArea path :/demo controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : localArea path :/local controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : basicArea path :/basic controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : digestArea path :/digest controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : googleArea path :/auth/google controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : googleCallBackArea path :/auth/google/callback controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : githubArea path :/auth/github controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : githubCallBackArea path :/auth/github/callback controller frameworkBundle:default:401
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : upload path :/upload controller demoBundle:demo:indexUpload
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : uploadFile path :/fileupload controller demoBundle:demo:upload
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : orm path :/sequelize controller demoBundle:demo:sequelize
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : sql path :/query/sql controller demoBundle:demo:querySql
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : sqlJoin path :/query/join controller demoBundle:demo:querySqlJoin
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : syscall path :/syscall controller demoBundle:demo:syscall
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : httpRequest path :/httpRequest controller demoBundle:demo:httpRequest
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : xmlResponse path :/xmlResponse controller demoBundle:demo:rawResponseSync
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : xmlAsyncResponse path :/xmlAsyncResponse controller demoBundle:demo:rawResponseAsync
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : indexReal path :/demo/realtime controller demoBundle:demo:indexRealTime
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : finder path :/finder controller demoBundle:finder:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : download path :/download controller demoBundle:finder:download
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : websoket path :/websoket controller demoBundle:demo:websoket
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : json path :/json controller demoBundle:demo:json
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : redirect path :/redirect controller demoBundle:demo:redirectGoogle
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : webAudioApi path :/webAudioApi controller demoBundle:webAudio:mix
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : webrtc-config path :/webrtc/config controller demoBundle:webrtc:config
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : webrtc path :/webrtc/diag controller demoBundle:webrtc:diag
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : myroute path :/myroute controller demoBundle:test:myroute
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : myroute2 path :/myroute/{page}/{elements} controller demoBundle:test:myroute
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : response-status path :/test/unit/response/status/{st} controller demoBundle:test:responseStatus
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : response-message path :/test/unit/response/status/{st}/{message} controller demoBundle:test:responseMessage
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : response-query path :/test/unit/response/query/{myVariable}/{myVariable2} controller demoBundle:test:responseQuery
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : redirect-301 path :/test/unit/redirect/{status} controller demoBundle:controllerTest:redirect
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : request-data path :/test/unit/request controller demoBundle:controllerTest:request
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : request-promise path :/test/unit/promise/{action} controller demoBundle:controllerTest:promise
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : request-exception path :/test/unit/exception/{action} controller demoBundle:controllerTest:exception
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : twig-render path :/test/unit/twig/render controller demoBundle:twig:render
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : twig-extend path :/test/unit/twig/extend controller demoBundle:twig:extend
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : twig-websocket path :/test/unit/twig/websocket controller demoBundle:twig:websocket
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : session path :/test/unit/session/{type} controller demoBundle:session:session
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE ROUTER  : ADD ROUTE : subrequest path :/test/unit/subrequest controller demoBundle:subRequest:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/security.yml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE FIREWALL  : ADD security context : demo_area
+Tue Mar 28 2017 11:20:01 DEBUG CONTEXT SECURITY demo_area   : FACTORY sasl registered 
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE FIREWALL  : ADD security context : basic_area
+Tue Mar 28 2017 11:20:01 DEBUG CONTEXT SECURITY basic_area   : FACTORY passport-basic registered 
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE FIREWALL  : ADD security context : digest_area
+Tue Mar 28 2017 11:20:01 DEBUG CONTEXT SECURITY digest_area   : FACTORY passport-digest registered 
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE FIREWALL  : ADD security context : local_area
+Tue Mar 28 2017 11:20:01 DEBUG CONTEXT SECURITY local_area   : FACTORY passport-local registered 
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : SERVICE LOAD FILE :/Users/cci/repository/nodefony/src/bundles/demoBundle/Resources/config/services.xml
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE INJECTION  : START SERVICE dmsg( realTime,container,kernel )
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE INJECTION  : START SERVICE random( realTime,container,kernel )
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL  :  REGISTER BUNDLE : App   
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : CONFIG LOAD FILE :/Users/cci/repository/nodefony/app/config/config.yml
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : sequelize
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : http
+Tue Mar 28 2017 11:20:01 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : realTime
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : ROUTER LOAD FILE :/Users/cci/repository/nodefony/app/config/routing.yml
+Tue Mar 28 2017 11:20:01 WARNING SERVICE ROUTER  : ROUTE HAS SAME NAME : home path : / controller : documentationBundle:default:index
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE KERNEL READER  : SECURITY LOAD FILE :/Users/cci/repository/nodefony/app/config/security.yml
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  EVENT KERNEL onPostRegister
+Tue Mar 28 2017 11:20:01 INFO SERVICE CLI   : INSTALL ASSETS LINK IN WEB PUBLIC DIRECTORY  : /Users/cci/repository/nodefony/web/
+Tue Mar 28 2017 11:20:01 INFO SERVICE CLI   : INSTALL LINK IN /web TOTAL SIZE : 38 MB
+┌───────────────┬───────────────────────────┬─────────────────────────────────────────────────────────────┬─────────┐
+│ BUNDLES       │ DESTINATION PATH          │ SOURCE PATH                                                 │ SIZE    │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ framework     │ ./web/frameworkBundle     │ ./src/nodefony/bundles/frameworkBundle/Resources/public     │ 6.2 MB  │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ security      │ ./web/securityBundle      │ ./src/nodefony/bundles/securityBundle/Resources/public      │ 1.9 KB  │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ monitoring    │ ./web/monitoringBundle    │ ./src/nodefony/bundles/monitoringBundle/Resources/public    │ 2.9 MB  │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ documentation │ ./web/documentationBundle │ ./src/nodefony/bundles/documentationBundle/Resources/public │ 1.4 MB  │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ unitTest      │ ./web/unitTestBundle      │ ./src/nodefony/bundles/unitTestBundle/Resources/public      │ 0 bytes │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ demo          │ ./web/demoBundle          │ ./src/bundles/demoBundle/Resources/public                   │ 27 MB   │
+├───────────────┼───────────────────────────┼─────────────────────────────────────────────────────────────┼─────────┤
+│ App           │ ./web/app                 │ ./app//Resources/public                                     │ 9.1 MB  │
+└───────────────┴───────────────────────────┴─────────────────────────────────────────────────────────────┴─────────┘
+Tue Mar 28 2017 11:20:01 INFO BUNDLE FRAMEWORK  : WEBPACK BUNDLE RUN COMPILER WATCHING : false
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE WEBPACK   : LOAD WEBPACK BUNDLE ENTRY POINT :./js/framework.js
+Tue Mar 28 2017 11:20:01 INFO BUNDLE MONITORING  : WEBPACK BUNDLE RUN COMPILER WATCHING : false
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE WEBPACK   : LOAD WEBPACK BUNDLE ENTRY POINT :./js/monitoring.js
+Tue Mar 28 2017 11:20:01 INFO BUNDLE DOCUMENTATION  : WEBPACK BUNDLE RUN COMPILER WATCHING : false
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE WEBPACK   : LOAD WEBPACK BUNDLE ENTRY POINT :./js/documentation.js
+Tue Mar 28 2017 11:20:01 INFO BUNDLE DEMO  : WEBPACK BUNDLE RUN COMPILER WATCHING : false
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE WEBPACK   : LOAD WEBPACK BUNDLE ENTRY POINT :./js/demo.js
+Tue Mar 28 2017 11:20:01 INFO BUNDLE APP  : WEBPACK BUNDLE RUN COMPILER WATCHING : false
+Tue Mar 28 2017 11:20:01 DEBUG SERVICE WEBPACK   : LOAD WEBPACK BUNDLE ENTRY POINT :./js/app.js
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  HTTP
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  FRAMEWORK
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::401.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::403.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::404.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::exception.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::index.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::layout.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::md.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::system.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE FRAMEWORK  : Register Template   : 'frameworkBundle::timeout.html'
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  ASSETIC
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  SECURITY
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE SECURITY  : Register Controller : 'logout'
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  SEQUELIZE
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE SEQUELIZE  : LOAD ENTITY : sessionEntity.js
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE SEQUELIZE  : LOAD ENTITY : userEntity.js
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  REALTIME
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE REALTIME  : Register Controller : 'default'
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  MONITORING
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Controller : 'api'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Controller : 'default'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Template   : 'monitoringBundle:api:api.json'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Template   : 'monitoringBundle:api:api.xml'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Template   : 'monitoringBundle::app.xml'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Template   : 'monitoringBundle::debugBar.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : Register Template   : 'monitoringBundle::index.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE MONITORING  : LOAD ENTITY : requestsEntity.js
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  DOCUMENTATION
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Controller : 'default'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Controller : 'demo'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Controller : 'git'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle:demo:index.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle:demo:users.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle::index.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle:layouts:documentationLayout.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle:layouts:navSection.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle::navDoc.html'
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE DOCUMENTATION  : Register Template   : 'documentationBundle::navDocBundle.html'
+Tue Mar 28 2017 11:20:01 DEBUG KERNEL   :  INITIALIZE Bundle :  UNITTEST
+Tue Mar 28 2017 11:20:01 DEBUG BUNDLE UNITTEST  : Register Controller : 'default'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE UNITTEST  : Register Template   : 'unitTestBundle::index.html'
+Tue Mar 28 2017 11:20:02 DEBUG KERNEL   :  INITIALIZE Bundle :  DEMO
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'demo'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'finder'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'login'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'controllerTest'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'session'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'subRequest'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'test'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'twig'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'webAudio'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Controller : 'webrtc'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:Default:documentation.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:Default:exec.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:Default:httpRequest.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:Default:navDoc.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:Default:websocket.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:demo:index.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:demo:upload.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:demo:upload2.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:finder:files.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:finder:index.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:layouts:layout.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:layouts:navBar.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:login:login.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:login:subscribe.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:orm:orm.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:realTime:index.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:twig:render.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:unitTest:render.json'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:unitTest:rest.json'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:unitTest:subrequest.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:unitTest:subrequestLayout.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:unitTest:websocket.json'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:webAudio:mix2.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:webrtc:config.html'
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE DEMO  : Register Template   : 'demoBundle:webrtc:diag.html'
+Tue Mar 28 2017 11:20:02 DEBUG KERNEL   :  INITIALIZE Bundle :  APP
+Tue Mar 28 2017 11:20:02 DEBUG BUNDLE APP  : Register Template   : 'AppBundle::base.html'
+Tue Mar 28 2017 11:20:02 DEBUG KERNEL   :  EVENT KERNEL BOOT
+Tue Mar 28 2017 11:20:02 DEBUG SERVER STATIC FILE   : Add static route ===> /Users/cci/repository/nodefony/web/
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE I18N   : default Local APPLICATION ==> en_en
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE sequelize CONNECTION  : nodefony :  CONNECT to database sqlite : /app/Resources/databases/nodefony.db
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE FIREWALL  : Set Session Strategy  : migrate
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE sequelize   : sequelize REGISTER ENTITY : session PROVIDE BUNDLE : sequelize
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE sequelize   : sequelize REGISTER ENTITY : user PROVIDE BUNDLE : sequelize
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE sequelize   : sequelize REGISTER ENTITY : requests PROVIDE BUNDLE : monitoring
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE FIREWALL  :  Register Provider  : nodefony ENTITY user
+Tue Mar 28 2017 11:20:02 DEBUG KERNEL   :  EVENT KERNEL READY
+Tue Mar 28 2017 11:20:02 DEBUG CONTEXT SECURITY demo_area   :  FACTORY : sasl PROVIDER : user PATTERN : /^\/demo/
+Tue Mar 28 2017 11:20:02 DEBUG CONTEXT SECURITY basic_area   :  FACTORY : passport-basic PROVIDER : user PATTERN : /^\/basic/
+Tue Mar 28 2017 11:20:02 DEBUG CONTEXT SECURITY digest_area   :  FACTORY : passport-digest PROVIDER : user PATTERN : /^\/digest/
+Tue Mar 28 2017 11:20:02 DEBUG CONTEXT SECURITY local_area   :  FACTORY : passport-local PROVIDER : user PATTERN : /^\/local/
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE HTTPS   :  READ CERTIFICATE KEY : /Users/cci/repository/nodefony/config/certificates/server/privkey.pem
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE HTTPS   :  READ CERTIFICATE CERT : /Users/cci/repository/nodefony/config/certificates/server/fullchain.pem
+Tue Mar 28 2017 11:20:02 DEBUG SERVICE HTTPS   :  READ CERTIFICATE CA : /Users/cci/repository/nodefony/config/certificates/ca/nodefony-root-ca.crt.pem
+Tue Mar 28 2017 11:20:02 INFO BUNDLE MONITORING  : ADD DEBUG BAR MONITORING
+Tue Mar 28 2017 11:20:02 DEBUG KERNEL   :  EVENT KERNEL POST READY
+Tue Mar 28 2017 11:20:02 INFO MEMORY rss  : MEMORY POST READY  ( Resident Set Size ) PID ( 92661 ) : 155 MB
+Tue Mar 28 2017 11:20:02 INFO MEMORY heapTotal  : MEMORY POST READY  ( Total Size of the Heap ) PID ( 92661 ) : 119 MB
+Tue Mar 28 2017 11:20:02 INFO MEMORY heapUsed  : MEMORY POST READY  ( Heap actually Used ) PID ( 92661 ) : 84 MB
+Tue Mar 28 2017 11:20:02 INFO MEMORY external  : MEMORY POST READY  PID ( 92661 ) : 581 KB
+Tue Mar 28 2017 11:20:02 INFO SERVICE MONITORING   : Create server MONITORING listen on Domain : localhost Port : 1318
+Tue Mar 28 2017 11:20:02 INFO SERVICE REALTIME  : Create server DMSG listen on Domain : localhost Port : 1316
+Tue Mar 28 2017 11:20:02 INFO SERVICE REALTIME  : Create server RANDOM listen on Domain : localhost Port : 1315
+Tue Mar 28 2017 11:20:02 INFO SERVICE HTTP   : HTTP  Server is listening on DOMAIN : http://localhost:5151
+Tue Mar 28 2017 11:20:02 INFO SERVICE WEBSOCKET   :  Server is listening on DOMAIN : ws://localhost:5151
+Tue Mar 28 2017 11:20:02 INFO SERVICE HTTPS   : HTTPS  Server is listening on DOMAIN : https://localhost:5152
+Tue Mar 28 2017 11:20:02 INFO SERVICE WEBSOCKET SECURE   :  Server  is listening on DOMAIN : wss://localhost:5152
+Tue Mar 28 2017 11:20:02 INFO SERVICE SESSIONS  : CONTEXT default SEQUELIZE SESSIONS STORAGE  ==>  SESSION.STORAGE.SEQUELIZE COUNT SESSIONS : 1
+Tue Mar 28 2017 11:20:09 INFO SERVICE WEBPACK   : COMPILE BUNDLE : frameworkBundle
+Tue Mar 28 2017 11:20:12 INFO SERVICE WEBPACK   : COMPILE BUNDLE : app
+Tue Mar 28 2017 11:20:12 INFO SERVICE WEBPACK   : COMPILE BUNDLE : monitoringBundle
+Tue Mar 28 2017 11:20:12 INFO SERVICE WEBPACK   : COMPILE BUNDLE : documentationBundle
+Tue Mar 28 2017 11:20:12 INFO SERVICE WEBPACK   : COMPILE BUNDLE : demoBundle 
 </pre>
 </div>
 

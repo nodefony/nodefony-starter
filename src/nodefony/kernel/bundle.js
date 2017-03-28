@@ -79,7 +79,7 @@ nodefony.register("Bundle", function(){
 			try {
 				this.finder = new nodefony.finder( {
 					path:this.path,
-					exclude:/^docs$|^tests$|^public$|^doc|^node_modules$/,
+					exclude:/^tests$|^public$|^node_modules$/,
 				});
 			}catch(e){
 				this.logger(e, "ERROR");	
@@ -93,7 +93,8 @@ nodefony.register("Bundle", function(){
 
 			// controllers
 			this.controllersPath = this.path+"/controller" ; 
-			this.controllerFiles = this.findControllerFiles(this.finder.result);
+			
+			this.findControllerFiles();
 			this.controllers = {};
 			this.watcherController = null ;
 			this.regController = regController;
@@ -283,7 +284,7 @@ nodefony.register("Bundle", function(){
 			this.fire("onBoot",this);
 			try { 
 				// Register Controller
-				this.registerControllers();
+				this.registerControllers(this.controllerFiles);
 
 				// Register Views
 				this.registerViews();
@@ -365,25 +366,26 @@ nodefony.register("Bundle", function(){
 
 		registerControllers ( result ){
 			if ( result ){
-				this.findControllerFiles(result);	
+				this.controllerFiles = result ;
 			}	
-			
-			this.controllerFiles.forEach((ele) => {
-				var res = this.regController.exec( ele.name );
-				if ( res ){
-					var name = res[1] ;
-					var Class = this.loadFile( ele.path, false, true);
-					if (typeof Class === "function" ){
-						Class.prototype.name = name;
-						Class.prototype.bundle = this;
-						this.controllers[name] = Class ;
-						this.logger("Register Controller : '"+name+"'" , "DEBUG");
-					}else{
-						this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
-						console.trace("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format");
+			if ( this.controllerFiles ){
+				this.controllerFiles.forEach((ele) => {
+					var res = this.regController.exec( ele.name );
+					if ( res ){
+						var name = res[1] ;
+						var Class = this.loadFile( ele.path, false, true);
+						if (typeof Class === "function" ){
+							Class.prototype.name = name;
+							Class.prototype.bundle = this;
+							this.controllers[name] = Class ;
+							this.logger("Register Controller : '"+name+"'" , "DEBUG");
+						}else{
+							this.logger("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format","ERROR");
+							console.trace("Bundle "+this.name+" Register Controller : "+name +"  error Controller closure bad format");
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 
 		reloadWatcherControleur ( name, Path){

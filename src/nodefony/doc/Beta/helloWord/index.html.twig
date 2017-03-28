@@ -3,78 +3,167 @@
 	
 	
 <h2>Generate hello Bundle :</h2>
-CLI Generate new bundle :    generate:bundle nameBundle path
-
+Command console to Generate new bundle :    <strong>generate:bundle nameBundle path</strong>
+<br/>
+<br/>
 <pre>
-$ ./console generate:bundle helloBundle src/bundles
+$ <strong>./console generate:bundle helloBundle src/bundles</strong>
               _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
-             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
              | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+                                                                            
 
+		      NODEFONY CONSOLE CLUSTER MASTER Version : 2.0.3-beta PLATFORM : darwin  PROCESS PID : 76088
 
-		      CONSOLE Version : 1.0 PLATFORM : darwin  PROCESS PID : 1069
-
-GENERATE bundle : helloBundle LOCATION : src/bundles
-Create Directory :helloBundle
-Create Directory :Command
-Create Directory :controller
-Create File      :defaultController.js
-Create Directory :manager
-Create Directory :tests
-Create Directory :Resources
-Create Directory :config
-Create File      :config.yml
-Create File      :routing.yml
-Create Directory :public
-Create Directory :js
-Create Directory :css
-Create Directory :images
-Create Directory :translations
-Create Directory :views
-Create File      :index.html.twig
-Create Directory :core
-Create Directory :Entity
-Create File      :helloBundle.js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : GENERATE bundle : helloBundle LOCATION : src/bundles
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :helloBundle
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :Command
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :controller
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :defaultController.js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :services
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :tests
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :helloBundleTest.js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :Resources
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :config
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :config.yml
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :routing.yml
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :public
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :hello.js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :css
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :hello.css
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :images
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :assets
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :css
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :fonts
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :images
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :translations
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :views
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :index.html.twig
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :doc
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :1.0
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :readme.md
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :core
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :Entity
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :helloBundle.js
+Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :package.json
+Tue Mar 24 2017 16:05:01 INFO SERVICE generate   : INSTALL ASSETS LINK IN WEB PUBLIC DIRECTORY  : /Users/cci/repository/nodefony/web/
+Tue Mar 24 2017 16:05:01 INFO SERVICE generate   : INSTALL LINK IN /web TOTAL SIZE : 38 MB
+┌─────────┬───────────────────┬────────────────────────────────────────────┬───────────┐
+│ BUNDLES │ DESTINATION PATH  │ SOURCE PATH                                │ SIZE      │
+├─────────┼───────────────────┼────────────────────────────────────────────┼───────────┤
+│ hello   │ ./web/helloBundle │ ./src/bundles/helloBundle/Resources/public │ 399 bytes │
+└─────────┴───────────────────┴────────────────────────────────────────────┴───────────┘
+Tue Mar 28 2017 13:41:24 INFO CONSOLE   : Kernel Life Cycle Terminate CODE : 0
 </pre>
-<h2> Add hello bundle in Framework :</h2>
+
+<h2> AUTO REGISTRATION :</h2>
 <p>
-Open Bundle App "appKernel.js" to add new hello Bundle in **registerBundles** array :
+	The bundle generation engine auto registre generated bundle in framework : <br>
+	During the generation of a bundle nodefony uses a temporary yml file <strong>./config/generatedConfig.yml </strong><br>
+	If the bundle is to be used in a durable way It is preferable to register the bundles in config file : <strong>  ./config/config.yml</strong> <br>
 </p>
+
+<code>./config/generatedConfig.yml</code>
 <pre>
-/*
- *	ENTRY POINT FRAMEWORK APP KERNEL
- */
-
-nodefony.register("appKernel",function(){
-
-	var appKernel = class appKernel extends nodefony.kernel {
-
-		constructor (type, environment, debug, loader, settings){
-			
-			// kernel constructor
-			super(environment, debug, loader, type, settings)
-
-			/*
-	 		*	Bundles to register in Application
-	 		*/
-			this.registerBundles([
-				...
-				"./src/bundles/helloBundle"
-			]);
-
-			...
-		};
-	};
-
-	return appKernel;
-})
+system:
+  bundles:
+    hello: src/bundles/helloBundle
 </pre>
+
+<h2> WEBPACK MODULE BUNDLER :</h2>
+<p>
+The bundle generation engine build bundle config with a predefined webpack configuration <br>
+In this way webpack is very usefull to manage all assets of bundle <br>
+In developement mode watch  is very usefull to auto-compile webpack module bundle <br>
+without having to reboot the server
+</p>
+
+<code>./src/bundles/helloBundle/Resources/config/config.yml</code>
+<pre>
+#
+#  WEBPACK CONFIG       
+#
+webpack:
+  entry:
+    main:                       "./js/hello.js"
+  watch:                        true
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/hello.js"
+    library:                    "hello"
+    libraryTarget:              "umd"
+</pre>
+
+<code>src/bundles/helloBundle/Resources/views/index.html.twig</code>
+<pre>
+&#123;% extends '/app/Resources/views/base.html.twig' %&#125;
+
+&#123;% block title %&#125;Welcome &#123;&#123;kernel.name&#125;&#125;! &#123;% endblock %&#125;
+
+&#123;% block stylesheets %&#125;
+
+        &#123;&#123; parent() &#125;&#125;
+
+        <strong>&lt;!-- WEBPACK BUNDLE --&gt;
+        &lt;link rel='stylesheet' href='&#123;&#123;CDN("stylesheet")&#125;&#125;/helloBundle/assets/css/hello.css' /&gt;</strong>
+
+&#123;% endblock %&#125;
+
+&#123;% block body %&#125;
+        &lt;div class='container'&gt;
+                &lt;div class='row'&gt;
+                        &#123;&#123;readme&#125;&#125;
+                &lt;/div&gt;
+        &lt;/div&gt;
+&#123;% endblock %&#125;
+
+&#123;% block javascripts %&#125;
+
+        &#123;&#123; parent() &#125;&#125;
+
+        <strong>&lt;!-- WEBPACK BUNDLE --&gt;
+        &lt;script src='&#123;&#123;CDN("javascript")&#125;&#125;/helloBundle/assets/js/hello.js'&gt;&lt;/script&gt;</strong>
+
+&#123;% endblock %&#125;
+</pre>
+
+
+<h2> WATCHER FILES DURING DEVELOPMENT :</h2>
+<p>
+The bundle generation engine build bundle config with  node.js watcher configuration <br>
+In developement mode  is very usefull to auto-reload files as controllers , views , routing , translations <br>
+without having to reboot the server
+</p>
+<code>./src/bundles/helloBundle/Resources/config/config.yml</code>
+<pre>
+#
+#  WATCHERS
+#    
+#    watchers Listen to changes, deletion, renaming of files and directories 
+#    of different components
+#       
+#    For watch all components 
+# 
+#      watch:                   true
+#    or 
+#      watch:
+#        controller:            true
+#        config:                true
+#        views:                 true
+#        translations:          true
+#
+watch:                          true
+</pre>
+
+
 <h2> Start Nodefony to check new Bundle hello:</h2>
 <pre>
-$ make  or make install
 $ ./nodefony_dev
+
 </pre>
 
 Access to bundle route with URL : http://nodefony.com:5151/hello

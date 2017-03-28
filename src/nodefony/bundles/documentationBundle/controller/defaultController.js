@@ -17,7 +17,7 @@ nodefony.registerController("default", function(){
 			constructor(container, context){
 				super(container, context);
 				this.kernel = this.get("kernel") ;
-				this.defaultVersion = this.kernel.settings.system.version;
+				this.defaultVersion = this.kernel.settings.version;
 			}
 
 			/**
@@ -278,7 +278,7 @@ nodefony.registerController("default", function(){
  	 	 	*/
 			footerAction (){
 				var translateService = this.get("translation");
-				var version =  this.kernel.settings.system.version ;
+				var version =  this.kernel.settings.version ;
 				var path = this.generateUrl("home");
 				var year = new Date().getFullYear();
 				var langs = translateService.getLangs();
@@ -325,7 +325,7 @@ nodefony.registerController("default", function(){
 
 				var url = this.generateUrl("documentation-version",{
 					bundle:"nodefony",
-					version:this.kernel.settings.system.version
+					version:this.kernel.settings.version
 				}, true)
 				
 				var request = this.getRequest();

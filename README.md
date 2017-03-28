@@ -13,8 +13,10 @@ Nodefony assimilates into the ecosystem of node.js with services like :
 - Web servers (websocket(s), http(s)).
 - Notion of real-time context in Action Controller (Websocket).
 - Notion of synchronous or asynchronous execution in Action Controller (Promise). 
-- WEBPACK integration for assets management.
-- WATCHER node.js for auto reload-files in developement mode .
+- [WEBPACK](https://webpack.js.org/) Module bundler for assets management of application .
+- [WATCHER](https://nodejs.org/docs/latest/api/fs.html#fs_fs_watch_filename_options_listener) node.js for auto reload-files in developement mode .
+- [PM2](http://pm2.keymetrics.io/) Production Process Manager for Node.js .
+- [Passport](http://passportjs.org/) Simple, unobtrusive authentication for Node.js .
 
 Now in this version Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
@@ -120,8 +122,8 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/sr
 #
 
 name                            : "NODEFONY"
+version                         : "2.0.3-beta"
 system:
-  version                       : "2.0.3-beta"
   domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$" 
@@ -265,7 +267,25 @@ Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create Directory :Entity
 Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :helloBundle.js
 Fri Mar 24 2017 16:05:01 INFO SERVICE generate   : Create File      :package.json
 ```
-#### Now helleBundle is auto-insert in framework with watcher active on (controllers, views, routing )  and an webpack bundle auto-config  :
+#### Now helleBundle is auto-insert in framework with watcher active and auto-config Webpack Module bundler   :
+ - watcher : 
+
+   The bundle generation engine build bundle config with  node.js watcher configuration
+
+   In developement mode  is very usefull to auto-reload files as controllers , views , routing , translations
+
+   without having to reboot the server.
+
+ - Webpack Module bundler : 
+
+   The bundle generation engine build bundle config with a predefined webpack configuration
+
+   In this way webpack is very usefull to manage all assets of bundle
+
+   In developement mode watch  is very usefull to auto-compile webpack module bundle
+
+   without having to reboot the server
+   
 You can see helleBundle config   : vim  ./src/bundles/helloBundle/Resources/config/config.yml
 ```yml
 ########## nodefony CONFIG BUNDLE  helloBundle  ############

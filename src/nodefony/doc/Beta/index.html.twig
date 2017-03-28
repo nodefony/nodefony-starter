@@ -148,19 +148,53 @@ $ make build
 	Change config.yml Location : <code>./config/config.yml</code>
 	</p>
 	<pre class="doc3">
-#
-#  NODEFONY FRAMEWORK
-#
-#       KERNEL CONFIG
-#
-#
-name:                           "NODEFONY"
+
+name                            : "NODEFONY"
+version                         : "2.0.3-beta"
 system:
-  version:                      "2.0.1"
-<strong>  domain:			localhost
-  domainAlias:                  "^127.0.0.1$"
-  httpPort:                     5151
-  httpsPort:                    5152</strong>
+<strong>  domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+    - "^127.0.0.1$" 
+    - "^docker.nodefony$"
+  httpPort                      : 5151
+  httpsPort                     : 5152</strong>
+  statics                       : true
+  security                      : true
+  realtime                      : true
+  monitoring                    : true
+  locale                        : "en_en"
+
+  servers:
+    http                        : true
+    https	                : true	
+    ws			        : true	
+    wss			        : true
+    certificats:
+      key                       : "config/certificates/server/privkey.pem"
+      cert                      : "config/certificates/server/fullchain.pem"
+      ca                        : "config/certificates/ca/nodefony-root-ca.crt.pem"
+      options:
+        rejectUnauthorized      : false
+
+  bundles:
+    documentation 	        : "./src/nodefony/bundles/documentationBundle"
+    test		        : "./src/nodefony/bundles/unitTestBundle"
+    demo			: "./src/bundles/demoBundle"
+
+  PM2:
+    script		        : "nodefony"
+    name			: "nodefony"
+    exec_mode		        : "cluster"
+    max_memory_restart	        : "1024M"
+    autorestart		        : true
+    max_restarts		: 10
+    watch			: false
+    error_file                  : "tmp/nodefony.log" 
+    out_file                    : "tmp/nodefony.error.log"
+    merge_logs                  : true
+    env:
+      NODE_ENV                  : "production"
+      MODE_START                : "PM2"
 
 	</pre>
 </p>
