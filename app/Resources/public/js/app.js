@@ -3,7 +3,7 @@
  *	ENTRY POINT WEBPACK APP
  *
  */
-var stage = require("./stage/stage.js");
+var stage = require("nodefony-stage");
 
 require("bootstrap");
 require('bootstrap/dist/css/bootstrap.css');

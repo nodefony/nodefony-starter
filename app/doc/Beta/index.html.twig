@@ -8,9 +8,8 @@
 		App is a special bundle its behavior differs from other bundles<br>
 		This Bunlde is responsible  for : 
 		<ul>
-			<li>Add new bundles in framework</br>
-			<li>Start servers (https,websocket ...) </br>
 			<li>overloading Configurations and Views from other bundles </br>
+		</ul>
 		</strong>
 	</div>	
 </div>
@@ -62,14 +61,10 @@ app/
     │   ├── favicon.ico
     │   ├── images
     │   ├── js
-    │   ├── manifest.json
     │   ├── robots.txt
     │   └── sitemap.xml
     └── views
-        ├── base.html.twig
-        └── usersBundle
-            └── views
-                └── login.html.twig
+        └── base.html.twig
 
 	</pre>
 </div>
@@ -89,7 +84,7 @@ app/
 
 	<p>
 	<div class="alert alert-warning" role="alert">
-			Contrary to other bundles, App bundle has :    </br>
+			Contrary to other bundles, App bundle has :  </br>
 			<ul>
 				<li>
 					No file pattern type :   <code>nameBundle.js</code> but  : <code> appKernel.js </code>
@@ -120,35 +115,6 @@ nodefony.register("appKernel",function(){
 			
 			// kernel constructor
 			super(environment, debug, loader, type, settings)
-
-			/*
-	 		*	Bundles to register in Application
-	 		*/
-			<strong>this.registerBundles([
-				"./src/nodefony/bundles/documentationBundle",
-				"./src/nodefony/bundles/unitTestBundle",
-				"./src/bundles/demoBundle"
-			]);</strong>
-
-			/*
- 		 	*
- 		 	*	CREATE SERVERS HTTP / HTTPS / WEBSOCKET
- 		 	*/
-			if (type === "SERVER"){
-				this.listen(this,"onPostReady", () => {
-					// create HTTP server 
-					var http = this.get("httpServer").createServer();
-
-					// create HTTPS server
-					var https = this.get("httpsServer").createServer();
-
-					// create WEBSOCKET server
-					var ws = this.get("websocketServer").createServer(http);
-
-					// create WEBSOCKET SECURE server
-					var wss = this.get("websocketServerSecure").createServer(https);
-				});
-			};
 		};
 	};
 

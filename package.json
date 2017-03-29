@@ -60,6 +60,7 @@
     "node-getopt": "0.2.3",
     "node-pre-gyp": "0.6.34",
     "node-sass": "4.5.1",
+    "nodefony-stage": "0.0.1",
     "nodegit": "0.18.0",
     "npm": "4.5.0",
     "npmi": "2.0.1",
