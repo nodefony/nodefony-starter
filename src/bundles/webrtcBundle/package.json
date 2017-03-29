@@ -1,0 +1,14 @@
+{
+  	"name": "WEBRTC",
+  	"version": "1.0",
+  	"description": "",
+  	"author": "admin admin@nodefony.com",
+  	"contributors": [],
+  	"keywords": [
+		"nodefony",
+		"javascript"
+  	],
+  	"dependencies": {
+
+  	}
+}

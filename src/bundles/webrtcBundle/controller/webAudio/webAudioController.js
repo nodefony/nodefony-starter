@@ -24,7 +24,7 @@ nodefony.registerController("webAudio", function(){
 		 	*
 		 	*/
 			mixAction (){
-				return this.render("demoBundle:webAudio:mix2.html.twig");
+				return this.render("webrtcBundle:webAudio:mix2.html.twig");
 			}
 		};
 		

@@ -1,5 +1,7 @@
 
-stage.register.call(wai, 'controller', function(){
+//stage.register.call(wai, 'controller', function(){
+
+module.exports =  function(){
 
 	var controller = function(){
 		this.ui = null;
@@ -267,4 +269,4 @@ stage.register.call(wai, 'controller', function(){
 
 	return controller;
 
-});
+}();

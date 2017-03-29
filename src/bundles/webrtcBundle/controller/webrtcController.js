@@ -51,7 +51,7 @@ nodefony.registerController("webrtc", function(){
 						switch ( this.request.method ){
 							case "GET" :
 								this.context.session.set(api.server, api);
-								return this.renderAsync("demoBundle:webrtc:config.html.twig", {api:api} );
+								return this.renderAsync("webrtcBundle:webrtc:config.html.twig", {api:api} );
 							break;
 							case "POST" :
 								if (this.query.changeApi ){
@@ -61,7 +61,7 @@ nodefony.registerController("webrtc", function(){
 										api.server  = this.query.server ; 
 										api = getConfig.call(this, api ) ;
 									}
-									return this.renderAsync("demoBundle:webrtc:config.html.twig", {api:api} );	
+									return this.renderAsync("webrtcBundle:webrtc:config.html.twig", {api:api} );	
 								}else{
 									this.context.session.set(this.query.server, this.query);
 									return  this.redirect( this.generateUrl("webrtc-config") );	
@@ -103,7 +103,7 @@ nodefony.registerController("webrtc", function(){
 			}else{
 				api  = 	getConfig.call(this, apiParams );
 			}
-			return this.render("demoBundle:webrtc:diag.html.twig", {api:api} );
+			return this.render("webrtcBundle:webrtc:diag.html.twig", {api:api} );
 		}
 
 	};

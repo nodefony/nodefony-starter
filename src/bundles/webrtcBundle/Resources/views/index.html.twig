@@ -1,0 +1,31 @@
+{% extends '/app/Resources/views/base.html.twig' %}
+
+{% block title %}Welcome {{kernel.name}}! {% endblock %}
+
+{% block stylesheets %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<link rel='stylesheet' href='{{CDN("stylesheet")}}/webrtcBundle/assets/css/webrtc.css' />
+
+{% endblock %}
+
+{% block body %}
+	<div class='container'>
+		<div class='row'>
+			{{readme}}
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<script src='{{CDN("javascript")}}/webrtcBundle/assets/js/webrtc.js'></script>
+
+{% endblock %}
+
+

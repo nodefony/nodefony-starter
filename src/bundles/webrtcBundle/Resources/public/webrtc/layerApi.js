@@ -1,5 +1,6 @@
-stage.register("webrtcApi", function(){
 
+//stage.register("webrtcApi", function(){
+module.exports = function (){
 
 	var nativeTransport = function(url, settings){
 		return new stage.io.transports.websocket(url, settings);
@@ -295,4 +296,4 @@ stage.register("webrtcApi", function(){
 	};
 	
 	return transport ;		
-});
+}();

@@ -1,9 +1,8 @@
+var webrtcApi = require("./layerApi.js"); 
 
-
-stage.register("App", function(){ 
+module.exports = function (){ 
 
 	// closure private
-
 
 	return function( urlConfig, environment, debug ){
 
@@ -28,7 +27,7 @@ stage.register("App", function(){
 					method:"GET",
 					success:(config) =>{
 						try {
-							this.api = new stage.webrtcApi(kernel, config);
+							this.api = new webrtcApi(kernel, config);
 						}catch(e){
 							this.logger(e, "ERROR");
 						}
@@ -51,4 +50,4 @@ stage.register("App", function(){
 			}
 		});
 	}
-});
+}();

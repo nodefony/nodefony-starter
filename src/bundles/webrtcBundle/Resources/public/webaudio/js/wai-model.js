@@ -1,5 +1,6 @@
 
-stage.register.call(wai, 'model', function(){
+//stage.register.call(wai, 'model', function(){
+module.exports =  function(){
 	
 	var model = function(){
 		this.localMedia = null;
@@ -30,4 +31,4 @@ stage.register.call(wai, 'model', function(){
 	
 	return model;
 	
-});
+}();

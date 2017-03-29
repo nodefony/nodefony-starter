@@ -1,5 +1,7 @@
+//stage.register.call(wai, 'UI', function(){
 
-stage.register.call(wai, 'UI', function(){
+module.exports =  function(){
+
 
 	var tableMixContainer = function(){
 
@@ -197,4 +199,4 @@ stage.register.call(wai, 'UI', function(){
 
 	return waiUi;
 
-});
+}();

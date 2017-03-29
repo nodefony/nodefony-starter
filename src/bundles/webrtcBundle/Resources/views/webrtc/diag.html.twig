@@ -1,0 +1,75 @@
+{% extends "/app/Resources/views/base.html.twig" %}
+
+
+
+{% block description %} 
+	<meta name="description" content="Demo Webrtc with sip protocol kamailio configuration">
+{% endblock %}
+
+
+{% block title %} WEBRTC SIP {% endblock %}
+
+
+{% block stylesheets %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<link rel='stylesheet' href='{{CDN("stylesheet")}}/webrtcBundle/assets/css/webrtc.css' />
+
+
+{% endblock %}
+
+
+{% block body %}
+
+
+	<div class="centered">
+		<section  class="screen-height ">
+			<div class="container">
+				<div class="row">
+					<h1 class="wrapper strong text-center"><a class=" text-primary" ><strong class="text-primary">WEBRTC DEMO</strong></a> </h1>
+					<h4 class="block text-center text-primary "> LOGIN SIP</h4>
+					<div class="col-sm-6 col-md-4 col-md-offset-4">
+						<div class="account-wall">
+							<div id="my-tab-content" class="tab-content">
+								<div class="tab-pane active" id="homelogin">
+									<img class="profile-img" src="/demoBundle/images/user.png" alt=""/>
+               								<form  id="login" class="form-signin" action="{{path('documentation')}}" method="POST">
+               									<input id="email" name="email" type="text" class="form-control"  placeholder="{{"user"|trans}}" required disabled value="{{api.user.publicIdentity}}">
+               									<input id="passwd" name="passwd" type="password" class="form-control" placeholder="{{"pwd"|trans}}" required autofocus>
+               									<input id="valid" type="submit" class="btn btn-lg  btn-block" value={{"validation"|trans}} />
+               								</form>
+              							</div>
+              						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<script src='{{CDN("javascript")}}/webrtcBundle/assets/js/webrtc.js'></script>
+
+	<script>
+
+		// environment
+		var urlConfig = '{{ path("webrtc-config") }}' ;
+		var environment = '{{ nodefony.environment }}' ;
+		var debug = {{ nodefony.debug }} ;
+
+		var App = webrtc.kernel(urlConfig, environment, debug);
+			
+	</script>
+
+
+{% endblock %}
+

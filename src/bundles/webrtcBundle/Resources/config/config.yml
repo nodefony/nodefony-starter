@@ -1,14 +1,14 @@
 #
 #
-#	CONFIG BUNDLE {{ bundleName }} 
+#	CONFIG BUNDLE webrtcBundle 
 #
 #===============================================================================
 #
-#  Copyright © {{ projectYear }}/{{ projectYearNow }}        {{authorName}} | {{authorEmail}}
+#  Copyright © 2016/2017         | 
 #
 # ===============================================================================
 #
-#        GENERATE BY {{projectName}} BUILDER YAML FILE 
+#        GENERATE BY nodefony BUILDER YAML FILE 
 #
 # This file is YAML  FILE
 # ---
@@ -22,10 +22,10 @@
 
 
 
-########## {{projectName}} CONFIG BUNDLE  {{ bundleName }}  ############
-name :				{{ bundleName }}
+########## nodefony CONFIG BUNDLE  webrtcBundle  ############
+name :				webrtcBundle
 version:			"1.0"
-locale :			{{ local }}
+locale :			en_en
 
 #
 #  WATCHERS
@@ -50,12 +50,14 @@ watch:				true
 #
 webpack:
   entry:
-    main:                       "./js/{{ name }}.js"
+    main:                       "./js/webrtc.js"
   watch:                        true
+  externals:
+    jquery:                     "jQuery"
   devtool:                      "source-map"
   output:
-    filename:                   "./assets/js/{{ name }}.js"
-    library:                    "{{ name }}"
+    filename:                   "./assets/js/webrtc.js"
+    library:                    "webrtc"
     libraryTarget:              "umd"
 
 #
@@ -67,3 +69,5 @@ webpack:
 #
 #	example : create an other database connector
 #
+
+

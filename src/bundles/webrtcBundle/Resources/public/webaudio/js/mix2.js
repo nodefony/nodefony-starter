@@ -1,5 +1,22 @@
-stage.register('webmixer', function(){
+require("./excanvas.js");
+require("./jquery.knob.js");
+require("./bootstrap-slider.js");
+var controller = require("./wai-controller.js");
+var model =  require("./wai-model.js");
+var UI = require("./wai-ui.js");
+require("./bootstrap-slider.js");
+
+require("../css/bootstrap-slider.css");
+require("../css/wai.css");
+
+module.exports =  function(){
 	
+	
+	window["wai"] = {};
+	window["wai"].controller = controller ;
+	window["wai"].UI = UI ;
+	window["wai"].model = model ;
+
 	var drawSpectrum = function(myAudioAnalyser) {
 		
 		var canvas = $(this).get(0);
@@ -19,8 +36,6 @@ stage.register('webmixer', function(){
         	}
 	};
 	
-
-
 	/*
  	 *
  	 *
@@ -264,11 +279,11 @@ stage.register('webmixer', function(){
 		
 		start (){
 			
-			this.ring = this.addTrack('AJAX WAV', '/demoBundle/webaudio/music/marimba.wav');
-			this.addTrack('AJAX MP3 ', '/demoBundle/webaudio/music/Chico_Buarque.mp3');
-			this.addTrack('AJAX webm', '/demoBundle/webaudio/music/oceans-clip.webm');
+			this.ring = this.addTrack('AJAX WAV', '/webrtcBundle/webaudio/music/marimba.wav');
+			this.addTrack('AJAX MP3 ', '/webrtcBundle/webaudio/music/Chico_Buarque.mp3');
+			this.addTrack('AJAX webm', '/webrtcBundle/webaudio/music/oceans-clip.webm');
 
-			var domEle = $("<video src='/demoBundle/webaudio/music/oceans-clip.webm' />" )
+			var domEle = $("<video src='/webrtcBundle/webaudio/music/oceans-clip.webm' />" )
 			this.addTrack('DOM ELEMENT', domEle.get(0));
 
 			this.LA = this.build440();
@@ -366,7 +381,5 @@ stage.register('webmixer', function(){
 			}.bind(this), duration || 10000)
 		}
 	};
-	
 	return mix;
-	
-});
+}();
