@@ -291,6 +291,7 @@ nodefony.registerService("httpKernel", function(){
 		}
 
 		onError (container, error){
+			console.log(error)
 			var myError = null ;
 			if ( ! error ){
  		       		error = {

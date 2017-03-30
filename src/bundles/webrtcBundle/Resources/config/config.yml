@@ -70,4 +70,40 @@ webpack:
 #	example : create an other database connector
 #
 
+#
+#  OVERRIDE BUNDLE REALTIME 
+#
+realTimeBundle:
+  services:
+    kamailio:
+      type:                       udp
+      port:                       5060
+      domain:                     localhost
+
+webrtc:
+  server:                       "kamailio"
+  config:
+    protocol:                   "SIP"
+    enableVideo:                true
+    ICEServers:
+      - "url:stun:stun.l.google.com:19302"
+    maxBandwidth:               "{ audio:64, video:512 }"
+    videoSize:                  "{ minWidth: 640, minHeight:480, maxWidth: 640, maxHeight:480 }"
+  serversSip:
+    nodefony:
+      serverUrl:                "/secure/realtime"
+      sipTransport:             "TCP"
+      sipProxyUrl:              "nodefony.net"
+      DTMF:                     "SIP-INFO"                      # SIP-INFO | DTMF-OFF | RTP-EVENT 
+      publicAdress:             109.7.203.160
+      sipPort:                  5060,
+    kamailio:
+      serverUrl:                "wss://192.168.0.1:10443"
+      sipTransport:             "WSS"
+      sipProxyUrl:              "nodefony.net"
+      DTMF:                     "SIP-INFO"                      # SIP-INFO | DTMF-OFF | RTP-EVENT
+  user:
+    displayName:                1000
+    publicIdentity:             1000
+    realm:                      nodefony.net 
 

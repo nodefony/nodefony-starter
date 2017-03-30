@@ -36,7 +36,7 @@
 			onBoot: function(kernel){
 			},
 			onDomLoad: function(kernel){		
-				var mix = new mixer();
+				var mix = new webrtc.mixer();
 				mix.build($('.centered'));		
 				mix.start();	
 			}

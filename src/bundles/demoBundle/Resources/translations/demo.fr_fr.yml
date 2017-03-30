@@ -26,4 +26,4 @@
 
 
 welcome:                        Bienvenue
-framework:                      FRAMEWORK TEMPS REEL <a style="color:#999;font-size:25px" href="http://symfony.com/"><img alt="node.js"  src="/demoBundle/images/symfony/symfony_white_02.png" width="125px" height="31px"></a> LIKE
+framework:                      FRAMEWORK TEMPS REEL <a style="color:#999;font-size:25px" href="http://symfony.com/"><img alt="node.js"  src="/frameworkBundle/images/symfony/symfony_white_02.png" width="125px" height="31px"></a> LIKE

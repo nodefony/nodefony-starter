@@ -10,6 +10,7 @@
  *
  */
 require("../css/webrtc.css");
+require("../css/clean/style.css");
 var mixer = require("../webaudio/js/mix2.js");
 
 var kernel = require("../webrtc/kernel.js");
@@ -17,7 +18,7 @@ var kernel = require("../webrtc/kernel.js");
 module.exports = function (){ 
 
 	
-	window["mixer"] = mixer ;
+	//window["mixer"] = mixer ;
 		
 	/*
  	 *	Class
@@ -29,6 +30,7 @@ module.exports = function (){
 	
 		constructor() {
 			this.kernel = kernel ;
+			this.mixer = mixer ;
 		}
 	};
 

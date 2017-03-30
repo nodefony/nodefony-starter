@@ -21,7 +21,6 @@
 			<ul class="nav navbar-nav navbar-left">
 				{% if not  login  %}
 				
-
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO <span class="caret"></span></a>
 					<ul class="dropdown-menu">
@@ -50,25 +49,20 @@
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO REALTIME<span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                                 <li><a href="{{path("indexReal")}}">DEMO REALTIME</a></li>
-                                                <li role="separator" class="divider"></li>
-						{% if  webrtc  %}
-							<li><a href="{{path("webrtc")}}">DEMO WEBRTC</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="{{ path("webrtcsip", {userName: user.username  }) }}">DEMO WEBRTC SIP</a></li>
-						{% endif %}
 						{% if  user.username  %}
 						{% endif %}
                                         </ul>
                                 </li>
+				{% if  webrtc  %}
 				<li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MEDIAS<span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                                 <li><a href="{{path("webAudioApi")}}">WEB AUDIO API MIXER</a></li>
                                                 <li role="separator" class="divider"></li>
-						<li><a href="{{ path("webrtc-config") }}">CONFIG WEBRTC</a></li>
-						<li><a href="{{ path("webrtc") }}">DEMO WEBRTC</a></li>
+						<li><a href="{{ path("webrtc-home") }}"> WEBRTC </a></li>
                                         </ul>
                                 </li>
+				{% endif %}
 				{% endif %}
 				{% block documentation %}
 					{{ render( controller("demoBundle:demo:doc" )) }}

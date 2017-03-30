@@ -64,15 +64,9 @@ nodefony.registerController("default", function(){
 			indexAction (){
 				// markdown read and parse readme.md
 				try {
-					var path =  this.get("kernel").rootDir+"/src/bundles//webrtcBundle/readme.md";	
-					var file = new nodefony.fileClass(path);
-					var res = this.htmlMdParser(file.content(file.encoding),{
-						linkify: true,
-						typographer: true	
-					});
-					return this.render("webrtcBundle::index.html.twig",{readme:res});
+					return this.render("webrtcBundle::index.html.twig");
 				}catch(e){
-					return this.forward("frameworkBundle:default:system",{view: "webrtcBundle::index.html.twig",bundle:this.getParameters("bundles.webrtc")});
+					throw new Error(e);
 				}
 			}
 		};

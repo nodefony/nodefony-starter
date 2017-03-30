@@ -57,7 +57,7 @@ nodefony.registerController("webrtc", function(){
 								if (this.query.changeApi ){
 									var api  = this.context.session.get(this.query.server);
 									if ( ! api ){
-										api = this.getParameters('bundles.demo.webrtc');	
+										api = this.getParameters('bundles.webrtc.webrtc');	
 										api.server  = this.query.server ; 
 										api = getConfig.call(this, api ) ;
 									}
@@ -76,7 +76,7 @@ nodefony.registerController("webrtc", function(){
 		}
 
 		getSessionConfig ( callback) {
-			var apiParams = this.getParameters('bundles.demo.webrtc');
+			var apiParams = this.getParameters('bundles.webrtc.webrtc');
 			if ( ! this.context.session ){
 				return this.startSession( "default" ).then( (session) =>{ 	
 					try {
@@ -95,7 +95,7 @@ nodefony.registerController("webrtc", function(){
 		}
 
 		diagAction(){
-			var apiParams = this.getParameters('bundles.demo.webrtc');
+			var apiParams = this.getParameters('bundles.webrtc.webrtc');
 			var server = apiParams.server ;
 			var api = null ;
 			if ( this.context.session ){

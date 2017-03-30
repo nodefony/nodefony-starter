@@ -1,20 +1,17 @@
 
-//stage.register("webrtcApi", function(){
 module.exports = function (){
 
 	var nativeTransport = function(url, settings){
 		return new stage.io.transports.websocket(url, settings);
 	};
 
+	stage.realtime.prototype.send = function(data){
+		return this.sendMessage("OPENSIP", data) ;
+	};
 
 	var NODEFONYTranport = function(url, settings){
-		stage.realtime.prototype.send = function(data){
-			return this.sendMessage("OPENSIP", data) ;
-		}
-
 		return  new stage.realtime(url ,settings);
-	}
-
+	};
 
 	var error = function error (Class,  error) {
 		switch (true){
@@ -74,8 +71,6 @@ module.exports = function (){
 		}	
 	};
 
-
-
 	var transport = class transport extends stage.Service {
 	
 		constructor(kernel, config){
@@ -90,7 +85,6 @@ module.exports = function (){
 			this.listen(this, "onError", error.bind(this) );
 
 			this.connect();
-			
 		}	
 
 		connect (){
@@ -121,7 +115,7 @@ module.exports = function (){
 					this.transport = NODEFONYTranport.call(this, this.settings.sip.serverUrl, {
 						// fire when 401 http code
 		    				onUnauthorized:(authenticate, realtime) => {
-							//this.logger(" REAL TIME  WEBRTC Unauthorized")
+							this.logger(" REAL TIME  WEBRTC Unauthorized")
 		    				},
 		    				// fire when authetification success or not authenticate
 		    				onAuthorized:(authenticate, realtime) => {
@@ -182,9 +176,7 @@ module.exports = function (){
 				default:
 					throw new Error ("Api :" + this.settings.server +"not found ")
 			}
-		
 			return this.initWebrtc(this.transport);
-			
 		}
 
 		close (){
