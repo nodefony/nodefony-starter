@@ -5,12 +5,12 @@ module.exports = function (){
 		return new stage.io.transports.websocket(url, settings);
 	};
 
-	stage.realtime.prototype.send = function(data){
-		return this.sendMessage("OPENSIP", data) ;
-	};
-
 	var NODEFONYTranport = function(url, settings){
-		return  new stage.realtime(url ,settings);
+		var real = new stage.realtime(url ,settings);
+		real.send = function(data){
+			return this.sendMessage("kamailio", data) ;
+		}.bind(real);
+		return real;
 	};
 
 	var error = function error (Class,  error) {
@@ -123,33 +123,35 @@ module.exports = function (){
 		    				},
 		    				// fire when error
 		    				onError:(code, realtime ,message) => {
-			    				//console.log(arguments)
-			    				//stage.ui.log(message);
 			    				switch (code){
 				    				case 500:
 					    				//try to subcribe
-					    				//realtime.subscribe("OPENSIP");
-					    				break;
+					    				//realtime.subscribe("kamailio");
+					    			break;
+				    				case "403":
 				    				case 403:
-					    				break;
+									this.logger("CODE: "+ code + " Mesasge : " + message, "ERROR");
+					    			break;
+								default:
+									this.logger("CODE: "+ code + " Mesasge : " + message, "ERROR");
 			    				}
 		    				},
 		    				// fire when socket connection ready 
 		    				onHandshake:(message, socket, realtime) => {
+							this.fire("onHandshake", message, realtime , this);
 			    				this.logger("HANSHAKE OK");
 		    				},
 		    				// fire when service is ready
 		    				onConnect:(message, realtime) => {
 			    				this.logger("CONNECT ON : "+realtime.publicAddress);
-			    				if (message.data.OPENSIP){
-				    				realtime.subscribe("OPENSIP");
-				    				
+			    				if (message.data.kamailio){
+				    				realtime.subscribe("kamailio");
 			    				}
 		    				},
 
 						onSubscribe:(service, message, realtime) => {
 			    				this.logger( "SUBSCRIBE service : " + service);
-			    				if ( service  === "OPENSIP"){
+			    				if ( service  === "kamailio"){
 								this.initWebrtc(realtime);
 								this.fire("onConnect", realtime , this);
 							}
@@ -176,8 +178,16 @@ module.exports = function (){
 				default:
 					throw new Error ("Api :" + this.settings.server +"not found ")
 			}
-			return this.initWebrtc(this.transport);
 		}
+
+		register (user, passwd){
+			if ( this.webrtc ){
+				this.webrtc.register(user, passwd, {
+					displayName:this.settings.userConfig ? this.settings.userConfig.displayName : user  
+				});
+			}
+		};
+
 
 		close (){
 			if ( this.transport ){	 
@@ -199,6 +209,7 @@ module.exports = function (){
 		}
 
 		initWebrtc (transport){
+			console.log(this.settings)
 			this.webrtc = null ;
 			this.webrtc = new stage.media.webrtc(this.settings.sip.sipProxyUrl, transport, {
 				protocol	: this.settings.webrtc.protocol ,

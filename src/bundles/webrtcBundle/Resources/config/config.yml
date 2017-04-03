@@ -76,9 +76,9 @@ webpack:
 realTimeBundle:
   services:
     kamailio:
-      type:                       udp
+      type:                       tcp
       port:                       5060
-      domain:                     localhost
+      domain:                     nodefony.net
 
 webrtc:
   server:                       "kamailio"
@@ -95,10 +95,10 @@ webrtc:
       sipTransport:             "TCP"
       sipProxyUrl:              "nodefony.net"
       DTMF:                     "SIP-INFO"                      # SIP-INFO | DTMF-OFF | RTP-EVENT 
-      publicAdress:             109.7.203.160
+      #publicAdress:             109.7.203.160
       sipPort:                  5060,
     kamailio:
-      serverUrl:                "wss://192.168.0.1:10443"
+      serverUrl:                "wss://nodefony.net:10443"
       sipTransport:             "WSS"
       sipProxyUrl:              "nodefony.net"
       DTMF:                     "SIP-INFO"                      # SIP-INFO | DTMF-OFF | RTP-EVENT
