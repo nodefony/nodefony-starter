@@ -51,3 +51,22 @@ webpack:
     library:                    "demo"
     libraryTarget:              "umd"
  
+
+#
+#  OVERRIDE BUNDLE REALTIME 
+#
+realTimeBundle:
+  system:
+    reconnect:
+      handshake:                  true
+      connect:                    true
+  services:
+    random:
+      type:                       tcp
+      port:                       1315
+      domain:                     localhost
+    dmsg:
+      type:                       tcp
+      port:                       1316
+      domain:                     localhost
+
