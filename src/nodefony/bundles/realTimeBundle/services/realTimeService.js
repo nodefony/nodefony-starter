@@ -255,11 +255,11 @@ nodefony.registerService("realTime", function(){
 						})	
 
 						client.on("data", (buffer) => {
-							console.log(buffer)
+							//console.log(buffer)
 							//this.logger(buffer.length, "INFO")
 							//console.log("--------")
 							//console.log(buffer.length)
-							console.log(buffer.toString())
+							//console.log(buffer.toString())
 							// ENCAPSULATION buffer in bayeux data
 							//console.log(buffer.toString())
 							this.send( context , this.protocol.publishMessage( message.subscription, buffer.toString(), message.clientId ) );
