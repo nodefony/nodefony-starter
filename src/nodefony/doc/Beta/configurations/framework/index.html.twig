@@ -2,8 +2,6 @@
 <div class="page-header">
 	<h1>Framework Configuration  </h1>
 	<p>
-		 Framework   <br>
-				
 		<h2 > You can see here :</h2>
 
 		<p>
@@ -38,9 +36,6 @@ Location : <code>./config</code>
 └── pm2.json
 </pre>
 </div>
-
-
-
 	
 <h2 id="global">Goblal Configuration <span class="badge">File</span></h2>	
 <div class="doc2">
@@ -55,18 +50,19 @@ Location : <code>./config</code>
 
 	  This config file  do multiple tasks as : <br>
 	  <ul>	
-		  <li> parametrers http(s) servers listen domain and port </li>
+		  <li> parametrers http(s) servers start , listen domain and port, certificats </li>
 		  <li> Domain Alias </li>
 		  <li> AutoLoad differents framework bundles as security monitoring ...</li>
 		  <li> Autoload services for render statics  files (css, js , images ..)</li>
 		  <li> locale (Lang) by default for all framework </li>
-		  <li> Log management </li>
+		  <li> PM2 management </li>
 	  </ul>	
 
 
 	  Location : <code>./config/config.yml</code>
 	  <p>
     	  <pre>
+#########################################################
 #
 #  NODEFONY FRAMEWORK
 #
@@ -74,47 +70,99 @@ Location : <code>./config</code>
 #
 #
 
-name:                           "NODEFONY"
+name                            : "NODEFONY"
+version                         : "2.0.4-beta"
 system:
- version:                      "Alpha"
- domain:                       nodefony.com                    # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
- domainAlias:                  "^www\\.nodefony\\.com$"        # domainAlias string only <<regexp>> the separator is space  example ".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"
- httpPort:                     5151
- httpsPort:                    5152
- statics:                      true
- security:                     true
- realtime:                     true
- monitoring:                   true
+  domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                                                          # domainAlias string only regexp   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+    - "^127.0.0.1$" 
+    - "^docker.nodefony$"
+  httpPort                      : 5151
+  httpsPort                     : 5152
+  statics                       : true
+  security                      : true
+  realtime                      : true
+  monitoring                    : true
+  locale                        : "en_en"
 
+  servers:
+    http                        : true
+    https	                : true	
+    ws			        : true	
+    wss			        : true
+    certificats:
+      key                       : "config/certificates/server/privkey.pem"
+      cert                      : "config/certificates/server/fullchain.pem"
+      ca                        : "config/certificates/ca/nodefony-root-ca.crt.pem"
+      options:
+        rejectUnauthorized      : false
 
-locale:                       "en_en"
+  bundles:
+    documentation 	        : "./src/nodefony/bundles/documentationBundle"
+    test		        : "./src/nodefony/bundles/unitTestBundle"
+    demo			: "./src/bundles/demoBundle"
 
-log:
- active:                     true
- console:                    false
- file:                       false
- messages:                   "/tmp/nodefony.log"
- error:                      "/tmp/errorNodefony.log"
- services:                   "/tmp/servicesNodefony.log"
- #TODO
- rotate:                     false
+  PM2:
+    script		        : "nodefony"
+    name			: "nodefony"
+    exec_mode		        : "cluster"
+    max_memory_restart	        : "1024M"
+    autorestart		        : true
+    max_restarts		: 10
+    watch			: false
+    error_file                  : "tmp/nodefony.log" 
+    out_file                    : "tmp/nodefony.error.log"
+    merge_logs                  : true
+    env:
+      NODE_ENV                  : "production"
+      MODE_START                : "PM2"
+  
+  log:
+    active                      : true
+    console                     : false
+    file                        : false
+    messages                    : "/tmp/nodefony.log"
+    error                       : "/tmp/errorNodefony.log"
+    #TODO
+    rotate                      : false
 
+#
+#       ASSETS CDN
+#
+#       You set cdn with string
+#       CDN :   cdn.nodefony.com
+#       or 
+#       CDN:
+#          global: cdn.nodefony.com
+#       or
+#       CDN:
+#         stylesheet:                  
+#           - cdn.nodefony.com       
+#         javascript:                  
+#           - cdn.nodefony.com
+#         image:
+#           - cdn.nodefony.com
+#           - cdn.nodefony.fr
+#         font:
+#           - cdn.nodefony.com
+#
+CDN                             : ~
+    
 #
 # ENGINE TEMPLATE
 #
 #       TWIG
 #       https://github.com/justjohn/twig.js
 #
-templating:                     twig
+templating                      : twig
 
 #
 # ENGINE ORM
 #
 #       SEQUELIZE
-#	https://github.com/sequelize/sequelize
 #
 #
-orm:                            sequelize
+orm                             : sequelize
 	  </pre>
   </div>
 
@@ -133,7 +181,7 @@ orm:                            sequelize
 		  <td>NODEFONY</td>
 	  </tr>	
 	  <tr> 
-		  <td class="config-parameters">system.version</td>
+		  <td class="config-parameters">version</td>
 		  <td>Version Framework</td>
 		  <td>String</td>
 		  <td>Alpha</td>
@@ -149,7 +197,7 @@ orm:                            sequelize
 	  <tr> 
 		  <td class="config-parameters">system.domainAlias</td>
 		  <td>Alias of domain  </td>
-		  <td>String  the separator is space  regexp only</td>
+		  <td>String or array  the separator is space for string type   regexp only  </td>
 		  <td>".*\\.nodefony.com  ^nodefony.eu$ ^.*\\.nodefony.eu$"</td>
 	  </tr>
 	  <tr> 
@@ -163,6 +211,37 @@ orm:                            sequelize
 		  <td>Port to listen servers HTTPS  / WEBSOCKET SECURE</td>
 		  <td>String</td>
 		  <td><span class="badge">5152</span></td>
+	  </tr>
+
+	  <tr> 
+		  <td class="config-parameters">system.servers.http</td>
+		  <td>Start http server </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.servers.https</td>
+		  <td>Start https server </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.servers.ws</td>
+		  <td>Start websocket server </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">system.servers.wss</td>
+		  <td>Start websocket secure server </td>
+		  <td>Boolean</td>
+		  <td><span class="badge">true</span></td>
+	  </tr>
+	   <tr> 
+		  <td class="config-parameters">system.servers.certificats</td>
+		  <td>Manage certificats for https and websocket secure server <a href="https://nodejs.org/dist/latest-v7.x/docs/api/tls.html#tls_tls_connect_options_callback">tls.connect(options) </a> </td>
+		  <td>Object</td>
+		  <td></td>
 	  </tr>
 	  <tr> 
 		  <td class="config-parameters">system.statics</td>
@@ -196,6 +275,12 @@ orm:                            sequelize
 		  <td>I18n lang Framework  </td>
 		  <td>String</td>
 		  <td><span class="badge">en_en</span></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">CDN</td>
+		  <td> Manages CDN for all differents assets. Can be use in twig templates with built-in &#123;&#123; CDN() &#125;&#125;  </td>
+		  <td>Object</td>
+		  <td></td>
 	  </tr>
 	  <tr> 
 		  <td class="config-parameters">log.avtive</td>
@@ -245,15 +330,11 @@ orm:                            sequelize
 		  <td>String</td>
 		  <td><span class="badge">sequelize</span></td>
 	  </tr>
-
-
-
 	  </tbody>  
   </table>
   </div>
 
 </div>
-
 
 <h2 id="certificates" >Certificates SSL HTTPS <span class="badge">Directory</span> <small><code>./config/certificates</code></small></h2>
 
@@ -281,38 +362,35 @@ drwxr-xr-x  6 cci  staff  204 15 déc 19:23 server
 
 	<p>
 		You can manage your https certificates in this directory <br>
-		The configurations of HTTPS and WEBSOCKET SECURE servers are in Application Bundle  see ( <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}"> Application configuration  </a> )		
 		
 	</p>
-
-
 
 </div>
 
 
-<h2 name="pm2" id="pm2">Configuration PM2   <span class="badge">File</span> <small><code>./config/pm2.json</code></small></h2>
+<h2 name="pm2" id="pm2">Configuration PM2   </h2>
 
 <div class="doc2">
 	<p>
 		Configuration nodefony running mode : <a href="{{ path('documentation-section',{section:'running', version:version, bundle:bundle })}}" >PM2</a> (Production process manager for Node.js )  <br>
-		This Configuration file for PM2 use by executable  <code>./nodefony_pm2</code>			
-		
+		This Configuration PM2 use by executable  <code>./nodefony_pm2</code>			
 	</p>
 
 	<pre>
-{
-	"script"		: "nodefony",
-	"name"			: "nodefony",
-	"exec_mode"		: "cluster",
-	"max_memory_restart"	: "1024M",
-	"autorestart"		: true,
-	"max_restarts"		: 10,
-	"watch"			: false,
-	"env"			: {
-		"NODE_ENV": "production",
-		"MODE_START": "PM2"
-	}
-}
+  PM2:
+    script		        : "nodefony"
+    name			: "nodefony"
+    exec_mode		        : "cluster"
+    max_memory_restart	        : "1024M"
+    autorestart		        : true
+    max_restarts		: 10
+    watch			: false
+    error_file                  : "tmp/nodefony.log" 
+    out_file                    : "tmp/nodefony.error.log"
+    merge_logs                  : true
+    env:
+      NODE_ENV                  : "production"
+      MODE_START                : "PM2"
 	</pre>
 	<a href="http://pm2.keymetrics.io/docs/usage/cluster-mode/"> Documentation pm2.keymetrics.io </a>
 </div>

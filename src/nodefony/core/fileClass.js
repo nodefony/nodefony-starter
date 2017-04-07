@@ -7,39 +7,21 @@
  */
 const mime = require('mime');
 const crypto = require('crypto');
-//var fs = require("fs");
-//var path = require("path");
 
 nodefony.register("fileClass", function(){
 
 
-	var findPath = function(str, Path, rec){
-		//Path = Path.replace(" ","\ ");
-		//str = str.replace(" ","\ ");
-			//console.log( "Patern :" + str );
-			//console.log( "Path Dir:" + Path);
-		var res = regRelatif.exec(str);
-		if (res){
-			var nb = str.indexOf("/");
-			//console.log("NB = " + nb)
-			if (nb > 0){
-				var ele = str.slice(nb+1);
-				//console.log("SLICE = " + ele)
-				//console.log("dirname = " + path.dirname(Path))
-				return findPath(ele, path.dirname(Path) , true);
-			}
-		}else{
-			var dirname  =  path.dirname(Path) ;
-			if ( rec ){
-				return dirname+"/"+str; 
-			}
-			res = regAbsolute.exec(str);
-			if (res){
-				return str;
-			}
-			return dirname+"/"+str;
+	var checkPath = function (myPath){
+		if ( ! myPath ){
+			return null ;
 		}
-	};
+		var abs = path.isAbsolute( myPath ) ;
+		if ( abs ){
+			return myPath ;
+		}else{
+			return process.cwd()+"/"+myPath ;
+		}
+	}
 
 	var regHidden = /^\./;
 
@@ -56,7 +38,6 @@ nodefony.register("fileClass", function(){
  	 *
  	 *
  	 */
-	var regRelatif = /^(\.\.\/)+/;
 	var regAbsolute = /^\//;
 
 	var File = class File {
@@ -66,7 +47,7 @@ nodefony.register("fileClass", function(){
 				this.type = this.checkType();	
 				if ( this.stats.isSymbolicLink() ){
 					var res = fs.readlinkSync( Path ) ;
-					this.path = findPath(Path, res) ;
+					this.path = checkPath(Path, res) ;
 				}else{
 					this.path = this.getRealpath(Path) ;	
 				}

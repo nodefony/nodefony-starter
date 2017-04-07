@@ -55,110 +55,43 @@ app/config/
 
 	  Location : <code>./app/config/config.yml</code>
     	  <pre>
+#####################
 #
 #  FRAMEWORK NODEFONY
 #
 #     APP CONFIG  
-name :				AppBundle
-locale :			en_en
-version :                       "1.0"
+name :                          AppBundle
+locale :                        en_en
+version :                       "Beta"
+
 App:
-  projectName:                  "Demo" 
-  projectYear:                  2015 
+  projectName:                  "nodefony" 
+  projectYear:                  2016 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
 
-
-#
-#       OVERRIDE BUNDLE MONITORING
-#
-#       see MONITORING BUNDLE config for more options
-#
-#
-monitoringBundle:
-  debugBar:                     true
-  #storage:                      false
-  
-#
-#       OVERRIDE BUNDLE HTTP 
-#
-#       see HTTP BUNDLE config for more options
-#       
-#       // SERVICES
-#       statics files
-#       session
-#       http server
-#       https server
-#       upload 
-#       websocket server 
-#       websocket secure server 
-#
-#
-httpBundle:
-  statics:
-    settings:
-      cache :                     true	
-      maxAge:                     0 
-    web:
-      path:                       "/web/"
-      maxage:                     30*24*60*60*1000
-
-  upload:
-    tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000               #en Bytes
-
-  session:
-    handler:                      session.storage.sequelize       # session.storage.files | session.storage.sequelize | session.storage.memcached
-    cookie:
-      maxAge:                     0   
-
-  http:
-    responseTimeout:              40000
-  https:
-    responseTimeout:              40000
-    certificats:
-      key:                        "config/certificates/server/privkey.pem"
-      cert:                       "config/certificates/server/fullchain.pem"
-      ca:                         "config/certificates/ca/nodefony-root-ca.crt.pem"
+lang:
+  en_en:                        "english"
+  fr_fr:                        "français"
 
 
+##########
 #
-#       OVERRIDE BUNDLE ASSETIC
+#  WEBPACK
 #
-#       LESS SERVICE CONFIGURATION
+# Assets root path is ./Resources/public
 #
-asseticBundle:
-  less:
-    compress:                     true
-    cache:                        true 
+webpack:
+  entry:
+    main:                       "./js/app.js"
+  watch:                        false
+  devtool:                      "source-map"
+  output:
+    filename:                   "./assets/js/app.js"
+    library:                    "app"
+    libraryTarget:              "umd"
 
-#
-#       OVERRIDE  BUNDLE SEQUELIZE  
-#       
-#       see SEQUELIZE BUNDLE config for more options
-#
-#       Nodefony Database Management
-#
-#       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / User 
-#
-#
-#       here create new databases connectors
-#
-#
-sequelizeBundle: 
-  debug:        false
-  connectors:                    
-    nodefony:
-      driver:          mysql
-      dbname:          'nodefony'
-      username:        'root'
-      password:        'password'
-      options:
-        dialect:       mysql
-        host:          nodefony.com
-        port:          '3306'
 	  </pre>
   </div>
 
@@ -227,6 +160,23 @@ sequelizeBundle:
 		  <td>String</td>
 		  <td></td>
 	  </tr>
+	  <tr> 
+		  <td class="config-parameters">lang</td>
+		  <td>
+			  All langs enable in Application 
+		  </td>
+		  <td>Object</td>
+		  <td></td>
+	  </tr>
+	  <tr> 
+		  <td class="config-parameters">webpack</td>
+		  <td>
+		      Module bundler for assets management of application see <a href="https://webpack.js.org/">WEBPACK</a>. 
+		  </td>
+		  <td>Object</td>
+		  <td></td>
+	  </tr>
+
 
 	  </tbody>  
   </table>
@@ -294,9 +244,36 @@ security:
 		</div>
 		Example <code>./app/config/config.yml </code>	
 		<pre>
-#./app/config/config.yml
-
 ....
+
+##################################
+#
+#       OVERRIDE  BUNDLE SEQUELIZE  
+#       
+#       see SEQUELIZE BUNDLE config for more options
+#
+#       Nodefony Database Management
+#
+#       By default nodefony create  connector name nodefony ( driver sqlite )
+#       for manage Sessions / User 
+#
+#
+#       here create new databases connectors ( example mysql) 
+#
+#
+sequelizeBundle: 
+  debug:        false
+  connectors:                    
+    nodefony:
+      driver:          mysql
+      dbname:          'nodefony'
+      username:        'username'
+      password:        'password'
+      options:
+        dialect:       mysql
+        host:          localhost
+        port:          '3306'
+
 
 #
 #       OVERRIDE BUNDLE MONITORING
@@ -308,26 +285,12 @@ security:
 debugBar:                     true
 #storage:                      false
 
-
-#
-#       OVERRIDE BUNDLE ASSETIC
-#
-#       
-#
-<strong>asseticBundle:</strong>
-less:
- compress:                     true
- cache:                        true
-CDN:
- javascripts:		  cdn.nodefony.com
- stylesheets:		  cdn.nodefony.com
-
 ....
 
 
 // STARTED NODEFONY SYSLOG :   
+Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : sequelize
 Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : monitoring
-Mon Oct 03 2016 17:10:41 WARNING BUNDLE APP  :  OVERRIDING  CONFIG bundle  : assetic
 		</pre>	
 		
 	</div>

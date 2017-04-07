@@ -87,7 +87,8 @@ nodefony.registerService("webpack", function(){
 	var fontsRule = function(basename){
 		return {
 			test: /\.(eot|woff2?|svg|ttf)([\?]?.*)$/,
-			use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/fonts/&outputPath=/assets/fonts/',
+			//use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/fonts/&outputPath=/assets/fonts/',
+			use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'&outputPath=/assets/fonts/',
 		};
         };
 
@@ -97,7 +98,8 @@ nodefony.registerService("webpack", function(){
 	var imagesRule = function(basename){ 
 		return {
 			test: /\.(jpg|png|gif)$/,
-          		use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/images/&outputPath=/assets/images/'
+          		//use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'/assets/images/&outputPath=/assets/images/'
+          		use: 'file-loader?name=[name].[ext]&publicPath=/'+basename+'&outputPath=/assets/images/'
 		};
         };
 
@@ -125,7 +127,7 @@ nodefony.registerService("webpack", function(){
 			plugins: [
 				new ExtractTextPluginCss( {
 					 filename:"./assets/css/"+ name +".css", 
-				}),
+				})
 			]
 		};
 	};

@@ -14,6 +14,7 @@ git push -u origin <branch_name>
 
 // TRACK REMOTE BRANCH 
 $ git branch --track origin/ES6
+$ git checkout -b dev --track  origin/dev
 
 
 // track ignored file

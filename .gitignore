@@ -5,6 +5,7 @@ tmp/**
 web/**
 **/assets/**
 config/generatedConfig.yml
+src/bundles/webrtcBundle
 
 app/Resources/databases/*
 *.db

@@ -1,0 +1,94 @@
+{{trans_default_domain("doc")}}
+
+
+<h1> Notifications Center </h1>
+<hr>
+
+<div class="alert alert-info" role="alert">
+	<strong>
+		A notification center can manage all events off a composant in nodefony .</br>
+		A notification center is a wrapper of node.js <a href="https://nodejs.org/dist/latest-v7.x/docs/api/events.html">Events</a> .</br>
+		This wrapper add some particularities and assumes backward compatibility with old version of events manager.
+	</strong>
+</div>	
+
+
+<h2>Create Notifications Center : </h2>
+
+<p>
+
+</p>
+<pre>
+var notificationsCenter = nodefony.notificationsCenter.create();
+</pre>
+
+<h2>Listen an event of Notification Center : </h2>
+<p>
+wrapper of addListener 
+</p>
+<pre>
+//listen an event of notification center   : (context, eventName, callback) 
+<strong>notificationsCenter.listen</strong>(myContext, "onReady", function(myArg){
+	// where this is argument myContext 
+	console.log(this);
+});
+</pre>
+
+
+<h2>Fire an event of Notification Center :  </h2>
+<p>
+Wrapper of emitter.emit 
+</p>
+<pre>
+//Fire an event of notification center   : (eventName, argument ...) 
+<strong>notificationsCenter.fire</strong>("onReady", myArg);
+</pre>
+
+
+
+<h2>Automatically add events in Notification Center : </h2>
+<p>
+	Is useful to Automatically add events when you you have somme settings (configurations ).</br>
+	settingsToListen find all Events Name who begin by "on" on the setting object and 
+</p>
+
+<pre>
+//Add events with settings in notification center   : (localSettings, context) 
+<strong>notificationsCenter.settingsToListen</strong>({
+	display:true,
+	<strong>onBoot</strong>:function {
+		// here context is mycontext
+		console.log(this)
+	},
+	<strong>onInitialize</strong>: function{
+		// here context is mycontext
+		console.log(this)
+	},
+	exclude: /^test$/
+}, <strong>mycontext</strong>);
+</pre>
+
+
+<h2>Unlisten an event of Notification Center : </h2>
+
+<pre>
+var callback = function(myArg1, myArg2){
+	...
+};
+
+notificationsCenter.listen(this, "onReady", callback);
+
+//Unlisten an event of notification center   : (eventName, listener) 
+<strong>notificationsCenter.Unlisten</strong>("onReady", callback);
+</pre>
+
+
+<h2>remove All Listeners of an event of Notification Center : </h2>
+
+<pre>
+//Unlisten all listeners   of an event Name  notification center   : ([eventName]) 
+<strong>notificationsCenter.removeAllListeners</strong>("onReady");
+</pre>
+
+
+

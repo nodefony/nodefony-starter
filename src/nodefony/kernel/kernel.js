@@ -589,12 +589,13 @@ nodefony.register("kernel", function(){
 			var func = function(){
 				try{
 					 return new nodefony.finder( {
-						path:path,
-						recurse:false,
+						path: path,
+						followSymLink: true,
+						exclude:/^doc$|^node_modules$/,
+						recurse: false,
 						onFile:(file) => {
 							if ( file.matchName(this.regBundle) ){
 								try {
-									//this.logger("registerBundles : " + file.name ,"DEBUG");
 									this.loadBundle(file);
 								}catch(e){
 									this.logger(e, "ERROR");

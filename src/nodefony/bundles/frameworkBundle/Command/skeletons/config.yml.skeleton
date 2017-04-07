@@ -39,7 +39,7 @@ locale :			{{ local }}
 #    or 
 #      watch:
 #        controller:		true
-#        config:                true
+#        config:                true		# only  routing.yml
 #        views:			true
 #        translations:          true
 #

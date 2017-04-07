@@ -237,7 +237,15 @@ nodefony.register("finder", function(){
 	var find = function(file, result, depth, settings, parent){
 		try{
 				
-			var res = fs.readdirSync(file.path);
+			try {
+				var res = fs.readdirSync(file.path);
+			}catch(e){
+				if (file.type ==="symbolicLink" && settings.followSymLink && depth-1 !== 0){
+					var res = fs.readlinkSync(file.path)
+				}else{
+					throw e ;
+				}
+			}
 
 			if (res && res.length){
 				var ret = regSlash.exec(file.path);

@@ -397,12 +397,7 @@ nodefony.register("syslog", function(){
    	 *
     	 *    var logIntance = new nodefony.syslog(settings);
     	 *
-    	 *
-    	 *    controller.logIntance.listen(context,function(pdu){
-    	 *        logView(pdu)
-    	 *    } )
-    	 *
-    	 *    controller.logIntance.listenWithConditions(context,{
+    	 *    logIntance.listenWithConditions(context,{
     	 *        checkConditions: "&&",
    	 *        severity:{
    	 *            data:"CRITIC,ERROR"
@@ -423,7 +418,7 @@ nodefony.register("syslog", function(){
     	 *
     	 *
     	 *    var myFunction = function(error){
-    	 *        controller.logIntance.logger(error, "ERROR", "myFunction", ERROR_DEFINE[error] );
+    	 *        logIntance.logger(error, "ERROR", "myFunction", ERROR_DEFINE[error] );
     	 *    }
     	 *
     	 *
@@ -484,7 +479,6 @@ nodefony.register("syslog", function(){
              	 	* @type Number
              	 	*/
            		this.start = 0;
-       			this.fire = this.settings.async ? super.fireAsync : super.fire ;
 		}
 
    		pushStack (pdu){

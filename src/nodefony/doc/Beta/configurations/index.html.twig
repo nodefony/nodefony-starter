@@ -21,8 +21,34 @@
 		<div class="alert alert-danger" role="alert">
 			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 			<span class="sr-only">Error:</span>
-			In Developement mode :  Nodefony kernel Don't reload config files,You must restart nodefony  !!!
+			In Developement mode :  Nodefony kernel Don't reload config.yml services.xml security.yml files,You must restart nodefony  !!!
 		</div>
+		<div class="alert alert-info" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+			<span class="sr-only">Error:</span>
+			In Developement mode :  routing.yml is auto-reloaded is you manage  WATCHERS in config.yml
+			</br>
+			<pre>
+#
+#  WATCHERS
+#    
+#    watchers Listen to changes, deletion, renaming of files and directories 
+#    of different components
+#       
+#    For watch all components 
+# 
+#      watch:			true
+#    or 
+#      watch:
+#        controller:		true
+#        config:                true   	# only  routing.yml
+#        views:			true
+#        translations:          true
+#
+watch:				true
+			</pre>
+		</div>
+
 	</div>
 
 	<a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:bundle, queryString:{'subsection':'application'} })}}"> <button type="button" class="btn btn-primary">Aplication Configuration</button></a>
