@@ -1,9 +1,0 @@
-# Security
-security:
-    #
-    #  FIREWALL  PROVIDER
-    #
-    providers:
-      nodefony:
-        entity:
-          name:   "user"

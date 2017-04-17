@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const pm2 = require('pm2');
 const Table = require('cli-table');
 const yaml = require('js-yaml');
@@ -67,6 +66,7 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 			config.error_file = config.cwd+"/"+config.error_file;
 		}
 	}
+
 	if ( config.out_file ){
 		abs = path.isAbsolute(config.out_file);
 		if ( ! abs ){
@@ -106,7 +106,6 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
     			});
   		});
 	});
-
 });
 
 

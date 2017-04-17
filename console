@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 const asciify = require('asciify');
+const path = require("path");
 
-//  AUTOLOAD LIBRARY nodefony NODE
-const autoloader = require("./vendors/nodefony/core/autoloader");
-autoloader.load("./app/appKernel.js");
-autoloader.load("./vendors/nodefony/console/console.js");
+var autoloader = null ;
+// AUTOLOADER
+try {
+	autoloader = require("nodefony");
+}catch(e){
+	autoloader = require(".", "src", "nodefony", "core", "autoloader");	
+}
+autoloader.load( path.resolve(".", "app", "appKernel.js" ) );
+autoloader.load( path.resolve( autoloader.dirname, "console", "console.js") );
 
 // START CONSOLE
 asciify("      NODEFONY", {font:'standard'}, function(err, res){

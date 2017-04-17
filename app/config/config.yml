@@ -19,8 +19,8 @@ locale :                        en_en
 version :                       "Beta"
 
 App:
-  projectName:                  "nodefony" 
-  projectYear:                  2016 
+  projectName:                  "demo" 
+  projectYear:                  2017 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"

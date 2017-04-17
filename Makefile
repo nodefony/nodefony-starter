@@ -9,11 +9,9 @@ VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
 #$(error $(VERSION))  
 VERSION := $(shell expr $(VERSION) )
 
-all:  install 
+all:  npm install 
 
 install:
-
-	make npm ;
 
 	@echo "";
 	@echo "#########################################" ;
@@ -82,6 +80,8 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
+	@rm -rf ./tmp/webpack
+	@rm -rf ./tmp/assestLink
 	./node_modules/pm2/bin/pm2 update
 	./nodefony_pm2 &
 
@@ -165,8 +165,10 @@ framework:
 	@echo "#######################################" ;
 	@echo "";
 
-	git submodule sync;
-	git submodule update --init --recursive
+	@if [ -e .git ] ; then \
+		git submodule sync ; \
+		git submodule update --init --recursive ; \
+	fi
 	
 	@echo "";
 	@echo "####################################################" ;
@@ -194,6 +196,9 @@ framework:
 	fi
 	@if [ ! -d web/images ] ; then  \
 		mkdir web/images ;\
+	fi
+	@if [ ! -d web/fonts ] ; then  \
+		mkdir web/fonts ;\
 	fi
 	@if [ ! -d web/assets ] ; then  \
 		mkdir  web/assets ;\
