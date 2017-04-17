@@ -21,7 +21,7 @@ version :                       "Beta"
 
 App:
   projectName:                  "nodefony" 
-  projectYear:                  2016 
+  projectYear:                  2017 
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
@@ -83,7 +83,7 @@ sequelizeBundle:
 monitoringBundle:
   debugBar:                     true
   storage:
-    active:                     false                      
+    active:                     true                      
     requests:                   orm
   
 #
