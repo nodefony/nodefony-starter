@@ -26,7 +26,7 @@
     "node": ">=6"
   },
   "dependencies": {
-    "nodefony": "git+https://github.com/nodefony/nodefony-core.git"
+    "nodefony": "2.1.0-beta"
   },
   "devDependencies": {
   },
