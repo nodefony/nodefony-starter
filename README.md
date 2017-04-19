@@ -109,7 +109,7 @@ $ make kill
 
 Access to App with URL : http://localhost:5151
 
-[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony-core/master/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
+[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony-core/master/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://nodefony.net)
 
 ## <a name="configurations"></a>Configurations Kernel
 Open **[./config/config.yml](https://github.com/nodefony/nodefony-core/blob/master/config/config.yml)**  if you want change httpPort, domain ,servers, add bundle, locale ...
@@ -369,7 +369,7 @@ Access  with URL : https://localhost:5152/hello
 
 Access to monitoring route with URL : http://localhost:5151/nodefony
 
-[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/doc/Beta/cluster.png)
+[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/doc/Beta/cluster.png)](https://nodefony.net/nodefony)
 
 Monitoring in progress !!! 
 
