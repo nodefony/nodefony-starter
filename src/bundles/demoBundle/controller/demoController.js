@@ -31,16 +31,181 @@ nodefony.registerController("demo", function(){
  	 	*/
 		indexAction (){
 			var kernel = this.get("kernel") ;
+			// return  OBJECT by default view is : demoBundle:demo:index.html.twig
 			return {
 				title:"nodefony",
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			};
+			// WITH RENDER 
 			/*return this.render("demoBundle:demo:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			});*/
+		}
+
+		/**
+ 	 	*	 renderView 
+ 	 	*		
+ 	 	*/
+		renderviewAction (){
+			var content = this.renderView('demoBundle:Default:documentation.html.twig',{name:"render"});
+			return this.renderResponse(content);
+		}
+		
+		/**
+ 	 	*	@see renderResponse() with content html
+ 	 	*
+ 	 	*/
+		htmlAction (name){
+			var name = "nodefony";
+			return this.renderResponse('<h1> renderResponse </h1>');
+		}
+
+		/**
+ 	 	*
+ 	 	*	@see forward
+ 	 	*/
+		forwardAction (){
+			return this.forward("frameworkBundle:default:index");
+		}
+		
+		/**
+ 	 	*
+ 	 	*	@see redirect
+ 	 	*/
+		redirectGoogleAction (){
+			// status 301 or 302
+			return this.redirect("http://google.com");
+			//return this.redirect("/json", 302);
+		}
+
+		/**
+ 	 	*
+ 	 	*	render JSON 
+ 	 	*/
+		jsonAction (){
+			return this.renderJson({
+				foo:"bar",
+				bar:"foo"
+			});
+		}
+
+		/**
+ 	 	*
+ 	 	*	@see redirect with variables 
+ 	 	*	@see generateUrl 
+ 	 	*/
+		generateUrlAction (){
+			// absolute
+			return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
+
+			// relative
+			//return this.redirect ( this.generateUrl("user", {name:"cci"} );
+		}
+
+		/**
+ 	 	*
+ 	 	*	DEMO WEBSOCKET
+ 	 	*/
+		websoketAction (message){
+			var context = this.getContext();
+				
+			switch( this.getMethod() ){
+				case "GET" :
+					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
+				case "WEBSOCKET" :
+					if (message){
+						// MESSAGES CLIENT
+						this.logger( message.utf8Data , "INFO");
+					}else{
+						// PREPARE  PUSH MESSAGES SERVER 
+						// SEND MESSAGES TO CLIENTS
+						var i = 0 ;
+						var id = setInterval(() => {
+							var mess = "I am a  message "+ i +"\n" ;
+							this.logger( "SEND TO CLIENT :" + mess , "INFO");
+							//context.send(mess);
+							this.renderResponse(mess);
+							i++;
+						}, 1000);
+
+						setTimeout( () => {
+							clearInterval(id);
+							// close reason , descripton
+							context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
+							id = null ;
+						}, 10000);
+						this.context.listen(this, "onClose" , () => {
+							if (id){
+								clearInterval(id);	
+							}
+						});
+					}
+				break;
+				default :
+					throw new Error("REALTIME METHOD NOT ALLOWED");
+			}
+		}
+
+		/**
+ 	 	*
+ 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
+ 	 	*	SQL SELECT
+ 	 	*
+ 	 	*/
+		querySqlAction (){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			var users = null ;
+			return nodefonyDb.query('SELECT * FROM users')
+			.then((result) => {
+				return this.render('demoBundle:orm:orm.html.twig', {
+					users:result[0],
+				});
+			})
+		}
+
+		/**
+ 	 	*
+ 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
+ 	 	*	SQL WITH JOIN 
+ 	 	*
+ 	 	*
+ 	 	*/
+		querySqlJoinAction (){
+
+			var orm = this.getORM() ;
+
+			var nodefonyDb = orm.getConnection("nodefony") ;
+
+			return nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
+			.then((result) => {
+				var joins = result[0];
+				for (var i = 0 ; i < joins.length ; i++){
+					joins[i].metaBag = JSON.parse( joins[i].metaBag );
+				}
+				return this.render('demoBundle:orm:orm.html.twig', {
+					joins:joins,
+				});
+			})
+		}
+
+		readmeAction (){
+			var kernel = this.container.get("kernel");
+			var path = kernel.rootDir+'/README.md';
+			var file = new nodefony.fileClass(path);
+			var res = this.htmlMdParser(file.content(),{
+				linkify: true,
+				typographer: true	
+			});
+			return  this.render('demoBundle:Default:documentation.html.twig',{
+				html:res
+			});
 		}
 		
 		/**
@@ -296,54 +461,7 @@ nodefony.registerController("demo", function(){
 						return this.redirect(this.generateUrl("subscribe"));
 					}
 				});
-			
 			}
-		}
-
-		/**
- 	 	*
- 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
- 	 	*	SQL SELECT
- 	 	*
- 	 	*/
-		querySqlAction (){
-
-			var orm = this.getORM() ;
-
-			var nodefonyDb = orm.getConnection("nodefony") ;
-
-			var users = null ;
-			return nodefonyDb.query('SELECT * FROM users')
-			.then((result) => {
-				return this.render('demoBundle:orm:orm.html.twig', {
-					users:result[0],
-				});
-			})
-		}
-
-		/**
- 	 	*
- 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
- 	 	*	SQL WITH JOIN 
- 	 	*
- 	 	*
- 	 	*/
-		querySqlJoinAction (){
-
-			var orm = this.getORM() ;
-
-			var nodefonyDb = orm.getConnection("nodefony") ;
-
-			return nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
-			.then((result) => {
-				var joins = result[0];
-				for (var i = 0 ; i < joins.length ; i++){
-					joins[i].metaBag = JSON.parse( joins[i].metaBag );
-				}
-				return this.render('demoBundle:orm:orm.html.twig', {
-					joins:joins,
-				});
-			})
 		}
 
 		/*
@@ -578,123 +696,6 @@ nodefony.registerController("demo", function(){
 					{'Content-Type': 'application/json; charset=utf-8'}
 				);
 			}
-		}
-
-		/**
- 	 	*	 renderView 
- 	 	*		
- 	 	*/
-		renderviewAction (){
-			var content = this.renderView('demoBundle:Default:documentation.html.twig',{name:"render"});
-			return this.renderResponse(content);
-		}
-		
-		/**
- 	 	*	@see renderResponse() with content html
- 	 	*
- 	 	*/
-		htmlAction (name){
-			var name = "nodefony";
-			return this.renderResponse('<h1> renderResponse </h1>');
-		}
-
-		/**
- 	 	*
- 	 	*	@see forward
- 	 	*/
-		forwardAction (){
-			return this.forward("frameworkBundle:default:index");
-		}
-		
-		/**
- 	 	*
- 	 	*	@see redirect
- 	 	*/
-		redirectGoogleAction (){
-			// status 301 or 302
-			return this.redirect("http://google.com");
-			//return this.redirect("/json", 302);
-		}
-
-		/**
- 	 	*
- 	 	*	render JSON 
- 	 	*/
-		jsonAction (){
-			return this.renderJson({
-				foo:"bar",
-				bar:"foo"
-			});
-		}
-
-		/**
- 	 	*
- 	 	*	@see redirect with variables 
- 	 	*	@see generateUrl 
- 	 	*/
-		generateUrlAction (){
-			// absolute
-			return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
-
-			// relative
-			//return this.redirect ( this.generateUrl("user", {name:"cci"} );
-		}
-
-		/**
- 	 	*
- 	 	*	DEMO WEBSOCKET
- 	 	*/
-		websoketAction (message){
-			var context = this.getContext();
-				
-			switch( this.getMethod() ){
-				case "GET" :
-					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
-				case "WEBSOCKET" :
-					if (message){
-						// MESSAGES CLIENT
-						this.logger( message.utf8Data , "INFO");
-					}else{
-						// PREPARE  PUSH MESSAGES SERVER 
-						// SEND MESSAGES TO CLIENTS
-						var i = 0 ;
-						var id = setInterval(() => {
-							var mess = "I am a  message "+ i +"\n" ;
-							this.logger( "SEND TO CLIENT :" + mess , "INFO");
-							//context.send(mess);
-							this.renderResponse(mess);
-							i++;
-						}, 1000);
-
-						setTimeout( () => {
-							clearInterval(id);
-							// close reason , descripton
-							context.close(1000, "NODEFONY CONTROLLER CLOSE SOCKET");
-							id = null ;
-						}, 10000);
-						this.context.listen(this, "onClose" , () => {
-							if (id){
-								clearInterval(id);	
-							}
-						});
-					}
-				break;
-				default :
-					throw new Error("REALTIME METHOD NOT ALLOWED");
-			}
-		}
-
-		readmeAction (){
-			var kernel = this.container.get("kernel");
-			var path = kernel.rootDir+'/README.md';
-			var file = new nodefony.fileClass(path);
-			var res = this.htmlMdParser(file.content(),{
-				linkify: true,
-				typographer: true	
-			});
-			return  this.render('demoBundle:Default:documentation.html.twig',{
-				html:res
-			});
 		}
 	};
 	

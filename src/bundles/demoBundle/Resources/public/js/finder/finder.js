@@ -1,4 +1,4 @@
-
+require('../../clean/css/style.css');
 
 module.exports = function (){ 
 
@@ -77,5 +77,4 @@ module.exports = function (){
           		}
       		});
 	});
-
 }

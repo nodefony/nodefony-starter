@@ -4,6 +4,9 @@
 
 	{{ parent() }}
 
+	<!-- WEBPACK BUNDLE -->
+	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/finder.css" />
+
         <link rel="stylesheet" href="/demoBundle/css/finder/flickity.min.css" media="screen">
 	<link rel="stylesheet" href="/demoBundle/css/finder/jquery.fancybox.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="/demoBundle/js/finder/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
@@ -14,6 +17,8 @@
 {% block javascripts %}
 
 	{{ parent() }}
+	<!-- WEBPACK BUNDLE -->
+	<script src="{{CDN('javascript')}}/demoBundle/assets/js/finder.js"></script>
 
 	<script type="text/javascript" src="/demoBundle/js/finder/flickity.pkgd.min.js"></script>
 	<script type="text/javascript" src="/demoBundle/js/finder/jquery.fancybox.pack.js"></script>
@@ -23,9 +28,8 @@
         <script type="text/javascript" src="/demoBundle/js/finder/helpers/jquery.fancybox-media.js"></script>
 
 	<script> 
-		demo.finder();
+		finder();
 	</script>
-
 
 {% endblock %}
 

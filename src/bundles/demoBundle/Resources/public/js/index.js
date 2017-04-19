@@ -6,7 +6,7 @@ require("../clean/js/jquery.sticky.js");
 require("../clean/js/smoothscroll.js");
 const WOW = require("../clean/js/wow.min.js").WOW;
 
-
+require('../clean/css/style.css');
 require( '../plugins/gritter/css/jquery.gritter.css');
 require( '../clean/css/simple-line-icons.css');
 require ('../clean/css/animate.css');

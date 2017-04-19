@@ -41,17 +41,17 @@ watch:                          ~
 #
 webpack:
   entry:
-    main:                       "./js/demo.js"
+    demo:                       "./js/index.js"
+    finder:                     "./js/finder/finder.js"
   watch:                        false
   devtool:                      "source-map"
   externals:
     jquery:                     "jQuery"
   output:
-    filename:                   "./assets/js/demo.js"
-    library:                    "demo"
+    filename:                   "./assets/js/[name].js"
+    library:                    "[name]"
     libraryTarget:              "umd"
  
-
 #
 #  OVERRIDE BUNDLE REALTIME 
 #
