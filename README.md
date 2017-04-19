@@ -109,10 +109,10 @@ $ make kill
 
 Access to App with URL : http://localhost:5151
 
-[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
+[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony-core/master/src/nodefony/bundles/documentationBundle/Resources/public/images/nodefony.png)](https://github.com/nodefony/nodefony)
 
 ## <a name="configurations"></a>Configurations Kernel
-Open **[./config/config.yml](https://github.com/nodefony/nodefony/blob/master/src/nodefony/config/config.yml)**  if you want change httpPort, domain ,servers, add bundle, locale ...
+Open **[./config/config.yml](https://github.com/nodefony/nodefony-core/blob/master/config/config.yml)**  if you want change httpPort, domain ,servers, add bundle, locale ...
 ```yml
 #########################################################
 #
@@ -369,7 +369,7 @@ Access  with URL : https://localhost:5152/hello
 
 Access to monitoring route with URL : http://localhost:5151/nodefony
 
-[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/doc/Beta/cluster.png)](https://github.com/nodefony/nodefony)
+[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/doc/Beta/cluster.png)
 
 Monitoring in progress !!! 
 
