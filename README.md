@@ -122,7 +122,7 @@ Open **[./config/config.yml](https://github.com/nodefony/nodefony-core/blob/mast
 #
 
 name                            : "NODEFONY"
-version                         : "2.1.0-beta"
+version                         : "2.1.2-beta"
 system:
   domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
