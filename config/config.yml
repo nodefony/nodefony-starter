@@ -17,12 +17,9 @@
 #       KERNEL CONFIG
 #
 #
-
-name                            : "NODEFONY"
-version                         : "2.1.0-beta"
 system:
-  domain                        : localhost                             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
-  domainAlias:                                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+  domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$" 
     - "^docker.nodefony$"
   httpPort                      : 5151
@@ -51,27 +48,23 @@ system:
     demo			: "./src/bundles/demoBundle"
 
   PM2:
-    script		        : "nodefony"
     name			: "demo"
     exec_mode		        : "cluster"
     max_memory_restart	        : "1024M"
     autorestart		        : true
     max_restarts		: 10
     watch			: false
-    error_file                  : "tmp/nodefony.log" 
-    out_file                    : "tmp/nodefony.error.log"
-    merge_logs                  : true
-    env:
-      NODE_ENV                  : "production"
-      MODE_START                : "PM2"
+    log_file                    : "tmp/nodefony.log"
+    out_file                    : "tmp/nodefony.out.log"
+    error_file                  : "tmp/nodefony.error.log" 
+    #merge_logs                  : true
   
   log:
     active                      : true
-    console                     : false
+    #TODO
     file                        : false
     messages                    : "/tmp/nodefony.log"
-    error                       : "/tmp/errorNodefony.log"
-    #TODO
+    error                       : "/tmp/nodefony.error.log"
     rotate                      : false
 
 #

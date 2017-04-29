@@ -28,9 +28,10 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	
 	var nodefonyConfig = null ; 
 	try {
-		var exist = fs.existsSync("./config/config.yml");
+		var conf = path.resolve(".", "config", "config.yml");
+		var exist = fs.existsSync( conf );
 		if (exist){
-			nodefonyConfig =  yaml.load( fs.readFileSync("./config/config.yml", 'utf8' ) ); 
+			nodefonyConfig =  yaml.load( fs.readFileSync(conf, 'utf8' ) ); 
 		}
 	}catch(e){
 		console.trace(e)
@@ -39,9 +40,10 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 
 	var config = null ;
 	try {
-		var exist = fs.existsSync("./config/pm2.json");
+		var conf = path.resolve(".", "config", "pm2.json");
+		var exist = fs.existsSync(conf);
 		if (exist){
-			config = require("./config/pm2.json"); 
+			config = require(conf); 
 		}
 	}catch(e){
 		console.trace(e)
@@ -51,27 +53,15 @@ require('asciify')("      NODEFONY", {font:'standard'}, function(err, res){
 	if ( ! config ){
 		config = nodefonyConfig.system.PM2 ;		
 	}
+	config.script = "nodefony" ;
+	config.env =  {
+		NODE_ENV : "production",
+		MODE_START : "PM2"
+	};
+	config.cwd = process.cwd(); 
+
 	if ( ! config.instances ){
 		config.instances = instances ;
-	}
-	if ( ! config.cwd ){
-		config.cwd = process.cwd(); 
-	}
-
-	// LOG
-	var abs = null ;
-	if ( config.error_file ){
-		abs = path.isAbsolute(config.error_file);
-		if ( ! abs ){
-			config.error_file = config.cwd+"/"+config.error_file;
-		}
-	}
-
-	if ( config.out_file ){
-		abs = path.isAbsolute(config.out_file);
-		if ( ! abs ){
-			config.out_file = config.cwd+"/"+config.out_file;
-		}
 	}
 
 	pm2.connect(true, function() {

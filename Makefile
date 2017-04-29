@@ -3,11 +3,12 @@ VERBOSE = 0
 NODE_VERSION := $(shell node -v)
 
 PWD := $(shell pwd)
-PWD_STAGE := $(shell pwd)/src/nodefony-stage
 
 VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
 #$(error $(VERSION))  
 VERSION := $(shell expr $(VERSION) )
+
+APP_NAME = "demo"
 
 all:  npm install 
 
@@ -25,19 +26,6 @@ install:
 	else \
 		echo "./.console_dev npm:install";\
 		./.console_dev npm:install ;\
-	fi \
-
-	@echo "";
-	@echo "#########################################" ;
-	@echo "#        NODEFONY ASSETS INSTALL        #" ;
-	@echo "#########################################" ;
-	@echo "";
-	@if [ $(VERBOSE) = 0 ] ; then \
-		echo "./console assets:install" ;\
-		./console assets:install ;\
-	else \
-		echo "./.console_dev assets:install" ;\
-		./.console_dev assets:install ;\
 	fi \
 
 build:
@@ -86,28 +74,28 @@ start:
 	./nodefony_pm2 &
 
 stop:
-	./node_modules/pm2/bin/pm2 stop nodefony
+	./node_modules/pm2/bin/pm2 stop $(APP_NAME)
 
 kill:
 	./node_modules/pm2/bin/pm2 kill
 
 show:
-	./node_modules/pm2/bin/pm2 show nodefony
+	./node_modules/pm2/bin/pm2 show $(APP_NAME)
 
 monitor:
-	./node_modules/pm2/bin/pm2 monit nodefony
+	./node_modules/pm2/bin/pm2 monit $(APP_NAME)
 
 status:
 	./node_modules/pm2/bin/pm2 status
 
 reload:
-	./node_modules/pm2/bin/pm2 reload nodefony
+	./node_modules/pm2/bin/pm2 reload $(APP_NAME)
 
 restart:
-	./node_modules/pm2/bin/pm2 restart nodefony
+	./node_modules/pm2/bin/pm2 restart $(APP_NAME)
 
 logs:
-	./node_modules/pm2/bin/pm2 --lines 1000 logs nodefony
+	./node_modules/pm2/bin/pm2 --lines 1000 logs $(APP_NAME)
 
 # NODEFONY BUILD FRAMEWORK 
 npm:
@@ -263,6 +251,7 @@ certificates:
 	@echo "#         NODEFONY CERTIFICATES         #" ;
 	@echo "#########################################" ;
 	@echo "";
+	rm -rf config/certificates ;
 	./bin/generateCertificates.sh;
 
 docker-build:
