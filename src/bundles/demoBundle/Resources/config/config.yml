@@ -1,5 +1,5 @@
 #
-#        nodefony BUILDER YAML FILE 
+#        nodefony BUILDER YAML FILE
 #
 #
 # This file is YAML  FILE
@@ -18,14 +18,14 @@ version :                       "1.0"
 
 #
 #  WATCHERS
-#    
-#    watchers Listen to changes, deletion, renaming of files and directories 
+#
+#    watchers Listen to changes, deletion, renaming of files and directories
 #    of different components
-#       
-#    For watch all components 
-# 
+#
+#    For watch all components
+#
 #      watch:			true
-#    or 
+#    or
 #      watch:
 #        controller:		true
 #        config:                true
@@ -41,8 +41,10 @@ watch:                          ~
 #
 webpack:
   entry:
+    layout:                     "./js/layout.js"
     demo:                       "./js/index.js"
     finder:                     "./js/finder/finder.js"
+    login:                      "./js/login.js"
   watch:                        false
   devtool:                      "source-map"
   externals:
@@ -51,9 +53,9 @@ webpack:
     filename:                   "./assets/js/[name].js"
     library:                    "[name]"
     libraryTarget:              "umd"
- 
+
 #
-#  OVERRIDE BUNDLE REALTIME 
+#  OVERRIDE BUNDLE REALTIME
 #
 realTimeBundle:
   system:
@@ -69,4 +71,3 @@ realTimeBundle:
       type:                       tcp
       port:                       1316
       domain:                     localhost
-

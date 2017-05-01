@@ -3,23 +3,22 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block stylesheets %}
-	
+
 	{{ parent() }}
 
-	
+	<link href="{{CDN('stylesheet')}}/demoBundle/assets/css/layout.css" rel="stylesheet"/>
 	<link href="{{CDN('stylesheet')}}/frameworkBundle/vendors/dataTable/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
-	
+
 {% endblock %}
 
 {% block javascripts %}
-	
+
 	{{ parent() }}
 
-	
+	<script type="text/javascript" src="{{CDN('javascript')}}/demoBundle/assets/js/layout.js"></script>
 	<script type="text/javascript" src="{{CDN('javascript')}}/frameworkBundle/vendors/dataTable/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" src="{{CDN('javascript')}}/frameworkBundle/vendors/dataTable/js/dataTables.bootstrap.js"></script>
 
-	
 	<script>
 		/* ---------------------------------------------- /*
 		 * LANG IN URL CHANGE
@@ -41,4 +40,3 @@
 		{{ render( controller("demoBundle:demo:footer" )) }}
 	</footer>
 {% endblock %}
-

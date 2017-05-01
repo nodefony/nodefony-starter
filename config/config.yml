@@ -20,7 +20,7 @@
 system:
   domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
-    - "^127.0.0.1$" 
+    - "^127.0.0.1$"
     - "^docker.nodefony$"
   httpPort                      : 5151
   httpsPort                     : 5152
@@ -34,8 +34,8 @@ system:
 
   servers:
     http                        : true
-    https	                : true	
-    ws			        : true	
+    https	                : true
+    ws			        : true
     wss			        : true
     certificats:
       key                       : "config/certificates/server/privkey.pem"
@@ -56,9 +56,9 @@ system:
     watch			: false
     log_file                    : "tmp/nodefony.log"
     out_file                    : "tmp/nodefony.out.log"
-    error_file                  : "tmp/nodefony.error.log" 
-    #merge_logs                  : true
-  
+    error_file                  : "tmp/nodefony.error.log"
+    merge_logs                  : true
+
   log:
     active                      : true
     #TODO
@@ -72,14 +72,14 @@ system:
 #
 #       You set cdn with string
 #       CDN :   cdn.nodefony.com
-#       or 
+#       or
 #       CDN:
 #          global: cdn.nodefony.com
 #       or
 #       CDN:
-#         stylesheet:                  
-#           - cdn.nodefony.com       
-#         javascript:                  
+#         stylesheet:
+#           - cdn.nodefony.com
+#         javascript:
 #           - cdn.nodefony.com
 #         image:
 #           - cdn.nodefony.com
@@ -88,7 +88,7 @@ system:
 #           - cdn.nodefony.com
 #
 CDN                             : ~
-    
+
 #
 # ENGINE TEMPLATE
 #

@@ -242,9 +242,8 @@ nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		footerAction (){
-			var kernel = this.get("kernel");
 			var translateService = this.get("translation");
-			var version =  kernel.settings.system.version ;
+			var version =  this.kernel.settings.version ;
 			var path = this.generateUrl("home");
 			var year = new Date().getFullYear();
 			var langs = translateService.getLangs();

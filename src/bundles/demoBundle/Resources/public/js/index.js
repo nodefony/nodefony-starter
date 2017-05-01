@@ -1,29 +1,25 @@
-
-
-require("../plugins/gritter/js/jquery.gritter.js");
 require("../clean/js/jquery.parallax-1.1.3.js");
 require("../clean/js/jquery.sticky.js");
 require("../clean/js/smoothscroll.js");
 const WOW = require("../clean/js/wow.min.js").WOW;
 
-require('../clean/css/style.css');
-require( '../plugins/gritter/css/jquery.gritter.css');
+//css
 require( '../clean/css/simple-line-icons.css');
 require ('../clean/css/animate.css');
 
 /**
  * * * * *
  * KERNEL *
- * * * * * 
+ * * * * *
  */
-module.exports = function (){ 
+module.exports = function (){
 	//== overload Kernel logger
 	stage.appKernel.prototype.initializeLog = function(settings){
-		
+
 		this.syslog.listenWithConditions(this,{
 			severity:{
 				data:"ERROR,INFO"
-			}		
+			}
 		},function(pdu){
 			if (pdu.payload.stack ){
 					console.error( "SYSLOG " + pdu.severityName +" " + pdu.msgid + " "+new Date(pdu.timeStamp) + " " + pdu.msg+" : "+  pdu.payload.stack);
@@ -33,15 +29,15 @@ module.exports = function (){
 					text: pdu.payload,
 					image: '/frameworkBundle/images/nodefony-logo.png',
 					class_name:"gritter-light"
-					
-				});	
+
+				});
 			}
 		});
 
 		this.syslog.listenWithConditions(this,{
 			severity:{
 				data:"CRITIC,WARNING,DEBUG "
-			}		
+			}
 		},function(pdu){
 			switch( pdu.severityName){
 				case "CRITIC" :
@@ -74,7 +70,7 @@ module.exports = function (){
 		},
 
 		onBoot:function() {
-			
+
 		},
 		onReady: function() {
 		},
@@ -113,7 +109,7 @@ module.exports = function (){
 			/* ---------------------------------------------- */
 
 			/*$('a[href*=#]').bind("click", function(e){
-           	
+
 				var anchor = $(this);
 				$('html, body').stop().animate({
 					scrollTop: $(anchor.attr('href')).offset().top

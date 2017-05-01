@@ -38,7 +38,7 @@ body {
 #slider {
     padding-top: 20px;
     padding-bottom: 20px;
-    
+
     color: #FFF;
     height: 22%;
 
@@ -173,16 +173,3 @@ img.small {
     border-color: #e2e7eb;
     padding: 10px 15px;
 }
-
-.alert-01 {
-	  background: url('img/alert-01.jpg') center no-repeat;
-  }
-  .alert-02 {
-	    background: url('img/alert-02.jpg') center no-repeat;
-    }
-    .alert-03 {
-	      background: url('img/alert-03.jpg') center no-repeat;
-      }
-      .alert-04 {
-	        background: url('img/alert-04.jpg') center no-repeat;
-	}

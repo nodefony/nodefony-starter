@@ -1,22 +1,13 @@
 {% extends "../layouts/layout.html.twig" %}
 
-
-
-{% block title %}  
-
+{% block title %}
 	ORM
-
-
 {% endblock %}
-
-
 
 {% block stylesheets %}
 	{{ parent() }}
 
 {% endblock %}
-
-
 
 {% block javascripts %}
 	{{ parent() }}
@@ -24,7 +15,7 @@
 	<script>
 		$(document).ready(function(){
 
-			$("table").DataTable()	
+			$("table").DataTable()
 		})
 
 	</script>
@@ -151,8 +142,4 @@
 
 	</div>
 	{% endif %}
-
-
-
-
 {% endblock %}

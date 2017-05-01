@@ -7,11 +7,6 @@
 	<!-- WEBPACK BUNDLE -->
 	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/finder.css" />
 
-        <link rel="stylesheet" href="/demoBundle/css/finder/flickity.min.css" media="screen">
-	<link rel="stylesheet" href="/demoBundle/css/finder/jquery.fancybox.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="/demoBundle/js/finder/helpers/jquery.fancybox-buttons.css" type="text/css" media="screen" />
-        <link rel="stylesheet" href="/demoBundle/css/finder/style.css" media="screen">
-
 {% endblock %}
 
 {% block javascripts %}
@@ -20,14 +15,7 @@
 	<!-- WEBPACK BUNDLE -->
 	<script src="{{CDN('javascript')}}/demoBundle/assets/js/finder.js"></script>
 
-	<script type="text/javascript" src="/demoBundle/js/finder/flickity.pkgd.min.js"></script>
-	<script type="text/javascript" src="/demoBundle/js/finder/jquery.fancybox.pack.js"></script>
-        
-        <!-- Optionally add helpers - button, thumbnail and/or media -->
-        <script type="text/javascript" src="/demoBundle/js/finder/helpers/jquery.fancybox-buttons.js"></script>
-        <script type="text/javascript" src="/demoBundle/js/finder/helpers/jquery.fancybox-media.js"></script>
-
-	<script> 
+	<script>
 		finder();
 	</script>
 
@@ -45,9 +33,9 @@
             <div id="previews-container">
                 <div class="container">
                     <div class="preview-container">
-                        
+
                     </div>
-                    
+
                     <span class="name"></span>
                 </div>
 
@@ -154,12 +142,12 @@
                                     {% else %}
                                         <a href="{{ path('finder' ) }}?path={{jsonTree.path}}">{{jsonTree.name}}</a>
                                     {% endif %}
-                                    
+
                                 </td>
                                 <td>{{jsonTree.stats.size}}</td>
                                 <td>
                                     {% if jsonTree.type == "File"  %}
-                                        
+
                                         {{jsonTree.mimeType}}
                                     {% else %}
                                         {{jsonTree.type}}
@@ -175,4 +163,3 @@
         </div>
 
 {% endblock %}
-
