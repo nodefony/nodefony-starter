@@ -48,7 +48,6 @@ system:
     demo			: "./src/bundles/demoBundle"
 
   PM2:
-    name			: "demo"
     exec_mode		        : "cluster"
     max_memory_restart	        : "1024M"
     autorestart		        : true
@@ -61,11 +60,6 @@ system:
 
   log:
     active                      : true
-    #TODO
-    file                        : false
-    messages                    : "/tmp/nodefony.log"
-    error                       : "/tmp/nodefony.error.log"
-    rotate                      : false
 
 #
 #       ASSETS CDN

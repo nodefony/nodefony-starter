@@ -6,7 +6,10 @@
 
 
 {% block stylesheets %}
+
 	{{ parent() }}
+		<!-- WEBPACK BUNDLE -->
+	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/demo.css" />
 
 		
 	<style>	
@@ -98,9 +101,12 @@
 {% block javascripts %}
 
 	{{ parent() }}
+	<!-- WEBPACK BUNDLE -->
+	<script src="{{CDN('javascript')}}/demoBundle/assets/js/demo.js"></script>
+
 	
 	<script> 
-		demo.index();
+		demo();
 	</script>
 
 {% endblock %}

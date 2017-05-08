@@ -145,7 +145,6 @@ system:
     demo			: "./src/bundles/demoBundle"
 
   PM2:
-    name			: "demo"
     exec_mode		        : "cluster"
     max_memory_restart	        : "1024M"
     autorestart		        : true
@@ -303,12 +302,12 @@ watch:                          true
 #
 webpack:
   entry:
-    main:                       "./js/hello.js"
+    hello:                      "./js/hello.js"
   watch:                        true
   devtool:                      "source-map"
   output:
-    filename:                   "./assets/js/hello.js"
-    library:                    "hello"
+    filename:                   "./assets/js/[name].js"
+    library:                    "[name]"
     libraryTarget:              "umd"
 
 ```

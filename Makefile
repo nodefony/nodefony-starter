@@ -1,3 +1,5 @@
+#https://www.gnu.org/software/make/manual/html_node/index.html
+
 DISTRIB := $(shell uname)
 VERBOSE = 0 
 NODE_VERSION := $(shell node -v)
@@ -5,12 +7,20 @@ NODE_VERSION := $(shell node -v)
 PWD := $(shell pwd)
 
 VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
-#$(error $(VERSION))  
+#$(error $(VERSION))
 VERSION := $(shell expr $(VERSION) )
 
-APP_NAME = "demo"
+APP_NAME := $(shell bin/nodefony app 2>/dev/null )
+
+NODEFONY_VERSION := $(shell bin/nodefony version 2>/dev/null )
+
+LINE := NODEFONY $(NODEFONY_VERSION)  PLATFORM : $(DISTRIB)   NODE VERSION : $(NODE_VERSION)   APPLICATION : $(APP_NAME)   DEBUG : $(VERBOSE)
+$(info $(LINE))
 
 all:  npm install 
+
+version:
+	@echo ""
 
 install:
 
@@ -68,10 +78,9 @@ startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
-	@rm -rf ./tmp/webpack
-	@rm -rf ./tmp/assestLink
 	./node_modules/pm2/bin/pm2 update
-	./nodefony_pm2 &
+	./nodefony_pm2
+	./node_modules/pm2/bin/pm2 --lines 20 logs 
 
 stop:
 	./node_modules/pm2/bin/pm2 stop $(APP_NAME)
@@ -97,6 +106,9 @@ restart:
 logs:
 	./node_modules/pm2/bin/pm2 --lines 1000 logs $(APP_NAME)
 
+clean-log:
+	./node_modules/pm2/bin/pm2 flush
+
 # NODEFONY BUILD FRAMEWORK 
 npm:
 	@echo "" ;
@@ -105,7 +117,7 @@ npm:
 	@echo "#######################################################" ;
 	@echo "" ;
 
-	@[ $(VERSION) -ge 600 ]  || echo '$(NODE_VERSION) NODEFONY ERROR NODE VERSION must have version >= v6.0.0  See https://nodejs.org/en/download/package-manager for upgrade version ';  
+	@[ $(VERSION) -ge 600 ]  || ( echo '$(NODE_VERSION) NODEFONY ERROR NODE VERSION must have version >= v6.0.0  See https://nodejs.org/en/download/package-manager for upgrade version '; exit 1; )  
 	
 	@if [  -f package.json  ] ; then \
 		if [ $(VERBOSE) = 0 ] ; then \
@@ -117,7 +129,9 @@ npm:
 		fi \
 	fi
 
-deploy: webpack asset start
+deploy:  asset
+	./node_modules/pm2/bin/pm2 update
+	./nodefony_pm2
 
 webpack:
 	@echo "";

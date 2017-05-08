@@ -1,0 +1,29 @@
+#!/usr/bin/env node  
+
+var path = require("path");
+
+var arg = process.argv.slice(2)[0];  
+
+switch ( arg ){
+	case "app" :
+		try {
+			var autoloader = require("nodefony");
+			var config = yaml.load( fs.readFileSync( path.resolve( "app", "config", "config.yml"), 'utf8' ) ); 
+			return process.stdout.write( config.App.projectName );
+		}catch(e){
+			return process.stdout.write( "nodefony" );
+		}	
+	case "version" :
+		try {
+			var nodefony_version = require( path.resolve( "node_modules", "nodefony", "package.json") ).version;
+			return process.stdout.write( nodefony_version );
+		}catch(e){
+			throw e ;
+		}
+	case "config" :
+		var autoloader = require("nodefony");
+		var config = yaml.load( fs.readFileSync( path.resolve( "app", "config", "config.yml"), 'utf8' ) );
+		return  process.stdout.write( JSON.stringify(config, null, '\t') );
+	default :
+		throw new Error("Bad command line ");
+}

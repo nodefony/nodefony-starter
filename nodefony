@@ -13,12 +13,6 @@ try {
 }
 autoloader.load( path.resolve(".", "app", "appKernel.js" ) );
 
-var links = path.resolve( ".", "tmp", "assestLink" ) ;
-if ( fs.existsSync( links) ){
-	fs.rmdirSync( links );	
-}
-						
-
 /*
  *
  * NODEFONY FRAMEWORK START WITH PM2
@@ -47,6 +41,17 @@ process.env["MODE_START"] = "NODEFONY" ;
 if (cluster.isMaster) {
 	asciify("      NODEFONY", {font:'standard'}, (err, res) => {
 		console.log('\033[31m'+res+'\033[0m');
+		var links = path.resolve(".", "tmp", "assestLink" ) ;
+		if ( fs.existsSync( links) ){
+			console.log("DELETE TMP :" + links)
+			fs.rmdirSync( links );	
+		}
+
+		var webpack = path.resolve(".", "tmp", "webpack" ) ;
+		if ( fs.existsSync( webpack) ){
+			console.log("DELETE TMP :" + webpack)
+			fs.rmdirSync( webpack );	
+		}
 	});
 	var nbProc = require('os').cpus().length; 
 	for (var i=0 ; i < nbProc; i++){
