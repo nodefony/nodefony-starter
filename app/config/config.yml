@@ -38,12 +38,12 @@ lang:
 #
 webpack:
   entry:
-    main:                       "./js/app.js"
+    app:                       "./js/app.js"
   watch:                        false
   devtool:                      "source-map"
   output:
-    filename:                   "./assets/js/app.js"
-    library:                    "app"
+    filename:                   "./assets/js/[name].js"
+    library:                    "[name]"
     libraryTarget:              "umd"
 
 
