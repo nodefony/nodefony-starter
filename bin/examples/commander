@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+try {
+  const nodefony = require("nodefony");
+}catch(e){
+  const nodefony = require(require("path").resolve( "src", "nodefony", "core", "autoloader"));
+}
+
+const cli = new nodefony.cli("CLI", {
+    resize:true,
+    onStart:(cli) => {}
+    },
+    onResize:()=>{
+    }
+});
+
+module.exports = cli ;
+return cli;

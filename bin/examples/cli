@@ -1,0 +1,190 @@
+#!/usr/bin/env node
+// nodefony
+try {
+  const nodefony = require("nodefony");
+}catch(e){
+  const nodefony = require(require("path").resolve( "src", "nodefony", "core", "autoloader"));
+}
+
+// CLI
+const cli = new nodefony.cli("MY CLI" , {
+    resize:true,
+    onResize: (cli)=>{
+        cli.logger("RESIZE : " + cli.getEmoji() );
+    },
+    onStart: (cli) =>{
+        cli.logger("ON START");
+        // PROMISE
+        simpleLogger(cli).then ( (cli) => {
+            // SPINNER
+            return spinner(cli, 5000);
+        })
+        .then( (cli) =>{
+            // TABLE
+            return tableExample(cli) ;
+        })
+        .then((cli) => {
+            // PROGRESS
+            return progress(cli, 20);
+        })
+        .then((cli) => {
+            // PROGRESS 2
+            return progress2(cli, 20);
+        })
+        .then( (cli) =>{
+            // Sparkline
+            return Sparkline(cli);
+        })
+        .then( (cli) =>{
+            // Sparkline 2
+            return Sparkline2(cli, 30);
+        })
+        .then( (cli) =>{
+            cli.logger("TERMINATE MY CLI : " + cli.getEmoji("checkered_flag") );
+            cli.terminate();
+        })
+        .catch( (e) =>{
+            console.log(e)
+            cli.terminate(1);
+        })
+    }
+});
+
+const simpleLogger = function(cli){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START simpleLogger : " + cli.getEmoji("clapper"));
+        cli.logger("Emoji : " + cli.getEmoji());
+        cli.blankLine();
+        cli.logger("Emoji : " + cli.getEmoji(),"DEBUG");
+        cli.blankLine();
+        cli.logger("Emoji : " + cli.getEmoji(),"ERROR");
+        cli.blankLine();
+        cli.logger("Emoji : " + cli.getEmoji(),"WARNING")
+        cli.logger("END simpleLogger : " + cli.getEmoji("checkered_flag") );
+        resolve(cli);
+    });
+};
+
+const random = function(nb){
+    return Math.floor(Math.random() * nb) + 1  ;
+}
+var severity = [
+        "EMERGENCY",
+        "ALERT",
+        "CRITIC",
+        "ERROR",
+        "WARNING",
+        "NOTICE",
+        "INFO",
+        "DEBUG"
+];
+const spinner = function(cli, time){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START SPINNER : " + cli.getEmoji("clapper"));
+        cli.startSpinner("MY CLI",['⣾','⣽','⣻','⢿','⡿','⣟','⣯','⣷'] );
+        cli.blankLine();
+        cli.logger("MESSAGE : " + cli.getEmoji());
+        var interval = setInterval ( () =>{
+            cli.logger("MESSAGE : " + cli.getEmoji(), severity[random(7)] );
+        }, 0);
+        setTimeout ( () =>{
+            cli.stopSpinner();
+            cli.logger("END SPINNER : " + cli.getEmoji("checkered_flag") );
+            clearInterval(interval);
+            resolve(cli);
+        }, time || 2000);
+    });
+};
+
+const tableExample = function(cli){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START TABLE : " + cli.getEmoji("clapper"));
+        let options = {
+            head:[
+                "COLUMN 1",
+                "COLUMN 2",
+                "COLUMN 3",
+                "COLUMN 4"
+            ]
+        } ;
+        let table = cli.displayTable(null, options);
+        for ( let i = 0 ; i <10 ; i++ ){
+            table.push([severity[random(7)], random(100), random(200), random(300)])
+        }
+        console.log( table.toString() );
+        let tab = [];
+        for ( let i = 0 ; i <10 ; i++ ){
+            tab.push([severity[random(7)], random(100), random(200), random(300)])
+        }
+        let table2 = cli.displayTable(tab, options);
+        cli.logger("END TABLE : " + cli.getEmoji("checkered_flag") );
+        resolve(cli);
+    });
+};
+
+const progress = function(cli, time){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START PROGRESS : " + cli.getEmoji("clapper"));
+        var pg = cli.createProgress(50);
+        var i = 0 ;
+        var interval = setInterval ( () =>{
+            cli.logger ( pg.update(++i, 50) );
+            if ( i === 50 ){
+                clearInterval(interval);
+                cli.logger("END PROGRESS : " + cli.getEmoji("checkered_flag") );
+                resolve(cli);
+            }
+        }, time || 50 )
+    });
+};
+
+const progress2 = function(cli, time){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START PROGRESS 2 : " + cli.getEmoji("clapper"));
+        var pg = cli.createProgress(100);
+        var i = 0 ;
+        cli.startSpinner("PROGRESS");
+        var interval = setInterval ( () =>{
+            cli.logger(  "MY PROGRESS " + pg.update(++i, 100) );
+            if ( i === 100 ){
+                clearInterval(interval);
+                cli.stopSpinner();
+                cli.logger(  "MY PROGRESS " + pg.update(i, 100) );
+                cli.logger("END PROGRESS 2 : " + cli.getEmoji("checkered_flag") );
+                resolve(cli);
+            }
+        }, time || 30);
+    });
+};
+
+const Sparkline = function(cli, time){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START Sparkline  : " + cli.getEmoji("clapper"));
+        var sl = cli.createSparkline([10,12,3,7,12,9,23,10,9,19,16,18,12,12], " reqs/sec");
+        cli.logger(sl);
+        cli.logger("END Sparkline  : " + cli.getEmoji("checkered_flag") );
+        resolve(cli);
+    });
+};
+
+const Sparkline2 = function(cli, time){
+    return  new Promise( (resolve, reject) => {
+        cli.logger("START Sparkline  : " + cli.getEmoji("clapper"));
+        var i = 0 ;
+        var tab = [];
+        cli.startSpinner("Sparkline");
+        var myInterval = setInterval ( () =>{
+            ++i ;
+            tab.push( random(200) );
+            var sl = cli.createSparkline(tab, " reqs/sec");
+            cli.logger(sl);
+            if ( i === 100 ){
+                cli.blankLine();
+                clearInterval(myInterval);
+                cli.stopSpinner();
+                cli.logger("END Sparkline2 : " + cli.getEmoji("checkered_flag") );
+                resolve(cli);
+            }
+        }, time || 30);
+    });
+};

@@ -1,7 +1,7 @@
 #https://www.gnu.org/software/make/manual/html_node/index.html
 
 DISTRIB := $(shell uname)
-VERBOSE = 0 
+VERBOSE = 0
 NODE_VERSION := $(shell node -v)
 
 PWD := $(shell pwd)
@@ -10,17 +10,14 @@ VERSION := $(subst v,,$(subst .,,$(NODE_VERSION)))
 #$(error $(VERSION))
 VERSION := $(shell expr $(VERSION) )
 
-APP_NAME := $(shell bin/nodefony app 2>/dev/null )
+APP_NAME := $(shell ./nodefony app 2>/dev/null )
 
-NODEFONY_VERSION := $(shell bin/nodefony version 2>/dev/null )
+NODEFONY_VERSION := $(shell ./nodefony version 2>/dev/null )
 
 LINE := NODEFONY $(NODEFONY_VERSION)  PLATFORM : $(DISTRIB)   NODE VERSION : $(NODE_VERSION)   APPLICATION : $(APP_NAME)   DEBUG : $(VERBOSE)
 $(info $(LINE))
 
-all:  npm install 
-
-version:
-	@echo ""
+all:  npm install
 
 install:
 
@@ -31,11 +28,11 @@ install:
 	@echo "";
 
 	@if [ $(VERBOSE) = 0 ] ; then \
-		echo "./console npm:install";\
-		./console npm:install ;\
+		echo "./nodefony npm:install";\
+		./nodefony npm:install ;\
 	else \
-		echo "./.console_dev npm:install";\
-		./.console_dev npm:install ;\
+		echo "./nodefony -d npm:install";\
+		./nodefony -d npm:install ;\
 	fi \
 
 build:
@@ -47,40 +44,40 @@ build:
 
 	make clean ;
 
-	make npm ;
-	
-	make install ;
-
-	make sequelize
-
-	@if [ $(VERBOSE) = 0 ] ; then \
-		echo "./console router:generate:routes";\
-		./console router:generate:routes ;\
-		echo "./console router:match:url /";\
-		./console router:match:url /\
-		echo "./console npm:list";\
-		./console npm:list ;\
-	else \
-		echo "./.console_dev router:generate:routes";\
-		./.console_dev router:generate:routes ;\
-		echo "./console router:match:url /";\
-		./console router:match:url /\
-		echo "./.console_dev npm:list";\
-		./.console_dev npm:list ;\
-	fi \
-
 	make certificates ;
 
+	make npm ;
+
+	make install && echo "success nodefony install !" || echo "failure nodefony install !" ;
+
+	make sequelize && echo "success nodefony sequelize !" || echo "failure nodefony sequelize !" ;
+
+	@if [ $(VERBOSE) = 0 ] ; then \
+		echo "./nodefony router:generate:routes";\
+		./nodefony router:generate:routes ;\
+		echo "./nodefony router:match:url /";\
+		./nodefony router:match:url /\
+		echo "./nodefony npm:list";\
+		./nodefony npm:list ;\
+	else \
+		echo "./nodefony -d router:generate:routes";\
+		./nodefony -d router:generate:routes ;\
+		echo "./nodefony -d router:match:url /";\
+		./nodefony -d router:match:url /\
+		echo "./nodefony -d npm:list";\
+		./nodefony -d npm:list ;\
+	fi \
+
 #
-# PM2 MANAGEMENT PRODUCTION 
+# PM2 MANAGEMENT PRODUCTION
 #
 startup:
 	./node_modules/pm2/bin/pm2 startup
 
 start:
 	./node_modules/pm2/bin/pm2 update
-	./nodefony_pm2
-	./node_modules/pm2/bin/pm2 --lines 20 logs 
+	./nodefony pm2
+	./node_modules/pm2/bin/pm2 --lines 1 logs
 
 stop:
 	./node_modules/pm2/bin/pm2 stop $(APP_NAME)
@@ -109,7 +106,7 @@ logs:
 clean-log:
 	./node_modules/pm2/bin/pm2 flush
 
-# NODEFONY BUILD FRAMEWORK 
+# NODEFONY BUILD FRAMEWORK
 npm:
 	@echo "" ;
 	@echo "#######################################################" ;
@@ -117,21 +114,38 @@ npm:
 	@echo "#######################################################" ;
 	@echo "" ;
 
-	@[ $(VERSION) -ge 600 ]  || ( echo '$(NODE_VERSION) NODEFONY ERROR NODE VERSION must have version >= v6.0.0  See https://nodejs.org/en/download/package-manager for upgrade version '; exit 1; )  
-	
+	@[ $(VERSION) -ge 600 ]  || ( echo '$(NODE_VERSION) NODEFONY ERROR NODE VERSION must have version >= v6.0.0  See https://nodejs.org/en/download/package-manager for upgrade version '; exit 1; )
+
 	@if [  -f package.json  ] ; then \
 		if [ $(VERBOSE) = 0 ] ; then \
-			echo "npm -s install" ;\
-			npm -s install  ;\
+			echo "npm  install" ;\
+			npm  install  ;\
 		else \
 			echo "npm -ddd install" ;\
 			npm -ddd install  ;\
 		fi \
 	fi
 
+outdated:
+	@echo "" ;
+	@echo "#######################################################" ;
+	@echo "#           node.js  outdated dependencies            #" ;
+	@echo "#######################################################" ;
+	@echo "" ;
+	npm outdated --deph=0
+
+list:
+	@echo "" ;
+	@echo "#######################################################" ;
+	@echo "#           node.js  list  dependencies               #" ;
+	@echo "#######################################################" ;
+	@echo "" ;
+	npm ls --depth=0
+
+
 deploy:  asset
 	./node_modules/pm2/bin/pm2 update
-	./nodefony_pm2
+	./nodefony pm2
 
 webpack:
 	@echo "";
@@ -139,7 +153,7 @@ webpack:
 	@echo "#     NODEFONY WEBPACK COMPILE          #" ;
 	@echo "#########################################" ;
 	@echo "";
-	./console webpack:dump ;\
+	./nodefony webpack:dump ;\
 
 asset:
 	@echo "";
@@ -149,15 +163,15 @@ asset:
 	@echo "";
 
 	@if [ $(VERBOSE) = 0 ] ; then \
-		echo "./console assets:install" ;\
-		./console assets:install ;\
-		echo "./console assets:dump" ;\
-		./console assets:dump ;\
+		#echo "./nodefony assets:install" ;\
+		#./nodefony assets:install ;\
+		echo "./nodefony assets:dump" ;\
+		./nodefony assets:dump ;\
 	else \
-		echo "./.console_dev assets:install" ;\
-		./.console_dev assets:install ;\
-		echo "./.console_dev assets:dump" ;\
-		./.console_dev assets:dump ;\
+		#echo "./nodefony assets:install" ;\
+		#./nodefony -d assets:install ;\
+		echo "./nodefony -d assets:dump" ;\
+		./nodefony -d assets:dump ;\
 	fi \
 
 framework:
@@ -171,7 +185,7 @@ framework:
 		git submodule sync ; \
 		git submodule update --init --recursive ; \
 	fi
-	
+
 	@echo "";
 	@echo "####################################################" ;
 	@echo "#            CREATE FRAMEWORK REPOSITORY           #" ;
@@ -217,15 +231,15 @@ framework:
 	@if [ ! -e web/favicon.ico ] ; then \
 		echo " copy favicon.ico " ;\
 		cp app/Resources/public/favicon.ico web/ ;\
-	fi 
+	fi
 	@if [ ! -e web/robots.txt ] ; then  \
 		echo " copy robots.txt " ;\
 		cp app/Resources/public/robots.txt web/ ;\
-	fi 
+	fi
 
 sequelize:
-	./console Sequelize:generate:entities
-	./console Sequelize:fixtures:load
+	./nodefony Sequelize:generate:entities
+	./nodefony Sequelize:fixtures:load
 
 clean:
 	@if [ -e  node_modules ] ; then \
@@ -253,7 +267,7 @@ clean:
 		echo ""; \
 		rm -rf web/* ; \
 	fi
-	
+
 	make framework ;
 
 test:
@@ -278,12 +292,12 @@ docker-build:
 	make framework ;
 
 	make npm ;
-	
+
 	make install ;
 
 	make certificates ;
 
-docker-compose: docker-compose-stop 
+docker-compose: docker-compose-stop
 	$(MAKE) -C docker compose-start
 
 docker-compose-stop:

@@ -9,14 +9,14 @@
  *
  */
 "use strict;"
-nodefony.register("appKernel",function(){
+module.exports = nodefony.register("appKernel",function(){
 
 	var appKernel = class appKernel extends nodefony.kernel {
 
-		constructor (type, environment, debug, loader, settings){
+		constructor (type, environment, debug, settings){
 			// kernel constructor
 			try {
-				super(environment, debug, loader, type, settings)
+				super(environment, debug, type, settings);
 			}catch(e){
 				throw e ;
 			}

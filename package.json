@@ -4,8 +4,12 @@
   "description": "FRAMEWORK web developpement symfony like",
   "main": "/nodefony",
   "scripts": {
-    "start": "make deploy",
-    "test": "./console unitTest:launch:all"
+    "start": "./nodefony -d dev",
+    "stop": "make stop",
+    "prod": "make start",
+    "kill": "make kill",
+    "outdated": "npm outdated --deph=0",
+    "test": "./nodefony unitTest:launch:all"
   },
   "keywords": [
     "Node.js"
@@ -26,11 +30,25 @@
     "node": ">=6"
   },
   "dependencies": {
-    "nodefony": "2.1.4-beta"
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "bootstrap": "^3.3.7",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "font-awesome": "^4.7.0",
+    "js-yaml": "^3.9.0",
+    "nodefony": "git://github.com/nodefony/nodefony-core.git#dev",
+    "nodefony-stage": "^0.1.1",
+    "pm2": "^2.6.1",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1",
+    "webpack-merge": "^4.1.0",
+    "xml2js": "^0.4.17"
   },
-  "devDependencies": {
-  },
-  "author": "cci <christophe.camensuli@gmail.com>",
+  "devDependencies": {},
+  "author": "name <mail@domain.com>",
   "readmeFilename": "README.md",
   "contributors": [
     {}

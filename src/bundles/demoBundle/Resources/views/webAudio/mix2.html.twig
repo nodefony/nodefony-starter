@@ -1,0 +1,45 @@
+{% extends "../layouts/layout.html.twig" %}
+
+{% block title %} WEB AUDIO API ( MIX ){% endblock %}
+
+{% block stylesheets %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<link rel='stylesheet' href='{{CDN("stylesheet")}}/demoBundle/assets/css/audio.css' />
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	<!-- WEBPACK BUNDLE -->
+	<script src='{{CDN("javascript")}}/demoBundle/assets/js/audio.js'></script>
+
+	<script type="text/javascript">
+		var kernel = new stage.appKernel(null, "dev", {
+			debug: true,
+			location: {
+				html5Mode: false
+			},
+			onLoad: function(kernel){
+			},
+			onReady: function(kernel){
+			},
+			onBoot: function(kernel){
+			},
+			onDomLoad: function(kernel){
+				var mix = new audio(kernel);
+				mix.build($('.centered'));
+				mix.start();
+			}
+		});
+	</script>
+{% endblock %}
+
+{% block body %}
+	{{ parent() }}
+	<div class="centered"></div>
+{% endblock %}

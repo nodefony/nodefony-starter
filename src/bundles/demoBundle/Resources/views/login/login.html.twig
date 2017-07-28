@@ -5,8 +5,8 @@
 {% block stylesheets %}
 	{{ parent() }}
 
-		
-	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/login.css" />
+
+	<!--link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/assets/css/login.css" /-->
 	<link rel="stylesheet" href="{{CDN('stylesheet')}}/demoBundle/css//login/style.css" />
 
 {% endblock %}
@@ -35,9 +35,9 @@
             		<div class="login-header" >
                 		<div class="brand">
 					{% if type == "passport-local" %}
-						<span><a href="http://passportjs.org/"><img width="45px" height="41px" src="/demoBundle/images/passportjs.png" alt="passportjs"></img></a></span>  {{type}}  
+						<span><a href="http://passportjs.org/"><img width="45px" height="41px" src="/demoBundle/images/passportjs.png" alt="passportjs"></img></a></span>  {{type}}
 					{% else %}
-						<span class=""><img width="50px" height="46px" src="/frameworkBundle/images/nodefony-logo.png"></img></span>  {{type}}  
+						<span class=""><img width="50px" height="46px" src="/frameworkBundle/images/nodefony-logo.png"></img></span>  {{type}}
 					{% endif %}
                     			<small>Authentication : </small>
                 		</div>
@@ -64,7 +64,7 @@
                         				<input id="passwd"  type="password" class="form-control input-lg" placeholder="Password" />
                     				</div>
 				{% endif %}
-                    			
+
                     				<div class="checkbox m-b-20">
                         				<label>
 								<p>login : admin  passwd : admin</p>
@@ -96,7 +96,7 @@
 
 {% block javascripts %}
 	{{ parent() }}
-		 
+
 	<script>
 		window.loginType = "{{type}}";
 	</script>
@@ -106,6 +106,3 @@
 	<script type="text/javascript" src="{{CDN('javascript')}}/demoBundle/assets/js/login.js"></script>
 
 {% endblock %}
-
-
-

@@ -1,5 +1,5 @@
 #
-#        nodefony APP CONFIG YAML FILE 
+#        nodefony APP CONFIG YAML FILE
 #
 # This file is YAML  FILE
 # ---
@@ -13,14 +13,15 @@
 #
 #  FRAMEWORK NODEFONY
 #
-#     APP CONFIG  
+#     APP CONFIG
 name :                          AppBundle
+version:                        1.0.0
 locale :                        en_en
-version :                       "Beta"
+
 
 App:
-  projectName:                  "demo" 
-  projectYear:                  2017 
+  projectName:                  "demo"
+  projectYear:                  2017
   locale:                       "en_en"
   authorName:                   "admin"
   authorMail:                   "admin@nodefony.com"
@@ -30,21 +31,23 @@ lang:
   fr_fr:                        "français"
 
 
-##########
 #
-#  WEBPACK
+#  WATCHERS
 #
-# Assets root path is ./Resources/public
+#    watchers Listen to changes, deletion, renaming of files and directories
+#    of different components
 #
-webpack:
-  entry:
-    app:                       "./js/app.js"
-  watch:                        false
-  devtool:                      "source-map"
-  output:
-    filename:                   "./assets/js/[name].js"
-    library:                    "[name]"
-    libraryTarget:              "umd"
+#    For watch all components
+#
+#      watch:			true
+#    or
+#      watch:
+#        controller:		true
+#        config:                true		# only  routing.yml
+#        views:			true
+#        translations:          true
+#
+watch:				true
 
 
 ##################################
@@ -57,28 +60,28 @@ webpack:
 monitoringBundle:
   debugBar:                     true
   storage:
-    active:                     false                      
+    active:                     false
     requests:                   orm
 
 
 ##################################
 #
-#       OVERRIDE  BUNDLE SEQUELIZE  
-#       
+#       OVERRIDE  BUNDLE SEQUELIZE
+#
 #       see SEQUELIZE BUNDLE config for more options
 #
 #       Nodefony Database Management
 #
 #       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / User 
+#       for manage Sessions / User
 #
 #
-#       here create new databases connectors 
+#       here create new databases connectors
 #
 #
-sequelizeBundle: 
+sequelizeBundle:
   debug:        false
-#  connectors:                    
+#  connectors:
 #    nodefony:
 #      driver:          mysql
 #      dbname:          'nodefony'
@@ -92,52 +95,60 @@ sequelizeBundle:
 
 ############################
 #
-#       OVERRIDE BUNDLE HTTP 
+#       OVERRIDE BUNDLE HTTP
 #
 #       see HTTP BUNDLE config for more options
-#       
+#
 #       // SERVICES
 #       statics files
 #       session
 #       http server
 #       https server
-#       upload 
-#       websocket server 
-#       websocket secure server 
+#       upload
+#       websocket server
+#       websocket secure server
+#       sockjs dev server ( webpack dev server like WDS)
 #
 #
 httpBundle:
-  statics:
-    settings:
-      cache :                     false	
-      maxAge:                     0 
-    web:
-      path:                       "/web/"
-      maxage:                     0                             #30*24*60*60*1000
-  upload:
-    tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000                       #in Bytes
-  session:
-    start:                        false                         # autostart || false 
-    handler:                      session.storage.sequelize     # session.storage.files | session.storage.sequelize | session.storage.memcached
-    #save_path:                    "./tmp/sessions"             # for session.storage.files only
-    cookie:
-      maxAge:                     0                             # like cookie_lifetime php  =>seconde 
-    memcached:
-      servers:                      
-        nodefony: 
-          location:               127.0.0.1
-          port:                   11211
-          weight:                 1
   http:
     responseTimeout:              40000
   https:
     responseTimeout:              40000
- 
+  sockjs:
+      overlay:                      true
+      hot:                          true
+      protocol:                     https
+      websocket:                    true
+  statics:
+    defaultOptions:
+      cacheControl :              true
+      maxAge:                     0
+    web:
+      path:                       "web"
+      options:
+        maxAge:                   0                             #30*24*60*60*1000
+  upload:
+    tmp_dir:                      "tmp/upload"
+    #max_filesize:                 100000                       #in Bytes
+  session:
+    start:                        false                         # autostart || false
+    handler:                      session.storage.sequelize     # session.storage.files | session.storage.sequelize | session.storage.memcached
+    #save_path:                    "./tmp/sessions"             # for session.storage.files only
+    cookie:
+      maxAge:                     0                             # like cookie_lifetime php  =>seconde
+    memcached:
+      servers:
+        nodefony:
+          location:               127.0.0.1
+          port:                   11211
+          weight:                 1
+
+
 
 ################################
 #
-#       OVERRIDE BUNDLE REALTIME 
+#       OVERRIDE BUNDLE REALTIME
 #
 #       see REALTIME BUNDLE config for more options
 #
@@ -147,4 +158,4 @@ realTimeBundle:
     monitoring:
       type:                       tcp
       port:                       1318
-      domain:                     localhost 
+      domain:                     localhost

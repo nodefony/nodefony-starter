@@ -8,13 +8,11 @@
  *
  *
  */
+let execSync = require('child_process').execSync;
+let exec = require('child_process').exec;
+let spawn = require('child_process').spawn ;
 
-var spawn = require('child_process').spawn;
-var execSync = require('child_process').execSync;
-var exec = require('child_process').exec;
-
-
-nodefony.registerController("demo", function(){
+module.exports = nodefony.registerController("demo", function(){
 
 
 	var demoController = class demoController extends nodefony.controller {
@@ -26,7 +24,7 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO index 
+ 	 	*	DEMO index
  	 	*
  	 	*/
 		indexAction (){
@@ -35,9 +33,10 @@ nodefony.registerController("demo", function(){
 			return {
 				title:"nodefony",
 				user: this.context.user,
+				version:kernel.version,
 				nodefony:kernel.settings.name + " " + kernel.settings.system.version
 			};
-			// WITH RENDER 
+			// WITH RENDER
 			/*return this.render("demoBundle:demo:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
@@ -46,14 +45,14 @@ nodefony.registerController("demo", function(){
 		}
 
 		/**
- 	 	*	 renderView 
- 	 	*		
+ 	 	*	 renderView
+ 	 	*
  	 	*/
 		renderviewAction (){
 			var content = this.renderView('demoBundle:Default:documentation.html.twig',{name:"render"});
 			return this.renderResponse(content);
 		}
-		
+
 		/**
  	 	*	@see renderResponse() with content html
  	 	*
@@ -70,7 +69,7 @@ nodefony.registerController("demo", function(){
 		forwardAction (){
 			return this.forward("frameworkBundle:default:index");
 		}
-		
+
 		/**
  	 	*
  	 	*	@see redirect
@@ -83,7 +82,7 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	render JSON 
+ 	 	*	render JSON
  	 	*/
 		jsonAction (){
 			return this.renderJson({
@@ -94,12 +93,12 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	@see redirect with variables 
- 	 	*	@see generateUrl 
+ 	 	*	@see redirect with variables
+ 	 	*	@see generateUrl
  	 	*/
 		generateUrlAction (){
 			// absolute
-			return this.redirect ( this.generateUrl("user", {name:"cci"},true) );	
+			return this.redirect ( this.generateUrl("user", {name:"cci"},true) );
 
 			// relative
 			//return this.redirect ( this.generateUrl("user", {name:"cci"} );
@@ -111,7 +110,7 @@ nodefony.registerController("demo", function(){
  	 	*/
 		websoketAction (message){
 			var context = this.getContext();
-				
+
 			switch( this.getMethod() ){
 				case "GET" :
 					return this.render('demoBundle:Default:websocket.html.twig',{name:"websoket"});
@@ -120,7 +119,7 @@ nodefony.registerController("demo", function(){
 						// MESSAGES CLIENT
 						this.logger( message.utf8Data , "INFO");
 					}else{
-						// PREPARE  PUSH MESSAGES SERVER 
+						// PREPARE  PUSH MESSAGES SERVER
 						// SEND MESSAGES TO CLIENTS
 						var i = 0 ;
 						var id = setInterval(() => {
@@ -139,7 +138,7 @@ nodefony.registerController("demo", function(){
 						}, 10000);
 						this.context.listen(this, "onClose" , () => {
 							if (id){
-								clearInterval(id);	
+								clearInterval(id);
 							}
 						});
 					}
@@ -151,7 +150,7 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
+ 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES
  	 	*	SQL SELECT
  	 	*
  	 	*/
@@ -172,8 +171,8 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES 
- 	 	*	SQL WITH JOIN 
+ 	 	*	DEMO ORM ASYNC CALL WITHOUT ENTITIES
+ 	 	*	SQL WITH JOIN
  	 	*
  	 	*
  	 	*/
@@ -201,38 +200,38 @@ nodefony.registerController("demo", function(){
 			var file = new nodefony.fileClass(path);
 			var res = this.htmlMdParser(file.content(),{
 				linkify: true,
-				typographer: true	
+				typographer: true
 			});
 			return  this.render('demoBundle:Default:documentation.html.twig',{
 				html:res
 			});
 		}
-		
+
 		/**
  	 	*
- 	 	*	DEMO navbar 
+ 	 	*	DEMO navbar
  	 	*
  	 	*/
 		navAction (login){
-			var webrtcBundle = this.get("kernel").getBundles("webrtc"); 
+			var webrtcBundle = this.get("kernel").getBundles("webrtc");
 			return this.render('demoBundle:layouts:navBar.html.twig',{
 				user: this.context.user,
 				webrtc:webrtcBundle,
 				login:login
-			});	
+			});
 		}
 
 		/**
  	 	*
- 	 	*	DEMO navbar 
+ 	 	*	DEMO navbar
  	 	*
  	 	*/
 		docAction (){
-			var docBundle = this.get("kernel").getBundles("documentation"); 
+			var docBundle = this.get("kernel").getBundles("documentation");
 			if (  docBundle ){
 				return this.forward("documentationBundle:default:navDoc");
 			}
-			return this.render('demoBundle:Default:navDoc.html.twig');	
+			return this.render('demoBundle:Default:navDoc.html.twig');
 		}
 
 		/**
@@ -251,9 +250,9 @@ nodefony.registerController("demo", function(){
 			var langOptions = "";
 			for (var ele in langs ){
 				if (locale === langs[ele].value){
-					langOptions += '<option value="'+langs[ele].value+'" selected >'+langs[ele].name+'</option>' ;	
+					langOptions += '<option value="'+langs[ele].value+'" selected >'+langs[ele].name+'</option>' ;
 				}else{
-					langOptions += '<option value="'+langs[ele].value+'" >'+langs[ele].name+'</option>';	
+					langOptions += '<option value="'+langs[ele].value+'" >'+langs[ele].name+'</option>';
 				}
 			}
 			var html = '<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">\
@@ -288,14 +287,14 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO RENDER RAW RESPONSE  SYNC  
+ 	 	*	DEMO RENDER RAW RESPONSE  SYNC
  	 	*
  	 	*/
 		rawResponseSyncAction (){
-			// override timeout response 
+			// override timeout response
 			//this.getResponse().setTimeout(10000);
 			//return ;
-			
+
 			var kernel = this.get("kernel") ;
 			var settings = kernel.settings ;
 			var content = '<xml><nodefony>\
@@ -311,7 +310,7 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO RENDER RAW RESPONSE ASYNC  
+ 	 	*	DEMO RENDER RAW RESPONSE ASYNC
  	 	*
  	 	*/
 		rawResponseAsyncAction (){
@@ -319,9 +318,9 @@ nodefony.registerController("demo", function(){
 			var settings = kernel.settings ;
 
 			// async CALL
-			/*var childHost =*/  
+			/*var childHost =*/
 			exec('hostname', (error, stdout/*, stderr*/) => {
-				var hostname = stdout ;	
+				var hostname = stdout ;
 
 				var content = '<xml><nodefony>\
 				<kernel name="'+settings.name+'" version="'+settings.system.version+'">\
@@ -338,12 +337,12 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO ORM ASYNC CALL WITH ENTITIES 
+ 	 	*	DEMO ORM ASYNC CALL WITH ENTITIES
  	 	*
  	 	*/
 		sequelizeAction (){
 			var orm = this.getORM() ;
-			
+
 			this.sessionEntity = orm.getEntity("session");
 			this.userEntity = orm.getEntity("user");
 
@@ -358,9 +357,9 @@ nodefony.registerController("demo", function(){
 			.catch(function(error){
 				throw error ;
 			})
-			return ;*/	
+			return ;*/
 
-			// MULTIPLE ORM CALL ASYNC RENDER WITH PROMISE 
+			// MULTIPLE ORM CALL ASYNC RENDER WITH PROMISE
 			return Promise.all([this.sessionEntity.findAll(), this.userEntity.findAll()] )
 			.then((result) => {
 				return this.render('demoBundle:orm:orm.html.twig', {
@@ -374,12 +373,12 @@ nodefony.registerController("demo", function(){
 
 		/**
  	 	*
- 	 	*	DEMO ORM INSERT ENTITIES 
+ 	 	*	DEMO ORM INSERT ENTITIES
  	 	*
  	 	*/
 		addUserAction (){
-			
-			// here start session for flashbag because action is not on secure area and not autostart session 
+
+			// here start session for flashbag because action is not on secure area and not autostart session
 			if ( ! this.context.session ){
 				this.startSession("default", (error/*, session*/) => {
 					if (error){
@@ -393,20 +392,20 @@ nodefony.registerController("demo", function(){
 					// FORM DATA
 					var query = this.getParameters("query");
 
-					// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
+					// GET FACTORY SECURE TO ENCRYPTE PASSWORD
 					//var firewall = this.get("security");
-					//var area = firewall.getSecuredArea("demo_area") ; 
+					//var area = firewall.getSecuredArea("demo_area") ;
 					//var factory = area.getFactory();
 					//var realm = factory.settings.realm ;
 					//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
-						
-					var users = null ; 
-					this.userEntity.create({ 
-						username:	query.post.usernameCreate, 
-						email:		query.post.emailCreate, 
+
+					var users = null ;
+					this.userEntity.create({
+						username:	query.post.usernameCreate,
+						email:		query.post.emailCreate,
 						password:	query.post.passwordCreate,
 						name:		query.post.nameCreate  ,
-						surname:	query.post.surnameCreate,  
+						surname:	query.post.surnameCreate,
 					})
 					.then( (results) => {
 						users = results;
@@ -418,7 +417,7 @@ nodefony.registerController("demo", function(){
 						this.setFlashBag("error",error.errors[0].message );
 						return this.redirect(this.generateUrl("subscribe"));
 					});
-					
+
 				});
 			}else{
 				var orm = this.getORM() ;
@@ -427,27 +426,27 @@ nodefony.registerController("demo", function(){
 				// FORM DATA
 				var query = this.getParameters("query");
 
-				// GET FACTORY SECURE TO ENCRYPTE PASSWORD 
+				// GET FACTORY SECURE TO ENCRYPTE PASSWORD
 				//var firewall = this.get("security");
-				//var area = firewall.getSecuredArea("demo_area") ; 
+				//var area = firewall.getSecuredArea("demo_area") ;
 				//var factory = area.getFactory();
 				//var realm = factory.settings.realm ;
 				//var cryptpwd = factory.generatePasswd(realm, query.post.usernameCreate, query.post.passwordCreate);
-					
-				var users = null ; 
-				return this.userEntity.create({ 
-					username:	query.post.usernameCreate, 
-					email:		query.post.emailCreate, 
+
+				var users = null ;
+				return this.userEntity.create({
+					username:	query.post.usernameCreate,
+					email:		query.post.emailCreate,
 					password:	query.post.passwordCreate,
 					name:		query.post.nameCreate  ,
-					surname:	query.post.surnameCreate,  
+					surname:	query.post.surnameCreate,
 				})
 				.then( (results) => {
 					users = results;
 					this.getSession().invalidate();
 					this.setFlashBag("adduser"," Add user  : "+ query.post.usernameCreate + " OK" );
-					return this.redirect(this.generateUrl("saslArea"));	
-					
+					return this.redirect(this.generateUrl("saslArea"));
+
 				})
 				.catch( (error) => {
 					if ( error.errors  ){
@@ -455,7 +454,7 @@ nodefony.registerController("demo", function(){
 						this.setFlashBag("error",error.errors[0].message );
 						return this.redirect(this.generateUrl("subscribe"));
 					}else{
-						this.logger(util.inspect(error) , "ERROR");	
+						this.logger(util.inspect(error) , "ERROR");
 						this.setFlashBag("error",error.message );
 						return this.redirect(this.generateUrl("subscribe"));
 					}
@@ -476,13 +475,13 @@ nodefony.registerController("demo", function(){
 				try {
 					var childHost =  execSync('hostname');
 					var res = childHost.toString() ;
-					resolve(res);	
-					return 	res ;	
+					resolve(res);
+					return 	res ;
 				}catch(e){
-					reject(e) ;	
+					reject(e) ;
 				}
 			}));
-				
+
 			// exec PWD
 			tab.push (new Promise( (resolve, reject) => {
 				return exec("pwd", (error, stdout, stderr) => {
@@ -492,12 +491,12 @@ nodefony.registerController("demo", function(){
 					if ( stderr ){
 						this.logger(stderr, "ERROR");
 					}
-					return resolve(stdout) ;	
+					return resolve(stdout) ;
 				});
 			}));
 
-			
-			// system call  spawn ping  
+
+			// system call  spawn ping
 			tab.push (new Promise( (resolve/*, reject*/) => {
 				var du = spawn('ping', ['-c', "3", "google.com"]);
 				var str = "" ;
@@ -530,10 +529,10 @@ nodefony.registerController("demo", function(){
 			var hostname = "";
 			var pwd = "" ;
 
-			// CALL PROMISE 
+			// CALL PROMISE
 			return Promise.all(tab)
 			.then((result) => {
-				// format result for pass in renderAsync view   
+				// format result for pass in renderAsync view
 				hostname = result[0];
 				pwd = result[1] ;
 				ping = result[2].ping ;
@@ -557,17 +556,17 @@ nodefony.registerController("demo", function(){
 
 		/*
  	 	*
- 	 	*	HTTP REQUEST FOR PROXY  
+ 	 	*	HTTP REQUEST FOR PROXY
  	 	*/
 		httpRequestAction (){
 			this.hideDebugBar();
 			//this.getResponse().setTimeout(5000)
-			//return 
+			//return
 
 			var path = this.generateUrl("xmlAsyncResponse");
 			var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
 			var type = this.context.type ;
-			// cookie session 
+			// cookie session
 			var headers = {};
 			if ( this.context.session ){
 				headers.Cookie = this.context.session.name+"="+this.context.session.id ;
@@ -582,7 +581,7 @@ nodefony.registerController("demo", function(){
 			var wrapper = http.request ;
 			var keepAliveAgent = null ;
 
-			// https 
+			// https
 			if (this.context.request.url.protocol === "https:"){
 				// keepalive if multiple request in same socket
 				keepAliveAgent = new https.Agent({ keepAlive: true });
@@ -602,9 +601,9 @@ nodefony.registerController("demo", function(){
 			}else{
 				// keepalive
 				keepAliveAgent = new http.Agent({ keepAlive: true });
-				options.agent = keepAliveAgent;	
+				options.agent = keepAliveAgent;
 			}
-			
+
 			var req = wrapper(options, (res) => {
 				var bodyRaw = "";
 				res.setEncoding('utf8');
@@ -640,7 +639,7 @@ nodefony.registerController("demo", function(){
 	 	*
 	 	*/
 		indexRealTimeAction (){
-			return this.render("demoBundle:realTime:index.html.twig",{title:"realTime"});			
+			return this.render("demoBundle:realTime:index.html.twig",{title:"realTime"});
 		}
 
 		/*
@@ -653,9 +652,9 @@ nodefony.registerController("demo", function(){
 		}
 
 		uploadAction (){
-		
+
 			var files = this.getParameters("query.files");
-			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;	
+			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;
 			for (let file in files){
 				if( files[file].error ){
 					throw files[file].error ;
@@ -690,14 +689,13 @@ nodefony.registerController("demo", function(){
 					res.metas.push(meta);
 				}
 				return this.renderResponse(
-					JSON.stringify(res), 
-					200, 
+					JSON.stringify(res),
+					200,
 					{'Content-Type': 'application/json; charset=utf-8'}
 				);
 			}
 		}
 	};
-	
+
 	return demoController;
 });
-

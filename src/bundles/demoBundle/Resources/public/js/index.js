@@ -1,7 +1,5 @@
 require("../clean/js/jquery.parallax-1.1.3.js");
 require("../clean/js/jquery.sticky.js");
-require("../clean/js/smoothscroll.js");
-const WOW = require("../clean/js/wow.min.js").WOW;
 
 //css
 require( '../clean/css/simple-line-icons.css');
@@ -98,10 +96,10 @@ module.exports = function (){
 				topSpacing: 0
 			});
 
-			$('body').scrollspy({
+			/*$('body').scrollspy({
 				target: '.navbar-custom',
 				offset: 70
-			})
+			})*/
 
 
 			/* ---------------------------------------------- /*
@@ -141,15 +139,7 @@ module.exports = function (){
 				$('#home').parallax('50%', 0.1);
 				//$('#demo').parallax('50%', 0.1);
 			}
-
-			/* ---------------------------------------------- /*
-		 	* WOW Animation When You Scroll
-			/* ---------------------------------------------- */
-
-			var wow = new WOW({
-				mobile: false
-			});
-			wow.init();
+			
 		}
 	});
 

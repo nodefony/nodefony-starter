@@ -1,14 +1,14 @@
 #
 #
-#	ROUTING BUNDLE demoBundle 
+#	ROUTING BUNDLE demoBundle
 #
 #===============================================================================
 #
-#  Copyright © /2016         | 
+#  Copyright © /2016         |
 #
 # ===============================================================================
 #
-#        GENERATE BY App BUILDER YAML FILE 
+#        GENERATE BY App BUILDER YAML FILE
 #
 # This file is YAML  FILE
 # ---
@@ -33,152 +33,152 @@
 #################################
 
 ### HOME ###
-home: 
+home:
   pattern:  /
   defaults: {"controller": "demoBundle:demo:index"}
 
 ### MANAGE  DOCUMENTATION  ###
-documentation: 
+documentation:
   pattern:  /documentation
   defaults: {"controller": "demoBundle:demo:readme"}
 
 ### MANAGE  LOGIN AND CREATE ACCOUNT NOT SECURE  ###
-loginAll: 
+loginAll:
   pattern:  /login/{type}
   defaults: {"controller": "demoBundle:login:login"}
 
-subscribe: 
+subscribe:
   pattern:  /subscribe
   defaults: {"controller": "demoBundle:login:subscribe"}
-	
+
 ### MANAGE SECURE FOR AJAX CHALENGE AND FORM VALID ###
-demoSecure: 
+demoSecure:
   pattern:  /demo/secure
   defaults: {"controller": "frameworkBundle:default:401"}
 
-adduser: 
+adduser:
   pattern:  /adduser
   defaults: {"controller": "demoBundle:demo:addUser"}
-  requirements: 
-    method: POST 
+  requirements:
+    method: POST
 
-demoLogout: 
+demoLogout:
   pattern:  /logout
   defaults: {"controller": "securityBundle:logout:logout"}
 
 ### ROUTE SECURE  FIRWALL AREA ###
-saslArea: 
+saslArea:
   pattern:  /demo
   defaults: {"controller": "frameworkBundle:default:401"}
 
-localArea: 
+localArea:
   pattern:  /local
   defaults: {"controller": "frameworkBundle:default:401"}
 
-basicArea: 
+basicArea:
   pattern:  /basic
   defaults: {"controller": "frameworkBundle:default:401"}
 
-digestArea: 
+digestArea:
   pattern:  /digest
   defaults: {"controller": "frameworkBundle:default:401"}
 
 ### GOOGLE AUTH AREA ###
-googleArea: 
+googleArea:
   pattern:  /auth/google
   defaults: {"controller": "frameworkBundle:default:401"}
 
-googleCallBackArea: 
+googleCallBackArea:
   pattern:  /auth/google/callback
   defaults: {"controller": "frameworkBundle:default:401"}
 
 ### GITHUB AUTH AREA ###
-githubArea: 
+githubArea:
   pattern:  /auth/github
   defaults: {"controller": "frameworkBundle:default:401"}
 
-githubCallBackArea: 
+githubCallBackArea:
   pattern:  /auth/github/callback
   defaults: {"controller": "frameworkBundle:default:401"}
 
 ### UPLOAD ###
-upload: 
+upload:
   pattern:  /upload
   defaults: {"controller": "demoBundle:demo:indexUpload"}
-  requirements: 
+  requirements:
     method: GET
 
-uploadFile: 
+uploadFile:
   pattern:  /fileupload
   defaults: {"controller": "demoBundle:demo:upload"}
-  requirements: 
+  requirements:
     method: POST
 
 ### ORM ###
-orm: 
+orm:
   pattern:  /sequelize
   defaults: {"controller": "demoBundle:demo:sequelize"}
-  requirements: 
+  requirements:
     method: GET
 
-sql: 
+sql:
   pattern:  /query/sql
   defaults: {"controller": "demoBundle:demo:querySql"}
-  requirements: 
+  requirements:
     method: GET
-		
-sqlJoin: 
+
+sqlJoin:
   pattern:  /query/join
   defaults: {"controller": "demoBundle:demo:querySqlJoin"}
-  requirements: 
-    method: GET	
+  requirements:
+    method: GET
 
 
 ### SYSTEM ###
-syscall: 
+syscall:
   pattern:  /syscall
   defaults: {"controller": "demoBundle:demo:syscall"}
-  requirements: 
-    method: GET	
+  requirements:
+    method: GET
 
-httpRequest: 
+httpRequest:
   pattern:  /httpRequest
   defaults: {"controller": "demoBundle:demo:httpRequest"}
-  requirements: 
+  requirements:
     method: GET
 
-xmlResponse: 
+xmlResponse:
   pattern:  /xmlResponse
   defaults: {"controller": "demoBundle:demo:rawResponseSync"}
-  requirements: 
+  requirements:
     method: GET
 
-xmlAsyncResponse: 
+xmlAsyncResponse:
   pattern:  /xmlAsyncResponse
   defaults: {"controller": "demoBundle:demo:rawResponseAsync"}
-  requirements: 
-    method: GET	
+  requirements:
+    method: GET
 
 ### REALTIME ###
-indexReal: 
+indexReal:
   pattern:  /demo/realtime
   defaults: {"controller": "demoBundle:demo:indexRealTime"}
-  requirements: 
-    method: GET	
+  requirements:
+    method: GET
 
 ### FINDER ###
-finder: 
+finder:
   pattern:  /finder
   defaults: {"controller": "demoBundle:finder:index"}
 
-download: 
+download:
   pattern:  /download
   defaults: {"controller": "demoBundle:finder:download"}
-  requirements: 
-    method: GET		
+  requirements:
+    method: GET
 
 ### WEBSOCKET ###
-websoket: 
+websoket:
   pattern:  /websoket
   defaults: {"controller": "demoBundle:demo:websoket"}
   requirements:
@@ -187,14 +187,16 @@ websoket:
       - WEBSOCKET
 
 ### JSON ###
-json: 
+json:
   pattern:  /json
   defaults: {"controller": "demoBundle:demo:json"}
 
 ### REDIRECT ###
-redirect: 
+redirect:
   pattern:  /redirect
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
-	
 
-
+### WEB AUDIO ###
+webAudioApi: 
+  pattern:  /webAudioApi
+  defaults: {controller: "demoBundle:webAudio:mix"}

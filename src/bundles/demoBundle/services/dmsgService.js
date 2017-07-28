@@ -1,16 +1,16 @@
 /*
- * 
- * 
- *    
- * 
- * 
+ *
+ *
+ *
+ *
+ *
  */
 
 var net = require('net');
 
-nodefony.registerService("dmsg", function(){
+module.exports = nodefony.registerService("dmsg", function(){
 
-	
+
 	/*
  	 *
  	 *
@@ -28,7 +28,7 @@ nodefony.registerService("dmsg", function(){
 			this.socket.write(data+"");
 		}
 	};
-	
+
 	/*
  	 *
  	 *
@@ -38,7 +38,7 @@ nodefony.registerService("dmsg", function(){
 	var dmsg = class dmsg {
 
 		constructor(realTime, container, kernel){
-		
+
 			this.realTime = realTime ;
 			this.kernel = kernel ;
 			if ( ! this.realTime ){
@@ -58,7 +58,7 @@ nodefony.registerService("dmsg", function(){
 				if ( this.kernel.type === "SERVER" ) {
 					this.port = this.container.getParameters("bundles.realTime.services.dmsg.port") || 1316;
 					this.createWatcher();
-					this.server = null;	
+					this.server = null;
 					this.createServer();
 				}
 			});
@@ -73,12 +73,12 @@ nodefony.registerService("dmsg", function(){
 			try {
 				this.watcher = new nodefony.watcher(null , {
 					persistent:		true,
-					followSymlinks:		false,	
+					followSymlinks:		false,
 					usePolling:		true,
 					interval:		60,
 					binaryInterval:		300
 				}, this.container);
-				
+
 				this.watcher.listen(this, 'onError',(error) => {
 					this.realTime.logger(error, "ERROR");
 				});
@@ -86,9 +86,9 @@ nodefony.registerService("dmsg", function(){
 					this.realTime.logger(path);
 				});
 			}catch(e){
-				this.logger(e, "ERROR"); 
+				this.logger(e, "ERROR");
 			}
-			
+
 		}
 
 		createServer (){
@@ -135,7 +135,7 @@ nodefony.registerService("dmsg", function(){
 				socket.on("data",(buffer) => {
 					try {
 						if (this.nbConnections === 0 ){
-							this.watcher.watch(this.fileDmsg);		
+							this.watcher.watch(this.fileDmsg);
 						}
 						this.nbConnections ++ ;
 					}catch(e){
@@ -143,8 +143,8 @@ nodefony.registerService("dmsg", function(){
 					}
 				});
 			});
-				
-				
+
+
 			/*
  		 	*	EVENT ERROR
  		 	*/
@@ -159,7 +159,7 @@ nodefony.registerService("dmsg", function(){
     						}, 1000);
 					break;
 					default :
-						this.logger( new Error(httpError) ,"CRITIC");	
+						this.logger( new Error(httpError) ,"CRITIC");
 				}
 			});
 
@@ -172,18 +172,18 @@ nodefony.registerService("dmsg", function(){
 
 
 			/*
- 		 	*	LISTEN ON DOMAIN 
+ 		 	*	LISTEN ON DOMAIN
  		 	*/
 			this.server.listen(this.port, this.domain, () => {
 				this.realTime.logger("Create server DMSG listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
-			});	
+			});
 
 			this.kernel.listen(this, "onTerminate", () => {
 				this.stopServer();
 			});
 
 		}
-		
+
 		stopServer (){
 			for ( var connection in this.connections ){
 				this.connections[connection].socket.end();
@@ -200,5 +200,5 @@ nodefony.registerService("dmsg", function(){
 		}
 	};
 
-	return dmsg; 
+	return dmsg;
 });

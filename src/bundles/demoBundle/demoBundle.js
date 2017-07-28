@@ -7,7 +7,7 @@
  *
  */
 
-nodefony.registerBundle ("demo", function(){
+module.exports = nodefony.registerBundle ("demo", function(){
 
 	var demo = class demo extends nodefony.Bundle {
 

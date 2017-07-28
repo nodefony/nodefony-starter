@@ -9,11 +9,11 @@
  *
  */
 
-nodefony.registerController("finder", function(){
+module.exports = nodefony.registerController("finder", function(){
 
 
 	var search = function(path){
-		var response = null; 
+		var response = null;
 		try {
 			var file = new nodefony.fileClass(path);
 			switch (file.type){
@@ -52,12 +52,12 @@ nodefony.registerController("finder", function(){
 								content:file.content(file.encoding),
 								mime:file.mimeType,
 								encoding:file.encoding
-							});	
+							});
 						break;
 						case "text/x-markdown":
 							var res = this.htmlMdParser(file.content(file.encoding),{
 								linkify: true,
-								typographer: true	
+								typographer: true
 							});
 							this.renderAsync('demoBundle:finder:files.html.twig',{
 								title:file.name,
@@ -67,7 +67,7 @@ nodefony.registerController("finder", function(){
 							});
 						break;
 						default:
-							encode.call(this, file);	
+							encode.call(this, file);
 					}
 				break;
 			}
@@ -78,17 +78,17 @@ nodefony.registerController("finder", function(){
 		}
 	};
 
-	
+
 	var encode = function(file){
 		switch (true) {
-			
+
 			case /^image/.test(file.mimeType):
 			case /^video/.test(file.mimeType):
 			case /^audio/.test(file.mimeType):
 			case /application\/pdf/.test(file.mimeType):
 				try {
 					this.renderMediaStream( file );
-					
+
 				}catch(error){
 					switch (error.code){
 						case "EISDIR":
@@ -101,7 +101,7 @@ nodefony.registerController("finder", function(){
 			// download
 			default:
 				try {
-					this.renderFileDownload(file) ; 
+					this.renderFileDownload(file) ;
 				}catch(error){
 					switch (error.code){
 						case "EISDIR":
@@ -136,10 +136,10 @@ nodefony.registerController("finder", function(){
 				throw {
 					status:401
 				}
-				//var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images"	
+				//var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/images"
 			}
 
-			try{ 
+			try{
 				search.call(this, path) ;
 			}catch(e){
 				throw e ;
@@ -157,11 +157,10 @@ nodefony.registerController("finder", function(){
 			try {
 				return encode.call(this, file);
 			}catch(e){
-				throw e;		
+				throw e;
 			}
 		};
 	};
 
 	return finderController ;
 });
-

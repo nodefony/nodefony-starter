@@ -9,17 +9,17 @@
  *
  */
 
-nodefony.registerController("login", function(){
+module.exports = nodefony.registerController("login", function(){
 
 	var loginController = class loginController extends nodefony.controller {
 
 		constructor(container, context){
 			super(container, context);
 		};
-		
+
 		/**
  	 	*
- 	 	*	DEMO login  
+ 	 	*	DEMO login
  	 	*
  	 	*/
 		loginAction (type){
@@ -35,7 +35,7 @@ nodefony.registerController("login", function(){
 			}
 
 			if ( ! log ){
-				log = {} ; 
+				log = {} ;
 			}
 
 			switch(type){
@@ -59,7 +59,7 @@ nodefony.registerController("login", function(){
 						throw error ;
 					}
 					var log  = session.getFlashBag("session") ;
-					
+
 					if ( log ){
 						log.login = true ;
 					}else{
@@ -71,7 +71,7 @@ nodefony.registerController("login", function(){
 					}
 					var adduser  = session.getFlashBag("adduser");
 					if ( adduser){
-						log.adduser = adduser ;	
+						log.adduser = adduser ;
 					}
 					this.renderAsync('demoBundle:login:subscribe.html.twig',log);
 				});
@@ -88,12 +88,12 @@ nodefony.registerController("login", function(){
 				}
 				var adduser  = this.context.session.getFlashBag("adduser") ;
 				if ( adduser){
-					log.adduser = adduser ;	
+					log.adduser = adduser ;
 				}
 				return this.render('demoBundle:login:subscribe.html.twig',log);
 			}
 		}
 	};
-	
+
 	return loginController;
 });

@@ -3,7 +3,7 @@ var net = require('net');
 var xml = require('xml2js');
 
 
-nodefony.registerService("random", function(){
+module.exports = nodefony.registerService("random", function(){
 
 	var randomChain = function(){
 		var txt = "";
@@ -21,7 +21,7 @@ nodefony.registerService("random", function(){
 			this.service = service;
 			this.interval = null;
 			this.notificationsCenter = nodefony.notificationsCenter.create();
-			
+
 		};
 
 		start (time){
@@ -35,11 +35,11 @@ nodefony.registerService("random", function(){
 
 
 		listen (context, callback){
-			this.notificationsCenter.listen(context || this, "tic", callback)		
+			this.notificationsCenter.listen(context || this, "tic", callback)
 		};
 
 		unListen ( callback){
-			this.notificationsCenter.unListen("tic" , callback);		
+			this.notificationsCenter.unListen("tic" , callback);
 		};
 
 
@@ -64,7 +64,7 @@ nodefony.registerService("random", function(){
 
 	var service = class service {
 		constructor (realTime, container, kernel){
-		
+
 			this.realTime = realTime ;
 			this.kernel = kernel ;
 			if ( ! this.realTime ){
@@ -82,7 +82,7 @@ nodefony.registerService("random", function(){
 			this.server = null;
 
 			this.kernel.listen(this, "onReady" ,() => {
-				if ( this.kernel.type === "SERVER" ) { 
+				if ( this.kernel.type === "SERVER" ) {
 					this.port = this.container.getParameters("bundles.realTime.services.random.port") || 1315;
 					this.createServer();
 					this.protocol = new nodefony.io.protocol["json-rpc"]();
@@ -101,7 +101,7 @@ nodefony.registerService("random", function(){
 		stopServer (){
 			this.stopped = true ;
 			for (var i = 0 ; i < this.connections.length ; i++){
-				this.connections[i].socket.end();	
+				this.connections[i].socket.end();
 				var id = this.connections[i].id
 				delete this.connections[id];
 			}
@@ -127,7 +127,7 @@ nodefony.registerService("random", function(){
 				//d.run(() => {
 				socket.write("READY");
 				this.stopped = false ;
-				//});	
+				//});
 			});
 
 			/*
@@ -135,11 +135,11 @@ nodefony.registerService("random", function(){
  		 	*/
 			this.server.on("connection",(socket) => {
 				this.logger("CONNECT TO SERVICE RANDOM FROM : "+socket.remoteAddress, "INFO");
-				
+
 				var conn = new connection(socket);
 				this.connections.push(conn) ;
 				this.connections[conn.id] = this.connections[this.connections.length-1];
-				
+
 				var closed = false ;
 
 				var callback = (value) => {
@@ -148,7 +148,7 @@ nodefony.registerService("random", function(){
 							return
 						conn.write(this.protocol.methodSuccees(value));
 					}catch(e){
-						this.logger(e,"ERROR")	
+						this.logger(e,"ERROR")
 					}
 				};
 				this.random.listen(this, callback);
@@ -176,7 +176,7 @@ nodefony.registerService("random", function(){
 										try {
 											this.random.start.apply(this.random, message.params )
 										}catch(e){
-											conn.write(this.protocol.methodError(e.message, message.id));	
+											conn.write(this.protocol.methodError(e.message, message.id));
 										}
 									}
 								});
@@ -185,17 +185,17 @@ nodefony.registerService("random", function(){
 								try {
 									this.random.stop.apply(this.random, message.params )
 								}catch(e){
-									conn.write(this.protocol.methodError(e.message, message.id));	
+									conn.write(this.protocol.methodError(e.message, message.id));
 								}
 							break;
 						}
 					}catch(e){
-						//conn.write(this.protocol.methodError(e.message, message.id));	
+						//conn.write(this.protocol.methodError(e.message, message.id));
 						this.logger("message :" + buffer.toString() + " error : "+e.message,"ERROR")
 					}
 				});
 
-				
+
 			});
 
 			/*
@@ -220,25 +220,25 @@ nodefony.registerService("random", function(){
     						}, 1000);
 					break;
 					default :
-						this.logger( new Error(httpError) ,"CRITIC");	
+						this.logger( new Error(httpError) ,"CRITIC");
 				}
 			})
 
 			/*
- 		 	*	LISTEN ON DOMAIN 
+ 		 	*	LISTEN ON DOMAIN
  		 	*/
 			this.server.listen(this.port, this.domain, () => {
 				this.realTime.logger("Create server RANDOM listen on Domain : "+this.domain+" Port : "+this.port, "INFO");
-			});	
-				
+			});
+
 			/*
  		 	*  KERNEL EVENT TERMINATE
- 		 	*/ 
+ 		 	*/
 			this.kernel.listen(this, "onTerminate", () => {
 				this.stopServer();
-			})	
+			})
 		};
 	};
 
-	return service; 
+	return service;
 });

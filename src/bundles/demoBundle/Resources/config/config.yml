@@ -14,7 +14,7 @@
 ########## NODEFONY CONFIG BUNDLE  demoBundle  ############
 name :				demoBundle
 locale :			en_en
-version :                       "1.0"
+version :           "1.0.0"
 
 #
 #  WATCHERS
@@ -32,27 +32,8 @@ version :                       "1.0"
 #        views:			true
 #        translations:          true
 #
-watch:                          ~
+watch:                          false
 
-#
-#  WEBPACK CONFIG
-#
-#
-#
-webpack:
-  entry:
-    layout:                     "./js/layout.js"
-    demo:                       "./js/index.js"
-    finder:                     "./js/finder/finder.js"
-    login:                      "./js/login.js"
-  watch:                        false
-  devtool:                      "source-map"
-  externals:
-    jquery:                     "jQuery"
-  output:
-    filename:                   "./assets/js/[name].js"
-    library:                    "[name]"
-    libraryTarget:              "umd"
 
 #
 #  OVERRIDE BUNDLE REALTIME

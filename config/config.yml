@@ -21,7 +21,6 @@ system:
   domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$"
-    - "^docker.nodefony$"
   httpPort                      : 5151
   httpsPort                     : 5152
   statics                       : true
@@ -34,9 +33,9 @@ system:
 
   servers:
     http                        : true
-    https	                : true
-    ws			        : true
-    wss			        : true
+    https	                    : true
+    ws			                : true
+    wss			                : true
     certificats:
       key                       : "config/certificates/server/privkey.pem"
       cert                      : "config/certificates/server/fullchain.pem"
@@ -45,14 +44,14 @@ system:
         rejectUnauthorized      : false
 
   bundles:
-    demo			: "./src/bundles/demoBundle"
+    demo                        : "src/bundles/demoBundle"
 
   PM2:
-    exec_mode		        : "cluster"
+    exec_mode		            : "cluster"
     max_memory_restart	        : "1024M"
-    autorestart		        : true
-    max_restarts		: 10
-    watch			: false
+    autorestart		            : true
+    max_restarts		        : 10
+    watch			            : false
     log_file                    : "tmp/nodefony.log"
     out_file                    : "tmp/nodefony.out.log"
     error_file                  : "tmp/nodefony.error.log"
@@ -93,8 +92,13 @@ templating                      : twig
 
 #
 # ENGINE ORM
-#
 #       SEQUELIZE
-#
-#
 orm                             : sequelize
+
+#
+# NODE.JS PACKAGE MANAGER
+#
+#       npm
+#       yarn
+#
+packageManager                  : npm
