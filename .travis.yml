@@ -3,28 +3,29 @@ language: node_js
 os:
   - linux
 #  - osx
-  
+
 sudo: true
 
 node_js:
   - "6"
-  - "7"
-  
+  - "8"
+
 services:
   - mysql
   - memcached
   - elasticsearch
-  
+
 env:
   - DB=sqlite
   - DB=mysql
-  
+
 before_script:
   - sleep 10
-  
+
 before_install:
   - sudo apt-get install nginx -y
   - mysql -e "create database IF NOT EXISTS nodefony;" -uroot
+  - mysql -e "GRANT ALL ON nodefony.* TO 'travis'@'localhost';"
   - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/master/.travis/bin/install.sh | /bin/sh"
 
 branches:
