@@ -1,8 +1,8 @@
 {
-  "name": "App",
-  "version": "1.0.0",
-  "description": "FRAMEWORK web developpement symfony like",
-  "main": "/nodefony",
+  "name": "nodefony-demo",
+  "version": "3.0.0",
+  "description": "Nodefony Node.js full-stack web framework",
+  "main": "./nodefony",
   "scripts": {
     "start": "./nodefony -d dev",
     "stop": "make stop",
@@ -11,8 +11,10 @@
     "outdated": "npm outdated --deph=0",
     "test": "./nodefony unitTest:launch:all"
   },
+  "private": true,
   "keywords": [
-    "Node.js"
+    "Node.js",
+    "nodefony"
   ],
   "repository": {},
   "bugs": {},
@@ -38,10 +40,11 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "font-awesome": "^4.7.0",
-    "js-yaml": "^3.9.0",
-    "nodefony": "git://github.com/nodefony/nodefony-core.git#dev",
+    "js-yaml": "^3.9.1",
+    "nodefony": "^2.1.4-beta",
     "nodefony-stage": "^0.1.1",
     "pm2": "^2.6.1",
+    "uglify-es": "^3.0.27",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1",
     "webpack-merge": "^4.1.0",
@@ -50,7 +53,5 @@
   "devDependencies": {},
   "author": "name <mail@domain.com>",
   "readmeFilename": "README.md",
-  "contributors": [
-    {}
-  ]
+  "contributors": [{}]
 }

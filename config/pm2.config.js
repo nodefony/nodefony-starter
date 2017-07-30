@@ -1,8 +1,19 @@
 const cpu = require('os').cpus().length ;
+const path = require("path");
+const fs   = require('fs');
+const yml = require("js-yaml");
+let name = "nodefony";
+
+try {
+  const config = yml.safeLoad(fs.readFileSync(path.resolve("app", "config", "config.yml"), 'utf8'));
+  name = config.App.projectName;
+}catch(e){
+  throw e ;
+}
 
 module.exports = {
   apps : [{
-    name                : "demo",
+    name                : name,
     script              : "./nodefony",
     args                : "pm2",
     watch               : false,

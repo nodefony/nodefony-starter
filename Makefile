@@ -20,13 +20,11 @@ $(info $(LINE))
 all:  npm install
 
 install:
-
 	@echo "";
 	@echo "#########################################" ;
 	@echo "#      NODEFONY INSTALL BUNDLES         #" ;
 	@echo "#########################################" ;
 	@echo "";
-
 	@if [ $(VERBOSE) = 0 ] ; then \
 		echo "./nodefony npm:install";\
 		./nodefony npm:install ;\
@@ -142,8 +140,7 @@ list:
 	@echo "" ;
 	npm ls --depth=0
 
-
-deploy:  asset
+deploy:
 	./node_modules/pm2/bin/pm2 update
 	./nodefony pm2
 
@@ -154,25 +151,6 @@ webpack:
 	@echo "#########################################" ;
 	@echo "";
 	./nodefony webpack:dump ;\
-
-asset:
-	@echo "";
-	@echo "#########################################" ;
-	@echo "#            NODEFONY ASSETS            #" ;
-	@echo "#########################################" ;
-	@echo "";
-
-	@if [ $(VERBOSE) = 0 ] ; then \
-		#echo "./nodefony assets:install" ;\
-		#./nodefony assets:install ;\
-		echo "./nodefony assets:dump" ;\
-		./nodefony assets:dump ;\
-	else \
-		#echo "./nodefony assets:install" ;\
-		#./nodefony -d assets:install ;\
-		echo "./nodefony -d assets:dump" ;\
-		./nodefony -d assets:dump ;\
-	fi \
 
 framework:
 	@echo "";

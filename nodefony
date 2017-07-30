@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 const path = require("path");
 const cluster = require('cluster');
+const fs = require("fs");
 const pm2 = require('pm2');
 const yaml = require('js-yaml');
-const fs = require("fs");
-const instances =  require('os').cpus().length ;
 try {
   const nodefony = require("nodefony");
 }catch(e){
@@ -19,6 +18,7 @@ let type = null ;
 let debug = false ;
 let kernel = null ;
 let environment = "production" ;
+"use strict;"
 
 if (process.env.MODE_START && process.env.MODE_START === "PM2"){
     module.exports  =  new nodefony.appKernel("SERVER", environment, false, {});
@@ -92,6 +92,7 @@ let start = function(cmd, args){
 };
 
 let prodStart = function( type, environment, debug,  options ){
+    const instances =  require('os').cpus().length ;
     if (cluster.isMaster) {
       for (var i=0 ; i < instances; i++){
         cluster.fork();

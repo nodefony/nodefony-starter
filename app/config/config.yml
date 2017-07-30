@@ -43,9 +43,10 @@ lang:
 #    or
 #      watch:
 #        controller:		true
-#        config:                true		# only  routing.yml
-#        views:			true
-#        translations:          true
+#        config:        true		# only  routing.yml
+#        views:			    true
+#        translations:  true
+#        webpack:       true
 #
 watch:				true
 
