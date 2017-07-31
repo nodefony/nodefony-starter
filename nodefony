@@ -1,24 +1,35 @@
 #!/usr/bin/env node
+"use strict;"
 const path = require("path");
 const cluster = require('cluster');
 const fs = require("fs");
+
+let script = null ;
+try {
+    script  = path.resolve( process.cwd(), "bin", "check.js");
+    fs.lstatSync(  script ) ;
+}catch(e){
+    console.error( "You must run nodefony on Framework Root Directory  ");
+    throw new Error( process.cwd() + "Is Not a Nodefony Repository  !!  ");
+}
+let nodefonyCheck = null ;
+try {
+    nodefonyCheck = require( script );
+}catch(e){
+    console.error(e);
+    throw e;
+}
+const nodefony = nodefonyCheck.nodefony ;
+const nodefony_version = nodefonyCheck.version;
+
 const pm2 = require('pm2');
 const yaml = require('js-yaml');
-try {
-  const nodefony = require("nodefony");
-}catch(e){
-  const nodefony = require( path.resolve( "src", "nodefony", "core", "autoloader"));
-}
-
-var nodefony_version = require( path.resolve( "package.json") ).version;
-
 let command  = null ;
 let args = null ;
 let type = null ;
 let debug = false ;
 let kernel = null ;
 let environment = "production" ;
-"use strict;"
 
 if (process.env.MODE_START && process.env.MODE_START === "PM2"){
     module.exports  =  new nodefony.appKernel("SERVER", environment, false, {});

@@ -17,7 +17,7 @@ if [ "$DB" = "mysql" ]
 then
 	./nodefony generate:bundle:angular generatedBundle ./src/bundles
 	make deploy &
-	sleep 30;
+	sleep 60;
 	make status &
 else
 	./nodefony generate:bundle generatedBundle ./src/bundles
