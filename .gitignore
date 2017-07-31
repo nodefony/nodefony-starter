@@ -4,7 +4,7 @@
 /web/**
 **/assets/**
 config/generatedConfig.yml
-src/bundles/webrtcBundle
+src/nodefony
 
 app/Resources/databases/*
 *.db

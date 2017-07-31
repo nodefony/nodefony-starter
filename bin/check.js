@@ -7,25 +7,38 @@ const classPackageManager = require( path.resolve("bin", "packageManager.js") );
 const checkManager = class checkManager {
 
     constructor(){
-        this.packageManager = new classPackageManager();
         this.isNodefony = this.isNodefonyTrunk();
         if( ! this.isNodefony ){
-            throw new Error(" Nodefony repository not found !!  ")
+            console.error( "You must run nodefony on Framework Root Directory  ");
+            throw new Error(process.cwd() + " Is Not a Nodefony Repository !!  ");
         }
         this.isCore = this.isCoreTrunk();
-
-        if( ! this.isCore ){
-            this.nodefony = require("nodefony");
-        }else{
-            this.nodefony = require( path.resolve( "src", "nodefony", "core", "autoloader"));
+        try {
+            if( ! this.isCore ){
+                this.nodefony = require("nodefony");
+            }else{
+                this.nodefony = require( path.resolve( "src", "nodefony", "core", "autoloader"));
+            }
+            if ( ! this.nodefony ){
+                    let error = new Error("Nodefony trunk is not build !!") ;
+                    console.error("Run make build to install framework  ");
+                    throw  error ;
+            }
+        }catch(e){
+            let error = new Error("Nodefony trunk is not build !!") ;
+            console.error("Run make build to install framework  ");
+            throw e ;
         }
-        if ( ! nodefony ){
-                let error = new Error("Nodefony trunk is not build !!") ;
-                console.error(error);
-                console.error("Run npn install to build ");
-                throw  error ;
+        try {
+            this.packageManager = new classPackageManager();
+        }catch(e){
+            throw e ;
         }
-        this.version = this.getVersion();
+        try {
+            this.version = this.getVersion();
+        }catch(e){
+            throw e ;
+        }
     }
 
     isCoreTrunk (){
@@ -59,6 +72,33 @@ const checkManager = class checkManager {
             return myPath ;
         }else{
             return path.resolve( process.cwd(), myPath ) ;
+        }
+    }
+
+    linkCoreBundles(){
+        if ( this.isCore ){
+            return true ;
+        }
+        let shell = null ;
+        try {
+            shell = require("shelljs");
+        }catch(e){
+            throw e ;
+        }
+        let nodefonyPath = this.checkPath( path.resolve("src", "nodefony") );
+        try {
+            fs.lstatSync( nodefonyPath );
+        }catch(e){
+            try {
+                fs.lstatSync( this.nodefony.autoloader.dirname );
+            }catch(e){
+                throw e ;
+            }
+            try {
+                shell.ln("-sf", this.nodefony.autoloader.dirname, nodefonyPath);
+            }catch(e){
+                throw e ;
+            }
         }
     }
 

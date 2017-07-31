@@ -16,25 +16,28 @@ let nodefonyCheck = null ;
 try {
     nodefonyCheck = require( script );
 }catch(e){
-    console.error(e);
+    //console.error(e);
     throw e;
 }
 const nodefony = nodefonyCheck.nodefony ;
 const nodefony_version = nodefonyCheck.version;
 
-const pm2 = require('pm2');
-const yaml = require('js-yaml');
-let command  = null ;
-let args = null ;
-let type = null ;
-let debug = false ;
-let kernel = null ;
 let environment = "production" ;
 
 if (process.env.MODE_START && process.env.MODE_START === "PM2"){
     module.exports  =  new nodefony.appKernel("SERVER", environment, false, {});
     return ;
 }
+
+const pm2 = require('pm2');
+const yaml = require('js-yaml');
+const shell = require("shelljs");
+let command  = null ;
+let args = null ;
+let type = null ;
+let debug = false ;
+let kernel = null ;
+nodefonyCheck.linkCoreBundles();
 
 let start = function(cmd, args){
 	if ( cmd ){
