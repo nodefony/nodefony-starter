@@ -41,7 +41,7 @@
     "file-loader": "^0.11.2",
     "font-awesome": "^4.7.0",
     "js-yaml": "^3.9.1",
-    "nodefony": "^2.1.4-beta",
+    "nodefony": "git://github.com/nodefony/nodefony.git#dev",
     "nodefony-stage": "^0.1.1",
     "pm2": "^2.6.1",
     "uglify-es": "^3.0.27",
@@ -53,5 +53,7 @@
   "devDependencies": {},
   "author": "name <mail@domain.com>",
   "readmeFilename": "README.md",
-  "contributors": [{}]
+  "contributors": [
+    {}
+  ]
 }
