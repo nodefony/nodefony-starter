@@ -4,3 +4,82 @@ IMG.displayed , .success{
     margin-right: auto;
     text-align: center;
 }
+/* Css Footer*/
+footer{
+    position: fixed;
+    bottom: 0;
+
+}
+.footer-nodfony{
+    background-color: #e4e4e4;
+    border-color: #e7e7e7;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    width: 100%;
+    font: bold 16px sans-serif;
+    text-align: left;
+
+    padding: 20px 60px;
+    margin-top: 80px;
+    overflow: hidden;
+}
+
+/* bloc left in footer */
+.footer-nodfony .footer-left{
+    float: left;
+}
+
+/* bloc right in footer*/
+
+.footer-nodfony .footer-right{
+    float: right;
+}
+
+/* for links  or <a ..*/
+.footer-nodfony .footer-links{
+    color:  #ffffff;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+.footer-nodfony .footer-links a{
+    display:inline-block;
+    line-height: 1.8;
+    text-decoration: none;
+    color:  inherit;
+}
+
+.nodefony-select {
+    background: #E7E7E7;
+    border: 1px solid #78818a;
+    font-size: 12px;
+    padding: 0 15px;
+}
+
+.footer-nodfony .footer-company-name{
+    color:  #8f9296;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.footer-nodfony select {
+    -webkit-appearance: button;
+    -webkit-border-radius: 2px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-padding-end: 20px;
+    -webkit-padding-start: 2px;
+    -webkit-user-select: none;
+    background-image: url(../images/select_icone_nodefony.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    border: 1px solid #a9abb1;
+    color: #8f9296;
+    font-size: inherit;
+    margin: 20px;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 300px;
+}

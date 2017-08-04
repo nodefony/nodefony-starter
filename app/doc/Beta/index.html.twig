@@ -1,17 +1,17 @@
 
 <div class="page-header">
   <h1><strong>Application</strong> </h1>
-	
+
 	<div class="alert alert-info" role="alert">
 		<strong>
 		Bundle Application is the entry point of framework, is the kernel instance of nodefony</br>
 		App is a special bundle its behavior differs from other bundles<br>
-		This Bunlde is responsible  for : 
+		This Bunlde is responsible  for :
 		<ul>
 			<li>overloading Configurations and Views from other bundles </br>
 		</ul>
 		</strong>
-	</div>	
+	</div>
 </div>
 
 <h2 > You can see HERE :</h2>
@@ -27,45 +27,68 @@
 <div class="doc2">
 	<p>
 		You can find bundle repository under rootdir <code>./app</code> directory.
-		
+
 	</p>
 
 	<pre>
 $ ll app/
 
-total 8
-drwxr-xr-x  3 cci  staff   102 19 nov  2015 Command
-drwxr-xr-x  3 cci  staff   102 19 nov  2015 Fixtures
-drwxr-xr-x  5 cci  staff   170  5 sep 11:14 Resources
--rw-r--r--  1 cci  staff  1213  5 sep 11:14 <strong>appKernel.js</strong>
-drwxr-xr-x  8 cci  staff   272 11 oct 17:31 config
-drwxr-xr-x  5 cci  staff   170 11 oct 17:27 doc
+total 16
+drwxr-xr-x  3 cci  staff  102 18 avr 10:55 Fixtures
+drwxr-xr-x  6 cci  staff  204 28 jul 15:31 Resources
+-rw-r--r--  1 cci  staff  395  3 jul 09:37 appKernel.js
+drwxr-xr-x  6 cci  staff  204 31 jul 10:01 config
+drwxr-xr-x  3 cci  staff  102 28 jul 14:25 controller
+drwxr-xr-x  4 cci  staff  136 18 avr 10:55 doc
+-rw-r--r--  1 cci  staff  400 18 jul 12:59 package.json
 
 app/
-├── <strong>appKernel.js</strong>
+├── Fixtures
+├── Resources
+│   ├── databases
+│   │   └── nodefony.db
+│   ├── public
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   ├── app.css
+│   │   │   │   └── app.css.map
+│   │   │   ├── fonts
+│   │   │   ├── images
+│   │   │   └── js
+│   │   │       ├── app.js
+│   │   │       └── app.js.map
+│   │   ├── css
+│   │   │   └── app.css
+│   │   ├── favicon.ico
+│   │   ├── images
+│   │   ├── js
+│   │   │   └── app.js
+│   │   ├── manifest.json
+│   │   ├── robots.txt
+│   │   └── sitemap.xml
+│   ├── translations
+│   │   ├── messages.en_en.yml
+│   │   └── messages.fr_fr.yml
+│   └── views
+│       ├── base.html.twig
+│       ├── footer.html.twig
+│       └── index.html.twig
+├── appKernel.js
 ├── config
 │   ├── config.yml
-│   ├── parameters.yml
 │   ├── routing.yml
-│   └── security.yml
+│   ├── security.yml
+│   └── webpack
+│       ├── webpack.common.js
+│       ├── webpack.dev.config.js
+│       └── webpack.prod.config.js
+├── controller
+│   └── appController.js
 ├── doc
 │   ├── Beta
 │   │   └── index.html.twig
 │   └── Default -> Beta
-├── Fixtures
-└── Resources
-    ├── databases
-    │   └── nodefony.db
-    ├── public
-    │   ├── css
-    │   ├── favicon.ico
-    │   ├── images
-    │   ├── js
-    │   ├── robots.txt
-    │   └── sitemap.xml
-    └── views
-        └── base.html.twig
-
+└── package.json
 	</pre>
 </div>
 
@@ -73,7 +96,7 @@ app/
 <h2 name="config" id="config">Configuration Application  :<small> See <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:'nodefony', queryString:{'subsection':'application'} })}}">Application config</a></small> </h2>
 <div class="doc2">
 	<p>
-		
+
 	</p>
 
 </div>
@@ -112,7 +135,7 @@ nodefony.register("appKernel",function(){
 	var appKernel = class appKernel extends nodefony.kernel {
 
 		constructor (type, environment, debug, loader, settings){
-			
+
 			// kernel constructor
 			super(environment, debug, loader, type, settings)
 		};

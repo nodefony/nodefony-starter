@@ -1,11 +1,11 @@
-i{% extends '/app/Resources/views/base.html.twig' %}
+{% extends './base.html.twig' %}
 
 {% block title %} {{trans("welcome")}} ! {% endblock %}
 
 {% block body %}
 	<img class='displayed' src='{{CDN("image")}}/frameworkBundle/images/nodefony-logo-white.png'>
     <h1 class="success" >
-        <a href="https://nodefony.net">
+        <a href="{{path('documentation')}}">
             <strong itemprop="name" class="text-primary" style="font-size:45px">
             	NODEFONY {{core}}
             </strong>

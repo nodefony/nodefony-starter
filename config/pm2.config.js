@@ -16,6 +16,7 @@ module.exports = {
     name                : name,
     script              : "./nodefony",
     args                : "pm2",
+    //node_args           : "--expose-gc",
     watch               : false,
     exec_mode		        : "cluster",
     instances           : cpu,

@@ -1,33 +1,28 @@
-<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-    <div class"container-fluid">
-        <div class="navbar-header">
-            <a class=" text-primary navbar-text" href="{{ path('home') }}" style="margin-left:20px" >
-                {{year}}
-                <strong class="text-primary"> NODEFONY {{version}}  ©</strong>
-            </a>
-        </div>
-        <div class="collapse navbar-collapse" id="footer-collapse">
-            <ul class="nav navbar-nav navbar-left">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li  class="navbar-btn pull-right" style="margin-right:40px">
-                    <select id="langs"  class="form-control">
-                        {% for opt in langs %}
-                            {% if locale ==  opt.value %}
-                                <option value="{{ opt.value}}" selected > {{ opt.name }} </option>
-                            {% else %}
-                                <option value="{{ opt.value}}"> {{ opt.name }} {{locale}}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </li>
-            </ul>
-        </div>
+<footer class="footer-nodfony">
+
+    <div class="footer-left">
+        <p  class="footer-company-name" href="{{ path('home') }}" >
+
+            <strong> NODEFONY {{version}}  ©</strong> {{year}}
+        </p>
     </div>
+
+    <div class="footer-right">
+        <select class="nodefony-select" id="langs">
+            {% for opt in langs %}
+                {% if locale ==  opt.value %}
+                    <option value="{{ opt.value}}" selected > {{ opt.name }} </option>
+                {% else %}
+                    <option value="{{ opt.value}}"> {{ opt.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
     <script>
-            document.getElementById("langs").addEventListener("change", function(e) {
-                    window.location.href = "?lang="+this.value
-	                e.preventDefault();
-            });
+        document.getElementById("langs").addEventListener("change", function(e) {
+            window.location.href = "?lang="+this.value
+            e.preventDefault();
+        });
     </script>
-</nav>
+</footer>

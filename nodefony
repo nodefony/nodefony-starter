@@ -21,7 +21,6 @@ try {
 }
 const nodefony = nodefonyCheck.nodefony ;
 const nodefony_version = nodefonyCheck.version;
-
 let environment = "production" ;
 
 if (process.env.MODE_START && process.env.MODE_START === "PM2"){

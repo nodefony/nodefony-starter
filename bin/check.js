@@ -29,6 +29,7 @@ const checkManager = class checkManager {
             console.error("Run make build to install framework  ");
             throw e ;
         }
+        this.nodefonyPath = this.checkPath( path.resolve("src", "nodefony") );
         try {
             this.packageManager = new classPackageManager();
         }catch(e){
@@ -85,9 +86,8 @@ const checkManager = class checkManager {
         }catch(e){
             throw e ;
         }
-        let nodefonyPath = this.checkPath( path.resolve("src", "nodefony") );
         try {
-            fs.lstatSync( nodefonyPath );
+            fs.lstatSync( this.nodefonyPath );
         }catch(e){
             try {
                 fs.lstatSync( this.nodefony.autoloader.dirname );
@@ -95,13 +95,12 @@ const checkManager = class checkManager {
                 throw e ;
             }
             try {
-                shell.ln("-sf", this.nodefony.autoloader.dirname, nodefonyPath);
+                shell.ln("-sf", this.nodefony.autoloader.dirname, this.nodefonyPath);
             }catch(e){
                 throw e ;
             }
         }
     }
-
 }
 
 let check = null ;
