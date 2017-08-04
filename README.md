@@ -18,6 +18,11 @@ Nodefony assimilates into the ecosystem of node.js with services like :
 - [PM2](http://pm2.keymetrics.io/) Production Process Manager for Node.js .
 - [Passport](http://passportjs.org/) Simple, unobtrusive authentication for Node.js .
 
+Nodefony 3  adds the following functionality :
+- [Angular](https://github.com/angular/angular-cli) Bundle Generator ( Now an Angular Project can be merge into a Nodefony Bundle )
+- [SockJS](https://github.com/sockjs) Server ( Like WDS 'Webpack Dev Server' and HMR management )
+- New cli Management (Command Line Interface )
+
 Now in this version  3 Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
 Evolution priorities up to the stable version will focus on robustness, unit testing, documentation and security.
@@ -132,7 +137,8 @@ system:
       options:
         rejectUnauthorized      : false
 
-  bundles                       : ~                      
+  bundles                       :
+    demo                        : "src/bundles/demoBundle"                 
 ```
 
 ## <a name="cli"></a>Command Line Interface
@@ -200,6 +206,7 @@ CLI Generate new bundle :    generate:bundle nameBundle path
 
 ```bash
 $ ./nodefony generate:bundle helloBundle src/bundles
+
 Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : GENERATE bundle : helloBundle LOCATION : /Users/cci/repository/nodefony/src/bundles
 Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :helloBundle
 Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :Command
@@ -267,19 +274,20 @@ locale :                        en_en
 
 #
 #  WATCHERS
-#    
+#
 #    watchers Listen to changes, deletion, renaming of files and directories
 #    of different components
-#       
+#
 #    For watch all components
 #
-#      watch:                   true
+#      watch:			true
 #    or
 #      watch:
-#        controller:            true
-#        config:                true
-#        views:                 true
-#        translations:          true
+#        controller:	true
+#        config:        true		# only  routing.yml
+#        views:			true
+#        translations:  true
+#        webpack:       true
 #
 watch:                          true
 ```
@@ -304,9 +312,7 @@ const commonConfig = require("./webpack.common.js");
 const webpackDevClient = "webpack-dev-server/client?https://"+kernel.hostHttps+"/";
 
 module.exports = webpackMerge( {
-    watch       : true,
     entry       : {
-      //hello    : ["./js/hello.js", webpackDevClient ],
       hello  : [ "./js/hello.js" ],
     },
     output      : {
