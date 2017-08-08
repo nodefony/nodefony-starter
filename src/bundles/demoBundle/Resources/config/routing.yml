@@ -33,8 +33,8 @@
 #################################
 
 ### HOME ###
-home:
-  pattern:  /
+demo:
+  pattern:  /home
   defaults: {"controller": "demoBundle:demo:index"}
 
 ### MANAGE  DOCUMENTATION  ###
@@ -197,6 +197,6 @@ redirect:
   defaults: {"controller": "demoBundle:demo:redirectGoogle"}
 
 ### WEB AUDIO ###
-webAudioApi: 
+webAudioApi:
   pattern:  /webAudioApi
   defaults: {controller: "demoBundle:webAudio:mix"}

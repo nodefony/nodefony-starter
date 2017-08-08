@@ -10,7 +10,7 @@ module.exports = nodefony.registerController("app", function(){
 		 *	@param {class} context
 		 *
 		 */
-		var appController = class appController extends nodefony.controller {
+		const appController = class appController extends nodefony.controller {
 
 			constructor (container, context){
 				super(container, context);
@@ -22,9 +22,19 @@ module.exports = nodefony.registerController("app", function(){
 		 	*
 		 	*/
 			indexAction (){
-				let core = this.kernel.isCore ? "CORE" : version ;
+				let core = this.kernel.isCore ? "CORE" : this.kernel.settings.version ;
+				let demo = this.kernel.getBundle("demo");
+				let readme  = null ;
+				try {
+					readme = new nodefony.fileClass(path.resolve(this.kernel.rootDir, "readme.md") );
+				}catch(e){
+					readme = false ;
+				}
+				readme = null ;
 				return this.render("AppBundle::index.html.twig" , {
-					core	: core
+					core	: core,
+					demo  : demo ? true : false ,
+					readme : readme ? this.htmlMdParser( readme.content() ) : false
 				});
 			}
 

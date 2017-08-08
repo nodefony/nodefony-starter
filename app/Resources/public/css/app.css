@@ -4,21 +4,23 @@ IMG.displayed , .success{
     margin-right: auto;
     text-align: center;
 }
+
 /* Css Footer*/
 footer{
     position: fixed;
-    bottom: 0;
-
+    bottom: 29px;
+    left: 0;
+    right:0;
 }
+
 .footer-nodfony{
-    background-color: #e4e4e4;
+    background-color: hsl(249, 89%, 31%);
     border-color: #e7e7e7;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
     width: 100%;
     font: bold 16px sans-serif;
     text-align: left;
-
     padding: 20px 60px;
     margin-top: 80px;
     overflow: hidden;
@@ -30,7 +32,6 @@ footer{
 }
 
 /* bloc right in footer*/
-
 .footer-nodfony .footer-right{
     float: right;
 }
@@ -57,7 +58,7 @@ footer{
 }
 
 .footer-nodfony .footer-company-name{
-    color:  #8f9296;
+    color:  #e6e5f1;
     font-size: 14px;
     font-weight: normal;
     margin: 0;
@@ -82,4 +83,5 @@ footer{
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 300px;
+    border-radius:10px;
 }
