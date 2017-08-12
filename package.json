@@ -8,6 +8,7 @@
     "stop": "make stop",
     "prod": "make start",
     "kill": "make kill",
+    "build": "make build",
     "outdated": "npm outdated --deph=0",
     "test": "./nodefony unitTest:launch:all"
   },
@@ -44,7 +45,7 @@
     "nodefony": "git://github.com/nodefony/nodefony-core.git#dev",
     "nodefony-stage": "^0.1.1",
     "pm2": "^2.6.1",
-    "webpack": "^3.5.1",
+    "webpack": "^3.5.4",
     "webpack-dev-server": "^2.7.1",
     "webpack-merge": "^4.1.0",
     "xml2js": "^0.4.17"
