@@ -13,148 +13,143 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a><img alt="nodefony" style="margin-left:0px ;margin-top:10px ;float:left" width="32px" height="29px" src="/frameworkBundle/images/nodefony-logo.png"><a>
-			<a class="navbar-brand text-primary" href="{{path("home")}}" style="margin-left:0px" ><strong class="text-primary">NODEFONY</strong></a>
-		</div>
+				<a class="navbar-brand text-primary" href="{{path("home")}}" style="margin-left:0px" ><strong class="text-primary">NODEFONY</strong></a>
+			</div>
 
-		<div class="collapse navbar-collapse" id="custom-collapse">
+			<div class="collapse navbar-collapse" id="custom-collapse">
 
-			<ul class="nav navbar-nav navbar-left">
-				{% if not  login  %}
-				
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="{{path("finder")}}">DEMO FINDER</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("upload")}}">DEMO UPLOAD</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("orm")}}">ORM SEQUELIZE</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("sql")}}">QUERY SQL</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("sqlJoin")}}">QUERY SQL JOIN</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("syscall")}}">SYSTEM CALL</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("httpRequest")}}">HTTP REQUEST</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("websoket")}}">WEBSOCKET</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("json")}}">RENDER JSON</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="{{path("redirect")}}">REDIRECT</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO REALTIME<span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                                <li><a href="{{path("indexReal")}}">DEMO REALTIME</a></li>
-						{% if  user.username  %}
-						{% endif %}
-                                        </ul>
-                                </li>
-				{% if  webrtc  %}
-				<li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MEDIAS<span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                                <li><a href="{{path("webAudioApi")}}">WEB AUDIO API MIXER</a></li>
-                                                <li role="separator" class="divider"></li>
-						<li><a href="{{ path("webrtc-home") }}"> WEBRTC </a></li>
-                                        </ul>
-                                </li>
-				{% endif %}
-				{% endif %}
-				{% block documentation %}
-					{{ render( controller("demoBundle:demo:doc" )) }}
-				{% endblock %}
-				<li class="dropdown"> 
-					<a href="{{path("monitoring-index")}}" role="button" aria-haspopup="true" aria-expanded="false">MONITORING</a>
-				</li>
-			</ul>
-
-			<ul class="nav navbar-nav navbar-right ">
-				<li style='top:12px' >
-					{% if  user.image  %}
-						<img width="26px" height="26px" src="{{ user.image }}" alt=""></img>
-					{% else %}
-						<i class="fa fa-user" ></i>
+				<ul class="nav navbar-nav navbar-left">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							{% if  angular  %}
+									<li><a href="{{path("angular")}}">ANGULAR</a></li>
+									<li role="separator" class="divider"></li>
+							{% endif %}
+							<li><a href="{{path("finder")}}">DEMO FINDER</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("upload")}}">DEMO UPLOAD</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("orm")}}">ORM SEQUELIZE</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("sql")}}">QUERY SQL</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("sqlJoin")}}">QUERY SQL JOIN</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("syscall")}}">SYSTEM CALL</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("httpRequest")}}">HTTP REQUEST</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("websoket")}}">WEBSOCKET</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("json")}}">RENDER JSON</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{path("redirect")}}">REDIRECT</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DEMO REALTIME<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{{path("indexReal")}}">DEMO REALTIME</a></li>
+							{% if  user.username  %}
+							{% endif %}
+						</ul>
+					</li>
+					{% if  audio  %}
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MEDIAS<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{{path("webAudioApi")}}">WEB AUDIO API MIXER</a></li>
+							<li role="separator" class="divider"></li>
+						</ul>
+					</li>
 					{% endif %}
-				</li>
-				<li class="dropdown">
-					{% if  user.username  %}
+					{% block documentation %}
+					{{ render( controller("demoBundle:demo:doc" )) }}
+					{% endblock %}
+					<li class="dropdown">
+						<a href="{{path("monitoring-index")}}" role="button" aria-haspopup="true" aria-expanded="false">MONITORING</a>
+					</li>
+				</ul>
+
+				<ul class="nav navbar-nav navbar-right ">
+					<li style='top:12px' >
+						{% if  user.image  %}
+						<img width="26px" height="26px" src="{{ user.image }}" alt=""></img>
+						{% else %}
+						<i class="fa fa-user" ></i>
+						{% endif %}
+					</li>
+					<li class="dropdown">
+						{% if  user.username  %}
 						{% if  user.displayName  %}
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.displayName}} <span class="caret"></span></a>
 						{% else %}
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.username}} <span class="caret"></span></a>
 						{% endif %}
-					<div class="dropdown-menu float-right">
-					<div class="box-sm">
-						<div  class="login-box clearfix" style="padding: 10px 15px;">
-							<div class="user-img" >
-								{% if  user.image  %}
-									<img  src="{{ user.image }}" alt=""></img>
-								{% else %}
-									<img src="/frameworkBundle/images/nodefony-logo.png" alt="nodefony-logo" ></img>
+						<div class="dropdown-menu float-right">
+							<div class="box-sm">
+								<div  class="login-box clearfix" style="padding: 10px 15px;">
+									<div class="user-img" >
+										{% if  user.image  %}
+										<img  src="{{ user.image }}" alt=""></img>
+										{% else %}
+										<img src="/frameworkBundle/images/nodefony-logo.png" alt="nodefony-logo" ></img>
+										{% endif %}
+									</div>
+									<div class="user-info">
+										<span>{{user.username }}
+											<i>{{user.name }} {{user.surname }}</i>
+										</span>
+									</div>
+								</div>
+								<div class="account" >
+									<div class="">
+										<a href="{{path('demoLogout')}}" class="btn btn-flat display-block font-normal ">
+											<i class="glyph-icon icon-power-off"></i> {{ "logout"|trans() }}
+										</a>
+									</div>
+									<div class="">
+										<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
+											<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% else %}
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  >{{ "Login"|trans() }}  <span class="caret"></span></a>
+						<div class="dropdown-menu ">
+							<div class="box-sm" >
+								<div class=" " style="padding: 10px 15px;">
+									AUTHENTICATIONS TYPES
+								</div>
+								<div class="divider"></div>
+								<ul class="reset-ul">
+									<li>
+										<a href="{{path('saslArea')}}">{{ "nodefony-sasl"|trans() }}
+											<i class="glyph-icon float-right icon-caret-right"></i>
+										</a>
+									</li>
+									<li><a href="{{path('basicArea')}}">{{ "passport-basic"|trans() }}</a></li>
+									<li><a href="{{path('digestArea')}}">{{ "passport-digest"|trans() }}</a></li>
+									<li><a href="{{path('localArea')}}">{{ "passport-local"|trans() }}</a></li>
+									<li><a href="{{path('googleArea')}}">{{ "passport-google"|trans() }}</a></li>
+									<li><a href="{{path('githubArea')}}">{{ "passport-github"|trans() }}</a></li>
+								</ul>
+								<div class="account" >
+									<div class="">
+										<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
+											<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
+										</a>
+									</div>
+								</div>
+
 								{% endif %}
 							</div>
-							<div class="user-info">
-								<span>{{user.username }} 
-									<i>{{user.name }} {{user.surname }}</i>
-								</span>
-							</div>
 						</div>
-						<div class="account" >
-							<div class="">
-								<a href="{{path('demoLogout')}}" class="btn btn-flat display-block font-normal ">
-									<i class="glyph-icon icon-power-off"></i> {{ "logout"|trans() }}
-								</a>
-							</div>	
-							<div class="">
-								<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
-									<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
-								</a>
-							</div>
-						</div>
-					</div>
-					</div>
-					{% else %}
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"  >{{ "Login"|trans() }}  <span class="caret"></span></a>
-					<div class="dropdown-menu ">
-					<div class="box-sm" >
-						<div class=" " style="padding: 10px 15px;">
-							AUTHENTICATIONS TYPES	
-						</div>
-						<div class="divider"></div>
-						<ul class="reset-ul">
-							<li>
-								<a href="{{path('saslArea')}}">{{ "nodefony-sasl"|trans() }}
-									<i class="glyph-icon float-right icon-caret-right"></i>
-								</a>
-							</li>
-							<li><a href="{{path('basicArea')}}">{{ "passport-basic"|trans() }}</a></li>
-							<li><a href="{{path('digestArea')}}">{{ "passport-digest"|trans() }}</a></li>
-							<li><a href="{{path('localArea')}}">{{ "passport-local"|trans() }}</a></li>
-							<li><a href="{{path('googleArea')}}">{{ "passport-google"|trans() }}</a></li>
-							<li><a href="{{path('githubArea')}}">{{ "passport-github"|trans() }}</a></li>
-						</ul>
-						<div class="account" >
-							<div class="">
-								<a href="{{path('subscribe')}}" class="btn btn-flat display-block font-normal ">
-									<i class="glyph-icon icon-power-off"></i> {{ "Add account "|trans() }}
-								</a>
-							</div>
-						</div>
-
-					{% endif %}
-					</div>
-					</div>
-				</li>
-			</ul>
-		</div>
-
-	</div><!-- .container -->
-
-</nav>
-
-
-
+					</li>
+				</ul>
+			</div>
+		</div><!-- .container -->
+	</nav>

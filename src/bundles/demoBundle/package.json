@@ -1,16 +1,16 @@
 {
-  	"name": "nodefony demo",
-  	"version": "0.1.0",
-  	"description": "demo nodefony",
-  	"main": "/nodefony",
-  	"repository": "./",
-  	"keywords": [
-    		"nodefony"
-  		],
-  	"dependencies": {
-    	},
-  	"devDependencies": {},
-  	"author": "cci <christophe.camensuli@gmail.com>",
-	"license": "CECILL-B",
-  	"readmeFilename": "README.md"
+  "name": "nodefony demo",
+  "version": "0.1.0",
+  "description": "demo nodefony",
+  "main": "/nodefony",
+  "repository": "./",
+  "keywords": [
+    "nodefony"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "author": "cci <christophe.camensuli@gmail.com>",
+  "license": "CECILL-B",
+  "readmeFilename": "README.md"
 }

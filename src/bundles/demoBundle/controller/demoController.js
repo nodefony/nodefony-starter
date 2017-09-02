@@ -19,7 +19,6 @@ module.exports = nodefony.registerController("demo", function(){
 
 		constructor(container, context){
 			super(container, context);
-			this.kernel = this.get("kernel");
 		}
 
 		/**
@@ -28,19 +27,18 @@ module.exports = nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		indexAction (){
-			var kernel = this.get("kernel") ;
 			// return  OBJECT by default view is : demoBundle:demo:index.html.twig
 			return {
 				title:"nodefony",
 				user: this.context.user,
-				version:kernel.version,
-				nodefony:kernel.settings.name + " " + kernel.settings.system.version
+				version: this.kernel.version,
+				nodefony: this.kernel.settings.name + " " + this.kernel.settings.system.version
 			};
 			// WITH RENDER
 			/*return this.render("demoBundle:demo:index.html.twig",{
 				title:"nodefony",
 				user: this.context.user,
-				nodefony:kernel.settings.name + " " + kernel.settings.system.version
+				nodefony:this.kernel.settings.name + " " + this.kernel.settings.system.version
 			});*/
 		}
 
@@ -185,7 +183,7 @@ module.exports = nodefony.registerController("demo", function(){
 			return nodefonyDb.query('SELECT * FROM sessions S LEFT JOIN users U on U.id = S.user_id ')
 			.then((result) => {
 				var joins = result[0];
-				for (var i = 0 ; i < joins.length ; i++){
+				for (let i = 0 ; i < joins.length ; i++){
 					joins[i].metaBag = JSON.parse( joins[i].metaBag );
 				}
 				return this.render('demoBundle:orm:orm.html.twig', {
@@ -195,10 +193,9 @@ module.exports = nodefony.registerController("demo", function(){
 		}
 
 		readmeAction (){
-			var kernel = this.container.get("kernel");
-			var path = kernel.rootDir+'/README.md';
-			var file = new nodefony.fileClass(path);
-			var res = this.htmlMdParser(file.content(),{
+			let Path = this.kernel.rootDir + '/README.md';
+			let file = new nodefony.fileClass(Path);
+			let res = this.htmlMdParser(file.content(),{
 				linkify: true,
 				typographer: true
 			});
@@ -213,11 +210,18 @@ module.exports = nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		navAction (login){
-			var webrtcBundle = this.get("kernel").getBundles("webrtc");
+			let audio = null ;
+			try {
+				audio = this.generateUrl("webAudioApi");
+			}catch(e){
+				audio = null ;
+			}
 			return this.render('demoBundle:layouts:navBar.html.twig',{
 				user: this.context.user,
-				webrtc:webrtcBundle,
-				login:login
+				audio: audio,
+				webrtc: this.kernel.getBundles("webrtc"),
+				angular: this.kernel.getBundles("angular"),
+				login: login
 			});
 		}
 
@@ -227,7 +231,7 @@ module.exports = nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		docAction (){
-			var docBundle = this.get("kernel").getBundles("documentation");
+			let docBundle = this.kernel.getBundles("documentation");
 			if (  docBundle ){
 				return this.forward("documentationBundle:default:navDoc");
 			}
@@ -248,7 +252,7 @@ module.exports = nodefony.registerController("demo", function(){
 			var langs = translateService.getLangs();
 			var locale = translateService.getLocale();
 			var langOptions = "";
-			for (var ele in langs ){
+			for (let ele in langs ){
 				if (locale === langs[ele].value){
 					langOptions += '<option value="'+langs[ele].value+'" selected >'+langs[ele].name+'</option>' ;
 				}else{
@@ -295,9 +299,8 @@ module.exports = nodefony.registerController("demo", function(){
 			//this.getResponse().setTimeout(10000);
 			//return ;
 
-			var kernel = this.get("kernel") ;
-			var settings = kernel.settings ;
-			var content = '<xml><nodefony>\
+			let settings = this.kernel.settings ;
+			let content = '<xml><nodefony>\
 				<kernel name="'+settings.name+'" version="'+settings.system.version+'">\
 					<server type="HTTP" port="'+settings.system.httpPort+'"></server>\
 					<server type="HTTPS" port="'+settings.system.httpsPort+'"></server>\
@@ -314,8 +317,7 @@ module.exports = nodefony.registerController("demo", function(){
  	 	*
  	 	*/
 		rawResponseAsyncAction (){
-			var kernel = this.get("kernel") ;
-			var settings = kernel.settings ;
+			let settings = this.kernel.settings ;
 
 			// async CALL
 			/*var childHost =*/
@@ -559,35 +561,34 @@ module.exports = nodefony.registerController("demo", function(){
  	 	*	HTTP REQUEST FOR PROXY
  	 	*/
 		httpRequestAction (){
+			// hide debug bar
 			this.hideDebugBar();
 			//this.getResponse().setTimeout(5000)
 			//return
-
-			var path = this.generateUrl("xmlAsyncResponse");
-			var host =  this.context.request.url.protocol+"//"+this.context.request.url.host+path ;
-			var type = this.context.type ;
+			let Path = this.generateUrl("xmlAsyncResponse");
+			let host =  this.context.request.url.protocol+"//"+this.context.request.url.host+Path ;
+			let type = this.context.type ;
 			// cookie session
-			var headers = {};
+			let headers = {};
 			if ( this.context.session ){
 				headers.Cookie = this.context.session.name+"="+this.context.session.id ;
 			}
-			var options = {
+			let options = {
   				hostname: this.context.request.url.hostname,
   				port: this.context.request.url.port,
-				path:path,
+					path:Path,
   				method: 'GET',
-				headers:headers
+					headers:headers
 			};
-			var wrapper = http.request ;
-			var keepAliveAgent = null ;
+			let wrapper = http.request ;
+			let keepAliveAgent = null ;
 
 			// https
 			if (this.context.request.url.protocol === "https:"){
 				// keepalive if multiple request in same socket
 				keepAliveAgent = new https.Agent({ keepAlive: true });
 				// certificat
-				var kernel = this.get("kernel");
-				var certificats =  this.get("httpsServer").getCertificats() ;
+				let certificats =  this.get("httpsServer").getCertificats() ;
 
 				nodefony.extend(options,{
 					key: certificats.key,
@@ -604,14 +605,13 @@ module.exports = nodefony.registerController("demo", function(){
 				options.agent = keepAliveAgent;
 			}
 
-			var req = wrapper(options, (res) => {
-				var bodyRaw = "";
+			let req = wrapper(options, (res) => {
+				let bodyRaw = "";
 				res.setEncoding('utf8');
 				res.on('data',  (chunk)  => {
 					this.logger( chunk, "DEBUG");
 					bodyRaw += chunk ;
 				});
-
 				res.on('end', () => {
 					this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
 						host: host,
@@ -620,7 +620,6 @@ module.exports = nodefony.registerController("demo", function(){
 					});
 				});
 			});
-
 			req.on('error', (e)  => {
 				this.logger('Problem with request: ' + e.message, "ERROR");
 				this.renderAsync("demoBundle:Default:httpRequest.html.twig", {
@@ -629,7 +628,6 @@ module.exports = nodefony.registerController("demo", function(){
 					bodyRaw:e,
 				});
 			});
-
 			req.end();
 		}
 
@@ -653,14 +651,14 @@ module.exports = nodefony.registerController("demo", function(){
 
 		uploadAction (){
 
-			var files = this.getParameters("query.files");
-			var path =  this.get("kernel").rootDir+"/src/bundles/demoBundle/Resources/upload" ;
+			let files = this.getParameters("query.files");
+			let Path =  this.kernel.rootDir+"/src/bundles/demoBundle/Resources/upload" ;
 			for (let file in files){
 				if( files[file].error ){
 					throw files[file].error ;
 				}
 				//files[file].move("/tmp/");
-				files[file].move(path);
+				files[file].move(Path);
 				//console.log( files[file].getExtention() )
 				//console.log( files[file].getMimeType() )
 				//console.log( files[file].realName() )
@@ -669,17 +667,17 @@ module.exports = nodefony.registerController("demo", function(){
 				//return this.forward("demoBundle:finder:index");
 				return this.redirect ( this.generateUrl( "finder",{queryString:{"path":this.kernel.rootDir+"/src/bundles/demoBundle/Resources/upload"}} ) );
 			}else{
-				var res = {
+				let res = {
 					"files": [],
 					"metas": []
 				};
 				for (let file in files){
-					var name = files[file].realName();
-					res.files.push(path+"/"+name);
-					var meta = {
+					let name = files[file].realName();
+					res.files.push(Path+"/"+name);
+					let meta = {
 						date : new Date(),
 						extention:files[file].getExtention(),
-						file:path+"/"+name,
+						file:Path+"/"+name,
 						name:name,
 						old_name:files[file].name,
 						size:files[file].stats.size,
