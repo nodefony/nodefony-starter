@@ -9,8 +9,14 @@ try {
   script  = path.resolve( process.cwd(), "bin", "check.js");
   fs.lstatSync(  script ) ;
 }catch(e){
-  console.error( "You must run nodefony on Framework Root Directory  ");
-  throw new Error( process.cwd() + "Is Not a Nodefony Repository  !!  ");
+    try {
+        const { app  } = require('electron');
+        process.chdir( app.getAppPath() );
+        script  = path.resolve( process.cwd(), "bin", "check.js");
+        fs.lstatSync(  script ) ;
+    }catch(e){
+        throw new Error( process.cwd() + "Is Not a Nodefony Repository  !!  ");
+    }
 }
 let nodefonyCheck = null ;
 try {
@@ -21,6 +27,15 @@ try {
 }
 const nodefony = nodefonyCheck.nodefony ;
 const nodefony_version = nodefonyCheck.version;
+
+//ELECTRON
+const isElectron = nodefony.autoloader.isElectron();
+let electron = null ;
+if (isElectron ){
+  electron = require('electron') ;
+  app = electron.app;
+}
+
 let environment = "production" ;
 
 if (process.env.MODE_START && process.env.MODE_START === "PM2"){
@@ -228,16 +243,62 @@ let pm2Start = function (){
 let manageCache = function (cli) {
   let cacheLink = path.resolve (process.cwd() ,"tmp", "assestLink" ) ;
   if ( fs.existsSync( cacheLink) ){
-    cli.logger("DELETE TMP LINK :" + cacheLink);
+    if (cli.logger){
+      cli.logger("DELETE TMP LINK :" + cacheLink);
+    }
     shell.rm("-Rf", this.cacheLink);
   }
   let cacheWebpack = path.resolve(process.cwd(), "tmp", "webpack" ) ;
   if ( fs.existsSync( cacheWebpack) ){
-    cli.logger("DELETE TMP :" + cacheWebpack)
+    if (cli.logger){
+      cli.logger("DELETE TMP :" + cacheWebpack)
+    }
     shell.rm("-Rf", cacheWebpack);
   }
 }
 
+// NODEFONY ELECTRON CONTEXT
+if( isElectron ){
+  app.on('ready', () => {
+    try {
+      // NODEFONY
+      const cli = new nodefony.cli("CLI", {
+        asciify:false,
+        signals:false,
+        promiseRejection:false,
+        version:nodefony_version,
+        onStart:(cli) => {
+          cli.commander.arguments('<cmd> [args...]')
+          .action(function (cmd, args, commander) {
+            command = cmd;
+            args = args;
+          });
+          cli.setCommandOption('-d, --debug ', 'Nodefony debug' );
+          cli.setCommandOption('-h, --help ', 'Nodefony help' );
+          cli.setCommandOption('-v, --version ', 'Nodefony version' );
+          cli.setCommandOption('-i, --interactive ', 'Nodefony cli Interactive Mode' );
+          if (! command ){
+              command = "dev";
+          }else{
+              if( process.argv && process.argv[0] ){
+                cli.commander.parse(process.argv);
+              }
+          }
+          if (!! cli.commander.debug){
+            debug = true ;
+          }
+          return start.call(cli, command, args);
+        }
+      });
+    }catch(e){
+      throw e ;
+    }
+  });
+  module.exports = app ;
+  return ;
+}
+
+// NODEFONY CLI CONTEXT
 const cli = new nodefony.cli("CLI", {
   asciify:false,
   signals:false,
@@ -257,9 +318,7 @@ const cli = new nodefony.cli("CLI", {
     if (!! cli.commander.debug){
       debug = true ;
     }
-
-    return start.call(cli, command, args)
+    return start.call(cli, command, args);
   }
 });
-
 module.exports = kernel || cli ;

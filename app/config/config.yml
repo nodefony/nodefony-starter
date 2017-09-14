@@ -74,11 +74,14 @@ monitoringBundle:
 #       Nodefony Database Management
 #
 #       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / User
+#       for manage Sessions / Users / Requests
 #
+#       For mysql/mariadb create database nodefony before
+#       Mysql > CREATE DATABASE nodefony;
 #
-#       here create new databases connectors
-#
+#       Here create new databases connectors
+#       and use for sync connectors :
+#       make sequelize
 #
 sequelizeBundle:
   debug:        false
