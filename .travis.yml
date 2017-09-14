@@ -20,7 +20,7 @@ env:
   - DB=mysql
 
 before_script:
-  - sleep 10
+  - sleep 20
 
 before_install:
   - sudo apt-get install nginx -y

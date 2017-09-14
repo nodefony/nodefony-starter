@@ -11,7 +11,7 @@
 "use strict;"
 module.exports = nodefony.register("appKernel",function(){
 
-	var appKernel = class appKernel extends nodefony.kernel {
+	const appKernel = class appKernel extends nodefony.kernel {
 
 		constructor (type, environment, debug, settings){
 			// kernel constructor
