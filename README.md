@@ -9,22 +9,37 @@ The Nodefony project is inspired by the PHP Symfony framework, a developer can f
 
 Nodefony is not an exhaustive port of symfony !
 
-Nodefony assimilates into the ecosystem of node.js with services like :
-- Web servers (websocket(s), http(s)).
-- Notion of real-time context in Action Controller (Websocket).
+Nodefony features :
+- Servers  (http(s), websocket(s), statics, sockjs)
+- Dynamics routing
+- ORM ([Sequelize](http://docs.sequelizejs.com/))
+- Simple Databases connection (mongo, redis ...)
+- MVC templating (Twig)
+- HMR hot module Replacement  (auto-reload controller views routing in developement mode)
+- Notion of real-time context in Action Controller (websocket).
 - Notion of synchronous or asynchronous execution in Action Controller (Promise).
+- Services containers (Design Patterns)
+- Sessions Manager (ORM, memcached)
+- Authentication Manager (Digest, Basic, oAuth, Local, ldap)
+- Firewall ( Application Level )
+- Cross-Origin Resource Sharing ([CORS](https://www.w3.org/TR/cors/))
+- Production Management ([PM2](https://github.com/Unitech/pm2/))
+- RealTime API (Bayeux Protocol)
+- Translations ()
+- CLI (Command Line Interface)
+
+Nodefony assimilates into the ecosystem of node.js with services like :
 - [WEBPACK](https://webpack.js.org/) Module bundler for assets management of application .
 - [WATCHER](https://nodejs.org/docs/latest/api/fs.html#fs_fs_watch_filename_options_listener) node.js for auto reload-files in developement mode .
 - [PM2](http://pm2.keymetrics.io/) Production Process Manager for Node.js .
 - [Passport](http://passportjs.org/) Simple, unobtrusive authentication for Node.js .
 
-Nodefony 3  adds the following functionality :
+Nodefony 3  adds the following features :
 - [Angular](https://github.com/angular/angular-cli) Bundle Generator ( Now an Angular Project can be merge into a Nodefony Bundle )
 - ~~[React](https://github.com/facebookincubator/create-react-app) Bundle Generator ( Soon an React Project can be merge into a Nodefony Bundle )~~
 - [SockJS](https://github.com/sockjs) Server ( Like WDS 'Webpack Dev Server' and HMR management )
 - New cli Management (Command Line Interface )
 - [Electron](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project  )
-
 
 Now in this version  3 Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
@@ -39,7 +54,6 @@ You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nod
 #### -  **[Nodefony Demo](https://nodefony.net)**  
 #### -  **[Nodefony Documentation](https://nodefony.net/documentation)**  
 #### -  **[Nodefony Monitoring](https://nodefony.net/nodefony)**
-
 
 #### Documentation in progress !!
 
@@ -184,9 +198,6 @@ framework
     router:generate:route routeName                                  Generate one route Example : nodefony router:generate:route home
     router:match:url url                                             Get route who match url Example : nodefony router:match:url /nodefony
     webpack:dump                                                     Compile webpack for all bundles
-assetic
-    assets:install                                                   Installs bundles web assets link under a public web directory
-    assets:dump                                                      Dump  all bundles web assets under a public web directory
 security
     encoders:Digest firewall login password [realm]                  Generate encoding keys digest MD5 Example : nodefony encoders:Digest secured_area login password
 sequelize
@@ -288,7 +299,7 @@ locale :                        en_en
 #      watch:
 #        controller:	true
 #        config:        true		# only  routing.yml
-#        views:			true
+#        views:         true
 #        translations:  true
 #        webpack:       true
 #
