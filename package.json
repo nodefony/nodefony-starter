@@ -1,6 +1,6 @@
 {
   "name": "nodefony-demo",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "description": "Nodefony Node.js full-stack web framework",
   "main": "./nodefony",
   "scripts": {
@@ -42,9 +42,10 @@
     "file-loader": "^0.11.2",
     "font-awesome": "^4.7.0",
     "js-yaml": "^3.10.0",
-    "nodefony": "^3.0.2-beta",
+    "nodefony": "git://github.com/nodefony/nodefony-core.git#dev",
     "nodefony-stage": "^0.1.1",
     "npm": "^5.4.2",
+    "optimize-css-assets-webpack-plugin": "^3.2.0",
     "pm2": "^2.7.0",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.8.2",
