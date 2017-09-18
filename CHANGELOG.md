@@ -1,21 +1,37 @@
 # Changelog
 
+## v3.0.2 (18/09/2017)
+- update outdated
+- websocket error framework
+- debug response http setHeaders
+- optimize extend
+- update babel in webpack | add firewall test
+- websocket  force json context
+- clean error management request | update pm2
+- update webpack version
+- add error event in watcher
+- debug error stack context json
+- add syslog pdu in context json  framework
+
+---
+
 ## v3.0.1 (14/09/2017)
 - webpack dump
 - add details connectors sequelize
 - debug sequelize mysql Sequelize.STRING(126).BINARY
 - update outdated
 - debug node6
-- debug accees nodefony without app for cli usage
+- debug acces nofony without app for cli usage
 - clean error stack
 - unit test accept header
 - add detect accept request json for rest api style
 - clean core
 - update sequelize version
 - debug finder findByNode
+- travis tempo
 - debug memcached session
 - debug config app webpack
-- webpack new framework HMR from error 500 400
+- update deps | webpack new framework HMR from error 500 400
 - update webpack version
 
 ---
