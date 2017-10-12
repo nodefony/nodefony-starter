@@ -568,7 +568,7 @@ Monitoring in progress !!!
 - [PM2](https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md)
 - [WEBPACK](https://webpack.js.org/)
 
-More informations [Documentation](https://nodefony.net/documentation)
+More informations **[Nodefony Documentation](https://nodefony.net/documentation/default/nodefony)** 
 
 ## <a name="authors"></a>Authors
 
