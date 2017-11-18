@@ -1,20 +1,20 @@
 # Security
 security:
-
     #
     #  FIREWALL strategy
     #  when change security context (multi firewalls areas)
     #
-    #  Strategy can be : none, migrate, invalidate
+    #  Strategy can be :       none, migrate, invalidate
     #
-    session_fixation_strategy:  migrate
-
+    session_fixation_strategy: migrate
     #
     #  FIREWALL  AREAS
     #
-    firewalls: ~
-
+    firewalls:                 ~
     #
     #  FIREWALL  PROVIDER
     #
-    providers: ~
+    providers:
+      nodefony:
+        entity:
+          name:                "user"

@@ -1,37 +1,23 @@
+######################
+#  NODEFONY APP CONFIG
 #
-#        nodefony APP CONFIG YAML FILE
+#   @here You can OVERRIDE all Bundles Configurations
 #
-# This file is YAML  FILE
-# ---
-# YAML: YAML Ain't Markup Language
-#
-# What It Is: YAML is a human friendly data serialization
-#   standard for all programming languages.
-#
-
-#####################
-#
-#  FRAMEWORK NODEFONY
-#
-#     APP CONFIG
-name :                          AppBundle
-version:                        1.0.0
-locale :                        en_en
-
-
+name :                           AppBundle
+version:                         1.0.0
+locale :                         en_en
 App:
-  projectName:                  "demo"
-  projectYear:                  2017
-  locale:                       "en_en"
-  authorName:                   "admin"
-  authorMail:                   "admin@nodefony.com"
+  projectName:                   "nodefony"
+  projectYear:                   2017
+  locale:                        "en_en"
+  authorName:                    "admin"
+  authorMail:                    "admin@nodefony.com"
 
 lang:
-  en_en:                        "english"
-  fr_fr:                        "français"
+  en_en:                         "english"
+  fr_fr:                         "français"
 
-
-#
+##################################
 #  WATCHERS
 #
 #    watchers Listen to changes, deletion, renaming of files and directories
@@ -39,39 +25,38 @@ lang:
 #
 #    For watch all components
 #
-#      watch:			true
+#      watch:                    true
 #    or
 #      watch:
-#        controller:		true
-#        config:        true		# only  routing.yml
-#        views:			    true
-#        translations:  true
-#        webpack:       true
+#        controller:             true
+#        config:                 true        # only  routing.yml
+#        views:                  true
+#        translations:           true
+#        webpack:                true
 #
-watch:				true
-
+watch:                           true
 
 ##################################
+#  OVERRIDE BUNDLE MONITORING
 #
-#       OVERRIDE BUNDLE MONITORING
-#
-#       see MONITORING BUNDLE config for more options
+#    see MONITORING BUNDLE config for more options
 #
 #
 monitoringBundle:
-  debugBar:                     true
+  debugBar:                      true
+  forceDebugBarProd:             false
   storage:
-    active:                     false
-    requests:                   orm
-
+    active:                      false
+    requests:                    orm
 
 ##################################
+#  OVERRIDE  BUNDLE SEQUELIZE
 #
-#       OVERRIDE  BUNDLE SEQUELIZE
-#
-#       see SEQUELIZE BUNDLE config for more options
+#       @see SEQUELIZE BUNDLE config for more options
+#       @more options http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
 #
 #       Nodefony Database Management
+#        dialect :               'mysql'|'sqlite'|'postgres'|'mssql'
 #
 #       By default nodefony create  connector name nodefony ( driver sqlite )
 #       for manage Sessions / Users / Requests
@@ -84,26 +69,26 @@ monitoringBundle:
 #       make sequelize
 #
 sequelizeBundle:
-  debug:        false
+  debug:                         false
 #  connectors:
 #    nodefony:
-#      driver:          mysql
-#      dbname:          'nodefony'
-#      username:        'username'
-#      password:        'password'
+#      driver:                   mysql
+#      dbname:                   'nodefony'
+#      username:                 'nodefony'
+#      password:                 'nodefony'
 #      options:
-#        dialect:       mysql
-#        host:          localhost
-#        port:          '3306'
-
+#        dialect:                mysql
+#        host:                   localhost
+#        port:                   '3306'
 
 ############################
-#
-#       OVERRIDE BUNDLE HTTP
+#  OVERRIDE BUNDLE HTTP
 #
 #       see HTTP BUNDLE config for more options
 #
-#       // SERVICES
+#       query string parser
+#       form-data multipart parser
+#       upload
 #       statics files
 #       session
 #       http server
@@ -115,44 +100,80 @@ sequelizeBundle:
 #
 #
 httpBundle:
+  # For more options parser formidable @see : https://github.com/felixge/node-formidable
+  request:
+    uploadDir:                   "/tmp"                        # temporing file upload system
+    maxFileSize:                 2097152                        # In Bytes
+    maxFieldsSize:               2097152                       # 2MB
+    maxFields:                   1000                          # 0 for unlimited
+  # For more options parser QS @see : https://github.com/ljharb/qs
+  queryString:
+    parameterLimit:              1000
+    delimiter:                   "&"
+  # Server @see :                https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_class_http_server
   http:
-    responseTimeout:              40000
+    responseTimeout:             40000
   https:
-    responseTimeout:              40000
+    responseTimeout:             40000
   sockjs:
-      overlay:                      true
-      hot:                          true
-      protocol:                     https
-      websocket:                    true
+      overlay:                   true
+      hot:                       true
+      protocol:                  https
+      websocket:                 true
   statics:
     defaultOptions:
-      cacheControl :              true
-      maxAge:                     0
+      cacheControl :             true
+      maxAge:                    0
     web:
-      path:                       "web"
+      path:                      "web"
       options:
-        maxAge:                   0                             #30*24*60*60*1000
-  upload:
-    tmp_dir:                      "tmp/upload"
-    #max_filesize:                 100000                       #in Bytes
+        maxAge:                  0                             #30*24*60*60*1000
   session:
-    start:                        false                         # autostart || false
-    handler:                      session.storage.sequelize     # session.storage.files | session.storage.sequelize | session.storage.memcached
-    #save_path:                    "./tmp/sessions"             # for session.storage.files only
+    start:                       false                 # false || true || Name Session Context 
+    name:                        "nodefony"
+    handler:                     sequelize             # files | sequelize | memcached  "nodefony.session.storage"
+    #save_path:                  "./tmp/sessions"      # for session.storage.files only
+    use_strict_mode:             true
+    gc_probability:              1
+    gc_divisor:                  100
+    gc_maxlifetime:              1440
+    use_cookies:                 true
+    use_only_cookies:            true
+    referer_check:               false
     cookie:
-      maxAge:                     0                             # like cookie_lifetime php  =>seconde
+      maxAge:                    0                     # like cookie_lifetime php  =>seconde
+      secure:                    false                 # Set true for https site only see https://developer.mozilla.org/fr/docs/Web/HTTP/Headers/Set-Cookie
     memcached:
       servers:
         nodefony:
-          location:               127.0.0.1
-          port:                   11211
-          weight:                 1
+          location:              127.0.0.1
+          port:                  11211
+          weight:                1
 
-
+#######################
+#  OVERRIDE SECURITY BUNDLE
+#
+#   HEADERS SECURITY
+#
+#    Content-Security-Policy
+#    Strict-Transport-Security
+#     ...
+#    Manage and Clean hsts in chrome
+#     chrome://net-internals/#hsts
+#
+securityBundle:
+  headers:
+    http:
+     #Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+     X-Frame-Options:            "SAMEORIGIN"
+     X-Content-Type-Options:     "nosniff"
+    https           :
+     #Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
+     X-Frame-Options:            "SAMEORIGIN"
+     X-Content-Type-Options:     "nosniff"
 
 ################################
-#
-#       OVERRIDE BUNDLE REALTIME
+#  OVERRIDE BUNDLE REALTIME
 #
 #       see REALTIME BUNDLE config for more options
 #
@@ -160,6 +181,6 @@ httpBundle:
 realTimeBundle:
   services:
     monitoring:
-      type:                       tcp
-      port:                       1318
-      domain:                     localhost
+      type:                      tcp
+      port:                      1318
+      domain:                    localhost

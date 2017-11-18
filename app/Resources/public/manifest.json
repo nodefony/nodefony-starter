@@ -1,10 +1,11 @@
 {
   "name": "Nodefony Framework",
   "short_name": "Nodefony",
-  "start_url": ".",
+  "display": "standalone",
+  "start_url": "/",
   "description": "Node.js full-stack web framework Symfony Like",
   "launch_path": "/",
-  "default_locale": "fr",
+  "default_locale": "en",
   "icons": [{
     "src": "/favicon.ico",
     "sizes": "48x48",
@@ -12,6 +13,6 @@
   }],
   "developer": {
     "name": "cci",
-    "url": "https://nodefony.fr"
+    "url": "https://nodefony.net"
   }
 }
