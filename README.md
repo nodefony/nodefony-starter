@@ -21,7 +21,7 @@ Nodefony features :
 - Services Containers, Dependency Injection (Design Patterns)
 - Sessions Manager (ORM, memcached)
 - Authentication Manager (Digest, Basic, oAuth, Local, ldap)
-- Firewall ( Application Level )
+- Firewall ( Web Application Firewall WAF )
 - Cross-Origin Resource Sharing ([CORS](https://www.w3.org/TR/cors/))
 - Production Management ([PM2](https://github.com/Unitech/pm2/))
 - RealTime API ([Bayeux Protocol](http://autogrowsystems.github.io/faye-go/))
@@ -38,10 +38,12 @@ Nodefony assimilates into the ecosystem of node.js with services like :
 
 Nodefony 3  adds the following features :
 - [Angular](https://github.com/angular/angular-cli) Bundle Generator ( Now an Angular Project can be merge into a Nodefony Bundle )
+- New cli Management (Command Line Interface)
 - ~~[React](https://github.com/facebookincubator/create-react-app) Bundle Generator ( Soon an React Project can be merge into a Nodefony Bundle )~~
 - [SockJS](https://github.com/sockjs) Server ( Like WDS 'Webpack Dev Server' and HMR management )
-- New cli Management (Command Line Interface )
+
 - ~~[Electron](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project  )~~
+- ~~[HTTP2](https://nodejs.org/dist/latest-v9.x/docs/api/http2.html) Soon Server HTTP2 ( Integration of the HTTP/2 protocol )~~
 
 Now in this version  3 Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
