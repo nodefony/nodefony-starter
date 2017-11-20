@@ -1,9 +1,55 @@
 # Changelog
 
+## v3.1.0 (20/11/2017)
+- [documentation](https://api.github.com/repos/nodefony/nodefony-core/git/commits/899afb98339056386b8fbab6be2008e191ebade4) s-soo @cci
+- [service monitoring debug](https://api.github.com/repos/nodefony/nodefony-core/git/commits/dbc88cd759a62562bc52f5f7d2c419fb9fc91b33) s-soo @cci
+- [update sequelize](https://api.github.com/repos/nodefony/nodefony-core/git/commits/24a26eae73c16376645138f1c296de7c5bab9ac0) s-soo @cci
+- [add services watcher](https://api.github.com/repos/nodefony/nodefony-core/git/commits/aaa9af5888a968ad2e7a06dbda4948627664cbb7) s-soo @cci
+- [debug websocket error](https://api.github.com/repos/nodefony/nodefony-core/git/commits/319f0d792411cb2cc60f36c09550e331a902945f) s-soo @cci
+- [debug websocket sessions](https://api.github.com/repos/nodefony/nodefony-core/git/commits/0ad7ac581bd1d9d5744d3fb303c89652ff133119) s-soo @cci
+- [session in controller constructor](https://api.github.com/repos/nodefony/nodefony-core/git/commits/6ece761ce82a825d77057e71d3453c27fd5952e2) s-soo @cci
+- [session storage gc debug](https://api.github.com/repos/nodefony/nodefony-core/git/commits/6544d66ccb85ec509d820044c40bc9c29d4eb0f8) s-soo @cci
+- [new design code controller and bundle](https://api.github.com/repos/nodefony/nodefony-core/git/commits/901821735c9358d3f7e5f8d950074f2a41cc1a44) s-soo @cci
+- [debug angular compile](https://api.github.com/repos/nodefony/nodefony-core/git/commits/4ea78907bf940e9b8a08fa772de4bf182ef2d39a) s-soo @cci
+- [flush debug](https://api.github.com/repos/nodefony/nodefony-core/git/commits/98c791e77750fb4d22fadb7d2ba8a8ffa3d290c9) s-soo @cci
+- [annotation block format](https://api.github.com/repos/nodefony/nodefony-core/git/commits/4727736738a4aa8f0cf165a78738e896b2fe05a1) s-soo @cci
+- [debug service annotations](https://api.github.com/repos/nodefony/nodefony-core/git/commits/0f5ca66f694fba33068b467a6d4ae943ae9d7158) s-soo @cci
+- [annotations integration](https://api.github.com/repos/nodefony/nodefony-core/git/commits/6e54ad1bf6e039ea1caad347c6c0d2d0ec483952) s-soo @cci
+- [add annotation class](https://api.github.com/repos/nodefony/nodefony-core/git/commits/3e38bf50170896ab9dc1780dcd33b47b9e389eb0) s-soo @cci
+- [add annotation reader router service](https://api.github.com/repos/nodefony/nodefony-core/git/commits/48798fdd6323389a30492c7b348b6a59ea8a0019) s-soo @cci
+- [controller instance in front request end](https://api.github.com/repos/nodefony/nodefony-core/git/commits/cdd56bd6841ba676bfcb6abcaf6ee2cb3f4dbe96) s-soo @cci
+- [debug gc sequelize delete session](https://api.github.com/repos/nodefony/nodefony-core/git/commits/e92a8c59cc7f06b8b21b748f91ea119147db5931) s-soo @cci
+- [new generator bundle controller](https://api.github.com/repos/nodefony/nodefony-core/git/commits/9e9d41b59a57bc619e49e11209692c13ef29e810) s-soo @cci
+- [new generator builder](https://api.github.com/repos/nodefony/nodefony-core/git/commits/37ed29253fe2b9dc82bc9836d1122d82fccebd0b) s-soo @cci
+- [webpack and routing config better management | new generater engine](https://api.github.com/repos/nodefony/nodefony-core/git/commits/76c95485a21b4e695e13370792a436f98f4b1b3a) s-soo @cci
+- [debug request](https://api.github.com/repos/nodefony/nodefony-core/git/commits/ea5064e48fc04ea4c6432935b0654e07024bff96) s-soo @cci
+- [parser multipart migrate formidable](https://api.github.com/repos/nodefony/nodefony-core/git/commits/2667fb35e1b80162df62651477c9d19e67717fb3) s-soo @cci
+- [debug fireawall websocket](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c56ee967792c63f9c1c5a2b041bd9460aa1b0229) s-soo @cci
+- [add routing javascript config file](https://api.github.com/repos/nodefony/nodefony-core/git/commits/084f697037a9184f1150760b1ed8db20fb355b2b) s-soo @cci
+- [add url twig func](https://api.github.com/repos/nodefony/nodefony-core/git/commits/9417435b84c9c3ed7a7d99e99f06a8e25c79bd1d) s-soo @cci
+- [update websocket](https://api.github.com/repos/nodefony/nodefony-core/git/commits/ab572226878e59edc4e5509359e98efb5232e06c) s-soo @cci
+- [update pm2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c935e8ff073dee8a26b4d6e1e3f3cdf27301bb1c) s-soo @cci
+- [clean firewall prepare stateless](https://api.github.com/repos/nodefony/nodefony-core/git/commits/a7658e7d501010b640f5bf0db643d499edf379ae) s-soo @cci
+- [update webpack sequelize](https://api.github.com/repos/nodefony/nodefony-core/git/commits/949ec570e7dadff0b784ebbbca54687939f08f5d) s-soo @cci
+- [debug notificationsCenter | update webpack](https://api.github.com/repos/nodefony/nodefony-core/git/commits/06a3a02b8ee7eda664e35d5a210d828a7428776d) s-soo @cci
+- [debug once notificationsCenter](https://api.github.com/repos/nodefony/nodefony-core/git/commits/ce02c9e2b37554e6aaa6f396f3395f10663883ac) s-soo @cci
+- [add buffer node in response](https://api.github.com/repos/nodefony/nodefony-core/git/commits/f50982f15b654b5e952089f90ab5399c05055a5c) s-soo @cci
+- [debug path twig](https://api.github.com/repos/nodefony/nodefony-core/git/commits/a2bfa73690509e13bb7c3b327067d6cab2c1ec69) s-soo @cci
+- [add local lang in template base | debugBar force diplay in prod](https://api.github.com/repos/nodefony/nodefony-core/git/commits/1a740fa548981cc346e3ca64f01bdea018ac5154) s-soo @cci
+- [add headers security](https://api.github.com/repos/nodefony/nodefony-core/git/commits/849309a47f4e879c5c81ac490545d9789f208a33) s-soo @cci
+- [debug webpack service](https://api.github.com/repos/nodefony/nodefony-core/git/commits/6e92c5d2088721c04bd4b638781034238cf48ab0) s-soo @cci
+- [debug certificate script](https://api.github.com/repos/nodefony/nodefony-core/git/commits/fcc718713b22d4c402785247d13275b1a2114e77) s-soo @cci
+- [doc cdn nginx](https://api.github.com/repos/nodefony/nodefony-core/git/commits/90ab79e53b041cef5da9788b702b7201a8905327) s-soo @cci
+- [debug freebsd](https://api.github.com/repos/nodefony/nodefony-core/git/commits/05a34eafeddc7f4b31785a421de1df3133dec247) s-soo @cci
+- [try debug freebsd](https://api.github.com/repos/nodefony/nodefony-core/git/commits/40763b0558f47a5cc8b68e0aff1130ae61134e00) s-soo @cci
+- [inc version](https://api.github.com/repos/nodefony/nodefony-core/git/commits/21dc2b3be457f772734cda801499c9b2d7cf6763) s-soo @cci
+
+---
+
 ## v3.0.3 (09/10/2017)
 - [readme](https://api.github.com/repos/nodefony/nodefony-core/git/commits/9a2bfcc55368f19c945643ddbbc6391cf6dceb37) - @cci
-- [debug error stack](https://api.github.com/repos/nodefony/nodefony-core/git/commits/8498fd8b8550a9ed66b335fa0131e86d508d3a36) - @CAMENSULI Christophe
-- [debug error websocket](https://api.github.com/repos/nodefony/nodefony-core/git/commits/f5bb2058b07c60968768ddce7185fcabd281ee56) - @CAMENSULI Christophe
+- [debug error stack](https://api.github.com/repos/nodefony/nodefony-core/git/commits/8498fd8b8550a9ed66b335fa0131e86d508d3a36) - @cci
+- [debug error websocket](https://api.github.com/repos/nodefony/nodefony-core/git/commits/f5bb2058b07c60968768ddce7185fcabd281ee56) - @cci
 - [CORS WEBSOCKET](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c372340cf914896ea30321a78adbdc4acf8527ed) - @cci
 - [CORS in service](https://api.github.com/repos/nodefony/nodefony-core/git/commits/0358bc42b60835741f79a393d94bd2c5f65d69e8) - @cci
 - [debug firewall auth](https://api.github.com/repos/nodefony/nodefony-core/git/commits/8815bf7763ee07ba65bfd5a545360705befc9dd5) - @cci

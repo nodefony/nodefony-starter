@@ -1,5 +1,4 @@
 #!/bin/sh
-
 echo "INSTALL NODEFONY TRAVIS ENVIRONEMENT $DB ACTIVE ";
 
 if [ "$DB" = "mysql" ]
@@ -9,6 +8,8 @@ then
 else
 	echo "NODEFONY TRAVIS ENVIRONEMENT SQLITE ACTIVE " ;
 fi
+
+cat /etc/hosts
 
 #configuring the system
 make build
