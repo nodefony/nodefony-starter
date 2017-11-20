@@ -1,38 +1,42 @@
 {% extends './base.html.twig' %}
-
-{% block title %}Nodefony {{core}} {% endblock %}
-
+{% block title %}Nodefony
+  {{core}}
+{% endblock %}
 {% block body %}
-<img class='displayed' src='{{CDN("image")}}/frameworkBundle/images/nodefony-logo-white.png'>
-<h1 class="success" >
-	<a href="{{path('documentation')}}">
-		<strong  style="font-size:45px">
-			NODEFONY {{core}}
-		</strong>
-	</a>
-	<p>{{trans("welcome")}}</p>
-	<p>
-		<a href="{{path('documentation')}}" >
-			<button> Documentation </button>
-		</a>
-	</p>
-	{% if demo %}
-	<p>
-		<a href="{{path('demo')}}" >
-			<button> Demo </button>
-		</a
-	</p>
-	{% endif %}
-</h1>
-{% if readme %}
-<div class='row displayed'>
-	{{readme}}
-</div>
-{% endif %}
-{% endblock %}
-
-{% block footer %}
-<footer>
-	{{ render( controller("AppBundle:app:footer" )) }}
-</footer>
-{% endblock %}
+  <img class='displayed' src='{{CDN("image")}}/frameworkBundle/images/nodefony-logo-white.png'>
+  <h1 class="success">
+    <a href="{{url('documentation')}}">
+      <strong style="font-size:45px">
+        NODEFONY
+        {{core}}
+      </strong>
+    </a>
+    <p>{{trans("welcome")}}
+      {{user.username}}</p>
+    <p>
+      <a href="{{url('documentation')}}">
+        <button>
+          Documentation
+        </button>
+      </a>
+    </p>
+    {% if demo %}
+      <p>
+        <a href="{{url('demo')}}">
+          <button>
+            Demo
+          </button>
+        </a </p>
+      {% endif %}
+    </h1>
+    {% if readme %}
+      <div>
+        {{readme}}
+      </div>
+    {% endif %}
+  {% endblock %}
+  {% block footer %}
+    <footer>
+      {{ render( controller("AppBundle:app:footer" )) }}
+    </footer>
+  {% endblock %}

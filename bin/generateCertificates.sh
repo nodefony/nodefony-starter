@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # inspired by https://jamielinux.com/docs/openssl-certificate-authority/index.html
 
 ROOT_DIR="./config/certificates"
@@ -17,7 +17,7 @@ mkdir -p $ROOT_CA/{certs,crl,newcerts,db,private}
 touch $ROOT_CA/db/index.txt
 touch $ROOT_CA/db/nodefony-ca.db
 touch $ROOT_CA/db/nodefony-ca.db.attr
-if [ ! -f $ROOT_CA/db/serial ] 
+if [ ! -f $ROOT_CA/db/serial ]
 then
 	echo 1000 > $ROOT_CA/db/serial
 fi
@@ -52,11 +52,11 @@ mkdir -p $ROOT_CA_INTERMEDIATE/{certs,crl,newcerts,db,private,csr}
 touch $ROOT_CA_INTERMEDIATE/db/index.txt
 touch $ROOT_CA_INTERMEDIATE/db/nodefony-ca.db
 touch $ROOT_CA_INTERMEDIATE/db/nodefony-ca.db.attr
-if [ ! -f $ROOT_CA_INTERMEDIATE/db/serial ] 
+if [ ! -f $ROOT_CA_INTERMEDIATE/db/serial ]
 then
 	echo 1000 > $ROOT_CA_INTERMEDIATE/db/serial
 fi
-if [ ! -f $ROOT_CA_INTERMEDIATE/db/crlnumber ] 
+if [ ! -f $ROOT_CA_INTERMEDIATE/db/crlnumber ]
 then
 	echo 1000 > $ROOT_CA_INTERMEDIATE/db/crlnumber
 fi
@@ -140,7 +140,7 @@ rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/ca/nodefony-root-ca.crt.pem
 rsync -a $ROOT_CA/private/ca.key.pem $ROOT_DIR/ca/nodefony-root-ca.key.pem
 
 # copy in directory client
-# Create a public key 
+# Create a public key
 openssl rsa \
   -in $ROOT_CA_INTERMEDIATE/private/intermediate.key.pem \
   -pubout -out $ROOT_DIR/client/pubkey.pem
@@ -162,11 +162,11 @@ openssl x509 -noout -text \
       -in $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem
 
 
-# verify server 
+# verify server
 openssl verify -CAfile $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem \
       $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem
 
-# verify server 
+# verify server
 openssl verify -CAfile $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem \
       $ROOT_CA_INTERMEDIATE/certs/client.nodefony.cert.pem
 

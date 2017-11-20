@@ -8,42 +8,42 @@ IMG.displayed , .success{
 /* Css Footer*/
 footer{
     position: fixed;
-    bottom: 29px;
+    bottom: 0px;
     left: 0;
     right:0;
 }
 
-.footer-nodfony{
-    background-color: #312450;
-    border-color: #e7e7e7;
+.footer-nodefony{
+    background-color: #e7e7e7;
+    border-color: #312450 ;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
     width: 100%;
     font: bold 16px sans-serif;
     text-align: left;
-    padding: 20px 60px;
+    padding: 0px;
     margin-top: 80px;
     overflow: hidden;
 }
 
 /* bloc left in footer */
-.footer-nodfony .footer-left{
+.footer-nodefony .footer-left{
     float: left;
 }
 
 /* bloc right in footer*/
-.footer-nodfony .footer-right{
+.footer-nodefony .footer-right{
     float: right;
 }
 
 /* for links  or <a ..*/
-.footer-nodfony .footer-links{
+.footer-nodefony .footer-links{
     color:  #ffffff;
     margin: 0 0 10px;
     padding: 0;
 }
 
-.footer-nodfony .footer-links a{
+.footer-nodefony .footer-links a{
     display:inline-block;
     line-height: 1.8;
     text-decoration: none;
@@ -57,14 +57,14 @@ footer{
     padding: 0 15px;
 }
 
-.footer-nodfony .footer-company-name{
-    color:  #e6e5f1;
+.footer-nodefony .footer-company-name{
+    color:  #0167b8;
     font-size: 14px;
     font-weight: normal;
-    margin: 0;
+    margin: 17px;
 }
 
-.footer-nodfony select {
+.footer-nodefony select {
     -webkit-appearance: button;
     -webkit-border-radius: 2px;
     -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
@@ -77,7 +77,7 @@ footer{
     border: 1px solid #a9abb1;
     color: #8f9296;
     font-size: inherit;
-    margin: 20px;
+    margin: 10px;
     overflow: hidden;
     padding: 5px 10px;
     text-overflow: ellipsis;

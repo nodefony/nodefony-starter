@@ -1,25 +1,10 @@
-#
-#        NODEFONY FRAMEWORK CONFIG YAML FILE
-#
-#
-# This file is YAML  FILE
-# ---
-# YAML: YAML Ain't Markup Language
-#
-# What It Is: YAML is a human friendly data serialization
-#   standard for all programming languages.
-#
-#
 #########################################################
-#
 #  NODEFONY FRAMEWORK
 #
 #       KERNEL CONFIG
-#
-#
 system:
-  domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
-  domainAlias:                                          # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+  domain                        : localhost      # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domainAlias:   # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$"
   httpPort                      : 5151
   httpsPort                     : 5152
@@ -30,12 +15,11 @@ system:
   documentation                 : true
   unitTest                      : true
   locale                        : "en_en"
-
   servers:
     http                        : true
-    https	                    : true
-    ws			                : true
-    wss			                : true
+    https	                      : true
+    ws			                    : true
+    wss			                    : true
     certificats:
       key                       : "config/certificates/server/privkey.pem"
       cert                      : "config/certificates/server/fullchain.pem"
@@ -46,14 +30,16 @@ system:
   bundles:
     demo                        : "src/bundles/demoBundle"
 
+  #################
+  # SYSLOG NODEFONY
   log:
     active                      : true
 
-#
+##################
 #       ASSETS CDN
 #
 #       You set cdn with string
-#       CDN :   cdn.nodefony.com
+#       CDN :    cdn.nodefony.com
 #       or
 #       CDN:
 #          global: cdn.nodefony.com
@@ -68,10 +54,9 @@ system:
 #           - cdn.nodefony.fr
 #         font:
 #           - cdn.nodefony.com
-#
 CDN                             : ~
 
-#
+#################
 # ENGINE TEMPLATE
 #
 #       TWIG
@@ -79,12 +64,12 @@ CDN                             : ~
 #
 templating                      : twig
 
-#
+############
 # ENGINE ORM
 #       SEQUELIZE
 orm                             : sequelize
 
-#
+#########################
 # NODE.JS PACKAGE MANAGER
 #
 #       npm
