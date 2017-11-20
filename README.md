@@ -10,11 +10,11 @@ The Nodefony project is inspired by the PHP Symfony framework, a developer can f
 Nodefony is not an exhaustive port of symfony !
 
 Nodefony features :
-- Servers  (http(s), websocket(s), statics, sockjs)
+- Servers  ([http(s)](https://nodejs.org/dist/latest-v8.x/docs/api/https.html), [websocket(s)](https://github.com/theturtle32/WebSocket-Node), statics, sockjs)
 - Dynamics routing
 - ORM ([Sequelize](http://docs.sequelizejs.com/))
 - Simple Databases connection (mongo, redis ...)
-- MVC templating (Twig)
+- MVC templating ([Twig](https://github.com/twigjs/twig.js))
 - HMR hot module Replacement  (auto-reload controller views routing in developement mode)
 - Notion of real-time context in Action Controller (websocket).
 - Notion of synchronous or asynchronous execution in Action Controller (Promise).
@@ -24,7 +24,7 @@ Nodefony features :
 - Firewall ( Application Level )
 - Cross-Origin Resource Sharing ([CORS](https://www.w3.org/TR/cors/))
 - Production Management ([PM2](https://github.com/Unitech/pm2/))
-- RealTime API (Bayeux Protocol)
+- RealTime API ([Bayeux Protocol](http://autogrowsystems.github.io/faye-go/))
 - Translations
 - CLI (Command Line Interface)
 - Monitororing , Debug Bar
@@ -41,7 +41,7 @@ Nodefony 3  adds the following features :
 - ~~[React](https://github.com/facebookincubator/create-react-app) Bundle Generator ( Soon an React Project can be merge into a Nodefony Bundle )~~
 - [SockJS](https://github.com/sockjs) Server ( Like WDS 'Webpack Dev Server' and HMR management )
 - New cli Management (Command Line Interface )
-- [Electron](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project  )
+- ~~[Electron](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project  )~~
 
 Now in this version  3 Beta,  Nodefony is evolved to a stable version without major fundamental changes.
 
@@ -54,7 +54,7 @@ You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nod
 ##  **Resources for Newcomers**
 
 #### -  **[Nodefony Demo](https://nodefony.net)**  
-#### -  **[Nodefony Documentation](https://nodefony.net/documentation)**  
+#### -  **[Nodefony Documentation](https://nodefony.net/documentation/default/nodefony)**
 #### -  **[Nodefony Monitoring](https://nodefony.net/nodefony)**
 
 #### Documentation in progress !!
@@ -84,18 +84,28 @@ You can follow Nodefony build on travis at **[https://travis-ci.org/nodefony/nod
 
 -  **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime ( >= 6 )
 
--  **[npm](https://www.npmjs.com/)**  is the Package Manager for javascript application
+-  **[npm](https://www.npmjs.com/)** or **[yarn](https://yarnpkg.com/lang/en/)**  Packages Manager for javascript application
 
    npm will be automatically installed by Node.js
 
-#### System :
-- LINUX ( Checked )
+#### Operating Systems : **[Install Node.js via Package](https://nodejs.org/en/download/package-manager)**
 
-  -  **[Install Node.js via Package](https://nodejs.org/en/download/package-manager)**
+- LINUX
+  - debian (Checked, Tested)
+  - RASPBIAN Raspberry Pi (Checked)
 
-- MACOS ( Checked )
+- FreeBSD (Checked)
+  - pkg install bash rsync gmake gcc6
+  - setenv CC "/usr/local/bin/gcc"
+  - setenv CXX "/usr/local/bin/g++"
+  - cd /usr/local/bin/ ;ln -s pythonx.x python
+  - replace make by gmake
 
-- ~~WINDOWS ( Unchecked )~~
+- ~~OpenBSD (Not Checked yet )~~
+
+- MACOS (Checked, Tested)
+
+- ~~WINDOWS (Not ported yet )~~
 
 - EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
 
@@ -192,7 +202,6 @@ nodefony
 framework
     generate:bundle nameBundle path                                  Generate a nodefony Bundle  Example : nodefony generate:bundle myBundle ./src/bundles
     generate:bundle:angular nameBundle path                          Generate a Angular Bundle  Example : nodefony generate:bundle:angular myBundle ./src/bundles
-    generate:bundle:react nameBundle path                            Generate a React Bundle Example : nodefony generate:bundle:react myBundle ./src/bundles
     generate:controller  nameController bundlePath                   Generate a controller Example : nodefony generate:controller myController ./src/bundles/myBundle
     generate:command nameCommand path                                Generate a command js file in bundle path
     generate:service nameService path                                Generate a service js file in bundle path
@@ -223,53 +232,53 @@ CLI Generate new bundle :    generate:bundle nameBundle path
 ```bash
 $ ./nodefony generate:bundle helloBundle src/bundles
 
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : GENERATE bundle : helloBundle LOCATION : /Users/cci/repository/nodefony/src/bundles
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :helloBundle
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :Command
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :controller
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :defaultController.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :services
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :tests
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :helloBundleTest.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :Resources
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :config
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :config.yml
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :routing.yml
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :webpack
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :webpack.common.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :webpack.dev.config.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :webpack.prod.config.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :security.yml
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :public
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :hello.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :css
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :hello.css
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :images
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :assets
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :css
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :fonts
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :images
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :translations
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :views
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :index.html.twig
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :doc
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :1.0
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :readme.md
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create symbolic link :Default
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :core
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create Directory :Entity
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :helloBundle.js
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create symbolic link :readme.md
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : Create File      :package.json
-Wed Jul 19 2017 15:22:12 INFO SERVICE CLI KERNEL  : INSTALL ASSETS LINK IN WEB PUBLIC DIRECTORY  : /Users/cci/repository/nodefony-core/web/
+Mon Nov 20 2017 16:42:01 INFO SERVICE CLI KERNEL  : GENERATE bundle : helloBundle LOCATION : /Users/cci/repository/nodefony-core/src/bundles
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :helloBundle
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :controller
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :defaultController.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :Resources
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :config
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :config.yml
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :routing.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :security.yml
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :services.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :webpack.config.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :webpack
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :webpack.dev.config.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :webpack.prod.config.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :public
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :hello.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :css
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :hello.css
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :images
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :assets
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :css
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :fonts
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :images
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :translations
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :views
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :index.html.twig
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :tests
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :helloTest.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :Command
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :helloCommand.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :services
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :doc
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :default
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :readme.md
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :helloBundle.js
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :readme.md
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :src
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create Directory :Entity
+ Mon Nov 20 2017 16:42:01 INFO GENERATER  : Create File      :package.json
 ┌─────────┬───────────────────┬────────────────────────────────────────────┬───────────┬────────────────┐
 │ BUNDLES │ DESTINATION PATH  │ SOURCE PATH                                │ SIZE      │ ASSETS COMPILE │
 ├─────────┼───────────────────┼────────────────────────────────────────────┼───────────┼────────────────┤
 │ hello   │ ./web/helloBundle │ ./src/bundles/helloBundle/Resources/public │ 483 bytes │ 0 bytes        │
 └─────────┴───────────────────┴────────────────────────────────────────────┴───────────┴────────────────┘
-Wed Jul 19 2017 15:22:12 INFO CONSOLE   : NODEFONY Kernel Life Cycle Terminate CODE : 0
+ Mon Nov 20 2017 16:42:01 INFO KERNEL CONSOLE   : NODEFONY Kernel Life Cycle Terminate CODE : 0
 ```
 ### Start Servers to check new Bundle hello:
 ```bash
@@ -308,10 +317,11 @@ locale :                        en_en
 #    or
 #      watch:
 #        controller:	true
-#        config:        true		# only  routing.yml
+#        config:        true		# only  routing
 #        views:         true
 #        translations:  true
 #        webpack:       true
+#        services:      true
 #
 watch:                          true
 ```
@@ -325,31 +335,91 @@ watch:                          true
 
 #### without having to reboot the server
 
-You can see helloBundle config webpack : vim  ./src/bundles/helloBundle/Resources/config/webpack/webpack-dev.config.js
+You can see helloBundle config webpack : vim  ./src/bundles/helloBundle/Resources/config/webpack.config.js
 ```js
 const path = require("path");
-const webpack = require('webpack');
+const public = path.resolve(__dirname, "..", "public");
+const bundleName = path.basename(path.resolve(__dirname, "..", ".."));
 const ExtractTextPluginCss = require('extract-text-webpack-plugin');
-const webpackMerge = require('webpack-merge'); // used to merge webpack configs
-const public = path.resolve(__dirname, "..", ".." ,"public");
-const commonConfig = require("./webpack.common.js");
-const webpackDevClient = "webpack-dev-server/client?https://"+kernel.hostHttps+"/";
+const webpackMerge = require('webpack-merge');
+let config = null;
+if (kernel.environment === "dev") {
+  config = require("./webpack/webpack.dev.config.js");
+} else {
+  config = require("./webpack/webpack.prod.config.js");
+}
 
-module.exports = webpackMerge( {
-    entry       : {
-      hello  : [ "./js/hello.js" ],
-    },
-    output      : {
-      path      : public,
-      filename  : "./assets/js/[name].js",
-      library   : "[name]",
-      libraryTarget: "umd"
-    },
-    devtool     : "source-map",
-    externals   : {},
-    resolve     : {},
-    plugins     : []
-}, commonConfig );
+module.exports = webpackMerge({
+  context: public,
+  target: "web",
+  entry       : {
+    hello  : [ "./js/hello.js" ]
+  },
+  output: {
+    path: public,
+    filename: "./assets/js/[name].js",
+    library: "[name]",
+    libraryTarget: "umd"
+  },
+  externals: {},
+  resolve: {},
+  module: {
+    rules: [{
+      // BABEL TRANSCODE
+      test: new RegExp("\.es6$"),
+      exclude: new RegExp("node_modules"),
+      use: [{
+        loader: 'babel-loader',
+        options: {
+          presets: ['env']
+        }
+      }]
+    }, {
+      // CSS EXTRACT
+      test: new RegExp("\.css$"),
+      use: ExtractTextPluginCss.extract({
+        use: 'css-loader'
+      })
+    }, {
+      // SASS
+      test: new RegExp(".scss$"),
+      use: [{
+        loader: 'style-loader'
+      }, {
+        loader: 'css-loader'
+      }, {
+        loader: 'sass-loader'
+      }]
+    }, {
+      test: new RegExp("\.less$"),
+      use: ExtractTextPluginCss.extract({
+        use: [
+          "raw-loader",
+          {
+            loader: 'less-loader',
+            options: {
+              //strictMath: true,
+              //noIeCompat: true
+            }
+          }
+        ]
+      })
+    }, {
+      // FONTS
+      test: new RegExp("\.(eot|woff2?|svg|ttf)([\?]?.*)$"),
+      use: 'file-loader?name=[name].[ext]&publicPath=/' + bundleName + '&outputPath=/assets/fonts/',
+    }, {
+      // IMAGES
+      test: new RegExp("\.(jpg|png|gif)$"),
+      use: 'file-loader?name=[name].[ext]&publicPath=/' + bundleName + '&outputPath=/assets/images/'
+    }]
+  },
+  plugins: [
+    new ExtractTextPluginCss({
+      filename: "./assets/css/[name].css",
+    })
+  ]
+}, config);
 ```
 
 ### <a name="start_prod"></a>Start Production Mode
@@ -386,7 +456,7 @@ Access  with URL : https://localhost:5152/hello
 
 Access to monitoring route with URL : http://localhost:5151/nodefony
 
-[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/doc/Beta/cluster.png)](https://nodefony.net/nodefony)
+[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/doc/default/cluster.png)](https://nodefony.net/nodefony)
 
 Monitoring in progress !!!
 
@@ -394,167 +464,7 @@ Monitoring in progress !!!
 #### NPM : *Will be automatically installed by Makefile*
 
 ```
-┌──────────────────────────────┬──────────┬────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────┐
-│ NAME                         │ VERSION  │ DESCRIPTION                                                                                        │ BUNDLES            │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ asciify                      │ 1.3.5    │ Plain text awesomizer. A hybrid npm module and CLI for turning plain text into ascii art.          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ async                        │ 2.5.0    │ Higher-order functions and common patterns for asynchronous code                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ babel-cli                    │ 6.24.1   │ Babel command line.                                                                                │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ babel-loader                 │ 7.1.1    │ babel module loader for webpack                                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ babel-preset-es2015          │ 6.24.1   │ Babel preset for all es2015 plugins.                                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ babel-preset-es2017          │ 6.24.1   │ Babel preset for all es2017 plugins.                                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ babel-register               │ 6.24.1   │ babel require hook                                                                                 │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ bluebird                     │ 3.5.0    │ Full featured Promises/A+ implementation with exceptionally good performance                       │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ bootstrap                    │ 3.3.7    │ The most popular front-end framework for developing responsive, mobile first projects on the web.  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ bootstrap-loader             │ 2.1.0    │ Boostrap for Webpack                                                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ chai                         │ 4.1.0    │ BDD/TDD assertion library for node.js and the browser. Test framework agnostic.                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ cheerio                      │ 1.0.0-r… │ Tiny, fast, and elegant implementation of core jQuery designed specifically for the server         │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ chokidar                     │ 1.7.0    │ A neat wrapper around node.js fs.watch / fs.watchFile / fsevents.                                  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ cli-color                    │ 1.2.0    │ Colors, formatting and other tools for the console                                                 │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ cli-table                    │ 0.3.1    │ Pretty unicode tables for the CLI                                                                  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ clui                         │ 0.3.6    │ A Node.js toolkit for drawing nice command line tables, gauges, spinners, and sparklines.          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ commander                    │ 2.11.0   │ the complete solution for node.js command-line programs                                            │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ connect                      │ 2.30.2   │ High performance middleware framework                                                              │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ cookie                       │ 0.3.1    │ HTTP server cookie parsing and serialization                                                       │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ core-js                      │ 2.4.1    │ Standard library                                                                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ css-loader                   │ 0.28.4   │ css loader module for webpack                                                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ elasticsearch                │ 13.2.0   │ The official low-level Elasticsearch client for Node.js and the browser.                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ extract-text-webpack-plugin  │ 3.0.0    │ Extract text from bundle into a file.                                                              │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ file-loader                  │ 0.11.2   │ file loader module for webpack                                                                     │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ font-awesome                 │ 4.7.0    │ The iconic font and CSS framework                                                                  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ img-loader                   │ 2.0.0    │ Image minimizing loader for webpack                                                                │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ inquirer                     │ 3.2.0    │ A collection of common interactive command line user interfaces.                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ jquery                       │ 3.2.1    │ JavaScript library for DOM operations                                                              │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ js-yaml                      │ 3.9.0    │ YAML 1.2 parser and serializer                                                                     │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ less                         │ 2.7.2    │ Leaner CSS                                                                                         │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ less-loader                  │ 4.0.5    │ Less loader for webpack. Compiles Less to CSS.                                                     │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ lodash                       │ 4.17.4   │ Lodash modular utilities.                                                                          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ lodash.isregexp              │ 4.0.1    │ The lodash method `_.isRegExp` exported as a module.                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ markdown-it                  │ 8.3.1    │ Markdown-it - modern pluggable markdown parser.                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ memcached                    │ 2.2.2    │ A fully featured Memcached API client, supporting both single and clustered Memcached servers thr… │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ mime                         │ 1.3.6    │ A comprehensive library for mime-type mapping                                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ mkdirp                       │ 0.5.1    │ Recursively mkdir, like `mkdir -p`                                                                 │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ mocha                        │ 3.4.2    │ simple, flexible, fun test framework                                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ mysql2                       │ 1.3.6    │ fast mysql driver. Implements core protocol, prepared statements, ssl and compression in native JS │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ node-emoji                   │ 1.7.0    │ simple emoji support for node.js projects                                                          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ node-pre-gyp                 │ 0.6.36   │ Node.js native addon binary install tool                                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ node-sass                    │ 4.5.3    │ Wrapper around libsass                                                                             │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ nodefony-stage               │ 0.1.0    │ Client Side Nodefony web developpement                                                             │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ npm                          │ 5.3.0    │ a package manager for JavaScript                                                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ oauth2orize                  │ 1.8.0    │ OAuth 2.0 authorization server toolkit for Node.js.                                                │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ optimize-css-assets-webpack… │ 2.0.0    │ A Webpack plugin to optimize \ minimize CSS assets.                                                │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport                     │ 0.3.2    │ Simple, unobtrusive authentication for Node.js.                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-github2             │ 0.1.10   │ GitHub authentication strategy for Passport.                                                       │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-google-oauth        │ 1.0.0    │ Google (OAuth) authentication strategies for Passport.                                             │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-google-oauth20      │ 1.0.0    │ Google (OAuth 2.0) authentication strategy for Passport.                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-http                │ 0.3.0    │ HTTP Basic and Digest authentication strategies for Passport.                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-ldapauth            │ 2.0.0    │ LDAP authentication strategy for Passport                                                          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-local               │ 1.0.0    │ Local username and password authentication strategy for Passport.                                  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-nodefony            │ 2.0.2    │ Passport strategy wrapper for nodefony framework                                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ passport-oauth2              │ 1.4.0    │ OAuth 2.0 authentication strategy for Passport.                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ pm2                          │ 2.5.0    │ Production process manager for Node.JS applications with a built-in load balancer.                 │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ promise                      │ 8.0.1    │ Bare bones Promises/A+ implementation                                                              │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ qs                           │ 6.5.0    │ A querystring parser that supports nesting and arrays, with a depth limit                          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ raw-loader                   │ 0.5.1    │ raw loader module for webpack                                                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ request                      │ 2.81.0   │ Simplified HTTP request client.                                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ resolve-url-loader           │ 2.1.0    │ Webpack loader that resolves relative paths in url() statements based on the original source file  │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ rxjs                         │ 5.4.2    │ Reactive Extensions for modern JavaScript                                                          │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ sass-loader                  │ 6.0.6    │ Sass loader for webpack                                                                            │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ semver                       │ 5.3.0    │ The semantic version parser used by npm.                                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ sequelize                    │ 4.3.2    │ Multi dialect ORM for Node.JS                                                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ shelljs                      │ 0.7.8    │ Portable Unix shell commands for Node.js                                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ shortid                      │ 2.2.8    │ Amazingly short non-sequential url-friendly unique id generator.                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ simple-git                   │ 1.73.0   │ Simple GIT interface for node.js                                                                   │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ sqlite3                      │ 3.1.8    │ Asynchronous, non-blocking SQLite3 bindings                                                        │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ style-loader                 │ 0.18.2   │ style loader module for webpack                                                                    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ twig                         │ 1.10.5   │ JS port of the Twig templating language.                                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ uglify-es                    │ 3.0.25   │ JavaScript parser, mangler/compressor and beautifier toolkit for ES6+                              │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ uglifycss                    │ 0.0.27   │ Port of YUI CSS Compressor to NodeJS                                                               │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ url-loader                   │ 0.5.9    │ url loader module for webpack                                                                      │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ useragent                    │ 2.2.1    │ Fastest, most accurate & effecient user agent string parser, uses Browserscope's research for par… │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ webpack                      │ 3.3.0    │ Packs CommonJs/AMD modules for the browser. Allows to split your codebase into multiple bundles, … │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ webpack-merge                │ 4.1.0    │ Variant of merge that's useful for webpack configuration                                           │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ websocket                    │ 1.0.24   │ Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.    │ nodefony-core      │
-├──────────────────────────────┼──────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────┤
-│ xml2js                       │ 0.4.17   │ Simple XML to JavaScript object converter.                                                         │ nodefony-core      │
-└──────────────────────────────┴──────────┴────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────┘
+
 ```
 
 **Big thanks:**
@@ -568,7 +478,7 @@ Monitoring in progress !!!
 - [PM2](https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md)
 - [WEBPACK](https://webpack.js.org/)
 
-More informations [Documentation](https://nodefony.net/documentation)
+More informations  **[Nodefony Documentation](https://nodefony.net/documentation/default/nodefony)**
 
 ## <a name="authors"></a>Authors
 

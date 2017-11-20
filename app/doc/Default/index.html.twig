@@ -34,13 +34,14 @@
 $ ll app/
 
 total 16
-drwxr-xr-x  3 cci  staff  102 18 avr 10:55 Fixtures
-drwxr-xr-x  6 cci  staff  204 28 jul 15:31 Resources
--rw-r--r--  1 cci  staff  395  3 jul 09:37 appKernel.js
-drwxr-xr-x  6 cci  staff  204 31 jul 10:01 config
-drwxr-xr-x  3 cci  staff  102 28 jul 14:25 controller
-drwxr-xr-x  4 cci  staff  136 18 avr 10:55 doc
--rw-r--r--  1 cci  staff  400 18 jul 12:59 package.json
+drwxr-xr-x  3 cci  staff  102  6 sep 11:36 Fixtures
+drwxr-xr-x  6 cci  staff  204 11 sep 18:18 Resources
+-rw-r--r--  1 cci  staff  408  2 nov 09:41 appKernel.js
+drwxr-xr-x  8 cci  staff  272 14 nov 18:20 config
+drwxr-xr-x  3 cci  staff  102 13 nov 09:48 controller
+drwxr-xr-x  3 cci  staff  102  2 nov 09:41 doc
+-rw-r--r--  1 cci  staff  400  6 sep 11:36 package.json
+-rw-r--r--  1 cci  staff    0  6 sep 11:36 readme.md
 
 app/
 ├── Fixtures
@@ -76,19 +77,21 @@ app/
 ├── appKernel.js
 ├── config
 │   ├── config.yml
-│   ├── routing.yml
+│   ├── routing.js
 │   ├── security.yml
-│   └── webpack
-│       ├── webpack.common.js
-│       ├── webpack.dev.config.js
-│       └── webpack.prod.config.js
+│   ├── services.js
+│   ├── webpack
+│   │   ├── webpack.dev.config.js
+│   │   └── webpack.prod.config.js
+│   └── webpack.config.js
 ├── controller
 │   └── appController.js
 ├── doc
-│   ├── Beta
-│   │   └── index.html.twig
-│   └── Default -> Beta
-└── package.json
+│   └── Default
+│       └── index.html.twig
+├── package.json
+└── readme.md
+
 	</pre>
 </div>
 
@@ -120,29 +123,23 @@ app/
 		<code>./app/appKernel.js</code>
 	</p>
 	<pre>
-/*
- *
- *
- *
- *	ENTRY POINT FRAMEWORK APP KERNEL
- *
- *
- *
- *
+/**
+ *  ENTRY POINT FRAMEWORK APP KERNEL
  */
-nodefony.register("appKernel",function(){
-
-	var appKernel = class appKernel extends nodefony.kernel {
-
-		constructor (type, environment, debug, loader, settings){
-
-			// kernel constructor
-			super(environment, debug, loader, type, settings)
-		};
-	};
-
-	return appKernel;
-})
+"use strict;";
+module.exports = nodefony.register("appKernel", function () {
+  const appKernel = class appKernel extends nodefony.kernel {
+    constructor(type, environment, debug, settings) {
+      // kernel constructor
+      try {
+        super(environment, debug, type, settings);
+      } catch (e) {
+        throw e;
+      }
+    }
+  };
+  return appKernel;
+});
 	</pre>
 
 </div>
