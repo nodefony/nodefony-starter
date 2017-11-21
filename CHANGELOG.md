@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.1.2 (21/11/2017)
+- [debug parser query request](https://api.github.com/repos/nodefony/nodefony-core/git/commits/b9b6d8498a35c1e4fb0eabc98e716ae09fdb2e74) s-soo @cci
+
+---
+
 ## v3.1.1 (21/11/2017)
 - [debug angular builder](https://api.github.com/repos/nodefony/nodefony-core/git/commits/f60241cc266e711959460bd2357ca2cd1e539042) s-soo @cci
 - [debug firewall | monitoring](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c3eada09b0361d776e4744b09b19309a873d27f4) s-soo @cci
