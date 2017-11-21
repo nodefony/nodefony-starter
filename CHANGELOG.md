@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.1.1 (21/11/2017)
+- [debug angular builder](https://api.github.com/repos/nodefony/nodefony-core/git/commits/f60241cc266e711959460bd2357ca2cd1e539042) s-soo @cci
+- [debug firewall | monitoring](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c3eada09b0361d776e4744b09b19309a873d27f4) s-soo @cci
+- [updated deps || inc version](https://api.github.com/repos/nodefony/nodefony-core/git/commits/43582de496a460a3cee573fb55e5adcaa47a8701) s-soo @cci
+- [readme](https://api.github.com/repos/nodefony/nodefony-core/git/commits/a2b8f354169382e8ef69bb01c1798d78dbb832e3) s-soo @cci
+
+---
+
 ## v3.1.0 (20/11/2017)
 - [documentation](https://api.github.com/repos/nodefony/nodefony-core/git/commits/899afb98339056386b8fbab6be2008e191ebade4) s-soo @cci
 - [service monitoring debug](https://api.github.com/repos/nodefony/nodefony-core/git/commits/dbc88cd759a62562bc52f5f7d2c419fb9fc91b33) s-soo @cci
