@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.1.3 (22/11/2017)
+- [debug isCrossdomain referer](https://api.github.com/repos/nodefony/nodefony-core/git/commits/cd18c7a326f5dea988853434c059be74fe7b0cbc) s-soo @cci
+
+---
+
 ## v3.1.2 (21/11/2017)
 - [debug parser query request](https://api.github.com/repos/nodefony/nodefony-core/git/commits/b9b6d8498a35c1e4fb0eabc98e716ae09fdb2e74) s-soo @cci
 
