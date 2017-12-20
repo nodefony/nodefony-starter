@@ -59,7 +59,7 @@ monitoringBundle:
 #        dialect :               'mysql'|'sqlite'|'postgres'|'mssql'
 #
 #       By default nodefony create  connector name nodefony ( driver sqlite )
-#       for manage Sessions / Users / Requests
+#       for manage Sessions / Users
 #
 #       For mysql/mariadb create database nodefony before
 #       Mysql > CREATE DATABASE nodefony;
@@ -80,6 +80,34 @@ sequelizeBundle:
 #        dialect:                mysql
 #        host:                   localhost
 #        port:                   '3306'
+
+
+##################################
+#  OVERRIDE  BUNDLE MONGO
+#
+#       @see MONGO BUNDLE config for more options
+#       @more options http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
+#
+#
+#       By default nodefony create  connector name nodefony
+#       for manage Sessions / Users
+#
+#
+#mongoBundle:
+#  mongoose:
+#    debug:                      false
+#    connectors:
+#      nodefony:
+#        host:                   "127.0.0.1"
+#        port:                   32772
+#        dbname:                 "nodefony"
+#        settings:
+#          user:                 "nodefony"
+#          pass:                 "nodefony"
+#          authSource:           "admin"
+#          reconnectTries:       1000
+#          reconnectInterval:    10
+#          autoReconnect:        true
 
 ############################
 #  OVERRIDE BUNDLE HTTP
@@ -129,9 +157,9 @@ httpBundle:
       options:
         maxAge:                  0                             #30*24*60*60*1000
   session:
-    start:                       false                 # false || true || Name Session Context 
+    start:                       false                 # false || true || Name Session Context
     name:                        "nodefony"
-    handler:                     sequelize             # files | sequelize | memcached  "nodefony.session.storage"
+    handler:                     orm                   # files | orm | memcached    => "nodefony.session.storage"
     #save_path:                  "./tmp/sessions"      # for session.storage.files only
     use_strict_mode:             true
     gc_probability:              1

@@ -1,4 +1,4 @@
-#Ignore directory 
+#Ignore directory
 /docs/**
 /tmp/**
 /web/**
@@ -10,6 +10,7 @@ app/Resources/databases/*
 *.db
 
 node_modules/**
+**/node_modules/**
 npm-debug.log
 *.[oa]
 

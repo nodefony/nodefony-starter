@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.1.4 (20/12/2017)
+- [add mongoose authentication](https://api.github.com/repos/nodefony/nodefony-core/git/commits/587d41bcd35758f82c22eeb6d93c37d2b326d07c) s-soo @cci
+- [monitoring sessions](https://api.github.com/repos/nodefony/nodefony-core/git/commits/eab12192d4d583bfaea9fc272bcded0d15c0d929) s-soo @cci
+- [debug testUnit mongoose](https://api.github.com/repos/nodefony/nodefony-core/git/commits/8a507a9b2b87d008f6d139c32971b8b0d079418d) s-soo @cci
+- [debug sync force sequelize](https://api.github.com/repos/nodefony/nodefony-core/git/commits/a3bf3c7639be8c45dcf1fe3ec74f928866456ab5) s-soo @cci
+- [new design entity migration](https://api.github.com/repos/nodefony/nodefony-core/git/commits/d171576d91f0861fc025d67fc390e2392d09b58f) s-soo @cci
+- [new Class Entity](https://api.github.com/repos/nodefony/nodefony-core/git/commits/b3ca11484a922c2bb039fe5d19e6d59dec7623a4) s-soo @cci
+- [add requests entity mongo](https://api.github.com/repos/nodefony/nodefony-core/git/commits/23442b626258f8032bca09d0335432562aab2e69) s-soo @cci
+- [add mongoose ORM #58](https://api.github.com/repos/nodefony/nodefony-core/git/commits/3b6210025506ec06ed78f14481fd5ff6e532b944) s-soo @cci
+- [update webpack](https://api.github.com/repos/nodefony/nodefony-core/git/commits/a0b58d5605114b7de98b25cf2618358a6222473f) s-soo @cci
+- [add haproxy certificate concat](https://api.github.com/repos/nodefony/nodefony-core/git/commits/d7d5445b74cd9097f1d19c140d3eeffb87bc112c) s-soo @cci
+- [debug watcher controller dependencies](https://api.github.com/repos/nodefony/nodefony-core/git/commits/b36dee758fed1d1f61c8f2528213a60924e611f3) s-soo @cci
+- [proxy sockjs url](https://api.github.com/repos/nodefony/nodefony-core/git/commits/665b498483aad6f368eafec2221f955a5444ed10) s-soo @cci
+- [add haproxy certificat generator](https://api.github.com/repos/nodefony/nodefony-core/git/commits/1a93b97d66e8b436563086d04019fc8c86c7287e) s-soo @cci
+
 ## v3.1.3 (22/11/2017)
 - [debug isCrossdomain referer](https://api.github.com/repos/nodefony/nodefony-core/git/commits/cd18c7a326f5dea988853434c059be74fe7b0cbc) s-soo @cci
 
