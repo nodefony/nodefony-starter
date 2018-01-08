@@ -3,7 +3,7 @@
 #
 #       KERNEL CONFIG
 system:
-  domain                        : localhost      # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
+  domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
   domainAlias:   # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
     - "^127.0.0.1$"
   httpPort                      : 5151
@@ -16,6 +16,7 @@ system:
   unitTest                      : true
   locale                        : "en_en"
   servers:
+    protocol                    : "2.0"             #  2.0 || 1.1
     http                        : true
     https	                      : true
     ws			                    : true
@@ -25,7 +26,7 @@ system:
       cert                      : "config/certificates/server/fullchain.pem"
       ca                        : "config/certificates/ca/nodefony-root-ca.crt.pem"
       options:
-        rejectUnauthorized      : false
+        rejectUnauthorized      : true
 
   bundles:
     demo                        : "src/bundles/demoBundle"

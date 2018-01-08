@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.2.0 (08/01/2018)
+- [monitoring http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/89e6a1e67c82208319e0536e72d64fa92e980353) s-soo @cci
+- [debug passeport wrapper](https://api.github.com/repos/nodefony/nodefony-core/git/commits/2a734732ac063a81eae89131f6a151642cdbb0bb) s-soo @cci
+- [server push http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c7a138b5da4d5216051d1afff53678d87e58ddd0) s-soo @cci
+- [add  http2 specification with ALPN negotiation](https://api.github.com/repos/nodefony/nodefony-core/git/commits/55e46ace9966992ab2863cf671906763f5de1d2e) s-soo @cci
+- [auto-negociation http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c197a1b990497474a19dee1fcec7da0dcd444550) s-soo @cci
+
+---
+
 ## v3.1.4 (20/12/2017)
 - [add mongoose authentication](https://api.github.com/repos/nodefony/nodefony-core/git/commits/587d41bcd35758f82c22eeb6d93c37d2b326d07c) s-soo @cci
 - [monitoring sessions](https://api.github.com/repos/nodefony/nodefony-core/git/commits/eab12192d4d583bfaea9fc272bcded0d15c0d929) s-soo @cci

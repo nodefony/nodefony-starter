@@ -173,3 +173,9 @@ openssl verify -CAfile $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem \
 openssl rsa -noout -modulus -in $ROOT_DIR/server/privkey.pem
 openssl req -noout -modulus -in $ROOT_CA_INTERMEDIATE/csr/nodefony.csr.pem
 openssl x509 -noout -modulus -in $ROOT_DIR/server/fullchain.pem
+
+echo "####################";
+echo "#       HAPROXY    #";
+echo "####################";
+
+cat $ROOT_DIR/server/fullchain.pem $ROOT_DIR/server/privkey.pem > $ROOT_DIR/server/haproxy.pem
