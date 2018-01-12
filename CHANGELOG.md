@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.2.1 (12/01/2018)
+- [monotoring http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/396e2fa7f5d608738f775a76fe82792276f5d9fa) s-soo @cci
+- [server http2 push don't work with node 9.4.0](https://api.github.com/repos/nodefony/nodefony-core/git/commits/0131092156a35303419928c433e1dca59b1d3d19) s-soo @cci
+- [debug webpack service for react](https://api.github.com/repos/nodefony/nodefony-core/git/commits/dab93b14413d3a26cee82d4fccc9ca4f963a98e0) s-soo @cci
+- [debug react bundle generator](https://api.github.com/repos/nodefony/nodefony-core/git/commits/e445103dbb8aee1a42382e480617a8d4ff0d08fa) s-soo @cci
+
+---
+
 ## v3.2.0 (08/01/2018)
 - [monitoring http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/89e6a1e67c82208319e0536e72d64fa92e980353) s-soo @cci
 - [debug passeport wrapper](https://api.github.com/repos/nodefony/nodefony-core/git/commits/2a734732ac063a81eae89131f6a151642cdbb0bb) s-soo @cci

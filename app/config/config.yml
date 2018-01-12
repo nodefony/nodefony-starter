@@ -99,7 +99,7 @@ sequelizeBundle:
 #    connectors:
 #      nodefony:
 #        host:                   "127.0.0.1"
-#        port:                   32772
+#        port:                   27017
 #        dbname:                 "nodefony"
 #        settings:
 #          user:                 "nodefony"
@@ -143,11 +143,15 @@ httpBundle:
     responseTimeout:             40000
   https:
     responseTimeout:             40000
+  http2:
+    enablePush:                  true
   sockjs:
       overlay:                   true
       hot:                       true
       protocol:                  https
       websocket:                 true
+      hostname:                  "localhost"
+      port:                      "5152"
   statics:
     defaultOptions:
       cacheControl :             true

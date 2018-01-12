@@ -39,9 +39,8 @@ Nodefony assimilates into the ecosystem of node.js with services like :
 
 Nodefony 3  adds the following features :
 - [Angular](https://github.com/angular/angular-cli) Bundle Generator ( Now an Angular Project can be merge into a Nodefony Bundle )
-- ~~[React](https://github.com/facebookincubator/create-react-app) Bundle Generator ( Soon an React Project can be merge into a Nodefony Bundle )~~
+- [React](https://github.com/facebookincubator/create-react-app) Bundle Generator ( Now an React Project can be merge into a Nodefony Bundle )
 - [SockJS](https://github.com/sockjs) Server ( Like WDS 'Webpack Dev Server' and HMR management )
-- New cli Management (Command Line Interface )
 - ~~[Electron](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project  )~~
 
 Now in this version  3 Beta,  Nodefony is evolved to a stable version without major fundamental changes.
