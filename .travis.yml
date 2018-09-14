@@ -33,7 +33,7 @@ before_install:
   - sudo mysql_upgrade -uroot -pnodefony
   - sudo service mysql restart
   - sudo mysql -e "GRANT ALL ON nodefony.* TO 'root'@'localhost';" -uroot -pnodefony
-  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony-core/master/.travis/bin/install.sh | /bin/sh"
+  - "curl -L https://raw.githubusercontent.com/nodefony/nodefony/master/.travis/bin/install.sh | /bin/sh"
 
 branches:
   only:
