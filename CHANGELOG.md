@@ -1,5 +1,161 @@
 # Changelog
 
+## v4.0.0-beta.5 (13/09/2018)
+- [doc](https://github.com/nodefony/nodefony-core/commit/d6ea13bc00523000ecfd64060cde47e6f4a9f900) s-soo @cci
+- [git Init create project](https://github.com/nodefony/nodefony-core/commit/04d1a34c3dcb21f52b1cc5a3c2a48578af7e259f) s-soo @cci
+- [update deps](https://github.com/nodefony/nodefony-core/commit/30d2f1514ff5dce82a68c1aab44fb3b4ec9bd05b) s-soo @cci
+
+---
+
+## v4.0.0-beta.4 (07/09/2018)
+- [debug create project  | add interactive package manager](https://github.com/nodefony/nodefony-core/commit/c869cb0875e8b43c84f99b3c31028eae1151674d) s-soo @cci
+- [debug sqlite fixture](https://github.com/nodefony/nodefony-core/commit/a38c323b51e7e9ffe30affa9ce1443ca1b50cfb8) s-soo @cci
+- [clean command fixture](https://github.com/nodefony/nodefony-core/commit/fea9a41c33868cc5fd48f8fba5124a7fde73164c) s-soo @cci
+
+---
+
+## v4.0.0-beta.3 (06/09/2018)
+- [sqlite fixtures debug](https://github.com/nodefony/nodefony-core/commit/268ed79b70898f38e493fd11cd129c51ba228170) s-soo @cci
+
+---
+
+## v4.0.0-beta.2 (04/09/2018)
+- [monggose update](https://github.com/nodefony/nodefony-core/commit/395b0f3acab64b6e2e8a188eeed14afda662ef2c) s-soo @cci
+- [update babel-core to @babel/core](https://github.com/nodefony/nodefony-core/commit/b0625966fcd3dbd8cd4d8d4d6b1cd87acd16459c) s-soo @cci
+- [debug webpack compiler sync](https://github.com/nodefony/nodefony-core/commit/807db2e8f34b9774ebed52c4d213d84975a5f6e0) s-soo @cci
+- [webpack compile promise](https://github.com/nodefony/nodefony-core/commit/c6f8613a33d11f0ef88bbded288dd421fb4f3a2c) s-soo @cci
+
+---
+
+## v4.0.0-beta.1 (24/08/2018)
+- [debug bad entity orm register](https://github.com/nodefony/nodefony-core/commit/a96c4c964e61ce1fca7123393b445719228c1869) s-soo @cci
+- [update test wit vue.js bundle](https://github.com/nodefony/nodefony-core/commit/5303340dc04e53160b5117cdf314d2eb4666ccb5) s-soo @cci
+- [entity command](https://github.com/nodefony/nodefony-core/commit/94bcb227a1f43aecfa4110c193d7c53fc7cf5826) s-soo @cci
+- [command generate entity](https://github.com/nodefony/nodefony-core/commit/1fa8b21233d0108a2e3f5df168ccc1046a23b5dd) s-soo @cci
+- [change orm sequelize command name](https://github.com/nodefony/nodefony-core/commit/b6d6c0636f1cb879a4e3bebe4a6da22dfc2b120d) s-soo @cci
+- [command add service](https://github.com/nodefony/nodefony-core/commit/a99b5ba155fe033afc5b3e1916c027508ac800c4) s-soo @cci
+- [command generate service](https://github.com/nodefony/nodefony-core/commit/d186921986905c3298487e71ecdd40576c92b286) s-soo @cci
+- [debug skeleton parse](https://github.com/nodefony/nodefony-core/commit/33add9e5d8a22dddd09a8bcc556cf4a46cc94d7c) s-soo @cci
+- [debug parse skeleton](https://github.com/nodefony/nodefony-core/commit/faf1d359513ca7b984441c6d9ced1d1260356c98) s-soo @cci
+- [command generate config haproxy letsencrypt](https://github.com/nodefony/nodefony-core/commit/36c5016505f36dd2cc9638a45e028984a2ec0354) s-soo @cci
+- [generate nginx config command](https://github.com/nodefony/nodefony-core/commit/132f4a6357d31a0d79102418ee41aab9908532f5) s-soo @cci
+- [menu help debug](https://github.com/nodefony/nodefony-core/commit/8d6522f6b9b08c9762956b8a7e6a07a18e41ca70) s-soo @cci
+- [command generate controller](https://github.com/nodefony/nodefony-core/commit/c0db1e794cfaee505af4d2e5aa5fc3ec04b8dbde) s-soo @cci
+- [add new menu](https://github.com/nodefony/nodefony-core/commit/1ef4202d0f0e2661733fabd23293f3223d2d5c62) s-soo @cci
+- [commande generate controller](https://github.com/nodefony/nodefony-core/commit/ecbc30f3f0ba6b5d6c20558ab8c79ef290aefcc2) s-soo @cci
+- [update](https://github.com/nodefony/nodefony-core/commit/23bd693be7f323fb07ec5029275f644bd1538988) s-soo @cci
+- [new generate controller](https://github.com/nodefony/nodefony-core/commit/19ee8b96a19bb88aa6386e97069ff6f82b80c2a8) s-soo @cci
+- [debug outdated](https://github.com/nodefony/nodefony-core/commit/eeb919dd05c8134e1b58574c43eb55a4abfd3e03) s-soo @cci
+- [debug rebuild](https://github.com/nodefony/nodefony-core/commit/cd8b0a0d8f0c23f6e6302dc9203ece8b1a979254) s-soo @cci
+- [rebuild command](https://github.com/nodefony/nodefony-core/commit/1c362c97d7fcac82ddbfb9a11d7700536b1d2d6f) s-soo @cci
+- [add generater menu](https://github.com/nodefony/nodefony-core/commit/1eb5eb82657bdccb4cae6391896b116122560d0c) s-soo @cci
+- [test](https://github.com/nodefony/nodefony-core/commit/10a55b043e753c4bca8a15c54a990c577ddbcc61) s-soo @cci
+- [updated](https://github.com/nodefony/nodefony-core/commit/7bec06a1958971e0483267571eca2af8831526f4) s-soo @cci
+- [add domainCheck in config](https://github.com/nodefony/nodefony-core/commit/410a034cee5a0623c6b82cb7b9289b32a4e54f23) s-soo @cci
+- [clean command log](https://github.com/nodefony/nodefony-core/commit/3feae5558435ce9c26aacb3fedc0895d871985af) s-soo @cci
+- [add interactive command](https://github.com/nodefony/nodefony-core/commit/002b692fb3bff3e09c76e0bf2debc7b13f78d246) s-soo @cci
+- [debug search package kernel](https://github.com/nodefony/nodefony-core/commit/ebc9c6c25be7e06b1251d5074c1325b48d48f24b) s-soo @cci
+- [debug genarate project](https://github.com/nodefony/nodefony-core/commit/3523b65dd66fd9e45f4c1a07b683396b75c22979) s-soo @cci
+- [add setContentType in controller class](https://github.com/nodefony/nodefony-core/commit/8a6c1a462c786f7a3d8488302eb2b6d4eb6b397d) s-soo @cci
+- [update pm2](https://github.com/nodefony/nodefony-core/commit/94c121870f87893f082daaab5eca9d64f85cc5e6) s-soo @cci
+- [add package maganager variable](https://github.com/nodefony/nodefony-core/commit/90a1c22ebc3cbc0de09267520b16b2a532d5a1e1) s-soo @cci
+- [debug command sequelize](https://github.com/nodefony/nodefony-core/commit/aeef4a0d806a88c2d97a92785cf465ef1c9090da) s-soo @cci
+- [cli management start](https://github.com/nodefony/nodefony-core/commit/8f15ee0984856afc1f2fffc7aaefcc1b7923d4fa) s-soo @cci
+- [setProcessTitle to project name](https://github.com/nodefony/nodefony-core/commit/99597788ed19cc2a2fce63371be1f2a3738e4dbc) s-soo @cci
+- [add pm2 tools](https://github.com/nodefony/nodefony-core/commit/a70816cde1409a53f5aea90ad164e11c48d9dc4f) s-soo @cci
+- [sekeleton test debug](https://github.com/nodefony/nodefony-core/commit/1ce6f78864c9675fbaf06c0b5555347e27b5c007) s-soo @cci
+- [debug mongo command](https://github.com/nodefony/nodefony-core/commit/8ad35c02eb5f976fda7bfa556f19d70796476c9e) s-soo @cci
+- [debug push HTT2](https://github.com/nodefony/nodefony-core/commit/fae5d89451daa1f86e4be2d7fb55b389d449573e) s-soo @cci
+- [update](https://github.com/nodefony/nodefony-core/commit/251a0abbcbc2432b2abab04a8daf7fe6037d139d) s-soo @cci
+- [debug pm2 production](https://github.com/nodefony/nodefony-core/commit/8e59b39c28b6cd429a081cad10ffc96685a462bf) s-soo @cci
+- [debug prod cli](https://github.com/nodefony/nodefony-core/commit/ef026351a748beebca42d532d79a0f79afed90a6) s-soo @cci
+- [debug install project cli](https://github.com/nodefony/nodefony-core/commit/a78dcd20cca0d263855f5574855d7365b69a3b37) s-soo @cci
+- [add searchPackage](https://github.com/nodefony/nodefony-core/commit/d266dfe9e3b60ff387c296d0bb1f1512e7958701) s-soo @cci
+- [debug install cli](https://github.com/nodefony/nodefony-core/commit/f6914c2b3bd7ce2219b9c128913d5b3d90e335b3) s-soo @cci
+- [debug bin nodefony](https://github.com/nodefony/nodefony-core/commit/167bc1aeb56901b9944905cd6000667745a484ba) s-soo @cci
+- [debug test](https://github.com/nodefony/nodefony-core/commit/a8d211352a29955383955d7e9bf45d79c5943bc6) s-soo @cci
+- [debug build](https://github.com/nodefony/nodefony-core/commit/8e5023d19cc28113e2b4fd214892b1c2ae57447a) s-soo @cci
+- [debug command promise design](https://github.com/nodefony/nodefony-core/commit/4e793f645daf2aaa387ca19e2d5a40fdd945b0eb) s-soo @cci
+- [debug travis](https://github.com/nodefony/nodefony-core/commit/a3ea0809f6a82388118a29dc58da44ac2d7bfb99) s-soo @cci
+- [debug nodefony bin](https://github.com/nodefony/nodefony-core/commit/b87f864918803e3ffaf53c55391f3781b6502bd4) s-soo @cci
+- [debug framework compile webpack](https://github.com/nodefony/nodefony-core/commit/c88571c540e95f319fc3adbc50b3988d5f6b8d8c) s-soo @cci
+- [clean nodefony bin](https://github.com/nodefony/nodefony-core/commit/6f06c9c11aed0583059f674dd08286c657376097) s-soo @cci
+- [debug install project](https://github.com/nodefony/nodefony-core/commit/9639ab41687640c1d5989400c93b2321c0a1f510) s-soo @cci
+- [debug cli install](https://github.com/nodefony/nodefony-core/commit/317d3733de1b6b46322baa837d349658c2cd1839) s-soo @cci
+- [cli new command](https://github.com/nodefony/nodefony-core/commit/34d29769d3c6e1dfbdf88e12fdd54d35e977d8c2) s-soo @cci
+- [change executable linux --no-warning](https://github.com/nodefony/nodefony-core/commit/cd3957a87661c517b7d37858414d445c6c9c352a) s-soo @cci
+- [new command console management](https://github.com/nodefony/nodefony-core/commit/b8c76ba20efdfc256abf3038f91b308eb92c82c3) s-soo @cci
+
+---
+
+## v4.0.0-beta.0 (15/06/2018)
+- [4.0.0-beta.0](https://github.com/nodefony/nodefony-core/commit/0d306b3c70e9be7332752a1a3fcf2bf1e172c32e) s-soo @cci
+- [clean repo](https://github.com/nodefony/nodefony-core/commit/1f2cb48e56614bf18de137793ecc30200eac9286) s-soo @cci
+- [debug bin nodefony](https://github.com/nodefony/nodefony-core/commit/ab3f2b700982b96df7c2274ea84a239c7d06564f) s-soo @cci
+- [generate project cli](https://github.com/nodefony/nodefony-core/commit/41e101dbda6ee03d5fbe25bba785399ca0d0be71) s-soo @cci
+- [add intractive cli  create Project](https://github.com/nodefony/nodefony-core/commit/9da90bac874dcdc87836716d7cd43dbda39e4337) s-soo @cci
+- [cli project](https://github.com/nodefony/nodefony-core/commit/8e9ab09870f2788af6f841f8a1dd7884a1b0b7bd) s-soo @cci
+- [cli chmod](https://github.com/nodefony/nodefony-core/commit/f0d4bc8ec770e3f7623769d0e9944c0185d6a34d) s-soo @cci
+- [debug cli](https://github.com/nodefony/nodefony-core/commit/2a7bc48cd0fe0b62d22306ad6473348392504a61) s-soo @cci
+- [new cli design start](https://github.com/nodefony/nodefony-core/commit/e270a6385de9b6c3136e8b8495c79da15c98edfb) s-soo @cci
+- [debug core](https://github.com/nodefony/nodefony-core/commit/14d760a60ae64ae784de4886394d50999746c03f) s-soo @cci
+- [debug clean repo](https://github.com/nodefony/nodefony-core/commit/0e5936e381e6f4b0de42218092b6511d5b047953) s-soo @cci
+- [bin nodefony](https://github.com/nodefony/nodefony-core/commit/92f09d9164bf85558c835b1724fa03a0c85018be) s-soo @cci
+- [debug bar clean](https://github.com/nodefony/nodefony-core/commit/f1758ac151606fcd62dd84dc9750f47e03926ea6) s-soo @cci
+- [update deps](https://github.com/nodefony/nodefony-core/commit/88c7e99a8bd8994396752ba90102fcba7b3ad413) s-soo @cci
+- [clean moodules](https://github.com/nodefony/nodefony-core/commit/a7fc9fee2f5f2d373539cf595cd5030042da79fc) s-soo @cci
+- [new nodefony exe](https://github.com/nodefony/nodefony-core/commit/8f09aca0dabcd326f317cc1317f942e0de81bff4) s-soo @cci
+- [demo update](https://github.com/nodefony/nodefony-core/commit/97c228f92a8297ebef4c2215e1aabefc615a1f77) s-soo @cci
+- [clean bundle pattern search](https://github.com/nodefony/nodefony-core/commit/7227abddb72efe2b8a15b9a589c21222e7663b45) s-soo @cci
+- [debug app bundle name](https://github.com/nodefony/nodefony-core/commit/c78093d8628f54d042996f0283c66cea7920e901) s-soo @cci
+- [demo bundle change](https://github.com/nodefony/nodefony-core/commit/f64b7fd2d58f1686000f3718f1190dd04bd63369) s-soo @cci
+- [debug bundle as node package](https://github.com/nodefony/nodefony-core/commit/6e41beee01212a66f4fd4be3600bf22784c53cec) s-soo @cci
+- [readme](https://github.com/nodefony/nodefony-core/commit/c44bbe8f11ba9e363ce691865896d914ef4c904b) s-soo @cci
+- [debug conmmand](https://github.com/nodefony/nodefony-core/commit/21209fca5cc6c467fb4f73d6477c64014c56d756) s-soo @cci
+- [add assets in repo](https://github.com/nodefony/nodefony-core/commit/e53cee1d797bd29fb7d438720b2685c7c61d62fd) s-soo @cci
+- [debug package realTime](https://github.com/nodefony/nodefony-core/commit/ec40fbbf914207f206b00f316244a6f86e8325a3) s-soo @cci
+- [debug bundles format package](https://github.com/nodefony/nodefony-core/commit/6f0102caca918f2cb7ad8bb58eee5097c244e582) s-soo @cci
+- [load bundle as node package](https://github.com/nodefony/nodefony-core/commit/7990a2d437d3949372ac18019ea67a3d7926189b) s-soo @cci
+- [add package core](https://github.com/nodefony/nodefony-core/commit/a554801b566885416564c18b50fde0e224a68e6b) s-soo @cci
+- [clean package.json bundle](https://github.com/nodefony/nodefony-core/commit/b496a525a933b3a4bcf57f740a365f430b98bd02) s-soo @cci
+- [add loadBundle multi type](https://github.com/nodefony/nodefony-core/commit/e5e0eeed01ff3c04c05ef4065997bf1abfe9d7d5) s-soo @cci
+- [debug monitoring | unit test](https://github.com/nodefony/nodefony-core/commit/30ef509b089d162fa123a695d46b145c5c19ba7b) s-soo @cci
+- [Entity Sequelize change](https://github.com/nodefony/nodefony-core/commit/0862631b5208d5e136a6c26d7d219a9650cdd332) s-soo @cci
+- [change type sequelise entity](https://github.com/nodefony/nodefony-core/commit/73c1aa1bc5b7851275227a897bb80fd37f0e1bae) s-soo @cci
+- [debug install](https://github.com/nodefony/nodefony-core/commit/621045e8361f675c26ea4302ebcd63aa73315ad4) s-soo @cci
+- [delete log](https://github.com/nodefony/nodefony-core/commit/961b56d78218121bac2e747fcacab73beacfeb1e) s-soo @cci
+- [debug session token security](https://github.com/nodefony/nodefony-core/commit/c3296a7df0e1bf1d66d3e7619dbbee059ade41d6) s-soo @cci
+- [update deps orm sequelize default](https://github.com/nodefony/nodefony-core/commit/02fad75ce1edc9ad017a13b231728ef8d9962bd7) s-soo @cci
+- [debuf generate bndle add npm install](https://github.com/nodefony/nodefony-core/commit/ece9359ec027efe0f6e51411c4931ffa075a2d51) s-soo @cci
+- [add mongo encoder security](https://github.com/nodefony/nodefony-core/commit/22af75b15ec4d585f79e8d743990807090df8651) s-soo @cci
+- [add encoder security](https://github.com/nodefony/nodefony-core/commit/c5d814d0d3c94b8ddf00dbeba1c7605a8d85cc95) s-soo @cci
+- [debug github factory](https://github.com/nodefony/nodefony-core/commit/996a960560e26245b4dfa4da6c519a54a0729f32) s-soo @cci
+- [add github factory](https://github.com/nodefony/nodefony-core/commit/91b999a3a3d5aa64dd69de2c7e0bda2660d964dd) s-soo @cci
+- [updated deps](https://github.com/nodefony/nodefony-core/commit/b59800accfd53e11ee9caff0b9ac4410e2f933e9) s-soo @cci
+- [update mongoBundle](https://github.com/nodefony/nodefony-core/commit/4d16daf0d6ae7b4e36faec5aa287904ea3781a7c) s-soo @cci
+- [update demo](https://github.com/nodefony/nodefony-core/commit/9e32f9ad9a12b1a67f846ac4bac60c40d89e7eea) s-soo @cci
+- [Authorisation dev](https://github.com/nodefony/nodefony-core/commit/b03827c5b30c1ab65b56835fa2f6d829418612a7) s-soo @cci
+- [clean](https://github.com/nodefony/nodefony-core/commit/9c3852d0bc1841a8d11e0e7952a09e7536635fdf) s-soo @cci
+- [update](https://github.com/nodefony/nodefony-core/commit/62be9556e0fdbee99a4624da7317be804d6dbd35) s-soo @cci
+- [Acces control](https://github.com/nodefony/nodefony-core/commit/2031d896150a8181104a6f4354df3b660fc17afc) s-soo @cci
+- [authorization service](https://github.com/nodefony/nodefony-core/commit/25a66a72b24186bcf45ba02eeedb33130f6761ee) s-soo @cci
+- [update](https://github.com/nodefony/nodefony-core/commit/2567567fcd064b5308e6272733a9397eff31dbb8) s-soo @cci
+- [add error client](https://github.com/nodefony/nodefony-core/commit/700bc43734ae2570990e3a3ab1ed63ef66a463f8) s-soo @cci
+- [new class error security](https://github.com/nodefony/nodefony-core/commit/5ef43b65c0d2a553c20dfba3915e4f6996876bd5) s-soo @cci
+- [clean error class](https://github.com/nodefony/nodefony-core/commit/c241d1c6dd06db0a69ef0776a8453ce8d0180fbe) s-soo @cci
+- [clean travis](https://github.com/nodefony/nodefony-core/commit/e80e3e4200790287f680dd96ce4f4512865b4237) s-soo @cci
+- [clean repo](https://github.com/nodefony/nodefony-core/commit/45920264ac1816b7cf3360419928c1c37098e3d4) s-soo @cci
+- [clean](https://github.com/nodefony/nodefony-core/commit/39b4a6c37b6f0ca3e0f4f4e5cb4658c9d4abbd33) s-soo @cci
+- [delete secure area ldap](https://github.com/nodefony/nodefony-core/commit/1ec90368cb9e3994f7331dea030afdc664dcfad6) s-soo @cci
+- [debug sockjs](https://github.com/nodefony/nodefony-core/commit/5f9ec68d86a5b9950b708d4055cbbbad04f9a660) s-soo @cci
+- [update webpack config](https://github.com/nodefony/nodefony-core/commit/96f1781fb524ef32160e2e6e409bc4b0cea3eb24) s-soo @cci
+
+## v3.2.2 (12/01/2018)
+- [fix engine package.json](https://api.github.com/repos/nodefony/nodefony-core/git/commits/890dba27773fdb3c84d612a1fd2eb2d3ba08d64a) s-soo @cci
+- [CHANGELOG](https://api.github.com/repos/nodefony/nodefony-core/git/commits/c4a4fe818b072ca8861d66f34a0a644d4c24023e) s-soo @cci
+
+---
+
 ## v3.2.1 (12/01/2018)
 - [monotoring http2](https://api.github.com/repos/nodefony/nodefony-core/git/commits/396e2fa7f5d608738f775a76fe82792276f5d9fa) s-soo @cci
 - [server http2 push don't work with node 9.4.0](https://api.github.com/repos/nodefony/nodefony-core/git/commits/0131092156a35303419928c433e1dca59b1d3d19) s-soo @cci

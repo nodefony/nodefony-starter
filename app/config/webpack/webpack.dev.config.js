@@ -1,11 +1,15 @@
-//  with PROXY
-//const webpackDevClient = "webpack-dev-server/client?https://" + kernel.hostname + "/";
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const public = path.resolve(__dirname, "..", "..", "Resources", "public");
 
-const webpackDevClient = "webpack-dev-server/client?https://" + kernel.hostHttps + "/";
 module.exports = {
-  entry: {
-    app: [webpackDevClient]
-  },
+  mode: "development",
   devtool: "source-map",
-  plugins: []
+  plugins: [
+    new CleanWebpackPlugin(['assets'], {
+      verbose: kernel.debug,
+      root: public
+    })
+    //new webpack.NamedModulesPlugin(),
+    //new webpack.HotModuleReplacementPlugin()
+  ]
 };

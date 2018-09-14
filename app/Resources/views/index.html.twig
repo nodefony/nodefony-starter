@@ -3,12 +3,11 @@
   {{core}}
 {% endblock %}
 {% block body %}
-  <img class='displayed' src='{{CDN("image")}}/frameworkBundle/images/nodefony-logo-white.png'>
+  <img class='displayed' src='{{CDN("image")}}/framework-bundle/images/nodefony-logo-white.png'>
   <h1 class="success">
     <a href="{{url('documentation')}}">
       <strong style="font-size:45px">
-        NODEFONY
-        {{core}}
+        {{name|upper}}
       </strong>
     </a>
     <p>{{trans("welcome")}}
@@ -30,13 +29,11 @@
       {% endif %}
     </h1>
     {% if readme %}
-      <div>
-        {{readme}}
-      </div>
+      <div></div>
     {% endif %}
   {% endblock %}
   {% block footer %}
     <footer>
-      {{ render( controller("AppBundle:app:footer" )) }}
+      {{ render( controller("app:app:footer" )) }}
     </footer>
   {% endblock %}

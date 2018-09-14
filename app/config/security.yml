@@ -15,6 +15,14 @@ security:
     #  FIREWALL  PROVIDER
     #
     providers:
+      anonymous:
+        anonymous:
+          provider:            anonymous
       nodefony:
         entity:
           name:                "user"
+          property:            "username"
+    encoders:
+      user :
+        algorithm:             bcrypt
+        saltRounds:            13

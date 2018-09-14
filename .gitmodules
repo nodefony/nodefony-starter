@@ -1,3 +1,0 @@
-[submodule "src/bundles/demoBundle"]
-	path = src/bundles/demoBundle
-	url = https://github.com/nodefony/demoBundle.git

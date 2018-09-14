@@ -1,18 +1,29 @@
 {
-  "name": "Nodefony Framework",
-  "short_name": "Nodefony",
+  "name": "myproject",
+  "short_name": "myproject",
   "display": "standalone",
   "start_url": "/",
-  "description": "Node.js full-stack web framework Symfony Like",
   "launch_path": "/",
+  "description": "Project myproject",
   "default_locale": "en",
+  "background_color": "#2196F3",
+  "theme_color": "#2196F3",
+  "orientation": "landscape",
   "icons": [{
-    "src": "/favicon.ico",
-    "sizes": "48x48",
-    "type": "image/png"
-  }],
-  "developer": {
-    "name": "cci",
-    "url": "https://nodefony.net"
-  }
+      "src": "/images/favicon.ico",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/app/images/app-logo.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/app/images/app-logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "developer": {}
 }

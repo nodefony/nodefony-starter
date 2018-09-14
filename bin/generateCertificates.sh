@@ -12,14 +12,14 @@ echo "###################################";
 ROOT_CA="$ROOT_DIR/ca"
 CONF_DIR_CA="$CONF_DIR/ca"
 
-mkdir -p $ROOT_CA/{certs,crl,newcerts,db,private}
+mkdir -p $ROOT_CA/{certs,crl,newcerts,db,private,public}
 #chmod 700 $ROOT_CA/private
 touch $ROOT_CA/db/index.txt
-touch $ROOT_CA/db/nodefony-ca.db
-touch $ROOT_CA/db/nodefony-ca.db.attr
+touch $ROOT_CA/db/myproject-ca.db
+touch $ROOT_CA/db/myproject-ca.db.attr
 if [ ! -f $ROOT_CA/db/serial ]
 then
-	echo 1000 > $ROOT_CA/db/serial
+  echo 1000 > $ROOT_CA/db/serial
 fi
 
 #  Create the root key
@@ -31,13 +31,15 @@ openssl genrsa \
 #chmod 400 $ROOT_CA/private/ca.key.pem
 
 openssl req -config $CONF_DIR_CA/openssl.cnf \
-      -key $ROOT_CA/private/ca.key.pem \
-      -new -x509 -days 7300 -sha256 -extensions v3_ca \
-      -out $ROOT_CA/certs/ca.cert.pem
+  -key $ROOT_CA/private/ca.key.pem \
+  -new -x509 -days 7300 -sha256 -extensions v3_ca \
+  -out $ROOT_CA/certs/ca.cert.pem
 
 openssl x509 -noout -text -in $ROOT_CA/certs/ca.cert.pem
 
-
+openssl rsa -in $ROOT_CA/private/ca.key.pem \
+  -pubout -outform PEM \
+  -out $ROOT_CA/public/public.key.pem
 
 
 echo "###################################";
@@ -50,15 +52,15 @@ mkdir -p $ROOT_CA_INTERMEDIATE
 mkdir -p $ROOT_CA_INTERMEDIATE/{certs,crl,newcerts,db,private,csr}
 #chmod 700 $ROOT_CA_INTERMEDIATE/private
 touch $ROOT_CA_INTERMEDIATE/db/index.txt
-touch $ROOT_CA_INTERMEDIATE/db/nodefony-ca.db
-touch $ROOT_CA_INTERMEDIATE/db/nodefony-ca.db.attr
+touch $ROOT_CA_INTERMEDIATE/db/myproject-ca.db
+touch $ROOT_CA_INTERMEDIATE/db/myproject-ca.db.attr
 if [ ! -f $ROOT_CA_INTERMEDIATE/db/serial ]
 then
-	echo 1000 > $ROOT_CA_INTERMEDIATE/db/serial
+  echo 1000 > $ROOT_CA_INTERMEDIATE/db/serial
 fi
 if [ ! -f $ROOT_CA_INTERMEDIATE/db/crlnumber ]
 then
-	echo 1000 > $ROOT_CA_INTERMEDIATE/db/crlnumber
+  echo 1000 > $ROOT_CA_INTERMEDIATE/db/crlnumber
 fi
 
 #  Create the root key
@@ -71,19 +73,16 @@ openssl genrsa \
 
 # certificate signing request
 openssl req -config $CONF_DIR_INTERMEDIATE/openssl.cnf -new -sha256 \
-      -key $ROOT_CA_INTERMEDIATE/private/intermediate.key.pem \
-      -out $ROOT_CA_INTERMEDIATE/csr/intermediate.csr.pem
+  -key $ROOT_CA_INTERMEDIATE/private/intermediate.key.pem \
+  -out $ROOT_CA_INTERMEDIATE/csr/intermediate.csr.pem
 
 openssl ca -config $CONF_DIR_CA/openssl.cnf -batch -extensions v3_intermediate_ca \
-      -days 3650 -notext -md sha256 \
-      -in $ROOT_CA_INTERMEDIATE/csr/intermediate.csr.pem \
-      -out $ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem
+  -days 3650 -notext -md sha256 \
+  -in $ROOT_CA_INTERMEDIATE/csr/intermediate.csr.pem \
+  -out $ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem
 
 openssl x509 -noout -text \
-      -in $ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem
-
-
-
+  -in $ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem
 
 
 echo "###########################################################";
@@ -92,36 +91,36 @@ echo "###########################################################";
 
 #  Create the root key
 #Encrypt the root key with AES 256-bit encryption and a strong password.
-#openssl genrsa -aes256  -out $ROOT_CA_INTERMEDIATE/private/nodefony.key.pem 2048
+#openssl genrsa -aes256  -out $ROOT_CA_INTERMEDIATE/private/myproject.key.pem 2048
 openssl genrsa \
-  -out $ROOT_CA_INTERMEDIATE/private/nodefony.key.pem \
+  -out $ROOT_CA_INTERMEDIATE/private/myproject.key.pem \
   2048
-# chmod 400 $ROOT_CA_INTERMEDIATE/private/nodefony.key.pem
+# chmod 400 $ROOT_CA_INTERMEDIATE/private/myproject.key.pem
 
 
 openssl req -config $CONF_DIR_INTERMEDIATE/openssl.cnf \
-      -key $ROOT_CA_INTERMEDIATE/private/nodefony.key.pem \
-      -new -sha256 -out $ROOT_CA_INTERMEDIATE/csr/nodefony.csr.pem
+  -key $ROOT_CA_INTERMEDIATE/private/myproject.key.pem \
+  -new -sha256 -out $ROOT_CA_INTERMEDIATE/csr/myproject.csr.pem
 
 #Create  server a certificate
 # sign the CSR
 openssl ca -config $CONF_DIR_INTERMEDIATE/openssl.cnf -batch \
-      -extensions server_cert -days 375 -notext -md sha256 \
-      -in $ROOT_CA_INTERMEDIATE/csr/nodefony.csr.pem \
-      -out $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem
-# chmod 444 $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem
+  -extensions server_cert -days 375 -notext -md sha256 \
+  -in $ROOT_CA_INTERMEDIATE/csr/myproject.csr.pem \
+  -out $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem
+# chmod 444 $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem
 
 openssl x509 -noout -text \
-	-in $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem
+  -in $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem
 
 
 # Create  client a certificate
 # sign the CSR
 openssl ca -config $CONF_DIR_INTERMEDIATE/openssl.cnf -batch \
-      -extensions usr_cert -days 375 -notext -md sha256 \
-      -in $ROOT_CA_INTERMEDIATE/csr/nodefony.csr.pem  \
-      -out $ROOT_CA_INTERMEDIATE/certs/client.nodefony.cert.pem
-# chmod 444 $ROOT_CA_INTERMEDIATE/certs/client.nodefony.cert.pem
+  -extensions usr_cert -days 375 -notext -md sha256 \
+  -in $ROOT_CA_INTERMEDIATE/csr/myproject.csr.pem  \
+  -out $ROOT_CA_INTERMEDIATE/certs/client.myproject.cert.pem
+# chmod 444 $ROOT_CA_INTERMEDIATE/certs/client.myproject.cert.pem
 
 
 
@@ -130,14 +129,14 @@ echo "#      COPY        #";
 echo "####################";
 
 # create fullchain
-cat $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem \
-	$ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem \
-	$ROOT_CA/certs/ca.cert.pem > $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem
+cat $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem \
+  $ROOT_CA_INTERMEDIATE/certs/intermediate.cert.pem \
+  $ROOT_CA/certs/ca.cert.pem > $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem
 
 
 # copy in directory ca
-rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/ca/nodefony-root-ca.crt.pem
-rsync -a $ROOT_CA/private/ca.key.pem $ROOT_DIR/ca/nodefony-root-ca.key.pem
+rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/ca/myproject-root-ca.crt.pem
+rsync -a $ROOT_CA/private/ca.key.pem $ROOT_DIR/ca/myproject-root-ca.key.pem
 
 # copy in directory client
 # Create a public key
@@ -149,8 +148,8 @@ rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/client/chain.pem
 
 # copy in directory server
 rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/server/chain.pem
-rsync -a $ROOT_CA_INTERMEDIATE/private/nodefony.key.pem $ROOT_DIR/server/privkey.pem
-rsync -a $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem $ROOT_DIR/server/cert.pem
+rsync -a $ROOT_CA_INTERMEDIATE/private/myproject.key.pem $ROOT_DIR/server/privkey.pem
+rsync -a $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem $ROOT_DIR/server/cert.pem
 rsync -a $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem $ROOT_DIR/server/fullchain.pem
 
 
@@ -159,19 +158,19 @@ echo "#       VERIFY     #";
 echo "####################";
 
 openssl x509 -noout -text \
-      -in $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem
+  -in $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem
 
 
 # verify server
 openssl verify -CAfile $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem \
-      $ROOT_CA_INTERMEDIATE/certs/server.nodefony.cert.pem
+  $ROOT_CA_INTERMEDIATE/certs/server.myproject.cert.pem
 
 # verify server
 openssl verify -CAfile $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem \
-      $ROOT_CA_INTERMEDIATE/certs/client.nodefony.cert.pem
+  $ROOT_CA_INTERMEDIATE/certs/client.myproject.cert.pem
 
 openssl rsa -noout -modulus -in $ROOT_DIR/server/privkey.pem
-openssl req -noout -modulus -in $ROOT_CA_INTERMEDIATE/csr/nodefony.csr.pem
+openssl req -noout -modulus -in $ROOT_CA_INTERMEDIATE/csr/myproject.csr.pem
 openssl x509 -noout -modulus -in $ROOT_DIR/server/fullchain.pem
 
 echo "####################";

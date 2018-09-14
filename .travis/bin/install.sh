@@ -12,15 +12,17 @@ fi
 cat /etc/hosts
 
 #configuring the system
-make build
+npm -g install nodefony
+
+nodefony build
 
 if [ "$DB" = "mysql" ]
 then
-	./nodefony generate:bundle:angular generatedBundle ./src/bundles
-	make deploy &
-	sleep 60;
-	make status &
+  nodefony generate:bundle generated
+  nodefony pm2 &
+  sleep 60;
+  nodefony status &
 else
-	./nodefony generate:bundle generatedBundle ./src/bundles
-	./nodefony dev &
+  nodefony generate:bundle generated
+  nodefony dev &
 fi

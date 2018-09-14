@@ -5,7 +5,7 @@ module.exports = {
   home: {
     pattern: "/",
     defaults: {
-      controller: "AppBundle:app:index"
+      controller: "app:app:index"
     }
   }
 };

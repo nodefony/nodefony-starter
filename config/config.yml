@@ -8,12 +8,14 @@ system:
     - "^127.0.0.1$"
   httpPort                      : 5151
   httpsPort                     : 5152
+  domainCheck                   : true
   statics                       : true
   security                      : true
   realtime                      : true
   monitoring                    : true
   documentation                 : true
   unitTest                      : true
+  demo                          : true
   locale                        : "en_en"
   servers:
     protocol                    : "2.0"             #  2.0 || 1.1
@@ -24,12 +26,20 @@ system:
     certificats:
       key                       : "config/certificates/server/privkey.pem"
       cert                      : "config/certificates/server/fullchain.pem"
-      ca                        : "config/certificates/ca/nodefony-root-ca.crt.pem"
+      ca                        : "config/certificates/ca/myproject-root-ca.crt.pem"
       options:
         rejectUnauthorized      : true
+  devServer:
+    inline                      : true
+    hot                         : false
+    hotOnly                     : false
+    overlay                     : true
+    logLevel                    : info        # none, error, warning or info
+    progress                    : false
+    protocol                    : https
+    websocket                   : true
 
-  bundles:
-    demo                        : "src/bundles/demoBundle"
+  bundles                       : ~
 
   #################
   # SYSLOG NODEFONY
@@ -68,7 +78,6 @@ templating                      : twig
 ############
 # ENGINE ORM
 #       sequelize || mongoose
-#orm                             : mongoose
 orm                             : sequelize
 
 #########################

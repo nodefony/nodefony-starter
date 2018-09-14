@@ -5,7 +5,7 @@
 # than one openssl command.
 
 [ default ]
-ca                      = nodefony-ca				# CA name
+ca                      = myproject-ca				# CA name
 dir                     = ./config/certificates			# Top dir
 
 # The next part of the configuration file is used by the openssl req command.
@@ -27,15 +27,15 @@ x509_extensions		= v3_ca
 
 [ ca_dn ]
 0.domainComponent       = "com"
-1.domainComponent       = "nodefony"
-organizationalUnitName  = "Nodefony Root CA"
+1.domainComponent       = "myproject"
+organizationalUnitName  = "myproject Root CA"
 countryName		= FR
 stateOrProvinceName	= BDR
 localityName		= Marseille
-organizationName	= Nodefony Signing Authority
+organizationName	= myproject Signing Authority
 organizationalUnitName	= Development
 emailAddress		= admin@nodefony.com
-commonName              = "nodefony.com"
+commonName              = "localhost"
 
 [ ca_reqext ]
 keyUsage                = critical,keyCertSign,cRLSign
@@ -115,9 +115,9 @@ subjectAltName		= @alt_names
 [alt_names]
 IP.1			= 127.0.0.1
 DNS.1			= localhost
-DNS.2			= docker.nodefony
-DNS.3			= nodefony.com
-DNS.4			= nodefony 
+DNS.2			= docker.myproject
+DNS.3			= localhost
+DNS.4			= myproject
 
 
 [ usr_cert ]
