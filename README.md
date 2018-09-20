@@ -126,23 +126,36 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 
 -   EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
 
-## <a name="install"></a>Install Nodefony Framework
+## <a name="install"></a>Install Nodefony Excutable Globaly
 
-**npm** :
+**Node.js Installation** :
+ -   [nvm](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions 
+ 
+  To install or update nvm, you can use the install script using cURL:
 
-```bash
-$ npm -g install nodefony
+```sh
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 ```
 
-**yarn** :
+or Wget:
 
-```bash
-$ yarn global add nodefony
+```sh
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 ```
 
- -   [See Global install How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
+**Nodefony Install** :
 
- -   [nvm](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
+```bash
+npm -g install nodefony
+
+# or with yarn
+
+yarn global add nodefony
+```
+
+**EACCES error** : (Reinstall npm with a Node Version Manager)
+
+-   [See Global install How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
 
 ## Generating with CLI (Command Line Interface) a Nodefony project :
 
