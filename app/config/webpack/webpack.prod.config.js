@@ -1,9 +1,21 @@
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: "production",
   watch: false,
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          warnings: true,
+          compress: true
+        },
+        cache: true,
+        parallel: true
+      })
+    ]
+  },
   plugins: [
     new OptimizeCssAssetsPlugin({
       cssProcessorOptions: {
@@ -12,13 +24,6 @@ module.exports = {
         }
       },
       canPrint: true
-    }),
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        warnings: true,
-        compress: true
-      },
-      parallel: true
     })
   ]
 };

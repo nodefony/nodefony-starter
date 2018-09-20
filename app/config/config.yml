@@ -33,29 +33,6 @@ lang:
 #
 watch                         :  false
 
-##################################
-#  OVERRIDE MONITORING BUNDLE
-#
-#    see MONITORING BUNDLE config for more options
-#
-#
-monitoring-bundle:
-  debugBar                    :  true
-  forceDebugBarProd           :  false
-  profiler:
-    active                    :  false
-    storage                   :  orm
-
-##################################
-#  OVERRIDE FRAMEWORK Bundle
-#
-#    see FRAMEWORK BUNDLE config for more options
-#
-#
-framework-bundle:
-  webpack:
-    cache                   :    true
-    outputFileSystem        :    file-system    # memory-fs not implemented yet
 
 ##################################
 #  OVERRIDE  SEQUELIZE BUNDLE
@@ -93,8 +70,8 @@ sequelize-bundle:
 ##################################
 #  OVERRIDE  BUNDLE MONGO
 #
-#       @see MONGO BUNDLE config for more options
-#       @more options http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
+#       @see MONGO BUNDLE config
+#       @more options https://mongoosejs.com/docs/connections.html
 #
 #
 #       By default nodefony create  connector name nodefony
@@ -206,6 +183,30 @@ security-bundle:
      #Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
      X-Frame-Options          :  "SAMEORIGIN"
      X-Content-Type-Options   :  "nosniff"
+
+##################################
+#  OVERRIDE MONITORING BUNDLE
+#
+#    see MONITORING BUNDLE config for more options
+#
+#
+monitoring-bundle:
+  debugBar                    :  true
+  forceDebugBarProd           :  false
+  profiler:
+    active                    :  false
+    storage                   :  orm
+
+##################################
+#  OVERRIDE FRAMEWORK Bundle
+#
+#    see FRAMEWORK BUNDLE config for more options
+#
+#
+framework-bundle:
+  webpack:
+    cache                   :    true
+    outputFileSystem        :    file-system    # memory-fs not implemented yet
 
 ################################
 #  OVERRIDE BUNDLE REALTIME

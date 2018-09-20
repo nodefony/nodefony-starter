@@ -1,4 +1,4 @@
-#########################################################
+#####################
 #  NODEFONY FRAMEWORK
 #
 #       KERNEL CONFIG
@@ -39,6 +39,12 @@ system:
     protocol                    : https
     websocket                   : true
 
+  #######################
+  #  BUNDLES REGISTRATION
+  #
+  #       bundles:
+  #         hello-bundle                 : "file:src/bundles/hello-bundle"
+  #         my-bundle                    : "my-bundle@1.0.0"
   bundles                       : ~
 
   #################
@@ -46,10 +52,9 @@ system:
   log:
     active                      : true
 
-##################
-#       ASSETS CDN
+#############
+#  ASSETS CDN
 #
-#       You set cdn with string
 #       CDN :    cdn.nodefony.com
 #       or
 #       CDN:
@@ -61,10 +66,9 @@ system:
 #         javascript:
 #           - cdn.nodefony.com
 #         image:
-#           - cdn.nodefony.com
 #           - cdn.nodefony.fr
 #         font:
-#           - cdn.nodefony.com
+#           - cdn.nodefony.fr
 CDN                             : ~
 
 #################
@@ -72,7 +76,6 @@ CDN                             : ~
 #
 #       TWIG
 #       https://github.com/justjohn/twig.js
-#
 templating                      : twig
 
 ############
@@ -85,5 +88,4 @@ orm                             : sequelize
 #
 #       npm
 #       yarn
-#
 packageManager                  : npm
