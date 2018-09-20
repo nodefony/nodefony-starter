@@ -51,7 +51,8 @@ watch                         :  false
 #
 #       Here create new databases connectors
 #       and use for sync connectors :
-#       make sequelize
+#
+#       nodefony sequelize:sync
 #
 sequelize-bundle:
   debug                       :  false
@@ -72,7 +73,6 @@ sequelize-bundle:
 #
 #       @see MONGO BUNDLE config
 #       @more options https://mongoosejs.com/docs/connections.html
-#
 #
 #       By default nodefony create  connector name nodefony
 #       for manage Sessions / Users
