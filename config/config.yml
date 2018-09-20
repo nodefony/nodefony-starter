@@ -44,7 +44,7 @@ system:
   #
   #       bundles:
   #         hello-bundle                 : "file:src/bundles/hello-bundle"
-  #         my-bundle                    : "my-bundle@1.0.0"
+  #         my-bundle                    : "1.0.0"
   bundles                       : ~
 
   #################
