@@ -2,20 +2,38 @@
 #  NODEFONY FRAMEWORK
 #
 #       KERNEL CONFIG
+#
+#   Domain listen : Nodefony can listen only one domain ( no vhost )
+#     Example :
+#      domain :  0.0.0.0      # for all interfaces
+#      domain :  [::1]        # for IPV6 only
+#      domain :  192.168.1.1  # IPV4
+#      domain :  mydomain.com # DNS
+#
+#   Domain Alias : string only "<<regexp>>" use domainCheck : true
+#     Example :
+#      domainAlias:
+#        - "^127.0.0.1$"
+#        - "^localhost$"
+#        - ".*\\.nodefony\\.com"
+#        - "^nodefony\\.eu$"
+#        - "^.*\\.nodefony\\.eu$"
+#
+
 system:
-  domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
-  domainAlias:   # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+  domain                        : 0.0.0.0
+  domainAlias:
     - "^127.0.0.1$"
+    - "^localhost$"
   httpPort                      : 5151
   httpsPort                     : 5152
-  domainCheck                   : true
+  domainCheck                   : false
   statics                       : true
   security                      : true
   realtime                      : true
   monitoring                    : true
   documentation                 : true
   unitTest                      : true
-  demo                          : true
   locale                        : "en_en"
   servers:
     protocol                    : "2.0"             #  2.0 || 1.1

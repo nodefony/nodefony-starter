@@ -219,4 +219,4 @@ realtime-bundle:
     monitoring:
       type                    :  tcp
       port                    :  1318
-      domain                  :  localhost
+      domain                  :  0.0.0.0

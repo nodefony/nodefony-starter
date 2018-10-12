@@ -1,0 +1,123 @@
+{% extends "./index.html.twig" %}
+
+{% block title %}
+  {{ error.code }}
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+    <div class="row pb-5 mt-7">
+        <div class="col-lg-12">
+          <div class="card bg-light text-dark shadow p-3 mb-5 rounded">
+            <div class="card-body mx-auto">
+                <img src='{{CDN("image")}}/app/images/app-logo.png'><button class="btn btn-sm btn-danger" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  {{ error.type }}
+                </button>
+                <h1 class="display-4 text-danger">{{ error.code }} - {{ error.message }}</h1>
+            </div>
+          </div>
+          <hr class="my-4">
+          <div class="accordion" id="accordion">
+            <div class="card shadow rounded">
+              <div class="card-header" >
+                <h5 class="mb-1">
+                  <button class="btn btn-sm btn-outline-danger" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    {{ error.name }}
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      URL
+                      <div class="alert alert-info" role="alert">
+                        {{ error.url }}
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      code
+                      <div class="alert alert-danger" role="alert">
+                      {{ error.code }}
+                      </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      Error Type
+                      <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.type }}</div>
+                    </li>
+                    {% if error.type == "SystemError" %}
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Ernno
+                        <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.ernno }}</div>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Syscall
+                        <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.syscall }}</div>
+                      </li>
+                      {% if error.address %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Address
+                          <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.address }}</div>
+                        </li>
+                      {% endif %}
+                      {% if error.port %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Port
+                          <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.port }}</div>
+                        </li>
+                      {% endif %}
+                    {% else %}
+                      {% if error.type == "securityError" %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Secured Area
+                          <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.securedArea }}</div>
+                        </li>
+                      {% endif %}
+                      {% if error.bundle %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Bundle
+                          <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.bundle }}</div>
+                        </li>
+                      {% endif %}
+                      {% if error.controller %}
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Controller
+                        <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.controller }}</div>
+                      </li>
+                      {% endif %}
+                      {% if error.action %}
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Action
+                        <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.action }}</div>
+                      </li>
+                      {% endif %}
+                    {% endif %}
+                    {% if error.pdu  %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      PDU (Protocol Data Unit syslog json)
+                      <div class="d-inline p-1 bg-secondary text-white rounded">{{ error.pdu }}</div>
+                    </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="card shadow mt-4">
+              <div class="card-header" id="headingTwo">
+                <h5 class="mb-1">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    STACK
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                  <pre>{{ error.stack }}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock %}

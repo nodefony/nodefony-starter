@@ -1,39 +1,54 @@
 {% extends './base.html.twig' %}
-{% block title %}Nodefony
-  {{core}}
+{% set error = getFlashBag("error") %}
+
+{% block title %}
+  {{nodefony.name}}
 {% endblock %}
+
 {% block body %}
-  <img class='displayed' src='{{CDN("image")}}/framework-bundle/images/nodefony-logo-white.png'>
-  <h1 class="success">
-    <a href="{{url('documentation')}}">
-      <strong style="font-size:45px">
-        {{name|upper}}
-      </strong>
-    </a>
-    <p>{{trans("welcome")}}
-      {{user.username}}</p>
-    <p>
-      <a href="{{url('documentation')}}">
-        <button>
-          Documentation
-        </button>
-      </a>
-    </p>
-    {% if demo %}
-      <p>
-        <a href="{{url('demo')}}">
-          <button>
-            Demo
+
+  {% block header %}
+    {{ render( controller("app:app:header" )) }}
+  {% endblock %}
+
+  <div class="container text-center mt-8" >
+        <img class="mb-4" src="{{CDN("image")}}/app/images/app-logo.png" alt="">
+        <h1 class="h1 mb-3 font-weight-normal"style="color:#0167b8">{{nodefony.name|upper}}</h1>
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+          <strong>{{error}}</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
           </button>
-        </a </p>
-      {% endif %}
-    </h1>
-    {% if readme %}
-      <div></div>
-    {% endif %}
-  {% endblock %}
+        </div>
+        {% endif %}
+        <p class="h2 mt-3 mb-5">{{trans("welcome")}}
+          {{user.username}}
+        </p>
+        <p class="h3 mt-3">
+          <a href="{{url('documentation')}}">
+            <button class="btn btn-info btn-sm" type="button">
+              Documentation
+            </button>
+          </a>
+        </p>
+        {% if demo %}
+        <p class="h3 mt-3">
+          <a href="{{url('demo')}}">
+            <button class="btn btn-info btn-sm" type="button">
+              Demo
+            </button>
+            </a
+          </p>
+          {% endif %}
+        </h1>
+        {% if readme %}
+        <div>{{readme}}</div>
+        {% endif %}
+  </div>
+
   {% block footer %}
-    <footer>
-      {{ render( controller("app:app:footer" )) }}
-    </footer>
+    {{ render( controller("app:app:footer" )) }}
   {% endblock %}
+
+{% endblock %}

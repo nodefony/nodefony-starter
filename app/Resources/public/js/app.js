@@ -3,20 +3,33 @@
  *	ENTRY POINT WEBPACK bundle APP
  *
  */
+require('bootstrap');
+require('../../scss/custom.scss');
 require("../css/app.css");
 
-module.exports = function () {
+module.exports = function() {
   /*
    *	Class Bundle App client side
    */
   const App = class App {
     constructor() {
-      this.selectorLang = global.document.getElementById("langs");
-      if (this.selectorLang) {
-        this.selectorLang.addEventListener("change", function (e) {
-          window.location.href = "?lang=" + this.value;
+      let selectorLang = global.document.getElementById("lang");
+      if (selectorLang) {
+        selectorLang.addEventListener("change", (e) => {
+          //window.location.href = "?lang=" + this.value;
+          this.changeLang()
           e.preventDefault();
         });
+      }
+    }
+
+    changeLang(query) {
+      if (query) {
+        return window.location.href = "?lang=" + query;
+      }
+      let form = global.document.getElementById("formLang");
+      if (form) {
+        form.submit();
       }
     }
   };

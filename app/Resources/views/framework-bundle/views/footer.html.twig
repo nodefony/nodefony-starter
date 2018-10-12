@@ -11,12 +11,12 @@
   </div>
   </ul>
 
-  <form action="{{url('lang')}}" name="formLang" id="formLang" class="form-inline">
+  <form class="form-inline">
     <div class="form-inline input-group">
       <div class="input-group-prepend">
         <label class="input-group-text" for="inputGroupSelect01">{{ trans("lang") }} : </label>
       </div>
-      <select class="custom-select align-middle mr-4" name="lang"  id="lang">
+      <select class="custom-select align-middle mr-4" id="langs">
         {% for opt in langs %}
         {% if locale == opt.value %}
         <option value="{{ opt.value}}" selected>

@@ -1,0 +1,17 @@
+{% extends "./layout.json.twig" %}
+
+{% block body %}
+"server":"nodefony",
+"code":404,
+{% if error.pdu %}
+"pdu":{{ error.pdu }},
+{% else %}
+"pdu":null,
+{% endif %}
+"url":"{{error.url }}",
+{% if error.message %}
+"message":"{{error.message }}"
+{% else %}
+"message":"Not Found"
+{% endif %}
+{% endblock %}

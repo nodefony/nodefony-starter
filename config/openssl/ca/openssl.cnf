@@ -33,7 +33,7 @@ localityName		= Marseille
 organizationName	= myproject Signing Authority
 organizationalUnitName	= Development
 emailAddress		= admin@nodefony.com
-commonName              = "localhost"
+commonName              = "0.0.0.0"
 
 [ ca_reqext ]
 keyUsage                = critical,keyCertSign,cRLSign
@@ -113,9 +113,10 @@ subjectAltName		= @alt_names
 
 [alt_names]
 IP.1			= 127.0.0.1
+IP.2			= 0.0.0.0
 DNS.1			= localhost
 DNS.2			= docker.myproject
-DNS.3			= localhost
+DNS.3			= 0.0.0.0
 DNS.4			= myproject
 
 [ usr_cert ]

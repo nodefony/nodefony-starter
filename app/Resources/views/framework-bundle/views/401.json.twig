@@ -1,0 +1,21 @@
+{% extends "./layout.json.twig" %}
+
+{% block body %}
+  "server":"nodefony",
+  {% if error.code %}
+  "code":{{error.code}},
+  {% else %}
+  "code":401,
+  {% endif %}
+  {% if error.pdu %}
+  "pdu":{{ error.pdu }},
+  {% else %}
+  "pdu":null,
+  {% endif %}
+  "url":"{{error.url }}",
+  {% if error.message %}
+  "message":"{{error.message }}"
+  {% else %}
+  "message":"Unauthorized"
+  {% endif %}
+{% endblock %}

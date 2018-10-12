@@ -1,0 +1,40 @@
+{% extends '../base.html.twig' %}
+{{trans_default_domain("login")}}
+{% set error = getFlashBag("error") %}
+
+{% block title %}{{trans("login")}}{% endblock %}
+
+{% block body %}
+  {% block header %}
+    {{ render( controller("app:app:header" )) }}
+  {% endblock %}
+  <div class="container text-center mt-8">
+    <img class="mb-4" src="{{CDN("image")}}/app/images/app-logo.png" alt="">
+    <h1 class="h1 mb-3 font-weight-normal"style="color:#0167b8">{{nodefony.name|upper}}</h1>
+    <form class="nodefony-signin" id="login" action="{{ckeckLogin}}" method="POST">
+      <h1 class="h3 mb-3 font-weight-normal">{{trans("login")}}</h1>
+      <label for="username" class="sr-only">Username</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="username" required="true" autofocus="true">
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="passwd" name="passwd" class="form-control" placeholder="Password" required="true">
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+        <strong>{{error}}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">{{trans("submit")}}</button>
+      <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
+    </form>
+    </div>
+    {% block footer %}
+      {{ render( controller("app:app:footer" )) }}
+    {% endblock %}
+{% endblock %}

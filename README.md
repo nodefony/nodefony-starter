@@ -3,6 +3,8 @@
 </p>
 <h1 align="center">NODEFONY V4</h1>
 
+[![npm package](https://nodei.co/npm/nodefony.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nodefony)
+
 [![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://travis-ci.org/nodefony/nodefony.svg?branch=master)](https://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
 
 Nodefony is Node.js full-stack web framework.  
@@ -126,11 +128,11 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 
 -   EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
 
-## <a name="install"></a>Install Nodefony Excutable Globaly
+## <a name="install"></a>Install
 
-**Node.js Installation** :
- -   [nvm](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions 
- 
+**Install Node.js** :
+ -   [nvm](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
+
   To install or update nvm, you can use the install script using cURL:
 
 ```sh
@@ -143,7 +145,7 @@ or Wget:
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 ```
 
-**Nodefony Install** :
+**Install Nodefony Excutable (globally)** :
 
 ```bash
 npm -g install nodefony
@@ -153,12 +155,12 @@ npm -g install nodefony
 yarn global add nodefony
 ```
 
-**likely error** : 
+**likely error** :
 
 - EACCES error  [See Global install How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions) (Reinstall npm with a Node Version Manager)
 - Different Node.js version (NODE_MODULE_VERSION XX) use 'nodefony rebuild'
 
-## Generating with CLI (Command Line Interface) a Nodefony project :
+## Build Project with nodefony cli (recommended):
 
  ```bash
  #  CLI generate project name : myproject
@@ -173,7 +175,7 @@ yarn global add nodefony
 $ nodefony -h
 nodefony                                                                                              
     create [-i] name [path]                       Create New Nodefony Project                  
-      
+
 # OR YOU CAN USE CLI INTERACTIVE MODE (nodefony without args)
 
 $ nodefony
@@ -208,24 +210,24 @@ Version : 4.0.0-beta.5 Platform : darwin Process : nodefony PID : 16368
  $ nodefony
               _   _    ___    ____    _____   _____    ___    _   _  __   __
              | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
-             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V / 
+             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
              | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
              |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
-                                                                            
+
 
           Version : 4.0.0-beta.6 Platform : darwin Process : nodefony PID : 51362
-                
+
  Fri Sep 14 2018 14:46:14 INFO nodefony : WELCOME PROJECT : myproject 1.0.0
 ?  Nodefony CLI :  (Use arrow keys)
-❯ Build Project 
-  Generater 
-  Tools 
-  PM2 Tools 
+❯ Build Project
+  Generater
+  Tools
+  PM2 Tools
   --------
-  Help 
-  Quit 
+  Help
+  Quit
  ```
- 
+
 ## <a name="start"></a>Serving a Nodefony project via an development server
 
 **Starting Development Servers** :
@@ -333,10 +335,32 @@ You can find certificate authority (ca) here:
 Open **[config/config.yml](https://github.com/nodefony/nodefony-core/blob/master/config/config.yml)**  if you want change httpPort, domain ,servers, add bundle, locale ...
 
 ```yml
+#####################
+#  NODEFONY FRAMEWORK
+#
+#       KERNEL CONFIG
+#
+#   Domain listen : Nodefony can listen only one domain ( no vhost )
+#     Example :
+#      domain :  0.0.0.0      # for all interfaces
+#      domain :  [::1]        # for IPV6 only
+#      domain :  192.168.1.1  # IPV4
+#      domain :  mydomain.com # DNS
+#
+#   Domain Alias : string only "<<regexp>>" use domainCheck : true
+#     Example :
+#      domainAlias:
+#        - "^127.0.0.1$"
+#        - "^localhost$"
+#        - ".*\\.nodefony\\.com"
+#        - "^nodefony\\.eu$"
+#        - "^.*\\.nodefony\\.eu$"
+#
 system:
-  domain                        : localhost             # nodefony can listen only one domain ( no vhost )  /    [::1] for IPV6 only
-  domainAlias:   # domainAlias string only <<regexp>>   example ".*\\.nodefony\\.com  ^nodefony\\.eu$ ^.*\\.nodefony\\.eu$"
+  domain                        : 0.0.0.0
+  domainAlias:
     - "^127.0.0.1$"
+    - "^localhost$"
   httpPort                      : 5151
   httpsPort                     : 5152
   domainCheck                   : true
