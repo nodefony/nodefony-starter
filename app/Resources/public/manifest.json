@@ -1,10 +1,10 @@
 {
-  "name": "myproject",
-  "short_name": "myproject",
+  "name": "nodefony-starter",
+  "short_name": "nodefony-starter",
   "display": "standalone",
   "start_url": "/",
   "launch_path": "/",
-  "description": "Project myproject",
+  "description": "description project",
   "default_locale": "en",
   "background_color": "#2196F3",
   "theme_color": "#2196F3",

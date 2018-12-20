@@ -19,7 +19,6 @@
 #        - "^nodefony\\.eu$"
 #        - "^.*\\.nodefony\\.eu$"
 #
-
 system:
   domain                        : 0.0.0.0
   domainAlias:
@@ -28,14 +27,21 @@ system:
   httpPort                      : 5151
   httpsPort                     : 5152
   domainCheck                   : false
-  statics                       : true
+  locale                        : en_en
+  ##############
+  # BUNDLES CORE
   security                      : true
   realtime                      : true
   monitoring                    : true
   documentation                 : true
   unitTest                      : true
-  locale                        : "en_en"
+  redis                         : false
+  mongo                         : false
+  elastic                       : false
+  #########
+  # SERVERS
   servers:
+    statics                     : true
     protocol                    : "2.0"             #  2.0 || 1.1
     http                        : true
     https	                      : true
@@ -44,9 +50,11 @@ system:
     certificats:
       key                       : "config/certificates/server/privkey.pem"
       cert                      : "config/certificates/server/fullchain.pem"
-      ca                        : "config/certificates/ca/myproject-root-ca.crt.pem"
+      ca                        : "config/certificates/ca/nodefony-starter-root-ca.crt.pem"
       options:
         rejectUnauthorized      : true
+  ############
+  # DEV SERVER
   devServer:
     inline                      : true
     hot                         : false
@@ -62,7 +70,7 @@ system:
   #
   #       bundles:
   #         hello-bundle                 : "file:src/bundles/hello-bundle"
-  #         my-bundle                    : "1.0.0"
+  #         my-bundle                    : ~
   bundles                       : ~
 
   #################
@@ -70,23 +78,25 @@ system:
   log:
     active                      : true
 
-#############
-#  ASSETS CDN
+##################
+#       ASSETS CDN
 #
-#       CDN :    cdn.nodefony.com
+#       You set cdn with string
+#       CDN :    cdn.nodefony-starter.com
 #       or
 #       CDN:
-#          global: cdn.nodefony.com
+#          global: cdn.nodefony-starter.com
 #       or
 #       CDN:
 #         stylesheet:
-#           - cdn.nodefony.com
+#           - cdn.nodefony-starter.com
 #         javascript:
-#           - cdn.nodefony.com
+#           - cdn.nodefony-starter.com
 #         image:
-#           - cdn.nodefony.fr
+#           - cdn.nodefony-starter.com
+#           - cdn.nodefony-starter.fr
 #         font:
-#           - cdn.nodefony.fr
+#           - cdn.nodefony-starter.com
 CDN                             : ~
 
 #################
@@ -94,6 +104,7 @@ CDN                             : ~
 #
 #       TWIG
 #       https://github.com/justjohn/twig.js
+#
 templating                      : twig
 
 ############
@@ -106,4 +117,5 @@ orm                             : sequelize
 #
 #       npm
 #       yarn
-packageManager                  : npm
+#
+packageManager                  : 

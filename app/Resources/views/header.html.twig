@@ -1,3 +1,6 @@
+
+{% set user = getUser() %}
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <ul class="navbar-nav mr-auto">
     <a class="navbar-brand font-weight-bold" style="color:#0167b8" href="/" >
@@ -7,18 +10,41 @@
   </ul>
   <ul class="navbar-nav mt-2 mt-lg-0">
     <li class="nav-link fa fa-user pr-3" style="font-size:x-large"></li>
-    {% if getUser() %}
-      <li class="nav-item dropdown">
+    {% if  user %}
+      <li class="nav-item dropdown dropleft">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{getUser().name}}
+          {{user.name}}
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="{{url("logout")}}">{{"logout"|trans("login")}}</a>
+        <div class="dropdown-menu p-0" aria-labelledby="navbarDropdownMenuLink">
+          <div class="card" style="width: 20rem; border: none;">
+            <div class="card-header">
+                <h5 class="card-title">Informations</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{"username"|trans("login")}}</h6>
+            </div>
+            <div class="card-body" >
+              <div class="user-img">
+                {% if user.image %}
+                  <img src="{{ user.image }}" alt=""></img>
+                {% else %}
+                  <img src="/framework-bundle/images/nodefony-logo.png" alt="nodefony-logo"></img>
+                {% endif %}
+              </div>
+              <div class="user-info">
+                <p>{{"username"|trans("login")}} : {{ user.username }}</p>
+                <p>{{"name"|trans("login")}} : <i> {{ user.name }} </i> </p>
+                <p>{{"surname"|trans("login")}} : <i> {{ user.surname }} </i> </p>
+                </span>
+              </div>
+            </div>
+            <div class="card-footer text-muted">
+              <a href ="{{url("logout")}}" class="card-link">{{"logout"|trans("login")}}</a>
+            </div>
+          </div>
         </div>
       </li>
     {% else %}
     <li class="nav-link">
-      <a href="{{url("login",{type:"local"})}}"
+      <a href="{{url("login",{type:"nodefony"})}}"
           class="btn btn-sm btn-outline-secondary"
           role="button"
           aria-pressed="false">

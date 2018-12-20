@@ -5,7 +5,6 @@
  */
 require('bootstrap');
 require('../../scss/custom.scss');
-require("../css/app.css");
 
 module.exports = function() {
   /*
@@ -17,7 +16,7 @@ module.exports = function() {
       if (selectorLang) {
         selectorLang.addEventListener("change", (e) => {
           //window.location.href = "?lang=" + this.value;
-          this.changeLang()
+          this.changeLang();
           e.preventDefault();
         });
       }

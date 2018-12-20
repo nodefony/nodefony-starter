@@ -11,7 +11,7 @@ module.exports = {
     pattern: "/login/{type}",
     defaults: {
       controller: "app:login:login",
-      type: "local"
+      type: "nodefony"
     }
   },
   logout: {

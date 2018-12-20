@@ -1,6 +1,9 @@
 ########### TRANSLATION login domain ############
 
-security:  Securité
-login:     Se Connecter
-logout:    Se Déconnecter
-submit:    Valider
+security          : Securité
+login             : Se Connecter
+logout            : Se Déconnecter
+submit            : Valider
+surname           : Nom De Famille
+name              : Nom
+username          : Utilisateur

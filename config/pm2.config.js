@@ -1,7 +1,11 @@
 const cpu = require('os').cpus().length;
-let name = "myproject";
-let script = process.argv[1] || "nodefony";
-let logFile = path.resolve("tmp", "myproject.log");
+const path = require("path");
+
+const package = require(path.resolve("package.json"));
+const name = package.name;
+const script = process.argv[1] || "nodefony";
+const logName = `${name}.log`;
+const logFile = path.resolve("tmp", logName);
 
 /**
  * Application configuration section

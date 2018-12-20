@@ -1,6 +1,9 @@
 ########### TRANSLATION login domain ############
 
-security:  security
-login:     Sign in
-logout:    Sign out
-submit:    submit
+security          : Security
+login             : Sign In
+logout            : Sign Out
+submit            : Submit
+surname           : Surname
+name              : Name
+user_name         : User

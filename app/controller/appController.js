@@ -41,6 +41,7 @@ module.exports = class appController extends nodefony.controller {
    *
    */
   langAction() {
+    let referer = this.request.getHeader("referer");
     if (this.query.lang) {
       if (this.context.session) {
         this.context.session.set("lang", this.query.lang);
@@ -48,8 +49,10 @@ module.exports = class appController extends nodefony.controller {
         if (route) {
           return this.redirect(this.url(route));
         }
-        return this.redirect("/");
       }
+    }
+    if (referer) {
+      return this.redirect(referer);
     }
     return this.redirect("/");
   }

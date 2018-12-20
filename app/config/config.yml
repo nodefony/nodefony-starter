@@ -33,9 +33,36 @@ lang:
 #
 watch                         :  false
 
+##################################
+#  OVERRIDE MONITORING BUNDLE
+#
+#    see MONITORING BUNDLE config for more options
+#
+#
+monitoring-bundle:
+  debugBar                    :  true
+  forceDebugBarProd           :  false
+  profiler:
+    active                    :  false
+    storage                   :  orm
 
 ##################################
-#  OVERRIDE  SEQUELIZE BUNDLE
+#  OVERRIDE FRAMEWORK Bundle
+#
+#    see FRAMEWORK BUNDLE config for more options
+#
+#
+framework-bundle:
+  webpack:
+    cache                   :    true
+    outputFileSystem        :    file-system    # memory-fs not implemented yet
+    stats                   :
+      colors                :    true
+      verbose               :    true
+      maxModules            :    16     #Infinity
+
+##################################
+#  OVERRIDE ORM SEQUELIZE BUNDLE
 #
 #       @see SEQUELIZE BUNDLE config for more options
 #       @more options http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
@@ -51,7 +78,6 @@ watch                         :  false
 #
 #       Here create new databases connectors
 #       and use for sync connectors :
-#
 #       nodefony sequelize:sync
 #
 sequelize-bundle:
@@ -69,21 +95,22 @@ sequelize-bundle:
 
 
 ##################################
-#  OVERRIDE  BUNDLE MONGO
+#  OVERRIDE ORM BUNDLE MONGOOSE
 #
-#       @see MONGO BUNDLE config
+#       @see MONGO BUNDLE config for more options
 #       @more options https://mongoosejs.com/docs/connections.html
+#
 #
 #       By default nodefony create  connector name nodefony
 #       for manage Sessions / Users
 #
 #
-mongo-bundle:
+mongoose-bundle:
  mongoose:
    debug:                        false
    connectors:
      nodefony:
-       host:                     "127.0.0.1"
+       host:                     localhost
        port:                     27017
        dbname:                   "nodefony"
        settings:
@@ -95,8 +122,8 @@ mongo-bundle:
          autoReconnect:          true
          poolSize:               5
 
-############################
-#  OVERRIDE BUNDLE HTTP
+#################################
+#  OVERRIDE BUNDLE HTTP SETTINGS
 #
 #       see HTTP BUNDLE config for more options
 #
@@ -162,6 +189,61 @@ http-bundle:
           port                :  11211
           weight              :  1
 
+###################################
+#    OVERRIDE REDIS BUNDLE SETTINGS
+#
+#   All Options :                https://github.com/NodeRedis/node_redis
+#
+#   Add clients connections
+#   connections :
+#     data :
+#       name                      : data
+#     publish :
+#       name                      : publish
+#     subscribe :
+#       name                      : subscribe
+#
+redis-bundle:
+  redis:
+    debug                         : true
+    globalOptions :
+      host                        : localhost
+      port                        : 6379
+      family                      : IPv4
+      disable_resubscribing       : false
+      tls                         : null
+      no_ready_check              : false
+      socket_keepalive            : false
+      return_buffers              : false
+      retry_unfulfilled_commands  : true
+    connections                   :
+      main :
+        name                      : main
+
+#########################################
+# OVERRIDE ELASTIC BUNDLE SETTINGS
+#   elasticsearch
+#
+#	 options  :                    https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html
+#
+#
+elastic-bundle:
+  elasticsearch :
+    globalHostsOptions  :
+      protocol                    : http
+    globalOptions :
+      ssl :
+        #key                      : "./config/certificates/server/privkey.pem"
+        #cert                     : "./config/certificates/server/cert.pem"
+        #ca                       : "./config/certificates/ca/nodefony-root-ca.crt.pem"
+    connections :
+      main :
+        hosts:
+          - {
+            host                 : localhost,
+            port                 : 9200
+            }
+
 #######################
 #  OVERRIDE SECURITY BUNDLE
 #
@@ -183,30 +265,6 @@ security-bundle:
      #Strict-Transport-Security: "max-age=31536000; includeSubDomains; preload"
      X-Frame-Options          :  "SAMEORIGIN"
      X-Content-Type-Options   :  "nosniff"
-
-##################################
-#  OVERRIDE MONITORING BUNDLE
-#
-#    see MONITORING BUNDLE config for more options
-#
-#
-monitoring-bundle:
-  debugBar                    :  true
-  forceDebugBarProd           :  false
-  profiler:
-    active                    :  false
-    storage                   :  orm
-
-##################################
-#  OVERRIDE FRAMEWORK Bundle
-#
-#    see FRAMEWORK BUNDLE config for more options
-#
-#
-framework-bundle:
-  webpack:
-    cache                   :    true
-    outputFileSystem        :    file-system    # memory-fs not implemented yet
 
 ################################
 #  OVERRIDE BUNDLE REALTIME
