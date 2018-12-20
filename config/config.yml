@@ -118,4 +118,4 @@ orm                             : sequelize
 #       npm
 #       yarn
 #
-packageManager                  : 
+packageManager                  : npm
