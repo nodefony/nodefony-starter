@@ -1,7 +1,7 @@
 {
   "name": "nodefony-starter",
   "version": "1.0.0",
-  "description": "description project",
+  "description": "description nodefony-starter",
   "main": "nodefony",
   "scripts": {
     "nodefony": "nodefony",
@@ -29,11 +29,11 @@
     "node": ">=8"
   },
   "dependencies": {
-    "mongoose": "^5.4.0",
-    "nodefony": "^4.0.0-beta.21",
+    "mongoose": "^5.4.2",
+    "nodefony": "^4.1.0-beta.2",
     "sequelize": "5.0.0-beta.15",
-    "webpack": "^4.28.1",
-    "webpack-dev-server": "^3.1.10"
+    "webpack": "^4.28.3",
+    "webpack-dev-server": "^3.1.14"
   },
   "devDependencies": {
     "node-pre-gyp": "^0.12.0"

@@ -1,6 +1,9 @@
 {% extends '../base.html.twig' %}
 {{trans_default_domain("login")}}
+
 {% set error = getFlashBag("error") %}
+{% set info = getFlashBag("info") %}
+
 
 {% block title %}{{trans("login")}}{% endblock %}
 
@@ -9,26 +12,37 @@
     {{ render( controller("app:app:header" )) }}
   {% endblock %}
   <div class="container text-center mt-8">
-    <img class="mb-4" src="{{CDN("image")}}/app/images/app-logo.png" alt="">
-    <h1 class="h1 mb-3 font-weight-normal"style="color:#0167b8">{{nodefony.name|upper}}</h1>
-    <h1 class="h3 mb-3 font-weight-normal">{{trans("login")}} {{type|upper}}</h1>
-    <form class="nodefony-signin" id="login" action="{{action}}" method="POST">
-      <label for="username" class="sr-only">Username</label>
-      <input type="text" id="username" name="username" class="form-control" placeholder="username" required="true" autofocus="true">
-      <label for="password" class="sr-only">Password</label>
-      <input type="password" id="passwd" name="passwd" class="form-control mt-2" placeholder="Password" required="true">
-      {% if error %}
-      <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-        <strong>{{error}}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+    <div class="col-md-12">
+      <img class="mb-4" src="{{CDN("image")}}/app/images/app-logo.png" alt="">
+      <h1 class="h1 mb-3 font-weight-normal"style="color:#0167b8">{{nodefony.name|upper}}</h1>
+      <h1 class="h3 mb-3 font-weight-normal">{{trans("login")}} {{type|upper}}</h1>
+      {% if info %}
+        <div class="alert alert-primary dimissible mt-2" role="alert">
+          <strong>INFO : </strong> {{info}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       {% endif %}
-      <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">{{trans("submit")}}</button>
-      <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
-    </form>
+      {% if error %}
+        <div class="alert alert-danger dimissible mt-2" role="alert">
+          <strong>ERROR : </strong> {{error}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
+      <form class="nodefony-signin" id="login" action="{{action}}" method="POST">
+        <label for="username" class="sr-only">Username</label>
+        <input autocomplete="username" type="text" id="username" name="username" class="form-control" placeholder="username" required="true" autofocus="true">
+        <label for="password" class="sr-only">Password</label>
+        <input autocomplete="current-password" type="password" id="passwd" name="passwd" class="form-control mt-2" placeholder="Password" required="true">
+        <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">{{trans("submit")}}</button>
+      </form>
+      <a  href="{{url("nodefony-user-create")}}" class="mt-5 mb-3 text-muted">{{"register"|trans}}</a>
+      <p class="mt-5 mb-3 text-muted">© {{year}}</p>
     </div>
+  </div>
     {% block footer %}
       {{ render( controller("app:app:footer" )) }}
     {% endblock %}

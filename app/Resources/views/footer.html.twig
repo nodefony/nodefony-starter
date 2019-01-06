@@ -1,33 +1,9 @@
-<nav class="navbar navbar-ligth bg-light fixed-bottom">
-  <!-- Navbar content -->
-  <ul class="navbar-nav">
-    <a class="" href="/">
-      <img src="/app/images/app-logo.png" class="d-inline-block align-top" width="30" height="30" alt="{{name}}">
-      <strong class="font-weight-bold"> {{nodefony.name}}@{{nodefony.projectVersion}}</strong>
-    </a>
-  </ul>
-  <ul class="navbar-nav mx-auto">
-  <div class="">© {{year}} Copyright
+<!-- Footer -->
+<footer class="page-footer font-small bg-light fixed-bottom">
+  <!-- Copyright -->
+  <div class="text-center py-3">© {{year|escape}} Copyright:{{project|escape}}
+    <a href="/">{{nodefony.name|escape}}@{{nodefony.projectVersion|escape}}</a>
   </div>
-  </ul>
-
-  <form action="{{url('lang')}}" name="formLang" id="formLang" class="form-inline">
-    <div class="form-inline input-group">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01">{{ trans("lang") }} : </label>
-      </div>
-      <select class="custom-select align-middle mr-4" name="lang"  id="lang">
-        {% for opt in langs %}
-        {% if locale == opt.value %}
-        <option value="{{ opt.value}}" selected>
-          {{ opt.name }}
-        </option>
-        {% else %}
-        <option value="{{ opt.value}}">
-          {{ opt.name }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-    </div>
-  </form>
-</nav>
+  <!-- Copyright -->
+</footer>
+<!-- Footer -->

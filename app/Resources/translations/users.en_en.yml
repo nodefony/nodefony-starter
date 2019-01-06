@@ -1,0 +1,35 @@
+user            : User
+users           : Users
+username        : Username
+firstName       : First Name
+lastName        : Last Name
+email           : Email address
+textEmail       : We'll never share your email with anyone else.
+gender          : Gender
+role            : Role
+actions         : Actions
+oldPasswd       : Old Password
+newPasswd       : New Password
+createPasswd    : Create Password
+confirmPasswd   : Confirm Password
+lang            : Language
+enabled         : Enabled
+enable          : Enable
+disable         : Disable
+disabled        : Disabled
+
+
+male            : Male
+female          : Female
+none            : None
+
+register        : Register
+update          : Update
+create          : Create
+delete          : Delete
+textRegister    : "By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy."
+
+add             : "Add user"
+added           : "User added"
+
+choose          : Choose role...

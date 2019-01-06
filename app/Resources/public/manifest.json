@@ -4,7 +4,7 @@
   "display": "standalone",
   "start_url": "/",
   "launch_path": "/",
-  "description": "description project",
+  "description": "description nodefony-starter",
   "default_locale": "en",
   "background_color": "#2196F3",
   "theme_color": "#2196F3",

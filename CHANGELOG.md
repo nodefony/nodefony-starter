@@ -1,5 +1,27 @@
 # Changelog
 
+## v4.1.0-beta.2 (06/01/2019)
+- [nodefony release 4.1.0-beta.2](https://github.com/nodefony/nodefony-core/commit/56723c17bd96a4f307eb5e759b9ae5ba32889d86)
+
+---
+
+## v4.1.0-beta.1 (06/01/2019)
+- [nodefony release 4.1.0-beta.1](https://github.com/nodefony/nodefony-core/commit/fd5e57548838b27d3022092fb3902ffa141a8e18)
+- [Add CSRF service | update deps | update user entity | multi orm users management](https://github.com/nodefony/nodefony-core/commit/1680bf5e3eaad0e64ca64e4827c2d056791713de)
+- [Add csrf Service](https://github.com/nodefony/nodefony-core/commit/84300ed8694d7ce1c2d057141feeb10957d30da6)
+- [Add Csrf service](https://github.com/nodefony/nodefony-core/commit/0422f24b53634466229c97958f4ba3e429cded4f)
+
+---
+
+## v4.0.0-beta.22 (22/12/2018)
+- [nodefony release 4.0.0-beta.22](https://github.com/nodefony/nodefony-core/commit/126cbdcdf73dcd9dc1a780f80bfe1617d3648724)
+- [clean webpack default config](https://github.com/nodefony/nodefony-core/commit/b2d52c945e1b8c959e0fe4dba1dd7124e8cb25b6)
+- [upgrade deps](https://github.com/nodefony/nodefony-core/commit/a0a7eb7670dd3487a27a97e6ec98ef9d233e46d3)
+- [upgrade deps | change starter skeleton](https://github.com/nodefony/nodefony-core/commit/ab13417c5bc78daae1661dc201eac85fda56e73d)
+- [travis config](https://github.com/nodefony/nodefony-core/commit/16be670b3dbbc6dadf8243e4ea64920d83e082ea)
+
+---
+
 ## v4.0.0-beta.21 (20/12/2018)
 - [nodefony release 4.0.0-beta.21](https://github.com/nodefony/nodefony-core/commit/975ac0c0fcd4a14988b42d3d275b4c3b80be9928)
 - [Sequelize clean connector mysql | better sync](https://github.com/nodefony/nodefony-core/commit/451b037afe598fe500386eca45818ed4bdb0b2eb)

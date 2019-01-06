@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{nodefony.local}}">
+<html lang="{{nodefony.local|escape}}">
   <head>
     {% block head %}{% endblock %}
     {% block meta %}
@@ -16,7 +16,7 @@
       <meta name="description" content="Node.js full-stack web framework Symfony Like">
     {% endblock %}
     <title>
-      {% block title %}NODEFONY{% endblock %}
+      {% block title %}{{nodefony.name|escape}}{% endblock %}
     </title>
     {% block stylesheets %}
       <!-- WEBPACK BUNDLE -->

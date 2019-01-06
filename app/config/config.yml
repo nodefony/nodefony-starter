@@ -5,7 +5,7 @@
 #
 locale                      :    en_en
 App:
-  projectYear               :    2018
+  projectYear               :    2019
   locale                    :    "en_en"
   authorName                :    "admin"
   authorMail                :    "admin@nodefony.com"
@@ -154,8 +154,12 @@ http-bundle:
   # Server @see :                https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_class_http_server
   http:
     responseTimeout           :  40000
+    headers                   :
+      Cache-Control           :  "private, no-store, max-age=0, no-cache, must-revalidate"
   https:
     responseTimeout           :  40000
+    headers                   :
+      Cache-Control           :  "private, no-store, max-age=0, no-cache, must-revalidate"
   http2:
     enablePush                :  true
   statics:

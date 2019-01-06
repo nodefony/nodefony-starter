@@ -1,0 +1,36 @@
+user            : Utilisateur
+users           : Utilisateurs
+username        : Utilisateur
+firstName       : Prénom
+lastName        : Nom
+email           : Addresse Email
+textEmail       : Nous ne partagerons jamais votre email avec qui que ce soit.
+gender          : Genre
+role            : Role
+actions         : Actions
+oldPasswd       : Ancien Mot de passe
+newPasswd       : Nouveau Mot de passe
+createPasswd    : Créer Mot de passe
+confirmPasswd   : Confirmer Mot de passe
+lang            : Language
+enabled         : Activé
+enable          : Activer
+disable         : Désctiver
+disabled        : Désctivé
+
+
+male            : Homme
+female          : Femme
+none            : Aucun
+
+register        : "S'enregistrer"
+update          : Modifier
+create          : Créer
+delete          : Supprimer
+textRegister    : "En cliquant sur le bouton 'S'inscrire', vous confirmez que vous acceptez nos <br> Conditions d'utilisation et Politique de confidentialité."
+
+add             : "Ajouté Utilisateur"
+added           : "Utilisateur Ajouté"
+
+
+choose          : Choisir un role...

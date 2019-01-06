@@ -7,12 +7,12 @@ module.exports = class appController extends nodefony.controller {
   }
 
   /**
-   *
+   *  @see Route home in routing.js
    */
   indexAction() {
     return this.render("app::index.html.twig", {
       user: this.getUser(),
-      name: this.kernel.projectName
+      description: this.kernel.package.description
     });
   }
 
@@ -20,7 +20,10 @@ module.exports = class appController extends nodefony.controller {
    *
    */
   headerAction() {
-    return this.render("app::header.html.twig");
+    return this.render("app::header.html.twig", {
+      langs: this.get("translation").getLangs(),
+      locale: this.getLocale()
+    });
   }
 
   /**
@@ -29,28 +32,26 @@ module.exports = class appController extends nodefony.controller {
   footerAction() {
     let version = this.kernel.settings.version;
     return this.render("app::footer.html.twig", {
-      langs: this.get("translation").getLangs(),
       version: version,
-      year: new Date().getFullYear(),
-      locale: this.getLocale(),
-      description: this.kernel.app.settings.App.description
+      year: new Date().getFullYear()
     });
   }
 
   /**
-   *
+   *    @Method ({ "GET"})
+   *    @Route ("/lang", name="lang")
    */
   langAction() {
-    let referer = this.request.getHeader("referer");
-    if (this.query.lang) {
-      if (this.context.session) {
-        this.context.session.set("lang", this.query.lang);
-        let route = this.context.session.getMetaBag("lastRoute");
+    if (this.query.language) {
+      if (this.session) {
+        this.session.set("lang", this.query.language);
+        let route = this.session.getMetaBag("lastRoute");
         if (route) {
           return this.redirect(this.url(route));
         }
       }
     }
+    let referer = this.request.getHeader("referer");
     if (referer) {
       return this.redirect(referer);
     }

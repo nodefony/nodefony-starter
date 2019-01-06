@@ -5,7 +5,7 @@
 
 [![npm package](https://nodei.co/npm/nodefony.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nodefony)
 
-[![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://api.travis-ci.org/nodefony/nodefony-core.svg?branch=master)](https://travis-ci.org/nodefony/nodefony-core) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
+[![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://travis-ci.org/nodefony/nodefony.svg?branch=master)](https://travis-ci.org/nodefony/nodefony) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
 
 Nodefony is Node.js full-stack web framework.  
 
@@ -36,13 +36,13 @@ Nodefony is not an exhaustive port of symfony !
 -   [HTTP2](https://nodejs.org/api/http2.html)  http2 ready node module provides an implementation of the HTTP/2 (push server ready).
 -   Dynamics routing
 -   ORM ([Sequelize](http://docs.sequelizejs.com/), [mongoose](http://mongoosejs.com/index.html))
--   Simple Databases Services connections (Redis, Mongo, Elasticsearch).
+-   Simple Databases connection (mongo, ...)
 -   MVC templating ([Twig](https://github.com/twigjs/twig.js))
 -   Notion of real-time context in Action Controller (websocket).
 -   Notion of synchronous or asynchronous execution in Action Controller (Promise).
 -   Services Containers, Dependency Injection (Design Patterns)
 -   Sessions Manager (ORM, memcached)
--   Authentication Manager (Digest, Basic, oAuth, Local, ldap, jwf, openid)
+-   Authentication Manager (Digest, Basic, oAuth, Local, ldap, jwf)
 -   WAF ( Web application firewall )
 -   Cross-Origin Resource Sharing ([CORS](https://www.w3.org/TR/cors/))
 -   Production Management ([PM2](https://github.com/Unitech/pm2/))
@@ -363,35 +363,27 @@ system:
     - "^localhost$"
   httpPort                      : 5151
   httpsPort                     : 5152
-  domainCheck                   : false
-  locale                        : en_en
-  ##############
-  # BUNDLES CORE
+  domainCheck                   : true
+  statics                       : true
   security                      : true
   realtime                      : true
   monitoring                    : true
   documentation                 : true
   unitTest                      : true
-  redis                         : false
-  mongo                         : false
-  elastic                       : false
-  #########
-  # SERVERS
+  demo                          : true
+  locale                        : "en_en"
   servers:
-    statics                     : true
     protocol                    : "2.0"             #  2.0 || 1.1
     http                        : true
-    https	                      : true
-    ws			                    : true
+    https                       : true
+    ws                          : true
     wss			                    : true
     certificats:
       key                       : "config/certificates/server/privkey.pem"
       cert                      : "config/certificates/server/fullchain.pem"
-      ca                        : "config/certificates/ca/cci-root-ca.crt.pem"
+      ca                        : "config/certificates/ca/projectName-root-ca.crt.pem"
       options:
         rejectUnauthorized      : true
-  ############
-  # DEV SERVER
   devServer:
     inline                      : true
     hot                         : false
@@ -401,14 +393,8 @@ system:
     progress                    : false
     protocol                    : https
     websocket                   : true
-
-  #######################
-  #  BUNDLES REGISTRATION
-  #
-  #       bundles:
-  #         hello-bundle                 : "file:src/bundles/hello-bundle"
-  #         my-bundle                    : ~
-  bundles                       : ~
+  bundles:
+    hello-bundle                : "file:src/bundles/hello-bundle"
 ```
 
 ## <a name="bundles"></a>Quick Start

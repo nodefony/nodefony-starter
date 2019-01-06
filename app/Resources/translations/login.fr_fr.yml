@@ -4,6 +4,9 @@ security          : Securité
 login             : Se Connecter
 logout            : Se Déconnecter
 submit            : Valider
-surname           : Nom De Famille
-name              : Nom
+surname           : Nom
+name              : Prénom
 username          : Utilisateur
+
+register          : "S'enregistrer"
+update            : Modifer

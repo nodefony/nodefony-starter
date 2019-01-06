@@ -49,6 +49,8 @@
     "document": true,
     "navigator": true,
     "stage": true,
-    "$": true
+    "$": true,
+    "jQuery": true,
+    "Rx": true
   }
 }

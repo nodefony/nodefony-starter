@@ -1,3 +1,5 @@
 ########### TRANSLATION messages domain ############
 
-welcome:  Bienvenue
+welcome   : Bienvenue
+lang      : Langue
+users     : Utilisateurs

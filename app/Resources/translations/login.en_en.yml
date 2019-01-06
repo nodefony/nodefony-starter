@@ -7,3 +7,6 @@ submit            : Submit
 surname           : Surname
 name              : Name
 user_name         : User
+
+register          : Register
+update            : Update
