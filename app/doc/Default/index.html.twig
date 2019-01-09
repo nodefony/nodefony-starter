@@ -1,0 +1,85 @@
+
+<div class="page-header">
+  <h1><strong>Application</strong> </h1>
+
+	<div class="alert alert-info" role="alert">
+		<strong>
+		Bundle Application is the entry point of framework, is the kernel instance of nodefony</br>
+		App is a special bundle its behavior differs from other bundles<br>
+		This Bunlde is responsible  for :
+		<ul>
+			<li>Overloading Configurations and Views from other bundles </br>
+		</ul>
+		</strong>
+	</div>
+</div>
+
+<h2 > You can see HERE :</h2>
+
+<p>
+	<ul>
+		<li><a href="#location"> Location Bundle Application</a></li>
+		<li><a href="#config"> Configuration Bundle Application</a></li>
+		<li><a href="#entry"> Application  Entry Point</a></li>
+	</ul>
+<p>
+<h2 name="location" id="location">Location Bundle Application  :</h2>
+<div class="doc2">
+	<p>
+		You can find bundle repository under rootdir <code>./app</code> directory.
+
+	</p>
+
+	<pre>
+$ ll app/
+drwxr-xr-x    8 cci  staff     256  7 jan 10:32 Resources
+-rw-r--r--    1 cci  staff     285  9 nov 14:47 appKernel.js
+drwxr-xr-x    8 cci  staff     256  9 jan 10:39 config
+drwxr-xr-x    5 cci  staff     160  7 jan 10:32 controller
+drwxr-xr-x    4 cci  staff     128  9 jan 10:37 doc
+drwxr-xr-x  777 cci  staff   24864  7 jan 10:47 node_modules
+-rw-r--r--    1 cci  staff    1245  7 jan 10:32 package.json
+-rw-r--r--    1 cci  staff       0  5 nov 15:42 readme.md
+drwxr-xr-x    3 cci  staff      96  5 nov 15:42 services
+	</pre>
+</div>
+
+<h2 name="config" id="config">Configuration Application  :<small> See <a href="{{ path('documentation-section',{section:'configurations', version:version, bundle:'nodefony', queryString:{'subsection':'application'} })}}">Application config</a></small> </h2>
+<div class="doc2">
+	<p>
+
+	</p>
+</div>
+
+<h2 name="entry" id="entry">Application  Entry Point   :  <code style="text-transform: initial;">appKernel.js</code> <small>see <a href="{{ path('documentation-section',{section:'running', version:version, bundle:'nodefony',queryString:{'subsection':'developement'} })}}#script">Running Nodefony Startup Script </a></small></h2>
+<div class="doc2">
+	<p>
+	<div class="alert alert-warning" role="alert">
+			Contrary to other bundles, App bundle has :  </br>
+			<ul>
+				<li>
+					No file pattern type :   <code>nameBundle.js</code> but  : <code> appKernel.js </code>
+				</li>
+			</ul>
+		</div>
+	</p>
+	<p>
+		<code>./app/appKernel.js</code>
+	</p>
+	<pre>
+/*
+ *  ENTRY POINT FRAMEWORK APP KERNEL
+ */
+"use strict;";
+module.exports = class appKernel extends nodefony.kernel {
+  constructor(environment, cli, settings) {
+    // kernel constructor
+    try {
+      super(environment, cli, settings);
+    } catch (e) {
+      throw e;
+    }
+  }
+};
+	</pre>
+</div>

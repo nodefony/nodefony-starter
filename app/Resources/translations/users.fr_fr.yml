@@ -3,7 +3,7 @@ users           : Utilisateurs
 username        : Utilisateur
 firstName       : Prénom
 lastName        : Nom
-email           : Addresse Email
+email           : Adresse Email
 textEmail       : Nous ne partagerons jamais votre email avec qui que ce soit.
 gender          : Genre
 role            : Role

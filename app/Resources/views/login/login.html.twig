@@ -40,7 +40,15 @@
         <button class="btn btn-lg btn-primary btn-block mt-4" type="submit">{{trans("submit")}}</button>
       </form>
       <a  href="{{url("nodefony-user-create")}}" class="mt-5 mb-3 text-muted">{{"register"|trans}}</a>
-      <p class="mt-5 mb-3 text-muted">© {{year}}</p>
+      <p class="mt-5 mb-3 text-muted">
+        {% if github %}
+          <a href="/login/github" class="btn btn-secondary fa fa-github"> &nbsp {{trans("login")}}  with Github</a>
+        {% endif %}
+        {% if google %}
+          <a href="/login/google" class="btn btn-danger fa fa-google">&nbsp {{trans("login")}} with Google</a>
+        {% endif %}
+      </p>
+      <p class="mt-3 mb-3 text-muted">© {{nodefony.name}}</p>
     </div>
   </div>
     {% block footer %}

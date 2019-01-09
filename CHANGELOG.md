@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.1.0-beta.3 (08/01/2019)
+- [nodefony release 4.1.0-beta.3](https://github.com/nodefony/nodefony-core/commit/9edc63ea407a1d1ba9d653764eef284decfd1b8f)
+- [add firewall config social login](https://github.com/nodefony/nodefony-core/commit/77950b749c6cf67d99a88771e6b493e906144fef)
+- [add social button in login  oauth connection](https://github.com/nodefony/nodefony-core/commit/ad47a2b11a011fbece3f5170763493dea7fbe469)
+
+---
+
 ## v4.1.0-beta.2 (06/01/2019)
 - [nodefony release 4.1.0-beta.2](https://github.com/nodefony/nodefony-core/commit/56723c17bd96a4f307eb5e759b9ae5ba32889d86)
 

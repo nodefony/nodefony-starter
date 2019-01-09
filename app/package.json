@@ -1,7 +1,7 @@
 {
-  "name": "app-nodefony-starter",
+  "name": "app",
   "version": "1.0.0",
-  "description": "app nodefony-starter entry point",
+  "description": "app nodefony entry point",
   "author": "admin <admin@nodefony.com>",
   "main": "appKernel.js",
   "scripts": {},
