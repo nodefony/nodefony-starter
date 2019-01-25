@@ -5,7 +5,7 @@
 #
 locale                      :    en_en
 App:
-  projectYear               :    2019
+  projectYear               :    2018
   locale                    :    "en_en"
   authorName                :    "admin"
   authorMail                :    "admin@nodefony.com"
@@ -247,6 +247,8 @@ elastic-bundle:
             host                 : localhost,
             port                 : 9200
             }
+        sniffOnStart             : true
+        sniffInterval            : 5000
 
 #######################
 #  OVERRIDE SECURITY BUNDLE

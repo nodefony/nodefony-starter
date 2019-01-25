@@ -22,7 +22,8 @@ module.exports = class appController extends nodefony.controller {
   headerAction() {
     return this.render("app::header.html.twig", {
       langs: this.get("translation").getLangs(),
-      locale: this.getLocale()
+      locale: this.getLocale(),
+      version: nodefony.version
     });
   }
 
@@ -38,6 +39,33 @@ module.exports = class appController extends nodefony.controller {
   }
 
   /**
+   *	Documentation
+   *  @see Route documentation in routing.js
+   */
+  documentationAction() {
+    let docBundle = this.kernel.getBundles("documentation");
+    if (docBundle) {
+      return this.forward("documentation:default:index");
+    }
+    try {
+      let file = new nodefony.fileClass(path.resolve(this.kernel.rootDir, "README.md"));
+      if (file) {
+        let res = this.htmlMdParser(file.content(file.encoding), {
+          linkify: true,
+          typographer: true
+        });
+        return this.render("app:documentation:documentation.html.twig", {
+          readme: res,
+        });
+      }
+    } catch (e) {
+      throw e;
+    }
+    return this.render('app:documentation:documentation.html.twig');
+  }
+
+  /**
+   *    @see Route by Annotaion
    *    @Method ({ "GET"})
    *    @Route ("/lang", name="lang")
    */

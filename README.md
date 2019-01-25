@@ -19,7 +19,10 @@ Nodefony is not an exhaustive port of symfony !
 
 -   [Features](#features)
 -   [Requirements](#requirements)
--   [Install](#install)
+-   [Linux OSX Installation](#install)
+-   [Windows Installation ](#installwin32)
+-   [Build Nodefony Project with CLI (Command Line Interface)](#buildcli)
+-   [Build Nodefony Project with STARTER](#buildstarter)
 -   [Start Development Mode](#start)
 -   [Start Production Mode](#start_prod)
 -   [Configurations](#configurations)
@@ -114,38 +117,40 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 
 -   MACOS (Checked, Tested)
 
+-   WINDOWS (Checked)
+
 -   FreeBSD (Checked)
-    -   pkg install bash rsync gmake gcc6
+    -   pkg install bash gmake gcc6
     -   setenv CC "/usr/local/bin/gcc"
     -   setenv CXX "/usr/local/bin/g++"
     -   cd /usr/local/bin/ ;ln -s pythonx.x python
 
 -   ~~OpenBSD (Not Checked yet )~~
 
--   ~~WINDOWS (Not ported yet )~~
+
 
 -   ~~[ELECTRON](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project )~~
 
 -   EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
 
-## <a name="install"></a>Install
+## <a name="install"></a> Linux or OSX Installation (Recommanded)
 
-**Install Node.js** :
- -   [nvm](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
+**[NVM](https://github.com/creationix/nvm) Installation (Node Version Manager )** :
+ -   [NVM](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
 
-  To install or update nvm, you can use the install script using cURL:
-
+  To install or update nvm, you can use the install script:
 ```sh
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+# or
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 ```
 
-or Wget:
-
+**[Node.js](https://nodejs.org/) Installation with [NVM](https://github.com/creationix/nvm)** :
 ```sh
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+nvm install node # "node" is an alias for the latest version
 ```
 
-**Install Nodefony Excutable (globally)** :
+**[Nodefony](https://nodefony.net) Excutable Installation (Globally Recommanded)** :
 
 ```bash
 npm -g install nodefony
@@ -160,32 +165,39 @@ yarn global add nodefony
 - EACCES error  [See Global install How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions) (Reinstall npm with a Node Version Manager)
 - Different Node.js version (NODE_MODULE_VERSION XX) use 'nodefony rebuild'
 
-## Build Project with nodefony cli (recommended):
+## <a name="installwin32"></a> Windows Installation
 
- ```bash
- #  CLI generate project name : myproject
+**[Node.js](https://nodejs.org/en/) Installation** :
 
- $ nodefony create myproject
- $ cd myproject
- ```
+  To install or update Node.js, you can download installer here [Node.js](https://nodejs.org/en/)
 
-**Cli Usage** :
+**[Nodefony](https://nodefony.net) Excutable Installation** :
 
+ Launch a CMD terminal
 ```bash
-$ nodefony -h
-nodefony                                                                                              
-    create [-i] name [path]                       Create New Nodefony Project                  
+npm -g install nodefony
 
-# OR YOU CAN USE CLI INTERACTIVE MODE (nodefony without args)
+# or with yarn
 
+yarn global add nodefony
+```
+**Add NPM global bin in $Path windows** :
+
+  On the Windows System Property Menu, configure *Path* environment variable by adding :
+
+  ```bash
+C:\Users\myuser\AppData\Roaming\npm
+or
+C:\Users\myuser\AppData\Roaming\npm\bin
+  ```
+
+## <a name="buildcli"></a> Build Project with nodefony cli (recommended):
+
+**Cli Usage INTERACTIVE MODE** :
+
+YOU CAN USE CLI INTERACTIVE MODE (nodefony without args) :
+```bash
 $ nodefony
- _   _    ___    ____    _____   _____    ___    _   _  __   __
-| \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
-|  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
-| |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
-|_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
-
-Version : 4.0.0-beta.5 Platform : darwin Process : nodefony PID : 16368
 
 ?  Nodefony CLI :  (Use arrow keys)
 ❯ Create Nodefony Project
@@ -194,30 +206,47 @@ Version : 4.0.0-beta.5 Platform : darwin Process : nodefony PID : 16368
   Help
   Quit
 ```
+**Cli Usage NO INTERRATIVE** :
 
-## Build Project with Github Starter :
+YOU CAN USE CLI NO INTERACTIVE (nodefony with args) :
 
+```bash
+#  CLI generate project name : myproject
+
+$ nodefony create myproject
+$ cd myproject
+ ```
+
+**Cli Help** :
+
+```bash
+$ nodefony -h
+
+nodefony                                                                                              
+    create [-i] name [path]                       Create New Nodefony Project                  
+```
+
+## <a name="buildstarter"></a> Build Project with Github Starter :
+
+**CLI** :
+
+  Clone nodefony starter
  ```bash
- #  Clone nodefony starter
-
  $ git clone https://github.com/nodefony/nodefony.git
  $ cd nodefony
  $ nodefony build
+   ...
+   ...
+ $ npm start
  ```
- **Cli Usage** :
+ **CLI INTERATIVE** :
+
+  YOU CAN USE CLI INTERACTIVE MODE TO BUILD PROJECT (nodefony without args)
  ```bash
- # OR YOU CAN USE CLI INTERACTIVE MODE TO BUILD PROJECT (nodefony without args)
+ $ git clone https://github.com/nodefony/nodefony.git
+ $ cd nodefony
  $ nodefony
-              _   _    ___    ____    _____   _____    ___    _   _  __   __
-             | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
-             |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
-             | |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
-             |_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
 
-
-          Version : 4.0.0-beta.6 Platform : darwin Process : nodefony PID : 51362
-
- Fri Sep 14 2018 14:46:14 INFO nodefony : WELCOME PROJECT : myproject 1.0.0
 ?  Nodefony CLI :  (Use arrow keys)
 ❯ Build Project
   Generater
@@ -239,6 +268,7 @@ $ nodefony dev
 $ <ctrl-c>
 ```
 **Starting Development Servers in Debug Mode (-d)** :
+
 ```bash
 $ nodefony -d dev
 
@@ -246,8 +276,8 @@ $ nodefony -d dev
 $ <ctrl-c>
 ```
 
+OR YOU CAN USE CLI INTERACTIVE MODE (nodefony without args)
 ```bash
-# OR YOU CAN USE CLI INTERACTIVE MODE (nodefony without args)
  _   _    ___    ____    _____   _____    ___    _   _  __   __
 | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
 |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
@@ -413,19 +443,19 @@ system:
 
 ## <a name="bundles"></a>Quick Start
 
-### Install Nodefony  :
+### Install Nodefony :
 ```
 $ npm -g install nodefony
 ```
 [See Global install How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions)
 
-### Install Project  :
+### Create Project :
 ```
 $ nodefony create myproject
 $ cd myproject
 ```
 
-### Generating a New Bundle  :
+### Generating a New Bundle :
 
 CLI Generate new bundle : default path src/bundles
 
@@ -453,6 +483,8 @@ $ nodefony
 ### Starting Servers to check new Bundle hello:
 
 ```bash
+$ npm start
+or
 $ nodefony dev
 ```
 Access to bundle route with URL : <http://localhost:5151/hello>
@@ -583,7 +615,7 @@ module.exports = webpackMerge({
 
 Access to monitoring route with URL : <http://localhost:5151/nodefony>
 
-[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/src/nodefony/doc/default/cluster.png)](https://nodefony.net/nodefony)
+[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony-core/master/src/nodefony/doc/cluster.png)](https://nodefony.net/nodefony)
 
 Monitoring in progress !!!
 

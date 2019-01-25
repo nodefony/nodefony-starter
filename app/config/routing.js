@@ -6,6 +6,12 @@ module.exports = {
     defaults: {
       controller: "app:app:index"
     }
+  },
+  documentation: {
+    pattern: "/documentation",
+    defaults: {
+      controller: "app:app:documentation"
+    }
   }
   //GOOGLE AUTH AREA
   /*googleArea: {

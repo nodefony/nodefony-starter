@@ -17,6 +17,10 @@ module.exports = class loginController extends nodefony.controller {
    *    )
    */
   loginAction(type) {
+    let token = this.getToken();
+    if (this.session && token) {
+      return this.redirectToRoute("home");
+    }
     let area = this.security.getSecuredArea(type);
     let action = "/" + type;
     if (area && area.checkLogin) {
@@ -39,10 +43,13 @@ module.exports = class loginController extends nodefony.controller {
    *      name="login-check"
    *    )
    */
-  loginCheckAction() {
+  loginCheckAction(lastUrl) {
     try {
       let token = this.getToken();
       if (token.user && token.user.enabled) {
+        if (lastUrl) {
+          return this.redirect(lastUrl);
+        }
         return this.redirectToRoute("home");
       } else {
         this.context.session.invalidate();
@@ -66,10 +73,21 @@ module.exports = class loginController extends nodefony.controller {
    *    @Route ("/logout", name="logout")
    */
   logoutAction() {
-    return this.security.logout(this.context)
-      .catch((e) => {
-        throw e;
-      });
+    if (this.security) {
+      return this.security.logout(this.context)
+        .catch((e) => {
+          throw e;
+        });
+    }
+    if (this.context.session) {
+      return this.context.session.destroy(true)
+        .then(() => {
+          return this.redirectToRoute("login");
+        }).catch(e => {
+          this.logger(e, "ERROR");
+        });
+    }
+    return this.redirectToRoute("login");
   }
 
 };
