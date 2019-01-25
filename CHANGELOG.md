@@ -1,5 +1,43 @@
 # Changelog
 
+## v4.2.0-beta.2 (25/01/2019)
+- [nodefony release 4.2.0-beta.2](https://github.com/nodefony/nodefony-core/commit/98bd63dc67616c0cf7304a4b9ca653e3daac39b9)
+- [debug bundle generater](https://github.com/nodefony/nodefony-core/commit/0c1f46f63dcb7fff02aa7b00f66774786f518c8f)
+- [upgrade deps | debug logout openid](https://github.com/nodefony/nodefony-core/commit/1775ad2f5e7e25e57312ccc518481596ab41ef6e)
+
+---
+
+## v4.2.0-beta.1 (23/01/2019)
+- [nodefony release 4.2.0-beta.1](https://github.com/nodefony/nodefony-core/commit/2afe612afe8b180b5aef7e8e8819fcf97109cf41)
+- [debug accessControl allow role](https://github.com/nodefony/nodefony-core/commit/3a9544f734e3589a9a07497e9935a8b38df65677)
+- [clean doc bundle](https://github.com/nodefony/nodefony-core/commit/9107b95c56e7fbcc37dba58a0f63ac8666801b89)
+- [upgrade deps](https://github.com/nodefony/nodefony-core/commit/41d77bef6417617b91ed6479b9ebf1c4c4a2de47)
+- [debug documentation bundle](https://github.com/nodefony/nodefony-core/commit/953cd450204a601262482d5e7cc54e9b5efa2454)
+- [npmignore change](https://github.com/nodefony/nodefony-core/commit/c0eb5a6731722f225a7353b486c697d9fa744dc9)
+- [debug service git](https://github.com/nodefony/nodefony-core/commit/1c9fe7cedc6e2692482e5e0f668e12e043a3115f)
+- [upgrade documentation bundle with simple-git](https://github.com/nodefony/nodefony-core/commit/5ab7bb5800a77d108b0d96d48f452a782eb3c276)
+- [bundle documenttion](https://github.com/nodefony/nodefony-core/commit/95ed94914b5932eea17e5b31f454314a74dd1d79)
+- [documentation bundle](https://github.com/nodefony/nodefony-core/commit/e0013c4e5c2caf8b1932620a71c2ebe9e0bd9a9a)
+- [documentation migration bootstrap4](https://github.com/nodefony/nodefony-core/commit/fbe23d9882e9cbd754b14cd47dab4edeeb474715)
+- [Update README](https://github.com/nodefony/nodefony-core/commit/384c8354277596876438456f34494abe5d45548e)
+- [windows portage](https://github.com/nodefony/nodefony-core/commit/e9df48de3a77dd4c62b7af290f64a6ca1eb0e008)
+- [documentation migration bootstrap4](https://github.com/nodefony/nodefony-core/commit/a818bbf609ec51b06b0e0405cedbffb405884e71)
+- [upgrade deps](https://github.com/nodefony/nodefony-core/commit/839744641163f5e93622d4a9efdc2404716827fa)
+- [upgrade deps](https://github.com/nodefony/nodefony-core/commit/7215582d0b1b07614903a517926f0b2863dd96bc)
+
+---
+
+## v4.1.0-beta.4 (11/01/2019)
+- [nodefony release 4.1.0-beta.4](https://github.com/nodefony/nodefony-core/commit/7ce4df806712df6b2b2e88c40f0c18b7eb4e2d13)
+- [debug firewall authorisation](https://github.com/nodefony/nodefony-core/commit/4263fd3264a6626affcc3a460fb8ca307cb7709a)
+- [upgrade deps](https://github.com/nodefony/nodefony-core/commit/468bb0007a94a051e4736d8760fd29d77e9d5053)
+- [windows debug](https://github.com/nodefony/nodefony-core/commit/d7c36becdd52dc77981922a52e745a074f3201af)
+- [debug react config webpack](https://github.com/nodefony/nodefony-core/commit/2997937b54103f63aaa3382546ab5f246dbefbca)
+- [upgrade pm2](https://github.com/nodefony/nodefony-core/commit/4b6ba302626dd3bac9943085300abf2f28badc83)
+- [add route for social button in skeleton](https://github.com/nodefony/nodefony-core/commit/7fcae4f0f2d5b12dfc1b8ebe0100f384e54675a1)
+
+---
+
 ## v4.1.0-beta.3 (08/01/2019)
 - [nodefony release 4.1.0-beta.3](https://github.com/nodefony/nodefony-core/commit/9edc63ea407a1d1ba9d653764eef284decfd1b8f)
 - [add firewall config social login](https://github.com/nodefony/nodefony-core/commit/77950b749c6cf67d99a88771e6b493e906144fef)

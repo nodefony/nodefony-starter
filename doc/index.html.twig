@@ -1,0 +1,24 @@
+{{trans_default_domain("doc")}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-nodefony">{{ "Bundles" | trans() }}
+        </div>
+        <div class="card-body" style="overflow: auto;">
+          <ul>
+            {% for myBundle in bundles %}
+              <li>
+                <a href="{{path('documentation-version', {version:myBundle.version, bundle:myBundle.name})}}">
+                  <strong>{{myBundle.name}}</strong>
+                  <span class="badge badge-pill badge-secondary pull-right">{{myBundle.version}}</span></a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {{ readme }}
+    </div>
+  </div>
+</div>
