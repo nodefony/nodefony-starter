@@ -135,22 +135,22 @@ cat $ROOT_CA_INTERMEDIATE/certs/server.nodefony-starter.cert.pem \
 
 
 # copy in directory ca
-rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/ca/nodefony-starter-root-ca.crt.pem
-rsync -a $ROOT_CA/private/ca.key.pem $ROOT_DIR/ca/nodefony-starter-root-ca.key.pem
+cp -r $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/ca/nodefony-starter-root-ca.crt.pem
+cp -r $ROOT_CA/private/ca.key.pem $ROOT_DIR/ca/nodefony-starter-root-ca.key.pem
 
 # copy in directory client
 # Create a public key
 openssl rsa \
   -in $ROOT_CA_INTERMEDIATE/private/intermediate.key.pem \
   -pubout -out $ROOT_DIR/client/pubkey.pem
-rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/client/chain.pem
+cp -r $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/client/chain.pem
 
 
 # copy in directory server
-rsync -a $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/server/chain.pem
-rsync -a $ROOT_CA_INTERMEDIATE/private/nodefony-starter.key.pem $ROOT_DIR/server/privkey.pem
-rsync -a $ROOT_CA_INTERMEDIATE/certs/server.nodefony-starter.cert.pem $ROOT_DIR/server/cert.pem
-rsync -a $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem $ROOT_DIR/server/fullchain.pem
+cp -r $ROOT_CA/certs/ca.cert.pem $ROOT_DIR/server/chain.pem
+cp -r $ROOT_CA_INTERMEDIATE/private/nodefony-starter.key.pem $ROOT_DIR/server/privkey.pem
+cp -r $ROOT_CA_INTERMEDIATE/certs/server.nodefony-starter.cert.pem $ROOT_DIR/server/cert.pem
+cp -r $ROOT_CA_INTERMEDIATE/certs/ca-chain.cert.pem $ROOT_DIR/server/fullchain.pem
 
 
 echo "####################";

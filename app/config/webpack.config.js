@@ -30,7 +30,7 @@ module.exports = webpackMerge(config, {
     publicPath: publicPath,
     filename: "./js/[name].js",
     library: "[name]",
-    libraryTarget: "umd"
+    libraryExport: "default"
   },
   externals: {},
   resolve: {},
@@ -72,12 +72,7 @@ module.exports = webpackMerge(config, {
           }, {
             loader: 'postcss-loader', // Run post css actions
             options: {
-              plugins: function () { // post css plugins, can be exported to postcss.config.js
-                return [
-                  require('precss'),
-                  require('autoprefixer')
-                ];
-              }
+              plugins: () => [require('precss'), require('autoprefixer')]
             }
           }, {
             loader: "sass-loader",
@@ -105,30 +100,6 @@ module.exports = webpackMerge(config, {
             name: "[name].[ext]",
             publicPath: `/${bundleName}/assets/images/`,
             outputPath: "/images/"
-          }
-        }, {
-          loader: 'image-webpack-loader',
-          options: {
-            disable: dev,
-            mozjpeg: {
-              progressive: true,
-              quality: 65
-            },
-            // optipng.enabled: false will disable optipng
-            optipng: {
-              enabled: false,
-            },
-            pngquant: {
-              quality: '65-90',
-              speed: 4
-            },
-            gifsicle: {
-              interlaced: false,
-            },
-            // the webp option will enable WEBP
-            webp: {
-              quality: 75
-            }
           }
         }]
       }

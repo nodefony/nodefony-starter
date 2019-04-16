@@ -7,10 +7,13 @@
     "nodefony": "nodefony",
     "pm2": "pm2",
     "start": "nodefony",
+    "build": "nodefony build",
+    "rebuild": "nodefony rebuild",
     "stop": "nodefony stop",
     "prod": "nodefony prod",
     "kill": "nodefony kill",
-    "test": "nodefony test"
+    "test": "nodefony test",
+    "help": "nodefony -h"
   },
   "private": true,
   "keywords": [
@@ -29,13 +32,14 @@
     "node": ">=8"
   },
   "dependencies": {
-    "mongoose": "^5.4.2",
-    "nodefony": "^4.2.0-beta.2",
-    "sequelize": "5.0.0-beta.15",
-    "webpack": "^4.28.3",
-    "webpack-dev-server": "^3.1.14"
+    "mongoose": "^5.5.1",
+    "nodefony": "^4.3.3",
+    "sequelize": "^5.4.0",
+    "webpack": "^4.30.0",
+    "webpack-dev-server": "^3.3.1"
   },
   "devDependencies": {
+    "create-react-app": "^2.1.8",
     "node-pre-gyp": "^0.12.0"
   },
   "author": "admin <admin@nodefony.com>",

@@ -6,14 +6,8 @@ module.exports = {
     defaults: {
       controller: "app:app:index"
     }
-  },
-  documentation: {
-    pattern: "/documentation",
-    defaults: {
-      controller: "app:app:documentation"
-    }
   }
-  //GOOGLE AUTH AREA
+  //GOOGLE ROUTE AREA oauth
   /*googleArea: {
     pattern: "/login/google",
     defaults: {
@@ -26,7 +20,7 @@ module.exports = {
       controller: "framework:default:401"
     }
   },
-  // GITHUB AUTH AREA
+  // GITHUB ROUTE AREA oauth
   githubArea: {
     pattern: "/login/github",
     defaults: {

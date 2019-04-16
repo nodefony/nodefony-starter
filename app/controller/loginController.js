@@ -3,7 +3,6 @@ module.exports = class loginController extends nodefony.controller {
   constructor(container, context) {
     super(container, context);
     this.security = this.get("security");
-    this.entity = this.getEntity("user");
     this.startSession();
   }
 

@@ -10,11 +10,13 @@
     </a>
   <div class="collapse navbar-collapse" id="header_nodefony">
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <form class="form-inline" action="{{url('documentation')}}">
-          <button class="btn btn-sm btn-outline-secondary" type="submit">Documentation</button>
-        </form>
-      </li>
+      {% if  urlDoc %}
+        <li class="nav-item active">
+          <form class="form-inline" action="{{urlDoc}}">
+            <button class="btn btn-sm btn-outline-secondary" type="submit">Documentation</button>
+          </form>
+        </li>
+      {% endif %}
     </ul>
     <ul class="navbar-nav mt-2 mt-lg-0">
       <form action="{{url('lang')}}" name="formLang" id="formLang" class="form-inline">

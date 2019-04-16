@@ -1,40 +1,45 @@
 /*
  *
- *	ENTRY POINT WEBPACK bundle APP
- *
+ *	ENTRY POINT
+ *  WEBPACK bundle APP
+ *  client side
  */
-require('bootstrap');
-require('../scss/custom.scss');
 
-module.exports = function () {
-  /*
-   *	Class Bundle App client side
-   */
-  const App = class App {
-    constructor() {
-      let selectorLang = global.document.getElementById("language");
-      if (selectorLang) {
-        selectorLang.addEventListener("change", (e) => {
-          //window.location.href = "?lang=" + this.value;
-          this.changeLang();
-          e.preventDefault();
-        });
-      }
+// javascript bootstrap library
+import 'bootstrap';
+
+// bootstrap scss framework
+import '../scss/custom.scss';
+
+/*
+ *	Class Bundle App
+ */
+class App {
+  constructor() {
+    this.addEvents();
+  }
+
+  addEvents() {
+    let selectorLang = global.document.getElementById("language");
+    if (selectorLang) {
+      selectorLang.addEventListener("change", (e) => {
+        //window.location.href = "?lang=" + this.value;
+        this.changeLang();
+        e.preventDefault();
+      });
     }
+  }
 
-    changeLang(query) {
-      if (query) {
-        return window.location.href = "?language=" + query;
-      }
-      let form = global.document.getElementById("formLang");
-      if (form) {
-        form.submit();
-      }
+  changeLang(query) {
+    if (query) {
+      return window.location.href = "?language=" + query;
     }
-
-  };
-  return new App();
-}();
+    let form = global.document.getElementById("formLang");
+    if (form) {
+      form.submit();
+    }
+  }
+}
 
 /*
  * HMR
@@ -46,3 +51,5 @@ if (module.hot) {
     }
   });
 }
+
+export default new App();
