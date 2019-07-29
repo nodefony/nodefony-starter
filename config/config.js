@@ -41,7 +41,7 @@ module.exports = {
     realtime: true,
     monitoring: true,
     mail: true,
-    documentation: false,
+    documentation: true,
     unitTest: true,
     redis: false,
     mongo: false,
@@ -91,7 +91,9 @@ module.exports = {
      *       }
      */
     bundles: {
-      "users-bundle": path.resolve("src", "bundles", "users-bundle")
+      "users-bundle": path.resolve("src", "bundles", "users-bundle"),
+      //"vue-bundle": path.resolve("src", "bundles", "vue-bundle"),
+      //"react-bundle": path.resolve("src", "bundles", "react-bundle")
     },
     /**
      * SYSLOG NODEFONY
