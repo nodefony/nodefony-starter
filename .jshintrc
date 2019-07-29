@@ -1,5 +1,5 @@
 {
-  "esversion": 6,
+  "esversion": 8,
   "node": true,
   "undef": true,
   "unused": true,
@@ -8,6 +8,9 @@
   "curly": true,
   "loopfunc": true,
   "multistr": true,
+  "browser": true,
+  "node": true,
+  "shelljs": true,
   "globals": {
     "nodefony": true,
     "kernel": true,
@@ -51,6 +54,7 @@
     "stage": true,
     "$": true,
     "jQuery": true,
-    "Rx": true
+    "Rx": true,
+    "inquirer": true
   }
 }

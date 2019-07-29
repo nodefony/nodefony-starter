@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{nodefony.local|escape}}">
+  <head>
+    {% block head %}{% endblock %}
+    {% block meta %}
+      <meta charset="utf-8">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="generator" content="Nodefony (https://nodefony.net)">
+      <meta name="keywords" content="web,Framework,realtime,node.js,symfony,javascript,npm,linux">
+      <link rel="icon" type="image/x-icon" href="/app/favicon.ico"/>
+    {% endblock %}
+    {% block description %}
+      <meta name="description" content="Node.js full-stack web framework Symfony Like">
+    {% endblock %}
+    <title>
+      {% block title %}{{nodefony.name|escape}}{% endblock %}
+    </title>
+    {% block stylesheets %}
+      <link rel="stylesheet" href="{{CDN('stylesheet')}}/framework-bundle/assets/css/framework.css"/>
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+    {% block javascripts %}
+      <script type="text/javascript" src="{{CDN('javascript')}}/framework-bundle/assets/js/framework.js"></script>
+    {% endblock %}
+  </body>
+</html>

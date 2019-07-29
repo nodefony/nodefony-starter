@@ -1,0 +1,318 @@
+{% extends '../base.html.twig' %}
+
+{{trans_default_domain("users")}}
+
+{% set error = getFlashBag("error") %}
+{% set info = getFlashBag("info") %}
+
+{% if queryString  %}
+  {% set user = queryString %}
+{% endif %}
+
+
+{% block title %}
+  {{ "user"|trans}} {{nodefony.name|escape}}
+{% endblock %}
+
+
+
+{% block body %}
+  {% block header %}
+    {{ render( controller("users:users:header" )) }}
+  {% endblock %}
+  <div class="container mt-8">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          {% if user %}
+            <div class="card-header"> {{ "user"|trans}} {{user.username|escape}}</div>
+          {% else %}
+            <div class="card-header">{{ "create"|trans}} {{ "user"|trans}}</div>
+          {% endif %}
+          <div class="card-body">
+            {% if info %}
+              <div class="alert alert-primary" role="alert">
+                <strong>INFO : </strong> {{info|escape}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endif %}
+            {% if error %}
+              <div class="alert alert-danger" role="alert">
+                <strong>ERROR : </strong> {{error|escape}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endif %}
+            <article class="card-body">
+              {% if user and not queryString %}
+                <form name="my-form" action="{{url("nodefony-user-update",{username:user.username})}}" method="POST">
+              {% else %}
+                <form name="my-form" action="{{url("nodefony-user-create",{user:user.username})}}" method="POST">
+              {% endif %}
+                <div class="form-group row">
+                  <label for="username" class="col-md-4 col-form-label text-md-right">{{"username"|trans}}</label>
+                  <div class="col-md-6">
+                    <input autocomplete="username" type="text" id="username" class="form-control" name="username" value="{{user.username|escape}}">
+                    {% if user %}
+                      <input  type="hidden" id="oldusername" class="form-control" name="oldusername" value="{{user.username|escape}}">
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="col form-group">
+                    <label for="name">{{"firstName"|trans}}</label>
+                    <input type="text" id="name" class="form-control" name="name" placeholder=" " value="{{user.name|escape}}">
+                  </div> <!-- form-group end.// -->
+                  <div class="col form-group">
+                    <label for="surname">{{"lastName"|trans}}</label>
+                    <input type="text" id="surname" class="form-control" name="surname" placeholder=" " value="{{user.surname|escape}}">
+                  </div> <!-- form-group end.// -->
+                </div> <!-- form-row end.// -->
+                <div class="form-group">
+                  <label>{{"email"|trans}}</label>
+                  <input type="email" id="email" class="form-control" name="email" placeholder="" value="{{user.email|escape}}">
+                  <small class="form-text text-muted">{{"textEmail"|trans}}</small>
+                </div> <!-- form-group end.// -->
+                <div class="form-row">
+                  <div class="col form-group">
+                    <label class="pb-2">{{"gender"|trans}}</label>
+                    <div class="input-group">
+                      {% set genders=[
+                        {name:trans('male'),value:"male"},
+                        {name:trans("female"),value:"female"},
+                        {name:trans("none"),value:"none"}
+                      ] %}
+                      {% for gender in genders %}
+                        {% if user.gender  == gender.value %}
+                          {% set checked="checked='checked'" %}
+                        {% else %}
+                          {% set checked="" %}
+                        {% endif %}
+                        <label class="form-check mr-4">
+                          <input class="form-check-input" {{checked}} type="radio" name="gender" value="{{gender.value}}">
+                          <span class="form-check-label">{{gender.name}}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col form-group">
+                      <label>{{"lang"|trans("messages")}}</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="lang">{{ trans("lang","messages") }} : </label>
+                      </div>
+                      <select class="custom-select" name="lang" id="lang">
+                        {% if user %}
+                          {% for opt in langs %}
+                            {% if user.lang == opt.value %}
+                              <option value="{{ opt.value|escape}}" selected>
+                                {{ opt.name|escape }}
+                              </option>
+                            {% else %}
+                              <option value="{{ opt.value|escape}}">
+                                {{ opt.name|escape }}
+                              </option>
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          {% for opt in langs %}
+                            {% if locale == opt.value %}
+                              <option value="{{ opt.value|escape}}" selected>
+                                {{ opt.name|escape }}
+                              </option>
+                            {% else %}
+                              <option value="{{ opt.value|escape}}">
+                                {{ opt.name|escape }}
+                              </option>
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row" >
+                  <div class="form-group col">
+                    {% if is_granted("ROLE_ADMIN") %}
+                      {% set roles=["ROLE_USER", "ROLE_ADMIN","ROLE_ANONYMOUS"] %}
+                    {% else %}
+                      {% set roles=["ROLE_USER","ROLE_ANONYMOUS"] %}
+                    {% endif %}
+                    {% set userRoles=user.roles %}
+                    <label>Role</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupRole">ROLES</label>
+                      </div>
+                      <select class="custom-select" id="inputGroupRole">
+                        <option value="none" selected>{{ "choose"|trans }}</option>
+                        {% for role in roles %}
+                          <option value="{{role|escape}}">{{role|escape}}</option>
+                        {% endfor %}
+                      </select>
+                      <div class="input-group-append ml-3" >
+                        <label class="input-group-text" for="inputGroupRole" style="cursor: pointer;">
+                          <i id="iconGroupRole" class="fa fa-wrench "></i>
+                        </label>
+                      </div>
+                    </div>
+                  </div> <!-- form-group end.// -->
+                  <div class="form-group col">
+                    <label>{{"username"|trans}} ROLES :</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupRole">ROLES</label>
+                      </div>
+                      <select name="roles" id="roles" class="custom-select" multiple disabled>
+                        {% for role in roles %}
+                          {% for userRole in userRoles %}
+                            {% if userRole ==  role %}
+                              <option selected="selected" value="{{role|escape}}">
+                                {{role}}
+                              </option>
+                            {% endif %}
+                          {% endfor %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div> <!-- form-row.// -->
+                <div class="form-group">
+                  {% if user.enabled == "true" or user.enabled == true or (not user) %}
+                    {% set checked1="checked" %}
+                    {% set checked2="" %}
+                  {% else %}
+                    {% set checked1="" %}
+                    {% set checked2="checked" %}
+                  {% endif %}
+                  <label for="enableRadio1" class="col-form-label text-md-right">{{"enable"|trans}}</label>
+                  <div class="input-group">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" {{checked1}} type="radio" name="enabled" id="enableRadio1" value="true">
+                      <label class="form-check-label" for="enableRadio1">{{"enable"|trans}}</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" {{checked2}} type="radio" name="enabled" id="enableRadio2" value="false">
+                      <label class="form-check-label" for="enableRadio2">{{"disable"|trans}}</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  {% if user and not queryString %}
+                    {% if not is_granted("ROLE_ADMIN")%}
+                    <label for="old-passwd">{{"oldPasswd"|trans}}</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text password-button" id="validationOld">
+                          <i class="fa fa-eye-slash password-icon"></i>
+                        </span>
+                      </div>
+                      <input
+                      name="old-passwd"
+                      id="old-passwd"
+                      type="password"
+                      class="form-control password"
+                      placeholder="{{"oldPasswd"|trans}}"
+                      autocomplete="current-password"
+                      aria-describedby="validationOld">
+                    </div>
+                    {% endif %}
+                    <label for="passwd">{{"newPasswd"|trans}}</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text password-button" id="validationNew">
+                            <i class="fa fa-eye-slash password-icon"></i>
+                          </span>
+                        </div>
+                        <input
+                        name="passwd"
+                        id="passwd"
+                        type="password"
+                        autocomplete="new-password"
+                        class="form-control password"
+                        placeholder="{{"newPasswd"|trans}}"
+                        aria-describedby="validationNew">
+                    </div>
+                    {% if is_granted("ROLE_ADMIN") %}
+                      <label for="confirm">{{"confirmPasswd"|trans}}</label>
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text password-button" id="validationConfirm">
+                              <i class="fa fa-eye-slash password-icon"></i>
+                            </span>
+                          </div>
+                          <input
+                          name="confirm"
+                          id="confirm"
+                          type="password"
+                          autocomplete="current-password"
+                          class="form-control password"
+                          placeholder="{{"confirmPasswd"|trans}}"
+                          aria-describedby="validationConfirm">
+                      </div>
+                    {% endif %}
+                  {% else %}
+                    <label for="passwd">{{"createPasswd"|trans}}</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text password-button" id="validationPasswd">
+                          <i class="fa fa-eye-slash password-icon"></i>
+                        </span>
+                      </div>
+                      <input
+                      name="passwd"
+                      id="passwd"
+                      type="password"
+                      autocomplete="new-password"
+                      class="form-control password"
+                      placeholder="{{"createPasswd"|trans}}"
+                      aria-describedby="validationPasswd"
+                      required>
+                    </div>
+                    <label for="confirm">{{"confirmPasswd"|trans}}</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text password-button" id="validationConfirm">
+                            <i class="fa fa-eye-slash password-icon"></i>
+                          </span>
+                        </div>
+                        <input
+                        name="confirm"
+                        id="confirm"
+                        type="password"
+                        autocomplete="current-password"
+                        class="form-control password"
+                        placeholder="{{"confirmPasswd"|trans}}"
+                        aria-describedby="validationConfirm"
+                        required>
+                    </div>
+                  {% endif %}
+
+                </div> <!-- form-group end.// -->
+
+                <div class="form-group">
+                  {% if user and not queryString %}
+                    <button type="submit" class="btn btn-primary btn-block"> {{"update"|trans}}</button>
+                  {% else %}
+                    <button type="submit" class="btn btn-primary btn-block"> {{"register"|trans}}</button>
+                  {% endif %}
+                </div> <!-- form-group// -->
+                {% if not user %}
+                  <small class="text-muted">{{"textRegister"|trans}}</small>
+                {% endif %}
+              </form>
+            </article> <!-- card-body end .// -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% block footer %}
+    {{ render( controller("users:users:footer" )) }}
+  {% endblock %}
+
+{% endblock %}

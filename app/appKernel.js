@@ -7,7 +7,8 @@ module.exports = class appKernel extends nodefony.kernel {
     // kernel constructor
     try {
       super(environment, cli, settings);
-    } catch (e) {
+
+          } catch (e) {
       throw e;
     }
   }

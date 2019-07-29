@@ -7,6 +7,7 @@ const path = require("path");
 
 module.exports = {
   locale: "en_en",
+  type  : "sandbox",
   App: {
     projectYear: 2019,
     locale: "en_en",
@@ -28,14 +29,14 @@ module.exports = {
    *  or
    *      watch:{
    *        controller:             true
-   *        config:                 true        // only  routing.yml
+   *        config:                 true        // only routing and services
    *        views:                  true
    *        translations:           true
    *        webpack:                true
    *      }
    *
    */
-  watch: false,
+  watch: true,
 
   /**
    *    OVERRIDE MONITORING BUNDLE
@@ -100,15 +101,19 @@ module.exports = {
    */
   "mail-bundle": {
     nodemailer: {
-      default: "free",
+      default: "gmail",
       transporters: {
-        /*free: {
-          host: "smtp.free.fr",
+        /*gmail : {
+          host: "smtp.gmail.com",
           port: 465,
           secure: true, // true for 465, false for other ports
           auth: {
-            user: "", // generated  user
-            pass: "" // generated  password
+            user: "user@gmail.com",
+            pass: "xxxxxxxxx"
+          },
+          tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false
           }
         }*/
       }

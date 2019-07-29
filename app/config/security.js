@@ -1,8 +1,8 @@
 /**
  *  Firewall Config  service Security
- */
-module.exports = {
+ **/
 
+module.exports = {
   security: {
     /**
      *  FIREWALL strategy
@@ -11,161 +11,45 @@ module.exports = {
      *  Strategy can be : none, migrate, invalidate
      */
     session_fixation_strategy: "migrate",
-
     /**
      *  FIREWALL  PROVIDER
      */
-    providers: {
-      anonymous: {
-        anonymous: {
-          provider: "anonymous"
-        }
-      },
-      nodefony: {
-        entity: {
-          name: "user",
-          property: "username"
-        }
-      }
-    },
-    encoders: {
-      user: {
-        algorithm: "bcrypt",
-        saltRounds: 13
-      }
-    },
-
+    providers: {},
+    encoders: {},
     /**
      *  FIREWALL  Authorization
+     *  Example :
+     *    access_control: [{
+     *      path: /^\/nodefony/,
+     *      roles: ["ROLE_MONITORING"],
+     *      requires_channel: "https",
+     *      allow_if: {
+     *       roles: ["ROLE_ADMIN", "ROLE_USER"]
+     *      }
+     *    }]
      */
-    access_control: [{
-      path: /^\/nodefony/,
-      roles: ["ROLE_MONITORING"],
-      requires_channel: "https",
-      allow_if: {
-        roles: ["ROLE_ADMIN", "ROLE_USER"]
-      }
-    }],
-
+    access_control: [],
     /**
      * FIREWALL  AREAS
-     */
-    firewalls: {
-      // SECURITY AREA MONITORING  <passport-local>
-      nodefony_area: {
-        pattern: /^\/nodefony/,
-        provider: "nodefony",
-        form_login: {
-          login_path: "/login/nodefony",
-          check_path: "/login/check",
-          default_target_path: "/"
-        },
-        "passport-local": {
-          usernameField: 'username',
-          passwordField: 'passwd'
-        },
-        logout: "/logout",
-        context: null,
-        redirectHttps: true
-      }
-    }
-
+     *  Example :
+     *  SECURITY AREA MONITORING  <passport-local>
+     * nodefony_area: {
+     *   pattern: /^\/nodefony/,
+     *   provider: "nodefony",
+     *   form_login: {
+     *     login_path: "/login/nodefony",
+     *     check_path: "/login/check",
+     *     default_target_path: "/"
+     *   },
+     *   "passport-local": {
+     *     usernameField: 'username',
+     *     passwordField: 'passwd'
+     *   },
+     *   logout: "/logout",
+     *   context: null,
+     *   redirectHttps: true
+     * }
+     **/
+    firewalls: {}
   }
 };
-/* EXAMPLE */
-/*
- * SECURITY AREA GOOGLE
- *
- * google_area:{
- *   pattern                 : /^\/login\/google/,
- *   provider                : false,
- *   form_login:{
- *     default_target_path   : "/"
- *   },
- *   passport-google-oauth20 :{
- *     clientID              : "clientID",
- *     clientSecret          : "clientSecret",
- *     callbackURL           : "https://nodefony-starter.com/login/google/callback",
- *     scopes                : ["profile","email"]
- *   },
- *   logout                  : "/logout",
- *   context                 : "google",
- *   redirectHttps           : true,
- *   crossDomain :{
- *     allow-origin:{
- *       google              : "accounts.google.com"
- *     },
- *     "Access-Control":{
- *       "Access-Control-Allow-Methods"    : "GET, POST, PUT, DELETE, OPTIONS",
- *       "Access-Control-Allow-Headers"    : "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type",
- *       "Access-Control-Allow-Credentials": true,
- *       "Access-Control-Expose-Headers"   : "WWW-Authenticate ,X-Json",
- *       "Access-Control-Max-Age"         : 10
- *     }
- *   }
- * }
- */
-
-/**
- * SECURITY AREA GITHUB
- *
- * github_area:{
- *   pattern                 : /^\/login\/github/,
- *   provider                : false,
- *   form_login:{
- *     default_target_path   : "/"
- *   },
- *   "passport-github2":{
- *     clientID              : "clientID",
- *     clientSecret          : "clientSecret",
- *     callbackURL           : "https://nodefony-starter.com/login/github/callback",
- *     scopes                : [ "user:email" ]
- *   },
- *   logout                  : "/logout",
- *   context                 : "github",
- *   redirectHttps           : true,
- *   crossDomain:{
- *       "allow-origin":{
- *         github            : "github.com"
- *       },
- *       "Access-Control":{
- *         "Access-Control-Allow-Methods"    : "GET, POST, PUT, DELETE, OPTIONS",
- *         "Access-Control-Allow-Headers"    : "ETag, Authorization,  X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type",
- *         "Access-Control-Allow-Credentials": true,
- *         "Access-Control-Expose-Headers"   : "WWW-Authenticate ,X-Json",
- *         "Access-Control-Max-Age"          : 10
- *      }
- *   }
- * }
- */
-
-/**
- * SECURITY AREA LDAP
- * CHECK ldapjs-search -u ldap://ldap-server.com -b "dc=object,dc=com" "uid=user"
- *
- * ldap_area: {
- *   pattern                 : /^\//,
- *   provider                : false,
- *   form_login: {
- *     login_path            : "/login/ldap",
- *     default_target_path   : "/"
- *   },
- *   "passport-ldap": {
- *     server: {
- *       url                 : 'ldap://ldad-server.com',
- *       searchBase          : 'dc=nodefony,dc=com',
- *       searchFilter        : '(uid={{username}})'
- *     },
- *     usernameField         : 'username',
- *     passwordField         : 'passwd',
- *     profile_wrapper: {
- *       username            : "profile.uid",
- *       name                : "profile.sn",
- *       surname             : "profile.givenName",
- *       email               : "profile.mail"
- *     }
- *   },
- *   logout                  : "/logout",
- *   context                 : "ldap"
- * }
- */

@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/nodefony/nodefony-core/raw/master/src/nodefony/bundles/framework-bundle/Resources/public/images/nodefony-logo.png"><br>
 </p>
-<h1 align="center">NODEFONY V4</h1>
+<h1 align="center">NODEFONY V5</h1>
 
 [![npm package](https://nodei.co/npm/nodefony.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nodefony)
 
@@ -39,10 +39,10 @@ Nodefony is not an exhaustive port of symfony !
 -   [HTTP2](https://nodejs.org/api/http2.html)  http2 ready node module provides an implementation of the HTTP/2 (push server ready).
 -   Dynamics routing
 -   ORM ([Sequelize](http://docs.sequelizejs.com/), [mongoose](http://mongoosejs.com/index.html))
--   Simple Databases Services connections (Redis, Mongo, Elasticsearch).
+-   Simple Databases Services connections (Redis, Mongo, Elasticsearch, mysql, sqlite ...).
 -   MVC templating ([Twig](https://github.com/twigjs/twig.js))
 -   Notion of real-time context in Action Controller (websocket).
--   Notion of synchronous or asynchronous execution in Action Controller (Promise).
+-   Notion of synchronous or asynchronous execution in Action Controller (Promise, Async, Await).
 -   Services Containers, Dependency Injection (Design Patterns)
 -   Sessions Manager (ORM, memcached)
 -   Authentication Manager (Digest, Basic, oAuth, Local, ldap, jwt, openid)
@@ -66,7 +66,7 @@ Nodefony is not an exhaustive port of symfony !
 -   [Passport](http://passportjs.org/) Simple, unobtrusive authentication for Node.js .
 -   ~~[Angular](https://github.com/angular/angular-cli) Experimental Bundle Generator ( Angular cli no longer allows the ejection of a webpack config)~~
 
-**Nodefony 4  adds the following features** :
+**Nodefony 5  adds the following features** :
 
 -   C++ Addons (Binding in Bundle)
 -   Authorisations
@@ -140,6 +140,10 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 # or
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+
+$ source ~/.bashrc # or source ~/.bash_profile
+$ nvm ls-remote # show all remote versions  
+$ nvm ls # show local versions
 ```
 
 **[Node.js](https://nodejs.org/) Installation with [NVM](https://github.com/creationix/nvm)** :
@@ -165,8 +169,9 @@ yarn global add nodefony
 ## <a name="installwin32"></a> Windows Installation
 
 **[Node.js](https://nodejs.org/en/) Installation** :
-
-  To install or update Node.js, you can download installer here [Node.js](https://nodejs.org/en/)
+ [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows)
+ to easily switch Node versions between different projects.
+ or To install or update Node.js, you can download installer here [Node.js](https://nodejs.org/en/)
 
 **[Nodefony](https://nodefony.net) Excutable Installation** :
 

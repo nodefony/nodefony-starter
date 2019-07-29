@@ -5,56 +5,13 @@
 
 {% block body %}
 
-  {% block header %}
-    {{ render( controller("app:app:header" )) }}
-  {% endblock %}
+<div class="hello">
 
-  <div class="container text-center mt-8">
-    <div class="row justify-content-center nodefony">
-      <div class="col-md-12">
-        {% if info %}
-          <div class="alert alert-primary alert-dismissible fade show  mt-2" role="alert">
-            <strong>INFO :</strong>
-            {{info|escape}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% endif %}
-        {% if error %}
-          <div class="alert alert-danger alert-dismissible mt-2" role="alert">
-            <strong>ERROR :</strong>
-            {{error|escape}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% endif %}
-        <img class="mb-4" src="{{CDN('image')}}/app/images/app-logo.png" alt="">
-        <h1>
-          {% filter upper %}
-            {{nodefony.name|escape}}
-          {% endfilter %}
-        </h1>
-        <p>{{description|escape}}</p>
-        <p class="h2 mt-3">
-          {{trans("welcome")}}
-        </p>
-        <p class="h2 mt-3 mb-5">
-          {{user.name|escape}}
-          {{user.surname|escape}}
-        </p>
-        <p class="h2 mt-3 mb-5">
-          <a href="{{url('nodefony-user')}}" class="btn btn-secondary" tabindex="-1" role="button">
-            {{"users"|trans}}
-          </a>
-        </p>
-      </div>
-    </div>
-  </div>
+  <img class=displayed src=/framework-bundle/images/nodefony-logo.png>
+  <h1>{{ name }}</h1>
+  <h2>{{ description }}</h2>
+  <img class="displayed"  style=" width:10%; height:10%" src="/framework-bundle/images/nodejs/nodejs-new-pantone-black.png">
 
-  {% block footer %}
-    {{ render( controller("app:app:footer" )) }}
-  {% endblock %}
+</div>
 
 {% endblock %}

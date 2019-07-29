@@ -1,7 +1,7 @@
 {
   "name": "nodefony-starter",
   "version": "1.0.0",
-  "description": "description nodefony-starter",
+  "description": "Project Description",
   "main": "nodefony",
   "scripts": {
     "nodefony": "nodefony",
@@ -32,15 +32,15 @@
     "node": ">=8"
   },
   "dependencies": {
-    "mongoose": "^5.5.1",
-    "nodefony": "^4.3.3",
-    "sequelize": "^5.4.0",
-    "webpack": "^4.30.0",
-    "webpack-dev-server": "^3.3.1"
+    "mongoose": "^5.6.7",
+    "nodefony": "^5.0.0",
+    "sequelize": "^5.11.0",
+    "webpack": "^4.38.0",
+    "webpack-dev-server": "^3.7.2"
   },
   "devDependencies": {
-    "create-react-app": "^2.1.8",
-    "node-pre-gyp": "^0.12.0"
+    "node-gyp": "^5.0.2",
+    "node-pre-gyp": "^0.13.0"
   },
   "author": "admin <admin@nodefony.com>",
   "readmeFilename": "README.md",

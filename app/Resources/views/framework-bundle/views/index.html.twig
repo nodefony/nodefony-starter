@@ -1,12 +1,6 @@
-{% extends "../../base.html.twig" %}
+{% extends "./base.html.twig" %}
 {% block body %}
   <div class="container">
-    {% block header %}
-      {{ render( controller("app:app:header" )) }}
-    {% endblock %}
     {% block content %}{% endblock %}
-    {% block footer %}
-      {{ render( controller("app:app:footer" )) }}
-    {% endblock %}
   </div>
 {% endblock %}

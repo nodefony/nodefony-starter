@@ -90,8 +90,9 @@ module.exports = {
      *         "hello-bundle" : path.resolve(__dirname, "..", "src", "bundles", "hello-bundle"),
      *       }
      */
-    bundles: {},
-
+    bundles: {
+      "users-bundle": path.resolve("src", "bundles", "users-bundle")
+    },
     /**
      * SYSLOG NODEFONY
      */
