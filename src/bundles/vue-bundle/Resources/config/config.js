@@ -34,7 +34,14 @@ module.exports = {
    *      }
    *
    */
-  watch: true
+  watch: true,
+
+  /**
+   * DEV SERVER
+   */
+  devServer: {
+    hot: true
+  }
 
   /**
    *

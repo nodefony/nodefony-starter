@@ -13,5 +13,11 @@
  **/
 
 
-  module.exports = {};
-
+  module.exports = {
+    vue: {
+      pattern: "/vue*",
+      defaults: {
+        controller: "vue-bundle:default:index"
+      }
+    }
+  };
