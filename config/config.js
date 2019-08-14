@@ -92,8 +92,8 @@ module.exports = {
      */
     bundles: {
       "users-bundle": path.resolve("src", "bundles", "users-bundle"),
-      "vue-bundle": path.resolve("src", "bundles", "vue-bundle"),
-      "react-bundle": path.resolve("src", "bundles", "react-bundle")
+      //"vue-bundle": path.resolve("src", "bundles", "vue-bundle"),
+      //"react-bundle": path.resolve("src", "bundles", "react-bundle")
     },
     /**
      * SYSLOG NODEFONY
