@@ -104,6 +104,8 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 
 -   **[npm](https://www.npmjs.com/)** or **[yarn](https://yarnpkg.com/lang/en/)**  Packages Manager for javascript application
 
+-   **[nvm](https://github.com/nvm-sh/nvm/)**  Node Version Manager - POSIX-compliant bash script to manage multiple active node.js versions
+
 -   **[OpenSSL](https://www.openssl.org/)** Toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols
 
 -   **[GNU Bash](https://www.gnu.org/software/bash/)** Bash is the GNU Project's shell
@@ -132,7 +134,7 @@ You can follow Nodefony build on travis at **<https://travis-ci.org/nodefony/nod
 
 ## <a name="install"></a> Linux or OSX Installation (Recommanded)
 
-**[NVM](https://github.com/creationix/nvm) Installation (Node Version Manager )** :
+**[NVM](https://github.com/nvm-sh/nvm#installation-and-update) Installation (Node Version Manager )** :
  -   [NVM](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
 
   To install or update nvm, you can use the install script:
