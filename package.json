@@ -32,9 +32,9 @@
     "node": ">=8"
   },
   "dependencies": {
-    "mongoose": "^5.6.9",
-    "nodefony": "^5.0.3",
-    "sequelize": "^5.14.0",
+    "mongoose": "^5.6.11",
+    "nodefony": "^5.0.4",
+    "sequelize": "^5.16.0",
     "webpack": "^4.39.2",
     "webpack-dev-server": "^3.8.0"
   },
