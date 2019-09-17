@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+*.hot-update.json
+**.hot-update.json
+/Resources/public
