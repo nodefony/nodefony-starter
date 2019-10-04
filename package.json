@@ -11,6 +11,7 @@
     "rebuild": "nodefony rebuild",
     "stop": "nodefony stop",
     "prod": "nodefony prod",
+    "dev": "nodefony dev",
     "kill": "nodefony kill",
     "test": "nodefony test",
     "help": "nodefony -h"
@@ -32,14 +33,14 @@
     "node": ">=8"
   },
   "dependencies": {
-    "mongoose": "^5.7.1",
-    "nodefony": "^5.0.7",
-    "sequelize": "^5.18.4",
-    "webpack": "^4.40.2",
-    "webpack-dev-server": "^3.8.1"
+    "mongoose": "^5.7.3",
+    "nodefony": "^5.0.9",
+    "sequelize": "^5.19.2",
+    "webpack": "^4.41.0",
+    "webpack-dev-server": "^3.8.2"
   },
   "devDependencies": {
-    "node-gyp": "^5.0.2",
+    "node-gyp": "^6.0.0",
     "node-pre-gyp": "^0.13.0"
   },
   "author": "admin <admin@nodefony.com>",

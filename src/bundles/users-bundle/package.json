@@ -42,7 +42,7 @@
     "webpack-merge": "^4.2.2"
   },
   "devDependencies": {
-    "node-gyp": "^5.0.2",
+    "node-gyp": "^6.0.0",
     "node-pre-gyp": "^0.13.0"
   },
   "license": "",
