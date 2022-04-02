@@ -16,7 +16,7 @@
     "test": "nodefony test",
     "help": "nodefony -h"
   },
-  "private": true,
+  "private": false,
   "keywords": [
     "Node.js",
     "nodefony"
