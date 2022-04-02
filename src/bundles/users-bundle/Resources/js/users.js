@@ -9,6 +9,8 @@ import 'bootstrap';
 // bootstrap scss framework
 import '../scss/custom.scss';
 
+import $ from "jquery";
+
 /*
  *	Class Users Bundle App
  */

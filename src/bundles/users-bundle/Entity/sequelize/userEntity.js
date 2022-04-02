@@ -1,4 +1,8 @@
-const { Sequelize, DataTypes, Model } = require("sequelize");
+const {
+  Sequelize,
+  DataTypes,
+  Model
+} = nodefony.Sequelize; //require("sequelize");
 const validator = require('validator');
 /*
  *
@@ -40,7 +44,7 @@ class userEntity extends nodefony.Entity {
         allowNull: false,
         validate: {
           is: {
-            args: /[^\w]|_|-|./g,
+            args: /^[\w-_.]+$/,
             msg: `username allow alphanumeric and ( _ | - | . ) characters`
           }
           /*notIn: {
@@ -82,7 +86,7 @@ class userEntity extends nodefony.Entity {
       },
       email: {
         type: DataTypes.STRING,
-        primaryKey: true,
+        //primaryKey: true,
         unique: true,
         allowNull: false,
         validate: {
@@ -96,7 +100,7 @@ class userEntity extends nodefony.Entity {
         allowNull: true,
         validate: {
           is: {
-            args: /[^\w]|_|-|.|'/g,
+            args: /^[\w-_.]*$/,
             msg: `name allow alphanumeric characters`
           }
         }
@@ -106,7 +110,7 @@ class userEntity extends nodefony.Entity {
         allowNull: true,
         validate: {
           is: {
-            args: /[^\w]|_|-|.|''/g,
+            args: /^[\w-_.]*$/,
             msg: `surname allow alphanumeric characters`
           }
         }
@@ -153,7 +157,19 @@ class userEntity extends nodefony.Entity {
   }
 
   registerModel(db) {
-    class MyModel extends Model {}
+    class MyModel extends Model {
+      hasRole(name){
+        for (let role in this.roles) {
+          if (this.roles[role] === name) {
+            return true;
+          }
+        }
+        return false;
+      }
+      isGranted(role){
+        return this.hasRole(role);
+      }
+    }
     MyModel.init(this.getSchema(), {
       sequelize: db,
       modelName: this.name,

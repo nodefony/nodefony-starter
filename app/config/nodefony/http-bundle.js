@@ -16,13 +16,15 @@
  *       sockjs dev server ( webpack dev server like WDS)
  *
  */
+const tmpDir = kernel.tmpDir.path || "/tmp"
 module.exports = {
   // For more options request parser formidable @see : https://github.com/felixge/node-formidable
   request: {
-    uploadDir: "/tmp", // temporing file upload system
-    maxFileSize: 2097152, // In Bytes
-    maxFieldsSize: 2097152, // 2MB
+    uploadDir: tmpDir, // temporing file upload system
+    maxFileSize: 524288000, // In Bytes 500 MB
+    maxFieldsSize: 2097152, // 2 MB
     maxFields: 1000, // 0 for unlimited
+    encoding: 'utf-8'
   },
   //For more options queryString parser QS @see : https://github.com/ljharb/qs
   queryString: {

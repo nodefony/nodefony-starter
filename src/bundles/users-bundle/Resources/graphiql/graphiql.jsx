@@ -1,6 +1,7 @@
-import * as React from "react";
+import React from 'react';
 import { render } from "react-dom";
 import GraphiQL from "graphiql";
+//import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import "graphiql/graphiql.min.css";
 import "./index.css";
 const NODE_ENV = process.env.NODE_ENV ;
@@ -9,7 +10,7 @@ const config = process.env.GRAPHIQL ;
 
 const URL = config.url;
 
-function graphQLFetcher(graphQLParams) {
+function fetcher(graphQLParams) {
   return fetch(URL, {
     method: 'post',
     headers: {
@@ -19,12 +20,47 @@ function graphQLFetcher(graphQLParams) {
     body: JSON.stringify(graphQLParams),
     credentials: 'same-origin',
   }).then(response => response.json().then((ele)=>{
-    console.log(ele)
+    if(ele.error){
+      return ele.error;
+    }
     return ele.data;
+  }).catch(e =>{
+    throw e;
   }));
 }
 
 const defaultQuery = `
+# Welcome to GraphiQL
+#
+# GraphiQL is an in-browser tool for writing, validating, and
+# testing GraphQL queries.
+#
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
+#
+# GraphQL queries typically start with a "{" character. Lines that start
+# with a # are ignored.
+#
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
+#
+#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
+#
+#       Run Query:  Ctrl-Enter (or press the play button above)
+#
+#   Auto Complete:  Ctrl-Space (or just start typing)
+#
+
 {
   user(username: "admin") {
     username
@@ -55,6 +91,6 @@ const Logo = () => {
 GraphiQL.Logo = Logo;
 
 render(
-  <GraphiQL fetcher={graphQLFetcher} defaultQuery={defaultQuery} />,
+  <GraphiQL fetcher={fetcher} defaultQuery={defaultQuery} />,
   container
 );

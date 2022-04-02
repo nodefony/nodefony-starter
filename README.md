@@ -5,15 +5,12 @@
 
 [![npm package](https://nodei.co/npm/nodefony.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nodefony)
 
-[![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://github.com/nodefony/nodefony/workflows/nodefony-core/badge.svg)](https://github.com/nodefony/nodefony-core/actions) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
+[![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://github.com/nodefony/nodefony/workflows/nodefony/badge.svg)](https://github.com/nodefony/nodefony/actions) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
 
 Nodefony is Node.js full-stack web framework.  
 
 Nodefony can be used to develop a complete solution to create a Fullstack Web Application, Secure Api, or Microservices.
 
-The Nodefony project is inspired by the PHP Symfony framework, a developer can find most of the concepts, configurations and patterns of Symfony framework.
-
-Nodefony is not an exhaustive port of symfony !
 
 ## Table of content
 
@@ -80,7 +77,7 @@ Evolution priorities for the next version will focus on robustness, unit testing
 
 #### Nodefony is ported with ECMAScript 6 ( Class, Inheritance ).
 
-You can follow Nodefony-core build with github actions at **<https://github.com/nodefony/nodefony/actions>**
+You can follow Nodefony build with github actions at **<https://github.com/nodefony/nodefony/actions>**
 
 ## **Resources for Newcomers**
 
@@ -137,9 +134,9 @@ You can follow Nodefony-core build with github actions at **<https://github.com/
 
   To install or update nvm, you can use the install script:
 ```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 # or
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 $ source ~/.bashrc # or source ~/.bash_profile
 $ nvm ls-remote # show all remote versions  
@@ -264,7 +261,7 @@ nodefony
 
   Clone nodefony starter
  ```bash
- $ git clone https://github.com/nodefony/nodefony.git
+ $ git clone https://github.com/nodefony/nodefony-starter.git
  $ cd nodefony
  $ nodefony build
    ...
@@ -275,7 +272,7 @@ nodefony
 
   YOU CAN USE CLI INTERACTIVE MODE TO BUILD PROJECT (nodefony without args)
  ```bash
- $ git clone https://github.com/nodefony/nodefony.git
+ $ git clone https://github.com/nodefony/nodefony-starter.git
  $ cd nodefony
  $ ls -l
  -rw-r--r--     1 cci  staff   21306 27 mar 19:22 README.md
@@ -355,6 +352,8 @@ Fri Jul 27 2018 17:01:11 INFO nodefony : WELCOME PROJECT : myproject 1.0.0
 $ npm -g install npx
 
 $ npx --node-arg=--inspect nodefony dev
+// new version npx > 7
+$ npx --node-options=--inspect nodefony dev
 
 # check chrome://inspect in your browser
 ```

@@ -2,6 +2,7 @@
 
 security          : Securité
 login             : Se Connecter
+signin             : Se Connecter
 logout            : Se Déconnecter
 submit            : Valider
 surname           : Nom
@@ -9,4 +10,5 @@ name              : Prénom
 username          : Utilisateur
 
 register          : "S'enregistrer"
+signup            : "S'enregistrer"
 update            : Modifer

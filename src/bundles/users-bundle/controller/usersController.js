@@ -56,7 +56,7 @@ class usersController extends nodefony.Controller {
 
   /**
    *    @see Route by Annotaion
-   *    @Method ({ "GET"})
+   *    @Method ({ "GET", "POST"})
    *    @Route ("/lang", name="lang")
    */
   langAction() {
@@ -108,7 +108,7 @@ class usersController extends nodefony.Controller {
       }
       if (error) {
         this.setFlashBag("error", error.message);
-        this.logger(error, "ERROR");
+        this.log(error, "ERROR");
         delete this.query.password;
         delete this.query.confirm;
         return this.redirectToRoute("nodefony-user-create", {
@@ -123,12 +123,12 @@ class usersController extends nodefony.Controller {
         .then((user) => {
           let message = `${this.translate("added", "users")} ${user.username}`;
           this.setFlashBag("info", message);
-          this.logger(message, "INFO");
+          this.log(message, "INFO");
           return this.redirectToRoute("home");
         })
         .catch((error) => {
           //console.log(error)
-          this.logger(error, "ERROR");
+          this.log(error, "ERROR");
           this.setFlashBag("error", error.message);
           delete this.query.password;
           delete this.query.confirm;
@@ -203,7 +203,7 @@ class usersController extends nodefony.Controller {
               .then(() => {
                 let message = `Update User ${this.query.username} OK`;
                 this.setFlashBag("info", message);
-                this.logger(message, "INFO");
+                this.log(message, "INFO");
                 let currentUser = this.getUser();
                 if (myuser.username === currentUser.username) {
                   if (this.query.username !== myuser.username) {
@@ -228,7 +228,7 @@ class usersController extends nodefony.Controller {
         })
         .catch((error) => {
           this.setFlashBag("error", error.message);
-          this.logger(error, "ERROR");
+          this.log(error, "ERROR");
           return this.redirectToRoute("nodefony-user-update", {
             username: username
           });
@@ -255,14 +255,14 @@ class usersController extends nodefony.Controller {
           }
           return this.redirectToRoute("nodefony-user");
         }).catch(e => {
-          this.logger(e, "ERROR");
+          this.log(e, "ERROR");
           this.setFlashBag("error", e.message);
           return this.redirectToRoute("nodefony-user");
         });
     }
     let error = new nodefony.Error(`User ${username} not found`, this.context);
     this.setFlashBag("error", error.message);
-    this.logger(error, "ERROR");
+    this.log(error, "ERROR");
     return this.redirectToRoute("nodefony-user");
   }
 

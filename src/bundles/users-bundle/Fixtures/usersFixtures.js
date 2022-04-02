@@ -33,7 +33,7 @@ class usersFixture extends nodefony.Fixture {
       }
       return tab;
     } catch (e) {
-      this.logger(e, "ERROR");
+      this.log(e, "ERROR");
     }
   }
 
@@ -45,7 +45,7 @@ class usersFixture extends nodefony.Fixture {
       }
       return tab;
     } catch (e) {
-      this.logger(e, "ERROR");
+      this.log(e, "ERROR");
     }
   }
 
@@ -58,9 +58,9 @@ class usersFixture extends nodefony.Fixture {
       })
       .then((res) => {
         if (res[1]) {
-          this.logger("ADD USER : " + res[0].username, "INFO");
+          this.log("ADD USER : " + res[0].username, "INFO");
         } else {
-          this.logger("ALREADY EXIST USER : " + res[0].username, "INFO");
+          this.log("ALREADY EXIST USER : " + res[0].username, "INFO");
         }
         return res[1];
       });
@@ -76,7 +76,7 @@ class usersFixture extends nodefony.Fixture {
       }
       return tab;
     } catch (e) {
-      this.logger(e, "ERROR");
+      this.log(e, "ERROR");
     }
   }
 
@@ -88,7 +88,7 @@ class usersFixture extends nodefony.Fixture {
       }
       return tab;
     } catch (e) {
-      this.logger(e, "ERROR");
+      this.log(e, "ERROR");
     }
   }
 
@@ -99,10 +99,10 @@ class usersFixture extends nodefony.Fixture {
           username: obj.username
         });
         if (document) {
-          this.logger("ALREADY EXIST USER : " + obj.username, "INFO");
+          this.log("ALREADY EXIST USER : " + obj.username, "INFO");
         } else {
           document = await new this.entity(obj).save();
-          this.logger("ADD DOCUMENT USER : " + obj.username, "INFO");
+          this.log("ADD DOCUMENT USER : " + obj.username, "INFO");
         }
         return resolve(document);
       } catch (e) {

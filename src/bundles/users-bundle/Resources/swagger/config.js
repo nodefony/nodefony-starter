@@ -1,5 +1,5 @@
 module.exports = {
-  projectName: "Nodefony User",
+  projectName: "Nodefony API",
   logo: "/app/images/app-logo.png",
   urls: [{
     url: "/api/users/documentation",

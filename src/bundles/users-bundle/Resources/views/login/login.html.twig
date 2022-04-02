@@ -15,19 +15,15 @@
       <img class="mb-4" src="{{CDN("image")}}/app/images/app-logo.png" alt="">
       <h1 class="h1 mb-3 font-weight-normal"style="color:#0167b8">{{nodefony.name|upper}}</h1>
       {% if info %}
-        <div class="alert alert-primary dimissible mt-2" role="alert">
-          <strong>INFO : </strong> {{info}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+        <div class="alert alert-primary alert-dismissible fade show mt-2" role="alert">
+          <strong>INFO :</strong> {{info|escape}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
       {% endif %}
       {% if error %}
-        <div class="alert alert-danger dimissible mt-2" role="alert">
-          <strong>ERROR : </strong> {{error}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-          </button>
+        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+          <strong>INFO :</strong> {{error|escape}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       {% endif %}
       <form class="nodefony-signin" id="login" action="{{url("secure-login")}}" method="POST">

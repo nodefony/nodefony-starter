@@ -57,7 +57,7 @@ class loginController extends nodefony.controller {
             this.context.security,
             this.context
           );
-          this.logger(error, "ERROR");
+          this.log(error, "ERROR");
           this.setFlashBag("error", error.message);
         } else {
           error = new nodefony.securityError(
@@ -67,7 +67,7 @@ class loginController extends nodefony.controller {
             this.context
           );
         }
-        this.logger(error, "ERROR");
+        this.log(error, "ERROR");
         this.setFlashBag("error", error.message);
         return this.redirectToRoute("login");
       }
@@ -85,7 +85,7 @@ class loginController extends nodefony.controller {
       .then(() => {
         return this.redirectToRoute("login");
       }).catch((e) => {
-        this.logger(e, "ERROR");
+        this.log(e, "ERROR");
         return this.redirectToRoute("login");
       });
   }

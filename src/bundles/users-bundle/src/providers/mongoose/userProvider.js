@@ -24,8 +24,8 @@ module.exports = nodefony.registerProvider("userProvider", () => {
         });
     }
 
-    refreshUser(user) {
-      let serialize = user.populate();
+    async refreshUser(user) {
+      const serialize = await user.populate();
       return new nodefony.User(
         serialize.username,
         serialize.password,

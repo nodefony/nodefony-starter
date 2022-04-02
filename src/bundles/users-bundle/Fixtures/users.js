@@ -1,7 +1,7 @@
 const localFramework = kernel.app.settings.locale;
 let Faker = null ;
 try {
-  Faker = require(`faker`);
+  Faker = require(`@withshepherd/faker`);
 } catch (e) {}
 //const local = localFramework.slice(0, 2);
 //const Faker = require(`faker/locale/${local}`);

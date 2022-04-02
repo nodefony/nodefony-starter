@@ -1,7 +1,8 @@
 /**
  *    OVERRIDE REDIS BUNDLE SETTINGS
  *
- *   All Options :                https://github.com/NodeRedis/node_redis
+ *   All Options :                https://github.com/redis/node-redis
+ *          https://github.com/redis/node-redis/blob/master/docs/client-configuration.md
  *
  *   Add clients connections
  *   connections :{
@@ -20,20 +21,24 @@ module.exports = {
   redis: {
     debug: true,
     globalOptions: {
-      host: "localhost",
-      port: 6379,
-      family: "IPv4",
-      disable_resubscribing: false,
-      tls: null,
-      no_ready_check: false,
-      socket_keepalive: false,
-      return_buffers: false,
-      retry_unfulfilled_commands: true
+      socket:{
+        host: "localhost",
+        port: 6379,
+        family: "IPv4"
+      },
+      //username:"nodefony",
+      //password:"nodefony",
     },
     connections: {
       main: {
         name: "main"
       }
+      /*publish: {
+        name: "publish"
+      },
+      subscribe: {
+        name: "subscribe"
+      },*/
     }
   }
 };

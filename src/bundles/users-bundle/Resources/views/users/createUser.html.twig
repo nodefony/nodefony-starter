@@ -15,12 +15,11 @@
 {% endblock %}
 
 
-
 {% block body %}
   {% block header %}
     {{ render( controller("users:users:header" )) }}
   {% endblock %}
-  <div class="container mt-8">
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
@@ -52,7 +51,7 @@
               {% else %}
                 <form name="my-form" action="{{url("nodefony-user-create",{user:user.username})}}" method="post">
               {% endif %}
-                <div class="form-group row">
+                <div class="row">
                   <label for="username" class="col-md-4 col-form-label text-md-right">{{"username"|trans}}</label>
                   <div class="col-md-6">
                     <input autocomplete="username" type="text" id="username" class="form-control" name="username" value="{{user.username|escape}}">
@@ -62,25 +61,23 @@
                   </div>
                 </div>
 
-                <div class="form-row">
-                  <div class="col form-group">
+                <div class="row">
                     <label for="name">{{"firstName"|trans}}</label>
                     <input type="text" id="name" class="form-control" name="name" placeholder=" " value="{{user.name|escape}}">
-                  </div> <!-- form-group end.// -->
-                  <div class="col form-group">
+                </div>
+                <div class="row">
                     <label for="surname">{{"lastName"|trans}}</label>
                     <input type="text" id="surname" class="form-control" name="surname" placeholder=" " value="{{user.surname|escape}}">
-                  </div> <!-- form-group end.// -->
-                </div> <!-- form-row end.// -->
-                <div class="form-group">
+                </div>
+                <div class="row">
                   <label>{{"email"|trans}}</label>
                   <input type="email" id="email" class="form-control" name="email" placeholder="" value="{{user.email|escape}}">
                   <small class="form-text text-muted">{{"textEmail"|trans}}</small>
-                </div> <!-- form-group end.// -->
-                <div class="form-row">
-                  <div class="col form-group">
+                </div>
+
+                <div class="row">
+                  <div class="col">
                     <label class="pb-2">{{"gender"|trans}}</label>
-                    <div class="input-group">
                       {% set genders=[
                         {name:trans('male'),value:"male"},
                         {name:trans("female"),value:"female"},
@@ -92,19 +89,16 @@
                         {% else %}
                           {% set checked="" %}
                         {% endif %}
-                        <label class="form-check mr-4">
+                        <div class="form-check mr-4">
                           <input class="form-check-input" {{checked}} type="radio" name="gender" value="{{gender.value}}">
                           <span class="form-check-label">{{gender.name}}</span>
-                        </label>
+                        </div>
                       {% endfor %}
-                    </div>
                   </div>
-                  <div class="col form-group">
+                  <div class="col">
                       <label>{{"lang"|trans("messages")}}</label>
                     <div class="input-group mb-3">
-                      <div class="input-group-prepend">
                         <label class="input-group-text" for="lang">{{ trans("lang","messages") }} : </label>
-                      </div>
                       <select class="custom-select" name="lang" id="lang">
                         {% if user %}
                           {% for opt in langs %}
@@ -135,8 +129,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-row" >
-                  <div class="form-group col">
+                <div class="row" >
+                  <div class="col-auto">
                     {% if is_granted("ROLE_ADMIN") %}
                       {% set roles=["ROLE_USER", "ROLE_ADMIN","ROLE_ANONYMOUS"] %}
                     {% else %}
@@ -145,28 +139,22 @@
                     {% set userRoles=user.roles %}
                     <label>Role</label>
                     <div class="input-group mb-3">
-                      <div class="input-group-prepend">
                         <label class="input-group-text" for="inputGroupRole">ROLES</label>
-                      </div>
                       <select class="custom-select" id="inputGroupRole">
                         <option value="none" selected>{{ "choose"|trans }}</option>
                         {% for role in roles %}
                           <option value="{{role|escape}}">{{role|escape}}</option>
                         {% endfor %}
                       </select>
-                      <div class="input-group-append ml-3" >
-                        <label class="input-group-text" for="inputGroupRole" style="cursor: pointer;">
+                      <label class="input-group-text" for="inputGroupRole" style="cursor: pointer;">
                           <i id="iconGroupRole" class="fa fa-wrench "></i>
-                        </label>
-                      </div>
+                      </label>
                     </div>
                   </div> <!-- form-group end.// -->
-                  <div class="form-group col">
-                    <label>{{"username"|trans}} ROLES :</label>
+                  <div class="col-auto">
+                    <label >{{"username"|trans}} ROLES :</label>
                     <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupRole">ROLES</label>
-                      </div>
+                          <label class="input-group-text" for="inputGroupRole">ROLES</label>
                       <select name="roles" id="roles" class="custom-select" multiple disabled>
                         {% for role in roles %}
                           {% for userRole in userRoles %}
@@ -181,7 +169,7 @@
                     </div>
                   </div>
                 </div> <!-- form-row.// -->
-                <div class="form-group">
+                <div class="row">
                   {% if user.enabled == "true" or user.enabled == true or (not user) %}
                     {% set checked1="checked" %}
                     {% set checked2="" %}
@@ -201,16 +189,14 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="row">
                   {% if user and not queryString %}
                     {% if not is_granted("ROLE_ADMIN")%}
                     <label for="old-passwd">{{"oldPasswd"|trans}}</label>
                     <div class="input-group">
-                      <div class="input-group-prepend">
                         <span class="input-group-text password-button" id="validationOld">
                           <i class="fa fa-eye-slash password-icon"></i>
                         </span>
-                      </div>
                       <input
                       name="old-passwd"
                       id="old-passwd"
@@ -223,11 +209,9 @@
                     {% endif %}
                     <label for="password">{{"newPasswd"|trans}}</label>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                           <span class="input-group-text password-button" id="validationNew">
                             <i class="fa fa-eye-slash password-icon"></i>
                           </span>
-                        </div>
                         <input
                         name="password"
                         id="password"
@@ -240,11 +224,9 @@
                     {% if is_granted("ROLE_ADMIN") %}
                       <label for="confirm">{{"confirmPasswd"|trans}}</label>
                       <div class="input-group">
-                          <div class="input-group-prepend">
                             <span class="input-group-text password-button" id="validationConfirm">
                               <i class="fa fa-eye-slash password-icon"></i>
                             </span>
-                          </div>
                           <input
                           name="confirm"
                           id="confirm"
@@ -258,11 +240,9 @@
                   {% else %}
                     <label for="password">{{"createPasswd"|trans}}</label>
                     <div class="input-group">
-                      <div class="input-group-prepend">
                         <span class="input-group-text password-button" id="validationPasswd">
                           <i class="fa fa-eye-slash password-icon"></i>
                         </span>
-                      </div>
                       <input
                       name="password"
                       id="password"
@@ -275,11 +255,9 @@
                     </div>
                     <label for="confirm">{{"confirmPasswd"|trans}}</label>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                           <span class="input-group-text password-button" id="validationConfirm">
                             <i class="fa fa-eye-slash password-icon"></i>
                           </span>
-                        </div>
                         <input
                         name="confirm"
                         id="confirm"
@@ -294,7 +272,7 @@
 
                 </div> <!-- form-group end.// -->
 
-                <div class="form-group">
+                <div class="row mt-3">
                   {% if user and not queryString %}
                     <button type="submit" class="btn btn-primary btn-block"> {{"update"|trans}}</button>
                   {% else %}

@@ -81,7 +81,7 @@ class loginApiController extends nodefony.Controller {
    *    @Method ({"POST"})
    *    @Route (
    *      "/token",
-   *      name="api-login-jwt-refresh"
+   *      name="api-login-jwt-token"
    *    )
    *    @Firewall ({bypass:true})
    */
@@ -124,6 +124,56 @@ class loginApiController extends nodefony.Controller {
     } catch (e) {
       throw this.createException(e);
     }
+  }
+
+  /**
+   *    @Method ({"POST"})
+   *    @Route (
+   *      "/refresh",
+   *      name="api-login-jwt-refresh"
+   *    )
+   *
+   */
+  async refreshAction() {
+    // get refreshToken from request
+    let sessionToken = null;
+    let sessionRefreshToken = null;
+    let refreshToken = null;
+    let token = null;
+    // for statefull
+    if (this.session) {
+      sessionToken = this.session.get("token");
+      sessionRefreshToken = this.session.get("refreshToken");
+    }
+    refreshToken = this.request.headers.refreshtoken || this.query.refreshToken || sessionRefreshToken;
+    token = this.request.headers.jwt || this.query.token || sessionToken;
+    if (!refreshToken || !token) {
+      throw this.createSecurityException("refreshToken or token parameter Not found");
+    }
+    // verify refreshToken expired
+    let refresh = await this.jwtFactory.verifyRefreshToken(refreshToken)
+      .catch((e) => {
+        throw this.createSecurityException(e);
+      });
+    const username = refresh.data.username;
+    if (!username) {
+      throw this.createSecurityException(`username not valid`);
+    }
+    const dtuser = await this.usersService.findOne(username);
+    // controll user enabled
+    if (dtuser && dtuser.enabled) {
+      await this.jwtFactory.truncateJwtToken(this.context.token.user.username)
+      const refreshToken = await this.jwtFactory.generateJwtRefreshToken(
+        this.context.token.user.username,
+        token,
+        this.jwtSettings.refreshToken);
+      return this.api.render({
+        decodedToken: this.jwtFactory.decodeJwtToken(token),
+        token: token,
+        refreshToken: refreshToken
+      });
+    }
+    throw this.createSecurityException(`User not valid`);
   }
 
   /**

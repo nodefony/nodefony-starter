@@ -12,7 +12,7 @@
       <link rel="icon" type="image/x-icon" href="/app/favicon.ico"/>
     {% endblock %}
     {% block description %}
-      <meta name="description" content="Node.js full-stack web framework Symfony Like">
+      <meta name="description" content="Node.js full-stack web framework">
     {% endblock %}
     <title>
       {% block title %}{{nodefony.name|escape}}{% endblock %}
@@ -28,7 +28,6 @@
     {% endblock %}
     {% block body %}{% endblock %}
     {% block footer %}
-      {{ render( controller("documentation:documentation:footer" )) }}
     {% endblock %}
     {% block javascripts %}
       <!-- WEBPACK BUNDLE -->

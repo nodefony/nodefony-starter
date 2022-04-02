@@ -18,7 +18,7 @@ class fixtureTask extends nodefony.Task {
     try {
       const fixtures = this.bundle.getFixture("users");
       if (fixtures) {
-        this.logger(`LOAD FIXTURES users : ${args}`, "INFO");
+        this.log(`LOAD FIXTURES users : ${args}`, "INFO");
         let inst = new fixtures(this.container);
         return await inst.run(args);
       }
@@ -33,7 +33,7 @@ class fixtureTask extends nodefony.Task {
     try {
       const fixtures = this.bundle.getFixture("users");
       if (fixtures) {
-        this.logger(`RANDOM FIXTURES users : ${args}`, "INFO");
+        this.log(`RANDOM FIXTURES users : ${args}`, "INFO");
         let inst = new fixtures(this.container);
         return await inst.run(args);
       }

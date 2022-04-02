@@ -32,13 +32,13 @@ class usersCommand extends nodefony.Command {
   find(username) {
     return this.usersService.findOne(username)
       .then((res) => {
-        if (this.cli.commander.json) {
+        if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify(res)}\n`);
         } else {
           return this.display(res);
         }
       }).catch(e => {
-        if (this.cli.commander.json) {
+        if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify({})}\n`);
         } else {
           throw e;
@@ -49,14 +49,14 @@ class usersCommand extends nodefony.Command {
   findAll() {
     return this.usersService.find()
       .then((res) => {
-        if (this.cli.commander.json) {
+        if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify(res.rows)}\n`);
         } else {
           return this.display(res.rows);
         }
       })
       .catch(e => {
-        if (this.cli.commander.json) {
+        if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify({})}\n`);
         } else {
           throw e;
@@ -85,7 +85,7 @@ class usersCommand extends nodefony.Command {
         "Enabled"
       ]
     };
-    let table = this.cli.displayTable(null, options);
+    let table = this.cli.displayTable([], options);
     for (let i = 0; i < obj.length; i++) {
       const user = obj[i];
       table.push([

@@ -4,10 +4,7 @@
  *  WEBPACK bundle app
  *  client side
  */
-// javascript bootstrap library
-import 'bootstrap';
-// bootstrap scss framework
-import '../scss/custom.scss';
+import "../css/app.css";
 
 /*
  *	Class Bundle App

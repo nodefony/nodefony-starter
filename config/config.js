@@ -78,7 +78,7 @@ module.exports = {
      */
     servers: {
       statics: statics,
-      protocol: "1.1", //  2.0 || 1.1
+      protocol: "2.0", //  1.1 || 2.0 || 3.0 quic (not implemented)
       http: true,
       https: true,
       ws: true,
@@ -90,11 +90,9 @@ module.exports = {
      * DEV SERVER
      */
     devServer: {
-      inline: true,
-      hot: false,
-      hotOnly: false,
+      hot: false, // true  || only || false
       overlay: true,
-      logLevel: "info", // none, error, warning or info
+      logging: "info", // none, error, warning or info
       progress: false,
       protocol: "https",
       websocket: true
@@ -110,15 +108,14 @@ module.exports = {
      *       }
      */
     bundles: {
-      "users-bundle": path.resolve("src", "bundles", "users-bundle"),
-      //"vue-bundle": path.resolve("src", "bundles", "vue-bundle"),
-      //"react-bundle": path.resolve("src", "bundles", "react-bundle")
+      "users-bundle": path.resolve("src", "bundles", "users-bundle")
     },
     /**
      * SYSLOG NODEFONY
      */
     log: {
-      active: true
+      active: true,
+      debug: "*"
     }
   },
 

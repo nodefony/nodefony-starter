@@ -4,7 +4,7 @@ import {
   SwaggerUIStandalonePreset
 } from "swagger-ui-dist";
 
-import "swagger-ui/dist/swagger-ui.css";
+import "@modules/swagger-ui/dist/swagger-ui.css";
 import "./swagger.css";
 
 const configSwagger = process.env.SWAGGER;
@@ -26,6 +26,11 @@ class Swagger {
         // Section 02 - Set logo
         logo[0].children[0].alt = this.config.projectName;
         logo[0].children[0].src = this.config.logo;
+
+        const newDiv = document.createElement("div");
+        const newContent = document.createTextNode(this.config.projectName);
+        newDiv.appendChild(newContent);
+        logo[0].append(newDiv)
       });
     });
   }
@@ -36,14 +41,16 @@ class Swagger {
       urls: this.config.urls,
       "urls.primaryName": this.config.primaryName,
       dom_id: '#swagger',
-      //defaultModelsExpandDepth: -1,
+      validatorUrl:"none",
+      defaultModelsExpandDepth: -1,
       deepLinking: true,
+      persistAuthorization: true,
       presets: [
         SwaggerUI.presets.apis,
         SwaggerUIStandalonePreset
       ],
       plugins: [
-        SwaggerUIBundle.plugins.DownloadUrl
+        //SwaggerUIBundle.plugins.DownloadUrl
       ],
       layout: "StandaloneLayout",
       requestInterceptor: function (request) {

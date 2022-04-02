@@ -2,11 +2,13 @@
 
 security          : Security
 login             : Sign In
+signin            : Sign In
 logout            : Sign Out
 submit            : Submit
 surname           : Surname
 name              : Name
 user_name         : User
 
-register          : Register
+register          : Sign Up
+signup            : Sign Up
 update            : Update

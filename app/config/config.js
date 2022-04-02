@@ -10,7 +10,7 @@ module.exports = {
   locale: "en_en",
   type  : "sandbox",
   App: {
-    projectYear: 2020,
+    projectYear: 2022,
     locale: "en_en",
     authorName: "admin",
     authorMail: "admin@nodefony.com",

@@ -39,6 +39,8 @@ class graphqlController extends nodefony.Controller {
     }
   }
 
+  //  provides all functions for each API endpoint
+
   async user(field) {
     return await this.usersService.findOne(field.username);
   }
