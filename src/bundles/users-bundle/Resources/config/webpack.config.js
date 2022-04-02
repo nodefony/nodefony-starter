@@ -1,10 +1,9 @@
-//const bundleName = path.basename(path.resolve(__dirname, ".."));
-
 const path = require("path");
-//const webpack = require('webpack');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpackMerge = require('webpack-merge');
-
+const {
+  merge
+} = require('webpack-merge');
 
 // Default context <bundle base directory>
 //const context = path.resolve(__dirname, "..", "public");
@@ -17,6 +16,7 @@ const publicPath = `/${bundleName}-bundle/assets/`;
 
 let config = null;
 let dev = true;
+const debug = kernel.debug ? "*" : false;
 if (kernel.environment === "dev") {
   config = require("./webpack/webpack.dev.config.js");
 } else {
@@ -25,48 +25,71 @@ if (kernel.environment === "dev") {
 }
 
 
-module.exports = webpackMerge(config, {
+module.exports = merge(config, {
   //context: context,
   target: "web",
   entry: {
-    users:["./Resources/js/users.js"]
+    users: ["./Resources/js/users.js"],
+    swagger: ["./Resources/swagger/swagger.js"],
+    graphiql: ["./Resources/graphiql/graphiql.jsx"]
   },
   output: {
     path: public,
     publicPath: publicPath,
     filename: "./js/[name].js",
+    hashFunction: "xxhash64",
     library: "[name]",
     libraryExport: "default"
   },
   externals: {},
-  resolve: {},
+  resolve: {
+    extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
+    alias: {
+      "@modules": path.join(__dirname, "..", "..", "node_modules")
+    },
+    fallback: {
+      "path": false,
+      "assert": false,
+      buffer: require.resolve('buffer/')
+    }
+  },
   module: {
     rules: [{
         // BABEL TRANSCODE
-        test: new RegExp("\.es6$|\.js$"),
+        test: /\.(jsx|mjs|js|es6)$/,
         exclude: new RegExp("node_modules"),
         use: [{
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
+            //presets: ['@babel/preset-env', '@babel/preset-react']
+            presets: [
+                 ['@babel/preset-env', {
+                modules: false
+              }],
+                 '@babel/preset-react',
+               ],
           }
         }]
       }, {
-      /*
-       *	JQUERY EXPOSE BROWSER CONTEXT
-       *
-       */
-        test: require.resolve('jquery'),
-        use: [{
-          loader: 'expose-loader',
-          options: 'jQuery'
-        }, {
-          loader: 'expose-loader',
-          options: '$'
-        }]
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
+        include: /node_modules/,
       }, {
-        test: /jquery\..*\.js/,
-        use: "imports-loader?$=jquery,jQuery=jquery,this=>window"
+        test: require.resolve('jquery'),
+        rules: [{
+          loader: 'expose-loader',
+          options: {
+            //expose: ['$', 'jQuery'],
+            exposes: [{
+              globalName: '$',
+              override: true,
+                }, {
+              globalName: 'jQuery',
+              override: true,
+            }]
+          }
+        }]
       }, {
         test: /\.(sa|sc|c)ss$/,
         use: [
@@ -78,14 +101,6 @@ module.exports = webpackMerge(config, {
               sourceMap: true
             }
           }, {
-            loader: 'resolve-url-loader',
-            options: {}
-          }, {
-            loader: 'postcss-loader', // Run post css actions
-            options: {
-              plugins: () => [require('precss'), require('autoprefixer')]
-            }
-          }, {
             loader: "sass-loader",
             options: {
               sourceMap: true
@@ -94,33 +109,40 @@ module.exports = webpackMerge(config, {
         ]
       }, {
         test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        type: 'asset/inline'
+      }, {
+        test: /\.svg$/,
         use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts/', // where the fonts will go
-            publicPath: `${publicPath}fonts/` // override the default path
-          }
-        }]
+          loader: 'svg-inline-loader'
+        }],
       }, {
         // IMAGES
         test: /\.(gif|png|jpe?g|svg)$/i,
-        use: [{
-            loader: "file-loader",
-            options: {
-              name: "[name].[ext]",
-              publicPath: `${publicPath}/images/`,
-              outputPath: "/images/"
-            }
-          }]
+        type: 'asset/resource',
+        generator: {
+           filename: "images/[name][ext][query]",
+        }
       }
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "./css/[name].css",
-      allChunks: true
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
     }),
+    new MiniCssExtractPlugin({
+      filename: "./css/[name].css"
+    }),
+    new webpack.DefinePlugin({
+      'process':{
+        platform:`'${process.platform}'`
+      },
+      'process.env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        "NODE_DEBUG": JSON.stringify(debug),
+        "GRAPHIQL": JSON.stringify(bundleConfig.graphiql),
+        "SWAGGER": JSON.stringify(bundleConfig.swagger)
+      }
+    })
   ],
   devServer: {
     inline: true,

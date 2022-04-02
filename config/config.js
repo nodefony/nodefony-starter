@@ -21,6 +21,32 @@
  *      ]
  */
 const path = require("path");
+let certificats = {
+  options: {
+    rejectUnauthorized: true
+  }
+};
+let CDN = null;
+let statics = true;
+let monitoring = true;
+let documentation = true;
+let unitTest = true;
+let domainCheck = false;
+if (process.env && process.env.NODE_ENV === "production") {
+  certificats.key = path.resolve("config", "certificates", "server", "privkey.pem");
+  certificats.cert = path.resolve("config", "certificates", "server", "fullchain.pem");
+  certificats.ca = path.resolve("config", "certificates", "ca", "nodefony-starter-root-ca.crt.pem");
+  CDN = null;
+  statics = true;
+  documentation = false;
+  monitoring = true;
+  unitTest = false;
+  domainCheck = true;
+} else {
+  certificats.key = path.resolve("config", "certificates", "server", "privkey.pem");
+  certificats.cert = path.resolve("config", "certificates", "server", "fullchain.pem");
+  certificats.ca = path.resolve("config", "certificates", "ca", "nodefony-starter-root-ca.crt.pem");
+}
 
 module.exports = {
   system: {
@@ -31,7 +57,7 @@ module.exports = {
     ],
     httpPort: 5151,
     httpsPort: 5152,
-    domainCheck: false,
+    domainCheck: domainCheck,
     locale: "en_en",
 
     /**
@@ -39,10 +65,10 @@ module.exports = {
      */
     security: true,
     realtime: true,
-    monitoring: true,
+    monitoring: monitoring,
     mail: true,
-    documentation: true,
-    unitTest: true,
+    documentation: documentation,
+    unitTest: unitTest,
     redis: false,
     mongo: false,
     elastic: false,
@@ -51,31 +77,22 @@ module.exports = {
      * SERVERS
      */
     servers: {
-      statics: true,
-      protocol: "2.0", //  2.0 || 1.1
+      statics: statics,
+      protocol: "2.0", //  1.1 || 2.0 || 3.0 quic (not implemented)
       http: true,
       https: true,
       ws: true,
       wss: true,
-      certificats: {
-        key: path.resolve("config", "certificates", "server", "privkey.pem"),
-        cert: path.resolve("config", "certificates", "server", "fullchain.pem"),
-        ca: path.resolve("config", "certificates", "ca", "nodefony-starter-root-ca.crt.pem"),
-        options: {
-          rejectUnauthorized: true
-        }
-      }
+      certificats: certificats
     },
 
     /**
      * DEV SERVER
      */
     devServer: {
-      inline: true,
-      hot: false,
-      hotOnly: false,
+      hot: false, // true  || only || false
       overlay: true,
-      logLevel: "info", // none, error, warning or info
+      logging: "info", // none, error, warning or info
       progress: false,
       protocol: "https",
       websocket: true
@@ -91,15 +108,14 @@ module.exports = {
      *       }
      */
     bundles: {
-      "users-bundle": path.resolve("src", "bundles", "users-bundle"),
-      //"vue-bundle": path.resolve("src", "bundles", "vue-bundle"),
-      //"react-bundle": path.resolve("src", "bundles", "react-bundle")
+      "users-bundle": path.resolve("src", "bundles", "users-bundle")
     },
     /**
      * SYSLOG NODEFONY
      */
     log: {
-      active: true
+      active: true,
+      debug: "*"
     }
   },
 
@@ -128,7 +144,7 @@ module.exports = {
    *         ]
    *      },
    */
-  CDN: null,
+  CDN: CDN,
 
   /**
    *  ENGINE TEMPLATE

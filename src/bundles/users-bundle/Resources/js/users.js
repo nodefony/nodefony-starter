@@ -9,6 +9,8 @@ import 'bootstrap';
 // bootstrap scss framework
 import '../scss/custom.scss';
 
+import $ from "jquery";
+
 /*
  *	Class Users Bundle App
  */
@@ -33,8 +35,13 @@ class Users {
     $("#inputGroupRole").on("change", () => {
       this.checkSelect();
     });
-    $("#inputGroupRole")[0].size = $("#inputGroupRole option").length;
-    $("#roles")[0].size = $("#inputGroupRole option").length;
+    if ( $("#inputGroupRole")[0]){
+      $("#inputGroupRole")[0].size = $("#inputGroupRole option").length;
+    }
+    if ( $("#roles")[0]){
+      $("#roles")[0].size = $("#inputGroupRole option").length;
+    }
+
     $(document).on('submit', () => {
       $("#roles").removeAttr("disabled");
     });

@@ -1,3 +1,4 @@
+const binding = require('../build/Release/app.node');
 
 /**
  *	@class appController
@@ -5,7 +6,7 @@
  *	@param {class} container
  *	@param {class} context
  */
-module.exports = class appController extends nodefony.controller {
+class appController extends nodefony.Controller {
 
   constructor(container, context) {
     super(container, context);
@@ -20,7 +21,10 @@ module.exports = class appController extends nodefony.controller {
   indexAction() {
     return this.render("app::index.html.twig", {
       name: this.kernel.projectName,
-			description: this.kernel.package.description    });
+			description: this.kernel.package.description,
+      binding: binding.app()    });
 
   }
-};
+}
+
+module.exports = appController;

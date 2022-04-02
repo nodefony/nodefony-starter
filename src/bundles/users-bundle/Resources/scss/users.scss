@@ -1,16 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Comfortaa);
 @import url(https://fonts.googleapis.com/css?family=Gochi+Hand);
 
-.hello {
-  text-align: center;
-}
-
-.hello h1 {
-  font-family: 'Gochi Hand', cursive;
-  color: #0167b8;
-  letter-spacing: 0;
-  font-size: 4em;
-  text-transform: none;
+body{
 }
 
 .nodefony{
@@ -23,6 +14,14 @@
   color: #0167b8;
   letter-spacing: 0;
   font-size: 4em;
+  text-transform: none;
+}
+.nodefony h3 {
+  text-align: center;
+  font-family: 'Gochi Hand', cursive;
+  color: #0167b8;
+  letter-spacing: 0;
+  font-size: 1.2em;
   text-transform: none;
 }
 

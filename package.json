@@ -7,11 +7,11 @@
     "nodefony": "nodefony",
     "pm2": "pm2",
     "start": "nodefony",
+    "dev": "nodefony dev",
     "build": "nodefony build",
     "rebuild": "nodefony rebuild",
     "stop": "nodefony stop",
     "prod": "nodefony prod",
-    "dev": "nodefony dev",
     "kill": "nodefony kill",
     "test": "nodefony test",
     "help": "nodefony -h"
@@ -27,25 +27,26 @@
   "os": [
     "darwin",
     "linux",
-    "freebsd"
+    "freebsd",
+    "win32"
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "dependencies": {
-    "mongoose": "^5.7.3",
-    "nodefony": "^5.0.9",
-    "sequelize": "^5.19.2",
-    "webpack": "^4.41.0",
-    "webpack-dev-server": "^3.8.2"
+    "mongoose": "6.2.7",
+    "nodefony": "^6.12.0",
+    "pm2": "5.2.0",
+    "pm2-logrotate": "^2.7.0",
+    "sequelize": "6.17.0",
+    "webpack": "5.70.0",
+    "webpack-dev-server": "4.7.4"
   },
   "devDependencies": {
-    "node-gyp": "^6.0.0",
-    "node-pre-gyp": "^0.13.0"
+    "@mapbox/node-pre-gyp": "^1.0.8",
+    "node-gyp": "9.0.0"
   },
   "author": "admin <admin@nodefony.com>",
   "readmeFilename": "README.md",
-  "contributors": [
-    {}
-  ]
+  "contributors": [{}]
 }

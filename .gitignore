@@ -31,9 +31,56 @@ config/certificates/**/*
 /nbproject/private/
 
 
+#Ignore directory
+/tmp/*
+/web/*
+
 assets
-#**/assets/**
+**/assets/**
 app/Resources/public/assets/
-src/bundles/react-bundle/Resources/public/assets/
-src/bundles/react-bundle/Resources/public/dist/
-src/bundles/vue-bundle/Resources/public/assets/
+
+
+config/generatedConfig.yml
+
+app/Resources/databases/*
+app/*.db
+app/build
+
+node_modules/**
+**/node_modules/**
+**/precache-manifest*
+npm-debug.log
+yarn-error.log
+.~lock*
+
+yarn.lock
+package-lock.json
+package-lock.json/**
+**/package-lock.json/**
+yarn.lock/**
+**/yarn.lock/**
+*/yarn.lock
+*/package-lock.json
+*.[oa]
+
+config/certificates/**/*
+
+**/assets/**/*.map
+src/**/assets/**/*.map
+
+#Ignore vin backup
+*.swp
+*.swn
+*.swo
+#emacs
+*~
+# macos
+.DS_Store
+.ftpconfig
+.ftpignore
+
+.srl
+# Eclipse file
+/.project
+/.settings
+/nbproject/private/
