@@ -71,13 +71,14 @@ class restController extends nodefony.Controller {
    */
   async getAction(username) {
     let result = null;
+    const user = this.getUser();
     try {
       if (username) {
-        result = await this.usersService.findOne(username, this.query);
+        result = await this.usersService.findOne(username, this.query, user);
         delete result.password;
         delete result["2fa-token"];
       } else {
-        result = await this.usersService.find(this.query.query, this.query);
+        result = await this.usersService.find(this.query.query, this.query, user);
         result.rows.map((user) => {
           delete user.password;
           delete user["2fa-token"];
@@ -102,7 +103,7 @@ class restController extends nodefony.Controller {
    *    @Route ( "",name="api-users-post")
    */
   async postAction() {
-    let user = null;
+    let myuser = null;
     let error = null;
     if (!this.query.password || !this.query.confirm) {
       error = new Error(`Password can't be empty`);
@@ -116,13 +117,14 @@ class restController extends nodefony.Controller {
     }
     try {
       this.checkAuthorisation(null, this.query);
-      user = await this.usersService.create(this.query);
-      if (user) {
-        delete user.password;
-        delete user["2fa-token"];
+      const user = this.getUser()
+      myuser = await this.usersService.create(this.query, user);
+      if (myuser) {
+        delete myuser.password;
+        delete myuser["2fa-token"];
         let res = {
           query: this.query,
-          user: user
+          user: myuser
         };
         return this.api.render(res);
       }
@@ -134,7 +136,6 @@ class restController extends nodefony.Controller {
       this.log(e, "ERROR");
       return this.api.renderError(e, 400);
     }
-
   }
 
   /**
@@ -143,7 +144,8 @@ class restController extends nodefony.Controller {
    */
   async putAction(username) {
     this.checkAuthorisation(this.query.username, this.query);
-    return this.usersService.findOne(username)
+    const user = this.getUser()
+    return this.usersService.findOne(username, user)
       .then(async (myuser) => {
         if (myuser) {
           if (this.query.password) {
@@ -168,8 +170,8 @@ class restController extends nodefony.Controller {
               throw new Error(`User ${username} no confirm passport`);
             }
           }
-          return this.usersService.update(myuser, this.query)
-            .then(async (user) => {
+          return this.usersService.update(myuser, this.query, user)
+            .then(async (res) => {
               let message = `Update User ${this.query.username} OK`;
               this.log(message, "INFO");
               let currentUser = this.getUser();
@@ -181,7 +183,7 @@ class restController extends nodefony.Controller {
                   this.session.set("lang", this.query.lang);
                 }
               }
-              let newUser = await this.usersService.findOne(this.query.username);
+              let newUser = await this.usersService.findOne(this.query.username, user);
               delete newUser.password;
               delete newUser["2fa-token"];
               return this.api.render({
@@ -202,9 +204,9 @@ class restController extends nodefony.Controller {
    *    @Method ({"PATCH"})
    *    @Route ( "/{username}",name="api-user-patch")
    */
+   // TODO
   async patchAction(username) {
     this.log(username);
-
   }
 
   /**
@@ -214,7 +216,8 @@ class restController extends nodefony.Controller {
   async deleteAction(username) {
     try {
       this.checkAuthorisation(this.query.username, this.query);
-      return this.usersService.delete(username)
+      const user = this.getUser()
+      return this.usersService.delete(username, user)
         .then((user) => {
           delete user.password;
           delete user["2fa-token"];

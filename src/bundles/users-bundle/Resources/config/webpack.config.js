@@ -29,9 +29,7 @@ module.exports = merge(config, {
   //context: context,
   target: "web",
   entry: {
-    users: ["./Resources/js/users.js"],
-    swagger: ["./Resources/swagger/swagger.js"],
-    graphiql: ["./Resources/graphiql/graphiql.jsx"]
+    users: ["./Resources/js/users.js"]
   },
   output: {
     path: public,

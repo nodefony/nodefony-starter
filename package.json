@@ -34,19 +34,22 @@
     "node": ">=12"
   },
   "dependencies": {
-    "mongoose": "6.2.7",
-    "nodefony": "^6.12.0",
+    "graphql": "16.6.0",
+    "mongoose": "6.6.1",
+    "nodefony": "7.0.0-beta.5",
     "pm2": "5.2.0",
     "pm2-logrotate": "^2.7.0",
-    "sequelize": "6.17.0",
-    "webpack": "5.70.0",
-    "webpack-dev-server": "4.7.4"
+    "sequelize": "6.22.0",
+    "webpack": "5.74.0",
+    "webpack-dev-server": "4.11.0"
   },
   "devDependencies": {
     "@mapbox/node-pre-gyp": "^1.0.8",
-    "node-gyp": "9.0.0"
+    "node-gyp": "9.1.0"
   },
   "author": "admin <admin@nodefony.com>",
   "readmeFilename": "README.md",
-  "contributors": [{}]
+  "contributors": [
+    {}
+  ]
 }

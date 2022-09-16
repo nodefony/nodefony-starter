@@ -82,6 +82,7 @@ class usersController extends nodefony.Controller {
    *
    */
   createAction() {
+    const user = this.getUser();
     switch (this.method) {
     case "GET":
       let size = Object.keys(this.queryGet).length;
@@ -119,7 +120,7 @@ class usersController extends nodefony.Controller {
         this.query.roles = [this.query.roles];
       }
       this.checkAuthorisation(null, this.query);
-      return this.usersService.create(this.query)
+      return this.usersService.create(this.query, user)
         .then((user) => {
           let message = `${this.translate("added", "users")} ${user.username}`;
           this.setFlashBag("info", message);
@@ -146,10 +147,11 @@ class usersController extends nodefony.Controller {
    *    @Route ( "/update/{username}", name="nodefony-user-update")
    */
   updateAction(username) {
+    let user = this.getUser()
     this.checkAuthorisation(username, this.query);
     switch (this.method) {
     case "GET":
-      return this.usersService.findOne(username)
+      return this.usersService.findOne(username, user)
         .then((result) => {
           if (result) {
             return this.render("users:users:createUser.html.twig", {
@@ -163,7 +165,7 @@ class usersController extends nodefony.Controller {
           throw e;
         });
     case "POST":
-      return this.usersService.findOne(username)
+      return this.usersService.findOne(username, user)
         .then(async (myuser) => {
           if (myuser) {
             if (nodefony.typeOf(this.query.roles) === "string") {
@@ -199,7 +201,7 @@ class usersController extends nodefony.Controller {
                 }
               }
             }
-            return this.usersService.update(myuser, value)
+            return this.usersService.update(myuser, value, user)
               .then(() => {
                 let message = `Update User ${this.query.username} OK`;
                 this.setFlashBag("info", message);
@@ -244,9 +246,10 @@ class usersController extends nodefony.Controller {
    *
    */
   deleteAction(username) {
+    let user = this.getUser();
     this.checkAuthorisation(username);
     if (username) {
-      return this.usersService.delete(username)
+      return this.usersService.delete(username, user)
         .then((result) => {
           let message = `Delete User ${result.username} OK`;
           this.setFlashBag("info", message);
@@ -272,6 +275,7 @@ class usersController extends nodefony.Controller {
    *
    */
   userAction(username) {
+    let user = this.getUser();
     if (username) {
       switch (this.method) {
       case "PUT":
@@ -280,7 +284,7 @@ class usersController extends nodefony.Controller {
         return this.deleteAction(username);
       case "GET":
         //const user = new User(this);
-        return this.usersService.findOne(username)
+        return this.usersService.findOne(username, user)
           .then((result) => {
             if (result) {
               return this.render("users:users:readUsers.html.twig", {
@@ -297,7 +301,7 @@ class usersController extends nodefony.Controller {
     case "POST":
       return this.createAction();
     default:
-      return this.usersService.find()
+      return this.usersService.find(this.query,{}, user)
         .then((result) => {
           return this.render("users:users:readUsers.html.twig", {
             users: result.rows

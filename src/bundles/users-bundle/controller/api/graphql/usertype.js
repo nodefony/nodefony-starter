@@ -1,29 +1,5 @@
-/**
-*    query test {
-*      user(username: "admin") {
-*        username
-*        surname
-*        name
-*      }
-*      users {
-*        username
-*        name
-*        surname
-*        updatedAt
-*        roles
-*      }
-*    }
-*
-*    mutation addUser {
-*      addUser(username: "Jon", email: "Doe@foo.fr", password:"mypass") {
-*        username
-*        email
-*        name
-*        role  s
-*      }
-*    }
-*/
-const schema = `
+const type = `
+
   scalar Date
   scalar Url
   scalar Array
@@ -46,6 +22,24 @@ const schema = `
     roles : Array
   }
 
+  input UserInput {
+    username: String!
+    surname: String
+    name: String
+    enabled: Boolean
+    password: String
+    confirm: String
+    userNonExpired: Boolean
+    credentialsNonExpired : Boolean
+    accountNonLocked: Boolean
+    email : String!
+    lang : String
+    gender: String
+    url : Url
+    image: String
+    roles : Array
+  }
+
   # the schema allows the following query:
   type Query {
     user(username: String!): User
@@ -54,8 +48,11 @@ const schema = `
 
   # this schema allows the following mutation:
   type Mutation {
-    addUser(username: String!, email: String!, password: String!): User
+    addUser(input: UserInput!): User!
+    updateUser(username:String!, input: UserInput!): User!
+    deleteUser(username:String!): User!
+    deleteUsers(users:Array!): [User]!
   }
-`;
+`
 
-module.exports = nodefony.graphql.buildSchema(schema);
+module.exports = type

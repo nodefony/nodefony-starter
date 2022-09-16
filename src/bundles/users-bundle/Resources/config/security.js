@@ -39,14 +39,7 @@ module.exports = {
     /**
      *  FIREWALL  Authorization
      */
-    access_control: [{
-      path: /^\/nodefony/,
-      roles: ["ROLE_MONITORING"],
-      requires_channel: "https",
-      /*allow_if: {
-        roles: ["ROLE_ADMIN", "ROLE_USER"]
-      }*/
-    }],
+    access_control: [],
 
     firewalls: {
       // SECURITY AREA  <passport-local>
@@ -74,7 +67,7 @@ module.exports = {
           usernameField: 'username',
           passwordField: 'passwd'
         },
-        stateless: true,
+        stateless: false,
         redirectHttps: true,
         crossDomain: cors
       },

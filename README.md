@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://github.com/nodefony/nodefony/raw/master/src/nodefony/bundles/framework-bundle/Resources/public/images/nodefony-logo.png"><br>
 </p>
-<h1 align="center">NODEFONY V6</h1>
+<h1 align="center">NODEFONY V7</h1>
 
 [![npm package](https://nodei.co/npm/nodefony.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nodefony)
 
@@ -64,7 +64,7 @@ Nodefony can be used to develop a complete solution to create a Fullstack Web Ap
 -   [Passport](http://passportjs.org/) Simple, unobtrusive authentication for Node.js .
 -   ~~[Angular](https://github.com/angular/angular-cli) Experimental Bundle Generator ( Angular cli no longer allows the ejection of a webpack config)~~
 
-**Nodefony 6  adds the following features** :
+**Nodefony 7  adds the following features** :
 
 -   [React](https://github.com/facebookincubator/create-react-app) Experimental Bundle Generator ( Now an React Project can be merge into a Nodefony Bundle )
 -   [Vue.js](https://vuejs.org) Experimental Bundle Generator ( Now an Vue.js Project can be merge into a Nodefony Bundle )
@@ -195,7 +195,7 @@ C:\Users\myuser\AppData\Roaming\npm\bin
 **Cli command when use Global installation**
 ```bash
 $ nodefony -v
-6.0.0
+7.0.0
 ```
 
 **Cli command when By using yarn or npm in trunk**
@@ -416,7 +416,7 @@ You can find certificate authority (ca) here:
 #### Access to Secure App with URL : <https://localhost:5152>
 #### Access to App with URL : <http://localhost:5151>
 
-[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/bundles/documentation-bundle/Resources/public/images/nodefony.png)](https://nodefony.net)
+[![nodefony](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/bundles/monitoring-bundle/Resources/public/images/nodefony.png)](https://nodefony.net)
 
 ## <a name="configurations"></a>Framework Configurations
 
@@ -713,7 +713,7 @@ module.exports = webpackMerge(config, {
 
 Access to monitoring route with URL : <http://localhost:5151/nodefony>
 
-[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/doc/cluster.png)](https://nodefony.net/nodefony)
+[![MONITORING](https://raw.githubusercontent.com/nodefony/nodefony/master/src/nodefony/bundles/monitoring-bundle/Resources/public/images/monitor.png)](https://nodefony.net/nodefony)
 
 Monitoring in progress !!!
 

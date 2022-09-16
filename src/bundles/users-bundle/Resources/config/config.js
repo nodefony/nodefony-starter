@@ -74,14 +74,10 @@ module.exports = {
   },
   jwt: {
     token: {
-      expiresIn: 900
+      expiresIn: 900 // seconds
     },
     refreshToken: {
-      expiresIn: 3600
+      expiresIn: 3600 // seconds
     }
-  },
-  swagger: require(path.resolve(__dirname, "..", "swagger", "config.js")),
-
-  graphiql: require(path.resolve(__dirname, "..", "graphiql", "config.js"))
-
+  }
 };

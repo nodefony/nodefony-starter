@@ -33,7 +33,6 @@ class loginApiController extends nodefony.Controller {
   /**
    *    @Method ({"OPTIONS"})
    *    @Route ( "",name="api-login-options",)
-   *    @Firewall ({bypass:true})
    */
   optionsAction() {
     try {
@@ -132,7 +131,6 @@ class loginApiController extends nodefony.Controller {
    *      "/refresh",
    *      name="api-login-jwt-refresh"
    *    )
-   *
    */
   async refreshAction() {
     // get refreshToken from request
