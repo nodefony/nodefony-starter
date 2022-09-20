@@ -36,7 +36,7 @@
   "devDependencies": {
     "@mapbox/node-pre-gyp": "^1.0.8",
     "node-gyp": "9.1.0",
-    "webpack-dev-server": "4.11.0"
+    "webpack-dev-server": "4.11.1"
   },
   "license": "",
   "readmeFilename": "README.md",
