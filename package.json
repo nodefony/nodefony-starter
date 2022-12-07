@@ -36,7 +36,7 @@
   "dependencies": {
     "graphql": "16.6.0",
     "mongoose": "6.6.1",
-    "nodefony": "7.0.0-beta.7",
+    "nodefony": "7.0.0-beta.10",
     "pm2": "5.2.0",
     "pm2-logrotate": "^2.7.0",
     "sequelize": "6.23.0",
