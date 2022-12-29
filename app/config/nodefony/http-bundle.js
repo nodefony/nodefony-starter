@@ -74,6 +74,7 @@ module.exports = {
     port: kernel.settings.system.httpsPort
   },
   session: {
+    applyTransaction: true, // sequelize transaction session entity (no effective for sqlite)
     start: false, // false || true || Session Context Name (waf)
     name: "nodefony",
     handler: "orm", // files | orm | memcached

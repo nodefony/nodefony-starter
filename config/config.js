@@ -108,7 +108,8 @@ module.exports = {
      *       }
      */
     bundles: {
-      "users-bundle": path.resolve("src", "bundles", "users-bundle")
+      "users-bundle": path.resolve("src", "bundles", "users-bundle"),
+      //"vault-bundle": path.resolve("src", "bundles", "vault-bundle")
     },
     /**
      * SYSLOG NODEFONY
@@ -167,6 +168,7 @@ module.exports = {
    *
    *       npm
    *       yarn
+   *       pnpm
    */
   packageManager: "npm"
 

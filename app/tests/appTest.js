@@ -12,36 +12,36 @@
  *
  */
 const assert = require('assert');
+const https = require('node:https');
 
-describe("BUNDLE app", () => {
+describe("BUNDLE APP", () => {
   beforeEach(() => {
-    const requestClient = kernel.get("requestClient");
+    const fetchService = kernel.get("fetch");
     const httpsServer = kernel.get("httpsServer");
     const certificats = httpsServer.getCertificats();
-    const defaultOptions = {
-      method: 'GET',
-      timeout: 5000,
-      agentOptions: {
+    const httpsAgent = new https.Agent({
+	      keepAlive: true,
         cert: certificats.cert,
         key: certificats.key,
         ca: certificats.ca
-      }
+      });
+    const defaultOptions = {
+      method: 'GET',
+      agent: httpsAgent
     };
-    const myurl = `https://${kernel.settings.system.domain}:${kernel.settings.system.httpsPort}`;
-    global.request = requestClient.create(myurl, defaultOptions);
+    global.url = `https://${kernel.settings.system.domain}:${kernel.settings.system.httpsPort}`;
+    global.fetch = fetchService.fetch
+    global.options = defaultOptions
   });
 
-  describe('ROUTE', () => {
-
-    it("ROUTE  ", async () => {
-      let options = {
-        timeout: 1500
-      };
-      let result = await global.request.http("", options);
-      assert.equal(result.json.statusCode, 200);
-      assert.equal(result.json.headers.server, "nodefony");
+  describe('REQUEST ', () => {
+    it("FETCH REQUEST", async () => {
+      let response = await global.fetch(`${global.url}`, global.options)
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get("server"), "nodefony");
+      let html = await response.text()
+      assert(html);
     });
-
   });
 
 });

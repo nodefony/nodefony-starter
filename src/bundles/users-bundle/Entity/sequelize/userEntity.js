@@ -158,6 +158,9 @@ class userEntity extends nodefony.Entity {
 
   registerModel(db) {
     class MyModel extends Model {
+      static associate(models) {
+        // define association here
+      }
       hasRole(name){
         for (let role in this.roles) {
           if (this.roles[role] === name) {

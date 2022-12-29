@@ -1,0 +1,21 @@
+{
+  "name": "vault",
+  "version": "1.0.0",
+  "description": "vault description",
+  "author": "admin <admin@nodefony.com>",
+  "main": "vaultBundle.js",
+  "scripts": {},
+  "private": true,
+  "keywords": [
+    "nodefony",
+    "javascript",
+    "vault"
+  ],
+  "repository": {},
+  "dependencies": {
+    "node-vault": "^0.9.22"
+  },
+  "license": "",
+  "readmeFilename": "README.md",
+  "contributors": []
+}

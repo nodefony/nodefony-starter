@@ -53,9 +53,10 @@ module.exports = {
    "security-bundle": require(path.resolve(dirConfig, "security-bundle.js")),
    "framework-bundle": require(path.resolve(dirConfig, "framework-bundle.js")),
    "sequelize-bundle": require(path.resolve(dirConfig, "sequelize-bundle.js")),
-   "mongoose-bundle": require(path.resolve(dirConfig, "mongoose-bundle.js")),
    "mail-bundle": require(path.resolve(dirConfig, "mail-bundle.js")),
-   "redis-bundle": require(path.resolve(dirConfig, "redis-bundle.js")),
-   "elastic-bundle": require(path.resolve(dirConfig, "elastic-bundle.js")),
-   "realtime-bundle": require(path.resolve(dirConfig, "realtime-bundle.js"))
+   "realtime-bundle": require(path.resolve(dirConfig, "realtime-bundle.js")),
+   //"vault-bundle": require(path.resolve(dirConfig, "vault-bundle.js"))
+   //"mongoose-bundle": require(path.resolve(dirConfig, "mongoose-bundle.js")),
+   //"redis-bundle": require(path.resolve(dirConfig, "redis-bundle.js")),
+   //"elastic-bundle": require(path.resolve(dirConfig, "elastic-bundle.js")),
 };

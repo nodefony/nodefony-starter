@@ -10,6 +10,8 @@
  *
  */
 const assert = require('assert');
+const http = require('node:http');
+const https = require('node:https');
 
 describe("BUNDLE users", () => {
 
@@ -18,50 +20,69 @@ describe("BUNDLE users", () => {
     assert.equal(typeof nodefony, "object");
     // check instance kernel
     assert.equal(typeof kernel, "object");
-    //assert.equal(kernel instanceof nodefony.kernel, true);
-    // requests tools
-    const Request = kernel.get("requestClient");
     const serviceHttps = kernel.get("httpsServer");
     const openssl = serviceHttps.getCertificats();
-    // cookies container
-    global.jar = Request.engine.jar();
-    const requestOptions = {
-      method: 'GET',
-      timeout: 1500,
-      "User-Agent": `${nodefony.projectName}@${nodefony.projectVersion}`,
-      jar: global.jar,
-      headers: [{
-        name: 'Accept',
-        value: 'application/json'
-			}],
-      agentOptions: {
-        key: openssl.key,
-        cert: openssl.cert,
-        ca: openssl.ca,
+    global.baseUrl = `https://${kernel.settings.system.domain}:${kernel.settings.system.httpsPort}/api/jwt`;
+    const request = kernel.get("fetch")
+    global.fetch = request.fetch
+    global.formData = request.library.FormData
+    global.Headers = request.library.Headers
+    const httpAgent = new http.Agent({
+      keepAlive: true
+    });
+    const httpsAgent = new https.Agent({
+      keepAlive: true,
+      key: openssl.key,
+      cert: openssl.cert,
+      ca: openssl.ca,
+    });
+    global.options = {
+      agent: function(_parsedURL) {
+        if (_parsedURL.protocol == 'http:') {
+          return httpAgent;
+        } else {
+          return httpsAgent;
+        }
       }
     };
-    global.baseUrl = `https://${kernel.settings.system.domain}:${kernel.settings.system.httpsPort}/api/jwt`;
-    const request = Request.create(global.baseUrl, requestOptions);
-    global.http = request.http.bind(request);
-
   });
 
   describe('API LOGIN', () => {
     beforeEach(() => {});
     before(() => {});
+
     it("LOGIN JWT", async () => {
-      const result = await global.http("/login", {
-          method: 'POST',
-          form: {
-            username: 'admin',
-            passwd: 'admin'
-          }
-        })
+      //const formData = new global.FormData()
+      //formData.set('username', 'admin')
+      //formData.set('passwd', 'admin')
+
+      const meta = {
+        //'Content-Type': 'application/json',
+        //"Accept":"application/json"
+      };
+      const headers = new global.Headers(meta);
+      const params = new URLSearchParams();
+      params.append('username', "admin");
+      params.append('passwd', "admin");
+      //console.log(formData)
+      let options = nodefony.extend({
+        method: 'POST',
+        headers: headers,
+        body:params,
+        /*body: JSON.stringify({
+          username: "admin",
+          passwd: "admin"
+        })*/
+      }, global.options)
+      //console.log(formData)
+      const url = `${global.baseUrl}/login`;
+      //let url = "https://127.0.0.1:5152/api/jwt/login"
+      let response = await global.fetch(url, options)
         .catch(e => {
+          console.log(e)
           throw e;
         });
-      assert.strictEqual(result.json.statusCode, 200);
-      const body = JSON.parse(result.json.body);
+      const body = await response.json()
       assert(body.result);
       assert(body.result.token);
       global.token = body.result.token;
@@ -82,49 +103,80 @@ describe("BUNDLE users", () => {
       assert.strictEqual(body.scheme, 'https');
       assert.strictEqual(body.severity, 'INFO');
       assert.strictEqual(body.code, 200);
-    });
+    })
 
     it("BAD PASSWD LOGIN  JWT ", async () => {
-      const result = await global.http("/login", {
-          method: 'POST',
-          form: {
-            username: 'admin',
-            passwd: 'testfalse'
-          }
+      const meta = {
+        'Content-Type': 'application/json',
+        "Accept":"application/json"
+      };
+      const headers = new global.Headers(meta);
+      const url = `${global.baseUrl}/login`;
+      let options = nodefony.extend({
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          username: "admin",
+          passwd: "testfalse"
         })
+      }, global.options)
+      let response = await global.fetch(url, options)
         .catch(e => {
+          console.log(e)
           throw e;
         });
-      assert.strictEqual(result.json.statusCode, 401);
-      //const body = JSON.parse(result.json.body);
+      const body = await response.json()
+      assert.strictEqual(body.code, 401);
+      assert(body.error);
     });
+
     it("BAD NAME LOGIN JWT ", async () => {
-      const result = await global.http("/login", {
-          method: 'POST',
-          form: {
-            username: 'badname',
-            passwd: 'admin'
-          }
+      const meta = {
+        'Content-Type':'application/json',
+        "Accept":"application/json"
+      };
+      const headers = new global.Headers(meta);
+      const url = `${global.baseUrl}/login`;
+      let options = nodefony.extend({
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          username: "badname",
+          passwd: "admin"
         })
+      }, global.options)
+      let response = await global.fetch(url, options)
         .catch(e => {
+          console.log(e)
           throw e;
         });
-      assert.strictEqual(result.json.statusCode, 404);
-      const body = JSON.parse(result.json.body);
-      assert.strictEqual(body.message, "User : badname not Found");
+      const body = await response.json()
+      assert.strictEqual(body.code, 404);
+      assert.strictEqual(body.error.message, "User : badname not Found");
     });
 
     it("BAD LOGIN NO credentials ", async () => {
-      const result = await global.http("/login", {
-          method: 'POST',
-          form: {}
+      const meta = {
+        'Content-Type':'application/json',
+        "Accept":"application/json"
+      };
+      const headers = new global.Headers(meta);
+      const url = `${global.baseUrl}/login`;
+      let options = nodefony.extend({
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+
         })
+      }, global.options)
+      let response = await global.fetch(url, options)
         .catch(e => {
+          console.log(e)
           throw e;
         });
-      assert.strictEqual(result.json.statusCode, 400);
-      const body = JSON.parse(result.json.body);
-      assert.strictEqual(body.message, "Missing credentials");
+      const body = await response.json()
+      assert.strictEqual(body.code, 400);
+      assert.strictEqual(body.error.message, "Missing credentials");
     });
 
   });

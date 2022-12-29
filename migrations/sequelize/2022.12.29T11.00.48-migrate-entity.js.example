@@ -1,5 +1,3 @@
-// migrations/00_initial.js
-
 const {
   Sequelize
 } = require('sequelize');

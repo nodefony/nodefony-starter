@@ -1,4 +1,3 @@
-const binding = require('../build/Release/app.node');
 
 /**
  *	@class appController
@@ -21,8 +20,7 @@ class appController extends nodefony.Controller {
   indexAction() {
     return this.render("app::index.html.twig", {
       name: this.kernel.projectName,
-			description: this.kernel.package.description,
-      binding: binding.app()    });
+			description: this.kernel.package.description    });
 
   }
 }

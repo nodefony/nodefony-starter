@@ -74,10 +74,12 @@ Nodefony can be used to develop a complete solution to create a Fullstack Web Ap
 
 Evolution priorities for the next version will focus on robustness, unit testing, documentation and security.
 
-
-#### Nodefony is ported with ECMAScript 6 ( Class, Inheritance ).
-
 You can follow Nodefony build with github actions at **<https://github.com/nodefony/nodefony/actions>**
+
+## Nodefony implement modules with CommonJS and ECMAScript 6 ( Class, Inheritance ).
+The development framework will not be ported to typescript, but will wait for the version with type syntax in Emacsript
+
+**[proposal-type-annotations](https://github.com/tc39/proposal-type-annotations)**
 
 ## **Resources for Newcomers**
 
@@ -97,7 +99,7 @@ You can follow Nodefony build with github actions at **<https://github.com/nodef
 
 -   **[Node.js](https://nodejs.org/)** ® is a Platform built on Chrome's JavaScript runtime ( >= 8 )
 
--   **[npm](https://www.npmjs.com/)** or **[yarn](https://yarnpkg.com/lang/en/)**  Packages Manager for javascript application
+-   **[npm](https://www.npmjs.com/)** or **[yarn](https://yarnpkg.com/lang/en/)** or **[pnpm](https://pnpm.io/cli/install)**  Packages Manager for javascript application
 
 -   **[nvm](https://github.com/nvm-sh/nvm/)**  Node Version Manager - POSIX-compliant bash script to manage multiple active node.js versions
 
@@ -127,7 +129,7 @@ You can follow Nodefony build with github actions at **<https://github.com/nodef
 
 -   EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
 
-## <a name="install"></a> Linux or OSX Installation (Recommanded)
+## <a name="install"></a> Linux or OSX Installation
 
 **[NVM](https://github.com/nvm-sh/nvm#installation-and-update) Installation (Node Version Manager )** :
  -   [NVM](https://github.com/creationix/nvm) Node Version Manager - Simple bash script to manage multiple active node.js versions
@@ -209,7 +211,8 @@ npm run nodefony
 **By using npx**
 ***note: npx is included with npm > v5.2 or can be installed separately.***
 ```bash
-npx nodefony
+npx nodefony -v
+7.0.0-beta.10
 ```
 
 **The long way with the full path**
@@ -242,14 +245,14 @@ YOU CAN USE CLI NO INTERACTIVE (nodefony with args) :
 ```bash
 #  CLI generate project name : myproject
 
-$ nodefony create myproject
+$ npx nodefony create myproject
 $ cd myproject
  ```
 
 **Cli Help** :
 
 ```bash
-$ nodefony -h
+$ npx nodefony -h
 
 nodefony                                                                                              
     create [-i] name [path]                       Create New Nodefony Project                  
@@ -263,7 +266,7 @@ nodefony
  ```bash
  $ git clone https://github.com/nodefony/nodefony-starter.git
  $ cd nodefony
- $ nodefony build
+ $ npx nodefony build
    ...
    ...
  $ npm start
@@ -287,7 +290,7 @@ nodefony
  drwxr-xr-x    12 cci  staff     384 29 mar 11:01 web
  -rw-r--r--     1 cci  staff  542660 27 mar 19:24 yarn.lock
 
- $ nodefony
+ $ npx nodefony
 
 ?  Nodefony CLI :  (Use arrow keys)
 ❯ Build Project
@@ -304,7 +307,7 @@ nodefony
 **Starting Development Servers** :
 
 ```bash
-$ nodefony dev
+$ npx nodefony dev
 
 # TO STOP
 $ <ctrl-c>
@@ -312,7 +315,7 @@ $ <ctrl-c>
 **Starting Development Servers in Debug Mode (-d)** :
 
 ```bash
-$ nodefony -d dev
+$ npx nodefony -d dev
 
 # TO STOP
 $ <ctrl-c>
@@ -362,23 +365,23 @@ $ npx --node-options=--inspect nodefony dev
 
 **Starting a Nodefony project with [PM2](http://pm2.keymetrics.io/)** :
 ```bash
-$ nodefony prod
+$ npx nodefony prod
 or
-$ nodefony start
+$ npx nodefony start
 ```
 Tools PM2 You can see PM2 config : config/pm2.config.js
 ```bash
 # To See log
-$ nodefony logs
+$ npx nodefony logs
 
 # To List Status of Production projects
-$ nodefony list
+$ npx nodefony list
 
 # TO KILL PM2 DEAMON
-$ nodefony kill
+$ npx nodefony kill
 
 # TO STOP APPLICATION WITHOUT KILL PM2 DEAMON
-$ nodefony stop
+$ npx nodefony stop
 
 # YOU can use all pm2 command by using
 $ yarn pm2 monit
@@ -390,7 +393,7 @@ $ npm run pm2 logs --lines 200
 
 **Checking a Nodefony Project Pre-Production (Usefull to check Clusters Node)** :
 ```bash
-$ nodefony preprod
+$ npx nodefony preprod
 ```
 
 ## <a name="https"></a>Serving a Nodefony project with HTTPS or WSS

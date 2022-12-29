@@ -11,6 +11,7 @@ app/Resources/databases/*
 node_modules/**
 **/node_modules/**
 npm-debug.log
+pnpm-lock.yaml
 *.[oa]
 
 config/certificates/**/*
@@ -23,61 +24,6 @@ config/certificates/**/*
 *~
 # macos
 .DS_Store
-
-.srl
-# Eclipse file
-/.project
-/.settings
-/nbproject/private/
-
-
-#Ignore directory
-/tmp/*
-/web/*
-
-assets
-**/assets/**
-app/Resources/public/assets/
-
-
-config/generatedConfig.yml
-
-app/Resources/databases/*
-app/*.db
-app/build
-
-node_modules/**
-**/node_modules/**
-**/precache-manifest*
-npm-debug.log
-yarn-error.log
-.~lock*
-
-yarn.lock
-package-lock.json
-package-lock.json/**
-**/package-lock.json/**
-yarn.lock/**
-**/yarn.lock/**
-*/yarn.lock
-*/package-lock.json
-*.[oa]
-
-config/certificates/**/*
-
-**/assets/**/*.map
-src/**/assets/**/*.map
-
-#Ignore vin backup
-*.swp
-*.swn
-*.swo
-#emacs
-*~
-# macos
-.DS_Store
-.ftpconfig
-.ftpignore
 
 .srl
 # Eclipse file

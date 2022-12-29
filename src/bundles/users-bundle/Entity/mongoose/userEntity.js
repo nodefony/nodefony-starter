@@ -20,10 +20,6 @@ class userEntity extends nodefony.Entity {
      *   @param connection name
      */
     super(bundle, "user", "mongoose", "nodefony");
-    this.once("onConnect", (name, db) => {
-      this.model = this.registerModel(db);
-      this.orm.setEntity(this);
-    });
   }
 
   getSchema() {

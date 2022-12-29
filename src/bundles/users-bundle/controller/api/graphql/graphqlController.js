@@ -2,7 +2,7 @@
  *    @Route ("/api/graphql/users")
  *
  */
-const userType = require(path.resolve(__dirname, "userType.js"));
+const userType = require(path.resolve(__dirname, "usertype.js"));
 const userResolver = require(path.resolve(__dirname, "userResolver.js"));
 
 module.exports = class graphqlController extends nodefony.Controller {
