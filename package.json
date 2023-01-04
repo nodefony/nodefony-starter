@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "graphql": "16.6.0",
-    "mongoose": "6.8.1",
-    "nodefony": "7.0.0-beta.11",
+    "mongoose": "6.8.2",
+    "nodefony": "7.0.0-beta.13",
     "pm2": "^5.2.2",
     "pm2-logrotate": "^2.7.0",
     "sequelize": "6.28.0",
@@ -53,5 +53,7 @@
   },
   "author": "admin <admin@nodefony.com>",
   "readmeFilename": "README.md",
-  "contributors": [{}]
+  "contributors": [
+    {}
+  ]
 }
