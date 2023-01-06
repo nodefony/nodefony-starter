@@ -150,7 +150,7 @@ module.exports = {
     storage: "sequelize", // sequelize || memory || json
     path: path.resolve(kernel.path, "migrations", "sequelize"),
     seedeersPath: path.resolve(kernel.path, "migrations", "seedeers"),
-    storageSeedeers:"json",
+    storageSeedeers:"sequelize",
     options: {}
   }
 }
