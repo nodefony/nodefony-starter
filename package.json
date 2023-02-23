@@ -42,7 +42,7 @@
     "nodefony": "7.0.0-beta.14",
     "pm2": "^5.2.2",
     "pm2-logrotate": "^2.7.0",
-    "sequelize": "6.28.0",
+    "sequelize": "6.28.2",
     "webpack": "^5.75.0",
     "webpack-dev-server": "4.11.1"
   },
