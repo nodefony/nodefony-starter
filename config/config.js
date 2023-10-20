@@ -116,7 +116,7 @@ module.exports = {
      */
     log: {
       active: true,
-      debug: "*"
+      debug: "*" // ["WEBPACK","ROUTER","bundle-sequelize"]
     }
   },
 
