@@ -109,7 +109,9 @@ module.exports = {
      */
     bundles: {
       "users-bundle": path.resolve("src", "bundles", "users-bundle"),
-      //"vault-bundle": path.resolve("src", "bundles", "vault-bundle")
+      //"vault-bundle": path.resolve("src", "bundles", "vault-bundle"),
+      //"react-bundle": path.resolve("src", "bundles", "react-bundle"),
+      //"vue-bundle": path.resolve("src", "bundles", "vue-bundle")
     },
     /**
      * SYSLOG NODEFONY

@@ -7,7 +7,7 @@
 
 [![Issues Status](https://img.shields.io/github/issues/nodefony/nodefony.svg)](https://github.com/nodefony/nodefony/issues) [![Build Status](https://github.com/nodefony/nodefony/workflows/nodefony/badge.svg)](https://github.com/nodefony/nodefony/actions) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/495/badge)](https://bestpractices.coreinfrastructure.org/projects/495)
 
-Nodefony is Node.js full-stack web framework.  
+Nodefony is Node.js full-stack web framework.
 
 Nodefony can be used to develop a complete solution to create a Fullstack Web Application, Secure Api, or Microservices.
 
@@ -127,7 +127,7 @@ The development framework will not be ported to typescript, but will wait for th
 
 -   ~~[ELECTRON](https://github.com/nodefony/nodefony-electron) Experimental Nodefony Electron  ( Now an Electron Context can be use in Nodefony Project )~~
 
--   EMBEDDED SYSTEM ( Very difficult : large memory footprint )  
+-   EMBEDDED SYSTEM ( Very difficult : large memory footprint )
 
 ## <a name="install"></a> Linux or OSX Installation
 
@@ -141,7 +141,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 $ source ~/.bashrc # or source ~/.bash_profile
-$ nvm ls-remote # show all remote versions  
+$ nvm ls-remote # show all remote versions
 $ nvm ls # show local versions
 ```
 
@@ -254,8 +254,8 @@ $ cd myproject
 ```bash
 $ npx nodefony -h
 
-nodefony                                                                                              
-    create [-i] name [path]                       Create New Nodefony Project                  
+nodefony
+    create [-i] name [path]                       Create New Nodefony Project
 ```
 
 ## <a name="buildstarter"></a> Build Project with Github Starter :
@@ -326,14 +326,14 @@ OR YOU CAN USE CLI INTERACTIVE MODE (nodefony without args)
  _   _    ___    ____    _____   _____    ___    _   _  __   __
 | \ | |  / _ \  |  _ \  | ____| |  ___|  / _ \  | \ | | \ \ / /
 |  \| | | | | | | | | | |  _|   | |_    | | | | |  \| |  \ V /
-| |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |  
-|_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|  
+| |\  | | |_| | | |_| | | |___  |  _|   | |_| | | |\  |   | |
+|_| \_|  \___/  |____/  |_____| |_|      \___/  |_| \_|   |_|
 
 Version : 4.0.0 Platform : linux  Process : nodefony PID : 31635
 
 Fri Jul 27 2018 17:01:11 INFO nodefony : WELCOME PROJECT : myproject 1.0.0
 
-?  Nodefony CLI :  
+?  Nodefony CLI :
 ❯ Start Servers Development
   Start Servers Pre-Production
   Start Servers Production
@@ -594,7 +594,7 @@ class defaultController extends nodefony.Controller {
   indexAction() {
     return this.render("hello-bundle::index.html.twig", {
 			name: this.bundle.name,
-			description: this.bundle.package.description    
+			description: this.bundle.package.description
     });
   }
 }

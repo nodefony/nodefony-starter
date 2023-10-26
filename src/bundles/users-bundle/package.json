@@ -42,7 +42,7 @@
     "jquery": "3.7.1",
     "mini-css-extract-plugin": "2.7.6",
     "node-gyp": "9.4.0",
-    "sass": "1.69.4",
+    "sass": "1.69.5",
     "sass-loader": "^13.2.0",
     "sequelize-cli": "^6.5.2",
     "stream": "0.0.2",

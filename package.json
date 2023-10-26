@@ -14,6 +14,7 @@
     "prod": "nodefony prod",
     "kill": "nodefony kill",
     "test": "nodefony test",
+    "compile": "nodefony webpack:dump",
     "help": "nodefony -h",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0",
     "dev-deploy": "bash bin/dev-deploy.sh",
