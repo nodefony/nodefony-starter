@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.js": "/react-bundle/static/js/bundle.js",
+    "static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.chunk.js": "/react-bundle/static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.chunk.js",
+    "static/media/logo.svg": "/react-bundle/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/react-bundle/index.html",
+    "bundle.js.map": "/react-bundle/static/js/bundle.js.map",
+    "vendors-node_modules_web-vitals_dist_web-vitals_js.chunk.js.map": "/react-bundle/static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/bundle.js"
+  ]
+}
