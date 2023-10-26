@@ -13,7 +13,7 @@
   ],
   "repository": {},
   "dependencies": {
-    "node-vault": "^0.9.22"
+    "node-vault": "0.10.2"
   },
   "license": "",
   "readmeFilename": "README.md",
