@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{nodefony.local|escape}}">
+  <head>
+    {% block head %}{% endblock %}
+    {% block meta %}
+      <meta charset="utf-8">
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+      <meta name="theme-color" content="#ffffff">
+    {% endblock %}
+    {% block description %}
+      <meta name="description" content="">
+    {% endblock %}
+    <title>
+      {% block title %}{{nodefony.name|escape}}{% endblock %}
+    </title>
+    {% block stylesheets %}
+      <!-- WEBPACK BUNDLE -->
+    {% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+    {% block javascripts %}
+      <!-- WEBPACK BUNDLE -->
+    {% endblock %}
+  </body>
+</html>
