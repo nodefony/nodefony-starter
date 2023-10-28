@@ -27,7 +27,7 @@
     "html-webpack-plugin": "5.5.3",
     "imports-loader": "4.0.1",
     "mini-css-extract-plugin": "2.7.6",
-    "node-gyp": "9.4.0",
+    "node-gyp": "9.4.1",
     "sass": "1.69.5",
     "sass-loader": "13.3.2",
     "sitemap-webpack-plugin": "1.1.1",
