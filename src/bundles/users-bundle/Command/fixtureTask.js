@@ -1,15 +1,16 @@
 class fixtureTask extends nodefony.Task {
-
-  constructor(name, command) {
+  constructor (name, command) {
     super(name, command);
     this.bundle = command.bundle;
   }
 
-  showHelp() {
-    this.setHelp("users:fixtures:default",
+  showHelp () {
+    this.setHelp(
+      "users:fixtures:default",
       "Generate admin, anonymous and 3 common users `nodefony  users:fixtures:default` "
     );
-    this.setHelp("users:fixtures:random nb",
+    this.setHelp(
+      "users:fixtures:random nb",
       "Generate ramdom users with faker `nodefony users:fixtures:random 10` "
     );
   }
@@ -19,30 +20,28 @@ class fixtureTask extends nodefony.Task {
       const fixtures = this.bundle.getFixture("users");
       if (fixtures) {
         this.log(`LOAD FIXTURES users : ${args}`, "INFO");
-        let inst = new fixtures(this.container);
+        const inst = new fixtures(this.container);
         return await inst.run(args);
       }
-      throw new Error(`users fixtures not found `);
-
+      throw new Error("users fixtures not found ");
     } catch (e) {
       throw e;
     }
   }
 
-  async random(args = null) {
+  async random (args = null) {
     try {
       const fixtures = this.bundle.getFixture("users");
       if (fixtures) {
         this.log(`RANDOM FIXTURES users : ${args}`, "INFO");
-        let inst = new fixtures(this.container);
+        const inst = new fixtures(this.container);
         return await inst.run(args);
       }
-      throw new Error(`users fixtures not found `);
+      throw new Error("users fixtures not found ");
     } catch (e) {
       throw e;
     }
   }
-
 }
 
 module.exports = fixtureTask;

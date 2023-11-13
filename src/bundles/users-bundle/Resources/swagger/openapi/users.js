@@ -84,21 +84,21 @@ const openApi = {
           required: true
         }],
         responses: {
-          '200': {
+          "200": {
             description: "User Description",
             content: {
               "application/json": {
                 schema: {
                   allOf: [{
                     $ref: "#/components/schemas/users-api"
-                }, {
+                  }, {
                     type: "object",
                     properties: {
                       result: {
                         $ref: "#/components/schemas/user"
-                      },
+                      }
                     }
-                }]
+                  }]
                 }
               }
             }
@@ -114,7 +114,7 @@ const openApi = {
         summary: "Get OpenAPI (OAS 3.0) configuration",
         tags: ["users"],
         responses: {
-          '200': {
+          "200": {
             description: "OpenAPI (OAS 3.0) configuration",
             content: {
               "application/json": {}
@@ -140,7 +140,7 @@ const openApi = {
           required: false
         }],
         responses: {
-          '200': {
+          "200": {
             description: "List or filter Users",
             content: {
               "application/json": {
@@ -164,7 +164,7 @@ const openApi = {
                             }
                           }
                         }
-                      },
+                      }
                     }
                   }]
                 }
@@ -179,24 +179,24 @@ const openApi = {
       post: {
         summary: "Create user",
         requestBody: {
-          description: `Parameters **users** schema`,
+          description: "Parameters **users** schema",
           required: true,
           content: {
             "application/json": {
               schema: {
-                $ref: '#/components/schemas/user'
+                $ref: "#/components/schemas/user"
               }
             },
             "application/x-www-form-urlencoded": {
               schema: {
-                $ref: '#/components/schemas/user'
+                $ref: "#/components/schemas/user"
               }
             }
-          },
+          }
         },
         tags: ["users"],
         responses: {
-          '200': {
+          "200": {
             description: "get headers request"
           },
           default: {
@@ -211,7 +211,7 @@ const openApi = {
           jwtAuth: ""
         }],
         responses: {
-          '200': {
+          "200": {
             description: "get headers request"
           },
           default: {
@@ -219,7 +219,7 @@ const openApi = {
           }
         }
       }
-    },
+    }
   },
 
   tags: [{

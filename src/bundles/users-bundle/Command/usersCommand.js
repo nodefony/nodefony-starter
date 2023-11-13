@@ -1,26 +1,29 @@
 const fixtureTask = require(path.resolve(__dirname, "fixtureTask.js"));
 
 class usersCommand extends nodefony.Command {
-  constructor(cli, bundle) {
+  constructor (cli, bundle) {
     super("users", cli, bundle);
     this.usersService = this.get("users");
     this.setTask("fixtures", fixtureTask);
   }
 
-  showHelp() {
-    this.setHelp("users:show [user]",
+  showHelp () {
+    this.setHelp(
+      "users:show [user]",
       "nodefony users:show admin"
     );
-    this.setHelp("users:find [--json] username",
+    this.setHelp(
+      "users:find [--json] username",
       "nodefony --json users:find admin"
     );
-    this.setHelp("users:findAll [--json]",
+    this.setHelp(
+      "users:findAll [--json]",
       "nodefony --json users:findAll"
     );
     super.showHelp();
   }
 
-  async show(username) {
+  async show (username) {
     let obj = null;
     if (username) {
       obj = await this.find(username);
@@ -29,43 +32,40 @@ class usersCommand extends nodefony.Command {
     }
   }
 
-  find(username) {
+  find (username) {
     return this.usersService.findOne(username)
       .then((res) => {
         if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify(res)}\n`);
-        } else {
-          return this.display(res);
         }
-      }).catch(e => {
+        return this.display(res);
+      })
+      .catch((e) => {
         if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify({})}\n`);
-        } else {
-          throw e;
         }
+        throw e;
       });
   }
 
-  findAll() {
+  findAll () {
     return this.usersService.find()
       .then((res) => {
         if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify(res.rows)}\n`);
-        } else {
-          return this.display(res.rows);
         }
+        return this.display(res.rows);
       })
-      .catch(e => {
+      .catch((e) => {
         if (this.cli.commander.opts().json) {
           return process.stdout.write(`${JSON.stringify({})}\n`);
-        } else {
-          throw e;
         }
+        throw e;
       });
   }
 
-  display(obj) {
-    this.cli.logger("START TABLE : " + this.cli.getEmoji("clapper"));
+  display (obj) {
+    this.cli.logger(`START TABLE : ${this.cli.getEmoji("clapper")}`);
     const type = nodefony.typeOf(obj);
     if (type === "object" || type === null) {
       if (!obj) {
@@ -74,7 +74,7 @@ class usersCommand extends nodefony.Command {
         obj = [obj];
       }
     }
-    let options = {
+    const options = {
       head: [
         "username",
         "First Name",
@@ -85,7 +85,7 @@ class usersCommand extends nodefony.Command {
         "Enabled"
       ]
     };
-    let table = this.cli.displayTable([], options);
+    const table = this.cli.displayTable([], options);
     for (let i = 0; i < obj.length; i++) {
       const user = obj[i];
       table.push([
@@ -99,8 +99,7 @@ class usersCommand extends nodefony.Command {
       ]);
     }
     console.log(table.toString());
-    this.cli.logger("END TABLE : " + this.cli.getEmoji("checkered_flag"));
+    this.cli.logger(`END TABLE : ${this.cli.getEmoji("checkered_flag")}`);
   }
-
 }
 module.exports = usersCommand;

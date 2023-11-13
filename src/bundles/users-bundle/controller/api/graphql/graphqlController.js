@@ -6,8 +6,7 @@ const userType = require(path.resolve(__dirname, "usertype.js"));
 const userResolver = require(path.resolve(__dirname, "userResolver.js"));
 
 module.exports = class graphqlController extends nodefony.Controller {
-
-  constructor(container, context) {
+  constructor (container, context) {
     super(container, context);
     // service entity
     this.usersService = this.get("users");
@@ -26,13 +25,12 @@ module.exports = class graphqlController extends nodefony.Controller {
    *    @Method ({"GET", "POST","OPTIONS"})
    *    @Route ( "*",name="api-user-graphql")
    */
-  graphqlAction() {
+  graphqlAction () {
     try {
       return this.api.query(this.query.query, this.query.variables, this.query.operationName)
-        .then((data) => {
-          return this.api.render(data);
-        }).catch((e) => {
-          this.api.logger(this.query.query, "WARNING")
+        .then((data) => this.api.render(data))
+        .catch((e) => {
+          this.api.logger(this.query.query, "WARNING");
           this.api.logger(e, "ERROR");
           return this.api.renderError(e, 400);
         });
@@ -41,18 +39,18 @@ module.exports = class graphqlController extends nodefony.Controller {
     }
   }
 
-  static schema(context) {
-    return  nodefony.api.Graphql.makeExecutableSchema({
+  static schema (context) {
+    return nodefony.api.Graphql.makeExecutableSchema({
       typeDefs: graphqlController.types(context),
       resolvers: graphqlController.resolvers(context)
     });
   }
 
-  static types(context) {
+  static types (context) {
     return [userType];
   }
-  static resolvers(context) {
-    return [userResolver]
-  }
 
-}
+  static resolvers (context) {
+    return [userResolver];
+  }
+};

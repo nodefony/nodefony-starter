@@ -67,14 +67,14 @@ const openapi = {
         summary: "Get OpenAPI (OAS 3.0) configuration",
         tags: ["JSON WEB TOKEN"],
         responses: {
-          '200': {
+          "200": {
             description: "A paged array of users"
           },
           default: {
             $ref: "#/components/responses/default"
           }
         }
-      },
+      }
     },
     "/api/jwt/login": {
       post: {
@@ -92,7 +92,7 @@ const openapi = {
           required: true
         }],
         responses: {
-          '200': {
+          "200": {
             description: "get Authentication tokens",
             content: {
               "application/json": {
@@ -104,7 +104,7 @@ const openapi = {
                     properties: {
                       result: {
                         $ref: "#/components/schemas/jwt"
-                      },
+                      }
                     }
                   }]
                 },
@@ -172,12 +172,12 @@ const openapi = {
         parameters: [{
           name: "refreshToken",
           description: "Authentication refreshToken",
-          in: "header",
-          //required: true
+          in: "header"
+          // required: true
         }],
         requestBody: {
-          description: ``,
-          //required: true,
+          description: "",
+          // required: true,
           content: {
             "application/x-www-form-urlencoded": {
               schema: {
@@ -190,10 +190,10 @@ const openapi = {
                 required: ["refreshToken"]
               }
             }
-          },
+          }
         },
         responses: {
-          '200': {
+          "200": {
             description: "Regenerated Token"
           },
           default: {
@@ -213,7 +213,7 @@ const openapi = {
           required: true
         }],
         responses: {
-          '200': {
+          "200": {
             description: "logout user"
           },
           default: {
@@ -222,9 +222,9 @@ const openapi = {
         },
         security: [{
           jwtAuth: ""
-        }],
+        }]
       }
-    },
+    }
   },
   tags: [{
     name: "JSON WEB TOKEN",

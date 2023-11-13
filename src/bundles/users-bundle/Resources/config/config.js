@@ -12,9 +12,9 @@
  *        GENERATE BY nodefony-starter BUILDER
  */
 
-//const crypto = require('crypto');
-const path = require('path');
-const readFile = function (Path) {
+// const crypto = require('crypto');
+const path = require("path");
+const readFile = function readFile (Path) {
   try {
     return fs.readFileSync(Path, {
       encoding: "utf8"
@@ -24,14 +24,18 @@ const readFile = function (Path) {
     throw e;
   }
 };
-const randomSecret = function () {
-  let sercretPath = path.resolve("config", "certificates", "ca", "private", "ca.key.pem");
-  return readFile(sercretPath);
+const randomSecret = function randomSecret () {
+  if(  path && path.resolve){
+    const sercretPath = path.resolve(kernel.path,"config", "certificates", "ca", "private", "ca.key.pem");
+    return readFile(sercretPath);
+  }
+  return null
 };
 
 module.exports = {
   type: "sandbox",
   locale: "en_en",
+
   /**
    *    WATCHERS
    *
@@ -71,6 +75,9 @@ module.exports = {
       path: "/users",
       maxAge: 200
     }
+  },
+  webAuthn:{
+    enabled : true
   },
   jwt: {
     token: {

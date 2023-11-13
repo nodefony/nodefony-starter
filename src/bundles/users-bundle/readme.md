@@ -282,10 +282,10 @@ curl -k -X POST  --data "refreshToken=refreshToken" https://localhost:5152/jwt/t
 ```bash
 $ nodefony -h
 
-users :                                                                                               
- users:show [user]                           nodefony users:show admin                                                                                               
- users:find [--json] username                nodefony --json users:find admin                                                                                        
- users:findAll [--json]                      nodefony --json users:findAll  
+users :
+ users:show [user]                           nodefony users:show admin
+ users:find [--json] username                nodefony --json users:find admin
+ users:findAll [--json]                      nodefony --json users:findAll
 
 $ nodefony users:show
 
@@ -319,7 +319,7 @@ Thu Dec 05 2019 10:45:22 INFO nodefony : END TABLE : 🏁
 
 $ nodefony unitest:list:all
 
-                 _   _                  _       _   _         _   
+                 _   _                  _       _   _         _
  _   _   _ __   (_) | |_    ___   ___  | |_    | | (_)  ___  | |_
 | | | | | '_ \  | | | __|  / _ \ / __| | __|   | | | | / __| | __|
 | |_| | | | | | | | | |_  |  __/ \__ \ | |_    | | | | \__ \ | |_
@@ -333,8 +333,8 @@ Thu Dec 05 2019 10:55:21 INFO COMMAND unitest TASK list :        ‣ usersTest.j
 
 $ nodefony unitest:launch:bundle users
 
-                            _   _                  _       _                                  _     
-            _   _   _ __   (_) | |_    ___   ___  | |_    | |   __ _   _   _   _ __     ___  | |__  
+                            _   _                  _       _                                  _
+            _   _   _ __   (_) | |_    ___   ___  | |_    | |   __ _   _   _   _ __     ___  | |__
            | | | | | '_ \  | | | __|  / _ \ / __| | __|   | |  / _` | | | | | | '_ \   / __| | '_ \
            | |_| | | | | | | | | |_  |  __/ \__ \ | |_    | | | (_| | | |_| | | | | | | (__  | | | |
             \__,_| |_| |_| |_|  \__|  \___| |___/  \__|   |_|  \__,_|  \__,_| |_| |_|  \___| |_| |_|

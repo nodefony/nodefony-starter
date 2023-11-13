@@ -1,13 +1,11 @@
 module.exports = nodefony.registerProvider("userProvider", () => {
-
   const Provider = class userProvider extends nodefony.userEntityProvider {
-
-    constructor(name, manager, config) {
+    constructor (name, manager, config) {
       super(name, manager, config);
       this.property = {};
     }
 
-    loadUserByUsername(username) {
+    loadUserByUsername (username) {
       this.property[this.userProperty] = username;
       if (!this.userEntity) {
         this.userEntity = this.getEntity();
@@ -19,13 +17,14 @@ module.exports = nodefony.registerProvider("userProvider", () => {
           return this.refreshUser(user);
         }
         throw new nodefony.Error(`User : ${username} not Found`, 404);
-      }).catch((error) => {
-        throw error;
-      });
+      })
+        .catch((error) => {
+          throw error;
+        });
     }
 
-    refreshUser(user) {
-      let serialize = user.get();
+    refreshUser (user) {
+      const serialize = user.get();
       return new nodefony.User(
         serialize.username,
         serialize.password,

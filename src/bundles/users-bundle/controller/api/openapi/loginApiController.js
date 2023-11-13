@@ -2,8 +2,7 @@
  *    @Route ("/api/jwt")
  */
 class loginApiController extends nodefony.Controller {
-
-  constructor(container, context) {
+  constructor (container, context) {
     super(container, context);
     this.security = this.get("security");
     this.jwtFactory = this.security.getFactory("jwt");
@@ -26,7 +25,7 @@ class loginApiController extends nodefony.Controller {
    *    )
    *    @Firewall ({bypass:true})
    */
-  swaggerAction() {
+  swaggerAction () {
     return this.optionsAction();
   }
 
@@ -34,9 +33,9 @@ class loginApiController extends nodefony.Controller {
    *    @Method ({"OPTIONS"})
    *    @Route ( "",name="api-login-options",)
    */
-  optionsAction() {
+  optionsAction () {
     try {
-      let openApiConfig = require(path.resolve(this.bundle.path, "Resources", "swagger", "openapi", "login.js"));
+      const openApiConfig = require(path.resolve(this.bundle.path, "Resources", "swagger", "openapi", "login.js"));
       return this.api.renderSchema(openApiConfig, this.usersService.entity);
     } catch (e) {
       return this.api.renderError(e, 400);
@@ -50,7 +49,7 @@ class loginApiController extends nodefony.Controller {
    *      name="api-login-jwt"
    *    )
    */
-  async loginAction() {
+  async loginAction () {
     if (!this.context.token) {
       return this.createException("No Auth Token", 401);
     }
@@ -61,15 +60,17 @@ class loginApiController extends nodefony.Controller {
       }
       const token = this.jwtFactory.generateJwtToken(
         this.context.token.serialize(),
-        this.jwtSettings.token);
+        this.jwtSettings.token
+      );
       const refreshToken = await this.jwtFactory.generateJwtRefreshToken(
         this.context.token.user.username,
         token,
-        this.jwtSettings.refreshToken);
+        this.jwtSettings.refreshToken
+      );
       return this.api.render({
         decodedToken: this.jwtFactory.decodeJwtToken(token),
-        token: token,
-        refreshToken: refreshToken
+        token,
+        refreshToken
       });
     } catch (e) {
       throw this.createException(e, 401);
@@ -84,7 +85,7 @@ class loginApiController extends nodefony.Controller {
    *    )
    *    @Firewall ({bypass:true})
    */
-  async tokenAction() {
+  async tokenAction () {
     try {
       // get refreshToken from request
       let sessionToken = null;
@@ -98,13 +99,13 @@ class loginApiController extends nodefony.Controller {
         throw this.createSecurityException("refreshToken parameter Not found");
       }
       // verify refreshToken expired
-      let refresh = await this.jwtFactory.verifyRefreshToken(refreshToken)
+      const refresh = await this.jwtFactory.verifyRefreshToken(refreshToken)
         .catch((e) => {
           throw this.createSecurityException(e);
         });
-      const username = refresh.data.username;
+      const {username} = refresh.data;
       if (!username) {
-        throw this.createSecurityException(`username not valid`);
+        throw this.createSecurityException("username not valid");
       }
       const dtuser = await this.usersService.findOne(username);
       // controll user enabled
@@ -116,10 +117,10 @@ class loginApiController extends nodefony.Controller {
         await this.jwtFactory.updateJwtRefreshToken(dtuser.username, token, refreshToken);
         return this.api.render({
           decodedToken: this.jwtFactory.decodeJwtToken(token),
-          token: token
+          token
         });
       }
-      throw this.createSecurityException(`User not valid`);
+      throw this.createSecurityException("User not valid");
     } catch (e) {
       throw this.createException(e);
     }
@@ -132,7 +133,7 @@ class loginApiController extends nodefony.Controller {
    *      name="api-login-jwt-refresh"
    *    )
    */
-  async refreshAction() {
+  async refreshAction () {
     // get refreshToken from request
     let sessionToken = null;
     let sessionRefreshToken = null;
@@ -149,29 +150,30 @@ class loginApiController extends nodefony.Controller {
       throw this.createSecurityException("refreshToken or token parameter Not found");
     }
     // verify refreshToken expired
-    let refresh = await this.jwtFactory.verifyRefreshToken(refreshToken)
+    const refresh = await this.jwtFactory.verifyRefreshToken(refreshToken)
       .catch((e) => {
         throw this.createSecurityException(e);
       });
-    const username = refresh.data.username;
+    const {username} = refresh.data;
     if (!username) {
-      throw this.createSecurityException(`username not valid`);
+      throw this.createSecurityException("username not valid");
     }
     const dtuser = await this.usersService.findOne(username);
     // controll user enabled
     if (dtuser && dtuser.enabled) {
-      await this.jwtFactory.truncateJwtToken(this.context.token.user.username)
+      await this.jwtFactory.truncateJwtToken(this.context.token.user.username);
       const refreshToken = await this.jwtFactory.generateJwtRefreshToken(
         this.context.token.user.username,
         token,
-        this.jwtSettings.refreshToken);
+        this.jwtSettings.refreshToken
+      );
       return this.api.render({
         decodedToken: this.jwtFactory.decodeJwtToken(token),
-        token: token,
-        refreshToken: refreshToken
+        token,
+        refreshToken
       });
     }
-    throw this.createSecurityException(`User not valid`);
+    throw this.createSecurityException("User not valid");
   }
 
   /**
@@ -181,9 +183,9 @@ class loginApiController extends nodefony.Controller {
    *      name="api-login-jwt-truncate"
    *    )
    */
-  async truncateAction() {
+  async truncateAction () {
     try {
-      let res = await this.jwtFactory.truncateJwtToken(this.query.username);
+      const res = await this.jwtFactory.truncateJwtToken(this.query.username);
       return this.api.render({
         nbDeleted: res
       });
@@ -196,15 +198,12 @@ class loginApiController extends nodefony.Controller {
    *    @Method ({"POST"})
    *    @Route ("/logout", name="api-login-jwt-logout")
    */
-  logoutAction() {
+  logoutAction () {
     return this.logout()
-      .then(() => {
-        return this.api.render({
-          logout: "ok"
-        });
-      }).catch((e) => {
-        return this.api.render(e, 500);
-      });
+      .then(() => this.api.render({
+        logout: "ok"
+      }))
+      .catch((e) => this.api.render(e, 500));
   }
 }
 

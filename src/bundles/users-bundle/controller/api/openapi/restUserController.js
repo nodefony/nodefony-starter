@@ -2,8 +2,7 @@
  *    @Route ("/api/users")
  */
 class restController extends nodefony.Controller {
-
-  constructor(container, context) {
+  constructor (container, context) {
     super(container, context);
     // service entity
     this.usersService = this.get("users");
@@ -16,10 +15,10 @@ class restController extends nodefony.Controller {
     }, this.context);
   }
 
-  checkAuthorisation(username, query) {
-    let granted = this.is_granted("ROLE_ADMIN");
+  checkAuthorisation (username, query) {
+    const granted = this.is_granted("ROLE_ADMIN");
     if (username) {
-      let user = this.getUser();
+      const user = this.getUser();
       if (!user) {
         throw new nodefony.authorizationError("Unauthorized", 401, this.context);
       }
@@ -28,13 +27,11 @@ class restController extends nodefony.Controller {
           throw new nodefony.authorizationError("Unauthorized Role", 401, this.context);
         }
       }
-    } else {
-      if (!granted) {
-        throw new nodefony.authorizationError("Unauthorized", 401, this.context);
-      }
+    } else if (!granted) {
+      throw new nodefony.authorizationError("Unauthorized", 401, this.context);
     }
     if (query && query.roles && query.roles.length) {
-      if (query.roles.indexOf("ROLE_ADMIN") >= 0 && (!granted)) {
+      if (query.roles.indexOf("ROLE_ADMIN") >= 0 && !granted) {
         throw new nodefony.authorizationError("Unauthorized Role", 401, this.context);
       }
     }
@@ -48,7 +45,7 @@ class restController extends nodefony.Controller {
    *    )
    *    @Firewall ({bypass:true})
    */
-  swaggerAction() {
+  swaggerAction () {
     return this.optionsAction();
   }
 
@@ -56,9 +53,9 @@ class restController extends nodefony.Controller {
    *    @Method ({"OPTIONS"})
    *    @Route ( "",name="api-users-options")
    */
-  optionsAction() {
+  optionsAction () {
     try {
-      let openApiConfig = require(path.resolve(this.bundle.path, "Resources", "swagger", "openapi", "users.js"));
+      const openApiConfig = require(path.resolve(this.bundle.path, "Resources", "swagger", "openapi", "users.js"));
       return this.api.renderSchema(openApiConfig, this.usersService.entity);
     } catch (e) {
       return this.api.renderError(e, 400);
@@ -69,7 +66,7 @@ class restController extends nodefony.Controller {
    *    @Method ({"GET"})
    *    @Route ( "/{username}",name="api-user",defaults={"username" = ""})
    */
-  async getAction(username) {
+  async getAction (username) {
     let result = null;
     const user = this.getUser();
     try {
@@ -94,7 +91,7 @@ class restController extends nodefony.Controller {
    *    @Method ({"HEAD"})
    *    @Route ( "",name="api-users-head",)
    */
-  headAction() {
+  headAction () {
     return this.renderResponse("");
   }
 
@@ -102,14 +99,14 @@ class restController extends nodefony.Controller {
    *    @Method ({"POST"})
    *    @Route ( "",name="api-users-post")
    */
-  async postAction() {
+  async postAction () {
     let myuser = null;
     let error = null;
     if (!this.query.password || !this.query.confirm) {
-      error = new Error(`Password can't be empty`);
+      error = new Error("Password can't be empty");
     }
     if (this.query.password !== this.query.confirm) {
-      error = new Error(`Bad confirm password`);
+      error = new Error("Bad confirm password");
     }
     if (error) {
       this.logger(error, "ERROR");
@@ -117,12 +114,12 @@ class restController extends nodefony.Controller {
     }
     try {
       this.checkAuthorisation(null, this.query);
-      const user = this.getUser()
+      const user = this.getUser();
       myuser = await this.usersService.create(this.query, user);
       if (myuser) {
         delete myuser.password;
         delete myuser["2fa-token"];
-        let res = {
+        const res = {
           query: this.query,
           user: myuser
         };
@@ -142,24 +139,24 @@ class restController extends nodefony.Controller {
    *    @Method ({"PUT"})
    *    @Route ( "/{username}",name="api-user-put")
    */
-  async putAction(username) {
+  async putAction (username) {
     this.checkAuthorisation(this.query.username, this.query);
-    const user = this.getUser()
+    const user = this.getUser();
     return this.usersService.findOne(username, user)
       .then(async (myuser) => {
         if (myuser) {
           if (this.query.password) {
-            let confirm = false
+            let confirm = false;
             if (this.query.confirm) {
               if (this.query.password !== this.query.confirm) {
-                throw new Error(`Bad confirm password`);
+                throw new Error("Bad confirm password");
               }
               delete this.query.confirm;
               confirm = true;
             }
             if (this.query["old-password"]) {
-              let encoder = this.getNodefonyEntity("user").getEncoder();
-              let check = await encoder.isPasswordValid(this.query["old-password"], myuser.password);
+              const encoder = this.getNodefonyEntity("user").getEncoder();
+              const check = await encoder.isPasswordValid(this.query["old-password"], myuser.password);
               if (!check) {
                 throw new Error(`User ${username} bad passport`);
               }
@@ -172,9 +169,9 @@ class restController extends nodefony.Controller {
           }
           return this.usersService.update(myuser, this.query, user)
             .then(async (res) => {
-              let message = `Update User ${this.query.username} OK`;
+              const message = `Update User ${this.query.username} OK`;
               this.log(message, "INFO");
-              let currentUser = this.getUser();
+              const currentUser = this.getUser();
               if (this.session && myuser.username === currentUser.username) {
                 if (this.query.username !== myuser.username) {
                   currentUser.username = this.query.username;
@@ -183,7 +180,7 @@ class restController extends nodefony.Controller {
                   this.session.set("lang", this.query.lang);
                 }
               }
-              let newUser = await this.usersService.findOne(this.query.username, user);
+              const newUser = await this.usersService.findOne(this.query.username, user);
               delete newUser.password;
               delete newUser["2fa-token"];
               return this.api.render({
@@ -204,8 +201,8 @@ class restController extends nodefony.Controller {
    *    @Method ({"PATCH"})
    *    @Route ( "/{username}",name="api-user-patch")
    */
-   // TODO
-  async patchAction(username) {
+  // TODO
+  async patchAction (username) {
     this.log(username);
   }
 
@@ -213,16 +210,16 @@ class restController extends nodefony.Controller {
    *    @Method ({"DELETE"})
    *    @Route ( "/{username}",name="api-user-delete")
    */
-  async deleteAction(username) {
+  async deleteAction (username) {
     try {
       this.checkAuthorisation(this.query.username, this.query);
-      const user = this.getUser()
+      const user = this.getUser();
       return this.usersService.delete(username, user)
         .then((user) => {
           delete user.password;
           delete user["2fa-token"];
           return this.api.render({
-            user: user
+            user
           });
         })
         .catch((error) => {
@@ -237,12 +234,11 @@ class restController extends nodefony.Controller {
    *    @Method ({"TRACE"})
    *
    */
-  traceAction() {
+  traceAction () {
     return this.renderResponse(JSON.stringify(this.request.request.headers, null, " "), 200, {
       "Content-Type": "message/http"
     });
   }
-
 }
 
 module.exports = restController;

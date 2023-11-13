@@ -1,11 +1,11 @@
-  module.exports = {
-    styles: {
-      "mixins": true,
+module.exports = {
+  styles: {
+    "mixins": true,
 
-      "core": true,
-      "icons": true,
+    "core": true,
+    "icons": true,
 
-      "larger": true,
-      "path": true,
-    }
-  };
+    "larger": true,
+    "path": true
+  }
+};

@@ -1,17 +1,17 @@
 const localFramework = kernel.app.settings.locale;
-let Faker = null ;
+let Faker = null;
 try {
-  Faker = require(`@withshepherd/faker`);
+  Faker = require("@withshepherd/faker");
 } catch (e) {}
-//const local = localFramework.slice(0, 2);
-//const Faker = require(`faker/locale/${local}`);
-//Faker.locale = local;
+// const local = localFramework.slice(0, 2);
+// const Faker = require(`faker/locale/${local}`);
+// Faker.locale = local;
 
-//let uuid = Faker.random.uuid();
-//let ele = `/${uuid.split('-').slice(1, 4).join('\/')}/${uuid}.jpg `;
+// let uuid = Faker.random.uuid();
+// let ele = `/${uuid.split('-').slice(1, 4).join('\/')}/${uuid}.jpg `;
 
 
-const rolesArray = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_TEST', 'ROLE_AUDIO', 'ROLE_VIDEO'];
+const rolesArray = ["ROLE_USER", "ROLE_ADMIN", "ROLE_TEST", "ROLE_AUDIO", "ROLE_VIDEO"];
 
 const defaultFixtures = [{
   username: "anonymous",
@@ -63,7 +63,7 @@ const defaultFixtures = [{
 }];
 
 class randomFixture {
-  constructor() {
+  constructor () {
     this.matrice = {
       username: "",
       name: "",
@@ -77,8 +77,8 @@ class randomFixture {
     };
   }
 
-  randomUser(nb = 100) {
-    let tab = [];
+  randomUser (nb = 100) {
+    const tab = [];
     for (let i = 0; i < nb; i++) {
       let gender = "male";
       let lang = "fr-FR";
@@ -86,33 +86,31 @@ class randomFixture {
         gender = "female";
         lang = "en_EN";
       }
-      tab.push(
-        nodefony.extend({}, this.matrice, {
-          username: Faker.internet.userName(),
-          name: Faker.name.lastName(),
-          surname: Faker.name.firstName(),
-          email: Faker.internet.email(),
-          gender: gender,
-          lang: Faker.random.locale(),
-          image: Faker.image.avatar(),
-          url: Faker.internet.url(),
-          roles: [Faker.random.arrayElement(rolesArray)]
-        }));
+      tab.push(nodefony.extend({}, this.matrice, {
+        username: Faker.internet.userName(),
+        name: Faker.name.lastName(),
+        surname: Faker.name.firstName(),
+        email: Faker.internet.email(),
+        gender,
+        lang: Faker.random.locale(),
+        image: Faker.image.avatar(),
+        url: Faker.internet.url(),
+        roles: [Faker.random.arrayElement(rolesArray)]
+      }));
     }
     return tab;
   }
 
-  faker(option) {
+  faker (option) {
     return Faker.fake(option);
   }
 
-  randomFloat(modulo = 0, min = 0, max = 100) {
+  randomFloat (modulo = 0, min = 0, max = 100) {
     if (modulo % 2) {
       return -(Math.random() * (max - min) + min).toFixed(2);
     }
     return (Math.random() * (max - min) + min).toFixed(2);
   }
-
 }
 
 module.exports.default = defaultFixtures;

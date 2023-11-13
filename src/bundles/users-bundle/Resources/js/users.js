@@ -11,6 +11,9 @@ import '../scss/custom.scss';
 
 import $ from "jquery";
 
+
+import webAuthn from '../config/config.js'
+
 /*
  *	Class Users Bundle App
  */

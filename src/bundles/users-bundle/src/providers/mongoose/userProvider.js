@@ -1,30 +1,29 @@
 module.exports = nodefony.registerProvider("userProvider", () => {
-
   const Provider = class userProvider extends nodefony.userEntityProvider {
-
-    constructor(name, manager, config) {
+    constructor (name, manager, config) {
       super(name, manager, config);
       this.property = {};
     }
 
-    loadUserByUsername(username) {
+    loadUserByUsername (username) {
       this.property[this.userProperty] = username;
       if (!this.userEntity) {
         this.userEntity = this.getEntity();
       }
       return this.userEntity.findOne(this.property)
         .then((user) => {
-          //throw user;
+          // throw user;
           if (user) {
             return this.refreshUser(user);
           }
           throw new nodefony.Error(`User : ${username} not Found`, 404);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           throw error;
         });
     }
 
-    async refreshUser(user) {
+    async refreshUser (user) {
       const serialize = await user.populate();
       return new nodefony.User(
         serialize.username,
@@ -43,7 +42,6 @@ module.exports = nodefony.registerProvider("userProvider", () => {
         serialize.image
       );
     }
-
   };
   return Provider;
 });

@@ -1,16 +1,15 @@
 const users = require("./users.js");
 
 class usersFixture extends nodefony.Fixture {
-
-  constructor(container) {
+  constructor (container) {
     super("users", container);
     this.usersService = this.get("users");
     this.entity = this.orm.getEntity("user");
   }
 
-  async initialize(random = 0) {
+  async initialize (random = 0) {
     switch (this.ormName) {
-    case 'sequelize':
+    case "sequelize":
       if (random) {
         return await this.randomSequelize(random);
       }
@@ -23,12 +22,12 @@ class usersFixture extends nodefony.Fixture {
     }
   }
 
-  async randomSequelize(nb) {
+  async randomSequelize (nb) {
     try {
-      let tab = [];
+      const tab = [];
       const random = new users.random();
-      let fixs = random.randomUser(nb);
-      for await (let user of fixs) {
+      const fixs = random.randomUser(nb);
+      for await (const user of fixs) {
         tab.push(await this.loadSequelizeFixtures(user));
       }
       return tab;
@@ -37,10 +36,10 @@ class usersFixture extends nodefony.Fixture {
     }
   }
 
-  async runSequelize() {
+  async runSequelize () {
     try {
-      let tab = [];
-      for await (let user of users.default) {
+      const tab = [];
+      for await (const user of users.default) {
         tab.push(await this.loadSequelizeFixtures(user));
       }
       return tab;
@@ -49,29 +48,29 @@ class usersFixture extends nodefony.Fixture {
     }
   }
 
-  loadSequelizeFixtures(obj) {
+  loadSequelizeFixtures (obj) {
     return this.entity.findOrCreate({
-        where: {
-          username: obj.username
-        },
-        defaults: obj
-      })
+      where: {
+        username: obj.username
+      },
+      defaults: obj
+    })
       .then((res) => {
         if (res[1]) {
-          this.log("ADD USER : " + res[0].username, "INFO");
+          this.log(`ADD USER : ${res[0].username}`, "INFO");
         } else {
-          this.log("ALREADY EXIST USER : " + res[0].username, "INFO");
+          this.log(`ALREADY EXIST USER : ${res[0].username}`, "INFO");
         }
         return res[1];
       });
   }
 
-  async randomMongoose(nb) {
+  async randomMongoose (nb) {
     try {
-      let tab = [];
+      const tab = [];
       const random = new users.random();
-      let fixs = random.randomUser(nb);
-      for await (let user of fixs) {
+      const fixs = random.randomUser(nb);
+      for await (const user of fixs) {
         tab.push(await this.loadMongooseFixtures(user));
       }
       return tab;
@@ -80,10 +79,10 @@ class usersFixture extends nodefony.Fixture {
     }
   }
 
-  async runMongoose() {
+  async runMongoose () {
     try {
-      let tab = [];
-      for await (let user of users.default) {
+      const tab = [];
+      for await (const user of users.default) {
         tab.push(await this.loadMongooseFixtures(user));
       }
       return tab;
@@ -92,17 +91,17 @@ class usersFixture extends nodefony.Fixture {
     }
   }
 
-  loadMongooseFixtures(obj) {
+  loadMongooseFixtures (obj) {
     return new Promise(async (resolve, reject) => {
       try {
         let document = await this.entity.findOne({
           username: obj.username
         });
         if (document) {
-          this.log("ALREADY EXIST USER : " + obj.username, "INFO");
+          this.log(`ALREADY EXIST USER : ${obj.username}`, "INFO");
         } else {
           document = await new this.entity(obj).save();
-          this.log("ADD DOCUMENT USER : " + obj.username, "INFO");
+          this.log(`ADD DOCUMENT USER : ${obj.username}`, "INFO");
         }
         return resolve(document);
       } catch (e) {

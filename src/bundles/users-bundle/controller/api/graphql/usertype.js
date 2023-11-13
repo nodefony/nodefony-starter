@@ -53,6 +53,6 @@ const type = `
     deleteUser(username:String!): User!
     deleteUsers(users:Array!): [User]!
   }
-`
+`;
 
-module.exports = type
+module.exports = type;

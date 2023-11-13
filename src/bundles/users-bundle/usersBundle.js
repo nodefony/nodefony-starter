@@ -10,8 +10,7 @@
  *
  */
 module.exports = class usersBundle extends nodefony.Bundle {
-
-  constructor(name, kernel, container) {
+  constructor (name, kernel, container) {
     // Mother Class constructor
     super(name, kernel, container);
     // Load core bundle library
@@ -19,7 +18,7 @@ module.exports = class usersBundle extends nodefony.Bundle {
     case "sequelize":
       this.autoLoader.load(path.resolve(this.path, "src", "providers", "sequelize", "userProvider.js"));
       break;
-    case 'mongoose':
+    case "mongoose":
       this.autoLoader.load(path.resolve(this.path, "src", "providers", "mongoose", "userProvider.js"));
       break;
     }

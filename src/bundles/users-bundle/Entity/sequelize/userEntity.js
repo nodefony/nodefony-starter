@@ -2,8 +2,9 @@ const {
   Sequelize,
   DataTypes,
   Model
-} = nodefony.Sequelize; //require("sequelize");
-const validator = require('validator');
+} = nodefony.Sequelize; // require("sequelize");
+const validator = require("validator");
+
 /*
  *
  *
@@ -12,8 +13,8 @@ const validator = require('validator');
  *
  */
 class userEntity extends nodefony.Entity {
+  constructor (bundle) {
 
-  constructor(bundle) {
     /*
      *   @param bundle instance
      *   @param Entity name
@@ -21,7 +22,8 @@ class userEntity extends nodefony.Entity {
      *   @param connection name
      */
     super(bundle, "user", "sequelize", "nodefony");
-    /*this.orm.on("onOrmReady", ( orm ) => {
+
+    /* this.orm.on("onOrmReady", ( orm ) => {
         let session = this.orm.getEntity("session");
         if (session) {
           this.model.hasMany(session, {
@@ -35,7 +37,8 @@ class userEntity extends nodefony.Entity {
       });*/
   }
 
-  getSchema() {
+  // eslint-disable-next-line max-lines-per-function
+  getSchema () {
     return {
       username: {
         type: DataTypes.STRING(126),
@@ -45,9 +48,10 @@ class userEntity extends nodefony.Entity {
         validate: {
           is: {
             args: /^[\w-_.]+$/,
-            msg: `username allow alphanumeric and ( _ | - | . ) characters`
+            msg: "username allow alphanumeric and ( _ | - | . ) characters"
           }
-          /*notIn: {
+
+          /* notIn: {
             args: [['admin', 'root']],
             msg: `username don't allow (admin , root) login name`
           }*/
@@ -55,13 +59,14 @@ class userEntity extends nodefony.Entity {
       },
       password: {
         type: DataTypes.STRING(256),
-        allowNull: false,
-        validate: {
+        allowNull: false
+
+        /* validate: {
           min: {
             args: [[4]],
-            msg: `password  allow 4 characters min  `
+            msg: "password  allow 4 characters min  "
           }
-        }
+        }*/
       },
       "2fa": {
         type: DataTypes.BOOLEAN,
@@ -86,7 +91,7 @@ class userEntity extends nodefony.Entity {
       },
       email: {
         type: DataTypes.STRING,
-        //primaryKey: true,
+        // primaryKey: true,
         unique: true,
         allowNull: false,
         validate: {
@@ -101,7 +106,7 @@ class userEntity extends nodefony.Entity {
         validate: {
           is: {
             args: /^[\w-_.]*$/,
-            msg: `name allow alphanumeric characters`
+            msg: "name allow alphanumeric characters"
           }
         }
       },
@@ -111,7 +116,7 @@ class userEntity extends nodefony.Entity {
         validate: {
           is: {
             args: /^[\w-_.]*$/,
-            msg: `surname allow alphanumeric characters`
+            msg: "surname allow alphanumeric characters"
           }
         }
       },
@@ -122,9 +127,9 @@ class userEntity extends nodefony.Entity {
       roles: {
         type: DataTypes.JSON,
         defaultValue: ["ROLE_USER"],
-        get(key) {
+        get (key) {
           let val = this.getDataValue(key);
-          if (typeof (val) === "string") {
+          if (typeof val === "string") {
             val = JSON.parse(val);
           }
           return val;
@@ -145,8 +150,8 @@ class userEntity extends nodefony.Entity {
     };
   }
 
-  validPassword(value) {
-    let valid = validator.isLength(value, {
+  validPassword (value) {
+    const valid = validator.isLength(value, {
       min: 4,
       max: undefined
     });
@@ -156,20 +161,22 @@ class userEntity extends nodefony.Entity {
     return value;
   }
 
-  registerModel(db) {
+  registerModel (db) {
     class MyModel extends Model {
-      static associate(models) {
+      static associate (models) {
         // define association here
       }
-      hasRole(name){
-        for (let role in this.roles) {
+
+      hasRole (name) {
+        for (const role in this.roles) {
           if (this.roles[role] === name) {
             return true;
           }
         }
         return false;
       }
-      isGranted(role){
+
+      isGranted (role) {
         return this.hasRole(role);
       }
     }
@@ -178,12 +185,13 @@ class userEntity extends nodefony.Entity {
       modelName: this.name,
       hooks: {
         beforeCreate: (user) => {
+          console.log("beforeCreate", user);
           this.validPassword(user.password);
           return this.encode(user.password)
-            .then(hash => {
+            .then((hash) => {
               user.password = hash;
             })
-            .catch(err => {
+            .catch((err) => {
               this.logger(err, "ERROR");
               throw err;
             });
@@ -192,10 +200,10 @@ class userEntity extends nodefony.Entity {
           if ("password" in userUpate.attributes) {
             this.validPassword(userUpate.attributes.password);
             return this.encode(userUpate.attributes.password)
-              .then(hash => {
+              .then((hash) => {
                 userUpate.attributes.password = hash;
               })
-              .catch(err => {
+              .catch((err) => {
                 this.logger(err, "ERROR");
                 throw err;
               });
@@ -203,19 +211,19 @@ class userEntity extends nodefony.Entity {
         }
       },
       freezeTableName: true,
-      //add indexes
+      // add indexes
       indexes: [{
         unique: true,
-        fields: ['email']
+        fields: ["email"]
       }]
       // add custom validations
-      //validate: {}
+      // validate: {}
     });
     return MyModel;
   }
 
-  logger(pci /*, sequelize*/ ) {
-    const msgid = "Entity " + this.name;
+  logger (pci /* , sequelize*/) {
+    const msgid = `Entity ${this.name}`;
     return super.logger(pci, "DEBUG", msgid);
   }
 }
