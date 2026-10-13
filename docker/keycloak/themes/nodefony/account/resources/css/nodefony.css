@@ -1,0 +1,66 @@
+/*
+ * Consoles Keycloak (compte de l'utilisateur, administration) aux couleurs de
+ * Nodefony Studio.
+ *
+ * ⚠️ Ce fichier existe en DEUX exemplaires identiques, `account/` et `admin/` :
+ * Keycloak sert les ressources d'un type depuis son propre dossier, aucun
+ * type ne lit celles d'un autre. Un test du paquet les tient identiques.
+ *
+ * Seules des VARIABLES PatternFly 5 sont redéfinies : les consoles sont des
+ * applications React livrées par Keycloak (`keycloak.v3`, `keycloak.v2`), leur
+ * structure reste la leur et suit chaque mise à jour.
+ */
+
+:root {
+  /* Teintes `brand` de Studio (`@nodefony/studio/frontend/src/theme.ts`). */
+  --nf-brand-4: #4792cd;
+  --nf-brand-6: #0067ba;
+  --nf-brand-7: #00579c;
+  --nf-font:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
+  --pf-v5-global--FontFamily--text: var(--nf-font);
+  --pf-v5-global--FontFamily--heading: var(--nf-font);
+  --pf-v5-global--primary-color--100: var(--nf-brand-6);
+  --pf-v5-global--primary-color--200: var(--nf-brand-7);
+  --pf-v5-global--link--Color: var(--nf-brand-6);
+  --pf-v5-global--link--Color--hover: var(--nf-brand-7);
+}
+
+/* Schéma SOMBRE — posé par le parent (`kcDarkModeClass`) selon le système.
+   brand-6 sur le fond sombre des consoles (#1b1d21) = 2,93:1, sous AA : les
+   textes de lien passent en brand-4 (≈ 5:1). Les boutons pleins gardent la
+   teinte sombre de PatternFly (blanc sur #0066cc = 5,57:1). */
+:root.pf-v5-theme-dark {
+  --pf-v5-global--primary-color--100: var(--nf-brand-4);
+  --pf-v5-global--primary-color--200: #74b3e3;
+  --pf-v5-global--link--Color: var(--nf-brand-4);
+  --pf-v5-global--link--Color--hover: #74b3e3;
+}
+
+/* Logo : la marque est un pictogramme vertical, pas un bandeau horizontal.
+   Le nom est ajouté À CÔTÉ par la feuille : les consoles n'affichent qu'une
+   image (propriété `logo`), et réécrire leur `index.ftl` obligerait à le
+   resynchroniser à chaque version de Keycloak. Le texte généré entre dans le
+   nom accessible du lien. */
+.pf-v5-c-masthead__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+}
+.pf-v5-c-masthead .pf-v5-c-brand,
+.pf-v5-c-masthead__brand img {
+  height: 36px;
+  width: auto;
+}
+.pf-v5-c-masthead__brand::after {
+  content: "Nodefony";
+  font-family: var(--nf-font);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--pf-v5-global--Color--light-100, #fff);
+  white-space: nowrap;
+}

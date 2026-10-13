@@ -1,0 +1,1141 @@
+/* ═══ nodefony/login.css — feuille UNIQUE de la page de connexion ═══════════
+   Publiée par le paquet `nodefony` (`exports["./login.css"]`), servie par la
+   page `/login` du framework (ADR-0015).
+
+   Un balisage, des variables : la page ne change jamais de structure. Une
+   application l'habille en surchargeant les variables `--nf-login-*` dans sa
+   propre feuille, et choisit la mise en page sur
+   `<body data-layout="split|card|bare">` (`split` par défaut). Une mise à jour
+   du framework ne touche donc rien chez elle.
+
+   Thème : le système décide (`prefers-color-scheme`), `<html data-theme>`
+   force `light` ou `dark`. Le jeu clair est écrit DEUX fois — sous la requête
+   média et sous `[data-theme="light"]` — parce qu'une page de connexion ne
+   dépend pas de `light-dark()` ; un test exige que les deux copies restent
+   identiques.
+
+   Couleurs de MARQUE : cette feuille en est la source. Les copies que des
+   frontières imposent (console Studio, thème Keycloak, gabarits d'application,
+   barre de debug) sont confrontées à elle par
+   `src/tests/loginStylesheet.test.ts`.
+
+   Couleurs pleines : aucun dégradé décoratif ni halo. Seuls un voile
+   semi-transparent et une découpe sont admis.                              */
+
+:root {
+  /* Marque — le bleu, le vert et le cyan du logo (`assets/nodefony-logo.svg`). */
+  --nf-login-brand: #0067ba;
+  --nf-login-brand-hover: #00579c;
+  --nf-login-brand-green: #448438;
+  --nf-login-brand-cyan: #00a0f2;
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #3aa0ff;
+  --nf-login-ok: #36b37e;
+  --nf-login-warn: #ffab00;
+  --nf-login-crit: #ff6b4a;
+
+  /* Surfaces — sombre par défaut (celui de la barre de debug) */
+  --nf-login-bg: #14161a;
+  --nf-login-surface: #1c1f26;
+  --nf-login-raised: #22262e;
+  --nf-login-line: #2a2e36;
+  --nf-login-line-strong: #3a3f49;
+  --nf-login-heading: #f1f3f5;
+  --nf-login-text: #cfd3d8;
+  --nf-login-muted: #8a9099;
+  --nf-login-field: #171a1f;
+  --nf-login-crit-bg: rgba(255, 107, 74, 0.08);
+  --nf-login-ok-bg: rgba(54, 179, 126, 0.1);
+  --nf-login-home-green: #7cc46c;
+
+  /* Fond d'écran : image, motif, ou rien. Le voile garantit le contraste. */
+  --nf-login-backdrop: none;
+  --nf-login-backdrop-size: auto;
+  --nf-login-backdrop-position: center;
+  --nf-login-veil: transparent;
+
+  /* Panneau de marque (mise en page « split ») : un fond, une image facultative
+     (`url(...)` posée par l'application), un voile PLEIN par-dessus. */
+  --nf-login-hero-bg: #0f1114;
+  --nf-login-hero-image: none;
+  --nf-login-hero-veil: rgba(10, 14, 22, 0.6);
+  --nf-login-hero-fg: #f1f3f5;
+  --nf-login-hero-muted: #8a9099;
+  /* Les trois arcs du logo (bleu, vert, cyan) posés sur la jonction courbe. */
+  --nf-login-arcs: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%230067ba%22%20d%3D%22M100.00%200.00%20L99.52%201.11%20L99.04%202.22%20L98.58%203.33%20L98.13%204.44%20L97.69%205.56%20L97.26%206.67%20L96.84%207.78%20L96.44%208.89%20L96.04%2010.00%20L95.65%2011.11%20L95.28%2012.22%20L94.92%2013.33%20L94.56%2014.44%20L94.22%2015.56%20L93.89%2016.67%20L93.57%2017.78%20L93.26%2018.89%20L92.96%2020.00%20L92.67%2021.11%20L92.40%2022.22%20L92.13%2023.33%20L91.87%2024.44%20L91.63%2025.56%20L91.40%2026.67%20L91.17%2027.78%20L90.96%2028.89%20L90.76%2030.00%20L90.57%2031.11%20L90.39%2032.22%20L90.22%2033.33%20L90.06%2034.44%20L89.92%2035.56%20L89.78%2036.67%20L89.66%2037.78%20L89.54%2038.89%20L89.44%2040.00%20L89.35%2041.11%20L89.27%2042.22%20L89.20%2043.33%20L89.14%2044.44%20L89.09%2045.56%20L89.05%2046.67%20L89.02%2047.78%20L89.01%2048.89%20L89.00%2050.00%20L89.01%2051.11%20L89.02%2052.22%20L89.05%2053.33%20L89.09%2054.44%20L89.14%2055.56%20L89.20%2056.67%20L89.27%2057.78%20L89.35%2058.89%20L89.44%2060.00%20L89.54%2061.11%20L89.66%2062.22%20L89.78%2063.33%20L89.92%2064.44%20L90.06%2065.56%20L90.22%2066.67%20L90.39%2067.78%20L90.57%2068.89%20L90.76%2070.00%20L90.96%2071.11%20L91.17%2072.22%20L91.40%2073.33%20L91.63%2074.44%20L91.87%2075.56%20L92.13%2076.67%20L92.40%2077.78%20L92.67%2078.89%20L92.96%2080.00%20L93.26%2081.11%20L93.57%2082.22%20L93.89%2083.33%20L94.22%2084.44%20L94.56%2085.56%20L94.92%2086.67%20L95.28%2087.78%20L95.65%2088.89%20L96.04%2090.00%20L96.44%2091.11%20L96.84%2092.22%20L97.26%2093.33%20L97.69%2094.44%20L98.13%2095.56%20L98.58%2096.67%20L99.04%2097.78%20L99.52%2098.89%20L100.00%20100.00%20L100.00%20100.00%20L99.42%2098.89%20L98.87%2097.78%20L98.33%2096.67%20L97.81%2095.56%20L97.31%2094.44%20L96.81%2093.33%20L96.34%2092.22%20L95.87%2091.11%20L95.41%2090.00%20L94.97%2088.89%20L94.54%2087.78%20L94.12%2086.67%20L93.72%2085.56%20L93.33%2084.44%20L92.95%2083.33%20L92.58%2082.22%20L92.22%2081.11%20L91.88%2080.00%20L91.55%2078.89%20L91.23%2077.78%20L90.92%2076.67%20L90.63%2075.56%20L90.34%2074.44%20L90.07%2073.33%20L89.82%2072.22%20L89.57%2071.11%20L89.34%2070.00%20L89.12%2068.89%20L88.91%2067.78%20L88.72%2066.67%20L88.54%2065.56%20L88.37%2064.44%20L88.21%2063.33%20L88.06%2062.22%20L87.93%2061.11%20L87.81%2060.00%20L87.70%2058.89%20L87.61%2057.78%20L87.53%2056.67%20L87.46%2055.56%20L87.40%2054.44%20L87.36%2053.33%20L87.33%2052.22%20L87.31%2051.11%20L87.30%2050.00%20L87.31%2048.89%20L87.33%2047.78%20L87.36%2046.67%20L87.40%2045.56%20L87.46%2044.44%20L87.53%2043.33%20L87.61%2042.22%20L87.70%2041.11%20L87.81%2040.00%20L87.93%2038.89%20L88.06%2037.78%20L88.21%2036.67%20L88.37%2035.56%20L88.54%2034.44%20L88.72%2033.33%20L88.91%2032.22%20L89.12%2031.11%20L89.34%2030.00%20L89.57%2028.89%20L89.82%2027.78%20L90.07%2026.67%20L90.34%2025.56%20L90.63%2024.44%20L90.92%2023.33%20L91.23%2022.22%20L91.55%2021.11%20L91.88%2020.00%20L92.22%2018.89%20L92.58%2017.78%20L92.95%2016.67%20L93.33%2015.56%20L93.72%2014.44%20L94.12%2013.33%20L94.54%2012.22%20L94.97%2011.11%20L95.41%2010.00%20L95.87%208.89%20L96.34%207.78%20L96.81%206.67%20L97.31%205.56%20L97.81%204.44%20L98.33%203.33%20L98.87%202.22%20L99.42%201.11%20L100.00%200.00Z%22/%3E%3Cpath%20fill%3D%22%23448438%22%20d%3D%22M93.79%2012.22%20L93.37%2013.33%20L92.97%2014.44%20L92.58%2015.56%20L92.20%2016.67%20L91.83%2017.78%20L91.47%2018.89%20L91.13%2020.00%20L90.80%2021.11%20L90.48%2022.22%20L90.17%2023.33%20L89.88%2024.44%20L89.59%2025.56%20L89.32%2026.67%20L89.07%2027.78%20L88.82%2028.89%20L88.59%2030.00%20L88.37%2031.11%20L88.16%2032.22%20L87.97%2033.33%20L87.79%2034.44%20L87.62%2035.56%20L87.46%2036.67%20L87.31%2037.78%20L87.18%2038.89%20L87.06%2040.00%20L86.95%2041.11%20L86.86%2042.22%20L86.78%2043.33%20L86.71%2044.44%20L86.65%2045.56%20L86.61%2046.67%20L86.58%2047.78%20L86.56%2048.89%20L86.55%2050.00%20L86.56%2051.11%20L86.58%2052.22%20L86.61%2053.33%20L86.65%2054.44%20L86.71%2055.56%20L86.78%2056.67%20L86.86%2057.78%20L86.95%2058.89%20L87.06%2060.00%20L87.18%2061.11%20L87.31%2062.22%20L87.46%2063.33%20L87.62%2064.44%20L87.79%2065.56%20L87.97%2066.67%20L88.16%2067.78%20L88.37%2068.89%20L88.59%2070.00%20L88.82%2071.11%20L89.07%2072.22%20L89.32%2073.33%20L89.59%2074.44%20L89.88%2075.56%20L90.17%2076.67%20L90.48%2077.78%20L90.80%2078.89%20L91.13%2080.00%20L91.47%2081.11%20L91.83%2082.22%20L92.20%2083.33%20L92.58%2084.44%20L92.97%2085.56%20L93.37%2086.67%20L93.79%2087.78%20L93.77%2087.78%20L93.26%2086.67%20L92.78%2085.56%20L92.31%2084.44%20L91.86%2083.33%20L91.43%2082.22%20L91.01%2081.11%20L90.61%2080.00%20L90.22%2078.89%20L89.84%2077.78%20L89.48%2076.67%20L89.14%2075.56%20L88.81%2074.44%20L88.49%2073.33%20L88.18%2072.22%20L87.90%2071.11%20L87.62%2070.00%20L87.36%2068.89%20L87.12%2067.78%20L86.88%2066.67%20L86.67%2065.56%20L86.47%2064.44%20L86.28%2063.33%20L86.11%2062.22%20L85.95%2061.11%20L85.81%2060.00%20L85.68%2058.89%20L85.57%2057.78%20L85.47%2056.67%20L85.39%2055.56%20L85.32%2054.44%20L85.27%2053.33%20L85.23%2052.22%20L85.21%2051.11%20L85.20%2050.00%20L85.21%2048.89%20L85.23%2047.78%20L85.27%2046.67%20L85.32%2045.56%20L85.39%2044.44%20L85.47%2043.33%20L85.57%2042.22%20L85.68%2041.11%20L85.81%2040.00%20L85.95%2038.89%20L86.11%2037.78%20L86.28%2036.67%20L86.47%2035.56%20L86.67%2034.44%20L86.88%2033.33%20L87.12%2032.22%20L87.36%2031.11%20L87.62%2030.00%20L87.90%2028.89%20L88.18%2027.78%20L88.49%2026.67%20L88.81%2025.56%20L89.14%2024.44%20L89.48%2023.33%20L89.84%2022.22%20L90.22%2021.11%20L90.61%2020.00%20L91.01%2018.89%20L91.43%2017.78%20L91.86%2016.67%20L92.31%2015.56%20L92.78%2014.44%20L93.26%2013.33%20L93.77%2012.22Z%22/%3E%3Cpath%20fill%3D%22%2300a0f2%22%20d%3D%22M87.15%2028.89%20L86.87%2030.00%20L86.61%2031.11%20L86.37%2032.22%20L86.13%2033.33%20L85.92%2034.44%20L85.72%2035.56%20L85.53%2036.67%20L85.36%2037.78%20L85.20%2038.89%20L85.06%2040.00%20L84.93%2041.11%20L84.82%2042.22%20L84.72%2043.33%20L84.64%2044.44%20L84.57%2045.56%20L84.52%2046.67%20L84.48%2047.78%20L84.46%2048.89%20L84.45%2050.00%20L84.46%2051.11%20L84.48%2052.22%20L84.52%2053.33%20L84.57%2054.44%20L84.64%2055.56%20L84.72%2056.67%20L84.82%2057.78%20L84.93%2058.89%20L85.06%2060.00%20L85.20%2061.11%20L85.36%2062.22%20L85.53%2063.33%20L85.72%2064.44%20L85.92%2065.56%20L86.13%2066.67%20L86.37%2067.78%20L86.61%2068.89%20L86.87%2070.00%20L87.15%2071.11%20L87.04%2071.11%20L86.67%2070.00%20L86.32%2068.89%20L85.99%2067.78%20L85.68%2066.67%20L85.39%2065.56%20L85.12%2064.44%20L84.87%2063.33%20L84.64%2062.22%20L84.42%2061.11%20L84.23%2060.00%20L84.06%2058.89%20L83.90%2057.78%20L83.77%2056.67%20L83.66%2055.56%20L83.57%2054.44%20L83.49%2053.33%20L83.44%2052.22%20L83.41%2051.11%20L83.40%2050.00%20L83.41%2048.89%20L83.44%2047.78%20L83.49%2046.67%20L83.57%2045.56%20L83.66%2044.44%20L83.77%2043.33%20L83.90%2042.22%20L84.06%2041.11%20L84.23%2040.00%20L84.42%2038.89%20L84.64%2037.78%20L84.87%2036.67%20L85.12%2035.56%20L85.39%2034.44%20L85.68%2033.33%20L85.99%2032.22%20L86.32%2031.11%20L86.67%2030.00%20L87.04%2028.89Z%22/%3E%3C/svg%3E");
+
+  /* Forme */
+  --nf-login-radius: 8px;
+  --nf-login-card-radius: 12px;
+  /* Largeur de la carte : une part de l'écran (`ratio`), bornée entre un
+     minimum et un MAXIMUM (`width`) — elle grandit avec l'écran sans jamais
+     s'étirer, et le téléphone garde toute sa largeur (`100%`). Le calcul
+     s'écrit sur `.nf-card`, jamais dans une variable de `:root` : celle-ci
+     serait figée à la racine, et une surcharge posée plus bas (le thème
+     Keycloak, une application) n'y entrerait plus. Au-delà de 1 800 px, le
+     `zoom` des paliers « grand écran » s'y ajoute. */
+  --nf-login-card-min: 380px;
+  --nf-login-card-ratio: 34vw;
+  --nf-login-card-width: 520px;
+  --nf-login-card-shadow: none;
+  --nf-login-card-blur: 0px;
+  --nf-login-font:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --nf-login-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --nf-login-label-font: 600 13px/1.3 var(--nf-login-font);
+  --nf-login-title-size: 22px;
+  color-scheme: dark;
+}
+
+/* Jeu CLAIR — copie 1/2 : le système le demande et l'utilisateur ne force pas le sombre. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #ffffff;
+    --nf-login-surface: #ffffff;
+    --nf-login-raised: #f0f2f5;
+    --nf-login-line: #e3e6ea;
+    --nf-login-line-strong: #cdd2d8;
+    --nf-login-heading: #111317;
+    --nf-login-text: #343a40;
+    --nf-login-muted: #5d646d;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    --nf-login-home-green: #2f6a27;
+    --nf-login-hero-bg: #f5f6f8;
+    --nf-login-hero-veil: rgba(246, 248, 251, 0.65);
+    --nf-login-hero-fg: #111317;
+    --nf-login-hero-muted: #5d646d;
+    color-scheme: light;
+  }
+}
+/* Jeu CLAIR — copie 2/2 : l'utilisateur le force. */
+:root[data-theme="light"] {
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #ffffff;
+  --nf-login-surface: #ffffff;
+  --nf-login-raised: #f0f2f5;
+  --nf-login-line: #e3e6ea;
+  --nf-login-line-strong: #cdd2d8;
+  --nf-login-heading: #111317;
+  --nf-login-text: #343a40;
+  --nf-login-muted: #5d646d;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  --nf-login-home-green: #2f6a27;
+  --nf-login-hero-bg: #f5f6f8;
+  --nf-login-hero-veil: rgba(246, 248, 251, 0.65);
+  --nf-login-hero-fg: #111317;
+  --nf-login-hero-muted: #5d646d;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  min-height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--nf-login-text);
+  font: 15px/1.5 var(--nf-login-font);
+  background-color: var(--nf-login-bg);
+  background-image: var(--nf-login-backdrop);
+  background-size: var(--nf-login-backdrop-size);
+  background-position: var(--nf-login-backdrop-position);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+/* Voile PLEIN au-dessus du fond : c'est lui, pas l'image, qui tient le contraste. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--nf-login-veil);
+  pointer-events: none;
+}
+[hidden] {
+  display: none !important;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--nf-login-accent);
+  outline-offset: 2px;
+}
+.nf-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nf-mark {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: currentColor;
+}
+.nf-logo {
+  display: block;
+  width: auto;
+  height: 20px;
+}
+
+/* ── Bandeau d'état ─────────────────────────────────────────────────────── */
+.nf-strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--nf-login-line);
+  background: var(--nf-login-surface);
+}
+.nf-strip-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 650;
+  color: var(--nf-login-heading);
+}
+.nf-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--nf-login-line);
+}
+.nf-spacer {
+  flex: 1;
+}
+.nf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 12px;
+  background: var(--nf-login-raised);
+  font: 700 10px/1 var(--nf-login-mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--nf-login-muted);
+  white-space: nowrap;
+}
+.nf-chip.env {
+  color: var(--nf-login-warn);
+}
+.nf-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--nf-login-ok);
+}
+
+/* ── Scène ──────────────────────────────────────────────────────────────── */
+.nf-layout {
+  display: flex;
+  flex: 1;
+}
+.nf-hero {
+  display: none;
+}
+.nf-stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  gap: 18px;
+  padding: 40px 16px;
+}
+.nf-card {
+  width: min(
+    clamp(
+      var(--nf-login-card-min),
+      var(--nf-login-card-ratio),
+      var(--nf-login-card-width)
+    ),
+    100%
+  );
+  border: 1px solid var(--nf-login-line);
+  border-radius: var(--nf-login-card-radius);
+  background: var(--nf-login-surface);
+  box-shadow: var(--nf-login-card-shadow);
+  backdrop-filter: blur(var(--nf-login-card-blur));
+}
+.nf-head {
+  padding: 26px 28px 0;
+}
+.nf-head .nf-brand {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-weight: 700;
+  color: var(--nf-login-heading);
+}
+.nf-head .nf-brand .nf-logo {
+  height: 26px;
+}
+h1 {
+  margin: 0;
+  font-size: var(--nf-login-title-size);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--nf-login-heading);
+}
+.nf-sub {
+  margin: 4px 0 0;
+  color: var(--nf-login-muted);
+}
+
+/* Étapes — les onglets de la barre de debug, en lecture seule. Ils vivent
+   DANS le corps, juste au-dessus du formulaire qu'ils décrivent : posés sous
+   le titre, ils restaient en haut quand les fournisseurs passent d'abord, et
+   l'on ne voyait plus à quoi ils se rapportaient. */
+.nf-steps {
+  display: flex;
+  gap: 18px;
+  margin: 0 0 18px;
+  padding: 0;
+  border-bottom: 1px solid var(--nf-login-line);
+  list-style: none;
+}
+.nf-steps li {
+  padding: 0 0 9px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font: 700 10px/1 var(--nf-login-mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--nf-login-muted);
+}
+.nf-steps li[aria-current="step"] {
+  border-bottom-color: var(--nf-login-accent);
+  color: var(--nf-login-heading);
+}
+.nf-steps li.done {
+  color: var(--nf-login-text);
+}
+.nf-steps li.done::before {
+  content: "✓ ";
+  color: var(--nf-login-ok);
+}
+
+.nf-body {
+  padding: 22px 28px 14px;
+}
+form {
+  display: grid;
+  gap: 16px;
+}
+.nf-field {
+  display: grid;
+  gap: 6px;
+}
+.nf-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+label {
+  font: var(--nf-login-label-font);
+  color: var(--nf-login-heading);
+}
+.nf-input {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: var(--nf-login-radius);
+  background: var(--nf-login-field);
+}
+.nf-input:focus-within {
+  border-color: var(--nf-login-accent);
+  box-shadow: 0 0 0 1px var(--nf-login-accent);
+}
+.nf-input > .nf-icon {
+  margin-left: 12px;
+  color: var(--nf-login-muted);
+}
+.nf-input input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--nf-login-heading);
+  font-size: 16px; /* 16 px : iOS ne zoome pas au focus */
+  outline: none;
+}
+.nf-reveal {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 36px;
+  margin-right: 3px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--nf-login-muted);
+  cursor: pointer;
+}
+.nf-reveal:hover {
+  color: var(--nf-login-heading);
+  background: var(--nf-login-raised);
+}
+
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: var(--nf-login-radius);
+  background: var(--nf-login-surface);
+  color: var(--nf-login-heading);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nf-btn:hover {
+  background: var(--nf-login-raised);
+}
+/* Fournisseur d'organisation : le mot de l'utilisateur, puis le logiciel en
+   petit (`SSO · Keycloak`) pour qui le connaît. */
+.nf-btn .nf-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 5px 0;
+  line-height: 1.15;
+  text-align: left;
+}
+.nf-btn .nf-label small {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--nf-login-muted);
+}
+
+/* Sélecteur d'aperçu (développement, `loginPage.previewPicker`) : un outil
+   du développeur posé dans un coin, jamais une partie de la page livrée. */
+.nf-picker {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px dashed var(--nf-login-line-strong);
+  border-radius: var(--nf-login-radius);
+  background: var(--nf-login-surface);
+  font: 600 11px/1 var(--nf-login-mono);
+  color: var(--nf-login-muted);
+}
+.nf-picker label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nf-picker select {
+  font: inherit;
+  color: var(--nf-login-heading);
+  background: var(--nf-login-raised);
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+/* Bascule clair / sombre : l'icône montre le thème où l'on VA. */
+.nf-theme {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: 50%;
+  background: var(--nf-login-surface);
+  color: var(--nf-login-heading);
+  cursor: pointer;
+}
+.nf-theme:hover {
+  background: var(--nf-login-raised);
+}
+.nf-theme .t-moon {
+  display: none;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .nf-theme .t-moon {
+    display: block;
+  }
+  :root:not([data-theme="dark"]) .nf-theme .t-sun {
+    display: none;
+  }
+}
+:root[data-theme="light"] .nf-theme .t-moon {
+  display: block;
+}
+:root[data-theme="light"] .nf-theme .t-sun {
+  display: none;
+}
+.nf-btn.primary {
+  width: 100%;
+  border-color: var(--nf-login-brand);
+  background: var(--nf-login-brand);
+  color: var(--nf-login-on-brand);
+  font-size: 15px;
+}
+.nf-btn.primary:hover {
+  border-color: var(--nf-login-brand-hover);
+  background: var(--nf-login-brand-hover);
+}
+.nf-btn.primary .nf-icon {
+  transition: transform 0.12s;
+}
+.nf-btn.primary:hover .nf-icon {
+  transform: translateX(2px);
+}
+.nf-link {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--nf-login-accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nf-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.nf-center {
+  justify-self: center;
+}
+
+.nf-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: var(--nf-login-radius);
+  background: var(--nf-login-raised);
+}
+.nf-avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--nf-login-brand);
+  color: var(--nf-login-on-brand);
+  font-weight: 700;
+  font-size: 13px;
+}
+.nf-account .who {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 600 13px var(--nf-login-mono);
+  color: var(--nf-login-heading);
+}
+
+.nf-otp {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.nf-otp input {
+  width: 100%;
+  height: 52px;
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: var(--nf-login-radius);
+  background: var(--nf-login-field);
+  color: var(--nf-login-heading);
+  font: 600 22px var(--nf-login-mono);
+  text-align: center;
+  caret-color: var(--nf-login-accent);
+}
+.nf-otp input:focus {
+  outline: none;
+  border-color: var(--nf-login-accent);
+  box-shadow: 0 0 0 1px var(--nf-login-accent);
+}
+.nf-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--nf-login-muted);
+}
+
+.nf-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 14px;
+  font: 700 10px/1 var(--nf-login-mono);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--nf-login-muted);
+}
+.nf-or::before,
+.nf-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--nf-login-line);
+}
+.nf-alt {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.nf-alt .span {
+  grid-column: 1 / -1;
+}
+/* SSO d'abord : les comptes de l'organisation passent AVANT le formulaire
+   local, en lignes de registre ; le formulaire vient après « ou ». */
+body[data-sso-first] .nf-body {
+  display: flex;
+  flex-direction: column;
+}
+body[data-sso-first] [data-alt] {
+  display: flex;
+  flex-direction: column;
+  order: -1;
+}
+body[data-sso-first] .nf-alt {
+  order: -1;
+  grid-template-columns: 1fr;
+}
+body[data-sso-first] .nf-alt .nf-btn {
+  justify-content: flex-start;
+  padding: 0 14px;
+}
+body[data-sso-first] .nf-alt .nf-btn::after {
+  content: "→";
+  margin-left: auto;
+  font-weight: 500;
+  color: var(--nf-login-muted);
+}
+body[data-sso-first] .nf-or {
+  order: 0;
+  margin: 22px 0 16px;
+}
+
+.nf-message {
+  min-height: 38px;
+  margin-top: 12px;
+}
+.nf-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--nf-login-line);
+  border-left: 2px solid var(--nf-login-crit);
+  border-radius: 6px;
+  background: var(--nf-login-crit-bg);
+  color: var(--nf-login-heading);
+  font-size: 13px;
+}
+.nf-alert .code {
+  font: 700 11px/20px var(--nf-login-mono);
+  color: var(--nf-login-crit);
+}
+
+.nf-done {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 14px 0 4px;
+  text-align: center;
+}
+.nf-done .ring {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--nf-login-ok);
+  border-radius: 50%;
+  background: var(--nf-login-ok-bg);
+  color: var(--nf-login-ok);
+}
+.nf-done .ring .nf-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+.nf-done strong {
+  font-size: 15px;
+  color: var(--nf-login-heading);
+}
+.nf-done .dest {
+  font: 12px var(--nf-login-mono);
+  color: var(--nf-login-muted);
+}
+.nf-progress {
+  width: 100%;
+  height: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 1px;
+  background: var(--nf-login-line);
+}
+.nf-progress span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--nf-login-accent);
+  animation: nf-bar 1s ease-in-out infinite alternate;
+}
+@keyframes nf-bar {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: 60%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nf-progress span {
+    animation: none;
+    width: 100%;
+  }
+}
+
+.nf-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 600 10px/1 var(--nf-login-mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--nf-login-muted);
+}
+.nf-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nf-facts .nf-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--nf-login-ok);
+}
+.nf-powered {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--nf-login-muted);
+  text-decoration: none;
+}
+.nf-powered .nf-logo {
+  height: 14px;
+}
+.nf-powered:hover {
+  color: var(--nf-login-heading);
+}
+/* Sur un fond d'image, le pied passe sur une pastille pleine pour rester lisible. */
+.nf-foot {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+body[data-backdrop] .nf-foot {
+  padding: 8px 14px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 10px;
+  background: var(--nf-login-surface);
+}
+
+/* ── Mise en page « split » (défaut) : panneau de marque + formulaire ──────
+   Le panneau tient la marque en typographie ; son image, facultative, vit sur
+   un calque à part (::before), le voile PLEIN sur un autre (::after). Avec
+   `clip-path: shape()`, la jonction devient une courbe qui porte les trois
+   arcs du logo, calculés sur la MÊME quadratique que la découpe ; sans elle,
+   bord droit et filet, sans arcs — des arcs qui ne coïncideraient pas avec la
+   découpe vaudraient moins que rien. */
+body[data-layout="split"] .nf-strip {
+  display: none;
+}
+body[data-layout="split"] .nf-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1.1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 40px 56px 44px;
+  border-right: 1px solid var(--nf-login-line);
+  color: var(--nf-login-hero-fg);
+}
+body[data-layout="split"] .nf-hero::before,
+body[data-layout="split"] .nf-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+body[data-layout="split"] .nf-hero::before {
+  background-color: var(--nf-login-hero-bg);
+  background-image: var(--nf-login-hero-image);
+  background-size: cover;
+  background-position: center 40%;
+}
+body[data-layout="split"] .nf-hero::after {
+  background: var(--nf-login-hero-veil);
+}
+@supports (clip-path: shape(from 0 0, hline to 100%)) {
+  /* La courbe mange ~22 % du panneau à mi-hauteur : le contenu lui laisse sa place. */
+  body[data-layout="split"] .nf-hero {
+    border-right: 0;
+    padding-right: max(56px, 20%);
+  }
+  body[data-layout="split"] .nf-hero::before,
+  body[data-layout="split"] .nf-hero::after {
+    clip-path: shape(
+      from 0% 0%,
+      hline to 100%,
+      curve to 100% 100% with 78% 50%,
+      hline to 0%,
+      close
+    );
+  }
+  /* Arcs par-dessus le voile, légèrement flous : le flou s'applique AVANT la
+     découpe, le bord de la courbe reste net. */
+  body[data-layout="split"] .nf-hero::after {
+    background:
+      var(--nf-login-arcs) center / 100% 100% no-repeat,
+      var(--nf-login-hero-veil);
+    filter: blur(0.8px);
+  }
+}
+body[data-layout="split"] .nf-stage {
+  position: relative;
+  z-index: 0;
+  flex: 0 0 min(500px, 42%);
+  padding: 48px 32px;
+}
+body[data-layout="split"] .nf-card {
+  border-color: transparent;
+  background: transparent;
+}
+.nf-hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 650;
+}
+.nf-hero-brand::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 10px;
+  background: var(--nf-login-line);
+}
+.nf-hero-brand .nf-logo {
+  height: 30px;
+}
+.nf-hero h2 {
+  margin: 0 0 12px;
+  max-width: 9ch;
+  font-size: clamp(44px, 5.4vw, 68px);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.nf-hero p {
+  margin: 0;
+  max-width: 400px;
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--nf-login-hero-muted);
+}
+.nf-hero-panel {
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: var(--nf-login-hero-plate, transparent);
+}
+.nf-hero small {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 600 11px/1 var(--nf-login-mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--nf-login-hero-muted);
+}
+.nf-hero small::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--nf-login-line-strong);
+}
+/* La composition « accueil » dans le panneau : ses titres l'emportent sur ceux du panneau. */
+.nf-hero .nf-home h2 {
+  max-width: none;
+  margin: 18px auto 8px;
+  font-size: 38px;
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+}
+.nf-hero .nf-home p {
+  max-width: 520px;
+  margin-inline: auto;
+  line-height: 1.5;
+}
+.nf-hero .nf-home .sub {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.nf-hero .nf-home .sig {
+  font-size: 14px;
+}
+.nf-hero .nf-home .feature p {
+  font-size: 12.5px;
+  max-width: none;
+}
+
+/* ── Mise en page « bare » : pas de carte, le formulaire sur la page ───── */
+body[data-layout="bare"] .nf-strip {
+  border-bottom-color: transparent;
+  background: transparent;
+}
+body[data-layout="bare"] .nf-card {
+  border-color: transparent;
+  background: transparent;
+}
+body[data-layout="bare"] .nf-head .nf-brand {
+  display: flex;
+}
+
+@media (max-width: 899px) {
+  body[data-layout="split"] .nf-hero {
+    display: none;
+  }
+  body[data-layout="split"] .nf-stage {
+    flex: 1 1 auto;
+    padding: 32px 16px;
+  }
+  /* Sans panneau ni bandeau, la marque revient en tête du formulaire. */
+  body[data-layout="split"] .nf-head .nf-brand {
+    display: flex;
+  }
+}
+/* Grand écran : le bloc de connexion grandit TOUT ENTIER — texte, champs,
+   boutons —, par paliers. Mesuré en 2 560 × 1 440 : la carte n'occupait que
+   16 % de la largeur et 33 % de la hauteur, perdue au milieu de l'écran.
+   Élargir la seule carte allongerait les lignes sans rien rendre plus lisible ;
+   `zoom` garde les proportions — le bandeau de marque grandit avec lui. La hauteur compte autant que la largeur : un
+   écran large mais bas n'a pas la place de grandir. */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  .nf-strip,
+  .nf-stage {
+    zoom: 1.12;
+  }
+}
+@media (min-width: 2400px) and (min-height: 1300px) {
+  .nf-strip,
+  .nf-stage {
+    zoom: 1.3;
+  }
+}
+@media (max-width: 520px) {
+  .nf-strip .hide-sm {
+    display: none;
+  }
+  .nf-stage {
+    padding: 24px 12px;
+  }
+  .nf-head {
+    padding: 22px 20px 0;
+  }
+  .nf-steps {
+    gap: 14px;
+  }
+  .nf-body {
+    padding: 20px 20px 12px;
+  }
+  .nf-alt {
+    grid-template-columns: 1fr;
+  }
+  .nf-otp {
+    gap: 6px;
+  }
+}
+
+/* ── Panneau d'information « accueil » — la composition de la page d'accueil du cœur
+   (nodefony/views/index.eta) : logo, titre, sous-titre, phrase, pastilles, commande,
+   puis une grille de fonctionnalités. Couleurs de la marque : l'accent pour
+   les icônes (lisible dans les deux thèmes), le cyan du logo pour l'invite
+   sur le bandeau de commande toujours sombre, le vert lisible du thème. ── */
+.nf-home {
+  --nf-home-blue: var(--nf-login-accent);
+  --nf-home-cyan: var(--nf-login-brand-cyan);
+  --nf-home-green: var(--nf-login-home-green);
+  width: min(640px, 100%);
+  margin: auto;
+  text-align: center;
+  color: var(--nf-login-heading);
+}
+.nf-home .nf-home-logo {
+  display: block;
+  width: auto;
+  height: 64px;
+  margin: 0 auto;
+}
+.nf-home h2 {
+  margin: 18px auto 8px;
+  font-size: 38px;
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+  color: var(--nf-login-heading);
+}
+.nf-home .sub {
+  margin: 0 auto 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--nf-login-text);
+}
+.nf-home .sig {
+  margin: 0 auto;
+  max-width: 520px;
+  font-size: 14px;
+  color: var(--nf-login-muted);
+}
+.nf-home .badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.nf-home .badges li {
+  padding: 4px 12px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 999px;
+  background: var(--nf-login-surface);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--nf-login-muted);
+}
+.nf-home .badges li.agentic {
+  color: var(--nf-home-green);
+  border-color: color-mix(
+    in srgb,
+    var(--nf-home-green) 45%,
+    var(--nf-login-line)
+  );
+}
+.nf-home .install {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px auto 0;
+  padding: 11px 20px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 12px;
+  background: #0e1726;
+  color: #d9e6f5;
+  font: 14px var(--nf-login-mono);
+}
+.nf-home .install .p {
+  color: var(--nf-home-cyan);
+}
+.nf-home .features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 28px 0 0;
+  text-align: left;
+}
+.nf-home .feature {
+  padding: 14px 16px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 12px;
+  background: var(--nf-login-surface);
+}
+.nf-home .feature .ic {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--nf-home-blue);
+  background: color-mix(in srgb, var(--nf-home-blue) 12%, transparent);
+}
+.nf-home .feature .ic svg {
+  width: 16px;
+  height: 16px;
+}
+.nf-home .feature h3 {
+  margin: 10px 0 4px;
+  font-size: 14px;
+  color: var(--nf-login-heading);
+}
+.nf-home .feature p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--nf-login-muted);
+}
+
+/* Logo chargé depuis sa source (`<img>`) : les variantes d'une seule couleur
+   passent par un filtre, un masque CSS étant refusé en file:// (CORS). */
+.nf-logo-white {
+  filter: brightness(0) invert(1);
+}
+.nf-logo-mono {
+  filter: grayscale(1);
+  opacity: 0.75;
+}

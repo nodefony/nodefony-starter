@@ -1,0 +1,134 @@
+{
+  "realm": "nodefony",
+  "displayName": "nodefony",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "loginTheme": "nodefony",
+  "accountTheme": "nodefony",
+  "emailTheme": "nodefony",
+  "adminTheme": "nodefony",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["fr", "en"],
+  "defaultLocale": "fr",
+  "clients": [
+    {
+      "clientId": "nodefony",
+      "name": "nodefony (dev)",
+      "description": "Client confidentiel de l'application en développement — secret PUBLIC, jamais en production.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "nodefony-dev-keycloak-secret",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": false,
+      "redirectUris": [
+        "https://localhost:5152/nodefony/security/api/oauth2/keycloak/callback",
+        "http://localhost:5151/nodefony/security/api/oauth2/keycloak/callback"
+      ],
+      "webOrigins": ["+"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://localhost:5152/*##http://localhost:5151/*",
+        "backchannel.logout.url": "http://host.docker.internal:5151/nodefony/security/api/oauth2/keycloak/backchannel-logout",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-nodefony-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "https://localhost:5152/api/partner",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "nodefony-machine",
+      "name": "nodefony — appelant machine (compte de service)",
+      "description": "Appelant machine : obtient un jeton d'accès par client_credentials, sans utilisateur. Secret PUBLIC, jamais en production.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "nodefony-machine-dev-secret",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocolMappers": [
+        {
+          "name": "audience-nodefony-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "https://localhost:5152/api/partner",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "roles": {
+    "client": {
+      "nodefony": [
+        {
+          "name": "admin",
+          "description": "Administrateur de l'application — traduit en ROLE_ADMIN par la table roleMapping du fournisseur keycloak."
+        }
+      ]
+    }
+  },
+  "users": [
+    {
+      "id": "86bf7200-36ab-40d1-88f7-b6d3b580fa67",
+      "username": "alice",
+      "enabled": true,
+      "email": "alice@nodefony.test",
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Keycloak",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice-dev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["default-roles-nodefony"]
+    },
+    {
+      "id": "52368323-4812-4f5b-9669-093ce89432f3",
+      "username": "bob",
+      "enabled": true,
+      "email": "bob@nodefony.test",
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Keycloak",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "bob-dev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["default-roles-nodefony"],
+      "clientRoles": {
+        "nodefony": ["admin"]
+      }
+    }
+  ],
+  "rememberMe": true
+}

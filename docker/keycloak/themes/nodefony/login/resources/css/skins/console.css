@@ -1,0 +1,57 @@
+/* ═══ nodefony/login/skins/console.css — habillage « Console » ═══
+   Outils, back-offices, consoles : la signature de la barre de debug, en
+   carte centrée.
+
+   Mise en page : `card`.
+   Chargée APRÈS `login.css` et AVANT la feuille de l'application
+   (`loginPage.skin: "console"`) : elle ne redéfinit que des variables
+   `--nf-login-*` et la disposition de sa mise en page — jamais le balisage.
+   Aucune photo n'est fournie : elle vient de l'application
+   (`--nf-login-hero-image`). Le jeu CLAIR est écrit deux fois, à l'identique,
+   comme dans `login.css`. */
+:root {
+  --nf-login-home-green: #7cc46c;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-home-green: #3f7a35;
+    --nf-login-on-brand: #ffffff;
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #fafbfd;
+    --nf-login-surface: #ffffff;
+    --nf-login-raised: #f1f5fa;
+    --nf-login-line: #e3e9f2;
+    --nf-login-line-strong: #cfd8e6;
+    --nf-login-heading: #0e1726;
+    --nf-login-text: #2b3a52;
+    --nf-login-muted: #5b6b84;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --nf-login-home-green: #3f7a35;
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #fafbfd;
+  --nf-login-surface: #ffffff;
+  --nf-login-raised: #f1f5fa;
+  --nf-login-line: #e3e9f2;
+  --nf-login-line-strong: #cfd8e6;
+  --nf-login-heading: #0e1726;
+  --nf-login-text: #2b3a52;
+  --nf-login-muted: #5b6b84;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  color-scheme: light;
+}

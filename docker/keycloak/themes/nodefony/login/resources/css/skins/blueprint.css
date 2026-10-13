@@ -1,0 +1,70 @@
+/* ═══ nodefony/login/skins/blueprint.css — habillage « Plan technique » ═══
+   Produits techniques, API, plateformes de données : grille de plan, fond
+   bleu nuit.
+
+   Mise en page : `card` · fond décoré (`<body data-backdrop>`).
+   Chargée APRÈS `login.css` et AVANT la feuille de l'application
+   (`loginPage.skin: "blueprint"`) : elle ne redéfinit que des variables
+   `--nf-login-*` et la disposition de sa mise en page — jamais le balisage.
+   Aucune photo n'est fournie : elle vient de l'application
+   (`--nf-login-hero-image`). Le jeu CLAIR est écrit deux fois, à l'identique,
+   comme dans `login.css`. */
+:root {
+  --nf-login-home-green: #7cc46c;
+  --nf-login-bg: #0b1622;
+  --nf-login-surface: #0f1d2c;
+  --nf-login-raised: #142638;
+  --nf-login-line: #1d3247;
+  --nf-login-line-strong: #2a4560;
+  --nf-login-field: #0b1825;
+  --nf-login-muted: #8fa3b8;
+  --nf-login-backdrop: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M8%200V40M0%208H40%22%20stroke%3D%22%231a3550%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M16%200V40M0%2016H40%22%20stroke%3D%22%231a3550%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M24%200V40M0%2024H40%22%20stroke%3D%22%231a3550%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M32%200V40M0%2032H40%22%20stroke%3D%22%231a3550%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M40%200H0V40%22%20fill%3D%22none%22%20stroke%3D%22%231a3550%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+  --nf-login-card-shadow: 0 0 0 6px rgba(11, 22, 34, 0.9);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-home-green: #3f7a35;
+    --nf-login-on-brand: #ffffff;
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #eef4fa;
+    --nf-login-surface: #ffffff;
+    --nf-login-raised: #eef3f8;
+    --nf-login-line: #d5e1ec;
+    --nf-login-line-strong: #bfd0e0;
+    --nf-login-heading: #0e1726;
+    --nf-login-text: #2b3a52;
+    --nf-login-muted: #5b6b84;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    --nf-login-backdrop: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M8%200V40M0%208H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M16%200V40M0%2016H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M24%200V40M0%2024H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M32%200V40M0%2032H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M40%200H0V40%22%20fill%3D%22none%22%20stroke%3D%22%23cfe0ef%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+    --nf-login-card-shadow: 0 0 0 6px rgba(238, 244, 250, 0.9);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --nf-login-home-green: #3f7a35;
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #eef4fa;
+  --nf-login-surface: #ffffff;
+  --nf-login-raised: #eef3f8;
+  --nf-login-line: #d5e1ec;
+  --nf-login-line-strong: #bfd0e0;
+  --nf-login-heading: #0e1726;
+  --nf-login-text: #2b3a52;
+  --nf-login-muted: #5b6b84;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  --nf-login-backdrop: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Cpath%20d%3D%22M8%200V40M0%208H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M16%200V40M0%2016H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M24%200V40M0%2024H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M32%200V40M0%2032H40%22%20stroke%3D%22%23cfe0ef%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%22.5%22%2F%3E%3Cpath%20d%3D%22M40%200H0V40%22%20fill%3D%22none%22%20stroke%3D%22%23cfe0ef%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+  --nf-login-card-shadow: 0 0 0 6px rgba(238, 244, 250, 0.9);
+  color-scheme: light;
+}

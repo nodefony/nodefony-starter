@@ -1,0 +1,65 @@
+node_modules/
+dist/
+# Cache du gestionnaire de paquets gardé dans le projet par la CI GitLab.
+.npm/
+var/
+public/dist/
+*.log
+# Journaux du framework (`log.dir`) : fichiers `.log`, JSONL interrogeable,
+# journal d'un runtime lancé avec `--detach`. `*.log` ne couvre pas le JSONL.
+logs/
+
+# Graphe symbolique du code de l'application (`nodefony symbols --generate`).
+# Il se RÉGÉNÈRE depuis les sources : le versionner ferait suivre un fichier
+# qui change à chaque modification du code, sans que personne ne l'édite.
+.ai/symbols.json
+
+# vitest ≥ 5 : racine unique de ses artefacts (pièces jointes, blobs, rapports
+# json/junit/html). Elle apparaît dès le premier `npm test` — sans cette ligne,
+# une application fraîche naît avec un dossier non suivi que rien n'explique.
+.vitest/
+
+# Configuration Vite ÉCRITE par le superviseur de développement, à côté de
+# l'`index.html` de chaque frontend. Elle est dérivée de la config de
+# l'application à chaque démarrage : la versionner ferait suivre un fichier que
+# personne n'édite et qui change tout seul.
+vite.config.generated.mjs
+
+# Artefacts jetables — captures d'écran, journaux de console et arbres produits
+# par le navigateur du compose (`--profile browser`). Ce sont des PHOTOS d'un
+# instant : elles se refont, elles ne se versionnent pas.
+tmp/
+
+# Fichiers d'environnement — la convention Node (celle du .gitignore Node de
+# GitHub) : `.env` porte les valeurs du POSTE, secrets de dev compris, et ne se
+# commite JAMAIS ; seule sa notice `.env.example` est versionnée. Les clés de
+# chiffrement générées à la création vivent dans `.env` (rotation :
+# nodefony security:secrets). Ancrés à la RACINE : les `.env.*` d'un front Vite
+# (`frontend/.env.production`, variables `VITE_` publiques) restent versionnés.
+/.env
+/.env.*
+!/.env.example
+
+# Clés PRIVÉES. Le certificat public (`cert.pem`, `fullchain.pem`) peut se
+# committer ; la clé qui va avec, jamais — un dépôt public la publie
+# définitivement, et la retirer d'un commit ne la retire d'aucun clone.
+# Régénérer : `npx nodefony http:certificates`.
+*.key
+privkey*.pem
+*-key.pem
+
+# Secrets posés chez les agents de développement (nodefony security:token --write).
+# 🔴 `.gemini/.env` porte un JETON PORTEUR : la déclaration de la porte MCP,
+# elle, reste versionnable (.gemini/settings.json, .mcp.json) — c'est la CLÉ qui
+# ne se commite pas. Un jeton commité est un jeton publié.
+.gemini/.env
+.gemini/.env.*
+
+# Agents de développement : leur dossier est le home REDIRIGÉ que `ai:mcp` leur
+# donne pour que la porte MCP soit déclarée par PROJET (son URL porte un port —
+# une déclaration globale ne pourrait désigner qu'une application). Ils y
+# déposent aussi leurs fichiers de travail : seule la DÉCLARATION se versionne.
+.vibe/*
+!.vibe/config.toml
+.codex/*
+!.codex/config.toml

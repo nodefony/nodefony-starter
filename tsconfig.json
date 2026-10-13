@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    // ESNext (pas le défaut du target) : les déclarations des paquets
+    // nodefony exposent des APIs ES2025+ (RegExp.escape…) — même choix que
+    // les tsconfigs du framework. En mode --link comme depuis npm, l'app lit
+    // les `.d.ts` publiés (condition `types`), jamais les sources du checkout.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    // `vite/client` déclare ce que Vite sait importer et que TypeScript ignore :
+    // les feuilles de style, les images, `import.meta.env`. Sans lui, un
+    // `import "./styles.css"` fait échouer `npm run typecheck` (TS2882) alors
+    // que la page se construit et s'affiche parfaitement.
+    "types": ["node", "vite/client"],
+
+    "rootDir": "./",
+    "outDir": "./dist",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "noEmit": true
+  },
+  "include": [
+    "index.ts",
+    "env.ts",
+    "nodefony.config.ts",
+    "rolldown.config.ts",
+    "vitest.config.ts",
+    "nodefony/**/*.ts",
+    "frontend/src/**/*",
+    "tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

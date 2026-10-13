@@ -1,0 +1,502 @@
+# nodefony — infra de développement (docker compose)
+#
+# Ce fichier ne porte QUE ce que ton app utilise : le dialecte SQL a été retenu à
+# la création, les deux autres ne sont pas là. Ce qu'il fournit :
+#   - Redis    → sessions/idempotence partagées + backplane realtime multi-process
+#   - Loki + Grafana → centralisation des logs (driver `loki` du framework)
+#
+# Usage :
+#   docker compose up -d                          # Redis (ce qu'il faut à l'app)
+#   docker compose --profile tools up -d          # + RedisInsight (UI Redis)
+#   docker compose --profile loki up -d           # + Loki + Grafana (logs)
+#   docker compose --profile browser up -d        # + navigateur jetable (voir tes écrans)
+#   docker compose --profile app up -d --build    # + l'app EN IMAGE (éprouver l'image)
+#   docker compose --profile edge up -d --build   # + l'app DERRIÈRE son frontal nginx
+#   docker compose --profile keycloak up -d       # + Keycloak (connexion OpenID Connect)
+#   docker compose down                           # arrêt (volumes conservés)
+#   docker compose down -v                        # arrêt + PURGE des données
+#
+# Base SQL : aucune ici — l'app persiste en sqlite local (`var/databases/`), ce
+# qui la fait démarrer sans rien allumer. Pour passer sur une vraie base, ajoute
+# son service et déclare `NF_DATABASE_URL` : l'ORM déduit le dialecte du scheme
+# (`postgres://`, `mysql://`) et RIEN d'autre ne change dans l'app.
+#
+# Câblage côté app (env.ts est le SEUL lecteur de process.env) :
+#   NF_REDIS_URL="redis://:nodefony-dev@127.0.0.1:6379"
+#
+# Config : chaque valeur a un défaut inline `${VAR:-défaut}` → AUCUN fichier .env requis.
+# Pour surcharger (autre port, vrai secret) : `export VAR=…` avant le `up`.
+# Les mots de passe dev sont PUBLICS — JAMAIS en production.
+#
+# Réseau : un bridge nommé unique ; les conteneurs se parlent par NOM de service
+# (DNS interne Docker), jamais par localhost. Les ports ne sont publiés que sur
+# 127.0.0.1 : l'app tourne sur l'HÔTE et joint l'infra via 127.0.0.1:<port>.
+
+name: nodefony
+
+# Ancres partagées par les DEUX façons d'exécuter l'image de l'application —
+# seule, pour l'éprouver (profil `app`), ou derrière son frontal (profil `edge`).
+# Ce qui est commun n'est écrit qu'une fois : deux copies divergeraient, et
+# chacune marcherait de son côté jusqu'au jour où l'une des deux ment.
+x-app-env: &app-env
+  # Le nom du service, jamais 127.0.0.1 : depuis un conteneur, la boucle locale
+  # est celle du CONTENEUR, et la base est ailleurs.
+  NF_REDIS_URL: "redis://:${REDIS_PASSWORD:-nodefony-dev}@redis:6379"
+
+x-app-service: &app-service
+  build:
+    context: .
+    args:
+      VCS_REF: ${VCS_REF:-}
+      BUILD_DATE: ${BUILD_DATE:-}
+  image: nodefony:local
+  restart: unless-stopped
+  networks: [nodefony]
+  volumes:
+    # 🔴 LA PERSISTANCE. Sans ce volume, la base sqlite vit dans la couche
+    # inscriptible du conteneur : `docker compose down` emporte comptes,
+    # sessions, jetons et passkeys, sans un mot. Le dossier `/app/var` existe
+    # dans l'image et appartient à 1000:1000 — c'est ce qui fait qu'un volume
+    # NEUF hérite des bons droits au lieu de naître `root:root`.
+    - nodefony-var:/app/var
+  # 🔴 AU-DESSUS du `shutdownDeadline` (15 s) : compose n'attend que 10 s par
+  # défaut, et le drain serait coupé par un SIGKILL — requêtes en vol perdues à
+  # chaque déploiement, sans erreur ni trace.
+  stop_grace_period: 20s
+  depends_on:
+    redis:
+      condition: service_healthy
+
+services:
+  # --- Redis (défaut — sessions, idempotence, backplane realtime) ---
+  # Auth obligatoire même en dev (Zero Trust). AOF : survit au restart du conteneur.
+  redis:
+    # 🔴 `8`, pas `7` : Redis 7.4 est la SEULE fenêtre non libre de la gamme
+    # (RSALv2/SSPL seuls). La 8 est tri-licenciée — RSALv2, SSPLv1 ou AGPLv3 AU
+    # CHOIX du licencié —, donc libre, et la 7.2 et antérieures restent BSD-3.
+    # L'image officielle est conservée : un fork (valkey) coûterait la revue et
+    # les correctifs de sécurité pilotés par Docker, pour le même service.
+    image: redis:8-alpine
+    container_name: nodefony-redis
+    restart: unless-stopped
+    networks: [nodefony]
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-nodefony-dev}
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy noeviction
+    ports:
+      # Loopback uniquement — surface réseau minimale en dev.
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      # -a : sans auth, PING renvoie NOAUTH. « healthy » = Redis répond PONG.
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -a ${REDIS_PASSWORD:-nodefony-dev} ping | grep -q PONG",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # --- RedisInsight (profile tools — UI de debug Redis, jamais en prod) ---
+  redisinsight:
+    image: redis/redisinsight:3.8.0
+    container_name: nodefony-redisinsight
+    restart: unless-stopped
+    profiles: ["tools"]
+    networks: [nodefony]
+    ports:
+      - "127.0.0.1:${REDISINSIGHT_PORT:-5540}:5540"
+    # Il garde SON état : la connexion enregistrée, les requêtes gardées, les
+    # préférences. Sans volume, on la ressaisit à chaque `compose down` — et un
+    # outil qu'on doit reconfigurer à chaque usage finit par ne plus servir.
+    volumes:
+      - redisinsight-data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # --- Loki (profile loki — centralisation des logs, driver `loki` du framework) ---
+  # Léger : Loki indexe les LABELS (basse cardinalité), pas le texte → peu de RAM.
+  loki:
+    image: grafana/loki:3.7.2
+    container_name: nodefony-loki
+    restart: unless-stopped
+    profiles: ["loki"]
+    networks: [nodefony]
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "127.0.0.1:${LOKI_PORT:-3100}:3100"
+    volumes:
+      - loki-data:/loki
+    # PAS de healthcheck : image DISTROLESS (aucun shell dans le conteneur) — un
+    # healthcheck Docker la marquerait « unhealthy » à tort. Santé côté hôte :
+    # curl http://127.0.0.1:3100/ready
+
+  # --- Grafana (profile loki — visualisation des logs, datasource auto-provisionnée) ---
+  # Anonyme + rôle Admin pour un dev sans friction (JAMAIS en prod).
+  # Épinglé comme Loki : un décor de mesure qui se met à jour tout seul change de
+  # comportement entre deux runs sans qu'on l'ait demandé.
+  grafana:
+    image: grafana/grafana:13.2.1
+    container_name: nodefony-grafana
+    restart: unless-stopped
+    profiles: ["loki"]
+    networks: [nodefony]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-nodefony-dev}
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    ports:
+      - "127.0.0.1:${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      # Datasource Loki pré-câblée (lecture seule) → Grafana ouvre prêt, 0 setup.
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      # service_started (pas healthy) : Loki est distroless, pas de healthcheck.
+      loki:
+        condition: service_started
+
+  # --- browser (profil browser — VOIR tes écrans, sans navigateur sur ta machine) ---
+  #
+  # Un navigateur jetable, piloté par un agent (ou par un script) : il ouvre une
+  # page, lit la CONSOLE, l'arbre d'ACCESSIBILITÉ et les REQUÊTES réelles, et
+  # dépose captures et journaux dans `tmp/browser/`. Sert à répondre « l'écran se
+  # monte-t-il et s'alimente-t-il ? » sans que quelqu'un ait à regarder pour toi.
+  #
+  # Pourquoi en conteneur plutôt que sur le poste : un navigateur automatisé lancé
+  # à nu peut saturer une machine de développement. Ici il est plafonné et meurt
+  # au `down`. Rien à installer non plus : ni Chromium, ni pilote.
+  #
+  # TROIS RÈGLES qui ne se devinent pas — sans elles la page reste blanche ou
+  # refusée, alors que le réseau, lui, passe :
+  #   1. Joindre ton app par `host.docker.internal`, JAMAIS `localhost` : dans un
+  #      conteneur ce nom désigne le conteneur lui-même. Ce nom est DÉJÀ dans les
+  #      `trustedHosts` de développement (`nodefony.config.ts`, bloc http) : la
+  #      barrière Host, Vite, le CSP et l'origine des assets le suivent. Le retirer
+  #      rend la page blanche dans le conteneur (assets annoncés en `127.0.0.1`).
+  #   2. Passer par HTTPS : le cookie de session est `secure`, donc IGNORÉ sur une
+  #      origine `http://` qui n'est pas `localhost` — toutes les requêtes
+  #      authentifiées reviendraient en `401`, ce qui se lit à tort comme un échec
+  #      de connexion. Le certificat auto-signé de développement est accepté ici.
+  #   3. Rien à poser pour Vite : Nodefony le relaie sur l'origine de la page
+  #      (`/_vite/…`). Arriver par `host.docker.internal` en HTTPS suffit — les
+  #      scripts et le WebSocket du HMR suivent la page, sans contenu mixte, et
+  #      ton poste continue d'être servi sur `127.0.0.1` en même temps.
+  #
+  # DEUX façons de s'en servir, et elles ne se valent pas :
+  #   - PILOTER directement — l'image embarque Chromium ET Playwright, on y copie
+  #     un script et on l'exécute (`docker cp … && docker exec … node …`). C'est
+  #     la voie normale : une commande, un JSON, un code de retour, quelques
+  #     secondes. Le devkit livre deux sondes prêtes (voir `AGENTS.md`), dont la
+  #     MESURE des contrastes et tailles réellement calculés par le moteur.
+  #   - EXPLORER par MCP — le conteneur est aussi un serveur MCP, joignable sur
+  #     `http://127.0.0.1:${BROWSER_PORT:-3001}/mcp` (il imprime la config à
+  #     coller dans ses journaux au démarrage). Utile pour fouiller une page à la
+  #     main ; plus lent et non scriptable pour tout le reste.
+  browser:
+    # Épinglée par empreinte : un `latest` mouvant sous un banc d'observation
+    # ferait varier le rendu sans qu'on le sache.
+    image: mcp/playwright@sha256:097d978439237cc9b12e10825836a97245add2be0479272cce9d98c368f024d1
+    container_name: nodefony-browser
+    restart: unless-stopped
+    profiles: ["browser"]
+    networks: [nodefony]
+    ports:
+      - "127.0.0.1:${BROWSER_PORT:-3001}:3000"
+    # L'ENTRYPOINT de l'image fixe déjà `--headless --browser chromium
+    # --no-sandbox` ; la commande le COMPLÈTE, elle ne le remplace pas.
+    command:
+      # Sans `--port`, le serveur parle en stdio : personne au bout d'un service.
+      - "--port=3000"
+      # Le défaut `localhost` ne serait pas joignable depuis l'hôte, même avec la
+      # publication de port ci-dessus.
+      - "--host=0.0.0.0"
+      # Le port n'est publié que sur 127.0.0.1 : la vérification d'hôte ferait
+      # doublon et refuserait l'accès par le nom du service.
+      - "--allowed-hosts=*"
+      # Certificat de développement auto-signé (cf règle 2 ci-dessus).
+      - "--ignore-https-errors"
+      # Captures, console et arbres écrits en FICHIERS dans le volume monté.
+      - "--output-dir=/output"
+      - "--output-mode=file"
+      # Profil en mémoire : rien sur le disque du conteneur, et un `down` efface
+      # l'état d'authentification avec lui.
+      - "--isolated"
+      # Un seul contexte pour tous les clients : une session ouverte reste ouverte
+      # d'un appel à l'autre. Ne survit pas à un `restart` (profil en mémoire).
+      - "--shared-browser-context"
+      - "--viewport-size=1440x900"
+    volumes:
+      # `tmp/` est ignoré par git — une capture est une PHOTO, jamais du versionné.
+      - ./tmp/browser:/output
+    # Le répertoire courant, pas seulement `--output-dir` : une capture demandée
+    # sous un nom relatif est résolue par Playwright contre le répertoire COURANT.
+    # Sans cette ligne elle reste dans le conteneur pendant que l'appel répond OK.
+    working_dir: /output
+    extra_hosts:
+      # Le nom par lequel le conteneur joint l'app qui tourne sur l'hôte.
+      - "host.docker.internal:host-gateway"
+    # Précaution : le `/dev/shm` par défaut de Docker (64 Mo) est connu pour faire
+    # mourir un onglet Chromium sans message sur une page lourde.
+    shm_size: "1gb"
+    # Bornes de ressources : c'est ce qui rend « jetable » vérifiable — un
+    # navigateur emballé ne peut pas prendre la machine, il se fait tuer.
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2g
+
+  # --- LES MIGRATIONS, avant tout trafic (profils `app` et `edge`) ---
+  #
+  # 🔴 Sans ce service, la topologie ne démarre PAS — et le symptôme n'accuse
+  # personne. En production le schéma appartient aux migrations (`ddl: none`,
+  # délibéré : plusieurs exemplaires partent ensemble, aucun ne doit toucher aux
+  # tables). Un exemplaire dont le schéma est en retard REFUSE le trafic :
+  # `/readyz` rend 503, la sonde de l'image le déclare `unhealthy`, et le frontal
+  # — qui attend `service_healthy` — n'est jamais créé. Compose s'arrête alors
+  # sur « dependency failed to start », qui ne dit pas un mot des migrations.
+  #
+  # Le patron est celui de la production, pas un artifice de compose : les
+  # migrations passent dans une étape À PART, qui se termine, AVANT que les
+  # exemplaires ne démarrent (un Job Kubernetes, une tâche ponctuelle ECS, une
+  # étape de la chaîne d'intégration). `service_completed_successfully` dit
+  # exactement cela : on attend qu'il ait FINI, et bien fini.
+  migrate:
+    <<: *app-service
+    container_name: nodefony-migrate
+    profiles: ["app", "edge"]
+    # Une tâche, pas un service : elle se termine, et elle ne se relance pas.
+    restart: "no"
+    command: ["node_modules/.bin/nodefony", "orm:migrate"]
+    environment:
+      <<: *app-env
+
+  # --- L'APPLICATION elle-même, en image (profil `app`) ---
+  #
+  # Hors profil par défaut, et c'est délibéré : en développement l'app tourne sur
+  # l'HÔTE (HMR, débogueur, redémarrage à chaud) et joint cette infra par
+  # 127.0.0.1. Ce service sert à éprouver l'IMAGE — celle qu'on déploie — sans
+  # remonter un décor à part :
+  #
+  #   docker compose --profile app up -d --build
+  #
+  # ⚠️ Les ports diffèrent de ceux de l'app sur l'hôte : les deux doivent pouvoir
+  # tourner en même temps, sinon on éprouve l'image en s'interdisant de coder.
+  app:
+    <<: *app-service
+    container_name: nodefony-app
+    profiles: ["app"]
+    ports:
+      - "127.0.0.1:${APP_PORT:-5251}:5151"
+    environment:
+      <<: *app-env
+    depends_on:
+      # L'ancre pose déjà redis (et la base) ; ici on AJOUTE l'attente des
+      # migrations — un `depends_on` ne se fusionne pas, il se réécrit.
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # --- LA TOPOLOGIE DE PRODUCTION (profil `edge`) : l'app DERRIÈRE son frontal ---
+  #
+  #   npx nodefony http:certificates          # une fois — le certificat de dev
+  #   docker compose --profile edge up -d --build
+  #   curl -k https://localhost:${EDGE_TLS_PORT:-8443}/
+  #
+  # C'est la seule façon d'exercer la moitié applicative du contrat de proxy :
+  # `trustProxy` et l'adresse RÉELLE du client dans l'audit, la session et le
+  # rate-limit ; le cookie `Secure` posé alors que le lien interne est en clair ;
+  # la barrière `Host` ; la montée WebSocket ; la taille de corps acceptée. En
+  # direct, rien de tout cela n'est joué — et une application qui n'a jamais vu
+  # de proxy le découvre en production.
+  app-edge:
+    <<: *app-service
+    container_name: nodefony-app-edge
+    profiles: ["edge"]
+    # 🔴 AUCUN port publié, et c'est CE qui rend `uniquelocal` sûr : la confiance
+    # est accordée aux adresses privées, donc elle ne vaut que si le seul chemin
+    # vers l'application passe par le frontal. Publier un port ici rouvrirait la
+    # porte à un client capable de forger ses propres `X-Forwarded-*`.
+    environment:
+      <<: *app-env
+      # Les en-têtes du frontal ne sont crus que si le socket vient d'une adresse
+      # privée — le réseau du compose. Jamais `true`, qui croirait n'importe qui.
+      NF__HTTP__TRUSTPROXY: uniquelocal
+      # La barrière `Host` et le `server_name` du frontal disent la MÊME chose :
+      # une seule valeur les pose tous les deux (cf `args` du service `edge`).
+      NF__HTTP__TRUSTEDHOSTS: ${EDGE_HOSTS:-localhost}
+      # 🔴 Sans CE commutateur, `trustedHosts` ne sert à rien : la barrière est
+      # opt-in, et un `Host` étranger traverse le frontal jusqu'à l'application.
+      # Elle n'est allumée QUE derrière un proxy — en direct, elle refuserait
+      # tout ce qui n'est pas le nom déclaré, y compris l'adresse de boucle.
+      NF__APP__DOMAINCHECK: "true"
+      # Le serveur de fichiers de Node s'éteint : c'est nginx qui sert. N.B. il
+      # ne gate PAS les montages programmatiques (`/_assets/…` de Vite) — ceux-là
+      # sont servis avant Node par le `try_files` du frontal, pas contournés.
+      NF__HTTP__STATICS__ENABLED: "false"
+    depends_on:
+      # L'ancre pose déjà redis (et la base) ; ici on AJOUTE l'attente des
+      # migrations — un `depends_on` ne se fusionne pas, il se réécrit.
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # --- Le frontal nginx (profil `edge`) ---
+  # Sa configuration n'est pas écrite : elle est DÉRIVÉE de l'application à la
+  # construction (`proxy:generate`, étage `proxyconf` du Dockerfile), avec ses
+  # hôtes de confiance, ses statiques réels, son `maxBodySize` et son battement
+  # WebSocket. Change l'application, reconstruis : la configuration suit.
+  edge:
+    build:
+      context: .
+      target: edge
+      args:
+        # Le nom du SERVICE qui porte l'application sur ce réseau.
+        EDGE_BACKEND: app-edge
+        EDGE_HOSTS: ${EDGE_HOSTS:-localhost}
+        # 🔴 Les ports INTERNES du conteneur, jamais ceux publiés sur l'hôte.
+        # Ce sont eux que la configuration nginx écoute, que le `EXPOSE` déclare
+        # et que le `HEALTHCHECK` de l'image sonde (`127.0.0.1:8080`, en dur —
+        # une sonde interne n'a aucune raison de suivre un port d'hôte). Y passer
+        # `${EDGE_HTTP_PORT}` faisait écouter nginx sur le port de PUBLICATION :
+        # tant qu'on gardait les défauts, les deux coïncidaient et personne ne le
+        # voyait ; à la première surcharge, le mapping visait 8080 quand nginx
+        # écoutait ailleurs — plus rien ne répondait, et la sonde déclarait le
+        # frontal « unhealthy » sans dire pourquoi.
+        EDGE_HTTP_PORT: 8080
+        EDGE_TLS_PORT: 8443
+    image: nodefony-edge:local
+    container_name: nodefony-edge
+    restart: unless-stopped
+    profiles: ["edge"]
+    networks: [nodefony]
+    ports:
+      # Au-dessus de 1024 : joignables sous Podman sans privilèges, et ils ne
+      # heurtent pas un serveur de développement déjà posé sur 80/443.
+      - "127.0.0.1:${EDGE_HTTP_PORT:-8080}:8080"
+      - "127.0.0.1:${EDGE_TLS_PORT:-8443}:8443"
+    volumes:
+      # 🔴 Le certificat est MONTÉ, jamais gravé : une clé privée dans une image
+      # reste lisible par qui la télécharge, même effacée par une couche suivante.
+      # Ici, celui que l'application fabrique pour le développement :
+      #   npx nodefony http:certificates
+      # En production, c'est l'hébergeur ou l'ingress qui pourvoit ce montage.
+      - ./nodefony/config/certificates/server:/etc/nginx/certs:ro
+    depends_on:
+      # Le frontal ne route pas vers une application qui boote : `service_healthy`
+      # attend la sonde `/readyz` de l'image, pas le simple démarrage du conteneur.
+      app-edge:
+        condition: service_healthy
+
+  # --- Keycloak (profil `keycloak`) : un fournisseur d'identité OpenID Connect ---
+  #
+  #   npx nodefony http:certificates            # une fois — le certificat de dev
+  #   docker compose --profile keycloak up -d keycloak
+  #
+  # Importé au PREMIER démarrage depuis `docker/keycloak/import/` : un realm
+  # `nodefony`, un client confidentiel `nodefony` dont les URL de retour sont
+  # celles de CETTE application (https://localhost:5152 et http://localhost:5151),
+  # et un utilisateur `alice` / `alice-dev`. Brancher l'app : décommenter les
+  # lignes `NF_KEYCLOAK_*` de `.env`. Console d'administration :
+  # https://localhost:${KEYCLOAK_PORT:-8444}/admin (admin / nodefony-dev).
+  #
+  # Ce que l'app exige de ce décor, chaque point payé une fois :
+  #   - https, même en dev : l'émetteur est une URL https. Le certificat est
+  #     celui que l'app fabrique — et l'app doit lui faire CONFIANCE quand elle
+  #     appelle Keycloak : démarre-la avec
+  #     NODE_EXTRA_CA_CERTS=nodefony/config/certificates/ca/nodefony-root-ca.crt.pem
+  #     Sans elle : WARNING « provider "keycloak" indisponible », pas de bouton.
+  #   - `KC_HOSTNAME` en URL COMPLÈTE : l'émetteur (`iss`) ne dépend plus de qui
+  #     joint Keycloak. Navigateur et app voient le même — sinon l'app refuse les
+  #     jetons (garde anti-mix-up, RFC 9207). `localhost`, pas `127.0.0.1`.
+  #   - Linux natif : `export KEYCLOAK_UID=$(id -u)` avant le `up` — sinon la clé
+  #     privée montée (600) est illisible par le conteneur. Docker Desktop
+  #     (macOS, Windows) n'en a pas besoin.
+  #   - Port 8444 : 8443 appartient au frontal du profil `edge`.
+  #
+  # Base `dev-file` (embarquée, dans le volume) et secrets PUBLICS : décor de
+  # DÉVELOPPEMENT, jamais de production. `down -v` repart du fichier du realm ;
+  # sans `-v`, les retouches faites dans la console survivent.
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.0
+    container_name: nodefony-keycloak
+    restart: unless-stopped
+    profiles: ["keycloak"]
+    networks: [nodefony]
+    # Canal arrière (OpenID Connect Back-Channel Logout) : Keycloak APPELLE
+    # l'application, qui tourne sur l'hôte. Docker Desktop connaît ce nom ;
+    # sous Linux, `host-gateway` le pose.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    user: "${KEYCLOAK_UID:-1000}:0"
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-nodefony-dev}
+      KC_HOSTNAME: https://localhost:${KEYCLOAK_PORT:-8444}
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/tls/fullchain.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/tls/privkey.pem
+      # Aucun port en clair : le mode dev l'ouvre par défaut, on le ferme.
+      KC_HTTP_ENABLED: "false"
+      # Sondes /health/* sur le port de gestion 9000, NON publié : seul le
+      # healthcheck (dans le conteneur) l'interroge, en clair.
+      KC_HEALTH_ENABLED: "true"
+      KC_HTTP_MANAGEMENT_SCHEME: http
+      # Thème Nodefony par DÉFAUT : il habille aussi le realm `master` (console
+      # d'administration). La page d'accueil ne se choisit que par le serveur.
+      KC_SPI_THEME__DEFAULT: nodefony
+      KC_SPI_THEME__WELCOME_THEME: nodefony
+    ports:
+      - "127.0.0.1:${KEYCLOAK_PORT:-8444}:8443"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      # Realm d'import et thèmes (`nodefony` et un thème enfant par habillage
+      # de la page /login, `nodefony-<habillage>`) : posés par la contribution de
+      # `@nodefony/security` (`create app`, puis `nodefony scaffold:sync`) — de
+      # vrais fichiers, versionnés avec l'app, donc retouchables à ses couleurs.
+      - ./docker/keycloak/import:/opt/keycloak/data/import:ro
+      - ./docker/keycloak/themes:/opt/keycloak/themes:ro
+      - ./nodefony/config/certificates/server:/opt/keycloak/conf/tls:ro
+    healthcheck:
+      # L'image n'a ni curl ni wget : la sonde passe par le /dev/tcp de bash.
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q 'HTTP/1.0 200' <&3",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+# Bridge nommé explicite : résolution DNS par nom de service, isolation des autres
+# projets compose, nettoyage propre au down. Pas de sous-réseau figé (anti-collision).
+networks:
+  nodefony:
+    name: nodefony-net
+    driver: bridge
+
+volumes:
+  redis-data:
+  redisinsight-data:
+  loki-data:
+  grafana-data:
+  keycloak-data:
+  # Les données de l'app en image (profil `app`) : `var/`, dont la base sqlite.
+  # ⚠️ Tant que la base est sqlite, UNE SEULE réplique : c'est un fichier, pas un
+  # serveur. Deux conteneurs sur ce volume se corrompent ; sur deux volumes, ils
+  # divergent en silence. Pour répliquer, poser `NF_DATABASE_URL` sur une vraie
+  # base — l'ORM déduit le dialecte du scheme, rien d'autre ne change dans l'app.
+  nodefony-var:

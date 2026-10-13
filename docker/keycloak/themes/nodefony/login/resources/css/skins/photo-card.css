@@ -1,0 +1,72 @@
+/* ═══ nodefony/login/skins/photo-card.css — habillage « Photo — carte console » ═══
+   La photo de l'application en fond de page, voilée ; la carte console
+   reste pleine et lisible au-dessus. Sans photo, fond plein.
+
+   Mise en page : `card` · fond décoré (`<body data-backdrop>`).
+   Chargée APRÈS `login.css` et AVANT la feuille de l'application
+   (`loginPage.skin: "photo-card"`) : elle ne redéfinit que des variables
+   `--nf-login-*` et la disposition de sa mise en page — jamais le balisage.
+   Aucune photo n'est fournie : elle vient de l'application
+   (`--nf-login-hero-image`). Le jeu CLAIR est écrit deux fois, à l'identique,
+   comme dans `login.css`. */
+:root {
+  --nf-login-home-green: #7cc46c;
+  --nf-login-backdrop: var(--nf-login-hero-image);
+  --nf-login-backdrop-size: cover;
+  --nf-login-backdrop-position: center 40%;
+  --nf-login-veil: rgba(10, 14, 20, 0.55);
+  --nf-login-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-home-green: #3f7a35;
+    --nf-login-on-brand: #ffffff;
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #fafbfd;
+    --nf-login-surface: #ffffff;
+    --nf-login-raised: #f1f5fa;
+    --nf-login-line: #e3e9f2;
+    --nf-login-line-strong: #cfd8e6;
+    --nf-login-heading: #0e1726;
+    --nf-login-text: #2b3a52;
+    --nf-login-muted: #5b6b84;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    --nf-login-backdrop: var(--nf-login-hero-image);
+    --nf-login-backdrop-size: cover;
+    --nf-login-backdrop-position: center 40%;
+    --nf-login-veil: rgba(245, 246, 248, 0.18);
+    --nf-login-card-shadow: 0 20px 50px rgba(10, 30, 50, 0.28);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --nf-login-home-green: #3f7a35;
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #fafbfd;
+  --nf-login-surface: #ffffff;
+  --nf-login-raised: #f1f5fa;
+  --nf-login-line: #e3e9f2;
+  --nf-login-line-strong: #cfd8e6;
+  --nf-login-heading: #0e1726;
+  --nf-login-text: #2b3a52;
+  --nf-login-muted: #5b6b84;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  --nf-login-backdrop: var(--nf-login-hero-image);
+  --nf-login-backdrop-size: cover;
+  --nf-login-backdrop-position: center 40%;
+  --nf-login-veil: rgba(245, 246, 248, 0.18);
+  --nf-login-card-shadow: 0 20px 50px rgba(10, 30, 50, 0.28);
+  color-scheme: light;
+}
