@@ -1,0 +1,497 @@
+# Chaîne de PRODUCTION de nodefony — générée par `nodefony create app`.
+#
+# `ci.yml` éprouve le STATUS : typecheck, lint, tests, construction, et la suite
+# de bout en bout contre l'application démarrée sur le runner. Ce fichier-ci
+# éprouve ce qu'on DÉPLOIE — l'image, et la topologie qui la met en service.
+# Ce sont deux objets différents : une application peut être verte de bout en
+# bout et livrer une image qui ne démarre pas, ou qui se fait tuer à l'arrêt.
+#
+# 🔴 QUAND CES ÉPREUVES MORDENT — et pourquoi c'est acceptable.
+# Sur la branche par défaut seulement, pas à chaque envoi de branche : elles
+# construisent des images et lèvent une infrastructure, ce qui se compte en
+# minutes. Un défaut est donc vu APRÈS la fusion, jamais avant. C'est le bon
+# compromis ici parce que rien de ce qu'elles regardent n'est atteignable par un
+# utilisateur avant un déploiement : entre la fusion et la mise en service, il
+# reste le temps de corriger. Pour les faire mordre plus tôt sur un changement
+# risqué (Dockerfile, compose, configuration du frontal), lancer la chaîne à la
+# main depuis l'onglet Actions — c'est ce que `workflow_dispatch` ouvre.
+#
+# POUR LA RETIRER : `rm .github/workflows/production.yml`. Le filet de base
+# (`ci.yml`) est intact et continue de construire et de contrôler l'image.
+name: Production
+
+on:
+  push:
+    branches: [main]
+  # Lancement à la main, sur n'importe quelle branche.
+  workflow_dispatch:
+
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # L'IMAGE démarre, sert, et s'arrête PROPREMENT
+  # ═══════════════════════════════════════════════════════════════════════════
+  # `ci.yml` construit l'image et refuse qu'un secret y entre. Il ne la DÉMARRE
+  # pas — et « ça construit » ne dit rien : une image se construit parfaitement
+  # en étant incapable de démarrer (base changée, droits d'un dossier, migration
+  # absente). Ce job la met en service, l'interroge, puis l'arrête comme un
+  # orchestrateur le fait : par SIGTERM, en attendant le drain.
+  image:
+    name: L'image démarre, sert et draine
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # Le port publié sur l'hôte, posé UNE fois : le compose l'interpole
+    # (`${APP_PORT:-5251}`) et les étapes ci-dessous le lisent. Écrit aux deux
+    # endroits, il se surcharge d'un côté sans l'autre — et la sonde interroge
+    # alors un port où personne n'écoute, sur un message qui parle de l'application.
+    env:
+      APP_PORT: "5251"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Les secrets que la PRODUCTION exige, posés comme un exploitant le fait :
+      # par l'environnement du service, jamais dans l'image (`.dockerignore`
+      # exclut `.env`, et une couche reste lisible même effacée par la
+      # suivante). Un fichier NOMMÉ, passé par `-f` : `compose.override.yaml`
+      # serait lu tout seul, et écraserait celui que tu y aurais mis.
+      - name: Secrets d'exploitation (jamais dans l'image)
+        shell: bash
+        run: |
+          set -euo pipefail
+          SECRET=$(openssl rand -base64 32)
+          # La clé de SIGNATURE des jetons — une paire Ed25519, pas 32 octets.
+          # Sans elle, la production REFUSE de démarrer (jwt.keystore). Ce job
+          # n'installe pas l'application, donc `security:secrets --jwt-keyset`
+          # n'y est pas : le format est produit ici par node:crypto seul, et le
+          # dépôt Nodefony éprouve que son keystore charge CETTE sortie.
+          # nf-keyset:begin
+          KEYSET=$(node -e '
+          const c = require("node:crypto");
+          const k = c.generateKeyPairSync("ed25519").privateKey.export({ format: "jwk" });
+          const kid = c.createHash("sha256")
+            .update(JSON.stringify({ crv: k.crv, kty: k.kty, x: k.x }))
+            .digest("base64url");
+          process.stdout.write(JSON.stringify({ active: kid, keys: [{ ...k, kid, alg: "EdDSA", use: "sig" }] }));
+          ')
+          # nf-keyset:end
+          echo "::add-mask::$KEYSET"
+          cat > compose.ci.yaml <<YML
+          services:
+            migrate:
+              environment:
+                NF_CSRF_SECRET: "$SECRET"
+                NF_ADMIN_PASSWORD: "$SECRET"
+            app:
+              environment:
+                NF_CSRF_SECRET: "$SECRET"
+                NF_ADMIN_PASSWORD: "$SECRET"
+                NF_JWT_KEYSET: '$KEYSET'
+          YML
+
+      # Le geste de l'utilisateur, celui que le README documente. Il construit
+      # l'image, lève la base et Redis, APPLIQUE les migrations (service
+      # `migrate`, une tâche qui se termine), puis démarre l'application.
+      - name: docker compose --profile app up --build
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -f compose.yaml -f compose.ci.yaml --profile app up -d --build
+
+      # `up -d` rend la main quand les conteneurs sont CRÉÉS, pas quand ils
+      # servent. `/readyz` est la seule réponse qui engage l'application : elle
+      # y dit qu'elle a son schéma, ses connexions et ses services.
+      - name: /readyz → 200 (l'image est en service)
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS=""
+          for _ in $(seq 1 90); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:${APP_PORT}/readyz" || true)
+            [ "$STATUS" = "200" ] && break
+            sleep 1
+          done
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::/readyz jamais 200 après 90 s (reçu : $STATUS)"
+            exit 1
+          fi
+          echo "✓ /readyz → 200"
+
+      # 🔴 LE DRAIN — ce que rien d'autre ne regarde, et qui se perd en silence.
+      # Un orchestrateur arrête un conteneur par SIGTERM puis compte : k8s donne
+      # 30 s, `docker stop` 10 s. Le framework draine en dessous de
+      # `shutdownDeadline` et sort en 0. Si le signal n'arrive pas au bon
+      # process (forme shell du `CMD`, un shell en PID 1), personne ne draine et
+      # le noyau tue : le conteneur sort alors en 137, et les requêtes en vol
+      # sont perdues à CHAQUE déploiement — sans une erreur, sans une trace.
+      # Le code de sortie est le seul témoin, et il est binaire.
+      - name: Arrêt gracieux — SIGTERM, drain, sortie 0
+        shell: bash
+        run: |
+          set -euo pipefail
+          CONTAINER=$(docker compose -f compose.yaml -f compose.ci.yaml --profile app ps -q app)
+          [ -n "$CONTAINER" ] || { echo "::error::conteneur de l'application introuvable"; exit 1; }
+          STARTED=$SECONDS
+          docker compose -f compose.yaml -f compose.ci.yaml --profile app stop -t 20 app
+          ELAPSED=$((SECONDS - STARTED))
+          STATUS=$(docker inspect -f '{{.State.ExitCode}}' "$CONTAINER")
+          echo "arrêt en ${ELAPSED}s, code de sortie $STATUS"
+          if [ "$STATUS" = "137" ]; then
+            echo "::error::sortie 137 : le conteneur a été TUÉ, il n'a pas drainé."
+            echo "::error::Cause la plus fréquente : CMD en forme shell — /bin/sh est PID 1"
+            echo "::error::et ne transmet pas les signaux. Le Dockerfile doit porter CMD [\"…\"]."
+            exit 1
+          fi
+          [ "$STATUS" = "0" ] || { echo "::error::sortie $STATUS (expected 0)"; exit 1; }
+          echo "✓ drain complet, sortie 0"
+
+      # Ce que l'image EMBARQUE, au-delà du code : la base, ses bibliothèques
+      # système, les dépendances installées. `ci.yml` refuse qu'un SECRET y
+      # entre ; ce contrôle-ci regarde les vulnérabilités CONNUES.
+      #
+      # Le seuil est CRITICAL, et il est délibéré : une haute nouvellement
+      # publiée dans une bibliothèque de la base ne doit pas rendre rouge une
+      # chaîne qui n'a rien changé — sinon le contrôle se fait désarmer au
+      # premier faux blocage, et ne garde plus rien. Les hautes sont AFFICHÉES :
+      # elles se lisent, elles ne bloquent pas. Pour durcir, ajouter `HIGH` à
+      # `--severity` de la seconde commande.
+      #
+      # 🔴 `--ignore-unfixed` sur la passe qui TRANCHE, et c'est le réglage qui
+      # décide si ce job survit. Une distribution marque certaines failles
+      # « will_not_fix » : aucune mise à jour ne les corrigera JAMAIS. Mesuré
+      # sur `node:24-slim` — `zlib1g` CVE-2023-45853, critique, sans correctif :
+      # le job serait rouge à chaque exécution, pour toujours, sans que rien ne
+      # puisse être fait. Un contrôle qu'on ne peut pas satisfaire se fait
+      # retirer, et le reste part avec lui. Il n'échoue donc que sur ce qui est
+      # CORRIGEABLE — la première passe, elle, montre tout.
+      - name: Vulnérabilités connues de l'image
+        shell: bash
+        run: |
+          set -euo pipefail
+          TRIVY="aquasec/trivy:0.74.0"
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$HOME/.cache/trivy:/root/.cache/trivy" \
+            "$TRIVY" image --scanners vuln --severity CRITICAL,HIGH \
+            --exit-code 0 --no-progress nodefony:local
+          # Seconde passe, celle qui TRANCHE. Deux commandes plutôt qu'une :
+          # la première rend le tableau à lire, la seconde le verdict.
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$HOME/.cache/trivy:/root/.cache/trivy" \
+            "$TRIVY" image --scanners vuln --severity CRITICAL --ignore-unfixed \
+            --exit-code 1 --no-progress --quiet nodefony:local
+          echo "✓ aucune vulnérabilité critique CORRIGEABLE"
+
+      # Sans ceci, un démarrage raté s'instruit à l'aveugle : les journaux de
+      # l'application vivent dans le conteneur, que le `down` emporte.
+      - name: Journaux de la topologie (en cas d'échec seulement)
+        if: failure()
+        shell: bash
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile app logs --tail 200
+
+      - name: Ranger le décor
+        if: always()
+        shell: bash
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile app down -v
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # LA TOPOLOGIE DE PRODUCTION — l'application DERRIÈRE son frontal
+  # ═══════════════════════════════════════════════════════════════════════════
+  # C'est le job qui a le plus de valeur, parce qu'il exerce la moitié
+  # applicative du contrat de proxy : `trustProxy` et l'adresse RÉELLE du
+  # client, le cookie `Secure` posé alors que le lien interne est en clair, la
+  # barrière `Host`, la montée WebSocket, et les statiques servis par nginx
+  # pendant que le serveur de fichiers de Node est éteint.
+  #
+  # En direct — et c'est ce que fait `ci.yml` —, RIEN de cela n'est joué : une
+  # application qui n'a jamais vu de proxy le découvre en production, sur des
+  # symptômes qui ne parlent pas de proxy (sessions perdues, adresses toutes
+  # identiques dans l'audit, cookie refusé par le navigateur).
+  topologie:
+    name: L'application derrière son frontal
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Même raison que ci-dessus : le compose interpole `${EDGE_TLS_PORT}`,
+    # les sondes et l'adresse donnée à la suite e2e lisent CETTE valeur.
+    env:
+      EDGE_TLS_PORT: "8443"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # BÂTIR AVANT d'appeler le CLI, et pourquoi ce n'est pas facultatif.
+      # `nodefony http:certificates` est une commande de MODULE : elle exige une
+      # application bootable, donc une entrée construite (`main`, `dist/index.js`
+      # ou `index.js`). Sans ce build, le Kernel refuse par « Projet Nodefony
+      # détecté mais NON CONSTRUIT » — une garde délibérée, pas un incident.
+      # Le job voisin ne tombe pas sur ce cas seulement parce que `compose up
+      # --build` bâtit pour lui, DANS l'image ; ici, rien ne le fait à sa place.
+      - run: npm run build
+
+      # Le frontal MONTE un certificat, il ne l'embarque jamais : une clé privée
+      # gravée dans une image reste lisible par qui la télécharge, même effacée
+      # par une couche suivante. En production, c'est l'hébergeur ou l'ingress
+      # qui pourvoit ce montage ; ici, celui que l'application fabrique.
+      - name: Certificat de développement (monté par le frontal)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm exec -- nodefony http:certificates
+          for pem in fullchain.pem privkey.pem; do
+            test -f "nodefony/config/certificates/server/$pem" \
+              || { echo "::error::certificat absent : nodefony/config/certificates/server/$pem"; exit 1; }
+          done
+
+      - name: Secrets d'exploitation, et l'identité du décor e2e
+        shell: bash
+        run: |
+          set -euo pipefail
+          # 🔴 Le mot de passe d'administration n'est PAS tiré au hasard, et
+          # c'est le fait à comprendre. La suite e2e jouée plus bas s'adresse à
+          # un serveur qui tourne AILLEURS — dans un conteneur : elle ne le
+          # démarre pas, donc elle ne peut pas lui poser son identité. Elle se
+          # connecte avec la constante de son décor, et c'est donc la chaîne qui
+          # doit semer CE compte-là.
+          #
+          # Lue à SA source — la constante que le décor importe lui-même de
+          # `nodefony/testing` —, jamais recopiée ici ni extraite du texte de
+          # `tests/e2e.setup.ts` : un motif sur le source casse sans bruit le
+          # jour où la valeur y cesse d'être littérale, et le cas du cookie
+          # tomberait en 401 — un rouge qui accuserait le proxy.
+          PASSWORD=$(node --input-type=module -e 'const { E2E_ADMIN_PASSWORD } = await import("nodefony/testing"); process.stdout.write(E2E_ADMIN_PASSWORD ?? "")')
+          if [ -z "$PASSWORD" ]; then
+            echo "::error::identité du décor e2e introuvable : E2E_ADMIN_PASSWORD absent de nodefony/testing"
+            echo "::error::sans elle la suite ne peut pas se connecter"
+            exit 1
+          fi
+          echo "NF_CI_ADMIN_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+          # Le compte SANS privilège du décor, à la même source : c'est lui qui
+          # prouve qu'une garde de rôle mord (`DELETE` réservé à l'admin).
+          MEMBER=$(node --input-type=module -e 'const t = await import("nodefony/testing"); process.stdout.write(`${t.E2E_USER_IDENTIFIER ?? ""} ${t.E2E_USER_PASSWORD ?? ""}`)')
+          read -r MEMBER_ID MEMBER_PASSWORD <<< "$MEMBER"
+          if [ -z "${MEMBER_ID:-}" ] || [ -z "${MEMBER_PASSWORD:-}" ]; then
+            echo "::error::compte sans privilège du décor e2e introuvable : E2E_USER_IDENTIFIER/E2E_USER_PASSWORD absents de nodefony/testing"
+            exit 1
+          fi
+          echo "NF_CI_MEMBER_ID=$MEMBER_ID" >> "$GITHUB_ENV"
+          echo "NF_CI_MEMBER_PASSWORD=$MEMBER_PASSWORD" >> "$GITHUB_ENV"
+          # Les secrets d'application, eux, sont quelconques : la chaîne prouve
+          # que l'application démarre avec CEUX QU'ON LUI DONNE, pas avec des
+          # valeurs qu'elle connaîtrait d'avance.
+          echo "NF_CI_SECRET=$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+          # La clé de SIGNATURE des jetons, par le geste documenté — sans elle,
+          # la production refuse de démarrer (jwt.keystore).
+          KEYSET=$(npm exec -- nodefony security:secrets --jwt-keyset)
+          echo "::add-mask::$KEYSET"
+          echo "NF_CI_JWT_KEYSET=$KEYSET" >> "$GITHUB_ENV"
+
+      - name: Écrire la surcharge de la chaîne
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > compose.ci.yaml <<YML
+          services:
+            migrate:
+              environment:
+                NF_CSRF_SECRET: "${NF_CI_SECRET}"
+                NF_ADMIN_PASSWORD: "${NF_CI_ADMIN_PASSWORD}"
+            app-edge:
+              environment:
+                NF_CSRF_SECRET: "${NF_CI_SECRET}"
+                NF_ADMIN_PASSWORD: "${NF_CI_ADMIN_PASSWORD}"
+                NF_JWT_KEYSET: '${NF_CI_JWT_KEYSET}'
+          YML
+
+      # L'étage `proxyconf` du Dockerfile DÉRIVE la configuration du frontal de
+      # l'application elle-même (`proxy:generate`) : hôtes de confiance,
+      # statiques réels, taille de corps, battement WebSocket. Elle n'est pas
+      # écrite à la main, donc elle ne peut pas prendre du retard sur le code.
+      - name: docker compose --profile edge up --build
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge up -d --build
+
+      - name: /livez à travers le frontal → 200
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS=""
+          for _ in $(seq 1 90); do
+            STATUS=$(curl -sk -o /dev/null -w "%{http_code}" "https://localhost:${EDGE_TLS_PORT}/livez" || true)
+            [ "$STATUS" = "200" ] && break
+            sleep 1
+          done
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::/livez jamais 200 à travers le frontal (reçu : $STATUS)"
+            exit 1
+          fi
+          echo "✓ le frontal joint l'application par son NOM de service"
+
+      # Le second compte du décor, SANS privilège. En local, la suite le sème
+      # elle-même ; ici elle ne démarre rien — c'est donc la chaîne qui le pose,
+      # par la commande du framework, DANS le conteneur qui sert (même base).
+      - name: Semer le compte sans privilège du décor e2e
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge exec -T app-edge \
+            node_modules/.bin/nodefony security:user:add "$NF_CI_MEMBER_ID" --password "$NF_CI_MEMBER_PASSWORD"
+
+      # 🔴 LE TÉMOIN DE TOUTE LA CHAÎNE, en un seul caractère de préfixe.
+      # `__Host-` exige `Secure`, et `Secure` ne se pose que si l'application se
+      # SAIT servie en TLS — ce qu'elle ne peut apprendre que du frontal, par
+      # `X-Forwarded-Proto`, et qu'elle ne croit que si `trustProxy` accorde sa
+      # confiance à l'adresse d'où vient le socket. Le `proxy_set_header` de
+      # nginx, le réseau privé du compose et la configuration de l'application
+      # sont donc tous les trois observés ici, par un fait binaire.
+      - name: Le cookie porte le préfixe __Host- (le frontal est cru)
+        shell: bash
+        run: |
+          set -euo pipefail
+          HEADERS=$(curl -sk -D - -o /dev/null -X POST \
+            "https://localhost:${EDGE_TLS_PORT}/nodefony/security/api/auth/login" \
+            -H "content-type: application/json" \
+            -d "{\"username\":\"admin\",\"password\":\"${NF_CI_ADMIN_PASSWORD}\"}" || true)
+          # La casse d'un nom d'en-tête est LIBRE en HTTP/1.1 : `grep -i`, jamais
+          # une recherche de `Set-Cookie` tel quel.
+          if ! printf '%s' "$HEADERS" | grep -qi "__Host-"; then
+            printf '%s' "$HEADERS" | grep -i "set-cookie" || echo "(aucun Set-Cookie)"
+            echo "::error::aucun cookie __Host- — l'application ne se sait pas servie en TLS"
+            exit 1
+          fi
+          echo "✓ cookie __Host- posé"
+
+      # La MÊME suite que `ci.yml` joue en direct, rejouée à travers le frontal.
+      # `NF_E2E_BASE_URL` change sa nature : elle ne démarre rien et ne touche
+      # aucune base, elle MESURE le déploiement qui tourne. Les cas qui portent
+      # sur la base locale s'annoncent alors sautés — c'est voulu, et attendre
+      # ici 100 % de cas joués serait un faux critère.
+      #
+      # Le certificat est auto-signé : on le DONNE à Node plutôt que de désarmer
+      # la validation, qui ferait passer la suite contre n'importe quel
+      # certificat — un contrôle qui accepte tout ne contrôle plus rien.
+      - name: La suite de bout en bout, JOUÉE À TRAVERS le frontal
+        shell: bash
+        env:
+          NF_E2E_BASE_URL: https://localhost:${{ env.EDGE_TLS_PORT }}
+          NODE_EXTRA_CA_CERTS: nodefony/config/certificates/ca/nodefony-root-ca.crt.pem
+        run: npm run test:e2e
+
+      # 🔴 Un 200 ne dit PAS que la page marche. La configuration du frontal
+      # REMPLACE le `nginx.conf` de l'image : sans `mime.types`, nginx sert tout
+      # en `text/plain`, le navigateur REFUSE un module ES à ce type et ignore
+      # la feuille de style. Les fichiers répondent 200, le contrôle est vert,
+      # et l'écran est noir. On regarde donc le TYPE.
+      - name: Les fichiers du frontend sont servis avec le BON type
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://localhost:${EDGE_TLS_PORT}"
+          PAGE=$(curl -sk "$BASE/" || true)
+          # `|| true` sur CHAQUE grep : sans correspondance il rend 1, et sous
+          # `set -euo pipefail` cela tue l'étape sans le moindre message.
+          JS=$(printf '%s' "$PAGE" | grep -o '/_assets/[^"]*\.js' | head -1 || true)
+          CSS=$(printf '%s' "$PAGE" | grep -o '/_assets/[^"]*\.css' | head -1 || true)
+          [ -n "$JS" ] || { printf '%s' "$PAGE" | head -20; \
+            echo "::error::aucun module JS dans la page — l'arbre du frontend n'a pas été publié"; exit 1; }
+          for pair in "$JS|javascript" "$CSS|css"; do
+            url="${pair%%|*}"; expected="${pair##*|}"
+            [ -n "$url" ] || continue
+            kind=$(curl -sk -o /dev/null -w "%{content_type}" "$BASE$url" || true)
+            case "$kind" in
+              *"$expected"*) echo "✓ $(basename "$url") servi en « $kind »" ;;
+              *) echo "::error::$(basename "$url") servi en « $kind » (expected : $expected) — le navigateur le REFUSE"; exit 1 ;;
+            esac
+          done
+
+      # La preuve que le frontal sert SEUL : on éteint l'application. Un fichier
+      # qui répond encore n'a pas pu passer par Node. C'est binaire, et ça ne
+      # dépend d'aucun compteur. Avec son contrôle négatif — une route
+      # applicative DOIT tomber, sinon on n'aurait prouvé que la présence de
+      # l'application, pas que nginx sert seul.
+      - name: Les statiques sont servis application ÉTEINTE
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://localhost:${EDGE_TLS_PORT}"
+          PAGE=$(curl -sk "$BASE/" || true)
+          JS=$(printf '%s' "$PAGE" | grep -o '/_assets/[^"]*\.js' | head -1 || true)
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge stop app-edge
+          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" "$BASE$JS" || true)
+          [ "$STATUS" = "200" ] || { echo "::error::$JS → $STATUS application éteinte : le frontal ne sert pas les statiques"; exit 1; }
+          DEAD=$(curl -sk -o /dev/null -w "%{http_code}" "$BASE/nodefony/security/api/auth/login" || true)
+          [ "$DEAD" = "200" ] && { echo "::error::l'application répond alors qu'elle est arrêtée — la preuve précédente ne prouve rien"; exit 1; }
+          echo "✓ statiques servis par nginx seul (route applicative : $DEAD)"
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge up -d --force-recreate app-edge
+
+      # ── LA GARDE, SEEN MORDRE ────────────────────────────────────────────────
+      # Un contrôle qu'on n'a jamais vu échouer ne garde rien. On retire la
+      # SEULE ligne qui accorde la confiance au frontal, et on constate que le
+      # cookie perd son préfixe : l'application, ne croyant plus les en-têtes,
+      # se croit servie en clair. Si le préfixe tenait quand même, le cas
+      # précédent passerait de toute façon et ne prouverait rien.
+      - name: Sans NF__HTTP__TRUSTPROXY, le préfixe __Host- tombe
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://localhost:${EDGE_TLS_PORT}"
+          cat > compose.degraded.yaml <<'YML'
+          # Débranchement DÉLIBÉRÉ : la confiance au frontal est retirée.
+          services:
+            app-edge:
+              environment:
+                NF__HTTP__TRUSTPROXY: ""
+          YML
+          docker compose -f compose.yaml -f compose.ci.yaml -f compose.degraded.yaml \
+            --profile edge up -d --force-recreate app-edge
+          STATUS=""
+          for _ in $(seq 1 90); do
+            STATUS=$(curl -sk -o /dev/null -w "%{http_code}" "$BASE/livez" || true)
+            [ "$STATUS" = "200" ] && break
+            sleep 1
+          done
+          [ "$STATUS" = "200" ] || { echo "::error::l'application sans trustProxy ne répond pas — le débranchement mesure autre chose"; exit 1; }
+          HEADERS=$(curl -sk -D - -o /dev/null -X POST \
+            "$BASE/nodefony/security/api/auth/login" \
+            -H "content-type: application/json" \
+            -d "{\"username\":\"admin\",\"password\":\"${NF_CI_ADMIN_PASSWORD}\"}" || true)
+          if printf '%s' "$HEADERS" | grep -qi "__Host-"; then
+            echo "::error::__Host- posé SANS trustProxy — le cas précédent ne prouvait rien"
+            exit 1
+          fi
+          rm -f compose.degraded.yaml
+          echo "✓ la garde MORD : sans trustProxy, pas de __Host-"
+
+      # `down` sans `-v` : c'est le geste qu'on MESURE (l'arrêt de toute la
+      # topologie rend 0, donc le drain n'a été coupé nulle part), pas le
+      # rangement — celui-là vient après, et il emporte les volumes.
+      - name: docker compose down — le drain n'est coupé nulle part
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge up -d --force-recreate app-edge
+          docker compose -f compose.yaml -f compose.ci.yaml --profile edge down
+          echo "✓ down → 0 (stop_grace_period au-dessus du shutdownDeadline)"
+
+      - name: Journaux de la topologie (en cas d'échec seulement)
+        if: failure()
+        shell: bash
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile edge logs --tail 200
+
+      - name: Ranger le décor
+        if: always()
+        shell: bash
+        run: docker compose -f compose.yaml -f compose.ci.yaml --profile edge down -v

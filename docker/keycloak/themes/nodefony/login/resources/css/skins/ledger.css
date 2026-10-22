@@ -1,0 +1,224 @@
+/* ═══ nodefony/login/skins/ledger.css — habillage « Fiche » ═══
+   Outil interne ou back-office : la connexion est une formalité de
+   registre, lue d'un coup d'œil, sans carte ni décor. Feuille en deux
+   colonnes, étapes numérotées à gauche, formulaire à droite.
+
+   Mise en page : `bare`.
+   Chargée APRÈS `login.css` et AVANT la feuille de l'application
+   (`loginPage.skin: "ledger"`) : elle ne redéfinit que des variables
+   `--nf-login-*` et la disposition de sa mise en page — jamais le balisage.
+   Aucune photo n'est fournie : elle vient de l'application
+   (`--nf-login-hero-image`). Le jeu CLAIR est écrit deux fois, à l'identique,
+   comme dans `login.css`. */
+:root {
+  /* Deux volets : la carte prend une plus grande part de l'écran. */
+  --nf-login-card-min: 720px;
+  --nf-login-card-ratio: 62vw;
+  --nf-login-card-width: 940px;
+  --nf-login-title-size: 30px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-on-brand: #ffffff;
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #f6f7f9;
+    --nf-login-surface: #f6f7f9;
+    --nf-login-raised: #eceef2;
+    --nf-login-line: #dfe3e8;
+    --nf-login-line-strong: #c6ccd4;
+    --nf-login-heading: #111317;
+    --nf-login-text: #343a40;
+    --nf-login-muted: #5d646d;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #f6f7f9;
+  --nf-login-surface: #f6f7f9;
+  --nf-login-raised: #eceef2;
+  --nf-login-line: #dfe3e8;
+  --nf-login-line-strong: #c6ccd4;
+  --nf-login-heading: #111317;
+  --nf-login-text: #343a40;
+  --nf-login-muted: #5d646d;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  color-scheme: light;
+}
+
+/* ── La feuille : titre et étapes à gauche, formulaire à droite, un filet entre les deux ── */
+body[data-layout="bare"] .nf-strip {
+  border-bottom-color: var(--nf-login-line);
+}
+.nf-stage {
+  padding: 56px 24px;
+  gap: 0;
+}
+body[data-layout="bare"] .nf-card {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: auto 1fr;
+  border: 0;
+  border-radius: 0;
+}
+.nf-head {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  gap: 0;
+  padding: 0 36px 0 0;
+}
+/* Le bandeau porte déjà la marque : la feuille ne la répète pas. */
+body[data-layout="bare"] .nf-head .nf-brand {
+  display: none;
+}
+.nf-sub {
+  order: 1;
+  margin: 0 0 10px;
+  font: 700 10px/1 var(--nf-login-mono);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--nf-login-muted);
+}
+h1 {
+  order: 2;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+/* Étapes numérotées, en colonne : un registre, pas des onglets. */
+body[data-layout="bare"] .nf-steps {
+  grid-column: 1;
+  grid-row: 2;
+  flex-direction: column;
+  gap: 0;
+  margin: 32px 36px 0 0;
+  padding: 0;
+  border-bottom: 0;
+  border-top: 1px solid var(--nf-login-line);
+  counter-reset: step;
+}
+.nf-steps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--nf-login-line);
+  counter-increment: step;
+}
+.nf-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 20px;
+  border: 1px solid var(--nf-login-line-strong);
+  border-radius: 4px;
+  color: var(--nf-login-muted);
+}
+.nf-steps li[aria-current="step"] {
+  border-bottom-color: var(--nf-login-line);
+}
+.nf-steps li[aria-current="step"]::before {
+  border-color: var(--nf-login-accent);
+  background: var(--nf-login-accent);
+  color: var(--nf-login-bg);
+}
+.nf-steps li.done::before {
+  content: "✓";
+  border-color: var(--nf-login-ok);
+  color: var(--nf-login-ok);
+}
+
+.nf-body {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  padding: 0 0 0 44px;
+  border-left: 1px solid var(--nf-login-line);
+}
+.nf-btn.primary {
+  width: auto;
+  justify-self: start;
+  min-width: 180px;
+  padding: 0 22px;
+}
+
+/* Pied : une ligne de registre, faits à gauche, signature à droite. */
+.nf-foot {
+  width: min(
+    clamp(
+      var(--nf-login-card-min),
+      var(--nf-login-card-ratio),
+      var(--nf-login-card-width)
+    ),
+    100%
+  );
+  grid-template-columns: 1fr auto;
+  justify-items: start;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--nf-login-line);
+}
+.nf-facts {
+  justify-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  .nf-stage {
+    padding: 32px 20px;
+  }
+  body[data-layout="bare"] .nf-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .nf-head {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 0;
+  }
+  body[data-layout="bare"] .nf-steps {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin: 24px 0 0;
+    border-top: 0;
+    border-bottom: 1px solid var(--nf-login-line);
+  }
+  .nf-steps li {
+    padding: 0 0 10px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+  }
+  .nf-steps li[aria-current="step"] {
+    border-bottom-color: var(--nf-login-accent);
+  }
+  .nf-body {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 24px 0 0;
+    border-left: 0;
+  }
+  .nf-btn.primary {
+    width: 100%;
+  }
+  .nf-foot {
+    grid-template-columns: 1fr;
+  }
+}

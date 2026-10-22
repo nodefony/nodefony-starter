@@ -1,0 +1,50 @@
+{
+  "description": "Empreintes des fichiers livrés par les paquets (nodefony scaffold:sync). À versionner, à ne pas éditer : un fichier dont l'empreinte correspond est intact, et `scaffold:sync --update` le rafraîchit.",
+  "packages": {
+    "@nodefony/security": {
+      "version": "10.0.0-beta.4",
+      "files": {
+        "docker/keycloak/themes/nodefony-blueprint/login/theme.properties": "696d95fce4b020308efacbb1c94c8d26ca716211bad8d288ce8717787ca6ef0a",
+        "docker/keycloak/themes/nodefony-console/login/theme.properties": "f6a54cab0b3739b7b265cc2f3884d7b59afbc86874aef807733cc244e8627021",
+        "docker/keycloak/themes/nodefony-dots/login/theme.properties": "69205923cef8ce51ee4de0d2d20ee3861b9986bc0d7dd5701beb9f50efede1a4",
+        "docker/keycloak/themes/nodefony-enterprise/login/theme.properties": "037377a9cec0edf1d4e75b8aaa015cfd2e47a62a3021db65a2adf5ad82ba0f9a",
+        "docker/keycloak/themes/nodefony-horizon/login/theme.properties": "622084ef4a70e7ba54de18a47c12fe6dc195a5e5ecac8bfaa371e852c2491847",
+        "docker/keycloak/themes/nodefony-ledger/login/theme.properties": "ebe5c99547b57070bd8f4f2e5d80ab5ef79eedf9efe50a8230dc0d2d8a4bb364",
+        "docker/keycloak/themes/nodefony-minimal/login/theme.properties": "859fa6b451298ae9f604dee149dcf43ea6044d5d9fb5c87945aea41de52e4647",
+        "docker/keycloak/themes/nodefony-photo-card/login/theme.properties": "4c4e09a432056893424188dad6493a4eb43e01ad1ebf16e2636e769ecb2a7586",
+        "docker/keycloak/themes/nodefony/account/resources/css/nodefony.css": "9bb15fb95e87a8a7871ef83414320a71a292d45b332b10767696d8508c9536fa",
+        "docker/keycloak/themes/nodefony/account/resources/img/favicon.ico": "6ade2de5704900862b78dd38255b55f9bcdd73f7dea9e9a68a1d406605d5c6a8",
+        "docker/keycloak/themes/nodefony/account/resources/img/logo.png": "7063431ce020a3be02e632b39a8dcaaa7a7c4fe9d4fa992e414fb05cfbd53cb4",
+        "docker/keycloak/themes/nodefony/account/theme.properties": "0e7bba81e8dab324a02e15738475930c2c2cfadd22e2885dc782ea1a9842d4c5",
+        "docker/keycloak/themes/nodefony/admin/resources/css/nodefony.css": "9bb15fb95e87a8a7871ef83414320a71a292d45b332b10767696d8508c9536fa",
+        "docker/keycloak/themes/nodefony/admin/resources/img/favicon.ico": "6ade2de5704900862b78dd38255b55f9bcdd73f7dea9e9a68a1d406605d5c6a8",
+        "docker/keycloak/themes/nodefony/admin/resources/img/logo.png": "7063431ce020a3be02e632b39a8dcaaa7a7c4fe9d4fa992e414fb05cfbd53cb4",
+        "docker/keycloak/themes/nodefony/admin/theme.properties": "f1619b93f0628dd404f98caf14982a884416a98f72cf702212ceef09fc9d58ea",
+        "docker/keycloak/themes/nodefony/email/html/template.ftl": "e868ce891c446d699fc76d6657de4c45d0b0a7babd979666380614e45ddfbfb0",
+        "docker/keycloak/themes/nodefony/email/messages/messages_en.properties": "c933c32deeccb0a6fc19b4204ec13ee91eb1446f951815be19c47ab2ce9e1934",
+        "docker/keycloak/themes/nodefony/email/messages/messages_fr.properties": "cc90bd38833c5b3d9acbb0bd3b15f1cc66951d21526100da3622c6e8d6d174a4",
+        "docker/keycloak/themes/nodefony/email/resources/img/logo.png": "7063431ce020a3be02e632b39a8dcaaa7a7c4fe9d4fa992e414fb05cfbd53cb4",
+        "docker/keycloak/themes/nodefony/email/theme.properties": "9a819c5dc8360959a786351db92d3d5c8ee1214ba6173c509e38817d9cfeeda5",
+        "docker/keycloak/themes/nodefony/login/messages/messages_en.properties": "266123978cb66ee45c4c72acd91c17df6511b3fd484d3b58cfd4167ee628047d",
+        "docker/keycloak/themes/nodefony/login/messages/messages_fr.properties": "a9a99a2ccb20e6084b66d506de8f69470e9ab5a5bcc6a7f8dec036aac5923293",
+        "docker/keycloak/themes/nodefony/login/resources/css/login.css": "7da3ff33e3115beb7ebc5eafdd3ed5bad4d5dea8409cfe4bb44ceb07006ca685",
+        "docker/keycloak/themes/nodefony/login/resources/css/nodefony.css": "5f76929fa8bc2ccd211430e634f2d6f91fdefd1869a54fca46b9d2c8d2f5d943",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/blueprint.css": "679f97eab28d423d14798651b580ae30117b08eff12290b2b6d4f1847cdc57e8",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/console.css": "29e3d60c816e2fa6b1932a780835e8c5fa80b2cd352ed877673f4e31d85391ea",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/dots.css": "27adf0eeff18f7d91c8be297d79e2af0586d51bb4b987201aeda56ad1fb21e98",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/enterprise.css": "5b3fad46ca411cc98790a04194232f0f9196f066f7d83363b9112d293998b66d",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/horizon.css": "cefaa4b120038ee9a165bdc392c693d79697db70432c7db440e5877feae5c113",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/ledger.css": "16aca00023cc50d54f5f8d52cd0c4e923c8acfde08077795fca74fe8aaa4b424",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/minimal.css": "acac1fab0131169a5bc04cfef7339242f5f8717f346baa548b1955e92d94baeb",
+        "docker/keycloak/themes/nodefony/login/resources/css/skins/photo-card.css": "a61616007bef024f7721be9163eda27ec0a9bb3d250e36c564e2932b587209a1",
+        "docker/keycloak/themes/nodefony/login/resources/img/favicon.ico": "6ade2de5704900862b78dd38255b55f9bcdd73f7dea9e9a68a1d406605d5c6a8",
+        "docker/keycloak/themes/nodefony/login/resources/img/logo.png": "7063431ce020a3be02e632b39a8dcaaa7a7c4fe9d4fa992e414fb05cfbd53cb4",
+        "docker/keycloak/themes/nodefony/login/template.ftl": "60ad17c2d16d91ae8fdc892c4b9df85c540f2309255c2c691a5118c860f2d8ba",
+        "docker/keycloak/themes/nodefony/login/theme.properties": "fc0c872fd4a3ed7cccac53570310166173e68427748f332169f869f8aab12e40",
+        "docker/keycloak/themes/nodefony/welcome/resources/css/nodefony.css": "6156b61f8f621d10bfd7655c31898f00a37c5e2b6c87d8755ba30f3943e16cc4",
+        "docker/keycloak/themes/nodefony/welcome/resources/img/logo.png": "7063431ce020a3be02e632b39a8dcaaa7a7c4fe9d4fa992e414fb05cfbd53cb4",
+        "docker/keycloak/themes/nodefony/welcome/theme.properties": "49334f9793c690a5e58cd7dbfac1f84fc64326d6f082ffd46a99c9795a550ca0"
+      }
+    }
+  }
+}

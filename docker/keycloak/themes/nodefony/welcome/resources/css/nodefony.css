@@ -1,0 +1,32 @@
+/*
+ * Page d'accueil du serveur Keycloak aux couleurs de Nodefony Studio.
+ *
+ * Le gabarit du parent pose `logo.svg` et `background.svg` en dur : l'image
+ * est remplacée par `content` (pas de copie du gabarit à resynchroniser), le
+ * fond par le dégradé du panneau de marque de Studio (`AuthLayout.tsx`).
+ */
+
+:root {
+  --pf-v5-global--primary-color--100: #0067ba;
+  --pf-v5-global--primary-color--200: #00579c;
+  --pf-v5-global--link--Color: #0067ba;
+  --pf-v5-global--link--Color--hover: #00579c;
+}
+
+.pf-v5-c-background-image {
+  --pf-v5-c-background-image--BackgroundImage: none !important;
+  background: linear-gradient(135deg, #00467e 0%, #0067ba 55%, #4792cd 100%);
+}
+
+/* Pastille claire : l'arc extérieur du logo (#0067ba) se fondait dans le
+   dégradé, qui en part. */
+.kc-brand {
+  content: url("../img/logo.png");
+  box-sizing: content-box;
+  width: auto;
+  height: 72px;
+  padding: 16px 22px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}

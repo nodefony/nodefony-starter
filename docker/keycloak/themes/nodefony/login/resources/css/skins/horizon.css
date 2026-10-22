@@ -1,0 +1,158 @@
+/* ═══ nodefony/login/skins/horizon.css — habillage « Horizon » ═══
+   Application grand public ou produit SaaS : une carte postale. La photo
+   de l'application vit DANS la carte, en bandeau ; sans photo, le bandeau
+   prend la couleur du panneau de marque.
+
+   Mise en page : `card`.
+   Chargée APRÈS `login.css` et AVANT la feuille de l'application
+   (`loginPage.skin: "horizon"`) : elle ne redéfinit que des variables
+   `--nf-login-*` et la disposition de sa mise en page — jamais le balisage.
+   Aucune photo n'est fournie : elle vient de l'application
+   (`--nf-login-hero-image`). Le jeu CLAIR est écrit deux fois, à l'identique,
+   comme dans `login.css`. */
+:root {
+  --nf-login-bg: #0f1317;
+  --nf-login-surface: #171b21;
+  --nf-login-raised: #1e232b;
+  --nf-login-line: #272d36;
+  --nf-login-line-strong: #38404b;
+  --nf-login-field: #11151a;
+  --nf-login-card-width: 540px;
+  --nf-login-card-radius: 14px;
+  --nf-login-title-size: 24px;
+  /* Le bandeau porte la photo de l'application (`--nf-login-hero-image`) ;
+     une photo de 1100 px de large suffit à 540 px, même en Retina. */
+  --nf-login-band-height: 170px;
+  /* Décalage en px : un pourcentage se calculerait sur la boîte entière de .nf-head, pas sur le bandeau. */
+  --nf-login-band-position: center 0;
+  /* Micro-légende posée sur la photo (`"43.27 N · 5.35 E"`), ou rien. */
+  --nf-login-band-caption: none;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --nf-login-on-brand: #ffffff;
+    --nf-login-accent: #0067ba;
+    --nf-login-ok: #1f8a5b;
+    --nf-login-warn: #8a5a00;
+    --nf-login-crit: #c4321a;
+    --nf-login-bg: #eef1f5;
+    --nf-login-surface: #ffffff;
+    --nf-login-raised: #f2f4f7;
+    --nf-login-line: #e1e5ea;
+    --nf-login-line-strong: #ccd2da;
+    --nf-login-heading: #111317;
+    --nf-login-text: #343a40;
+    --nf-login-muted: #5d646d;
+    --nf-login-field: #ffffff;
+    --nf-login-crit-bg: #fff3f0;
+    --nf-login-ok-bg: #edf8f2;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --nf-login-on-brand: #ffffff;
+  --nf-login-accent: #0067ba;
+  --nf-login-ok: #1f8a5b;
+  --nf-login-warn: #8a5a00;
+  --nf-login-crit: #c4321a;
+  --nf-login-bg: #eef1f5;
+  --nf-login-surface: #ffffff;
+  --nf-login-raised: #f2f4f7;
+  --nf-login-line: #e1e5ea;
+  --nf-login-line-strong: #ccd2da;
+  --nf-login-heading: #111317;
+  --nf-login-text: #343a40;
+  --nf-login-muted: #5d646d;
+  --nf-login-field: #ffffff;
+  --nf-login-crit-bg: #fff3f0;
+  --nf-login-ok-bg: #edf8f2;
+  color-scheme: light;
+}
+
+/* ── La carte postale : la photo vit DANS la carte, le texte jamais dessus ──
+   Le bandeau est porté par .nf-head, pas par la carte : seuls ses trois enfants
+   sont « à revoir » pour axe (fond image), le reste de la carte reste mesurable. */
+.nf-strip {
+  border-bottom-color: transparent;
+  background: transparent;
+}
+.nf-stage {
+  padding: 32px 16px 40px;
+}
+.nf-card {
+  overflow: hidden;
+}
+.nf-head {
+  position: relative;
+  padding-top: calc(var(--nf-login-band-height) + 25px);
+  /* Sans photo, le bandeau prend la couleur pleine du panneau de marque. */
+  background: var(--nf-login-hero-image) var(--nf-login-band-position) / 100%
+    auto no-repeat;
+  background-color: var(--nf-login-hero-bg);
+}
+/* Sous la photo, une plaque pleine bordée d'un filet : le titre est sur la surface, jamais sur l'image. */
+.nf-head::after {
+  content: "";
+  position: absolute;
+  top: var(--nf-login-band-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--nf-login-line);
+  background: var(--nf-login-surface);
+}
+.nf-head > * {
+  position: relative;
+  z-index: 1;
+}
+/* La marque, en pastille pleine posée sur la photo : lisible par construction. */
+.nf-head .nf-brand {
+  display: inline-flex;
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  margin: 0;
+  padding: 6px 10px 6px 8px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 8px;
+  background: var(--nf-login-surface);
+  font-size: 13px;
+}
+.nf-head .nf-brand .nf-logo {
+  height: 18px;
+}
+/* Micro-légende en chasse fixe, même pastille : le détail qui dit « un vrai lieu ».
+   `content: none` (défaut) ne crée pas la pastille. */
+.nf-head::before {
+  content: var(--nf-login-band-caption);
+  position: absolute;
+  top: calc(var(--nf-login-band-height) - 32px);
+  right: 14px;
+  z-index: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--nf-login-line);
+  border-radius: 6px;
+  background: var(--nf-login-surface);
+  font: 700 9px/1 var(--nf-login-mono);
+  letter-spacing: 0.6px;
+  color: var(--nf-login-muted);
+}
+.nf-sub {
+  margin-top: 2px;
+}
+
+/* Petit écran : la carte postale ne doit pas pousser le bouton hors de l'écran.
+   Le bandeau rétrécit sur un écran COURT (téléphone, fenêtre basse), et la
+   scène reprend les marges serrées de login.css — la règle ci-dessus, posée
+   sans condition, les écrasait. */
+@media (max-height: 760px) {
+  :root {
+    --nf-login-band-height: 96px;
+  }
+}
+@media (max-width: 520px) {
+  .nf-stage {
+    padding: 16px 12px 24px;
+  }
+}

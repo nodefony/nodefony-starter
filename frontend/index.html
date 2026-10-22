@@ -1,0 +1,35 @@
+<!doctype html>
+<!--
+  Coquille HTML de ton app — TA page, pas celle du framework : ajoute ici tes
+  meta, polices, favicons, scripts externes. Le framework injecte ses balises
+  (entry Vite + HMR en dev, bundle fingerprinté en prod, nonce CSP propagé)
+  au marqueur ci-dessous — laisse-le en place.
+-->
+<!--
+  `lang` n'est pas décoratif : il décide de l'accent avec lequel une synthèse
+  vocale lit ta page, et de la langue que déclare ton document aux moteurs de
+  recherche. Il valait `en` sur une page dont le contenu est en français —
+  change-le pour la langue de TON application, ne le laisse jamais mentir.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>nodefony</title>
+    <!-- Résumé affiché par les moteurs de recherche sous ton titre. Sans lui,
+         ils en fabriquent un depuis le texte de la page — rarement à ton avantage. -->
+    <meta name="description" content="nodefony — application Nodefony." />
+    <!-- Dit au navigateur que la page sait s'afficher dans les deux thèmes :
+         sans cela, les contrôles natifs (champs, barres) restent clairs sur un
+         fond sombre. -->
+    <meta name="color-scheme" content="light dark" />
+    <!-- Icône de l'onglet : `public/favicon.ico`, servi à la racine par le
+         framework comme par le frontal de production. C'est le logo Nodefony
+         à la création — remplace le fichier par le tien, rien d'autre à changer. -->
+    <link rel="icon" href="/favicon.ico" />
+    <!--nodefony:frontend-->
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

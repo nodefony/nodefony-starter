@@ -1,0 +1,96 @@
+# CI de nodefony — générée par `nodefony create app`.
+#
+# C'est ICI que vit le filet complet, pas dans des hooks git : `verify`
+# enchaîne typecheck, lint, tests, CONSTRUCTION puis `nodefony doctor`, et la
+# suite e2e démarre l'application POUR DE VRAI et l'interroge en HTTP.
+# Un hook local est un doublon contournable (--no-verify) ; la forge, non.
+#
+# 🔴 La construction fait partie de `verify`, elle n'est PAS une étape d'ici :
+# `nodefony doctor` refuse une application non construite (sans `dist/index.js`
+# le serveur répond 404 sur toutes ses routes), et une étape écrite dans ce
+# fichier seul laisserait `npm run verify` rouge sur le poste du développeur.
+# Le filet doit être le MÊME en local et en forge.
+name: CI
+
+on:
+  push:
+    # Les BRANCHES, jamais les étiquettes : une étiquette posée sur un commit
+    # déjà éprouvé rejouerait la chaîne entière à l'identique.
+    branches: ["**"]
+  pull_request:
+
+# Un envoi qui en remplace un autre annule le run précédent : c'est la même
+# révision qu'on cesse d'éprouver deux fois.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Le minimum : cette chaîne LIT le dépôt et n'y écrit rien.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    # Sans borne, un démarrage qui pend consomme le quota jusqu'à six heures.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          # Le plancher des `engines` du framework — la forge éprouve la
+          # version la plus ANCIENNE qu'on prétend servir.
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # typecheck, lint, format:check, env:check, test, build, `nodefony doctor` — l'ordre du script.
+      - run: npm run verify
+
+      # Les clés de PRODUCTION que la suite e2e exige — chiffrement du second
+      # facteur et des webhooks, signature des jetons. Sans elles, la production
+      # démarre quand même, mais avec ces briques DÉSACTIVÉES : la CI serait verte
+      # sur une production amputée. Tirées à chaque exécution, elles ne protègent
+      # rien et n'ont donc pas leur place dans les `secrets` du dépôt. La commande
+      # démarre le noyau : elle vient APRÈS `verify`, qui construit. Une ligne
+      # `CLÉ=valeur` par clé, sans journal — le format que lit `$GITHUB_ENV`.
+      - name: Clés de production (tirées pour cette exécution)
+        shell: bash
+        run: npm exec -- nodefony security:secrets --env >> "$GITHUB_ENV"
+
+      # L'application DÉMARRE et répond en HTTP : la seule preuve qui compte.
+      - run: npm run test:e2e
+
+      # 🔴 L'IMAGE est le seul artefact que rien ne regardait, et c'est celui
+      # qu'on PUBLIE. Un secret qui y entre est public : une couche reste
+      # téléchargeable même quand une couche suivante efface le fichier — un
+      # `COPY` puis un `rm` donne donc une image où le secret est absent du
+      # système de fichiers et présent dans le registre. Ni le `.dockerignore`
+      # (qui filtre le contexte, pas ce que la construction produit) ni un `rm`
+      # dans le Dockerfile ne ferment ce chemin.
+      #
+      # La construire ICI est ce qui rend le contrôle possible : sans image, il
+      # n'y a rien à regarder. Elle n'est pas poussée — c'est une image de
+      # contrôle, et son tag le dit.
+      - name: Construire l'image
+        run: docker build -t nodefony:ci .
+
+      # `nodefony image:check` lit les COUCHES et refuse par un code non nul.
+      # Un contrôle qui n'a pas PU regarder (démon injoignable, couche illisible)
+      # sort en 69, pas en 0 : cette étape échoue alors, ce qui est voulu.
+      - name: Contrôler l'image (aucun secret embarqué)
+        run: npm exec -- nodefony image:check nodefony:ci
+
+      # Un démarrage raté en forge ne laisse RIEN à lire sans ceci : les
+      # journaux de l'application vivent sous `var/`, que le dépôt ignore.
+      # Sans cette étape, un e2e rouge s'instruit à l'aveugle.
+      - name: Journaux de l'application (en cas d'échec seulement)
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: journaux-nodefony
+          path: var/
+          if-no-files-found: ignore
+          retention-days: 7

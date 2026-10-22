@@ -1,0 +1,108 @@
+# Ce qui n'entre PAS dans le contexte de construction de l'image.
+# Motifs relatifs à la racine du contexte — `**/` pour atteindre les modules
+# locaux (`modules/*/node_modules`, `modules/*/dist`).
+
+# Reconstruits DANS l'image. Entrés depuis la machine, ils masqueraient le
+# build de l'étape et l'image partirait avec le code de la veille.
+**/node_modules
+**/dist
+
+# Cache du gestionnaire que la CI GitLab garde DANS le projet : le job qui
+# construit l'image l'a rempli juste avant, et il n'a rien à faire dans une image.
+.npm/
+
+# Écritures du runtime — propres à une machine, et sans valeur dans une image.
+# ⚠️ Les journaux FICHIER ne vont PAS sous `var/` : le driver `file` écrit dans
+# `log.dir`, dont le défaut est `logs/` (`Kernel.ts`). Et un motif sans `**/`
+# est ancré à la RACINE du contexte — contrairement à `.gitignore`, où il vaut
+# à toute profondeur. `*.log` seul ne voyait donc aucun journal.
+var
+logs
+**/*.log
+**/*.jsonl
+
+# Secrets — `.env` porte les valeurs du POSTE : il n'est jamais commité, et
+# n'entre pas davantage dans une image. Les couches d'une image sont lisibles
+# par qui la télécharge, et un secret y reste même effacé par une couche
+# suivante. En production, les valeurs viennent de l'orchestrateur (variables
+# d'environnement, gestionnaire de secrets) ; seule la notice entre. Motifs
+# de la RACINE seulement : les `.env.*` d'un front Vite portent des variables
+# `VITE_` publiques, dont `npm run build` a besoin.
+.env
+.env.*
+!.env.example
+
+# 🔴 MATIÈRE CRYPTOGRAPHIQUE. Le `.gitignore` d'à côté écrit « la clé qui va
+# avec, jamais » et exclut `*.key`, `privkey*.pem`, `*-key.pem` — ce fichier ne
+# le faisait pas, alors que le `COPY . ./` du Dockerfile emporte tout et que
+# l'image, elle, est PUBLIÉE. Quiconque avait lancé son application en
+# développement expédiait la clé privée de son poste dans un dépôt d'images :
+# le framework écrit celle qu'il fabrique sous `nodefony/config/certificates`
+# (`certificates.ts:134`), et une couche reste lisible même effacée plus loin.
+# Le motif porte sur l'EXTENSION, pas sur le chemin : un dossier se déplace, un
+# suffixe non. Aucune construction n'a jamais besoin d'un certificat — en
+# production il vient de l'orchestrateur, du proxy frontal ou de l'ingress.
+nodefony/config/certificates
+**/*.key
+**/*.pem
+**/*.crt
+**/*.p12
+**/*.pfx
+
+# 🔴 JETONS D'ACCÈS. Aucun n'est un secret « de production » : ce sont ceux du
+# POSTE, et c'est précisément ce qui les rend faciles à publier sans y penser.
+#
+#  - `.npmrc` porte une ligne `//registre/:_authToken=…` dès qu'un registre
+#    privé est en jeu — le cas courant en entreprise. Un registre privé se sert
+#    par un MONTAGE de secret, jamais par le contexte de construction :
+#      RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci …
+#      docker build --secret id=npmrc,src=$HOME/.npmrc .
+#  - Les agents câblés par `nodefony ai:mcp` gardent le jeton porteur du serveur
+#    MCP dans le projet, chacun dans son dossier : `.gemini/.env`, et les homes
+#    redirigés de Vibe et de Codex (`.vibe/.env`, `.codex/.env`).
+.npmrc
+**/.npmrc
+.netrc
+.gemini
+.vibe
+.codex
+.mcp.json
+
+
+# Rien de tout ceci ne sert à `npm run build`, et tout se retrouverait dans une
+# image publique : bancs d'essai, artefacts jetables, chaînes d'intégration,
+# décor de développement et consignes d'agents. Ce n'est pas que du poids —
+# c'est de la surface qu'on donne à lire.
+tests
+tmp
+.vitest
+
+# Configuration Vite ÉCRITE par le superviseur de développement, à côté de
+# l'`index.html` de chaque frontend. Elle est dérivée de la config de
+# l'application à chaque démarrage : la versionner ferait suivre un fichier que
+# personne n'édite et qui change tout seul.
+vite.config.generated.mjs
+coverage
+.github
+.gitlab-ci.yml
+.claude
+.agents
+AGENTS.md
+.cursor
+.vscode
+.idea
+docker
+deploy
+# TOUT compose, pas seulement `compose.yaml` : `compose.override.yaml` est le
+# point d'injection standard des valeurs d'exploitation, donc des secrets.
+compose*.y*ml
+docker-compose*.y*ml
+
+# Bruit — sans effet sur l'exécution, mais chaque octet du contexte est envoyé
+# au démon Docker à chaque construction.
+.git
+.gitignore
+Dockerfile
+.dockerignore
+**/.DS_Store
+**/Thumbs.db
